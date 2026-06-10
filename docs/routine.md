@@ -1,5 +1,7 @@
 # Daily routine
 
+`CLAUDE.md` is the canonical agent routine. This file is the detailed source checklist and writing reference.
+
 Goal: publish one dated digest that explains what changed in software engineering, why it matters, and what needs follow-up.
 
 ## Output contract

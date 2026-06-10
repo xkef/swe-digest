@@ -25,4 +25,4 @@ template = "page.html"
 
 ## Standing watchlist
 
-The maintained watchlist lives in `data/watchlist.toml`. The daily process lives in `docs/routine.md`.
+The canonical agent routine lives in `CLAUDE.md`. The maintained watchlist lives in `data/watchlist.toml`. The detailed daily process lives in `docs/routine.md`.

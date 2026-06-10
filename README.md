@@ -22,13 +22,15 @@ Run every morning:
 make new-digest
 ```
 
-Then follow `docs/routine.md`, update the generated digest, update memory files when a story needs follow-up, and commit one change to `main`.
+Then follow `CLAUDE.md`. It points to `docs/routine.md`, `data/watchlist.toml`, and `memory/` for source collection and long-running context.
 
 ## Site structure
 
 - `content/digests/`: dated public digests.
 - `content/sources/`: public source map and search strategy.
-- `docs/routine.md`: daily collection and writing process.
+- `CLAUDE.md`: canonical agent routine.
+- `AGENTS.md`: pointer for non-Claude agents.
+- `docs/routine.md`: detailed daily collection and writing process.
 - `memory/`: public long-running context, recurring topics, follow-ups, and source reliability notes.
 - `data/watchlist.toml`: maintained topic, source, repo, and company watchlist.
 - `scripts/new_digest.py`: creates the daily digest skeleton.
