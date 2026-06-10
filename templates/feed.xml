@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ config.title }}</title>
+  <id>{{ config.base_url | safe }}/</id>
+  <link href="{{ config.base_url | safe }}/" />
+  <link href="{{ feed_url | safe }}" rel="self" type="application/atom+xml" />
+  <updated>{{ last_updated | date(format="%Y-%m-%dT%H:%M:%SZ") }}</updated>
+  {% if config.description %}<subtitle>{{ config.description | escape }}</subtitle>{% endif %}
+  {% for page in pages %}
+  <entry>
+    <title>{{ page.title | escape }}</title>
+    <id>{{ page.permalink | safe }}</id>
+    <link href="{{ page.permalink | safe }}" />
+    <updated>{% if page.updated %}{{ page.updated | date(format="%Y-%m-%dT%H:%M:%SZ") }}{% else %}{{ page.date | date(format="%Y-%m-%dT%H:%M:%SZ") }}{% endif %}</updated>
+    {% if page.description %}<summary>{{ page.description | escape }}</summary>{% endif %}
+  </entry>
+  {% endfor %}
+</feed>

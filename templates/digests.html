@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="layout listing">
+  <header class="page-header">
+    <p class="eyebrow">Archive</p>
+    <h1>{{ section.title }}</h1>
+    {% if section.description %}<p>{{ section.description }}</p>{% endif %}
+  </header>
+  {% if paginator is defined %}
+  {% set pages = paginator.pages %}
+  {% else %}
+  {% set pages = section.pages %}
+  {% endif %}
+  <ol class="digest-list">
+    {% for page in pages %}
+    <li>
+      <time datetime="{{ page.date | date(format='%Y-%m-%d') }}">{{ page.date | date(format='%Y-%m-%d') }}</time>
+      <div>
+        <h2><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h2>
+        {% if page.description %}<p>{{ page.description }}</p>{% endif %}
+        {% if page.taxonomies.tags %}
+        <p class="tags">
+          {% for tag in page.taxonomies.tags %}<span>{{ tag }}</span>{% endfor %}
+        </p>
+        {% endif %}
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+  {% if paginator is defined %}
+  <nav class="pagination" aria-label="Pagination">
+    {% if paginator.previous %}<a href="{{ paginator.previous | safe }}">Newer</a>{% endif %}
+    <span>Page {{ paginator.current_index }} of {{ paginator.number_pagers }}</span>
+    {% if paginator.next %}<a href="{{ paginator.next | safe }}">Older</a>{% endif %}
+  </nav>
+  {% endif %}
+</section>
+{% endblock content %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="layout prose search-page">
+  <header class="page-header">
+    <p class="eyebrow">Archive</p>
+    <h1>{{ section.title }}</h1>
+    {% if section.description %}<p>{{ section.description }}</p>{% endif %}
+  </header>
+  {{ section.content | safe }}
+  <form class="search-box" role="search">
+    <label for="search-input">Query</label>
+    <input id="search-input" name="q" type="search" autocomplete="off" placeholder="CVE, Ghostty, outage, OpenAI, Rust">
+  </form>
+  <p id="search-status" class="meta" aria-live="polite">Type to search.</p>
+  <ol id="search-results" class="search-results"></ol>
+</section>
+<script src="{{ get_url(path='/search.js') | safe }}" defer></script>
+{% endblock content %}

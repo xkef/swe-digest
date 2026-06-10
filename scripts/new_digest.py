@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import sys
+from datetime import date, datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+SECTIONS = [
+    "Top stories",
+    "AI",
+    "Security",
+    "Outages",
+    "Developer tools",
+    "Languages and runtimes",
+    "Infrastructure",
+    "Engineering posts",
+    "Markets and companies",
+    "HN and Reddit pulse",
+    "Watchlist follow-ups",
+    "Sources checked",
+]
+
+TEMPLATE_ITEM = """### Story title
+
+- Category: AI | Security | Outage | Dev tools | Languages | Infrastructure | Engineering post | Markets | Pulse
+- Status: confirmed | developing | rumor | discussion
+- Sources: [primary](https://example.com), [discussion](https://news.ycombinator.com/item?id=0)
+- Summary: Replace with one to three factual sentences.
+- Why it matters: Replace with one sentence about engineering impact.
+- Follow-up: Replace or remove.
+"""
+
+
+def parse_day(value: str | None) -> date:
+    if not value:
+        return datetime.now(timezone.utc).date()
+    return datetime.strptime(value, "%Y-%m-%d").date()
+
+
+def front_matter(day: date) -> str:
+    iso = day.isoformat()
+    return f"""+++
+title = "{iso} digest"
+date = {iso}
+description = "Daily software engineering digest for {iso}."
+
+[taxonomies]
+categories = []
+tags = []
+
+[extra]
+status = "draft"
+source_count = 0
++++
+"""
+
+
+def body() -> str:
+    parts: list[str] = []
+    for section in SECTIONS:
+        parts.append(f"## {section}\n")
+        if section == "Top stories":
+            parts.append(TEMPLATE_ITEM)
+        elif section == "Sources checked":
+            parts.append("- Hacker News\n- Reddit\n- AI sources\n- Security advisories\n- Status pages\n- GitHub watchlist\n- Engineering blogs\n- Markets and company sources\n")
+        else:
+            parts.append("No entries yet.\n")
+    return "\n".join(parts)
+
+
+def main() -> int:
+    day = parse_day(sys.argv[1] if len(sys.argv) > 1 else None)
+    target = ROOT / "content" / "digests" / day.isoformat() / "index.md"
+    if target.exists():
+        print(f"exists: {target.relative_to(ROOT)}")
+        return 0
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(front_matter(day) + "\n" + body(), encoding="utf-8")
+    print(f"created: {target.relative_to(ROOT)}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

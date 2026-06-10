@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero layout">
+  <div class="hero-copy">
+    <p class="eyebrow">Daily engineering signal</p>
+    <h1>{{ section.title }}</h1>
+    <p>{{ section.description }}</p>
+    <div class="hero-actions">
+      <a href="{{ get_url(path='/digests/') | safe }}">Read digests</a>
+      <a href="{{ get_url(path='/search/') | safe }}">Search archive</a>
+    </div>
+  </div>
+  <svg class="signal-map" viewBox="0 0 520 360" role="img" aria-label="Digest signal map">
+    <defs>
+      <linearGradient id="pulse" x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0" stop-color="currentColor" stop-opacity="0.9" />
+        <stop offset="1" stop-color="currentColor" stop-opacity="0.25" />
+      </linearGradient>
+    </defs>
+    <rect x="20" y="20" width="480" height="320" rx="28" fill="none" stroke="currentColor" stroke-opacity="0.16" />
+    <path d="M70 238 C130 110, 198 284, 262 156 S394 96, 450 196" fill="none" stroke="url(#pulse)" stroke-width="8" stroke-linecap="round" />
+    <g fill="currentColor">
+      <circle cx="88" cy="212" r="8" />
+      <circle cx="178" cy="205" r="8" />
+      <circle cx="262" cy="156" r="8" />
+      <circle cx="350" cy="134" r="8" />
+      <circle cx="450" cy="196" r="8" />
+    </g>
+    <g class="map-labels">
+      <text x="64" y="278">HN</text>
+      <text x="146" y="88">AI</text>
+      <text x="234" y="256">CVE</text>
+      <text x="328" y="82">Tools</text>
+      <text x="402" y="264">Outages</text>
+    </g>
+  </svg>
+</section>
+
+<section class="layout prose">
+  {{ section.content | safe }}
+</section>
+{% endblock content %}

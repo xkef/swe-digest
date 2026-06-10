@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    {% if page is defined %}
+    <title>{{ page.title }} | {{ config.title }}</title>
+    {% elif section is defined and section.path != "/" %}
+    <title>{{ section.title }} | {{ config.title }}</title>
+    {% else %}
+    <title>{{ config.title }}</title>
+    {% endif %}
+    {% if page is defined and page.description %}
+    <meta name="description" content="{{ page.description }}">
+    {% elif section is defined and section.description %}
+    <meta name="description" content="{{ section.description }}">
+    {% elif config.description %}
+    <meta name="description" content="{{ config.description }}">
+    {% endif %}
+    <link rel="canonical" href="{% if page is defined %}{{ page.permalink | safe }}{% elif section is defined %}{{ section.permalink | safe }}{% else %}{{ config.base_url | safe }}{% endif %}">
+    <link rel="alternate" type="application/atom+xml" href="{{ get_url(path='/feed.xml') | safe }}" title="{{ config.title }}">
+    <link rel="stylesheet" href="{{ get_url(path='/style.css') | safe }}">
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <nav class="nav" aria-label="Primary">
+        <a class="brand" href="{{ get_url(path='/') | safe }}">SWE Digest</a>
+        <div class="nav-links">
+          <a href="{{ get_url(path='/digests/') | safe }}">Digests</a>
+          <a href="{{ get_url(path='/sources/') | safe }}">Sources</a>
+          <a href="{{ get_url(path='/search/') | safe }}">Search</a>
+          <a href="{{ get_url(path='/feed.xml') | safe }}">Feed</a>
+        </div>
+      </nav>
+    </header>
+    <main id="main">
+      {% block content %}{% endblock content %}
+    </main>
+    {% set release = get_env(name="RELEASE", default="dev") %}
+    {% set build_date = get_env(name="BUILD_DATE", default="") %}
+    <footer class="site-footer">
+      <p>
+        <span>{{ config.title }}</span>
+        <span>{{ release }}</span>
+        <span>{% if build_date %}{{ build_date }}{% else %}{{ now() | date(format="%Y-%m-%d") }}{% endif %}</span>
+        <span><a href="{{ config.extra.repository }}">Repository</a></span>
+      </p>
+    </footer>
+  </body>
+</html>
