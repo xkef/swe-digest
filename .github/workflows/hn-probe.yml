@@ -1,0 +1,21 @@
+name: hn-probe
+
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe HN endpoints
+        run: |
+          for url in \
+            "https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=1" \
+            "https://hacker-news.firebaseio.com/v0/topstories.json" \
+            "https://news.ycombinator.com/news" \
+            "https://hnrss.org/frontpage?count=1" \
+            "https://api.hnpwa.com/v0/news/1.json"; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$url" || echo "ERR")
+            echo "$code  $url"
+          done
