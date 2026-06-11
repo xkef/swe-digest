@@ -150,6 +150,24 @@ Format:
 - Last checked: 2026-06-11
 - Notes: Nightmare Eclipse PoC published 2026-06-11. Race condition in Defender quarantine pipeline. LPE to SYSTEM. Works on fully patched Windows 10 and 11. No CVE, no patch. Requires local ISO mount capability. Seventh Defender zero-day from this actor since April 2026.
 
+## 2026-06-11: Devin Desktop Cascade EOL 2026-07-01
+
+- Status: open
+- Category: Dev tools
+- Sources: [Devin blog](https://devin.ai/blog/windsurf-is-now-devin-desktop/)
+- Watch for: Cascade EOL enforcement on 2026-07-01; CI pipeline breakage reports from teams still invoking Cascade.
+- Last checked: 2026-06-11
+- Notes: Windsurf rebranded to Devin Desktop 2026-06-02. Cascade (local agent) EOL 2026-07-01, replaced by Devin Local (Rust rewrite). Devin Desktop ships with ACP (Agent Client Protocol) support.
+
+## 2026-06-11: Linux kernel splice()/vmsplice() removal proposal
+
+- Status: open
+- Category: Linux/Kernel
+- Sources: [LWN Weekly Edition 2026-06-11](https://lwn.net/)
+- Watch for: Formal kernel patch series removing splice/vmsplice; maintainer decision; impact on zero-copy I/O workloads.
+- Last checked: 2026-06-11
+- Notes: LWN June 11 edition covers proposal to remove splice() and vmsplice() due to surge of LLM-discovered security bugs in those calls. Broader kernel code-removal drive targeting ax25, ATM, ISDN. No patch accepted yet.
+
 ## 2026-06-11: GitHub Copilot AI Credits billing backlash
 
 - Status: open

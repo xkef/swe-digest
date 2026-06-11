@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 89
+source_count = 99
 +++
 
 ## Top stories
@@ -101,11 +101,39 @@ source_count = 89
 
 ## ML research
 
-No major items found.
+### The Self-Correction Illusion: LLMs correct others but not themselves
+
+- **Category:** ML research
+- **Status:** developing
+- **Sources:** [arXiv:2606.05976](https://arxiv.org/abs/2606.05976)
+- **Summary:** Chen, Su, and Chiang (submitted 2026-06-04) tested seven LLM families on 30 paired tasks across three domains, keeping erroneous claims byte-identical and varying only the wrapping role: the model's own thought, a user message, a tool response, or a system memory block. Relabeling a claim from the model's own thought to any external role lifted the explicit-correction rate by 23 to 93 percentage points. 10 of 13 model-domain cells reached maximum correction rates when the claim appeared as a tool or system memory entry.
+- **Why it matters:** Multi-agent architectures where independent agents review each other's outputs are substantially more reliable than single-agent self-correction loops; agent system designers should treat self-correction as unreliable by default.
+
+### NF-CoT: Latent reasoning with normalizing flows
+
+- **Category:** ML research
+- **Status:** developing
+- **Sources:** [arXiv:2606.06447](https://arxiv.org/abs/2606.06447), [project page](https://nf-cot.vercel.app/)
+- **Summary:** NF-CoT proposes performing intermediate reasoning steps in compact continuous states using normalizing flows before committing to text, rather than forcing computation through a discrete token stream. The approach preserves left-to-right generation, probabilistic sampling, KV-cache compatibility, and tractable likelihood estimation while reducing the verbalization overhead of standard chain-of-thought.
+- **Why it matters:** If the continuous reasoning overhead proves lower than discrete CoT at equivalent accuracy, inference costs for reasoning-heavy tasks could decrease without requiring separate latent-space model architectures.
 
 ## Agentic coding
 
-No major items found.
+### Claude Code Dynamic Workflows: parallel subagent orchestration in research preview
+
+- **Category:** Agentic coding
+- **Status:** confirmed
+- **Sources:** [Anthropic announcement](https://claude.com/blog/introducing-dynamic-workflows-in-claude-code), [Claude Code docs](https://code.claude.com/docs/en/workflows), [Claude Opus 4.8 release](https://www.anthropic.com/news/claude-opus-4-8)
+- **Summary:** Anthropic shipped Dynamic Workflows for Claude Code on 2026-05-28 as a research preview alongside Claude Opus 4.8, with general availability announced 2026-06-02. The feature lets Claude write JavaScript workflow scripts at runtime, break a task into subtasks, fan them across parallel subagents, verify results, and return a single coordinated output. Use cases include codebase-wide bug hunts, security audits, and large-scale migrations. Jarred Sumner reported porting roughly one million lines of Zig to Rust in six days using the feature. Availability is currently limited to Max, Team, and Enterprise plans and the Claude API; Claude Code CLI, Desktop, and VS Code extension are all supported.
+- **Why it matters:** Teams with codebase-wide or multi-file tasks that exceeded single-agent context can now run them as verifiable parallel work inside Claude Code without building custom orchestration.
+
+### Windsurf rebranded as Devin Desktop; Cascade agent reaches end of life 2026-07-01
+
+- **Category:** Agentic coding
+- **Status:** confirmed
+- **Sources:** [Devin blog](https://devin.ai/blog/windsurf-is-now-devin-desktop/), [Agent Client Protocol spec](https://github.com/agentclientprotocol/agent-client-protocol)
+- **Summary:** Cognition pushed an over-the-air update on 2026-06-02 renaming Windsurf to Devin Desktop. The default surface shifts from an editor canvas to the Agent Command Center, repositioning the product as an agent management hub with an embedded IDE. The local agent Cascade is end-of-life on 2026-07-01 and is replaced by Devin Local, rewritten in Rust. Devin Desktop ships with native support for the Agent Client Protocol (ACP), an open-source (Apache 2.0) JSON-RPC 2.0 spec over stdin/stdout originally created by Zed Industries in August 2025. ACP defines how code editors connect to coding agents; Codex, Claude Agent, Gemini CLI, OpenCode, and Junie all run as first-class agents inside Devin Desktop via ACP. As of June 2026, ACP has native implementations in Zed and JetBrains IDEs and more than 25 AI agent integrations.
+- **Why it matters:** Any CI pipeline or workflow rule that invokes Cascade must be repointed to Devin Local before 2026-07-01; ACP is emerging as the standard interface between editors and coding agents, with broad industry adoption across Zed, JetBrains, GitHub, Google, and Cognition.
 
 ## Security
 
@@ -310,7 +338,21 @@ GitHub experienced authentication issues affecting API requests on 2026-06-10 be
 
 ## Linux and kernel
 
-No major items found.
+### Seven stable kernels released 2026-06-01
+
+- **Category:** Linux/Kernel
+- **Status:** confirmed
+- **Sources:** [LWN announcement](https://lwn.net/Articles/1075806/)
+- **Summary:** Greg Kroah-Hartman released seven stable kernel updates on 2026-06-01: 7.0.11, 6.18.34, 6.12.92, 6.6.142, 6.1.175, 5.15.209, and 5.10.258. Each contains fixes throughout the tree. The releases include a fix for CVE-2026-46243 (CIFSwitch, a local privilege escalation in the CIFS filesystem driver).
+- **Why it matters:** Users running any of the affected stable branches should update; CVE-2026-46243 allows local privilege escalation via the CIFS client.
+
+### LWN Weekly Edition 2026-06-11: splice()/vmsplice() removal proposal; LLM-driven kernel bug reports
+
+- **Category:** Linux/Kernel
+- **Status:** confirmed
+- **Sources:** [LWN Weekly Edition 2026-06-11](https://lwn.net/), [LWN Articles/1075806](https://lwn.net/Articles/1075806/)
+- **Summary:** The LWN Weekly Edition for 2026-06-11 covers a proposal to remove splice() and vmsplice() from the kernel, motivated by a surge of security vulnerabilities in these system calls being discovered by LLM-based automated security scanning tools. Both calls have a long history of exploitable bugs. Separately, kernel developers are actively removing old networking code (ax25, ATM, ISDN, and selected PCI drivers) as an alternative to managing the increasing volume of LLM-generated CVE reports. Alexei Starovoitov presented at the 2026 BPF Summit on how BPF tooling could be redesigned to avoid being misused by coding agents, with follow-on discussion on problems practitioners are encountering when using bpftrace with LLM agents.
+- **Why it matters:** The LLM-generated bug-report flood is beginning to influence kernel architecture decisions, including potential removal of two system calls used by zero-copy I/O workloads; applications relying on splice() or vmsplice() should track this discussion.
 
 ## Infrastructure
 
@@ -488,6 +530,14 @@ No major items found.
 - **Watch for:** Microsoft emergency advisory and CVE assignment; in-the-wild exploitation reports.
 - **Notes:** Nightmare Eclipse PoC released 2026-06-11. Local privilege escalation via Defender quarantine pipeline race condition. Works on fully patched Windows 10 and 11. No patch, no CVE. Seventh Defender zero-day from Nightmare Eclipse since April 2026.
 
+### 2026-06-11: Google Cloud India outage: still developing
+
+- **Status:** open
+- **Category:** Outage
+- **Sources:** [Data Center Dynamics](https://www.datacenterdynamics.com/en/news/google-cloud-suffers-network-disruptions-after-fire-at-third-party-data-center-in-india/)
+- **Watch for:** Official resolution announcement from Google Cloud; facility restoration timeline from Tata Communications.
+- **Notes:** Fire on 2026-06-09 at Tata Communications Next-Gen Tower, Greater Kailash, New Delhi. Emergency power shutdown isolated Delhi PoP. Elevated latency across Delhi, Chennai, Mumbai metros. Still unresolved as of 2026-06-11 evening; Google rerouted traffic but demand exceeds rerouted capacity. No official resolution time published.
+
 ### 2026-06-11: Google Gemini 7-hour outage root cause
 
 - **Status:** open
@@ -545,3 +595,13 @@ No major items found.
 - OpenAI (openai.com) for Ona acquisition and Oracle Cloud partnership announcements
 - Bloomberg and CNBC for OpenAI Ona acquisition reporting
 - Dark Reading for Nightmare Eclipse RoguePlanet campaign context
+- Anthropic (claude.com/blog) for Claude Code Dynamic Workflows announcement
+- Claude Code docs (code.claude.com/docs/en/workflows) for Dynamic Workflows technical details
+- Anthropic (anthropic.com/news/claude-opus-4-8) for Opus 4.8 and Dynamic Workflows timeline
+- Devin (devin.ai/blog/windsurf-is-now-devin-desktop) for Windsurf to Devin Desktop rebrand
+- Agent Client Protocol spec (github.com/agentclientprotocol/agent-client-protocol) for ACP details
+- arXiv:2606.05976 for "The Self-Correction Illusion" paper
+- arXiv:2606.06447 and nf-cot.vercel.app for NF-CoT paper
+- LWN.net Weekly Edition 2026-06-11 for splice/vmsplice removal and kernel coverage
+- LWN.net Articles/1075806 for stable kernel release announcement
+- Hacker News degraded: all four collection methods returned HTTP 403 from datacenter IP ranges (Algolia, Firebase, front page HTML, hnrss.org); HN covered via WebSearch snippets only

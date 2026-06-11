@@ -11,11 +11,12 @@ Recurring entities tracked across digest runs.
 - jj: Jujutsu version control system. Track releases, Git compatibility, workflows, and tooling support.
 - Homebrew: macOS and Linux package manager. Track brew releases via GitHub and the brew.sh blog, tap trust model, deprecations, and platform support timelines. Current: 6.0.0 (2026-06-11). Intel x86_64 macOS goes Tier 3 September 2026, unsupported September 2027.
 - Xcode: Apple IDE. Track agentic coding features, Foundation Models integration, Swift toolchain. Xcode 27 beta (27A5194q) released 2026-06-08 with dual-engine agentic coding and LanguageModel protocol.
+- Devin Desktop (formerly Windsurf): AI coding IDE by Cognition. Rebranded from Windsurf to Devin Desktop on 2026-06-02. Default surface is Agent Command Center. Cascade agent EOL 2026-07-01, replaced by Devin Local (Rust rewrite). Ships with Agent Client Protocol (ACP) support.
 
 ## AI
 
 - OpenAI: track model releases (current: GPT-5.5 Instant), API changes, pricing, deprecations, and IPO process. Confidential S-1 filed 2026-06-08.
-- Anthropic: track model releases (current: Claude Fable 5 as of 2026-06-09, Opus 4.8, Sonnet 4.6, Haiku 4.5), API changes, pricing, deprecations, and IPO process. Confidential S-1 filed 2026-06-01. Sonnet 4 and Opus 4 retire 2026-06-15.
+- Anthropic: track model releases (current: Claude Fable 5 as of 2026-06-09, Opus 4.8, Sonnet 4.6, Haiku 4.5), API changes, pricing, deprecations, and IPO process. Confidential S-1 filed 2026-06-01. Sonnet 4 and Opus 4 retire 2026-06-15. Andrej Karpathy (OpenAI co-founder, former Tesla AI lead) joined Anthropic pretraining team 2026-05-19.
 - Google DeepMind: track Gemini model releases (current: Gemini 3.1 Ultra with 2M context), API changes, and pricing.
 - Meta AI: track Llama releases, open weight licenses, and PyTorch changes.
 - Mistral: track model releases, API, and open weight licenses.
@@ -55,9 +56,10 @@ Recurring entities tracked across digest runs.
 
 ## Agentic coding
 
-- Claude Code: Anthropic coding agent. Track releases, harness changes, MCP support, and subagent features.
+- Claude Code: Anthropic coding agent. Track releases, harness changes, MCP support, and subagent features. Dynamic Workflows (parallel subagent orchestration) launched as research preview 2026-05-28 with Opus 4.8; GA announced 2026-06-02.
 - Cursor and GitHub Copilot: coding agents. Track release notes, model changes, and agent capabilities.
 - Model Context Protocol: track spec changes, new servers and clients, and adoption.
+- Agent Client Protocol (ACP): open protocol (Apache 2.0) for editor-agent communication. Created by Zed Industries in August 2025. JSON-RPC 2.0 over stdin/stdout. Adopted by Zed, JetBrains, Devin Desktop, GitHub, Google, and 25+ AI agents as of June 2026.
 
 ## Markets
 
