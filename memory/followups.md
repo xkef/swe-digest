@@ -113,3 +113,21 @@ Format:
 - Watch for: Cisco patch release for CVE-2026-20245.
 - Last checked: 2026-06-11
 - Notes: Command injection in SD-WAN Manager CLI, requires netadmin privileges, allows root command execution. CISA KEV 2026-06-09. No patch; Cisco confirmed exploitation in limited cases. Affects all deployment types.
+
+## 2026-06-11: Ivanti Sentry CVE-2026-10520 PoC and active exploitation risk
+
+- Status: open
+- Category: Security
+- Sources: [watchTowr PoC](https://labs.watchtowr.com/more-evidence-that-words-dont-mean-what-we-thought-they-meant-ivanti-sentry-pre-auth-os-command-injection-cve-2026-10520/), [Ivanti advisory](https://hub.ivanti.com/s/article/Security-Advisory-Ivanti-Sentry-CVE-2026-10520-CVE-2026-10523)
+- Watch for: Active exploitation reports; CISA KEV addition; follow-on Ivanti advisories.
+- Last checked: 2026-06-11
+- Notes: CVE-2026-10520 CVSS 10.0 (unauthenticated OS command injection, root RCE) and CVE-2026-10523 CVSS 9.9 (auth bypass, admin account creation) in Ivanti Sentry. Advisory 2026-06-09; PoC published 2026-06-10 by watchTowr. Fixed in 10.5.2, 10.6.2, 10.7.1. No exploitation at disclosure. Ivanti products historically exploited within days of PoC publication.
+
+## 2026-06-11: Veeam CVE-2026-44963 exploitation watch
+
+- Status: open
+- Category: Security
+- Sources: [Veeam KB4696](https://www.veeam.com/kb4696)
+- Watch for: Active exploitation or ransomware campaigns using domain user access to compromise backup servers.
+- Last checked: 2026-06-11
+- Notes: CVSS v4 9.4. RCE via any authenticated domain user on domain-joined Veeam Backup and Replication v12 servers (affected: up to 12.3.2.4465; patched: 12.3.2.4854). v13.x not affected. No exploitation at disclosure.

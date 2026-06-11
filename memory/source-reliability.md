@@ -64,6 +64,12 @@ directly. When running in the remote environment, use the listed fallback.
 - `developer.apple.com/news/releases/` - Apple developer release listing fetches successfully; reliable for version numbers and dates.
 - `docs.gitlab.com/releases/patches/` - GitLab patch release docs are primary and fetchable; reliable.
 - `ic3.gov/PSA/` - FBI IC3 PSAs are primary; reliable for threat advisories.
+- `hub.ivanti.com/s/article/` - Ivanti security advisories are primary; may require authentication from datacenter IP ranges. Use helpnetsecurity.com and watchTowr as verified secondary sources.
+- `www.veeam.com/kb` - Veeam KB articles are primary and fetchable; reliable for patch version details.
+- `support.sap.com/en/my-support/knowledge-base/security-notes-news/` - SAP Security Patch Day pages are primary; accessible from datacenter.
+- `devblogs.microsoft.com/dotnet/` - Microsoft .NET Blog is primary and fetchable; reliable for .NET release notes and previews.
+- `securityaffairs.com` - Reliable secondary source for CVE analysis with good technical detail.
+- `labs.watchtowr.com` - Reliable for technical PoC analysis and exploit chain details; use as secondary, confirm CVE from vendor advisory.
 
 ### Secondary/aggregation sources
 

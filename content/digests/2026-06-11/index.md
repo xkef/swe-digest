@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 52
+source_count = 65
 +++
 
 ## Top stories
@@ -133,6 +133,39 @@ source_count = 52
 - **Summary:** The FBI issued a public service announcement on 2026-05-27 warning that threat actors are operating spoofed FIFA websites ahead of the 2026 World Cup (June 11 to July 19). Group-IB tracked over 4,300 fraudulent FIFA domains registered since August 2025, along with banking malware hidden in pirate streaming apps and at least one operation that replicates FIFA's login page for account takeover. The active window is June 11 to July 19.
 - **Why it matters:** Developers running authentication, payment, or fan-facing web services should expect elevated credential-stuffing and phishing traffic during the tournament period; rotate shared credentials and verify MFA coverage.
 
+### Ivanti Sentry CVE-2026-10520 and CVE-2026-10523: unauthenticated RCE and admin bypass, PoC published
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Ivanti advisory](https://hub.ivanti.com/s/article/Security-Advisory-Ivanti-Sentry-CVE-2026-10520-CVE-2026-10523), [Help Net Security](https://www.helpnetsecurity.com/2026/06/10/ivanti-sentry-cve-2026-10520-cve-2026-10523/), [watchTowr PoC](https://labs.watchtowr.com/more-evidence-that-words-dont-mean-what-we-thought-they-meant-ivanti-sentry-pre-auth-os-command-injection-cve-2026-10520/)
+- **Summary:** Ivanti published a security advisory on 2026-06-09 for two critical vulnerabilities in Ivanti Sentry. CVE-2026-10520 (CVSS 10.0) is an OS command injection flaw in the admin API allowing a remote unauthenticated attacker to achieve root-level remote code execution; it affects Sentry 10.7.0 and earlier. CVE-2026-10523 (CVSS 9.9) is an authentication bypass allowing an unauthenticated attacker to create arbitrary administrative accounts on a vulnerable device. Both are fixed in Sentry 10.5.2, 10.6.2, and 10.7.1. Ivanti reported no known customer exploitation at time of disclosure; watchTowr published a working PoC exploit for CVE-2026-10520 on 2026-06-10.
+- **Why it matters:** A public PoC for unauthenticated root RCE makes exploitation imminent for unpatched Sentry deployments; update to fixed versions immediately or restrict external network access to the Sentry admin interface.
+- **Follow-up:** Watch for CISA KEV addition and active exploitation reports.
+
+### Veeam Backup and Replication CVE-2026-44963: domain-user RCE on backup servers
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Veeam KB4696](https://www.veeam.com/kb4696), [Security Affairs](https://securityaffairs.com/193385/uncategorized/critical-veeam-rce-flaw-lets-low-privilege-users-take-over-backup-servers.html)
+- **Summary:** Veeam patched CVE-2026-44963 (CVSS v4 9.4) in Veeam Backup and Replication 12.3.2.4854, released 2026-06-09 via KB4696. Any authenticated Active Directory domain user on a domain-joined backup server can exploit the flaw to execute arbitrary code on that server. All v12 builds through 12.3.2.4465 are affected; version 13.x is not affected due to architectural changes introduced in that major version. No exploitation was observed at time of disclosure.
+- **Why it matters:** Backup servers are primary ransomware targets; domain-joined Veeam v12 deployments should apply KB4696 immediately or isolate backup servers from Active Directory if patching must be delayed.
+
+### SAP June 2026 Security Patch Day and Fortinet patches: critical SAML and command injection flaws
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [SAP Security Patch Day June 2026](https://support.sap.com/en/my-support/knowledge-base/security-notes-news/june-2026.html), [SecurityWeek](https://www.securityweek.com/fortinet-ivanti-patch-critical-vulnerabilities/)
+- **Summary:** SAP released four critical fixes on 2026-06-10. CVE-2026-44748 (CVSS 9.9, SAP Note 3746332) is an XML signature wrapping flaw in SAML authentication across SAP NetWeaver AS ABAP and ABAP Platform covering SAP_BASIS versions 702 through 919; an authenticated attacker can tamper with signed SAML assertions to bypass SSO access controls or impersonate other users. CVE-2026-27671 (CVSS 9.8) is a memory corruption flaw in Application Server ABAP. Fortinet also released patches on 2026-06-10 for CVE-2026-25089 (CVSS 9.1, FortiSandbox unauthenticated OS command injection via HTTP) and CVE-2026-44277 (CVSS 9.1, FortiAuthenticator unauthenticated improper access control). None of the four vulnerabilities were observed exploited at time of disclosure.
+- **Why it matters:** CVE-2026-44748 affects SAML SSO across a broad range of SAP BASIS versions in use today; organizations relying on federated authentication should prioritize applying SAP Note 3746332.
+
+### ServiceNow unauthenticated API access exploited against customer instances
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [BleepingComputer](https://www.bleepingcomputer.com/news/security/servicenow-discloses-security-incident-exposing-customer-data/), [TechTimes](https://www.techtimes.com/articles/318166/20260610/servicenow-data-breach-gated-advisory-left-customers-unaware-exploited-zero-auth-api.htm)
+- **Summary:** ServiceNow disclosed on 2026-06-10 that attackers accessed customer instance data between 2026-06-02 and 2026-06-03 via the REST endpoint `/api/now/related_list_edit/create`, which was configured without authentication on affected instances. The incident primarily affected customers on the Australia platform release. ServiceNow had received a bug bounty submission describing the issue on 2026-04-22 but applied a server-side patch only on 2026-06-05, after external exploitation was detected. No CVE has been assigned. ServiceNow attributed the activity to security researchers rather than malicious threat actors, though customer instance data was queried.
+- **Why it matters:** Self-managed ServiceNow instances should audit REST endpoints for authentication requirements; hosted SaaS customers require no action as the fix was applied server-side.
+
 ## Outages
 
 ### Google Cloud India network disruption, 2026-06-09 to present
@@ -152,7 +185,7 @@ source_count = 52
 - **Summary:** Cloudflare experienced a network performance issue in the US Eastern region between 13:39 and 14:06 UTC on 2026-06-02. Users saw increased latency or intermittent connectivity. The issue was mitigated within 27 minutes. No root cause was published at time of collection.
 - **Why it matters:** Brief resolved incident; no extended developer platform impact confirmed.
 
-No major outages were identified on 2026-06-11 for GitHub, AWS, Azure, OpenAI, Anthropic, npm, PyPI, or other tracked developer infrastructure. Cloudflare performed scheduled maintenance in London (00:00-06:00 UTC), Lisbon (00:00-04:00 UTC), and Paris (00:00-08:00 UTC) on 2026-06-11.
+GitHub experienced authentication issues affecting API requests on 2026-06-10 between 15:23 and approximately 16:30 UTC; the incident resolved without extended impact. No major outages were identified on 2026-06-11 for GitHub, AWS, Azure, OpenAI, Anthropic, npm, PyPI, or other tracked developer infrastructure. Cloudflare performed scheduled maintenance in London (00:00-06:00 UTC), Lisbon (00:00-04:00 UTC), and Paris (00:00-08:00 UTC) on 2026-06-11.
 
 ## Developer tools
 
@@ -197,6 +230,14 @@ No major outages were identified on 2026-06-11 for GitHub, AWS, Azure, OpenAI, A
 - **Sources:** [Rust blog](https://blog.rust-lang.org/2026/04/16/Rust-1.95.0/)
 - **Summary:** Rust 1.95.0 (released 2026-04-16) remains current stable. Key stabilizations include the `cfg_select!` macro (compile-time cfg matching, replacing the `cfg-if` crate dependency for most use cases) and if-let guards in `match` expressions. Rust 1.96.0 is currently in beta.
 - **Why it matters:** `cfg_select!` eliminates a common `cfg-if` dependency for crates targeting multiple platforms or features.
+
+### .NET 11 Preview 5 and C# 15 union types featured at Build 2026
+
+- **Category:** Languages
+- **Status:** confirmed
+- **Sources:** [.NET 11 Preview 5 blog](https://devblogs.microsoft.com/dotnet/dotnet-11-preview-5/), [Build 2026 .NET sessions](https://devblogs.microsoft.com/dotnet/dotnet-at-microsoft-build-2026/)
+- **Summary:** Microsoft featured .NET 11 Preview 5 at Build 2026. C# 15 introduces union types, described by the team as the largest type-system addition to C# since nullable reference types. Unions model closed sets of data shapes with exhaustive pattern matching and replace common third-party discriminated union workarounds such as the OneOf library. .NET 11 general availability is targeted for November 2026. The feature is available now in Preview 5 by targeting `net11.0` with preview language version enabled.
+- **Why it matters:** C# 15 union types will change how domain models and wire-protocol parsers are written in .NET codebases; early adoption in preview reduces migration pressure before the November GA.
 
 ## Infrastructure
 
@@ -282,6 +323,14 @@ No major outages were identified on 2026-06-11 for GitHub, AWS, Azure, OpenAI, A
 - **Sources:** [BleepingComputer](https://www.bleepingcomputer.com/news/microsoft/microsoft-june-2026-patch-tuesday-fixes-6-zero-days-200-flaws/)
 - **Summary:** The record 206-CVE Patch Tuesday generated broad discussion about patch fatigue and the viability of monthly update cycles. The wormable CVE-2026-45657 drew comparisons to EternalBlue; security practitioners noted that the gap between patch release and reliable public exploit is now measured in days.
 
+### πFS: data-free filesystem based on pi
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [HN discussion](https://news.ycombinator.com/item?id=48480978), [GitHub pifs](https://github.com/philipl/pifs)
+- **Summary:** An HN thread about πFS, a filesystem implementation based on the conjecture that pi is a normal number containing all possible finite digit sequences. The premise is that every file exists as a coordinate in pi, so storage becomes a lookup rather than a write. Commenters noted that the coordinate representation requires roughly the same storage as the data itself, and that LLMs represent a more practical form of lossy compression.
+- **Why it matters:** None operationally; the thread is useful for its illustration of normal number theory and information-theoretic storage limits.
+
 ## Watchlist follow-ups
 
 ### 2026-06-10: First daily news run
@@ -312,6 +361,22 @@ No major outages were identified on 2026-06-11 for GitHub, AWS, Azure, OpenAI, A
 - **Category:** Security
 - **Notes:** Confirmed: versions 19.0.2, 18.11.5, 18.10.8 patch 12 CVEs including CVE-2026-6552 (SAML account takeover, EE). Closed.
 
+### 2026-06-11: Ivanti Sentry CVE-2026-10520 PoC published
+
+- **Status:** open
+- **Category:** Security
+- **Sources:** [watchTowr PoC](https://labs.watchtowr.com/more-evidence-that-words-dont-mean-what-we-thought-they-meant-ivanti-sentry-pre-auth-os-command-injection-cve-2026-10520/), [Ivanti advisory](https://hub.ivanti.com/s/article/Security-Advisory-Ivanti-Sentry-CVE-2026-10520-CVE-2026-10523)
+- **Watch for:** Active exploitation; CISA KEV addition.
+- **Notes:** Advisory 2026-06-09; PoC published 2026-06-10 by watchTowr. CVE-2026-10520 CVSS 10.0 (unauthenticated RCE), CVE-2026-10523 CVSS 9.9 (auth bypass). Fixed in Sentry 10.5.2, 10.6.2, 10.7.1. Ivanti has a history of rapid exploitation after PoC publication.
+
+### 2026-06-11: Veeam CVE-2026-44963 watch for exploitation
+
+- **Status:** open
+- **Category:** Security
+- **Sources:** [Veeam KB4696](https://www.veeam.com/kb4696)
+- **Watch for:** Active exploitation or ransomware campaigns targeting domain-joined backup servers.
+- **Notes:** CVSS v4 9.4. Affects all Veeam Backup and Replication v12 builds through 12.3.2.4465 on domain-joined servers. Patched in 12.3.2.4854 (KB4696, released 2026-06-09). No exploitation at disclosure.
+
 ## Sources checked
 
 - Anthropic platform docs (platform.claude.com)
@@ -340,3 +405,11 @@ No major outages were identified on 2026-06-11 for GitHub, AWS, Azure, OpenAI, A
 - OpenAI API changelog (developers.openai.com)
 - Microsoft AI news (microsoft.ai)
 - Google AI / Gemini (llm-stats.com secondary aggregation; primary Google AI source not reachable)
+- Ivanti security advisory portal (hub.ivanti.com), Help Net Security, watchTowr for Sentry CVE details
+- Veeam KB4696 (veeam.com) for CVE-2026-44963
+- SAP Security Patch Day portal (support.sap.com) for June 2026 critical patches
+- SecurityWeek for Fortinet and SAP patch reporting
+- BleepingComputer and TechTimes for ServiceNow API breach reporting
+- Security Affairs for Veeam vulnerability analysis
+- Microsoft .NET Blog (devblogs.microsoft.com) for .NET 11 Preview 5 and Build 2026 .NET sessions
+- GitHub pifs repository for πFS reference
