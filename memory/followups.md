@@ -123,6 +123,15 @@ Format:
 - Last checked: 2026-06-11
 - Notes: Active exploitation confirmed 2026-06-11 by Shadowserver. At least 19 vulnerable instances; 2 confirmed backdoored. Less than 48h after PoC publication. CVE-2026-10520 CVSS 10.0, unauthenticated root RCE. Fixed in 10.5.2, 10.6.2, 10.7.1. Treat unpatched systems as compromised.
 
+## 2026-06-11: Homebrew 6.0.0 migration fallout
+
+- Status: open
+- Category: Dev tools
+- Sources: [Homebrew blog](https://brew.sh/2026/06/11/homebrew-6.0.0/), [GitHub release](https://github.com/Homebrew/brew/releases/tag/6.0.0)
+- Watch for: CI breakage from tap trust and ask mode defaults; Intel x86_64 macOS Tier 3 in September 2026; Gatekeeper-failing cask removal September 2026.
+- Last checked: 2026-06-11
+- Notes: 6.0.0 released 2026-06-11 at 13:13 UTC, after the morning digest run. Tap trust required for third-party taps. Internal JSON API default. Linux build sandboxing via Bubblewrap. Intel macOS fully unsupported by September 2027. Homebrew/brew added to watchlist same day.
+
 ## 2026-06-11: Veeam CVE-2026-44963 exploitation watch
 
 - Status: open

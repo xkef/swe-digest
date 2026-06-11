@@ -9,6 +9,7 @@ Recurring entities tracked across digest runs.
 - Neovim: editor. Track releases, LSP changes, Lua APIs, performance, plugin ecosystem, and breaking changes. Current stable: v0.12.3 (2026-06-10).
 - LazyVim and lazy.nvim: Neovim distribution and plugin manager. Track release notes and migration issues.
 - jj: Jujutsu version control system. Track releases, Git compatibility, workflows, and tooling support.
+- Homebrew: macOS and Linux package manager. Track brew releases via GitHub and the brew.sh blog, tap trust model, deprecations, and platform support timelines. Current: 6.0.0 (2026-06-11). Intel x86_64 macOS goes Tier 3 September 2026, unsupported September 2027.
 - Xcode: Apple IDE. Track agentic coding features, Foundation Models integration, Swift toolchain. Xcode 27 beta (27A5194q) released 2026-06-08 with dual-engine agentic coding and LanguageModel protocol.
 
 ## AI

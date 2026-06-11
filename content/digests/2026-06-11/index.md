@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 86
+source_count = 89
 +++
 
 ## Top stories
@@ -222,6 +222,15 @@ No major items found.
 GitHub experienced authentication issues affecting API requests on 2026-06-10 between 15:23 and approximately 16:30 UTC; the incident resolved without extended impact. Anthropic reported elevated errors across Claude models on 2026-06-11 from 09:42 to 10:03 PT (21 minutes), fully resolved; a second brief elevated-error period on Claude Opus 4.6 was investigated and mitigated by 17:56 UTC. Cloudflare performed scheduled maintenance in London (00:00-06:00 UTC), Lisbon (00:00-04:00 UTC), and Paris (00:00-08:00 UTC) on 2026-06-11; a separate performance issue affected the NRT (Tokyo) datacenter on the same day. No major outages were identified on 2026-06-11 for GitHub, AWS, Azure, npm, PyPI, or other tracked developer infrastructure.
 
 ## Developer tools
+
+### Homebrew 6.0.0: tap trust model, internal JSON API default, Linux build sandboxing
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [Homebrew blog](https://brew.sh/2026/06/11/homebrew-6.0.0/), [GitHub release](https://github.com/Homebrew/brew/releases/tag/6.0.0), [HN discussion 625 points](https://news.ycombinator.com/item?id=48490024)
+- **Summary:** Homebrew 6.0.0 was released on 2026-06-11. Third-party taps now require explicit trust before their code executes; official taps remain trusted by default. The internal JSON API becomes the default metadata source and combines all metadata into a single download. Build, test, and postinstall phases now run sandboxed on Linux via Bubblewrap. Ask mode becomes the default for developers, showing a dependency summary and requiring confirmation before changes. The release adds preliminary macOS 27 (Golden Gate) support, Apple M5 CPU recognition, and Linux AppImage support. Intel x86_64 macOS moves to Tier 3 support in September 2026 (no CI, no new bottles) and becomes fully unsupported by September 2027.
+- **Why it matters:** The tap trust requirement and ask mode default change behavior for scripts and CI jobs that install from third-party taps; the Intel macOS timeline sets a hard migration deadline for remaining x86_64 Mac fleets.
+- **Follow-up:** Watch for CI breakage reports from tap trust and ask mode defaults; Intel x86_64 macOS drops to Tier 3 in September 2026.
 
 ### Google I/O 2026: WebMCP open standard for browser-based AI agents
 
@@ -455,6 +464,14 @@ No major items found.
 - **Watch for:** CISA KEV addition; further compromise reports; Ivanti advisory update acknowledging exploitation.
 - **Notes:** Shadowserver confirmed on 2026-06-11 that attackers are backdooring internet-exposed Ivanti Sentry appliances, less than 48 hours after PoC publication. At least 19 vulnerable instances identified; at least 2 confirmed backdoored. Ivanti's advisory still does not acknowledge exploitation. If unpatched, treat as compromised. Fixed in 10.5.2, 10.6.2, 10.7.1.
 
+### 2026-06-11: Homebrew 6.0.0 migration fallout
+
+- **Status:** open
+- **Category:** Dev tools
+- **Sources:** [Homebrew blog](https://brew.sh/2026/06/11/homebrew-6.0.0/)
+- **Watch for:** CI breakage from tap trust and ask mode defaults; Intel x86_64 macOS Tier 3 in September 2026.
+- **Notes:** 6.0.0 released 2026-06-11. Tap trust required for third-party taps. Internal JSON API default. Linux build sandboxing via Bubblewrap. Intel macOS fully unsupported by September 2027.
+
 ### 2026-06-11: Veeam CVE-2026-44963 watch for exploitation
 
 - **Status:** open
@@ -497,6 +514,7 @@ No major items found.
 - Google Cloud Service Health (status.cloud.google.com)
 - Cloudflare Blog and Status page
 - GitHub releases for neovim/neovim
+- Homebrew blog (brew.sh) and GitHub releases for Homebrew/brew
 - Go release history (go.dev)
 - Rust blog (blog.rust-lang.org)
 - Kubernetes releases (kubernetes.io, kubernetes.dev)
