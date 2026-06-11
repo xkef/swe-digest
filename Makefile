@@ -13,6 +13,7 @@ stories:
 	@python3 scripts/build_stories.py
 
 build: stories
+	@python3 scripts/check_content.py
 	@command -v $(MISE) >/dev/null || { echo "mise not found"; exit 1; }
 	@rm -rf $(DIST)
 	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) build --output-dir $(DIST)

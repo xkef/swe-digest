@@ -40,6 +40,15 @@ def strip_markdown(text: str) -> str:
     return text.strip()
 
 
+def neutralize_html(text: str) -> str:
+    """Escape angle brackets outside inline code so raw HTML in a digest cannot
+    reach the rendered story page. Code spans are left for Zola to escape."""
+    parts = re.split(r"(`[^`]*`)", text)
+    for i in range(0, len(parts), 2):
+        parts[i] = parts[i].replace("<", "&lt;").replace(">", "&gt;")
+    return "".join(parts)
+
+
 def toml_str(value: str) -> str:
     return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
@@ -130,7 +139,7 @@ def write_story_page(story: dict) -> None:
         "+++",
         "",
     ]
-    body = "\n".join(story["lines"]) + "\n"
+    body = "\n".join(neutralize_html(line) for line in story["lines"]) + "\n"
     out = STORIES_DIR / f"{story['date']}-{story['slug']}.md"
     out.write_text("\n".join(fm) + body, encoding="utf-8")
 
