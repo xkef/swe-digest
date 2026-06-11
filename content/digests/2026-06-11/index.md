@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 40
+source_count = 52
 +++
 
 ## Top stories
@@ -22,6 +22,14 @@ source_count = 40
 - **Summary:** Claude Fable 5 (`claude-fable-5`) became generally available on 2026-06-09 across the Claude API, Amazon Bedrock, Vertex AI, and Microsoft Foundry. Context window is 1M tokens, max output is 128K tokens, adaptive thinking is always on, and pricing is $10/$50 per MTok input/output. Claude Mythos 5 (`claude-mythos-5`) is available in limited access to approved customers through Project Glasswing at the same context and pricing. Claude Sonnet 4 and Claude Opus 4 retire on 2026-06-15; Claude Opus 4.1 retires on 2026-08-05.
 - **Why it matters:** Developers using `claude-sonnet-4-20250514` or `claude-opus-4-20250514` must migrate before 2026-06-15 or requests will fail.
 - **Follow-up:** Check 2026-06-15 for Claude Sonnet 4 and Opus 4 retirement impact on production workloads.
+
+### Microsoft June 2026 Patch Tuesday: record 206 CVEs, wormable kernel flaw, one zero-day exploited
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [MSRC June 2026 release notes](https://msrc.microsoft.com/update-guide/releaseNote/2026-Jun), [KB5094126](https://support.microsoft.com/en-us/topic/june-9-2026-kb5094126-os-builds-26200-8655-and-26100-8655-1a9bcba6-5f53-4075-8156-fe11ac631737), [BleepingComputer](https://www.bleepingcomputer.com/news/microsoft/microsoft-june-2026-patch-tuesday-fixes-6-zero-days-200-flaws/)
+- **Summary:** Microsoft released 206 CVEs on 2026-06-09, the largest Patch Tuesday on record. Six zero-days were included: one exploited in the wild (CVE-2026-41091, Microsoft Defender elevation of privilege, CVSS 7.8, CISA KEV 2026-05-20, patched out-of-band May 19) and five publicly disclosed. The most severe unfixed-in-the-wild flaw is CVE-2026-45657, a use-after-free in the Windows kernel TCP/IP stack (CVSS 9.8) allowing unauthenticated remote code execution at SYSTEM level; Microsoft classified it as wormable. CVE-2026-47291 is a second unauthenticated RCE in HTTP.sys (CVSS 9.8). Publicly disclosed zero-days include CVE-2026-45586 (CTFMON privilege escalation to SYSTEM, named GreenPlasma) and CVE-2026-45585 (BitLocker bypass via USB in Windows Recovery Environment, named YellowKey). Critical Exchange Server RCE CVE-2026-45583 is also included.
+- **Why it matters:** CVE-2026-45657 is wormable across all Windows 11 and Windows Server 2022/2025 versions; patch immediately via KB5094126 or KB5094125/KB5094128 for affected server versions. Defender auto-updates cover CVE-2026-41091 for most endpoints.
 
 ### Check Point VPN CVE-2026-50751 exploited by Qilin ransomware affiliate
 
@@ -40,14 +48,6 @@ source_count = 40
 - **Summary:** CVE-2026-42271 is a command injection flaw (CVSS 8.7) in LiteLLM MCP server preview endpoints, affecting versions 1.74.2 through 1.83.6. The endpoints `POST /mcp-rest/test/connection` and `POST /mcp-rest/test/tools/list` accept a full server config including `command`, `args`, and `env` fields and spawn them as subprocesses without validation. Horizon3.ai chained this with CVE-2026-48710, a host header bypass in Starlette (BadHost), to achieve unauthenticated RCE with a combined CVSS of 10.0. CISA added the flaw to KEV on 2026-06-08.
 - **Why it matters:** Exploiting a LiteLLM proxy exposes all model provider API keys, integrated AI infrastructure, and downstream connected systems. Patch to LiteLLM 1.83.7 and Starlette 1.0.1; block the two affected endpoints at the reverse proxy if immediate patching is not possible.
 
-### Chrome V8 zero-day CVE-2026-11645 patched, added to CISA KEV
-
-- **Category:** Security
-- **Status:** confirmed
-- **Sources:** [Help Net Security](https://www.helpnetsecurity.com/2026/06/09/google-chrome-zero-day-cve-2026-11645/), [CISA KEV alert](https://www.cisa.gov/news-events/alerts/2026/06/09/cisa-adds-three-known-exploited-vulnerabilities-catalog)
-- **Summary:** CVE-2026-11645 is an out-of-bounds memory access in V8 (CVSS 8.8) triggered by incorrect bounds-check elimination in TurboFan JIT compilation. Google confirmed active exploitation and released Chrome 149.0.7827.102/103 for Windows/macOS and 149.0.7827.102 for Linux on 2026-06-08. CISA added it to KEV on 2026-06-09.
-- **Why it matters:** Any machine running Chrome below the patched version is exposed to in-browser code execution via a crafted HTML page; update Chrome immediately.
-
 ### Oracle PeopleSoft CVE-2026-35273 unauthenticated RCE, CVSS 9.8
 
 - **Category:** Security
@@ -56,14 +56,14 @@ source_count = 40
 - **Summary:** Oracle published Security Alert CVE-2026-35273 on 2026-06-11. The flaw is in the Updates Environment Management component of PeopleSoft Enterprise PeopleTools versions 8.61 and 8.62. An unauthenticated attacker with HTTP access can achieve full remote code execution. CVSS 3.1 base score is 9.8.
 - **Why it matters:** Internet-exposed PeopleTools instances at affected versions face complete compromise risk; Oracle recommends immediate patching.
 
-### Anthropic and OpenAI file confidential S-1s; SpaceX IPO pricing expected today
+### Anthropic and OpenAI file confidential S-1s; SpaceX prices IPO at $135
 
 - **Category:** Markets
 - **Status:** confirmed
-- **Sources:** [Anthropic S-1 announcement](https://www.anthropic.com/news/confidential-draft-s1-sec), [OpenAI S-1 announcement](https://openai.com/index/openai-submits-confidential-s-1/), [SpaceX S-1 SEC filing](https://www.sec.gov/Archives/edgar/data/1181412/000162828026036936/spaceexplorationtechnologi.htm)
-- **Summary:** Anthropic filed a confidential Form S-1 with the SEC on 2026-06-01. Its last funding round valued the company at $965B with an annualized revenue run rate above $47B. OpenAI filed its confidential S-1 on 2026-06-08 at a last-round valuation of $852B. SpaceX filed its S-1 in May, targets share pricing on 2026-06-11 at $135/share, and plans a Nasdaq listing on 2026-06-12 at a $1.75T valuation. The SpaceX S-1 explicitly positions the company as an AI compute infrastructure provider.
-- **Why it matters:** All three companies moving toward public markets in the same quarter increases enterprise AI procurement scrutiny and consolidation pressure.
-- **Follow-up:** Watch SpaceX Nasdaq listing 2026-06-12; monitor SEC review timelines for Anthropic and OpenAI.
+- **Sources:** [Anthropic S-1 announcement](https://www.anthropic.com/news/confidential-draft-s1-sec), [OpenAI S-1 announcement](https://openai.com/index/openai-submits-confidential-s-1/), [SpaceX S-1 SEC filing](https://www.sec.gov/Archives/edgar/data/1181412/000162828026036936/spaceexplorationtechnologi.htm), [CNBC SpaceX pricing](https://www.cnbc.com/2026/06/03/spacex-ipo-stock-price-roadshow-musk.html)
+- **Summary:** Anthropic filed a confidential Form S-1 with the SEC on 2026-06-01 at a $965B valuation with annualized revenue above $47B. OpenAI filed its confidential S-1 on 2026-06-08 at a $852B last-round valuation. SpaceX priced its IPO at $135 per share on 2026-06-11, targeting 555.6 million shares for a $75B raise at a $1.77T valuation; Nasdaq listing is set for 2026-06-12 under ticker SPCX. SpaceX bypassed the standard price-range roadshow and went straight to a fixed price. The S-1 explicitly positions SpaceX as an AI compute infrastructure company.
+- **Why it matters:** All three companies moving toward public markets in the same quarter increases enterprise AI procurement scrutiny and consolidation pressure. SpaceX's $75B raise is the largest IPO by capital raised on record.
+- **Follow-up:** Watch SpaceX Nasdaq debut 2026-06-12 and monitor SEC review timelines for Anthropic and OpenAI.
 
 ### Cloudflare Agents Week 2026: agentic cloud infrastructure release
 
@@ -101,24 +101,48 @@ source_count = 40
 
 ## Security
 
+### Microsoft June 2026 Patch Tuesday: record 206 CVEs
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [MSRC June 2026 release notes](https://msrc.microsoft.com/update-guide/releaseNote/2026-Jun), [KB5094126](https://support.microsoft.com/en-us/topic/june-9-2026-kb5094126-os-builds-26200-8655-and-26100-8655-1a9bcba6-5f53-4075-8156-fe11ac631737), [BleepingComputer](https://www.bleepingcomputer.com/news/microsoft/microsoft-june-2026-patch-tuesday-fixes-6-zero-days-200-flaws/)
+- **Summary:** The June 2026 Patch Tuesday update addresses 206 CVEs across Windows, Exchange Server, Office, and other products, the largest monthly release on record. One zero-day (CVE-2026-41091, Defender EoP, CVSS 7.8) was under active exploitation before the formal release; Microsoft patched it out-of-band on 2026-05-19 and CISA added it to KEV on 2026-05-20. Five additional zero-days were publicly disclosed but not observed exploited at release: CVE-2026-45657 (Windows kernel TCP/IP use-after-free, CVSS 9.8, wormable), CVE-2026-47291 (HTTP.sys unauthenticated RCE, CVSS 9.8), CVE-2026-45586 (CTFMON SYSTEM privilege escalation, GreenPlasma), CVE-2026-45585 (BitLocker USB bypass in Windows Recovery Environment, YellowKey), and CVE-2026-45583 (Exchange Server RCE). KB5094126 covers Windows 11 24H2 and 25H2; KB5094125 covers Windows Server 2025; KB5094128 covers Windows Server 2022.
+- **Why it matters:** CVE-2026-45657 and CVE-2026-47291 are both unauthenticated CVSS 9.8 RCEs; the kernel flaw is wormable. Apply this month's update on all Windows endpoints and servers immediately.
+
 ### CISA KEV additions 2026-06-08 and 2026-06-09
 
 - **Category:** Security
 - **Status:** confirmed
 - **Sources:** [CISA KEV catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog), [CISA alert June 9](https://www.cisa.gov/news-events/alerts/2026/06/09/cisa-adds-three-known-exploited-vulnerabilities-catalog)
-- **Summary:** CISA added five vulnerabilities to KEV across two days. On 2026-06-08: CVE-2026-42271 (LiteLLM command injection, covered above) and CVE-2026-50751 (Check Point VPN auth bypass, covered above). On 2026-06-09: CVE-2026-7473 (Arista EOS incomplete comparison), CVE-2026-11645 (Google Chromium V8 out-of-bounds read/write, covered above), and CVE-2026-20245 (Cisco Catalyst SD-WAN Manager improper output encoding).
-- **Why it matters:** Federal agencies must remediate all five within three days; enterprise security teams should prioritize immediately.
+- **Summary:** CISA added five vulnerabilities to KEV across two days. On 2026-06-08: CVE-2026-42271 (LiteLLM command injection, covered above) and CVE-2026-50751 (Check Point VPN auth bypass, covered above). On 2026-06-09: CVE-2026-7473 (Arista EOS incomplete comparison), CVE-2026-11645 (Google Chromium V8 out-of-bounds read/write, patched in Chrome 149.0.7827.102/103 on 2026-06-08), and CVE-2026-20245 (Cisco Catalyst SD-WAN Manager command injection, no patch available at time of addition).
+- **Why it matters:** Federal agencies must remediate all five within three days; enterprise security teams should prioritize immediately. Note that CVE-2026-20245 has no patch; Cisco confirmed exploitation and states a fix will ship in a future release.
 
-### GitLab security release, 12 vulnerabilities patched
+### GitLab security release 19.0.2, 18.11.5, 18.10.8
 
 - **Category:** Security
-- **Status:** developing
-- **Sources:** [CyberSecurityNews](https://cybersecuritynews.com/gitlab-security-update-vulnerabilities/)
-- **Summary:** GitLab released security updates on 2026-06-10 addressing 12 vulnerabilities. Specific CVE identifiers, affected versions, and patched versions were not confirmed from a primary GitLab advisory at time of collection.
-- **Why it matters:** Self-hosted GitLab instances should monitor the official GitLab security releases page and apply updates.
-- **Follow-up:** Confirm patched versions from official GitLab advisory when published.
+- **Status:** confirmed
+- **Sources:** [GitLab patch release docs](https://docs.gitlab.com/releases/patches/patch-release-gitlab-19-0-2-released/)
+- **Summary:** GitLab released versions 19.0.2, 18.11.5, and 18.10.8 on 2026-06-10 patching 12 vulnerabilities in CE and EE. High-severity CVEs include CVE-2026-6552 (improper access control in Group SAML Identity API affecting GitLab EE from 15.5, CVSS 8.7, enables full account takeover), CVE-2026-10087 (stored XSS in Analytics Dashboard, CVSS 8.7), CVE-2026-7250 (unauthenticated denial of service in Grape API JSON parsing, affects all versions from 12.10, CVSS 7.5), and CVE-2026-8589 (HTML injection in group-setting fields, CVSS 7.3).
+- **Why it matters:** CVE-2026-6552 enables account takeover on GitLab EE via SAML; all self-managed GitLab instances should upgrade immediately to 19.0.2, 18.11.5, or 18.10.8.
+
+### FBI advisory: FIFA World Cup 2026 phishing and credential-theft campaign
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [FBI IC3 PSA260527](https://www.ic3.gov/PSA/2026/PSA260527)
+- **Summary:** The FBI issued a public service announcement on 2026-05-27 warning that threat actors are operating spoofed FIFA websites ahead of the 2026 World Cup (June 11 to July 19). Group-IB tracked over 4,300 fraudulent FIFA domains registered since August 2025, along with banking malware hidden in pirate streaming apps and at least one operation that replicates FIFA's login page for account takeover. The active window is June 11 to July 19.
+- **Why it matters:** Developers running authentication, payment, or fan-facing web services should expect elevated credential-stuffing and phishing traffic during the tournament period; rotate shared credentials and verify MFA coverage.
 
 ## Outages
+
+### Google Cloud India network disruption, 2026-06-09 to present
+
+- **Category:** Outage
+- **Status:** developing
+- **Sources:** [Google Cloud Status](https://status.cloud.google.com/), [Business Standard](https://www.business-standard.com/technology/tech-news/google-cloud-outage-in-india-after-fire-at-third-party-data-centre-126061000116_1.html)
+- **Summary:** A fire at a third-party data center facility in Delhi on 2026-06-09 triggered an emergency power shutdown that isolated Google Cloud's local Point of Presence in Delhi and reduced network capacity across the region. The incident began at 11:22 PDT (23:52 IST) on 2026-06-09. Network traffic originating from Delhi, Chennai, Mumbai, and surrounding areas experienced intermittent elevated latency and packet loss. Google rerouted traffic but elevated latency continued as demand exceeded rerouted capacity. No resolution time has been published.
+- **Why it matters:** Applications relying on Google Cloud infrastructure in India should expect continued intermittent degradation; review latency SLOs for India-facing endpoints.
+- **Follow-up:** Check Google Cloud status page for restoration confirmation.
 
 ### Cloudflare US Eastern network performance issue, 2026-06-02
 
@@ -128,9 +152,25 @@ source_count = 40
 - **Summary:** Cloudflare experienced a network performance issue in the US Eastern region between 13:39 and 14:06 UTC on 2026-06-02. Users saw increased latency or intermittent connectivity. The issue was mitigated within 27 minutes. No root cause was published at time of collection.
 - **Why it matters:** Brief resolved incident; no extended developer platform impact confirmed.
 
-No major outages were identified on 2026-06-10 or 2026-06-11 for GitHub, AWS, Azure, Google Cloud, OpenAI, Anthropic, npm, PyPI, or other tracked developer infrastructure.
+No major outages were identified on 2026-06-11 for GitHub, AWS, Azure, OpenAI, Anthropic, npm, PyPI, or other tracked developer infrastructure. Cloudflare performed scheduled maintenance in London (00:00-06:00 UTC), Lisbon (00:00-04:00 UTC), and Paris (00:00-08:00 UTC) on 2026-06-11.
 
 ## Developer tools
+
+### Apple WWDC 2026: Xcode 27, Foundation Models LanguageModel protocol, Swift 6.2
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [WWDC26 developer site](https://developer.apple.com/wwdc26/), [What's new in Xcode 27](https://developer.apple.com/videos/play/wwdc2026/258/), [Foundation Models framework](https://developer.apple.com/videos/play/wwdc2026/241/)
+- **Summary:** Apple shipped Xcode 27 beta (build 27A5194q) and iOS/macOS 27 betas on 2026-06-08. Xcode 27 introduces a dual-engine agentic coding system: an on-device Neural Engine model for real-time Swift completions and a cloud routing layer that can delegate to Anthropic Claude, Google Gemini, or OpenAI. The agent can write and run tests, operate the iOS Simulator through a new Device Hub, and interact with live previews. The Foundation Models framework gains a new LanguageModel protocol that lets apps swap between Apple Foundation Models, Claude, and Gemini through the same Swift API with no session-code changes. Free access to Apple Foundation Models on Private Cloud Compute is available to developers with fewer than two million first-time App Store downloads. Swift 6.2 tightens data-isolation guarantees while reducing required annotation burden and adds a main-actor default configuration option with improved async debugging in LLDB. Apple confirmed the Foundation Models framework will be open-sourced later in 2026.
+- **Why it matters:** The LanguageModel protocol enables provider-agnostic AI calls from Swift applications; combined with free Private Cloud Compute access, it removes infrastructure cost as a barrier for on-platform AI features.
+
+### Google I/O 2026: WebMCP open standard for browser-based AI agents
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [Chrome Developers blog](https://developer.chrome.com/blog/chrome-at-io26), [Google Developers blog](https://developers.googleblog.com/all-the-news-from-the-google-io-2026-developer-keynote/)
+- **Summary:** Google announced WebMCP at Google I/O 2026, a proposed open web standard that lets developers expose structured JavaScript functions and HTML form endpoints to browser-based AI agents, replacing visual DOM scraping. WebMCP is co-developed by Google and Microsoft in the W3C Web Machine Learning Community Group. An origin trial begins in Chrome 149. Gemini in Chrome will gain WebMCP API support. Internal testing showed 67% fewer errors and 45% better task completion rates compared to visual scraping for the same tasks.
+- **Why it matters:** WebMCP defines how web applications advertise machine-callable interfaces to AI agents; developers who adopt it early gain reliable agent interaction before visual scraping becomes a legacy path.
 
 ### Neovim v0.12.3 released
 
@@ -204,13 +244,13 @@ No major outages were identified on 2026-06-10 or 2026-06-11 for GitHub, AWS, Az
 - **Summary:** OpenAI submitted a confidential Form S-1 to the SEC on 2026-06-08 at a last-round valuation of $852B. The company stated it has not decided on IPO timing. Goldman Sachs and Morgan Stanley are advising on the offering.
 - **Why it matters:** OpenAI moving toward public markets creates additional pressure on enterprise AI governance and vendor lock-in evaluation.
 
-### SpaceX Nasdaq listing targeting 2026-06-12
+### SpaceX prices IPO at $135, Nasdaq listing 2026-06-12
 
 - **Category:** Markets
 - **Status:** confirmed
 - **Sources:** [SpaceX S-1 SEC filing](https://www.sec.gov/Archives/edgar/data/1181412/000162828026036936/spaceexplorationtechnologi.htm), [Fortune](https://fortune.com/2026/06/04/new-spacex-filing-s-1-update-tesla-deal/)
-- **Summary:** SpaceX targets share pricing on 2026-06-11 at $135/share and a Nasdaq listing on 2026-06-12, seeking $75B in a raise at a $1.75T valuation. The S-1 explicitly describes SpaceX as an AI compute infrastructure company constructing compute capacity starting on Earth with the goal of extending to space.
-- **Why it matters:** SpaceX positioning as orbital AI compute infrastructure signals a new class of physical infrastructure vendor with relevance to long-horizon workloads and latency-sensitive satellite connectivity.
+- **Summary:** SpaceX priced its IPO at a fixed $135 per share on 2026-06-11, selling 555.6 million shares for a $75B raise at a $1.77T valuation. The company bypassed the standard roadshow price range and went directly to a fixed price. Trading on Nasdaq (ticker SPCX) begins 2026-06-12. Elon Musk retains over 82% voting control under the dual-class share structure. The S-1 explicitly describes SpaceX as an AI compute infrastructure company constructing compute capacity starting on Earth with the goal of extending to space. The $75B raise is the largest in IPO history, surpassing Saudi Aramco's 2019 $29.4B raise.
+- **Why it matters:** SpaceX positioning as orbital AI compute infrastructure signals a new class of physical infrastructure vendor with relevance to long-horizon workloads and satellite connectivity.
 
 ## HN and Reddit pulse
 
@@ -235,6 +275,13 @@ No major outages were identified on 2026-06-10 or 2026-06-11 for GitHub, AWS, Az
 - **Sources:** [HN discussion 437 points 216 comments](https://news.ycombinator.com/item?id=48476466), [PgDog funding post](https://pgdog.dev/blog/our-funding-announcement)
 - **Summary:** PgDog, a connection pooler and proxy that shards Postgres at the wire-protocol layer without application changes or extensions, announced funding. Practitioners discussed cross-shard query handling, failover, and how it compares to Citus and application-level sharding.
 
+### Microsoft June 2026 Patch Tuesday record discussion
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [BleepingComputer](https://www.bleepingcomputer.com/news/microsoft/microsoft-june-2026-patch-tuesday-fixes-6-zero-days-200-flaws/)
+- **Summary:** The record 206-CVE Patch Tuesday generated broad discussion about patch fatigue and the viability of monthly update cycles. The wormable CVE-2026-45657 drew comparisons to EternalBlue; security practitioners noted that the gap between patch release and reliable public exploit is now measured in days.
+
 ## Watchlist follow-ups
 
 ### 2026-06-10: First daily news run
@@ -243,22 +290,53 @@ No major outages were identified on 2026-06-10 or 2026-06-11 for GitHub, AWS, Az
 - **Category:** Meta
 - **Notes:** Repository completed its first real daily news collection run on 2026-06-11. Closed.
 
+### 2026-06-11: Claude Sonnet 4 and Opus 4 retirement
+
+- **Status:** open
+- **Category:** AI
+- **Sources:** [model deprecations](https://platform.claude.com/docs/en/about-claude/models/overview)
+- **Notes:** Claude Sonnet 4 and Opus 4 retire 2026-06-15. Claude Opus 4.1 retires 2026-08-05. No production breakage reports collected yet.
+- **Watch for:** Retirement confirmation 2026-06-15; production breakage reports.
+
+### 2026-06-11: Kubernetes v1.33 EOL
+
+- **Status:** open
+- **Category:** Infrastructure
+- **Sources:** [Kubernetes releases](https://kubernetes.io/releases/)
+- **Notes:** v1.33 EOL on 2026-06-28, 17 days away.
+- **Watch for:** v1.33 EOL on 2026-06-28; v1.37 Enhancements Freeze 2026-06-17.
+
+### 2026-06-11: GitLab security release follow-up
+
+- **Status:** closed
+- **Category:** Security
+- **Notes:** Confirmed: versions 19.0.2, 18.11.5, 18.10.8 patch 12 CVEs including CVE-2026-6552 (SAML account takeover, EE). Closed.
+
 ## Sources checked
 
 - Anthropic platform docs (platform.claude.com)
-- OpenAI API changelog (developers.openai.com)
-- Microsoft AI news (microsoft.ai)
-- Google AI / Gemini (llm-stats.com secondary aggregation; primary Google AI source not reachable)
+- MSRC Security Update Guide (msrc.microsoft.com)
+- Microsoft Support KB (support.microsoft.com)
+- GitLab release docs (docs.gitlab.com)
+- Apple Developer releases (developer.apple.com)
+- Google Developers blog (developers.googleblog.com)
+- Chrome Developers blog (developer.chrome.com)
+- FBI IC3 (ic3.gov)
 - CISA Known Exploited Vulnerabilities catalog (cisa.gov)
 - Check Point security advisory portal (support.checkpoint.com)
 - Rapid7, BleepingComputer, Help Net Security for CVE details
 - Horizon3.ai attack research
 - Oracle Security Alerts (oracle.com)
+- Google Cloud Service Health (status.cloud.google.com)
 - Cloudflare Blog and Status page
 - GitHub releases for neovim/neovim
 - Go release history (go.dev)
 - Rust blog (blog.rust-lang.org)
 - Kubernetes releases (kubernetes.io, kubernetes.dev)
 - SEC EDGAR for SpaceX S-1
-- CNBC, TechCrunch, Fortune for markets reporting
-- Hacker News Algolia API (front page and targeted queries, with item ids, points, and comment counts) and Reddit
+- CNBC, TechCrunch, Fortune, Business Standard for markets and outage reporting
+- Hacker News (front page and targeted queries via WebSearch fallback, datacenter IP block on Algolia API)
+- Reddit (via WebSearch fallback, datacenter IP block on Reddit JSON API)
+- OpenAI API changelog (developers.openai.com)
+- Microsoft AI news (microsoft.ai)
+- Google AI / Gemini (llm-stats.com secondary aggregation; primary Google AI source not reachable)

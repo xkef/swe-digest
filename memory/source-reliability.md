@@ -27,12 +27,30 @@ directly. When running in the remote environment, use the listed fallback.
 - `hacker-news.firebaseio.com` - HN Firebase API. Same pattern as Algolia.
 - `news.ycombinator.com` - HN front page and item pages. 200 locally. Remote
   fallback: WebSearch with site context.
+- `hnrss.org` - HN RSS fallback. Also returns 403 from datacenter IP ranges.
+  Remote fallback: WebSearch only.
 - `blog.cloudflare.com` - 200 locally; remote fallback WebSearch summaries.
 - `www.cloudflare.com` - path pages like /agents-week/updates/.
 - `techcrunch.com` - cross-reference with primary sources when remote.
 - `www.securityweek.com` - discovery only when remote; confirm from advisories.
 - `blog.rust-lang.org` - remote fallback releases.rs and WebSearch.
 - `blog.checkpoint.com` - use support.checkpoint.com sk advisory pages as primary.
+- `www.bleepingcomputer.com` - returns 403 from datacenter; use as WebSearch
+  snippet source only; confirm CVE details from vendor advisories.
+- `www.zerodayinitiative.com` - returns 403 from datacenter; use as WebSearch
+  snippet source only; confirm from MSRC directly.
+- `blog.talosintelligence.com` - returns 403 from datacenter; use as WebSearch
+  snippet source only.
+- `www.cloudflarestatus.com` - returns 403 from datacenter; use WebSearch or
+  check statusgator/isdown aggregators as fallback.
+- `status.cloud.google.com` - returns 403 from datacenter; use WebSearch for
+  incident details with site:cloud.google.com filter.
+- `msrc.microsoft.com` - returns 403 from datacenter; confirm from
+  support.microsoft.com KB pages which are accessible, or via WebSearch.
+- `developer.chrome.com` - returns 403 from datacenter; use WebSearch for
+  announcement details.
+- `sec.cloudapps.cisco.com` - Cisco security advisory pages return 403 from
+  datacenter; confirm from WebSearch snippets.
 
 ### Reliable primary sources
 
@@ -43,9 +61,14 @@ directly. When running in the remote environment, use the listed fallback.
 - `kubernetes.io/releases/` and `kubernetes.dev/resources/release/` - Reliable for K8s version tracking.
 - `helpnetsecurity.com` - Reliable secondary source for CVE details with good technical accuracy.
 - `horizon3.ai/attack-research/` - Reliable for technical exploit chain details.
+- `developer.apple.com/news/releases/` - Apple developer release listing fetches successfully; reliable for version numbers and dates.
+- `docs.gitlab.com/releases/patches/` - GitLab patch release docs are primary and fetchable; reliable.
+- `ic3.gov/PSA/` - FBI IC3 PSAs are primary; reliable for threat advisories.
 
 ### Secondary/aggregation sources
 
 - `llm-stats.com` - Aggregates AI model releases; useful for discovery but not a primary source. Verify against vendor docs.
 - `aifundingtracker.com` - Tracks AI acquisitions; useful for discovery. Verify from company newsrooms or SEC filings before publishing as confirmed.
 - `cybersecuritynews.com` - Secondary security reporting; useful for discovery. Confirm from vendor advisories.
+- `thehackernews.com` - Secondary security reporting; returns 403 from datacenter. Use WebSearch snippet content only; confirm CVEs from vendor advisories.
+- `business-standard.com` - Reliable for Indian tech infrastructure news; used for Google Cloud India fire coverage.

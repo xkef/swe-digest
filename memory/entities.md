@@ -9,6 +9,7 @@ Recurring entities tracked across digest runs.
 - Neovim: editor. Track releases, LSP changes, Lua APIs, performance, plugin ecosystem, and breaking changes. Current stable: v0.12.3 (2026-06-10).
 - LazyVim and lazy.nvim: Neovim distribution and plugin manager. Track release notes and migration issues.
 - jj: Jujutsu version control system. Track releases, Git compatibility, workflows, and tooling support.
+- Xcode: Apple IDE. Track agentic coding features, Foundation Models integration, Swift toolchain. Xcode 27 beta (27A5194q) released 2026-06-08 with dual-engine agentic coding and LanguageModel protocol.
 
 ## AI
 
@@ -20,11 +21,12 @@ Recurring entities tracked across digest runs.
 - Hugging Face: track platform changes, open weight hosting, and dataset policies.
 - NVIDIA: track CUDA releases, driver updates, GPU architecture, inference serving, and developer tools.
 - Microsoft AI: track MAI model family (MAI-Code-1-Flash in GitHub Copilot as of Build 2026-06-02), Azure OpenAI, and Foundry.
+- Apple Foundation Models: track framework releases, LanguageModel protocol, open-source timeline. Foundation Models going open source in 2026.
 
 ## Infrastructure
 
 - GitHub: track outages, incident write-ups, postmortems, release changes, and security advisories.
-- Cloudflare: track outages, engineering blog posts (Agents Week 2026 major release), Workers, and security advisories.
+- Cloudflare: track outages, engineering blog posts (Agents Week 2026 major release), Workers, Mesh, and security advisories.
 - AWS, Azure, Google Cloud, Vercel, Netlify, Fastly, Datadog, Sentry, npm, PyPI, Docker Hub: track outages, incident write-ups, postmortems, release changes, and security advisories.
 
 ## Security
@@ -32,10 +34,12 @@ Recurring entities tracked across digest runs.
 - CISA KEV, NVD, OSV, GitHub Security Advisories: track active exploitation, ecosystem exposure, patched versions, and mitigations.
 - LiteLLM (BerriAI): track CVEs and security advisories. CVE-2026-42271 (CISA KEV 2026-06-08) affects 1.74.2-1.83.6; patch to 1.83.7.
 - Check Point: track VPN and gateway security advisories. CVE-2026-50751 actively exploited by Qilin ransomware affiliate; CISA KEV 2026-06-08.
+- Microsoft Patch Tuesday: track monthly releases. June 2026: 206 CVEs (record), 1 exploited (CVE-2026-41091 Defender EoP), CVE-2026-45657 wormable kernel RCE (CVSS 9.8).
+- Cisco SD-WAN: track CVEs and security advisories. CVE-2026-20245 actively exploited, no patch available as of 2026-06-11.
 
 ## Markets
 
 - Developer infrastructure, AI, security, databases, cloud, semiconductors, payments, and open source companies: track acquisitions, IPO filings, governance changes, and licensing changes when engineering impact is clear.
-- SpaceX: S-1 filed May 2026; Nasdaq IPO targeting 2026-06-12. Positioned as AI compute infrastructure.
+- SpaceX: IPO priced 2026-06-11 at $135/share; Nasdaq listing 2026-06-12 as SPCX. Positioned as AI compute infrastructure.
 - Anthropic: confidential S-1 filed 2026-06-01.
 - OpenAI: confidential S-1 filed 2026-06-08.
