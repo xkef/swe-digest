@@ -16,24 +16,28 @@ Create or update `content/digests/YYYY-MM-DD/index.md`.
 Each digest contains:
 
 1. `Top stories`: 3 to 7 items.
-2. `AI`: model releases, tooling, infra, policy, research, notable product changes.
-3. `Security`: CVEs, exploited vulnerabilities, supply chain attacks, breaches, malware campaigns.
-4. `Outages`: major cloud, SaaS, developer infrastructure, payment, identity, package registry, CDN, DNS incidents.
-5. `Developer tools`: Ghostty, Neovim, terminals, editors, shells, Git, jj, CI, build tools, package managers.
-6. `Languages and runtimes`: Java, Kotlin, Rust, Go, Python, TypeScript, Zig, Swift, C, C++, WebAssembly.
-7. `Infrastructure`: Kubernetes, Linux, databases, queues, observability, networking, security infrastructure.
-8. `Engineering posts`: durable technical write-ups from company blogs and independent authors.
-9. `Markets and companies`: acquisitions, IPOs, S-1 filings, funding events only when they change engineering context.
-10. `HN and Reddit pulse`: what is getting attention, separated from verified fact.
-11. `Watchlist follow-ups`: updates to stories tracked in `memory/followups.md`.
-12. `Sources checked`: concise list of source classes checked.
+2. `AI`: model releases, tooling, infra, policy, notable product changes.
+3. `ML research`: papers with engineering relevance from arXiv, Papers with Code, and Hugging Face Papers.
+4. `Agentic coding`: coding-agent usage, tooling, MCP, and practitioner write-ups.
+5. `Security`: CVEs, exploited vulnerabilities, supply chain attacks, breaches, malware campaigns.
+6. `Outages`: major cloud, SaaS, developer infrastructure, payment, identity, package registry, CDN, DNS incidents.
+7. `Developer tools`: Ghostty, Neovim, terminals, editors, shells, Git, jj, CI, build tools, package managers.
+8. `Languages and runtimes`: Java, Kotlin, Rust, Go, Python, TypeScript, Zig, Swift, C, C++, WebAssembly, Spring Boot and the JVM ecosystem.
+9. `Apple platforms`: iOS, macOS, Swift, SwiftUI, Xcode, Foundation Models, Apple Silicon, and Darwin internals.
+10. `Linux and kernel`: kernel releases, LWN topics, scheduler, io_uring, eBPF, filesystems, and Rust for Linux.
+11. `Infrastructure`: Kubernetes, databases, queues, observability, networking, security infrastructure.
+12. `Engineering posts`: durable technical write-ups from company blogs and independent authors.
+13. `Markets and companies`: acquisitions, IPOs, S-1 filings, funding events only when they change engineering context.
+14. `HN and Reddit pulse`: what is getting attention, separated from verified fact.
+15. `Watchlist follow-ups`: updates to stories tracked in `memory/followups.md`.
+16. `Sources checked`: concise list of source classes checked.
 
 Each story uses this shape:
 
 ```md
 ### Story title
 
-- **Category:** AI | Security | Outage | Dev tools | Languages | Infrastructure | Engineering post | Markets | Pulse
+- **Category:** AI | ML research | Agentic coding | Security | Outage | Dev tools | Languages | Apple | Linux/Kernel | Infrastructure | Engineering post | Markets | Pulse
 - **Status:** confirmed | developing | rumor | discussion
 - **Sources:** [primary](https://example.com), [discussion](https://news.ycombinator.com/item?id=0)
 - **Summary:** One to three factual sentences.
@@ -172,6 +176,71 @@ Daily queries:
 - API pricing, rate limit, context window, tool use, structured output, multimodal, coding model, agent, and retrieval changes.
 - Open model weights, license changes, quantization, inference serving, GPU memory, and benchmark corrections.
 - AI security issues: prompt injection, data exfiltration, model supply chain, dependency compromise, jailbreaks with real impact.
+
+## ML research checks
+
+Primary sources:
+
+- arXiv listings: cs.LG, cs.CL, cs.AI, cs.CR.
+- Papers with Code and alphaXiv trending.
+- Hugging Face Papers daily.
+- Lab publications: DeepMind, Meta AI, OpenAI, Anthropic, Allen AI, Mistral.
+- Import AI and The Batch for context.
+
+Selection rules:
+
+- Include only papers with clear engineering relevance or strong ecosystem attention.
+- Record title, authors or lab, date, and the concrete result or method.
+- Do not restate benchmark numbers without the reported method.
+- Label preprints as developing until independently reproduced.
+- Do not include a paper only because it trends.
+
+## Agentic coding checks
+
+Primary sources:
+
+- Claude Code, Cursor, GitHub Copilot, and other coding-agent release notes, changelogs, and docs.
+- Model Context Protocol spec, servers, and clients.
+- Practitioner write-ups with concrete setup, prompts, or measured results.
+- Simon Willison's weblog and Latent Space for context.
+
+Selection rules:
+
+- Name the agent, model, and version when known.
+- Link release notes or docs as primary; label workflow and opinion posts as discussion.
+- Prefer posts with metrics, failure analysis, or reproducible setup over launch marketing.
+- Track agent evaluation results and how they were produced.
+
+## Apple platforms checks
+
+Primary sources:
+
+- Swift.org blog and Swift Evolution proposals.
+- Apple Developer news and release notes.
+- Xcode release notes, including agentic coding features.
+- Foundation Models and on-device model framework documentation.
+- The Eclectic Light Company for macOS and Darwin internals.
+
+Selection rules:
+
+- Capture version, release date, primary source, and the concrete API or behavior change.
+- Cover Swift and SwiftUI, the Swift toolchain, Apple Silicon, and macOS internals.
+- Keep the Swift language itself in `Languages and runtimes`; SDK, tooling, and platform changes go here.
+
+## Linux and kernel checks
+
+Primary sources:
+
+- LWN.net.
+- kernel.org release announcements and the stable tree.
+- Phoronix for release coverage and benchmarks.
+- Rust for Linux project updates.
+
+Selection rules:
+
+- Capture kernel version, release or merge-window date, primary source, and the concrete change.
+- Cover scheduler, io_uring, eBPF, filesystems, memory management, cgroups, and security hardening.
+- Keep Linux desktop tooling such as Wayland and shells in `Developer tools`.
 
 ## Security checks
 

@@ -99,6 +99,14 @@ source_count = 65
 - **Summary:** Google released Gemini 3.1 Ultra with a 2M-token native multimodal context window. Gemini 3.1 Flash-Lite delivers 2.5x faster responses compared to prior versions. Primary Google source not confirmed at time of collection.
 - **Why it matters:** 2M-token native multimodal context changes how long-document and multi-file analysis workflows are designed.
 
+## ML research
+
+No major items found.
+
+## Agentic coding
+
+No major items found.
+
 ## Security
 
 ### Microsoft June 2026 Patch Tuesday: record 206 CVEs
@@ -189,14 +197,6 @@ GitHub experienced authentication issues affecting API requests on 2026-06-10 be
 
 ## Developer tools
 
-### Apple WWDC 2026: Xcode 27, Foundation Models LanguageModel protocol, Swift 6.2
-
-- **Category:** Dev tools
-- **Status:** confirmed
-- **Sources:** [WWDC26 developer site](https://developer.apple.com/wwdc26/), [What's new in Xcode 27](https://developer.apple.com/videos/play/wwdc2026/258/), [Foundation Models framework](https://developer.apple.com/videos/play/wwdc2026/241/)
-- **Summary:** Apple shipped Xcode 27 beta (build 27A5194q) and iOS/macOS 27 betas on 2026-06-08. Xcode 27 introduces a dual-engine agentic coding system: an on-device Neural Engine model for real-time Swift completions and a cloud routing layer that can delegate to Anthropic Claude, Google Gemini, or OpenAI. The agent can write and run tests, operate the iOS Simulator through a new Device Hub, and interact with live previews. The Foundation Models framework gains a new LanguageModel protocol that lets apps swap between Apple Foundation Models, Claude, and Gemini through the same Swift API with no session-code changes. Free access to Apple Foundation Models on Private Cloud Compute is available to developers with fewer than two million first-time App Store downloads. Swift 6.2 tightens data-isolation guarantees while reducing required annotation burden and adds a main-actor default configuration option with improved async debugging in LLDB. Apple confirmed the Foundation Models framework will be open-sourced later in 2026.
-- **Why it matters:** The LanguageModel protocol enables provider-agnostic AI calls from Swift applications; combined with free Private Cloud Compute access, it removes infrastructure cost as a barrier for on-platform AI features.
-
 ### Google I/O 2026: WebMCP open standard for browser-based AI agents
 
 - **Category:** Dev tools
@@ -238,6 +238,20 @@ GitHub experienced authentication issues affecting API requests on 2026-06-10 be
 - **Sources:** [.NET 11 Preview 5 blog](https://devblogs.microsoft.com/dotnet/dotnet-11-preview-5/), [Build 2026 .NET sessions](https://devblogs.microsoft.com/dotnet/dotnet-at-microsoft-build-2026/)
 - **Summary:** Microsoft featured .NET 11 Preview 5 at Build 2026. C# 15 introduces union types, described by the team as the largest type-system addition to C# since nullable reference types. Unions model closed sets of data shapes with exhaustive pattern matching and replace common third-party discriminated union workarounds such as the OneOf library. .NET 11 general availability is targeted for November 2026. The feature is available now in Preview 5 by targeting `net11.0` with preview language version enabled.
 - **Why it matters:** C# 15 union types will change how domain models and wire-protocol parsers are written in .NET codebases; early adoption in preview reduces migration pressure before the November GA.
+
+## Apple platforms
+
+### Apple WWDC 2026: Xcode 27, Foundation Models LanguageModel protocol, Swift 6.2
+
+- **Category:** Apple
+- **Status:** confirmed
+- **Sources:** [WWDC26 developer site](https://developer.apple.com/wwdc26/), [What's new in Xcode 27](https://developer.apple.com/videos/play/wwdc2026/258/), [Foundation Models framework](https://developer.apple.com/videos/play/wwdc2026/241/)
+- **Summary:** Apple shipped Xcode 27 beta (build 27A5194q) and iOS/macOS 27 betas on 2026-06-08. Xcode 27 introduces a dual-engine agentic coding system: an on-device Neural Engine model for real-time Swift completions and a cloud routing layer that can delegate to Anthropic Claude, Google Gemini, or OpenAI. The agent can write and run tests, operate the iOS Simulator through a new Device Hub, and interact with live previews. The Foundation Models framework gains a new LanguageModel protocol that lets apps swap between Apple Foundation Models, Claude, and Gemini through the same Swift API with no session-code changes. Free access to Apple Foundation Models on Private Cloud Compute is available to developers with fewer than two million first-time App Store downloads. Swift 6.2 tightens data-isolation guarantees while reducing required annotation burden and adds a main-actor default configuration option with improved async debugging in LLDB. Apple confirmed the Foundation Models framework will be open-sourced later in 2026.
+- **Why it matters:** The LanguageModel protocol enables provider-agnostic AI calls from Swift applications; combined with free Private Cloud Compute access, it removes infrastructure cost as a barrier for on-platform AI features.
+
+## Linux and kernel
+
+No major items found.
 
 ## Infrastructure
 

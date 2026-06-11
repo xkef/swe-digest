@@ -72,23 +72,27 @@ The digest must contain these sections in this order:
 
 1. Top stories
 2. AI
-3. Security
-4. Outages
-5. Developer tools
-6. Languages and runtimes
-7. Infrastructure
-8. Engineering posts
-9. Markets and companies
-10. HN and Reddit pulse
-11. Watchlist follow-ups
-12. Sources checked
+3. ML research
+4. Agentic coding
+5. Security
+6. Outages
+7. Developer tools
+8. Languages and runtimes
+9. Apple platforms
+10. Linux and kernel
+11. Infrastructure
+12. Engineering posts
+13. Markets and companies
+14. HN and Reddit pulse
+15. Watchlist follow-ups
+16. Sources checked
 
 Use this story shape:
 
 ```md
 ### Story title
 
-- **Category:** AI | Security | Outage | Dev tools | Languages | Infrastructure | Engineering post | Markets | Pulse
+- **Category:** AI | ML research | Agentic coding | Security | Outage | Dev tools | Languages | Apple | Linux/Kernel | Infrastructure | Engineering post | Markets | Pulse
 - **Status:** confirmed | developing | rumor | discussion
 - **Sources:** [primary](https://example.com), [discussion](https://news.ycombinator.com/item?id=0)
 - **Summary:** One to three factual sentences.
@@ -278,6 +282,54 @@ Track:
 - Research only when it has clear engineering relevance or strong ecosystem attention.
 
 Always include model identifier, release date, source, and concrete change when known.
+
+## ML research procedure
+
+Track research papers with clear engineering relevance or strong ecosystem attention.
+
+Sources: arXiv (cs.LG, cs.CL, cs.AI, cs.CR), Papers with Code and alphaXiv trending, Hugging Face Papers, Import AI, The Batch.
+
+Capture:
+
+- Title, authors or lab, and publication date.
+- The concrete result or method, not the abstract framing.
+- Reported method and evaluation. Do not repeat benchmark claims without method.
+- Why the result changes practice, tooling, or model capability.
+
+Prefer the primary paper or project page. Label preprints as developing until independently reproduced. Do not include a paper only because it trends.
+
+## Agentic coding procedure
+
+Track how practitioners use and build with coding agents.
+
+Cover: Claude Code, Cursor, GitHub Copilot, and other coding agents; agent harnesses; Model Context Protocol servers and clients; subagents; agent evaluation; and durable practitioner write-ups on workflow, failure modes, and results.
+
+Rules:
+
+- Link release notes, changelogs, or docs as primary sources.
+- Label opinion and workflow posts as discussion unless they report measured results.
+- Prefer posts with concrete setup, prompts, or metrics over launch marketing.
+- Name the agent, model, and version when known.
+
+## Apple platforms procedure
+
+Track iOS and macOS engineering across app development and platform internals.
+
+Cover: Swift and SwiftUI changes, the Swift toolchain, Xcode releases and agentic coding features, Foundation Models and on-device model APIs, Apple Silicon, and macOS and Darwin internals.
+
+Sources: Swift.org blog, Apple Developer news and release notes, Swift Evolution proposals, and independent platform-internals writers such as The Eclectic Light Company.
+
+Capture version, release date, primary source, and the concrete API or behavior change. The Swift language itself stays in `Languages and runtimes`; platform, SDK, and tooling changes go here.
+
+## Linux and kernel procedure
+
+Track Linux kernel development and systems news.
+
+Sources: LWN.net, kernel.org release announcements, the stable tree, Phoronix for release coverage, and Rust for Linux updates.
+
+Cover: kernel releases and merge windows, scheduler, io_uring, eBPF, filesystems, memory management, cgroups, security hardening, and Rust for Linux progress.
+
+Capture kernel version, release or merge date, primary source, and the concrete change or impact. Linux desktop tooling such as Wayland and shells stays in `Developer tools`.
 
 ## Security procedure
 

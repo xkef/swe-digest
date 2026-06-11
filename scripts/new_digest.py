@@ -10,10 +10,14 @@ ROOT = Path(__file__).resolve().parents[1]
 SECTIONS = [
     "Top stories",
     "AI",
+    "ML research",
+    "Agentic coding",
     "Security",
     "Outages",
     "Developer tools",
     "Languages and runtimes",
+    "Apple platforms",
+    "Linux and kernel",
     "Infrastructure",
     "Engineering posts",
     "Markets and companies",
@@ -24,7 +28,7 @@ SECTIONS = [
 
 TEMPLATE_ITEM = """### Story title
 
-- **Category:** AI | Security | Outage | Dev tools | Languages | Infrastructure | Engineering post | Markets | Pulse
+- **Category:** AI | ML research | Agentic coding | Security | Outage | Dev tools | Languages | Apple | Linux/Kernel | Infrastructure | Engineering post | Markets | Pulse
 - **Status:** confirmed | developing | rumor | discussion
 - **Sources:** [primary](https://example.com), [discussion](https://news.ycombinator.com/item?id=0)
 - **Summary:** Replace with one to three factual sentences.

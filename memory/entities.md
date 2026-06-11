@@ -41,6 +41,23 @@ Recurring entities tracked across digest runs.
 - SAP: track Security Patch Days. June 2026 critical: CVE-2026-44748 (CVSS 9.9, SAML XML signature wrapping in NetWeaver AS ABAP, SAP_BASIS 702-919) patched 2026-06-10.
 - ServiceNow: track security incidents. Unauthenticated REST API access exploited 2026-06-02 to 2026-06-03 against hosted instances; patched 2026-06-05. No CVE assigned.
 
+## Apple platforms
+
+- Swift: language and toolchain. Track Swift Evolution proposals, concurrency, releases, and the open-source toolchain.
+- Spring Boot and Spring Framework: JVM application framework. Track releases, breaking changes, migration notes, and security advisories.
+
+## Linux and kernel
+
+- Linux kernel: track releases, merge windows, scheduler, io_uring, eBPF, filesystems, memory management, and security hardening.
+- LWN.net: kernel and systems reporting. Track subscriber and free articles on kernel development and ecosystem changes.
+- Rust for Linux: track upstream progress, supported drivers, and toolchain requirements.
+
+## Agentic coding
+
+- Claude Code: Anthropic coding agent. Track releases, harness changes, MCP support, and subagent features.
+- Cursor and GitHub Copilot: coding agents. Track release notes, model changes, and agent capabilities.
+- Model Context Protocol: track spec changes, new servers and clients, and adoption.
+
 ## Markets
 
 - Developer infrastructure, AI, security, databases, cloud, semiconductors, payments, and open source companies: track acquisitions, IPO filings, governance changes, and licensing changes when engineering impact is clear.

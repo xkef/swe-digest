@@ -27,6 +27,14 @@ source_count = 0
 
 No AI news collected in this setup entry.
 
+## ML research
+
+No major items found.
+
+## Agentic coding
+
+No major items found.
+
 ## Security
 
 No security news collected in this setup entry.
@@ -42,6 +50,14 @@ No developer tool news collected in this setup entry.
 ## Languages and runtimes
 
 No language or runtime news collected in this setup entry.
+
+## Apple platforms
+
+No major items found.
+
+## Linux and kernel
+
+No major items found.
 
 ## Infrastructure
 
