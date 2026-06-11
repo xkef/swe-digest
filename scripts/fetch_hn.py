@@ -29,6 +29,8 @@ WATCHLIST = ROOT / "data" / "watchlist.toml"
 
 ALGOLIA = "https://hn.algolia.com/api/v1"
 FIREBASE = "https://hacker-news.firebaseio.com/v0"
+HNAPI = "https://api.hackerwebapp.com"
+HNPWA = "https://api.hnpwa.com/v0"
 USER_AGENT = "swe-digest-fetcher/1.0 (daily digest collection script)"
 TIMEOUT = 15
 RETRIES = 2
@@ -116,6 +118,43 @@ def firebase_list(name: str, limit: int) -> list[dict]:
     if not stories:
         raise RuntimeError(f"firebase {name} returned no usable items")
     return stories
+
+
+def mirror_stories(url: str) -> list[dict]:
+    """Community JSON mirrors (node-hnapi shape). Discovery only: points may
+    lag and content is not first-party; published links stay canonical."""
+    stories = []
+    for item in fetch_json(url):
+        if not item.get("id") or not item.get("title") or item.get("type") == "job":
+            continue
+        item_url = item.get("url") or ""
+        if not item_url.startswith("http"):
+            item_url = None
+        stories.append(
+            make_story(
+                item["id"],
+                item["title"],
+                item_url,
+                item.get("points"),
+                item.get("comments_count"),
+                item.get("time"),
+            )
+        )
+    if not stories:
+        raise RuntimeError(f"mirror returned no usable items: {url}")
+    return stories
+
+
+def mirror_window(urls: list[str], since: int) -> list[dict]:
+    cutoff = datetime.fromtimestamp(since, tz=timezone.utc).isoformat()
+    seen: dict[int, dict] = {}
+    for url in urls:
+        for story in mirror_stories(url):
+            if story["created_at"] is None or story["created_at"] >= cutoff:
+                seen.setdefault(story["id"], story)
+    if not seen:
+        raise RuntimeError("mirrors returned no stories inside the window")
+    return list(seen.values())
 
 
 def html_front_page() -> list[dict]:
@@ -208,6 +247,8 @@ def main() -> int:
             ("algolia", lambda: algolia_stories({"tags": "front_page", "hitsPerPage": 30})),
             ("firebase", lambda: firebase_list("topstories", 30)),
             ("html", html_front_page),
+            ("hnapi-mirror", lambda: mirror_stories(f"{HNAPI}/news?page=1")),
+            ("hnpwa-mirror", lambda: mirror_stories(f"{HNPWA}/news/1.json")),
             ("hnrss", hnrss_front_page),
         ],
         failures,
@@ -234,6 +275,18 @@ def main() -> int:
                     >= datetime.fromtimestamp(since, tz=timezone.utc).isoformat()
                 ],
             ),
+            (
+                "hnapi-mirror",
+                lambda: mirror_window(
+                    [f"{HNAPI}/news?page=1", f"{HNAPI}/news?page=2"], since
+                ),
+            ),
+            (
+                "hnpwa-mirror",
+                lambda: mirror_window(
+                    [f"{HNPWA}/news/1.json", f"{HNPWA}/news/2.json"], since
+                ),
+            ),
         ],
         failures,
     )
@@ -251,6 +304,8 @@ def main() -> int:
                 ),
             ),
             ("firebase", lambda: firebase_list("askstories", 30)),
+            ("hnapi-mirror", lambda: mirror_stories(f"{HNAPI}/ask?page=1")),
+            ("hnpwa-mirror", lambda: mirror_stories(f"{HNPWA}/ask/1.json")),
         ],
         failures,
     )
@@ -268,6 +323,8 @@ def main() -> int:
                 ),
             ),
             ("firebase", lambda: firebase_list("showstories", 30)),
+            ("hnapi-mirror", lambda: mirror_stories(f"{HNAPI}/show?page=1")),
+            ("hnpwa-mirror", lambda: mirror_stories(f"{HNPWA}/show/1.json")),
         ],
         failures,
     )
@@ -299,6 +356,12 @@ def main() -> int:
                 corpus.setdefault(story["id"], story)
         except RuntimeError as corpus_error:
             print(f"warn: queries: corpus: {corpus_error}", file=sys.stderr)
+            try:
+                urls = [f"{HNAPI}/newest?page={page}" for page in (1, 2, 3)]
+                for story in mirror_window(urls, since):
+                    corpus.setdefault(story["id"], story)
+            except RuntimeError as mirror_error:
+                print(f"warn: queries: corpus mirror: {mirror_error}", file=sys.stderr)
         if corpus:
             query_results = match_queries(queries, list(corpus.values()), since)
             failures.append("queries (title-match fallback, Algolia search unavailable)")

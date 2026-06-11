@@ -91,7 +91,12 @@ Backend order per collection:
    `askstories`, `showstories`; queries degrade to title matching over the
    fetched corpus.
 3. Front page HTML (`news.ycombinator.com`).
-4. hnrss.org RSS.
+4. Community JSON mirrors: `api.hackerwebapp.com` (node-hnapi, fresh), then
+   `api.hnpwa.com` (CDN-cached, points lag). Both are CDN-fronted and expected
+   to be reachable where the first-party endpoints return 403. Mirror data is
+   discovery only: verify stories against primary sources and always link
+   canonical `news.ycombinator.com` item URLs, never mirror URLs.
+5. hnrss.org RSS.
 
 The Algolia and Firebase APIs return HTTP 403 from cloud datacenter IP ranges
 but 200 from local or residential networks. The script walks the fallback

@@ -214,9 +214,10 @@ make hn
 `scripts/fetch_hn.py` collects the front page, top stories from the last 24
 hours, Ask HN, Show HN, and every `[hacker_news]` query in
 `data/watchlist.toml`. It tries the Algolia API, the Firebase API, the front
-page HTML, and hnrss.org in order, writes results to
-`.cache/hn/YYYY-MM-DD.json`, and exits nonzero when any collection is
-degraded.
+page HTML, two community JSON mirrors (api.hackerwebapp.com, api.hnpwa.com),
+and hnrss.org in order, writes results to `.cache/hn/YYYY-MM-DD.json`, and
+exits nonzero when any collection is degraded. Mirror data is discovery only:
+verify against primary sources and link canonical news.ycombinator.com URLs.
 
 If `make hn` exits nonzero:
 

@@ -86,3 +86,5 @@ directly. When running in the remote environment, use the listed fallback.
 - `cybersecuritynews.com` - Secondary security reporting; useful for discovery. Confirm from vendor advisories.
 - `thehackernews.com` - Secondary security reporting; returns 403 from datacenter. Use WebSearch snippet content only; confirm CVEs from vendor advisories.
 - `business-standard.com` - Reliable for Indian tech infrastructure news; used for Google Cloud India fire coverage.
+- `api.hackerwebapp.com` - node-hnapi community JSON mirror of HN. Fresh data with points and comment counts; CDN-fronted, expected reachable from datacenter IPs. Discovery only; link canonical news.ycombinator.com URLs.
+- `api.hnpwa.com` - HNPWA community JSON mirror of HN. CDN-cached with lagging points; last-resort discovery only.
