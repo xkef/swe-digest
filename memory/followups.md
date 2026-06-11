@@ -114,14 +114,14 @@ Format:
 - Last checked: 2026-06-11
 - Notes: Command injection in SD-WAN Manager CLI, requires netadmin privileges, allows root command execution. CISA KEV 2026-06-09. No patch; Cisco confirmed exploitation in limited cases. Affects all deployment types.
 
-## 2026-06-11: Ivanti Sentry CVE-2026-10520 PoC and active exploitation risk
+## 2026-06-11: Ivanti Sentry CVE-2026-10520 active exploitation confirmed
 
 - Status: open
 - Category: Security
-- Sources: [watchTowr PoC](https://labs.watchtowr.com/more-evidence-that-words-dont-mean-what-we-thought-they-meant-ivanti-sentry-pre-auth-os-command-injection-cve-2026-10520/), [Ivanti advisory](https://hub.ivanti.com/s/article/Security-Advisory-Ivanti-Sentry-CVE-2026-10520-CVE-2026-10523)
-- Watch for: Active exploitation reports; CISA KEV addition; follow-on Ivanti advisories.
+- Sources: [BleepingComputer](https://www.bleepingcomputer.com/news/security/max-severity-ivanti-sentry-vulnerability-now-exploited-in-attacks/), [Ivanti advisory](https://hub.ivanti.com/s/article/Security-Advisory-Ivanti-Sentry-CVE-2026-10520-CVE-2026-10523)
+- Watch for: CISA KEV addition; further compromise scope; Ivanti advisory update acknowledging exploitation.
 - Last checked: 2026-06-11
-- Notes: CVE-2026-10520 CVSS 10.0 (unauthenticated OS command injection, root RCE) and CVE-2026-10523 CVSS 9.9 (auth bypass, admin account creation) in Ivanti Sentry. Advisory 2026-06-09; PoC published 2026-06-10 by watchTowr. Fixed in 10.5.2, 10.6.2, 10.7.1. No exploitation at disclosure. Ivanti products historically exploited within days of PoC publication.
+- Notes: Active exploitation confirmed 2026-06-11 by Shadowserver. At least 19 vulnerable instances; 2 confirmed backdoored. Less than 48h after PoC publication. CVE-2026-10520 CVSS 10.0, unauthenticated root RCE. Fixed in 10.5.2, 10.6.2, 10.7.1. Treat unpatched systems as compromised.
 
 ## 2026-06-11: Veeam CVE-2026-44963 exploitation watch
 
@@ -131,3 +131,39 @@ Format:
 - Watch for: Active exploitation or ransomware campaigns using domain user access to compromise backup servers.
 - Last checked: 2026-06-11
 - Notes: CVSS v4 9.4. RCE via any authenticated domain user on domain-joined Veeam Backup and Replication v12 servers (affected: up to 12.3.2.4465; patched: 12.3.2.4854). v13.x not affected. No exploitation at disclosure.
+
+## 2026-06-11: RoguePlanet unpatched Windows Defender zero-day
+
+- Status: open
+- Category: Security
+- Sources: [BleepingComputer](https://www.bleepingcomputer.com/news/microsoft/microsoft-defender-rogueplanet-zero-day-grants-system-privileges/), [SecurityWeek](https://www.securityweek.com/new-windows-zero-day-exploit-rogueplanet-released/)
+- Watch for: Microsoft emergency advisory and CVE assignment; in-the-wild exploitation.
+- Last checked: 2026-06-11
+- Notes: Nightmare Eclipse PoC published 2026-06-11. Race condition in Defender quarantine pipeline. LPE to SYSTEM. Works on fully patched Windows 10 and 11. No CVE, no patch. Requires local ISO mount capability. Seventh Defender zero-day from this actor since April 2026.
+
+## 2026-06-11: GitHub Copilot AI Credits billing backlash
+
+- Status: open
+- Category: Dev tools
+- Sources: [GitHub blog](https://github.blog/news-insights/company-news/github-copilot-is-moving-to-usage-based-billing/), [GitHub community discussion](https://github.com/orgs/community/discussions/192948)
+- Watch for: Microsoft policy adjustment; cap or override mechanism; competitor response (Cursor, JetBrains AI, Codeium).
+- Last checked: 2026-06-11
+- Notes: Token-metered AI Credits launched 2026-06-01. Pro+ bills reported jumping from $39 to $750+. No revert planned by Microsoft. Code completions and Next Edit Suggestions remain unmetered.
+
+## 2026-06-11: Google Gemini outage root cause
+
+- Status: open
+- Category: Outage
+- Sources: [StatusGator Gemini](https://statusgator.com/services/gemini)
+- Watch for: Google postmortem with root cause.
+- Last checked: 2026-06-11
+- Notes: ~7-hour outage on 2026-06-11. Errors 1076 and 1099. Resolved ~14:30 PT. No root cause published.
+
+## 2026-06-11: SpaceX SPCX first-day trading and S&P 500 inclusion
+
+- Status: open
+- Category: Markets
+- Sources: [CNBC SpaceX live](https://www.cnbc.com/2026/06/03/spacex-ipo-stock-price-roadshow-musk.html)
+- Watch for: First-day trading price action 2026-06-12; S&P 500 inclusion timeline; post-IPO lock-up expiry.
+- Last checked: 2026-06-11
+- Notes: Priced at $135, trading starts 2026-06-12 on Nasdaq as SPCX. $1.77T valuation at IPO price. S&P 500 committee blocked fast-track entry for dual-class structure.

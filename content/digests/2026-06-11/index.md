@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 65
+source_count = 86
 +++
 
 ## Top stories
@@ -174,6 +174,23 @@ No major items found.
 - **Summary:** ServiceNow disclosed on 2026-06-10 that attackers accessed customer instance data between 2026-06-02 and 2026-06-03 via the REST endpoint `/api/now/related_list_edit/create`, which was configured without authentication on affected instances. The incident primarily affected customers on the Australia platform release. ServiceNow had received a bug bounty submission describing the issue on 2026-04-22 but applied a server-side patch only on 2026-06-05, after external exploitation was detected. No CVE has been assigned. ServiceNow attributed the activity to security researchers rather than malicious threat actors, though customer instance data was queried.
 - **Why it matters:** Self-managed ServiceNow instances should audit REST endpoints for authentication requirements; hosted SaaS customers require no action as the fix was applied server-side.
 
+### RoguePlanet: new unpatched Windows Defender zero-day grants SYSTEM on fully patched Windows 10/11
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [BleepingComputer](https://www.bleepingcomputer.com/news/microsoft/microsoft-defender-rogueplanet-zero-day-grants-system-privileges/), [SecurityWeek](https://www.securityweek.com/new-windows-zero-day-exploit-rogueplanet-released/), [GitHub MSNightmare/RoguePlanet](https://github.com/MSNightmare/RoguePlanet)
+- **Summary:** A researcher identified as Nightmare Eclipse released a proof-of-concept exploit named RoguePlanet on 2026-06-11, hours after Microsoft's June Patch Tuesday. The exploit abuses a race condition in Microsoft Defender's quarantine pipeline to redirect a SYSTEM-level file operation to attacker-controlled code, granting SYSTEM privileges to a standard unprivileged user. It functions on fully patched Windows 10 and Windows 11, including the Canary Insider Preview channel. The PoC requires the ability to mount ISO images, so it does not currently function on Windows Server. No CVE has been assigned. RoguePlanet is the seventh Defender-related exploit Nightmare Eclipse has released since April 2026, following BlueHammer, RedSun, UnDefend, YellowKey, GreenPlasma, and MiniPlasma; security researchers characterize the campaign as retaliation over disputed responsible disclosure practices.
+- **Why it matters:** Fully patched Windows 10 and Windows 11 workstations are vulnerable to local privilege escalation with no patch available; defense teams should restrict ISO mounting via Group Policy and monitor for Defender quarantine pipeline abuse until Microsoft issues a fix.
+- **Follow-up:** Watch for Microsoft emergency advisory and CVE assignment; monitor for in-the-wild exploitation.
+
+### Jenkins Security Advisory 2026-06-10: deserialization, credential exposure, and redirect vulnerabilities
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Jenkins security advisory 2026-06-10](https://www.jenkins.io/security/advisory/2026-06-10/), [cybersecuritynews.com](https://cybersecuritynews.com/jenkins-vulnerabilities-expose-ci-cd-servers/)
+- **Summary:** Jenkins published a security advisory on 2026-06-10 covering multiple CVEs in Jenkins core and plugins. Jenkins 2.568 and LTS 2.555.3 restrict deserialization types in agent-controller communication and configuration loading, closing a vector for deserialization attacks. CVE-2026-53436 and CVE-2026-53437 fix improper URL redirect validation in the default login flow that could redirect authenticated users to attacker-controlled sites. CVE-2026-53442 fixes config.xml POST submissions writing plaintext secrets to disk where users with Item/Extended Read permission could read them. CVE-2026-53438 fixes a missing Item/Read permission check allowing users with Item/Cancel permission to cancel arbitrary queue items.
+- **Why it matters:** CI/CD servers are high-value targets; Jenkins operators should upgrade to 2.568 or LTS 2.555.3 to close the deserialization and secret-exposure vectors.
+
 ## Outages
 
 ### Google Cloud India network disruption, 2026-06-09 to present
@@ -193,7 +210,16 @@ No major items found.
 - **Summary:** Cloudflare experienced a network performance issue in the US Eastern region between 13:39 and 14:06 UTC on 2026-06-02. Users saw increased latency or intermittent connectivity. The issue was mitigated within 27 minutes. No root cause was published at time of collection.
 - **Why it matters:** Brief resolved incident; no extended developer platform impact confirmed.
 
-GitHub experienced authentication issues affecting API requests on 2026-06-10 between 15:23 and approximately 16:30 UTC; the incident resolved without extended impact. No major outages were identified on 2026-06-11 for GitHub, AWS, Azure, OpenAI, Anthropic, npm, PyPI, or other tracked developer infrastructure. Cloudflare performed scheduled maintenance in London (00:00-06:00 UTC), Lisbon (00:00-04:00 UTC), and Paris (00:00-08:00 UTC) on 2026-06-11.
+### Google Gemini 7-hour outage, 2026-06-11
+
+- **Category:** Outage
+- **Status:** confirmed
+- **Sources:** [TechRadar live updates](https://www.techradar.com/news/live/gemini-down-june-2026), [Tom's Guide](https://www.tomsguide.com/news/live/gemini-outage-june-10-live-updates), [StatusGator Gemini](https://statusgator.com/services/gemini)
+- **Summary:** Google Gemini experienced a widespread service failure on 2026-06-11 lasting approximately 7 hours. The incident began around 06:11 ET / 11:11 BST. Users encountered error 1076 (chat thread failure) and error 1099 (server-side failure) consistently. Google's engineering team applied mitigations and declared recovery around 14:30 PT / 17:30 ET. No root cause was published at time of collection.
+- **Why it matters:** Multi-hour Gemini API and consumer product failure; teams with production Gemini API dependencies should implement fallback routing for extended outages.
+- **Follow-up:** Watch for Google postmortem with root cause.
+
+GitHub experienced authentication issues affecting API requests on 2026-06-10 between 15:23 and approximately 16:30 UTC; the incident resolved without extended impact. Anthropic reported elevated errors across Claude models on 2026-06-11 from 09:42 to 10:03 PT (21 minutes), fully resolved; a second brief elevated-error period on Claude Opus 4.6 was investigated and mitigated by 17:56 UTC. Cloudflare performed scheduled maintenance in London (00:00-06:00 UTC), Lisbon (00:00-04:00 UTC), and Paris (00:00-08:00 UTC) on 2026-06-11; a separate performance issue affected the NRT (Tokyo) datacenter on the same day. No major outages were identified on 2026-06-11 for GitHub, AWS, Azure, npm, PyPI, or other tracked developer infrastructure.
 
 ## Developer tools
 
@@ -212,6 +238,30 @@ GitHub experienced authentication issues affecting API requests on 2026-06-10 be
 - **Sources:** [GitHub releases](https://github.com/neovim/neovim/releases/tag/v0.12.3)
 - **Summary:** Neovim v0.12.3 was released on 2026-06-10 as a patch release in the v0.12 series. Version 0.12 introduced a redesigned terminal emulator, eliminated "Press ENTER to continue" prompts, and improved cursor styling across terminal multiplexers. Detailed changelog available in-editor via `:help news`.
 - **Why it matters:** Patch releases in the active stable series accumulate bug fixes; users on v0.12.x should update.
+
+### GitHub Copilot moves to token-based AI Credits billing; developers report 10x to 100x cost increases
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [GitHub blog](https://github.blog/news-insights/company-news/github-copilot-is-moving-to-usage-based-billing/), [TechCrunch](https://techcrunch.com/2026/05/30/what-a-joke-github-copilots-new-token-based-billing-spurs-consternation-among-devs/), [The Register](https://www.theregister.com/ai-and-ml/2026/06/02/github-copilot-users-threaten-exit-as-metered-billing-kicks-in/5249826), [GitHub community discussion](https://github.com/orgs/community/discussions/192948)
+- **Summary:** GitHub Copilot transitioned all plans from flat-rate premium-request billing to token-metered GitHub AI Credits on 2026-06-01. Each plan includes a monthly allotment: Pro 1,500 credits ($15), Pro+ 7,000 credits ($70), Max 20,000 credits ($200). Code completions and Next Edit Suggestions remain outside credit metering. Agentic sessions and agent-mode interactions consume credits based on actual token throughput; developers report single agentic sessions exhausting $30 to $40 in credits, and Pro+ monthly bills jumping from $39 to $750 or higher. The fallback to a cheaper model on credit exhaustion was removed. Microsoft confirmed no plans to revert the billing model.
+- **Why it matters:** Teams budgeting under the previous flat-rate model face unpredictable cost increases; organizations should configure GitHub credit spending limits and audit per-developer consumption before the next billing cycle.
+
+### Claude Fable 5 generally available in GitHub Copilot
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [GitHub Changelog 2026-06-09](https://github.blog/changelog/2026-06-09-claude-fable-5-is-generally-available-for-github-copilot/)
+- **Summary:** Claude Fable 5 became generally available in GitHub Copilot on 2026-06-09 for Pro+, Max, Business, and Enterprise users. The model is selectable in VS Code across chat, ask, edit, and agent modes. Unlike all other Claude models in Copilot, which operate under zero data retention, Fable 5 retains prompts and outputs for up to 30 days for safety classifier operation. Enterprise and Business plan admins must explicitly enable the Claude Fable 5 policy in Copilot settings; the policy is off by default.
+- **Why it matters:** Teams using Copilot gain access to Fable 5 for long-horizon autonomous coding, but must accept a 30-day data retention window; enterprise security and compliance teams should evaluate the policy change before enabling.
+
+### GitHub CLI v2.94.0: native Discussions support and sub-issue management
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [GitHub Changelog Discussions 2026-06-10](https://github.blog/changelog/2026-06-10-list-view-and-create-discussions-in-github-cli/), [GitHub Changelog sub-issues 2026-06-10](https://github.blog/changelog/2026-06-10-manage-sub-issues-types-and-dependencies-from-github-cli/)
+- **Summary:** GitHub CLI v2.94.0, released 2026-06-10, adds a `gh discussion` command group with `list`, `view`, `create`, `edit`, and `comment` subcommands. The release also adds commands to manage sub-issues, issue types, and issue dependencies from the terminal. Both features previously required raw `gh api` calls.
+- **Why it matters:** Teams using GitHub Discussions for RFCs or architectural decisions can now automate and script discussion workflows without switching to the web UI.
 
 ## Languages and runtimes
 
@@ -307,6 +357,14 @@ No major items found.
 - **Summary:** SpaceX priced its IPO at a fixed $135 per share on 2026-06-11, selling 555.6 million shares for a $75B raise at a $1.77T valuation. The company bypassed the standard roadshow price range and went directly to a fixed price. Trading on Nasdaq (ticker SPCX) begins 2026-06-12. Elon Musk retains over 82% voting control under the dual-class share structure. The S-1 explicitly describes SpaceX as an AI compute infrastructure company constructing compute capacity starting on Earth with the goal of extending to space. The $75B raise is the largest in IPO history, surpassing Saudi Aramco's 2019 $29.4B raise.
 - **Why it matters:** SpaceX positioning as orbital AI compute infrastructure signals a new class of physical infrastructure vendor with relevance to long-horizon workloads and satellite connectivity.
 
+### OpenAI acquires Ona to expand Codex agent capabilities; models available on Oracle Cloud
+
+- **Category:** Markets
+- **Status:** confirmed
+- **Sources:** [OpenAI Ona announcement](https://openai.com/index/openai-to-acquire-ona/), [Bloomberg](https://www.bloomberg.com/news/articles/2026-06-11/openai-to-acquire-cloud-platform-ona-to-support-ai-agents), [CNBC](https://www.cnbc.com/2026/06/11/open-ai-ona-acquisition-codex.html), [OpenAI Oracle announcement](https://openai.com/index/openai-on-oracle-cloud/)
+- **Summary:** OpenAI announced on 2026-06-11 the acquisition of Ona, a startup that provides secure, pre-configured cloud environments stocked with tools, file systems, and persistent context for multi-step agent tasks. Ona employees join the Codex division post-closing. Financial terms were not disclosed. Codex reached 5 million weekly active users as of June 2026, up from 3 million in April. Separately, OpenAI announced that OpenAI models and Codex are now accessible through Oracle Cloud Infrastructure credit commitments, allowing enterprises to apply existing OCI spend toward OpenAI API usage.
+- **Why it matters:** Ona's persistent cloud environment infrastructure enables Codex agents to maintain working context across long multi-step tasks, directly competing with Anthropic's Claude Managed Agents platform launched the same week.
+
 ## HN and Reddit pulse
 
 ### Claude Fable 5 release, guardrails, and data retention
@@ -345,6 +403,20 @@ No major items found.
 - **Summary:** An HN thread about πFS, a filesystem implementation based on the conjecture that pi is a normal number containing all possible finite digit sequences. The premise is that every file exists as a coordinate in pi, so storage becomes a lookup rather than a write. Commenters noted that the coordinate representation requires roughly the same storage as the data itself, and that LLMs represent a more practical form of lossy compression.
 - **Why it matters:** None operationally; the thread is useful for its illustration of normal number theory and information-theoretic storage limits.
 
+### GitHub Copilot billing shock dominates developer discussion
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [GitHub community discussion #192948](https://github.com/orgs/community/discussions/192948), [TechCrunch](https://techcrunch.com/2026/05/30/what-a-joke-github-copilots-new-token-based-billing-spurs-consternation-among-devs/), [The Register](https://www.theregister.com/ai-and-ml/2026/06/02/github-copilot-users-threaten-exit-as-metered-billing-kicks-in/5249826)
+- **Summary:** The June 1 switch to token-based AI Credits billing generated sustained backlash across GitHub's community forums, Reddit, and Hacker News throughout the first two weeks of June. Developers reported Pro+ monthly bills jumping from $39 to $750 or more. Common themes: agentic sessions are unexpectedly expensive, the removed fallback-to-cheaper-model safety net is missed, and included credit allotments appear calibrated for interactive chat rather than the agentic workflows GitHub's own marketing promotes. Most-cited alternatives: direct Anthropic and OpenAI API access, OpenRouter, and RooCode.
+
+### Nightmare Eclipse RoguePlanet zero-day and Defender campaign discussion
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [SecurityWeek](https://www.securityweek.com/new-windows-zero-day-exploit-rogueplanet-released/), [Dark Reading](https://www.darkreading.com/vulnerabilities-threats/nightmare-eclipse-microsoft-exploit-rogueplanet)
+- **Summary:** Security practitioners discussed RoguePlanet and the Nightmare Eclipse campaign on forums and social platforms on 2026-06-11. The recurring pattern of timed Patch-Tuesday zero-day releases drew comparisons to a public bug-bounty bypass. Researchers noted the ISO-mount prerequisite limits remote exploitation but makes targeted local privilege escalation on developer workstations straightforward.
+
 ## Watchlist follow-ups
 
 ### 2026-06-10: First daily news run
@@ -375,13 +447,13 @@ No major items found.
 - **Category:** Security
 - **Notes:** Confirmed: versions 19.0.2, 18.11.5, 18.10.8 patch 12 CVEs including CVE-2026-6552 (SAML account takeover, EE). Closed.
 
-### 2026-06-11: Ivanti Sentry CVE-2026-10520 PoC published
+### 2026-06-11: Ivanti Sentry CVE-2026-10520 active exploitation confirmed
 
 - **Status:** open
 - **Category:** Security
-- **Sources:** [watchTowr PoC](https://labs.watchtowr.com/more-evidence-that-words-dont-mean-what-we-thought-they-meant-ivanti-sentry-pre-auth-os-command-injection-cve-2026-10520/), [Ivanti advisory](https://hub.ivanti.com/s/article/Security-Advisory-Ivanti-Sentry-CVE-2026-10520-CVE-2026-10523)
-- **Watch for:** Active exploitation; CISA KEV addition.
-- **Notes:** Advisory 2026-06-09; PoC published 2026-06-10 by watchTowr. CVE-2026-10520 CVSS 10.0 (unauthenticated RCE), CVE-2026-10523 CVSS 9.9 (auth bypass). Fixed in Sentry 10.5.2, 10.6.2, 10.7.1. Ivanti has a history of rapid exploitation after PoC publication.
+- **Sources:** [BleepingComputer exploitation report](https://www.bleepingcomputer.com/news/security/max-severity-ivanti-sentry-vulnerability-now-exploited-in-attacks/), [TechTimes](https://www.techtimes.com/articles/318221/20260611/ivanti-sentry-actively-exploited-cvss-100-flaw-backdoors-enterprise-mobile-gateways.htm), [Ivanti advisory](https://hub.ivanti.com/s/article/Security-Advisory-Ivanti-Sentry-CVE-2026-10520-CVE-2026-10523)
+- **Watch for:** CISA KEV addition; further compromise reports; Ivanti advisory update acknowledging exploitation.
+- **Notes:** Shadowserver confirmed on 2026-06-11 that attackers are backdooring internet-exposed Ivanti Sentry appliances, less than 48 hours after PoC publication. At least 19 vulnerable instances identified; at least 2 confirmed backdoored. Ivanti's advisory still does not acknowledge exploitation. If unpatched, treat as compromised. Fixed in 10.5.2, 10.6.2, 10.7.1.
 
 ### 2026-06-11: Veeam CVE-2026-44963 watch for exploitation
 
@@ -390,6 +462,22 @@ No major items found.
 - **Sources:** [Veeam KB4696](https://www.veeam.com/kb4696)
 - **Watch for:** Active exploitation or ransomware campaigns targeting domain-joined backup servers.
 - **Notes:** CVSS v4 9.4. Affects all Veeam Backup and Replication v12 builds through 12.3.2.4465 on domain-joined servers. Patched in 12.3.2.4854 (KB4696, released 2026-06-09). No exploitation at disclosure.
+
+### 2026-06-11: RoguePlanet unpatched Windows Defender zero-day
+
+- **Status:** open
+- **Category:** Security
+- **Sources:** [BleepingComputer](https://www.bleepingcomputer.com/news/microsoft/microsoft-defender-rogueplanet-zero-day-grants-system-privileges/), [SecurityWeek](https://www.securityweek.com/new-windows-zero-day-exploit-rogueplanet-released/)
+- **Watch for:** Microsoft emergency advisory and CVE assignment; in-the-wild exploitation reports.
+- **Notes:** Nightmare Eclipse PoC released 2026-06-11. Local privilege escalation via Defender quarantine pipeline race condition. Works on fully patched Windows 10 and 11. No patch, no CVE. Seventh Defender zero-day from Nightmare Eclipse since April 2026.
+
+### 2026-06-11: Google Gemini 7-hour outage root cause
+
+- **Status:** open
+- **Category:** Outage
+- **Sources:** [StatusGator Gemini](https://statusgator.com/services/gemini)
+- **Watch for:** Google postmortem with root cause disclosure.
+- **Notes:** ~7-hour outage on 2026-06-11. Resolved ~14:30 PT. No root cause published.
 
 ## Sources checked
 
@@ -427,3 +515,15 @@ No major items found.
 - Security Affairs for Veeam vulnerability analysis
 - Microsoft .NET Blog (devblogs.microsoft.com) for .NET 11 Preview 5 and Build 2026 .NET sessions
 - GitHub pifs repository for πFS reference
+- BleepingComputer for Ivanti Sentry active exploitation confirmation (shadowserver.org confirmation cited)
+- TechTimes for Ivanti Sentry backdoor report
+- BleepingComputer, SecurityWeek, GitHub MSNightmare/RoguePlanet for RoguePlanet zero-day
+- Jenkins security advisory portal (jenkins.io/security/advisory) for 2026-06-10 advisory
+- TechRadar, Tom's Guide, StatusGator for Google Gemini outage
+- Claude Status page (status.claude.com) for Anthropic API outage
+- GitHub Blog and GitHub Changelog for Copilot billing change, Claude Fable 5 in Copilot, CLI v2.94.0
+- TechCrunch and The Register for GitHub Copilot billing backlash
+- GitHub community discussion #192948 for developer feedback
+- OpenAI (openai.com) for Ona acquisition and Oracle Cloud partnership announcements
+- Bloomberg and CNBC for OpenAI Ona acquisition reporting
+- Dark Reading for Nightmare Eclipse RoguePlanet campaign context

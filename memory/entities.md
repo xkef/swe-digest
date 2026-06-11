@@ -34,9 +34,9 @@ Recurring entities tracked across digest runs.
 - CISA KEV, NVD, OSV, GitHub Security Advisories: track active exploitation, ecosystem exposure, patched versions, and mitigations.
 - LiteLLM (BerriAI): track CVEs and security advisories. CVE-2026-42271 (CISA KEV 2026-06-08) affects 1.74.2-1.83.6; patch to 1.83.7.
 - Check Point: track VPN and gateway security advisories. CVE-2026-50751 actively exploited by Qilin ransomware affiliate; CISA KEV 2026-06-08.
-- Microsoft Patch Tuesday: track monthly releases. June 2026: 206 CVEs (record), 1 exploited (CVE-2026-41091 Defender EoP), CVE-2026-45657 wormable kernel RCE (CVSS 9.8).
+- Microsoft Patch Tuesday: track monthly releases. June 2026: 206 CVEs (record), 1 exploited (CVE-2026-41091 Defender EoP), CVE-2026-45657 wormable kernel RCE (CVSS 9.8). Nightmare Eclipse released RoguePlanet unpatched LPE PoC on patch day 2026-06-11 (seventh Defender zero-day since April 2026).
 - Cisco SD-WAN: track CVEs and security advisories. CVE-2026-20245 actively exploited, no patch available as of 2026-06-11.
-- Ivanti Sentry: track CVEs and security advisories. CVE-2026-10520 (CVSS 10.0, unauthenticated RCE) and CVE-2026-10523 (CVSS 9.9, auth bypass) disclosed 2026-06-09; PoC published 2026-06-10; patched in 10.5.2/10.6.2/10.7.1.
+- Ivanti Sentry: track CVEs and security advisories. CVE-2026-10520 (CVSS 10.0, unauthenticated RCE) and CVE-2026-10523 (CVSS 9.9, auth bypass) disclosed 2026-06-09; PoC published 2026-06-10; active exploitation and backdoors confirmed by Shadowserver 2026-06-11; patched in 10.5.2/10.6.2/10.7.1.
 - Veeam Backup and Replication: track CVEs and security advisories. CVE-2026-44963 (CVSS v4 9.4, domain-user RCE on v12 domain-joined servers) patched in 12.3.2.4854 (KB4696, 2026-06-09).
 - SAP: track Security Patch Days. June 2026 critical: CVE-2026-44748 (CVSS 9.9, SAML XML signature wrapping in NetWeaver AS ABAP, SAP_BASIS 702-919) patched 2026-06-10.
 - ServiceNow: track security incidents. Unauthenticated REST API access exploited 2026-06-02 to 2026-06-03 against hosted instances; patched 2026-06-05. No CVE assigned.
@@ -61,6 +61,8 @@ Recurring entities tracked across digest runs.
 ## Markets
 
 - Developer infrastructure, AI, security, databases, cloud, semiconductors, payments, and open source companies: track acquisitions, IPO filings, governance changes, and licensing changes when engineering impact is clear.
-- SpaceX: IPO priced 2026-06-11 at $135/share; Nasdaq listing 2026-06-12 as SPCX. Positioned as AI compute infrastructure.
+- SpaceX: IPO priced 2026-06-11 at $135/share; Nasdaq listing 2026-06-12 as SPCX. Positioned as AI compute infrastructure. S&P 500 fast-track entry blocked by index committee (dual-class structure).
 - Anthropic: confidential S-1 filed 2026-06-01.
-- OpenAI: confidential S-1 filed 2026-06-08.
+- OpenAI: confidential S-1 filed 2026-06-08. Acquired Ona (secure cloud agent environments) 2026-06-11. Codex at 5M weekly active users. Models available on Oracle Cloud via OCI credit commitments.
+- GitHub Copilot: switched to token-based AI Credits billing 2026-06-01. Code completions unmetered; chat and agent mode consume credits. Developer backlash ongoing. Claude Fable 5 added to Copilot 2026-06-09 (30-day data retention, not ZDR).
+- Jenkins: track security advisories. Advisory 2026-06-10 patches deserialization, URL redirect, plaintext secret exposure (CVE-2026-53436, CVE-2026-53437, CVE-2026-53438, CVE-2026-53442). Fixed in 2.568 and LTS 2.555.3.

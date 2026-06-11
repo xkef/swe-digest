@@ -70,6 +70,12 @@ directly. When running in the remote environment, use the listed fallback.
 - `devblogs.microsoft.com/dotnet/` - Microsoft .NET Blog is primary and fetchable; reliable for .NET release notes and previews.
 - `securityaffairs.com` - Reliable secondary source for CVE analysis with good technical detail.
 - `labs.watchtowr.com` - Reliable for technical PoC analysis and exploit chain details; use as secondary, confirm CVE from vendor advisory.
+- `www.jenkins.io/security/advisory/` - Jenkins security advisory pages are primary; fetchable and reliable for CVE details and patched versions.
+- `shadowserver.org` - Reliable for internet-wide scan telemetry and exploitation confirmation; useful for corroborating active exploitation claims.
+- `statusgator.com/services/` - Reliable aggregation of third-party status page data; useful when official status pages block datacenter IPs. Confirm from official source when possible.
+- `status.claude.com` - Anthropic Claude status page returns 200; reliable for incident details and timelines.
+- `github.blog/changelog/` - GitHub Changelog is primary; fetchable and reliable for GitHub product updates.
+- `www.bleepingcomputer.com/news/security/` - Returns 403 from datacenter for direct fetch; WebSearch snippets contain useful exploitation confirmation details. Confirm CVE details from vendor advisory.
 
 ### Secondary/aggregation sources
 
