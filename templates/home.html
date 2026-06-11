@@ -1,110 +1,53 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% set digests = get_section(path="digests/_index.md") %}
-{% set watchlist = load_data(path="data/watchlist.toml") %}
-<section class="layout wide dashboard-hero">
-  <div class="latest-digest-card">
-    <p class="eyebrow">Latest digest</p>
-    {% if digests.pages | length > 0 %}
-    {% set latest = digests.pages[0] %}
-    <time datetime="{{ latest.date | date(format='%Y-%m-%d') }}">{{ latest.date | date(format='%Y-%m-%d') }}</time>
-    <h1>{{ latest.date | date(format='%Y-%m-%d') }}</h1>
-    <p><a class="latest-title" href="{{ latest.permalink | safe }}">{{ latest.title }}</a></p>
-    {% if latest.description %}<p>{{ latest.description }}</p>{% endif %}
-    <div class="metric-strip">
-      {% if latest.extra.status %}<div><span>Status</span><strong>{{ latest.extra.status }}</strong></div>{% endif %}
-      {% if latest.extra.source_count is defined %}<div><span>Sources</span><strong>{{ latest.extra.source_count }}</strong></div>{% endif %}
-      {% if latest.taxonomies.categories %}<div><span>Categories</span><strong>{{ latest.taxonomies.categories | length }}</strong></div>{% endif %}
-      {% if latest.taxonomies.tags %}<div><span>Tags</span><strong>{{ latest.taxonomies.tags | length }}</strong></div>{% endif %}
-    </div>
-    {% else %}
-    <h1>No digest published</h1>
-    <p>The archive is empty.</p>
-    {% endif %}
+{% set index = load_data(path="data/stories.json") %}
+
+<section class="layout story-index" aria-label="Digest index">
+  <h1 class="visually-hidden">SWE Digest</h1>
+
+  <div class="filter-bar">
+    <label class="filter-search">
+      <span class="visually-hidden">Filter stories</span>
+      <input type="search" id="story-search" placeholder="Filter by keyword" autocomplete="off">
+    </label>
+    <p class="filter-count" id="story-count" aria-live="polite"></p>
   </div>
 
-  <aside class="recent-card">
-    <p class="eyebrow">Recent</p>
-    <ul class="recent-list">
-      {% for page in digests.pages | slice(end=5) %}
-      <li>
-        <time datetime="{{ page.date | date(format='%Y-%m-%d') }}">{{ page.date | date(format='%Y-%m-%d') }}</time>
-        <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
+  <div class="facet-groups">
+    {% for facet in index.categories %}
+    <button type="button" class="facet" data-facet="category" data-value="{{ facet.name }}" aria-pressed="false">{{ facet.name }} <span>{{ facet.count }}</span></button>
+    {% endfor %}
+    {% for facet in index.statuses %}
+    <button type="button" class="facet facet-status" data-facet="status" data-value="{{ facet.name }}" aria-pressed="false">{{ facet.name }}</button>
+    {% endfor %}
+    <button type="button" class="facet facet-reset" id="filter-reset" hidden>Clear</button>
+  </div>
+
+  {% for digest in index.digests %}
+  <section class="digest-group" data-date="{{ digest.date }}">
+    <a class="digest-group-head" href="{{ config.base_url | safe }}{{ digest.url | safe }}">
+      <time datetime="{{ digest.date }}">{{ digest.date }}</time>
+      <span class="digest-group-count">{{ digest.count }} stories</span>
+    </a>
+    <ol class="story-list">
+      {% for story in digest.stories %}
+      <li class="story-row" data-category="{{ story.category }}" data-status="{{ story.status }}" data-text="{{ story.title | lower }} {{ story.summary | lower }} {{ story.category | lower }}">
+        <a class="story-link" href="{{ config.base_url | safe }}{{ story.url | safe }}">
+          <span class="story-meta">
+            {% if story.category %}<span class="badge badge-cat">{{ story.category }}</span>{% endif %}
+            {% if story.status %}<span class="badge badge-status status-{{ story.status }}">{{ story.status }}</span>{% endif %}
+          </span>
+          <span class="story-title">{{ story.title }}</span>
+          {% if story.summary %}<span class="story-summary">{{ story.summary }}</span>{% endif %}
+        </a>
       </li>
-      {% else %}
-      <li>No entries.</li>
       {% endfor %}
-    </ul>
-  </aside>
+    </ol>
+  </section>
+  {% endfor %}
+  <p class="story-empty" id="story-empty" hidden>No stories match these filters.</p>
 </section>
 
-<section class="layout wide metric-grid" aria-label="Repository metrics">
-  <article><span>Digests</span><strong>{{ digests.pages | length }}</strong></article>
-  <article><span>HN queries</span><strong>{{ watchlist.hacker_news.queries | length }}</strong></article>
-  <article><span>GitHub repos</span><strong>{{ watchlist.github.repos | length }}</strong></article>
-  <article><span>Reddit feeds</span><strong>{{ watchlist.reddit.subreddits | length }}</strong></article>
-  <article><span>Status pages</span><strong>{{ watchlist.status_pages.services | length }}</strong></article>
-  <article><span>Blog sources</span><strong>{{ watchlist.blogs.sources | length }}</strong></article>
-</section>
-
-<section class="layout wide watch-section">
-  <header class="section-heading">
-    <p class="eyebrow">Watchlist</p>
-    <h2>Tracked terms from <code>data/watchlist.toml</code></h2>
-  </header>
-  <div class="watch-grid">
-    <article>
-      <h3>AI</h3>
-      <p>{{ watchlist.topics.ai | length }} terms</p>
-      <ul>{% for item in watchlist.topics.ai | slice(end=5) %}<li>{{ item }}</li>{% endfor %}</ul>
-    </article>
-    <article>
-      <h3>Security</h3>
-      <p>{{ watchlist.topics.security | length }} terms</p>
-      <ul>{% for item in watchlist.topics.security | slice(end=5) %}<li>{{ item }}</li>{% endfor %}</ul>
-    </article>
-    <article>
-      <h3>Outages</h3>
-      <p>{{ watchlist.topics.outages | length }} terms</p>
-      <ul>{% for item in watchlist.topics.outages | slice(end=5) %}<li>{{ item }}</li>{% endfor %}</ul>
-    </article>
-    <article>
-      <h3>Developer tools</h3>
-      <p>{{ watchlist.topics.developer_tools | length }} terms</p>
-      <ul>{% for item in watchlist.topics.developer_tools | slice(end=5) %}<li>{{ item }}</li>{% endfor %}</ul>
-    </article>
-    <article>
-      <h3>Languages</h3>
-      <p>{{ watchlist.topics.languages | length }} terms</p>
-      <ul>{% for item in watchlist.topics.languages | slice(end=5) %}<li>{{ item }}</li>{% endfor %}</ul>
-    </article>
-    <article>
-      <h3>Infrastructure</h3>
-      <p>{{ watchlist.topics.infrastructure | length }} terms</p>
-      <ul>{% for item in watchlist.topics.infrastructure | slice(end=5) %}<li>{{ item }}</li>{% endfor %}</ul>
-    </article>
-  </div>
-</section>
-
-<section class="layout wide source-section">
-  <header class="section-heading">
-    <p class="eyebrow">Collection</p>
-    <h2>Maintained source pools</h2>
-  </header>
-  <div class="source-columns">
-    <article>
-      <h3>GitHub</h3>
-      <ul>{% for repo in watchlist.github.repos | slice(end=10) %}<li>{{ repo }}</li>{% endfor %}</ul>
-    </article>
-    <article>
-      <h3>Reddit</h3>
-      <ul>{% for sub in watchlist.reddit.subreddits | slice(end=10) %}<li>r/{{ sub }}</li>{% endfor %}</ul>
-    </article>
-    <article>
-      <h3>Status</h3>
-      <ul>{% for service in watchlist.status_pages.services | slice(end=10) %}<li>{{ service }}</li>{% endfor %}</ul>
-    </article>
-  </div>
-</section>
+<script src="{{ get_url(path='/filter.js') | safe }}" defer></script>
 {% endblock content %}

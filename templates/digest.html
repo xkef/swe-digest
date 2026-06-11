@@ -1,33 +1,41 @@
 {% extends "base.html" %}
 
 {% block content %}
-<article class="layout prose digest">
-  <header class="page-header digest-header">
+{% set index = load_data(path="data/stories.json") %}
+{% set day = page.date | date(format='%Y-%m-%d') %}
+<article class="layout digest-page">
+  <header class="page-header">
     <p class="eyebrow">Digest</p>
-    <h1>{{ page.title }}</h1>
+    <h1>{{ day }}</h1>
     <p class="meta">
-      <time datetime="{{ page.date | date(format='%Y-%m-%d') }}">{{ page.date | date(format='%Y-%m-%d') }}</time>
       {% if page.extra.status %}<span>{{ page.extra.status }}</span>{% endif %}
       {% if page.extra.source_count %}<span>{{ page.extra.source_count }} sources</span>{% endif %}
     </p>
     {% if page.description %}<p>{{ page.description }}</p>{% endif %}
-    {% if page.taxonomies.categories or page.taxonomies.tags %}
-    <div class="tag-row">
-      {% for category in page.taxonomies.categories %}<span>{{ category }}</span>{% endfor %}
-      {% for tag in page.taxonomies.tags %}<span>{{ tag }}</span>{% endfor %}
-    </div>
-    {% endif %}
   </header>
-  {% if page.toc %}
-  <nav class="toc" aria-label="Table of contents">
-    <p>Contents</p>
-    <ol>
-      {% for h in page.toc %}
-      <li><a href="#{{ h.id | safe }}">{{ h.title }}</a></li>
+
+  {% for digest in index.digests %}
+  {% if digest.date == day %}
+  {% for section in digest.sections %}
+  <section class="day-section">
+    <h2>{{ section.name }}</h2>
+    <ol class="story-list">
+      {% for story in section.stories %}
+      <li class="story-row">
+        <a class="story-link" href="{{ config.base_url | safe }}{{ story.url | safe }}">
+          <span class="story-meta">
+            {% if story.category %}<span class="badge badge-cat">{{ story.category }}</span>{% endif %}
+            {% if story.status %}<span class="badge badge-status status-{{ story.status }}">{{ story.status }}</span>{% endif %}
+          </span>
+          <span class="story-title">{{ story.title }}</span>
+          {% if story.summary %}<span class="story-summary">{{ story.summary }}</span>{% endif %}
+        </a>
+      </li>
       {% endfor %}
     </ol>
-  </nav>
+  </section>
+  {% endfor %}
   {% endif %}
-  {{ page.content | safe }}
+  {% endfor %}
 </article>
 {% endblock content %}

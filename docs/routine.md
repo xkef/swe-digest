@@ -28,12 +28,12 @@ Each story uses this shape:
 ```md
 ### Story title
 
-- Category: AI | Security | Outage | Dev tools | Languages | Infrastructure | Engineering post | Markets | Pulse
-- Status: confirmed | developing | rumor | discussion
-- Sources: [primary](https://example.com), [discussion](https://news.ycombinator.com/item?id=0)
-- Summary: One to three factual sentences.
-- Why it matters: One sentence tied to engineering impact.
-- Follow-up: Add only if this needs future tracking.
+- **Category:** AI | Security | Outage | Dev tools | Languages | Infrastructure | Engineering post | Markets | Pulse
+- **Status:** confirmed | developing | rumor | discussion
+- **Sources:** [primary](https://example.com), [discussion](https://news.ycombinator.com/item?id=0)
+- **Summary:** One to three factual sentences.
+- **Why it matters:** One sentence tied to engineering impact.
+- **Follow-up:** Add only if this needs future tracking.
 ```
 
 ## Ranking rules
@@ -69,6 +69,12 @@ Daily checks:
 - Ask HN: `tags=ask_hn`
 - Show HN: `tags=show_hn`
 - Query terms: `AI`, `LLM`, `OpenAI`, `Anthropic`, `Claude`, `Gemini`, `Mistral`, `Llama`, `GPU`, `Nvidia`, `CUDA`, `Rust`, `Go`, `Java`, `Kotlin`, `Python`, `TypeScript`, `Zig`, `Swift`, `Neovim`, `Vim`, `Ghostty`, `terminal`, `Wayland`, `Linux`, `Kubernetes`, `Postgres`, `SQLite`, `Redis`, `Kafka`, `Prometheus`, `Grafana`, `OpenTelemetry`, `AWS`, `GCP`, `Azure`, `Cloudflare`, `GitHub`, `npm`, `PyPI`, `CVE`, `0day`, `exploit`, `breach`, `outage`, `incident`, `acquires`, `acquisition`, `IPO`, `S-1`.
+
+The Algolia and Firebase HN APIs return HTTP 403 from cloud datacenter IP
+ranges but 200 from local or residential networks. Prefer them directly when
+running locally to capture objectID, points, num_comments, and created_at.
+When running in a blocked remote environment, fall back to `hnrss.org/frontpage`
+and `hnrss.org/newest`, then WebSearch with site context.
 
 Extraction rules:
 
@@ -116,6 +122,30 @@ Extraction rules:
 - Treat Reddit as pulse unless backed by primary sources.
 - Note repeated pain points when many users report the same failure mode.
 - Track hype separately from technical substance.
+
+## Social collection
+
+Track the people listed under `[social]` in `data/watchlist.toml`.
+
+X/Twitter has no free read API or official RSS, and Nitter mirrors are
+unreliable, so these are name-based web-search targets rather than subscribed
+feeds. Search for recent posts or threads, for example:
+
+```text
+"{name}" (post OR thread OR blog) since:{yesterday}
+```
+
+Extraction rules:
+
+- Label social-only items as `discussion`.
+- Include only engineering-relevant posts, not personal or off-topic content.
+- Link the primary source first when a post points to one.
+- Place findings in the `HN and Reddit pulse` section.
+- Add a person to `[social]` only when they are a recurring, relevant voice.
+
+If a tracked person publishes only on Mastodon or Bluesky, their account RSS
+(`https://{instance}/@{user}.rss`, `https://bsky.app/profile/{handle}/rss`) is
+a free, no-auth feed that can be fetched directly.
 
 ## AI checks
 

@@ -7,14 +7,17 @@ TODAY      = $(shell date -u +%Y-%m-%d)
 RELEASE    = $(if $(GITHUB_SHA),$(shell git rev-parse --short HEAD 2>/dev/null || echo dev),$(shell git describe --tags --always 2>/dev/null || echo dev))
 BUILD_DATE = $(shell date -u +%Y-%m-%d)
 
-.PHONY: build serve check clean new-digest
+.PHONY: build serve check check-content stories clean new-digest
 
-build:
+stories:
+	@python3 scripts/build_stories.py
+
+build: stories
 	@command -v $(MISE) >/dev/null || { echo "mise not found"; exit 1; }
 	@rm -rf $(DIST)
 	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) build --output-dir $(DIST)
 
-serve:
+serve: stories
 	@command -v $(MISE) >/dev/null || { echo "mise not found"; exit 1; }
 	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) serve --interface 127.0.0.1 --port 3000 --output-dir $(DIST) --force
 
@@ -29,6 +32,9 @@ check: build
 		fi; \
 	done
 	@echo "check ok"
+
+check-content:
+	@python3 scripts/check_content.py
 
 new-digest:
 	@python3 scripts/new_digest.py $(TODAY)

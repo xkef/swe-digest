@@ -7,12 +7,24 @@ The site tracks software engineering news, AI, security, outages, major releases
 ## Build
 
 ```sh
-make build
+make build         # regenerates data/stories.json, then builds the site
 make serve
-make check
+make check         # full build plus output validation
+make check-content # validates digest structure with python only (no mise/Zola)
 ```
 
 Local preview runs at `http://127.0.0.1:3000`.
+
+Digests stay single-file: each day is one `content/digests/DATE/index.md`
+with `### Story` sections. `make build` runs `scripts/build_stories.py`, which
+derives two generated, uncommitted outputs from those files:
+
+- one Zola page per story under `content/stories/`, path-routed to
+  `/digests/DATE/<slug>/`, so every story has its own page;
+- `data/stories.json`, the data behind the filterable home index.
+
+Each day page at `/digests/DATE/` is a super page that groups and links to its
+story pages.
 
 ## Daily routine
 
@@ -27,13 +39,14 @@ Then follow `CLAUDE.md`. It points to `docs/routine.md`, `data/watchlist.toml`, 
 ## Site structure
 
 - `content/digests/`: dated public digests.
-- `content/sources/`: public source map and search strategy.
 - `CLAUDE.md`: canonical agent routine.
 - `AGENTS.md`: pointer for non-Claude agents.
 - `docs/routine.md`: detailed daily collection and writing process.
 - `memory/`: public long-running context, recurring topics, follow-ups, and source reliability notes.
-- `data/watchlist.toml`: maintained topic, source, repo, and company watchlist.
+- `data/watchlist.toml`: maintained topic, source, repo, company, and people watchlist.
 - `scripts/new_digest.py`: creates the daily digest skeleton.
+- `scripts/build_stories.py`: generates per-story pages and the home index.
+- `scripts/check_content.py`: validates digest structure without a full build.
 
 ## Publishing
 

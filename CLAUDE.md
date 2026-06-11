@@ -56,13 +56,16 @@ Use this story shape:
 ```md
 ### Story title
 
-- Category: AI | Security | Outage | Dev tools | Languages | Infrastructure | Engineering post | Markets | Pulse
-- Status: confirmed | developing | rumor | discussion
-- Sources: [primary](https://example.com), [discussion](https://news.ycombinator.com/item?id=0)
-- Summary: One to three factual sentences.
-- Why it matters: One sentence about engineering impact.
-- Follow-up: Add only if this needs future tracking.
+- **Category:** AI | Security | Outage | Dev tools | Languages | Infrastructure | Engineering post | Markets | Pulse
+- **Status:** confirmed | developing | rumor | discussion
+- **Sources:** [primary](https://example.com), [discussion](https://news.ycombinator.com/item?id=0)
+- **Summary:** One to three factual sentences.
+- **Why it matters:** One sentence about engineering impact.
+- **Follow-up:** Add only if this needs future tracking.
 ```
+
+Bold each field label as shown. The site styles the bold label as the row
+header.
 
 Set front matter at publish time:
 
@@ -206,6 +209,26 @@ Include a Reddit topic when one of these is true:
 - It shows fast-moving hype around AI or developer tooling that needs labeling.
 
 Label Reddit-only items as `discussion` unless independently verified.
+
+## Social procedure
+
+Track the people listed under `[social]` in `data/watchlist.toml`. X/Twitter
+has no free read feed, so these are name-based web-search targets, not
+subscribed feeds. During a run, search for recent engineering-relevant posts
+or threads by these people.
+
+Include a social item when one of these is true:
+
+- The person announces or ships something with engineering impact.
+- The post contains a technical correction, benchmark, or postmortem detail.
+- The post points to a primary source worth surfacing.
+
+Rules:
+
+- Label social-only items as `discussion`.
+- Link the primary source first when a post points to one.
+- Place social findings in the `HN and Reddit pulse` section.
+- Do not include a post only because the author is well known.
 
 ## AI procedure
 

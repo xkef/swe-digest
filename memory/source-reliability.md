@@ -13,16 +13,26 @@ Use this file to track source quality over time.
 
 ## Notes
 
-### Blocked sources (HTTP 403 as of 2026-06-11)
+### Environment-specific 403 blocks (datacenter IP ranges)
 
-- `hn.algolia.com` - HN Algolia API returns 403; use WebSearch for HN discovery instead.
-- `news.ycombinator.com` - HN front page returns 403; use WebSearch with site context.
-- `blog.cloudflare.com` - Returns 403 on direct fetch; use WebSearch to discover posts then rely on search summaries.
-- `www.cloudflare.com` - Returns 403 on direct fetch for path pages like /agents-week/updates/.
-- `techcrunch.com` - Returns 403; use WebSearch summaries and cross-reference with primary sources.
-- `www.securityweek.com` - Returns 403; use as discovery reference, confirm from primary advisories.
-- `blog.rust-lang.org` - Returns 403; use WebSearch summaries and cross-reference with releases.rs.
-- `blog.checkpoint.com` - Returns 403; use support.checkpoint.com (sk advisory pages) as primary source instead.
+The 403 responses recorded on 2026-06-11 are specific to the remote
+execution environment (cloud datacenter IP ranges). The same URLs return
+200 from a local or residential network. When running locally, fetch these
+directly. When running in the remote environment, use the listed fallback.
+
+- `hn.algolia.com` - HN Algolia API. Returns 200 locally with full structured
+  data (objectID, points, num_comments, created_at). Use it directly when
+  local. Remote fallback: `hnrss.org/frontpage` and `hnrss.org/newest` RSS,
+  then WebSearch.
+- `hacker-news.firebaseio.com` - HN Firebase API. Same pattern as Algolia.
+- `news.ycombinator.com` - HN front page and item pages. 200 locally. Remote
+  fallback: WebSearch with site context.
+- `blog.cloudflare.com` - 200 locally; remote fallback WebSearch summaries.
+- `www.cloudflare.com` - path pages like /agents-week/updates/.
+- `techcrunch.com` - cross-reference with primary sources when remote.
+- `www.securityweek.com` - discovery only when remote; confirm from advisories.
+- `blog.rust-lang.org` - remote fallback releases.rs and WebSearch.
+- `blog.checkpoint.com` - use support.checkpoint.com sk advisory pages as primary.
 
 ### Reliable primary sources
 

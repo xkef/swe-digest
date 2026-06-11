@@ -24,12 +24,12 @@ SECTIONS = [
 
 TEMPLATE_ITEM = """### Story title
 
-- Category: AI | Security | Outage | Dev tools | Languages | Infrastructure | Engineering post | Markets | Pulse
-- Status: confirmed | developing | rumor | discussion
-- Sources: [primary](https://example.com), [discussion](https://news.ycombinator.com/item?id=0)
-- Summary: Replace with one to three factual sentences.
-- Why it matters: Replace with one sentence about engineering impact.
-- Follow-up: Replace or remove.
+- **Category:** AI | Security | Outage | Dev tools | Languages | Infrastructure | Engineering post | Markets | Pulse
+- **Status:** confirmed | developing | rumor | discussion
+- **Sources:** [primary](https://example.com), [discussion](https://news.ycombinator.com/item?id=0)
+- **Summary:** Replace with one to three factual sentences.
+- **Why it matters:** Replace with one sentence about engineering impact.
+- **Follow-up:** Replace or remove.
 """
 
 

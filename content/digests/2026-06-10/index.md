@@ -16,12 +16,12 @@ source_count = 0
 
 ### Repository initialized for daily digest publishing
 
-- Category: Meta
-- Status: confirmed
-- Sources: [repository](https://github.com/xkef/swe-digest)
-- Summary: The repository now defines a Zola site, daily digest structure, source strategy, search, feed output, and GitHub Pages deployment.
-- Why it matters: The morning routine has a stable public output format and a maintained memory layer.
-- Follow-up: Publish the first news digest after the next morning collection run.
+- **Category:** Meta
+- **Status:** confirmed
+- **Sources:** [repository](https://github.com/xkef/swe-digest)
+- **Summary:** The repository now defines a Zola site, daily digest structure, source strategy, search, feed output, and GitHub Pages deployment.
+- **Why it matters:** The morning routine has a stable public output format and a maintained memory layer.
+- **Follow-up:** Publish the first news digest after the next morning collection run.
 
 ## AI
 
