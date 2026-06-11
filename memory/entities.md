@@ -21,6 +21,8 @@ Recurring entities tracked across digest runs.
 ## Security
 
 - CISA KEV, NVD, OSV, GitHub Security Advisories: track active exploitation, ecosystem exposure, patched versions, and mitigations.
+- BerriAI LiteLLM: AI proxy library. Track CVEs, version advisories, and API security issues.
+- Miasma worm: ongoing npm supply chain campaign. Track new waves, IOCs, and targeted package scopes.
 
 ## Markets
 
