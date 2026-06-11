@@ -203,9 +203,28 @@ Rules:
 
 ## Hacker News procedure
 
-Use Hacker News as discovery and technical discussion.
+Use Hacker News as discovery and technical discussion. Hacker News is the
+most important discovery source; collect it with the structured fetcher,
+never by improvised search:
 
-Check:
+```sh
+make hn
+```
+
+`scripts/fetch_hn.py` collects the front page, top stories from the last 24
+hours, Ask HN, Show HN, and every `[hacker_news]` query in
+`data/watchlist.toml`. It tries the Algolia API, the Firebase API, the front
+page HTML, and hnrss.org in order, writes results to
+`.cache/hn/YYYY-MM-DD.json`, and exits nonzero when any collection is
+degraded.
+
+If `make hn` exits nonzero:
+
+- Retry later in the run before publishing.
+- Use WebSearch only to supplement, never as the sole HN source.
+- State the degraded HN coverage explicitly in `Sources checked`.
+
+The fetcher covers:
 
 - Front page.
 - High activity stories from the last 24 hours.
@@ -421,5 +440,6 @@ Before publishing, verify:
 - AI items name the model, product, or API surface.
 - Company events state engineering impact.
 - Follow-ups are added only for concrete future checks.
+- `make hn` succeeded, or `Sources checked` states the degraded HN coverage.
 - `make check` passes.
 - Commit subject is 72 characters or less.

@@ -69,21 +69,36 @@ Rank lower when a story has only:
 
 ## Hacker News collection
 
-Use Hacker News as a discovery and discussion layer, not as the sole source of truth.
+Use Hacker News as a discovery and discussion layer, not as the sole source of truth. It is the most important discovery source; missing a front page story is a routine failure.
 
-Daily checks:
+Daily check:
 
-- Front page: `https://hn.algolia.com/api/v1/search?tags=front_page`
-- High activity last 24 hours: `https://hn.algolia.com/api/v1/search_by_date?tags=story&numericFilters=created_at_i>{unix_yesterday}`
-- Ask HN: `tags=ask_hn`
-- Show HN: `tags=show_hn`
-- Query terms: `AI`, `LLM`, `OpenAI`, `Anthropic`, `Claude`, `Gemini`, `Mistral`, `Llama`, `GPU`, `Nvidia`, `CUDA`, `Rust`, `Go`, `Java`, `Kotlin`, `Python`, `TypeScript`, `Zig`, `Swift`, `Neovim`, `Vim`, `Ghostty`, `terminal`, `Wayland`, `Linux`, `Kubernetes`, `Postgres`, `SQLite`, `Redis`, `Kafka`, `Prometheus`, `Grafana`, `OpenTelemetry`, `AWS`, `GCP`, `Azure`, `Cloudflare`, `GitHub`, `npm`, `PyPI`, `CVE`, `0day`, `exploit`, `breach`, `outage`, `incident`, `acquires`, `acquisition`, `IPO`, `S-1`.
+```sh
+make hn
+```
 
-The Algolia and Firebase HN APIs return HTTP 403 from cloud datacenter IP
-ranges but 200 from local or residential networks. Prefer them directly when
-running locally to capture objectID, points, num_comments, and created_at.
-When running in a blocked remote environment, fall back to `hnrss.org/frontpage`
-and `hnrss.org/newest`, then WebSearch with site context.
+`scripts/fetch_hn.py` collects the front page, top stories from the last 24
+hours, Ask HN, Show HN, and every `[hacker_news]` query in
+`data/watchlist.toml`. It writes structured results (item id, title, url,
+points, comments, created_at) to `.cache/hn/YYYY-MM-DD.json` and prints a
+summary with the top front page items.
+
+Backend order per collection:
+
+1. Algolia API (`hn.algolia.com`): full search, the only backend that serves
+   the watchlist queries directly.
+2. Firebase API (`hacker-news.firebaseio.com`): `topstories`, `beststories`,
+   `askstories`, `showstories`; queries degrade to title matching over the
+   fetched corpus.
+3. Front page HTML (`news.ycombinator.com`).
+4. hnrss.org RSS.
+
+The Algolia and Firebase APIs return HTTP 403 from cloud datacenter IP ranges
+but 200 from local or residential networks. The script walks the fallback
+chain automatically and exits nonzero when any collection is degraded. On a
+nonzero exit: retry later in the run, use WebSearch only as a supplement, and
+state the degraded coverage in `Sources checked`. Never publish a digest whose
+HN coverage came from WebSearch alone without saying so.
 
 Extraction rules:
 

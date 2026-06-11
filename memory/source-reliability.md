@@ -22,13 +22,15 @@ directly. When running in the remote environment, use the listed fallback.
 
 - `hn.algolia.com` - HN Algolia API. Returns 200 locally with full structured
   data (objectID, points, num_comments, created_at). Use it directly when
-  local. Remote fallback: `hnrss.org/frontpage` and `hnrss.org/newest` RSS,
-  then WebSearch.
+  local.
 - `hacker-news.firebaseio.com` - HN Firebase API. Same pattern as Algolia.
-- `news.ycombinator.com` - HN front page and item pages. 200 locally. Remote
-  fallback: WebSearch with site context.
+- `news.ycombinator.com` - HN front page and item pages. 200 locally.
 - `hnrss.org` - HN RSS fallback. Also returns 403 from datacenter IP ranges.
-  Remote fallback: WebSearch only.
+- HN via WebSearch alone is not acceptable coverage. The 2026-06-11 run used
+  the WebSearch fallback and missed Homebrew 6.0.0, a 600+ point front page
+  release announcement. Use `make hn` (`scripts/fetch_hn.py`), which walks
+  Algolia, Firebase, front page HTML, and hnrss in order and exits nonzero on
+  degraded coverage.
 - `blog.cloudflare.com` - 200 locally; remote fallback WebSearch summaries.
 - `www.cloudflare.com` - path pages like /agents-week/updates/.
 - `techcrunch.com` - cross-reference with primary sources when remote.
