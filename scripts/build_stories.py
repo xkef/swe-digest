@@ -24,6 +24,11 @@ JSON_OUT = ROOT / "data" / "stories.json"
 
 SKIP_SECTIONS = {"Watchlist follow-ups", "Sources checked"}
 
+# The home index renders every shown story inline, so it must stay bounded as
+# the archive grows. Include whole recent days until the cumulative story count
+# would exceed this; older days remain reachable via /digests/ and search.
+HOME_MAX_STORIES = 45
+
 FIELD = re.compile(r"^- \*\*(?P<label>[^:*]+):\*\*\s*(?P<value>.*)$")
 SECTION = re.compile(r"^##\s+(?P<title>.+?)\s*$")
 STORY = re.compile(r"^###\s+(?P<title>.+?)\s*$")
@@ -128,6 +133,8 @@ def write_story_page(story: dict) -> None:
         f"path = {toml_str('digests/' + story['date'] + '/' + story['slug'])}",
         'template = "story.html"',
     ]
+    if story["summary"]:
+        fm.append(f"description = {toml_str(story['summary'])}")
     if story["category"]:
         fm += ["", "[taxonomies]", f"categories = [{toml_str(story['category'])}]"]
     fm += [
@@ -168,6 +175,20 @@ def facet_counts(stories: list[dict], key: str) -> list[dict]:
     ]
 
 
+def window_digests(digests: list[dict], max_stories: int) -> list[dict]:
+    """Most recent whole days whose cumulative story count stays within
+    max_stories. The newest day is always included so the home is never empty,
+    even if that one day exceeds the cap."""
+    shown: list[dict] = []
+    total = 0
+    for day in digests:
+        if shown and total + day["count"] > max_stories:
+            break
+        shown.append(day)
+        total += day["count"]
+    return shown
+
+
 def main() -> int:
     if STORIES_DIR.exists():
         shutil.rmtree(STORIES_DIR)
@@ -197,13 +218,22 @@ def main() -> int:
         )
         all_stories.extend(pub)
 
+    home_days = window_digests(digests, HOME_MAX_STORIES)
+    home_stories = [s for day in home_days for s in day["stories"]]
     payload = {
-        "digests": digests,
-        "categories": facet_counts(all_stories, "category"),
-        "statuses": facet_counts(all_stories, "status"),
+        "digests": home_days,
+        "categories": facet_counts(home_stories, "category"),
+        "statuses": facet_counts(home_stories, "status"),
+        "truncated": len(home_days) < len(digests),
+        "shown_stories": len(home_stories),
+        "total_stories": len(all_stories),
+        "total_days": len(digests),
     }
     JSON_OUT.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"build-stories ok ({len(all_stories)} story pages, {len(digests)} digests)")
+    print(
+        f"build-stories ok ({len(all_stories)} story pages, {len(digests)} digests, "
+        f"home shows {len(home_stories)} stories across {len(home_days)} days)"
+    )
     return 0
 
 

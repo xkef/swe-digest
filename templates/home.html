@@ -47,6 +47,9 @@
   </section>
   {% endfor %}
   <p class="story-empty" id="story-empty" hidden>No stories match these filters.</p>
+  {% if index.truncated %}
+  <p class="index-more">Showing the most recent {{ index.shown_stories }} stories across {{ index.digests | length }} days. <a href="{{ get_url(path='/digests/') | safe }}">Browse the full archive</a> of {{ index.total_stories }} stories across {{ index.total_days }} days.</p>
+  {% endif %}
 </section>
 
 <script src="{{ get_url(path='/filter.js') | safe }}" defer></script>
