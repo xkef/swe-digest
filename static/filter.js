@@ -21,18 +21,47 @@
   const MAX_RESULTS = 100;
   const active = { category: new Set(), status: new Set() };
   let query = "";
+  let needleSets = [];
   let archive = null;
 
   fetch(base + "/stories.json")
     .then(function (response) { return response.ok ? response.json() : null; })
-    .then(function (data) { archive = data; apply(); })
+    .then(function (data) { archive = data; setQuery(query); apply(); })
     .catch(function () {});
+
+  // Each query term expands through the alias groups in stories.json, so
+  // "anthropic" also matches claude/opus/sonnet stories. A story matches
+  // when every term matches via at least one of its alternatives.
+  function expand(term) {
+    const needles = [term];
+    for (const group of (archive && archive.aliases) || []) {
+      const hit = group.some(function (word) {
+        return word === term || (term.length >= 3 && word.startsWith(term));
+      });
+      if (!hit) continue;
+      for (const word of group) {
+        if (!needles.includes(word)) needles.push(word);
+      }
+    }
+    return needles;
+  }
+
+  function setQuery(value) {
+    query = value;
+    needleSets = query ? query.split(/\s+/).map(expand) : [];
+  }
+
+  function matchesText(text) {
+    return needleSets.every(function (needles) {
+      return needles.some(function (needle) { return text.includes(needle); });
+    });
+  }
 
   function matches(story) {
     const okCat = active.category.size === 0 || active.category.has(story.category);
     const okStatus = active.status.size === 0 || active.status.has(story.status);
     const text = (story.title + " " + story.summary + " " + story.category).toLowerCase();
-    return okCat && okStatus && (!query || text.includes(query));
+    return okCat && okStatus && matchesText(text);
   }
 
   function badge(cls, text) {
@@ -96,7 +125,7 @@
     for (const row of rows) {
       const okCat = active.category.size === 0 || active.category.has(row.dataset.category);
       const okStatus = active.status.size === 0 || active.status.has(row.dataset.status);
-      const okText = !query || row.dataset.text.includes(query);
+      const okText = matchesText(row.dataset.text);
       const visible = okCat && okStatus && okText;
       row.hidden = !visible;
       if (visible) shown++;
@@ -137,7 +166,7 @@
 
   if (search) {
     search.addEventListener("input", function () {
-      query = search.value.trim().toLowerCase();
+      setQuery(search.value.trim().toLowerCase());
       apply();
     });
   }
@@ -145,7 +174,7 @@
   reset.addEventListener("click", function () {
     active.category.clear();
     active.status.clear();
-    query = "";
+    setQuery("");
     if (search) search.value = "";
     for (const button of facets) button.setAttribute("aria-pressed", "false");
     apply();
