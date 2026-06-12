@@ -53,6 +53,13 @@ directly. When running in the remote environment, use the listed fallback.
   announcement details.
 - `sec.cloudapps.cisco.com` - Cisco security advisory pages return 403 from
   datacenter; confirm from WebSearch snippets.
+- `www.cisa.gov/news-events/alerts/` - CISA alert pages return 403 from datacenter.
+  Fallback: use WebSearch with `site:cisa.gov` filter, or fetch the CISA KEV JSON
+  feed at `https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json`
+  which may be CDN-fronted and accessible. GitHub issue #8 tracks this.
+- `forums.developer.nvidia.com` - NVIDIA developer forum returns 403 from datacenter.
+  Use `developer.nvidia.com/blog` and `nvidianews.nvidia.com` for NVIDIA release
+  announcements instead. GitHub issue #9 tracks this.
 
 ### Reliable primary sources
 
