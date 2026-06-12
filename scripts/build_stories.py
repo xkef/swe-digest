@@ -6,9 +6,13 @@ with `### Story` sections. This script derives, at build time:
 
 - One Zola page per story under content/stories/ (path-routed to
   /digests/DATE/<slug>/) so every story has its own page.
-- data/stories.json, the data-driven home index grouped by digest.
+- data/digests/DATE.json, the section data behind each /digests/DATE/ page.
+- data/home/page-N.json plus stub pages under content/home/ (routed to
+  /page/N/), the paginated data-driven home index grouped by digest.
+- static/stories.json, the flat full-archive index the home page filter
+  fetches to search across every story client-side.
 
-Both outputs are generated, gitignored, and rebuilt by `make build`.
+All outputs are generated, gitignored, and rebuilt by `make build`.
 """
 from __future__ import annotations
 
@@ -20,14 +24,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DIGESTS = ROOT / "content" / "digests"
 STORIES_DIR = ROOT / "content" / "stories"
-JSON_OUT = ROOT / "data" / "stories.json"
+HOME_PAGES_DIR = ROOT / "content" / "home"
+DAY_JSON_DIR = ROOT / "data" / "digests"
+HOME_JSON_DIR = ROOT / "data" / "home"
+CLIENT_INDEX = ROOT / "static" / "stories.json"
 
 SKIP_SECTIONS = {"Watchlist follow-ups", "Sources checked"}
 
-# The home index renders every shown story inline, so it must stay bounded as
-# the archive grows. Include whole recent days until the cumulative story count
-# would exceed this; older days remain reachable via /digests/ and search.
-HOME_MAX_STORIES = 45
+# Each home page renders every story on it inline, so pages must stay bounded
+# as the archive grows. A page holds whole recent days until the cumulative
+# story count would exceed this; older days continue on the next page.
+PAGE_MAX_STORIES = 45
 
 FIELD = re.compile(r"^- \*\*(?P<label>[^:*]+):\*\*\s*(?P<value>.*)$")
 SECTION = re.compile(r"^##\s+(?P<title>.+?)\s*$")
@@ -71,7 +78,7 @@ def parse_front_matter(text: str) -> dict[str, str]:
     return out
 
 
-def parse_digest(path: Path) -> list[dict]:
+def parse_digest(path: Path) -> tuple[str, list[dict]]:
     text = path.read_text(encoding="utf-8")
     fm = parse_front_matter(text)
     date = fm.get("date", path.parent.name)
@@ -122,7 +129,7 @@ def parse_digest(path: Path) -> list[dict]:
                 elif label == "summary":
                     current["summary"] = value
     flush()
-    return stories
+    return date, stories
 
 
 def write_story_page(story: dict) -> None:
@@ -175,64 +182,108 @@ def facet_counts(stories: list[dict], key: str) -> list[dict]:
     ]
 
 
-def window_digests(digests: list[dict], max_stories: int) -> list[dict]:
-    """Most recent whole days whose cumulative story count stays within
-    max_stories. The newest day is always included so the home is never empty,
-    even if that one day exceeds the cap."""
-    shown: list[dict] = []
+def paginate_days(digests: list[dict], max_stories: int) -> list[list[dict]]:
+    """Split days, newest first, into pages of whole days whose cumulative
+    story count stays within max_stories. A page always holds at least one
+    day, even if that one day exceeds the cap."""
+    pages: list[list[dict]] = []
+    current: list[dict] = []
     total = 0
     for day in digests:
-        if shown and total + day["count"] > max_stories:
-            break
-        shown.append(day)
+        if current and total + day["count"] > max_stories:
+            pages.append(current)
+            current = []
+            total = 0
+        current.append(day)
         total += day["count"]
-    return shown
+    if current:
+        pages.append(current)
+    return pages or [[]]
+
+
+def write_json(path: Path, payload: dict) -> None:
+    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def write_home_stub(number: int) -> None:
+    fm = [
+        "+++",
+        f'title = "Page {number}"',
+        f'path = "page/{number}"',
+        'template = "home.html"',
+        "",
+        "[extra]",
+        f"home_page = {number}",
+        "+++",
+        "",
+    ]
+    (HOME_PAGES_DIR / f"page-{number}.md").write_text("\n".join(fm), encoding="utf-8")
 
 
 def main() -> int:
-    if STORIES_DIR.exists():
-        shutil.rmtree(STORIES_DIR)
-    STORIES_DIR.mkdir(parents=True)
+    for directory in (STORIES_DIR, HOME_PAGES_DIR, DAY_JSON_DIR, HOME_JSON_DIR):
+        if directory.exists():
+            shutil.rmtree(directory)
+        directory.mkdir(parents=True)
     (STORIES_DIR / "_index.md").write_text(
         '+++\ntitle = "Stories"\nrender = false\n+++\n', encoding="utf-8"
+    )
+    (HOME_PAGES_DIR / "_index.md").write_text(
+        '+++\ntitle = "Home pages"\nrender = false\n+++\n', encoding="utf-8"
     )
 
     digests: list[dict] = []
     all_stories: list[dict] = []
     for path in sorted(DIGESTS.glob("*/index.md"), reverse=True):
-        stories = parse_digest(path)
+        date, stories = parse_digest(path)
+        pub = [public(s) for s in stories]
+        write_json(
+            DAY_JSON_DIR / f"{date}.json",
+            {"date": date, "count": len(pub), "sections": group_sections(pub)},
+        )
         if not stories:
             continue
         for story in stories:
             write_story_page(story)
-        date = stories[0]["date"]
-        pub = [public(s) for s in stories]
         digests.append(
             {
                 "date": date,
                 "url": f"/digests/{date}/",
                 "count": len(pub),
                 "stories": pub,
-                "sections": group_sections(pub),
             }
         )
         all_stories.extend(pub)
 
-    home_days = window_digests(digests, HOME_MAX_STORIES)
-    home_stories = [s for day in home_days for s in day["stories"]]
-    payload = {
-        "digests": home_days,
-        "categories": facet_counts(home_stories, "category"),
-        "statuses": facet_counts(home_stories, "status"),
-        "truncated": len(home_days) < len(digests),
-        "shown_stories": len(home_stories),
-        "total_stories": len(all_stories),
-        "total_days": len(digests),
-    }
-    JSON_OUT.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    pages = paginate_days(digests, PAGE_MAX_STORIES)
+    for number, days in enumerate(pages, start=1):
+        write_json(
+            HOME_JSON_DIR / f"page-{number}.json",
+            {
+                "page": number,
+                "total_pages": len(pages),
+                "digests": days,
+                "categories": facet_counts(all_stories, "category"),
+                "statuses": facet_counts(all_stories, "status"),
+                "total_stories": len(all_stories),
+                "total_days": len(digests),
+            },
+        )
+        if number > 1:
+            write_home_stub(number)
+
+    write_json(
+        CLIENT_INDEX,
+        {
+            "total_stories": len(all_stories),
+            "total_days": len(digests),
+            "stories": all_stories,
+        },
+    )
+
     print(
         f"build-stories ok ({len(all_stories)} story pages, {len(digests)} digests, "
-        f"home shows {len(home_stories)} stories across {len(home_days)} days)"
+        f"{len(pages)} home pages)"
     )
     return 0
 

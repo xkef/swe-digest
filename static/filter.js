@@ -1,5 +1,7 @@
-// Data-driven story filter for the home index. Progressive enhancement:
-// without JS every story is already rendered and visible.
+// Story search for the home index. Without JS every story on the current
+// page is rendered and visible. With JS, any query or facet searches the
+// full archive index fetched from /stories.json; clearing it restores the
+// server-rendered page.
 (function () {
   const index = document.querySelector(".story-index");
   if (!index) return;
@@ -11,11 +13,85 @@
   const count = document.getElementById("story-count");
   const empty = document.getElementById("story-empty");
   const reset = document.getElementById("filter-reset");
+  const results = document.getElementById("archive-results");
+  const pagination = index.querySelector(".pagination");
+  const base = index.dataset.base || "";
+  const defaultCount = count.textContent;
 
+  const MAX_RESULTS = 100;
   const active = { category: new Set(), status: new Set() };
   let query = "";
+  let archive = null;
 
-  function apply() {
+  fetch(base + "/stories.json")
+    .then(function (response) { return response.ok ? response.json() : null; })
+    .then(function (data) { archive = data; apply(); })
+    .catch(function () {});
+
+  function matches(story) {
+    const okCat = active.category.size === 0 || active.category.has(story.category);
+    const okStatus = active.status.size === 0 || active.status.has(story.status);
+    const text = (story.title + " " + story.summary + " " + story.category).toLowerCase();
+    return okCat && okStatus && (!query || text.includes(query));
+  }
+
+  function badge(cls, text) {
+    const span = document.createElement("span");
+    span.className = cls;
+    span.textContent = text;
+    return span;
+  }
+
+  function renderRow(story) {
+    const li = document.createElement("li");
+    li.className = "story-row";
+    const link = document.createElement("a");
+    link.className = "story-link";
+    link.href = base + story.url;
+    const meta = document.createElement("span");
+    meta.className = "story-meta";
+    meta.appendChild(badge("badge", story.date));
+    if (story.category) meta.appendChild(badge("badge badge-cat", story.category));
+    if (story.status) meta.appendChild(badge("badge badge-status status-" + story.status, story.status));
+    link.appendChild(meta);
+    const title = document.createElement("span");
+    title.className = "story-title";
+    title.textContent = story.title;
+    link.appendChild(title);
+    if (story.summary) {
+      const summary = document.createElement("span");
+      summary.className = "story-summary";
+      summary.textContent = story.summary;
+      link.appendChild(summary);
+    }
+    li.appendChild(link);
+    return li;
+  }
+
+  function showPage() {
+    for (const row of rows) row.hidden = false;
+    for (const group of groups) group.hidden = false;
+    if (pagination) pagination.hidden = false;
+    results.hidden = true;
+    results.textContent = "";
+    empty.hidden = true;
+    count.textContent = defaultCount;
+  }
+
+  function showArchive() {
+    const found = archive.stories.filter(matches);
+    results.textContent = "";
+    for (const story of found.slice(0, MAX_RESULTS)) results.appendChild(renderRow(story));
+    for (const group of groups) group.hidden = true;
+    if (pagination) pagination.hidden = true;
+    results.hidden = found.length === 0;
+    empty.hidden = found.length !== 0;
+    count.textContent = found.length > MAX_RESULTS
+      ? "first " + MAX_RESULTS + " of " + found.length + " matching stories"
+      : found.length + " of " + archive.total_stories + " stories";
+  }
+
+  function filterPageRows() {
     let shown = 0;
     for (const row of rows) {
       const okCat = active.category.size === 0 || active.category.has(row.dataset.category);
@@ -28,9 +104,20 @@
     for (const group of groups) {
       group.hidden = !group.querySelector(".story-row:not([hidden])");
     }
-    count.textContent = shown === 1 ? "1 story" : shown + " stories";
+    count.textContent = shown === 1 ? "1 story on this page" : shown + " stories on this page";
     empty.hidden = shown !== 0;
-    reset.hidden = active.category.size === 0 && active.status.size === 0 && !query;
+  }
+
+  function apply() {
+    const filtering = active.category.size > 0 || active.status.size > 0 || query;
+    reset.hidden = !filtering;
+    if (!filtering) {
+      showPage();
+    } else if (archive) {
+      showArchive();
+    } else {
+      filterPageRows();
+    }
   }
 
   for (const button of facets) {
@@ -63,6 +150,4 @@
     for (const button of facets) button.setAttribute("aria-pressed", "false");
     apply();
   });
-
-  apply();
 })();

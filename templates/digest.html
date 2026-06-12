@@ -1,22 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% set index = load_data(path="data/stories.json") %}
 {% set day = page.date | date(format='%Y-%m-%d') %}
+{% set digest = load_data(path="data/digests/" ~ day ~ ".json") %}
 <article class="layout digest-page">
   <header class="page-header">
     <p class="eyebrow">Digest</p>
     <h1>{{ day }}</h1>
     <p class="meta">
       {% if page.extra.status %}<span>{{ page.extra.status }}</span>{% endif %}
+      {% if digest.count %}<span>{{ digest.count }} stories</span>{% endif %}
       {% if page.extra.source_count %}<span>{{ page.extra.source_count }} sources</span>{% endif %}
       <a rel="nofollow" href="{{ config.extra.repository | safe }}/issues/new?template=story.yml">Suggest a story</a>
     </p>
     {% if page.description %}<p>{{ page.description }}</p>{% endif %}
   </header>
 
-  {% for digest in index.digests %}
-  {% if digest.date == day %}
   {% for section in digest.sections %}
   <section class="day-section">
     <h2>{{ section.name }}</h2>
@@ -35,8 +34,6 @@
       {% endfor %}
     </ol>
   </section>
-  {% endfor %}
-  {% endif %}
   {% endfor %}
 </article>
 {% endblock content %}

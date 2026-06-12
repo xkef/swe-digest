@@ -37,7 +37,7 @@ serve: stories
 check: build
 	@test -f $(DIST)/index.html
 	@test -f $(DIST)/feed.xml
-	@test -f $(DIST)/search_index.en.json -o -f $(DIST)/search_index.json
+	@test -f $(DIST)/stories.json
 	@find $(DIST) -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' \) -print | while read -r f; do \
 		size=$$(gzip -c "$$f" | wc -c | tr -d ' '); \
 		if [ "$$size" -gt 32768 ]; then \

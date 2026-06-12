@@ -1,17 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% set index = load_data(path="data/stories.json") %}
+{% if page is defined %}
+{% set page_number = page.extra.home_page %}
+{% else %}
+{% set page_number = 1 %}
+{% endif %}
+{% set index = load_data(path="data/home/page-" ~ page_number ~ ".json") %}
 
-<section class="layout story-index" aria-label="Digest index">
+<section class="layout story-index" data-base="{{ config.base_url | safe }}" aria-label="Digest index">
   <h1 class="visually-hidden">SWE Digest</h1>
 
   <div class="filter-bar">
     <label class="filter-search">
-      <span class="visually-hidden">Filter stories</span>
-      <input type="search" id="story-search" placeholder="Filter by keyword" autocomplete="off">
+      <span class="visually-hidden">Search stories</span>
+      <input type="search" id="story-search" placeholder="Search all stories" autocomplete="off">
     </label>
-    <p class="filter-count" id="story-count" aria-live="polite"></p>
+    <p class="filter-count" id="story-count" aria-live="polite">{{ index.total_stories }} stories across {{ index.total_days }} days</p>
   </div>
 
   <div class="facet-groups">
@@ -46,9 +51,24 @@
     </ol>
   </section>
   {% endfor %}
+  <ol class="story-list" id="archive-results" hidden></ol>
   <p class="story-empty" id="story-empty" hidden>No stories match these filters.</p>
-  {% if index.truncated %}
-  <p class="index-more">Showing the most recent {{ index.shown_stories }} stories across {{ index.digests | length }} days. <a href="{{ get_url(path='/digests/') | safe }}">Browse the full archive</a> of {{ index.total_stories }} stories across {{ index.total_days }} days.</p>
+  {% if index.total_pages > 1 %}
+  <nav class="pagination" aria-label="Pagination">
+    {% if index.page > 1 %}
+    {% if index.page == 2 %}
+    <a href="{{ config.base_url | safe }}/">Newer</a>
+    {% else %}
+    {% set prev = index.page - 1 %}
+    <a href="{{ get_url(path='/page/' ~ prev ~ '/', trailing_slash=true) | safe }}">Newer</a>
+    {% endif %}
+    {% endif %}
+    <span>Page {{ index.page }} of {{ index.total_pages }}</span>
+    {% if index.page < index.total_pages %}
+    {% set next = index.page + 1 %}
+    <a href="{{ get_url(path='/page/' ~ next ~ '/', trailing_slash=true) | safe }}">Older</a>
+    {% endif %}
+  </nav>
   {% endif %}
 </section>
 

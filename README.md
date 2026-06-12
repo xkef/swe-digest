@@ -36,7 +36,7 @@ leaves no trace; the system learns only from these channels.
 ## Build
 
 ```sh
-make build         # regenerates data/stories.json, then builds the site
+make build         # regenerates derived story data, then builds the site
 make serve
 make check         # full build plus output validation
 make check-content # validates digest structure with python only (no mise/Zola)
@@ -46,11 +46,13 @@ Local preview runs at `http://127.0.0.1:3000`.
 
 Digests stay single-file: each day is one `content/digests/DATE/index.md`
 with `### Story` sections. `make build` runs `scripts/build_stories.py`, which
-derives two generated, uncommitted outputs from those files:
+derives generated, uncommitted outputs from those files:
 
 - one Zola page per story under `content/stories/`, path-routed to
   `/digests/DATE/<slug>/`, so every story has its own page;
-- `data/stories.json`, the data behind the filterable home index.
+- `data/digests/DATE.json`, the section data behind each `/digests/DATE/` page;
+- `data/home/page-N.json` plus stub pages under `content/home/` (routed to
+  `/page/N/`), the paginated data behind the filterable home index.
 
 Each day page at `/digests/DATE/` is a super page that groups and links to its
 story pages.
