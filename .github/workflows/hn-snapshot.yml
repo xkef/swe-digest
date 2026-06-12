@@ -2,7 +2,7 @@ name: hn-snapshot
 
 on:
   schedule:
-    - cron: "30 */6 * * *"
+    - cron: "20 */3 * * *"
   workflow_dispatch:
 
 permissions:
@@ -22,8 +22,7 @@ jobs:
       - name: Commit snapshot
         run: |
           day=$(date -u +%F)
-          mkdir -p data/hn
-          cp ".cache/hn/$day.json" "data/hn/$day.json"
+          python3 scripts/merge_hn_snapshot.py ".cache/hn/$day.json" "data/hn/$day.json"
           ls data/hn/*.json | sort | head -n -7 | xargs -r git rm -q --
           git add "data/hn/$day.json"
           if git diff --cached --quiet; then

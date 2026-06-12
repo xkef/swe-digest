@@ -225,9 +225,10 @@ hours, Ask HN, Show HN, and every `[hacker_news]` query in
 page HTML, two community JSON mirrors (api.hackerwebapp.com, api.hnpwa.com),
 hnrss.org, and the committed `data/hn/` snapshot in order, writes results to
 `.cache/hn/YYYY-MM-DD.json`, and exits nonzero when any collection is
-degraded. The `hn-snapshot` GitHub Actions workflow refreshes `data/hn/`
-every six hours from an Actions runner; a snapshot under 12 hours old counts
-as full structured coverage. Mirror and snapshot data is discovery only:
+degraded. The `hn-snapshot` GitHub Actions workflow runs every three hours on
+an Actions runner and merges each fetch into the day's `data/hn/` file by
+item id, so the snapshot accumulates everything that surfaced during the day;
+a snapshot under 12 hours old counts as full structured coverage. Mirror and snapshot data is discovery only:
 verify against primary sources and link canonical news.ycombinator.com URLs.
 
 If `make hn` exits nonzero:

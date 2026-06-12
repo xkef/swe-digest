@@ -105,7 +105,9 @@ Backend order per collection:
    canonical `news.ycombinator.com` item URLs, never mirror URLs.
 5. hnrss.org RSS.
 6. Committed snapshot (`data/hn/`): the `hn-snapshot` GitHub Actions workflow
-   runs the fetcher every six hours and commits the day's JSON to `data/hn/`.
+   runs the fetcher every three hours and merges each fetch into the day's
+   JSON in `data/hn/` by item id (`scripts/merge_hn_snapshot.py`), so the
+   committed snapshot accumulates every story that surfaced during the day.
    The script uses the newest snapshot when every network backend fails and
    its `fetched_at` is under 12 hours old. A fresh snapshot counts as full
    structured coverage; a stale or missing one keeps the nonzero exit.
