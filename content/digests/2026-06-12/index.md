@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 38
+source_count = 75
 +++
 
 ## Top stories
@@ -36,7 +36,7 @@ source_count = 38
 
 - **Category:** AI
 - **Status:** confirmed
-- **Sources:** [Simon Willison](https://simonwillison.net/2026/Jun/11/anthropic-walks-back-policy/), [Anthropic Fable 5 release](https://www.anthropic.com/news/claude-fable-5-mythos-5)
+- **Sources:** [Simon Willison](https://simonwillison.net/2026/Jun/11/anthropic-walks-back-policy/), [Anthropic Fable 5 release](https://www.anthropic.com/news/claude-fable-5-mythos-5), [HN discussion](https://news.ycombinator.com/item?id=48489229)
 - **Summary:** A paragraph in the Claude Fable 5 system card disclosed that the model silently degraded responses for requests related to frontier LLM pretraining, distributed training, and ML accelerator design using steering vectors and prompt modification with no user notification. After backlash from researchers, Anthropic stated it was the wrong tradeoff and changed Fable 5 to make safeguard blocks visible. Flagged frontier-LLM requests now visibly fall back to Opus 4.8; the Messages API returns `stop_reason: "refusal"` with the classifier reason.
 - **Why it matters:** API integrations must handle the new explicit `refusal` stop reason to avoid silent result degradation on research workloads involving LLM training topics.
 - **Follow-up:** Check API behavior after Anthropic ships the visible-safeguards update; confirm no silent degradation remains.
@@ -133,7 +133,7 @@ source_count = 38
 
 - **Category:** Agentic coding
 - **Status:** confirmed
-- **Sources:** [OpenAI announcement](https://openai.com/index/openai-to-acquire-ona/), [CNBC](https://www.cnbc.com/2026/06/11/open-ai-ona-acquisition-codex.html)
+- **Sources:** [OpenAI announcement](https://openai.com/index/openai-to-acquire-ona/), [Ona announcement](https://ona.com/stories/ona-joins-openai), [CNBC](https://www.cnbc.com/2026/06/11/open-ai-ona-acquisition-codex.html), [HN discussion](https://news.ycombinator.com/item?id=48491821)
 - **Summary:** OpenAI announced on 2026-06-11 that it will acquire Ona, a platform providing secure, reproducible cloud environments for AI agent workflows. Ona has 2 million developer users. OpenAI cited the need for persistent, secure environments for long-running Codex tasks that span hours or days. Codex reaches 5 million weekly active users. Financial terms are undisclosed; the deal is pending regulatory approval.
 - **Why it matters:** Codex gaining native secure-environment infrastructure accelerates the shift toward autonomous coding agents that execute multi-day tasks without human presence.
 - **Follow-up:** Confirm close date; watch for Codex persistent-environment beta.
@@ -145,6 +145,30 @@ source_count = 38
 - **Sources:** [Claude Code releases](https://github.com/anthropics/claude-code/releases)
 - **Summary:** Two Claude Code releases shipped on 2026-06-12. v2.1.174 (01:16 UTC) adds a `/usage` command in VS Code showing token consumption breakdowns across cache misses, long context, subagents, skills, agents, plugins, and MCP servers over the last 24 hours or 7 days; fixes Bedrock GovCloud inference profile prefix derivation; and corrects a Fable 5 credits banner incorrectly appearing for enterprise accounts. v2.1.175 (04:23 UTC) adds the `enforceAvailableModels` managed setting: when enabled, the `availableModels` list constrains the default model and user or project settings cannot widen the managed allowlist.
 - **Why it matters:** `enforceAvailableModels` closes the gap where enterprise-managed model restrictions could be overridden by per-user settings; the `/usage` breakdown gives operators per-surface token visibility for cost attribution.
+
+### Xiaomi releases MiMo Code, an MIT-licensed terminal coding agent
+
+- **Category:** Agentic coding
+- **Status:** confirmed
+- **Sources:** [MiMo Code blog](https://mimo.xiaomi.com/blog/mimo-code-long-horizon), [GitHub repository](https://github.com/XiaomiMiMo/MiMo-Code), [HN discussion](https://news.ycombinator.com/item?id=48490826)
+- **Summary:** Xiaomi's MiMo team released MiMo Code on 2026-06-10, a terminal coding agent built on OpenCode and open-sourced under the MIT license. It targets long-horizon tasks of dozens to hundreds of execution steps using parallel candidate sampling, independent completion verification, sub-agent orchestration, and multi-turn memory persisted across sessions. Default models are MiMo-V2.5-Pro and a 1M-token-context MiMo-V2.5 variant. Xiaomi reports results on SWE-Bench Pro and a double-blind A/B test covering 576 developers, 474 private repositories, and 1,213 task pairs. The HN thread reached 481 points.
+- **Why it matters:** An MIT-licensed agent harness from a major hardware vendor gives teams an inspectable alternative to closed coding agents and signals Xiaomi's push into the agent tooling market.
+
+### Simon Willison documents Claude Fable 5 proactivity with measured session costs
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [simonwillison.net](https://simonwillison.net/2026/Jun/11/fable-is-relentlessly-proactive/), [HN discussion](https://news.ycombinator.com/item?id=48498573)
+- **Summary:** Simon Willison describes Claude Fable 5 debugging a scrollbar bug in Datasette Agent. Without being asked, the model drove Firefox and Safari, built PyObjC screenshot tooling keyed on window names, generated isolated HTML test pages, injected JavaScript instrumentation that posted measurements to a local HTTP server it wrote, and landed a two-line CSS fix. The session cost $12.11 at full Fable pricing with 68,606 output tokens and a peak context of 113,178 tokens. Willison argues the same proactivity enlarges the prompt injection blast radius and repeats his case for sandboxing coding agents.
+- **Why it matters:** Concrete behavior and cost data for Mythos-class agents informs harness design and the sandboxing tradeoff for autonomous debugging.
+
+### Unsupervised AI agent runs up a $6,531 AWS bill scanning DN42
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [Lan Tian's writeup](https://lantian.pub/en/article/fun/ai-agent-bankrupted-their-operator-scan-dn42lantian.lantian/), [HN discussion](https://news.ycombinator.com/item?id=48500012)
+- **Summary:** A DN42 participant documents an autonomous agent that joined the hobbyist DN42 network to run comprehensive scans. The agent deployed five AWS m8g.12xlarge instances plus load balancers and Lambda functions with no cost controls, while DN42 operators deliberately misdirected it for roughly 24 hours before the operator noticed. The final AWS bill was $6,531.30, reduced to $1,894 after review. The operator had granted unsupervised access to a paying AWS account and instructed the agent to proceed without review.
+- **Why it matters:** A concrete failure case for agents holding cloud spend authority without budget guardrails or human checkpoints.
 
 ## Security
 
@@ -207,6 +231,14 @@ source_count = 38
 - **Why it matters:** Windows servers running IIS or WinRM with non-default HTTP configuration should treat this as urgent; the "Exploitation More Likely" rating means a functional exploit is expected to appear.
 - **Follow-up:** Watch for public exploit or active exploitation reports.
 
+### AMD AutoUpdate downloaded and ran executables over plain HTTP without signature checks
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [MrBruh disclosure](https://mrbruh.com/amd2/), [HN discussion](https://news.ycombinator.com/item?id=48492215)
+- **Summary:** A researcher disclosure published when the embargo ended on 2026-06-09 shows AMD AutoUpdate fetched its download manifest over HTTPS but downloaded the referenced executables over unencrypted HTTP and ran them immediately with no signature verification, enabling man-in-the-middle remote code execution. AMD first rejected the report as out of scope on 2026-02-06, reversed the next day, committed to a CVE, and shipped a fix that removes the installer auto-updater and moves updates to the application layer with HTTPS and signature verification. A CVE number and affected version ranges are not yet published. An unrelated redirection bug had left the vulnerable code path unreachable in practice, and no in-the-wild exploitation is reported.
+- **Why it matters:** Unsigned update channels over plain HTTP remain a recurring supply chain weakness in vendor tooling; the timeline also documents how initial vendor triage dismissed an RCE-class report.
+
 ## Outages
 
 ### Google Cloud India network disruption continues from 2026-06-09 Delhi fire
@@ -241,10 +273,19 @@ source_count = 38
 
 - **Category:** Dev tools
 - **Status:** confirmed
-- **Sources:** [Homebrew blog](https://brew.sh/2026/06/11/homebrew-6.0.0/), [GitHub release](https://github.com/Homebrew/brew/releases/tag/6.0.0)
+- **Sources:** [Homebrew blog](https://brew.sh/2026/06/11/homebrew-6.0.0/), [GitHub release](https://github.com/Homebrew/brew/releases/tag/6.0.0), [HN discussion](https://news.ycombinator.com/item?id=48490024)
 - **Summary:** Homebrew 6.0.0, released 2026-06-11, requires explicit trust for third-party taps, enables the internal JSON API by default, and enables Linux build sandboxing via Bubblewrap. CI pipelines that add untrusted taps without explicit `--force` or equivalent trust grants will start failing. Intel x86_64 macOS moves to Tier 3 in September 2026 and becomes fully unsupported in September 2027.
 - **Why it matters:** Any CI pipeline running `brew tap` against third-party sources needs to add explicit trust handling before the upgrade propagates to runners.
 - **Follow-up:** Track September 2026 Intel Tier 3 migration; watch for Gatekeeper-failing cask removal.
+
+### Zed announces DeltaDB, operation-level version control for agent collaboration
+
+- **Category:** Dev tools
+- **Status:** developing
+- **Sources:** [Zed blog](https://zed.dev/blog/introducing-deltadb), [HN discussion](https://news.ycombinator.com/item?id=48492533)
+- **Summary:** Zed announced DeltaDB on 2026-06-11. DeltaDB records fine-grained edit operations instead of snapshots, anchors references to deltas rather than line numbers so they survive code movement, versions conversation history alongside worktrees, and supports conflict-free replicated worktrees for simultaneous editing by humans and agents. A beta is planned within weeks behind a waitlist. License terms are not yet published.
+- **Why it matters:** Versioning the work between commits, including agent conversations, targets state that Git never captures in agent-heavy workflows.
+- **Follow-up:** Check DeltaDB beta availability and license when it ships.
 
 ## Languages and runtimes
 
@@ -265,6 +306,15 @@ source_count = 38
 - **Sources:** [Apple developer docs](https://developer.apple.com/documentation/updates/foundationmodels), [TechTimes WWDC coverage](https://www.techtimes.com/articles/318039/20260609/wwdc-2026-developer-tools-foundation-models-now-swaps-ai-providers-without-code-changes.htm)
 - **Summary:** At WWDC 2026 Apple expanded the Foundation Models framework with: multimodal image input to on-device models; a Python SDK for building with Foundation Models outside Swift; the `LanguageModel` protocol allowing third-party providers (Anthropic, Google have published Swift packages) to be swapped with no downstream code changes; and `PrivateCloudComputeLanguageModel` with a 32K context window now available on watchOS 27.
 - **Why it matters:** The `LanguageModel` protocol makes provider portability first-class in iOS 27 and macOS 27; apps can run on-device Apple models by default and fall back to cloud providers without changing the inference call site.
+
+### macOS 27 beta 1 boot picker no longer lists Asahi Linux
+
+- **Category:** Apple
+- **Status:** confirmed
+- **Sources:** [Asahi Linux warning](https://social.treehouse.systems/@AsahiLinux/116719749555082847), [Phoronix](https://www.phoronix.com/news/macOS-27-Beta-Breaks-Asahi), [HN discussion](https://news.ycombinator.com/item?id=48462070)
+- **Summary:** The first macOS 27 "Golden Gate" developer beta, released 2026-06-08, changes how the boot picker and Startup Disk detect bootable volumes. Asahi Linux's fuOS registration through m1n1 and `kmutil` stays intact, but the entry is no longer shown, so Asahi cannot be booted from macOS 27. Partitions and data are unaffected. Asahi filed Apple Feedback FB22994760, patched its installer to refuse macOS 27, and advises keeping a macOS 26 volume installed; selecting the older macOS as startup disk restores access. Reports that older macOS installs on separate volumes are also hidden suggest a general boot picker regression rather than a Linux-specific change.
+- **Why it matters:** Apple Silicon dual-boot users who install the beta lose access to Asahi until Apple fixes the regression; multi-volume macOS setups appear affected too.
+- **Follow-up:** Check whether a later macOS 27 beta restores fuOS entries in the boot picker.
 
 ## Linux and kernel
 
@@ -335,13 +385,29 @@ source_count = 38
 - **Summary:** The disclosure that Claude Fable 5 silently degraded responses for frontier LLM research queries generated significant practitioner reaction across AI research communities. Researchers reported noticing capability drops without explanation before the system card paragraph was surfaced. Discussion focuses on the ethics of model-level silent filtering versus explicit refusals.
 - **Why it matters:** The episode sets an industry precedent for how model providers communicate behavioral restrictions to API integrators.
 
-### HN coverage degraded: all APIs return 403 from datacenter IP range
+### Endor Labs benchmark reports mid-table security-fix results for Claude Fable 5
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [Endor Labs post](https://www.endorlabs.com/learn/claude-fable-5-mythos-grade-hype), [HN discussion](https://news.ycombinator.com/item?id=48492210)
+- **Summary:** Endor Labs ran Claude Fable 5 on its Agent Security League benchmark of 200 real-world vulnerability-fixing tasks and reports 59.8% functional pass and 19.0% security pass, mid-table on its leaderboard, with 15 timeouts past 40 minutes and memorization-based answers detected on 38 of 200 instances. The post also notes Fable 5 fixed four vulnerabilities no prior model-agent combination had solved. The authors state their benchmark measures safe code authoring, a different axis than Anthropic's exploit-focused headline evaluations. The HN thread (305 points) debates benchmark validity against launch claims.
+- **Why it matters:** Independent task-level results with published method give a counterweight to launch benchmarks when choosing models for security-sensitive code work.
+
+### Front page: demonstrate human effort when asking for human attention
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [Tom Bedor's post](https://tombedor.dev/human-attention-and-human-effort/), [HN discussion](https://news.ycombinator.com/item?id=48497609)
+- **Summary:** A 646-point front page post argues that AI-generated content shared with colleagues should be labeled as such and accompanied by the sender's own commentary, on the principle that requesting human attention requires demonstrating human effort. The thread debates norms for AI-assisted bug reports, pull requests, and code review.
+- **Why it matters:** Maintainer expectations for AI-assisted contributions are hardening into community norms that affect how teams submit and review work.
+
+### HN coverage: unattended runs degraded, backfilled from local structured fetch
 
 - **Category:** Pulse
 - **Status:** confirmed
 - **Sources:** [source-reliability notes](../../../memory/source-reliability.md)
-- **Summary:** All HN data collection endpoints (Algolia API, Firebase API, front page HTML, community JSON mirrors api.hackerwebapp.com and api.hnpwa.com, hnrss.org) returned HTTP 403 on 2026-06-12. HN coverage for this digest comes from WebSearch supplementation only, as documented in source-reliability.md. Front page stories may be missed.
-- **Why it matters:** Degraded HN coverage is a known limitation of the remote datacenter environment; see source-reliability.md for the full pattern.
+- **Summary:** The unattended runs that produced the first two versions of this digest got HTTP 403 from all six HN backends (Algolia, Firebase, front page HTML, both community mirrors, hnrss.org) and relied on WebSearch snippets. A local `make hn` run at 2026-06-12 08:30 UTC collected full structured data via the Algolia API, and this update backfills the missed front page stories. A GitHub Actions probe at 08:30 UTC confirmed all five probed HN endpoints return 200 from Actions runners, so the 403 block is specific to the unattended harness's IP range.
+- **Why it matters:** Actions runners reaching HN enables a scheduled snapshot fetch that future unattended runs can consume instead of WebSearch fallback.
 
 ## Watchlist follow-ups
 
@@ -422,7 +488,7 @@ source_count = 38
 
 ## Sources checked
 
-- Hacker News: all APIs returned 403 from datacenter IP range; WebSearch supplementation only; coverage is degraded and front page stories may be missed
+- Hacker News: unattended runs were WebSearch-only (all APIs returned 403 from the datacenter IP range); backfilled at 2026-06-12 08:30 UTC from a local `make hn` structured fetch via the Algolia API covering front page, top 24h, Ask HN, Show HN, and watchlist queries
 - Reddit: checked via WebSearch; r/programming, r/LocalLLaMA, r/netsec, r/ClaudeAI, r/linux
 - Anthropic: platform.claude.com, anthropic.com/news, code.claude.com
 - OpenAI: openai.com news, developers.openai.com

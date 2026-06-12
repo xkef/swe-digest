@@ -29,8 +29,15 @@ directly. When running in the remote environment, use the listed fallback.
 - HN via WebSearch alone is not acceptable coverage. The 2026-06-11 run used
   the WebSearch fallback and missed Homebrew 6.0.0, a 600+ point front page
   release announcement. Use `make hn` (`scripts/fetch_hn.py`), which walks
-  Algolia, Firebase, front page HTML, and hnrss in order and exits nonzero on
-  degraded coverage.
+  Algolia, Firebase, front page HTML, community mirrors, and hnrss in order
+  and exits nonzero on degraded coverage.
+- 2026-06-12: the community mirrors `api.hackerwebapp.com` and `api.hnpwa.com`
+  also returned 403 from the unattended harness, so all six fetcher backends
+  are blocked there. An hn-probe workflow run (2026-06-12 08:30 UTC) got 200
+  from all five probed HN endpoints on GitHub Actions runners, so the block
+  does not cover Actions egress. Fallback order for unattended runs: committed
+  HN snapshot from the scheduled Actions fetch, then WebSearch supplementation
+  with the degradation stated in Sources checked.
 - `blog.cloudflare.com` - 200 locally; remote fallback WebSearch summaries.
 - `www.cloudflare.com` - path pages like /agents-week/updates/.
 - `techcrunch.com` - cross-reference with primary sources when remote.
@@ -93,5 +100,5 @@ directly. When running in the remote environment, use the listed fallback.
 - `cybersecuritynews.com` - Secondary security reporting; useful for discovery. Confirm from vendor advisories.
 - `thehackernews.com` - Secondary security reporting; returns 403 from datacenter. Use WebSearch snippet content only; confirm CVEs from vendor advisories.
 - `business-standard.com` - Reliable for Indian tech infrastructure news; used for Google Cloud India fire coverage.
-- `api.hackerwebapp.com` - node-hnapi community JSON mirror of HN. Fresh data with points and comment counts; CDN-fronted, expected reachable from datacenter IPs. Discovery only; link canonical news.ycombinator.com URLs.
-- `api.hnpwa.com` - HNPWA community JSON mirror of HN. CDN-cached with lagging points; last-resort discovery only.
+- `api.hackerwebapp.com` - node-hnapi community JSON mirror of HN. Fresh data with points and comment counts. Confirmed 403 from the unattended harness on 2026-06-12; works locally. Discovery only; link canonical news.ycombinator.com URLs.
+- `api.hnpwa.com` - HNPWA community JSON mirror of HN. CDN-cached with lagging points; last-resort discovery only. Confirmed 403 from the unattended harness on 2026-06-12; works locally and from Actions runners.
