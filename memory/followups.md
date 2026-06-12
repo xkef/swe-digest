@@ -258,6 +258,15 @@ Format:
 - Last checked: 2026-06-12
 - Notes: Chrome 150 expected 2026-06-30. All MV2 workarounds removed. uBlock Origin Lite (MV3) is the in-Chrome option with reduced blocking. Firefox and Brave retain full MV2 support.
 
+## 2026-06-12: Cloudflare Dashboard and API control-plane incident
+
+- Status: open
+- Category: Outage
+- Sources: [Cloudflare Status history](https://www.cloudflarestatus.com/history), [StatusGator](https://statusgator.com/services/cloudflare)
+- Watch for: Resolution time; whether Cloudflare publishes a root cause; any escalation beyond control plane.
+- Last checked: 2026-06-12
+- Notes: Dashboard and API service issues began ~14:27 UTC 2026-06-12, investigating state. CDN edge serving and security features unaffected. Separate Billing Dashboard UI issue (invoices not visible) opened 2026-06-11 21:42 UTC, monitoring by 2026-06-12 11:50 UTC; automatic billing unaffected. cloudflarestatus.com blocked from datacenter IP; details via aggregators and WebSearch.
+
 ## 2026-06-12: AUR supply chain attack
 
 - Status: open

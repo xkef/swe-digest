@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 96
+source_count = 100
 +++
 
 ## Top stories
@@ -271,6 +271,14 @@ source_count = 96
 - **Summary:** CVE-2026-44815 is a CVSS 9.8 stack-based buffer overflow (CWE-121) in the Windows DHCP Client Service. An attacker operating a rogue DHCP server on the same network segment can send a crafted DHCP response to trigger remote code execution with no credentials and no user interaction. The DHCP client service is present on every Windows installation. No in-the-wild exploitation is confirmed as of 2026-06-12. Patched in the June 2026 Windows cumulative update (KB5094126/KB5094125/KB5094128).
 - **Why it matters:** Every Windows host on a network where an adversary controls a router or DHCP server is vulnerable; the low attack complexity makes this a practical lateral movement vector once any network access is obtained.
 
+### June Patch Tuesday: three publicly disclosed Windows zero-days
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [The Hacker News](https://thehackernews.com/2026/06/microsoft-patches-record-206-flaws.html), [Zero Day Initiative review](https://www.zerodayinitiative.com/blog/2026/6/9/the-june-2026-security-update-review)
+- **Summary:** Three of the record 206 CVEs in Microsoft's June 2026 Patch Tuesday were publicly disclosed before release. CVE-2026-49160 (CVSS 7.5) is an `http.sys` denial of service tied to the HTTP/2 Bomb technique; testers exhausted 64 GB of RAM on an IIS server in about 45 seconds, and Microsoft added a `MaxHeadersCount` registry setting as mitigation. CVE-2026-45586 (CVSS 7.8) is a privilege escalation in the Collaborative Translation Framework (CTFMON) granting SYSTEM, linked to a researcher exploit named GreenPlasma. CVE-2026-50507 (CVSS 6.8) is a BitLocker security feature bypass ("bitskrieg") that grants access to encrypted data but requires physical access. All three were patched in the June cumulative update.
+- **Why it matters:** The HTTP/2 Bomb DoS needs no authentication and can take down internet-facing IIS quickly; the CTFMON path gives local SYSTEM, completing the June Patch Tuesday picture alongside the critical RCEs already tracked.
+
 ### Palo Alto CVE-2026-0257: GlobalProtect authentication bypass actively exploited; CISA KEV
 
 - **Category:** Security
@@ -299,6 +307,15 @@ source_count = 96
 - **Summary:** Gemini experienced a global service degradation from approximately 03:26 PT to 14:30 PT on 2026-06-11. Error codes 1076 (connection timeout) and 1099 (server-side session conflict) were reported globally across Flash and Pro variants. Google's engineering team stopped a background process causing missing conversation metadata. No detailed postmortem or root cause has been published.
 - **Why it matters:** Production integrations using the Gemini API should implement retry logic with backoff; the absence of a postmortem leaves the failure mode unclear.
 - **Follow-up:** Watch for Google postmortem with root cause.
+
+### Cloudflare Dashboard and API control-plane incident
+
+- **Category:** Outage
+- **Status:** developing
+- **Sources:** [Cloudflare Status history](https://www.cloudflarestatus.com/history), [StatusGator](https://statusgator.com/services/cloudflare)
+- **Summary:** Cloudflare reported issues with the Cloudflare Dashboard and related APIs beginning approximately 14:27 UTC on 2026-06-12 and entered an investigating state. Cloudflare stated the issue did not affect serving of cached files via the CDN or other security features at the Cloudflare edge. A separate Billing Dashboard UI issue, where some customers could not see invoices from the last three months, was opened 2026-06-11 21:42 UTC and reached monitoring by 2026-06-12 11:50 UTC; automatic billing was unaffected. The datacenter IP range used for this run is blocked from `cloudflarestatus.com`, so these details come from status aggregators and WebSearch snippets.
+- **Why it matters:** Dashboard and API control-plane disruptions block configuration changes and automation against the Cloudflare API even when edge traffic continues to serve.
+- **Follow-up:** Confirm resolution time and whether Cloudflare publishes a root cause.
 
 ## Developer tools
 
@@ -439,6 +456,7 @@ source_count = 96
 - **Category:** Pulse
 - **Status:** discussion
 - **Sources:** [Endor Labs post](https://www.endorlabs.com/learn/claude-fable-5-mythos-grade-hype), [HN discussion](https://news.ycombinator.com/item?id=48492210)
+- **Requested:** reader inbox (#11)
 - **Summary:** Endor Labs ran Claude Fable 5 on its Agent Security League benchmark of 200 real-world vulnerability-fixing tasks and reports 59.8% functional pass and 19.0% security pass, mid-table on its leaderboard, with 15 timeouts past 40 minutes and memorization-based answers detected on 38 of 200 instances. The post also notes Fable 5 fixed four vulnerabilities no prior model-agent combination had solved. The authors state their benchmark measures safe code authoring, a different axis than Anthropic's exploit-focused headline evaluations. The HN thread (305 points) debates benchmark validity against launch claims.
 - **Why it matters:** Independent task-level results with published method give a counterweight to launch benchmarks when choosing models for security-sensitive code work.
 
@@ -606,7 +624,9 @@ source_count = 96
 - Kubernetes: kubernetes.dev
 - Apple Developer: developer.apple.com
 - Market sources: CNBC, Capital.com, TradingKey, Bloomberg
-- Status pages: StatusGator for Gemini, Google Workspace status
+- Status pages: StatusGator for Gemini, Google Workspace status, and Cloudflare (cloudflarestatus.com blocked from datacenter IP, used WebSearch and StatusGator)
+- Cloudflare incident: cloudflarestatus.com history and StatusGator (Dashboard/API control-plane issue 2026-06-12 ~14:27 UTC)
+- June Patch Tuesday zero-days: The Hacker News and Zero Day Initiative (CVE-2026-49160, CVE-2026-45586, CVE-2026-50507)
 - NVIDIA: developer.nvidia.com (DGX Spark June 2026 release)
 - Langflow: github.com/langflow-ai/langflow/security/advisories; VulnCheck KEV; SecurityWeek; The Hacker News
 - Additional Patch Tuesday: Threat-Modeling.com June 2026 critical CVE analysis; Windows Forum CVE-2026-47291 guide
