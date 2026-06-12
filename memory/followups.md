@@ -230,3 +230,30 @@ Format:
 - Watch for: Beta 2; RC schedule; GA release September/October 2026.
 - Last checked: 2026-06-12
 - Notes: Beta 1 released 2026-06-04. Key features: parallel autovacuum, INSERT...ON CONFLICT DO SELECT, SQL/PGQ graph queries, REPACK, JIT disabled by default. PostgreSQL 14 EOL 2026-11-12.
+
+## 2026-06-12: Palo Alto CVE-2026-0257 GlobalProtect authentication bypass
+
+- Status: open
+- Category: Security
+- Sources: [Palo Alto advisory](https://security.paloaltonetworks.com/CVE-2026-0257), [Help Net Security](https://www.helpnetsecurity.com/2026/06/01/hackers-are-exploiting-palo-alto-globalprotect-vpn-authentication-bypass-cve-2026-0257/)
+- Watch for: Patch adoption rates; expanded exploitation targeting non-federal networks; additional threat actor groups confirmed.
+- Last checked: 2026-06-12
+- Notes: CVE-2026-0257 CVSS 9.1. Authentication bypass via forged auth override cookie in GlobalProtect portal/gateway. Active exploitation since 2026-05-17. CISA KEV; federal deadline 2026-06-01. Rapid7 confirmed exploitation in 8 of 10 affected MDR customers. Mitigation: disable auth override cookies or use dedicated cert. Patched PAN-OS versions available.
+
+## 2026-06-12: CVE-2026-44815 Windows DHCP Client RCE
+
+- Status: open
+- Category: Security
+- Sources: [Threat-Modeling.com](https://threat-modeling.com/microsoft-june-2026-patch-tuesday-critical-cves/)
+- Watch for: In-the-wild exploitation; ransomware campaigns leveraging rogue DHCP on compromised networks.
+- Last checked: 2026-06-12
+- Notes: CVSS 9.8. Stack-based buffer overflow in Windows DHCP Client Service. Rogue DHCP server attack vector, no user interaction, no credentials. Present on every Windows installation. No active exploitation as of 2026-06-12. Patched in June 2026 cumulative update.
+
+## 2026-06-12: Chrome 150 uBlock Origin MV2 removal
+
+- Status: open
+- Category: Dev tools
+- Sources: [PCWorld](https://www.pcworld.com/article/3160794/the-last-lifeline-for-ublock-origin-in-chrome-is-almost-gone-for-good.html)
+- Watch for: Chrome 150 release date confirmation; enterprise policy alternatives; uBlock Origin Lite coverage parity improvements.
+- Last checked: 2026-06-12
+- Notes: Chrome 150 expected 2026-06-30. All MV2 workarounds removed. uBlock Origin Lite (MV3) is the in-Chrome option with reduced blocking. Firefox and Brave retain full MV2 support.

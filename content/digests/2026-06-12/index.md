@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 75
+source_count = 87
 +++
 
 ## Top stories
@@ -239,6 +239,23 @@ source_count = 75
 - **Summary:** A researcher disclosure published when the embargo ended on 2026-06-09 shows AMD AutoUpdate fetched its download manifest over HTTPS but downloaded the referenced executables over unencrypted HTTP and ran them immediately with no signature verification, enabling man-in-the-middle remote code execution. AMD first rejected the report as out of scope on 2026-02-06, reversed the next day, committed to a CVE, and shipped a fix that removes the installer auto-updater and moves updates to the application layer with HTTPS and signature verification. A CVE number and affected version ranges are not yet published. An unrelated redirection bug had left the vulnerable code path unreachable in practice, and no in-the-wild exploitation is reported.
 - **Why it matters:** Unsigned update channels over plain HTTP remain a recurring supply chain weakness in vendor tooling; the timeline also documents how initial vendor triage dismissed an RCE-class report.
 
+### Windows DHCP Client CVE-2026-44815: unauthenticated RCE on every Windows host (CVSS 9.8)
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Threat-Modeling.com June Patch Tuesday](https://threat-modeling.com/microsoft-june-2026-patch-tuesday-critical-cves/), [Secure Reading](https://securereading.com/microsoft-ships-record-breaking-206-security-fixes-as-zero-days-and-critical-rce-flaws-emerge/)
+- **Summary:** CVE-2026-44815 is a CVSS 9.8 stack-based buffer overflow (CWE-121) in the Windows DHCP Client Service. An attacker operating a rogue DHCP server on the same network segment can send a crafted DHCP response to trigger remote code execution with no credentials and no user interaction. The DHCP client service is present on every Windows installation. No in-the-wild exploitation is confirmed as of 2026-06-12. Patched in the June 2026 Windows cumulative update (KB5094126/KB5094125/KB5094128).
+- **Why it matters:** Every Windows host on a network where an adversary controls a router or DHCP server is vulnerable; the low attack complexity makes this a practical lateral movement vector once any network access is obtained.
+
+### Palo Alto CVE-2026-0257: GlobalProtect authentication bypass actively exploited; CISA KEV
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Palo Alto advisory](https://security.paloaltonetworks.com/CVE-2026-0257), [Help Net Security](https://www.helpnetsecurity.com/2026/06/01/hackers-are-exploiting-palo-alto-globalprotect-vpn-authentication-bypass-cve-2026-0257/)
+- **Summary:** CVE-2026-0257 (CVSS 9.1) is an authentication bypass in the PAN-OS GlobalProtect portal and gateway. Affected firewalls expose the public key used to encrypt authentication override cookies; an attacker obtains the key from the HTTPS service, forges a valid cookie, and establishes an unauthorized VPN session with no credentials. Active exploitation confirmed since 2026-05-17. CISA added to KEV with a federal deadline of 2026-06-01. Rapid7 observed successful exploitation in 8 of 10 affected MDR customers. Mitigation: disable authentication override cookies or generate a dedicated certificate used exclusively for that feature; patched PAN-OS versions are available.
+- **Why it matters:** Perimeter VPN appliances are high-value initial-access targets; cookie-forgery exploitation is low-complexity, requires no user interaction, and affects any firewall with the misconfigured authentication override certificate binding.
+- **Follow-up:** Monitor for patch adoption rates and expanded exploitation scope.
+
 ## Outages
 
 ### Google Cloud India network disruption continues from 2026-06-09 Delhi fire
@@ -356,6 +373,14 @@ source_count = 75
 - **Summary:** Simon Willison released `micropython-wasm` 0.1a2, a Python library that runs a MicroPython interpreter inside a WebAssembly sandbox. The approach enables untrusted Python code execution without subprocess isolation or container overhead. The post details the architecture and limitations of the WASM boundary.
 - **Why it matters:** Lightweight sandboxed code execution is a common need in coding agents and tool-use environments; this provides a browser-and-server-compatible option without a full VM.
 
+### Lines of code got a better publicist
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [David Curlewis](https://curlewis.co.nz/posts/lines-of-code-got-a-better-publicist/), [HN discussion](https://news.ycombinator.com/item?id=48489402)
+- **Summary:** David Curlewis argues "percentage of code written by AI" is the lines-of-code productivity metric with better marketing. He contrasts vendor claims (Anthropic and OpenAI both report around 80% of merged production code written by AI) with outcome-based predecessors (GitHub's 2022 Copilot study reported 55% faster task completion -- a falsifiable outcome claim). Key data points: METR walked back its productivity research in 2026-02 after developers refused to work without AI and could no longer reliably self-report time; an NBER survey of approximately 6,000 executives found 69% actively using AI with roughly 90% reporting no measurable organizational productivity impact, and cross-study consensus settling around 10% organizational gains. The 391-point HN thread continues debates about measurable versus inflatable metrics.
+- **Why it matters:** Engineering and finance teams relying on AI code-volume claims to justify tooling spend are using a metric that cannot be falsified and does not correlate with shipped business outcomes.
+
 ## Markets and companies
 
 ### SpaceX SPCX opens on Nasdaq; largest IPO in history
@@ -408,6 +433,38 @@ source_count = 75
 - **Sources:** [source-reliability notes](../../../memory/source-reliability.md)
 - **Summary:** The unattended runs that produced the first two versions of this digest got HTTP 403 from all six HN backends (Algolia, Firebase, front page HTML, both community mirrors, hnrss.org) and relied on WebSearch snippets. A local `make hn` run at 2026-06-12 08:30 UTC collected full structured data via the Algolia API, and this update backfills the missed front page stories. A GitHub Actions probe at 08:30 UTC confirmed all five probed HN endpoints return 200 from Actions runners, so the 403 block is specific to the unattended harness's IP range.
 - **Why it matters:** Actions runners reaching HN enables a scheduled snapshot fetch that future unattended runs can consume instead of WebSearch fallback.
+
+### René Mayrhofer resigns from Google over Pentagon AI contract
+
+- **Category:** Pulse
+- **Status:** confirmed
+- **Sources:** [René Mayrhofer](https://www.mayrhofer.eu.org/post/leaving-google/), [HN discussion](https://news.ycombinator.com/item?id=48496396)
+- **Summary:** René Mayrhofer, Google's director for Android Platform Security, published a farewell post on 2026-06-11 announcing resignation effective 2026-08-31. He cites a Google deal granting the US Department of Defense access to classified AI model work as incompatible with his ethics, alongside Google quietly abandoning carbon-neutral goals under AI energy demand. He plans to continue work on privacy, encryption, digital identity, and OS security. The 284-point HN thread discusses AI governance, military contracting, and the tension between ethics-focused hiring and large government contracts.
+- **Why it matters:** Mayrhofer led Android platform security; his public departure signals recurring talent friction at the intersection of AI governance and government contracting.
+
+### Botsitting: workers spend 6.4 hours a week managing AI
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [Business Insider](https://www.businessinsider.com/botsitting-ai-hidden-human-labor-at-work-2026-6), [HN discussion](https://news.ycombinator.com/item?id=48490057)
+- **Summary:** A survey of 6,000 full-time workers in the US, UK, and Australia (conducted December 2025 to January 2026) found workers spend an average of 6.4 hours a week moving information between AI systems, fixing AI errors, and supplying context. 87% use AI at work; 75% say it makes them personally more productive; 13% say their organization performs significantly better. Workers spending an unusually large share of time botsitting are 73% more likely to be actively job-hunting.
+- **Why it matters:** High individual adoption with low organizational gain and a hidden supervision labor cost that offsets reported time savings is the current aggregate picture of enterprise AI productivity.
+
+### Google to remove all uBlock Origin MV2 workarounds in Chrome 150
+
+- **Category:** Pulse
+- **Status:** confirmed
+- **Sources:** [PCWorld](https://www.pcworld.com/article/3160794/the-last-lifeline-for-ublock-origin-in-chrome-is-almost-gone-for-good.html)
+- **Summary:** Chrome 150, expected 2026-06-30, removes the last technical workaround that allowed the full uBlock Origin Manifest V2 extension to function. Chrome users are directed to uBlock Origin Lite, a Manifest V3 version with reduced blocking capability built on the more limited `declarativeNetRequest` API. Firefox has committed to maintaining MV2 support; Brave implements workarounds to preserve full blocking capability.
+- **Why it matters:** Developers and organizations using Chrome lose full-capability content blocking; managed Chrome deployments relying on uBlock Origin for malicious-ad blocking need to assess migration before the end of June.
+
+### Microsoft shares Dutch regulatory officials' emails with US Congress under CLOUD Act
+
+- **Category:** Pulse
+- **Status:** confirmed
+- **Sources:** [Korte](https://www.korte.co/2026/06/11/digital-sovereignty-becomes-an-imparative-as-the-us-reads-dutch-emails/), [HN discussion](https://news.ycombinator.com/item?id=48500404)
+- **Summary:** Microsoft shared the names, email addresses, meeting minutes, and meeting invitations of Dutch civil servants from the Authority for Consumers and Markets and the Dutch Data Protection Authority -- both EU Digital Services Act enforcement bodies -- with the US House of Representatives following a CLOUD Act demand. The data covered EU platform regulation enforcement activities. The European Commission responded with what it describes as its first comprehensive digital and technology sovereignty strategy.
+- **Why it matters:** CLOUD Act risk is concrete: data belonging to EU regulators enforcing platform laws against US companies is legally accessible to the US Congress via demand on US cloud providers regardless of where that data is stored.
 
 ## Watchlist follow-ups
 
@@ -486,6 +543,21 @@ source_count = 75
 - **Status:** open -- updated
 - **Notes:** Discussed in LWN June 11 edition. No formal patch series accepted. Broader code-removal drive for ax25, ATM, ISDN.
 
+### Palo Alto CVE-2026-0257 GlobalProtect active exploitation
+
+- **Status:** open -- ongoing
+- **Notes:** Active exploitation confirmed since 2026-05-17. CISA KEV federal agency deadline was 2026-06-01. Mitigation: disable authentication override cookies or generate a dedicated cert. Patch available; monitor for adoption rates and expanded targeting.
+
+### CVE-2026-44815 Windows DHCP RCE
+
+- **Status:** open
+- **Notes:** No active exploitation as of 2026-06-12. CVSS 9.8. Patched in June 2026 cumulative update. Watch for exploitation since the DHCP attack surface is universal on Windows networks.
+
+### Chrome 150 uBlock Origin MV2 removal
+
+- **Status:** open
+- **Notes:** Chrome 150 expected 2026-06-30. All MV2 workarounds removed. uBlock Origin Lite (MV3) is the in-Chrome alternative with reduced blocking. Firefox and Brave retain full support.
+
 ## Sources checked
 
 - Hacker News: unattended runs were WebSearch-only (all APIs returned 403 from the datacenter IP range); backfilled at 2026-06-12 08:30 UTC from a local `make hn` structured fetch via the Algolia API covering front page, top 24h, Ask HN, Show HN, and watchlist queries
@@ -507,4 +579,11 @@ source_count = 75
 - Langflow: github.com/langflow-ai/langflow/security/advisories; VulnCheck KEV; SecurityWeek; The Hacker News
 - Additional Patch Tuesday: Threat-Modeling.com June 2026 critical CVE analysis; Windows Forum CVE-2026-47291 guide
 - Claude Code releases: github.com/anthropics/claude-code/releases (v2.1.174, v2.1.175)
+- Palo Alto security advisories: security.paloaltonetworks.com (CVE-2026-0257); helpnetsecurity.com for exploitation confirmation
+- Windows DHCP CVE-2026-44815: Threat-Modeling.com June Patch Tuesday; securereading.com
+- David Curlewis blog: curlewis.co.nz (Lines of code productivity post)
+- Business Insider: botsitting AI survey
+- Korte: digital sovereignty / Dutch emails
+- René Mayrhofer: mayrhofer.eu.org
+- PCWorld: uBlock Origin Chrome MV2 removal
 - WebSearch fallback used throughout due to 403 blocks on direct fetches from datacenter IP ranges (see memory/source-reliability.md)
