@@ -20,7 +20,8 @@ Recurring entities tracked across digest runs.
 - Google DeepMind: track Gemini model releases (current: Gemini 3.1 Ultra with 2M context), API changes, and pricing.
 - Meta AI: track Llama releases, open weight licenses, and PyTorch changes.
 - Mistral: track model releases, API, and open weight licenses.
-- Hugging Face: track platform changes, open weight hosting, and dataset policies.
+- Hugging Face: track platform changes, open weight hosting, and dataset policies. Open R1 project (github.com/huggingface/open-r1): open-source reproduction of DeepSeek-R1 reasoning; Step 1 complete (Mixture-of-Thoughts dataset + OpenR1-Distill-7B), RL pipeline in progress.
+- Moonshot AI: Chinese AI lab; track Kimi model releases. Kimi K2.7-Code released 2026-06-12 as open-weight coding model (Modified MIT license, huggingface.co/moonshotai/Kimi-K2.7-Code), targets token efficiency for coding workloads.
 - NVIDIA: track CUDA releases, driver updates, GPU architecture, inference serving, and developer tools.
 - Microsoft AI: track MAI model family (MAI-Code-1-Flash in GitHub Copilot as of Build 2026-06-02), Azure OpenAI, and Foundry.
 - Apple Foundation Models: track framework releases, LanguageModel protocol, open-source timeline. Foundation Models going open source in 2026.

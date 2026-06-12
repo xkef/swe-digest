@@ -257,3 +257,12 @@ Format:
 - Watch for: Chrome 150 release date confirmation; enterprise policy alternatives; uBlock Origin Lite coverage parity improvements.
 - Last checked: 2026-06-12
 - Notes: Chrome 150 expected 2026-06-30. All MV2 workarounds removed. uBlock Origin Lite (MV3) is the in-Chrome option with reduced blocking. Firefox and Brave retain full MV2 support.
+
+## 2026-06-12: AUR supply chain attack
+
+- Status: open
+- Category: Security
+- Sources: [Phoronix](https://www.phoronix.com/news/Arch-Linux-AUR-400-Compromised), [ioctl.fail analysis](https://ioctl.fail/preliminary-analysis-of-aur-malware/)
+- Watch for: Confirmation of compromised user credentials exploited in the wild; improvements to AUR orphan-package adoption policies; further scope of affected packages.
+- Last checked: 2026-06-12
+- Notes: Maintainer "arojas" adopted 400+ orphaned AUR packages and injected infostealer ("deps") + optional eBPF rootkit via modified PKGBUILD npm install calls. Targets developer credentials (browsers, Electron apps, SSH, GitHub, Docker, VPN). Discovered 2026-06-11; Arch maintainers removed malicious content and banned account. Official Arch repos unaffected. No confirmed downstream exploitation reported yet.
