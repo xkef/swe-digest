@@ -30,8 +30,8 @@ Format:
 - Category: AI
 - Sources: [model deprecations](https://platform.claude.com/docs/en/about-claude/models/overview)
 - Watch for: Retirement confirmation; any production breakage reports.
-- Last checked: 2026-06-11
-- Notes: Claude Sonnet 4 (claude-sonnet-4-20250514) and Opus 4 (claude-opus-4-20250514) retire 2026-06-15. Claude Opus 4.1 retires 2026-08-05.
+- Last checked: 2026-06-12
+- Notes: Claude Sonnet 4 (claude-sonnet-4-20250514) and Opus 4 (claude-opus-4-20250514) retire 2026-06-15 at 09:00 PT. No grace period; requests to retired model IDs fail immediately. Successors: claude-sonnet-4-6 and claude-opus-4-8. Agent SDK credit split also takes effect 2026-06-15.
 
 ## 2026-06-11: Check Point CVE-2026-50751 Qilin ransomware campaign
 
@@ -64,10 +64,10 @@ Format:
 
 - Status: open
 - Category: Markets
-- Sources: [SEC EDGAR](https://www.sec.gov/Archives/edgar/data/1181412/000162828026036936/spaceexplorationtechnologi.htm)
-- Watch for: Nasdaq debut 2026-06-12; first-day trading results; index inclusion timeline.
-- Last checked: 2026-06-11
-- Notes: Priced at $135/share on 2026-06-11. $75B raise, $1.77T valuation, ticker SPCX. Listing 2026-06-12.
+- Sources: [TradingKey](https://www.tradingkey.com/analysis/stocks/us-stocks/261960721-spacex-ipo-is-live-at-135-bull-base-and-bear-cases-for-the-first-90-days-tradingkey)
+- Watch for: First-day closing price; S&P 500 committee review; post-IPO lock-up expiry.
+- Last checked: 2026-06-12
+- Notes: Trading started 2026-06-12 at $135/share on Nasdaq as SPCX. $75B raise, $1.75T valuation. MSCI early inclusion effective 2026-06-13 (index fund demand from day 2). S&P 500 fast-track entry blocked (dual-class structure).
 
 ## 2026-06-11: Kubernetes v1.33 EOL and v1.37 release
 
@@ -91,10 +91,10 @@ Format:
 
 - Status: open
 - Category: Outage
-- Sources: [Google Cloud Status](https://status.cloud.google.com/)
+- Sources: [Medianama](https://www.medianama.com/2026/06/223-google-cloud-outage-india-delhi-fire/)
 - Watch for: Facility restoration; end of elevated-latency period.
-- Last checked: 2026-06-11
-- Notes: Fire at third-party Delhi data center on 2026-06-09 at 23:52 IST. Elevated latency in Delhi, Mumbai, Chennai. Traffic rerouted. No resolution time published.
+- Last checked: 2026-06-12
+- Notes: Fire at third-party Delhi data center on 2026-06-09 at 23:52 IST. Elevated latency and non-optimal routing in Delhi, Mumbai, Chennai persist as of 2026-06-12. Traffic rerouted but demand exceeds rerouted capacity on some ISPs. No restoration timeline published.
 
 ## 2026-06-11: Apple Foundation Models open source
 
@@ -118,10 +118,10 @@ Format:
 
 - Status: open
 - Category: Security
-- Sources: [BleepingComputer](https://www.bleepingcomputer.com/news/security/max-severity-ivanti-sentry-vulnerability-now-exploited-in-attacks/), [Ivanti advisory](https://hub.ivanti.com/s/article/Security-Advisory-Ivanti-Sentry-CVE-2026-10520-CVE-2026-10523)
-- Watch for: CISA KEV addition; further compromise scope; Ivanti advisory update acknowledging exploitation.
-- Last checked: 2026-06-11
-- Notes: Active exploitation confirmed 2026-06-11 by Shadowserver. At least 19 vulnerable instances; 2 confirmed backdoored. Less than 48h after PoC publication. CVE-2026-10520 CVSS 10.0, unauthenticated root RCE. Fixed in 10.5.2, 10.6.2, 10.7.1. Treat unpatched systems as compromised.
+- Sources: [Ivanti advisory](https://hub.ivanti.com/s/article/Security-Advisory-Ivanti-Sentry-CVE-2026-10520-CVE-2026-10523), [Help Net Security](https://www.helpnetsecurity.com/2026/06/10/ivanti-sentry-cve-2026-10520-cve-2026-10523/)
+- Watch for: CISA KEV addition; further compromise scope; Ivanti advisory update.
+- Last checked: 2026-06-12
+- Notes: Active exploitation confirmed 2026-06-11 by Shadowserver. At least 19 vulnerable instances; 2 confirmed backdoored. Less than 48h after PoC publication. CVE-2026-10520 CVSS 10.0, unauthenticated root RCE. Fixed in 10.5.2, 10.6.2, 10.7.1. Treat unpatched systems as compromised. CISA KEV addition expected.
 
 ## 2026-06-11: Homebrew 6.0.0 migration fallout
 
@@ -141,14 +141,14 @@ Format:
 - Last checked: 2026-06-11
 - Notes: CVSS v4 9.4. RCE via any authenticated domain user on domain-joined Veeam Backup and Replication v12 servers (affected: up to 12.3.2.4465; patched: 12.3.2.4854). v13.x not affected. No exploitation at disclosure.
 
-## 2026-06-11: RoguePlanet unpatched Windows Defender zero-day
+## 2026-06-11: RoguePlanet Windows Defender LPE CVE-2026-47281
 
 - Status: open
 - Category: Security
-- Sources: [BleepingComputer](https://www.bleepingcomputer.com/news/microsoft/microsoft-defender-rogueplanet-zero-day-grants-system-privileges/), [SecurityWeek](https://www.securityweek.com/new-windows-zero-day-exploit-rogueplanet-released/)
-- Watch for: Microsoft emergency advisory and CVE assignment; in-the-wild exploitation.
-- Last checked: 2026-06-11
-- Notes: Nightmare Eclipse PoC published 2026-06-11. Race condition in Defender quarantine pipeline. LPE to SYSTEM. Works on fully patched Windows 10 and 11. No CVE, no patch. Requires local ISO mount capability. Seventh Defender zero-day from this actor since April 2026.
+- Sources: [Threat-Modeling.com](https://threat-modeling.com/windows-defender-rogueplanet-zero-day-cve-2026-47281/), [Picus](https://www.picussecurity.com/resource/blog/rogueplanet-anatomy-of-the-nightmare-eclipse-microsoft-defender-zero-day)
+- Watch for: Microsoft out-of-band advisory; definitive patch confirmation; ransomware use of this vector.
+- Last checked: 2026-06-12
+- Notes: CVE-2026-47281 (CVSS 9.6) assigned. TOCTOU race in Defender/VS Code interaction path. LPE to SYSTEM. Active exploitation confirmed 2026-06-12. Works on fully patched Win10/Win11. Patch status in June cumulative update disputed; treat as unpatched. Requires local ISO mount capability.
 
 ## 2026-06-11: Devin Desktop Cascade EOL 2026-07-01
 
@@ -183,14 +183,32 @@ Format:
 - Category: Outage
 - Sources: [StatusGator Gemini](https://statusgator.com/services/gemini)
 - Watch for: Google postmortem with root cause.
-- Last checked: 2026-06-11
-- Notes: ~7-hour outage on 2026-06-11. Errors 1076 and 1099. Resolved ~14:30 PT. No root cause published.
+- Last checked: 2026-06-12
+- Notes: ~7-hour outage on 2026-06-11. Errors 1076 and 1099. Resolved ~14:30 PT. Google stopped a background process causing missing conversation metadata. No detailed root cause or postmortem published.
 
-## 2026-06-11: SpaceX SPCX first-day trading and S&P 500 inclusion
+## 2026-06-12: Claude Fable 5 visible safeguards implementation
 
 - Status: open
-- Category: Markets
-- Sources: [CNBC SpaceX live](https://www.cnbc.com/2026/06/03/spacex-ipo-stock-price-roadshow-musk.html)
-- Watch for: First-day trading price action 2026-06-12; S&P 500 inclusion timeline; post-IPO lock-up expiry.
-- Last checked: 2026-06-11
-- Notes: Priced at $135, trading starts 2026-06-12 on Nasdaq as SPCX. $1.77T valuation at IPO price. S&P 500 committee blocked fast-track entry for dual-class structure.
+- Category: AI
+- Sources: [Anthropic Fable 5](https://www.anthropic.com/news/claude-fable-5-mythos-5)
+- Watch for: Anthropic deployment of visible-safeguard update; confirmation that no silent degradation remains for frontier LLM research queries.
+- Last checked: 2026-06-12
+- Notes: Anthropic reversed hidden frontier LLM research restrictions on 2026-06-11. New behavior: flagged requests visibly fall back to Opus 4.8; API returns stop_reason: "refusal" with classifier details. Implementation date not specified by Anthropic.
+
+## 2026-06-12: Linux kernel 7.1 stable release
+
+- Status: open
+- Category: Linux/Kernel
+- Sources: [Phoronix rc7](https://www.phoronix.com/news/Linux-7.1-rc7)
+- Watch for: Linus Torvalds 7.1 stable announcement on 2026-06-14.
+- Last checked: 2026-06-12
+- Notes: rc7 released 2026-06-07. Torvalds stated stable expected 2026-06-14. Heavier than usual cycle due to AI-agent patch volume. rc7 disables AMD ROCm CRIU ioctl for security.
+
+## 2026-06-12: PostgreSQL 19 Beta 1 testing cycle
+
+- Status: open
+- Category: Infrastructure
+- Sources: [PostgreSQL announcement](https://www.postgresql.org/about/news/postgresql-19-beta-1-released-3313/)
+- Watch for: Beta 2; RC schedule; GA release September/October 2026.
+- Last checked: 2026-06-12
+- Notes: Beta 1 released 2026-06-04. Key features: parallel autovacuum, INSERT...ON CONFLICT DO SELECT, SQL/PGQ graph queries, REPACK, JIT disabled by default. PostgreSQL 14 EOL 2026-11-12.
