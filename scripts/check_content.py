@@ -31,10 +31,16 @@ SECTIONS = [
     "Infrastructure",
     "Engineering posts",
     "Markets and companies",
-    "HN and Reddit pulse",
+    "Hacker News",
+    "Reddit and social pulse",
     "Watchlist follow-ups",
     "Sources checked",
 ]
+
+# Digests published before the Hacker News section split keep their layout.
+SECTIONS_CUTOVER = "2026-06-13"
+
+SECTIONS_LEGACY = SECTIONS[:13] + ["HN and Reddit pulse"] + SECTIONS[15:]
 
 REQUIRED_KEYS = ["title", "date", "status", "source_count"]
 
@@ -81,11 +87,12 @@ def check_structure(path: Path, front: str, body: str) -> list[str]:
     for key in REQUIRED_KEYS:
         if not re.search(rf"^\s*{key}\s*=", front, re.MULTILINE):
             errors.append(f"{path}: front matter missing '{key}'")
+    expected = SECTIONS if path.parent.name >= SECTIONS_CUTOVER else SECTIONS_LEGACY
     headers = re.findall(r"^##\s+(.+?)\s*$", body, re.MULTILINE)
-    if headers != SECTIONS:
+    if headers != expected:
         errors.append(
             f"{path}: section headers do not match the required order.\n"
-            f"  expected: {SECTIONS}\n"
+            f"  expected: {expected}\n"
             f"  found:    {headers}"
         )
     return errors

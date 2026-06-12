@@ -21,7 +21,8 @@ SECTIONS = [
     "Infrastructure",
     "Engineering posts",
     "Markets and companies",
-    "HN and Reddit pulse",
+    "Hacker News",
+    "Reddit and social pulse",
     "Watchlist follow-ups",
     "Sources checked",
 ]

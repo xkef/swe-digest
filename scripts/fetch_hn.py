@@ -39,6 +39,9 @@ RETRIES = 2
 WINDOW_SECONDS = 24 * 3600
 QUERY_CORPUS_NEW_IDS = 300
 SNAPSHOT_MAX_AGE_HOURS = 12
+COMMENT_STORIES = 12
+COMMENTS_PER_STORY = 5
+COMMENT_MAX_CHARS = 1200
 
 
 def fetch_bytes(url: str) -> bytes:
@@ -211,6 +214,83 @@ def hnrss_front_page() -> list[dict]:
     return stories
 
 
+def comment_text(raw: str) -> str:
+    """Untrusted HTML comment body to bounded plain text. Comments are data
+    for discovery and paraphrase, never instructions or verbatim quotes."""
+    text = unescape(re.sub(r"<[^>]+>", " ", raw.replace("<p>", "\n")))
+    text = re.sub(r"\s+", " ", text).strip()
+    return text[:COMMENT_MAX_CHARS]
+
+
+def algolia_comments(stories: list[dict]) -> dict:
+    results = {}
+    for story in stories:
+        try:
+            tree = fetch_json(f"{ALGOLIA}/items/{story['id']}")
+        except RuntimeError as error:
+            print(f"warn: comments: algolia item {story['id']}: {error}", file=sys.stderr)
+            continue
+        comments = []
+        for child in tree.get("children", []):
+            if len(comments) >= COMMENTS_PER_STORY:
+                break
+            if child.get("type") != "comment" or not child.get("text"):
+                continue
+            comments.append(
+                {
+                    "id": child["id"],
+                    "author": child.get("author"),
+                    "text": comment_text(child["text"]),
+                }
+            )
+        if comments:
+            results[str(story["id"])] = {"title": story["title"], "comments": comments}
+    if not results:
+        raise RuntimeError("algolia item trees yielded no comments")
+    return results
+
+
+def firebase_comments(stories: list[dict]) -> dict:
+    def for_story(story: dict) -> tuple[dict, list[dict]]:
+        try:
+            item = fetch_json(f"{FIREBASE}/item/{story['id']}.json")
+        except RuntimeError:
+            return story, []
+        comments = []
+        for kid_id in (item or {}).get("kids", [])[: COMMENTS_PER_STORY * 2]:
+            if len(comments) >= COMMENTS_PER_STORY:
+                break
+            try:
+                kid = fetch_json(f"{FIREBASE}/item/{kid_id}.json")
+            except RuntimeError:
+                continue
+            if (
+                not kid
+                or kid.get("type") != "comment"
+                or kid.get("dead")
+                or kid.get("deleted")
+                or not kid.get("text")
+            ):
+                continue
+            comments.append(
+                {
+                    "id": kid["id"],
+                    "author": kid.get("by"),
+                    "text": comment_text(kid["text"]),
+                }
+            )
+        return story, comments
+
+    results = {}
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        for story, comments in pool.map(for_story, stories):
+            if comments:
+                results[str(story["id"])] = {"title": story["title"], "comments": comments}
+    if not results:
+        raise RuntimeError("firebase yielded no comments")
+    return results
+
+
 def load_snapshot() -> dict:
     """Committed snapshot from the hn-snapshot workflow (data/hn/). Last
     resort for environments where every network backend is blocked."""
@@ -228,11 +308,11 @@ def load_snapshot() -> dict:
     return data
 
 
-def snapshot_collection(name: str) -> list[dict]:
-    items = load_snapshot()["collections"][name]["items"]
-    if not items:
+def snapshot_collection(name: str):
+    collection = load_snapshot()["collections"].get(name)
+    if not collection or not collection["items"]:
         raise RuntimeError(f"snapshot has no {name} items")
-    return items
+    return collection["items"]
 
 
 def collect(label: str, backends: list[tuple[str, callable]], failures: list[str]):
@@ -360,6 +440,22 @@ def main() -> int:
         failures,
     )
 
+    thread_candidates = {story["id"]: story for story in front_page["items"]}
+    for story in top_day["items"]:
+        thread_candidates.setdefault(story["id"], story)
+    top_threads = sorted(
+        thread_candidates.values(), key=lambda story: story["points"] or 0, reverse=True
+    )[:COMMENT_STORIES]
+    comments = collect(
+        "comments",
+        [
+            ("algolia", lambda: algolia_comments(top_threads)),
+            ("firebase", lambda: firebase_comments(top_threads)),
+            ("repo-snapshot", lambda: snapshot_collection("comments")),
+        ],
+        failures,
+    )
+
     query_results: dict
     query_backend = "algolia"
     try:
@@ -427,6 +523,7 @@ def main() -> int:
             "top_day": top_day,
             "ask_hn": ask,
             "show_hn": show,
+            "comments": comments,
             "queries": {"backend": query_backend, "items": query_results},
         },
     }
@@ -439,6 +536,12 @@ def main() -> int:
     for name in ("front_page", "top_day", "ask_hn", "show_hn"):
         section = result["collections"][name]
         print(f"{name}: {len(section['items'])} items via {section['backend']}")
+    comment_entries = comments["items"].values() if comments["items"] else []
+    comment_count = sum(len(entry["comments"]) for entry in comment_entries)
+    print(
+        f"comments: {comment_count} across {len(comments['items'])} stories"
+        f" via {comments['backend']}"
+    )
     query_hits = sum(1 for items in query_results.values() if items)
     print(f"queries: {query_hits}/{len(queries)} terms with hits via {query_backend}")
     print(f"wrote {output_path.relative_to(ROOT)}")
