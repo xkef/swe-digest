@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 33
+source_count = 38
 +++
 
 ## Top stories
@@ -85,6 +85,14 @@ source_count = 33
 - **Summary:** Gemini 3.5 Flash launched 2026-05-19 and is available in the Gemini API and Gemini app. Gemini 3.5 Pro targets 2M context, Deep Think reasoning mode, and June 2026 GA, but no specific date has been set. As of 2026-06-12 the Pro variant is in limited preview only.
 - **Why it matters:** Integrations planning to use Gemini 3.5 Pro should not assume June GA is imminent without a public announcement.
 
+### NVIDIA DGX Spark June 2026 software update adds multi-node clustering and Qwen3.6 gains
+
+- **Category:** AI
+- **Status:** confirmed
+- **Sources:** [NVIDIA developer blog](https://developer.nvidia.com/blog/run-local-ai-agents-with-faster-models-and-multi-node-clustering-on-nvidia-dgx-spark/)
+- **Summary:** The June 2026 DGX Spark system software update disables over-the-air update installation during initial device setup to reduce out-of-box time, improves inference throughput for Qwen3.6 on the Grace Blackwell architecture, and adds guided multi-node cluster configuration for teams scaling beyond a single unit. DGX Spark delivers one petaflop of AI compute with 128 GB unified memory in a desktop form factor.
+- **Why it matters:** Multi-node clustering makes local frontier-model inference practical for small teams that want to run 200B+ parameter models without cloud dependencies.
+
 ## ML research
 
 ### DRPO improves RL stability for LLM post-training
@@ -130,6 +138,14 @@ source_count = 33
 - **Why it matters:** Codex gaining native secure-environment infrastructure accelerates the shift toward autonomous coding agents that execute multi-day tasks without human presence.
 - **Follow-up:** Confirm close date; watch for Codex persistent-environment beta.
 
+### Claude Code v2.1.174 and v2.1.175 add usage analytics and enterprise model enforcement
+
+- **Category:** Agentic coding
+- **Status:** confirmed
+- **Sources:** [Claude Code releases](https://github.com/anthropics/claude-code/releases)
+- **Summary:** Two Claude Code releases shipped on 2026-06-12. v2.1.174 (01:16 UTC) adds a `/usage` command in VS Code showing token consumption breakdowns across cache misses, long context, subagents, skills, agents, plugins, and MCP servers over the last 24 hours or 7 days; fixes Bedrock GovCloud inference profile prefix derivation; and corrects a Fable 5 credits banner incorrectly appearing for enterprise accounts. v2.1.175 (04:23 UTC) adds the `enforceAvailableModels` managed setting: when enabled, the `availableModels` list constrains the default model and user or project settings cannot widen the managed allowlist.
+- **Why it matters:** `enforceAvailableModels` closes the gap where enterprise-managed model restrictions could be overridden by per-user settings; the `/usage` breakdown gives operators per-surface token visibility for cost attribution.
+
 ## Security
 
 ### Ivanti Sentry CVE-2026-10520 backdoors confirmed; patch immediately
@@ -172,6 +188,24 @@ source_count = 33
 - **Sources:** [CISA KEV alert](https://www.cisa.gov/news-events/alerts/2026/06/09/cisa-adds-three-known-exploited-vulnerabilities-catalog)
 - **Summary:** CISA added three CVEs to the Known Exploited Vulnerabilities catalog on 2026-06-09: CVE-2026-7473 (Arista EOS incomplete comparison vulnerability), CVE-2026-11645 (Google Chromium V8 out-of-bounds read/write), and CVE-2026-20245 (Cisco SD-WAN command injection). Federal agencies have binding deadlines for remediation; enterprise teams should treat KEV additions as priority-one patch items.
 - **Why it matters:** Chrome V8 out-of-bounds RW is actively exploited in the browser context; organizations running Chrome on developer workstations should ensure the June update is applied.
+
+### Langflow CVE-2026-5027: path traversal RCE actively exploited on ~7,000 exposed instances
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Langflow security advisories](https://github.com/langflow-ai/langflow/security/advisories), [SecurityWeek](https://www.securityweek.com/hackers-exploit-langflow-vulnerability-for-remote-code-execution/), [The Hacker News](https://thehackernews.com/2026/06/unpatched-langflow-flaw-cve-2026-5027.html)
+- **Summary:** CVE-2026-5027 (CVSS 8.8) is a path traversal flaw in the `POST /api/v2/files` endpoint of Langflow, an open-source visual platform for building AI agents and RAG workflows. The `filename` multipart parameter is not sanitized, allowing `../` sequences to write files to arbitrary filesystem locations. Langflow enables unauthenticated auto-login by default, making the endpoint reachable without credentials. VulnCheck detected first in-the-wild exploitation on 2026-06-08. Censys identifies approximately 7,000 publicly exposed Langflow instances. Fixed in version 1.9.0 (2026-04-15); upgrade to 1.10.0 is the current recommendation.
+- **Why it matters:** Any Langflow instance reachable from the internet and running a version prior to 1.9.0 is actively being targeted; arbitrary file write enables cron-based persistence and lateral movement on the host.
+- **Follow-up:** Watch for CISA KEV formal addition.
+
+### CVE-2026-47291 HTTP.sys RCE (CVSS 9.8): no user interaction, Exploitation More Likely
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Threat-Modeling.com June Patch Tuesday](https://threat-modeling.com/microsoft-june-2026-patch-tuesday-critical-cves/), [Windows Forum patch guide](https://windowsforum.com/threads/cve-2026-47291-confirmed-windows-http-sys-rce-patch-tuesday-priority-guide.424352/)
+- **Summary:** CVE-2026-47291 is a critical integer overflow in `http.sys`, the Windows kernel-mode HTTP protocol stack used by IIS, Windows Remote Management, and other platform services. An unauthenticated remote attacker can trigger remote code execution by sending a crafted HTTP request with no user interaction. CVSS 9.8. Microsoft rates exploitation as "More Likely." Important exception: systems using the default `MaxRequestBytes` registry value are not vulnerable; only hosts with non-default or elevated HTTP request size configurations are at risk. No public exploit or in-the-wild exploitation confirmed as of 2026-06-12. Patched in the June 2026 Windows cumulative update (KB5094126/KB5094125/KB5094128).
+- **Why it matters:** Windows servers running IIS or WinRM with non-default HTTP configuration should treat this as urgent; the "Exploitation More Likely" rating means a functional exploit is expected to appear.
+- **Follow-up:** Watch for public exploit or active exploitation reports.
 
 ## Outages
 
@@ -324,7 +358,17 @@ source_count = 33
 ### Microsoft CVE-2026-45657 wormable Windows kernel RCE
 
 - **Status:** open
-- **Notes:** No public exploit or confirmed in-the-wild exploitation reported as of 2026-06-12. Patch via KB5094126/KB5094125/KB5094128. Security researchers previously assessed exploit availability within days of Patch Tuesday; none confirmed so far.
+- **Notes:** No public exploit or confirmed in-the-wild exploitation reported as of 2026-06-12. Three days post-disclosure. Security researchers actively reversing the patch. Patch via KB5094126/KB5094125/KB5094128.
+
+### Langflow CVE-2026-5027 CISA KEV watch
+
+- **Status:** open
+- **Notes:** VulnCheck KEV added 2026-06-08. CISA KEV formal addition pending. ~7,000 exposed instances; active exploitation confirmed. Patch to 1.9.0+. Langflow also published two new advisories on 2026-06-11 (GHSA-79ph-745m-6wxq path traversal in Knowledge Bases and GHSA-9c59-2mvc-vfr8 IDOR in Monitor API).
+
+### CVE-2026-47291 HTTP.sys RCE exploit watch
+
+- **Status:** open
+- **Notes:** No public exploit or active exploitation as of 2026-06-12. Exploitation More Likely rating. Patched in June 2026 cumulative update. Only non-default MaxRequestBytes configurations affected.
 
 ### RoguePlanet CVE-2026-47281 Windows Defender LPE
 
@@ -339,7 +383,7 @@ source_count = 33
 ### Ivanti Sentry CVE-2026-10520
 
 - **Status:** open -- updated
-- **Notes:** At least 2 confirmed backdoored instances. Treat unpatched systems as compromised. Patch to 10.5.2 / 10.6.2 / 10.7.1. CISA KEV addition expected.
+- **Notes:** CISA KEV addition confirmed. At least 2 backdoored instances confirmed by Shadowserver. Treat any unpatched system as compromised. Patch to 10.5.2 / 10.6.2 / 10.7.1.
 
 ### Anthropic and OpenAI IPO timelines
 
@@ -348,8 +392,8 @@ source_count = 33
 
 ### SpaceX SPCX first-day trading
 
-- **Status:** open -- first day in progress
-- **Notes:** IPO at $135/share. MSCI index inclusion effective 2026-06-13. First-day close price pending.
+- **Status:** open -- first day complete
+- **Notes:** IPO at $135/share. First-day close at $135, flat on the IPO price. No intraday gap or halt. MSCI index inclusion effective 2026-06-13.
 
 ### Kubernetes v1.37 and v1.33 EOL
 
@@ -393,4 +437,8 @@ source_count = 33
 - Apple Developer: developer.apple.com
 - Market sources: CNBC, Capital.com, TradingKey, Bloomberg
 - Status pages: StatusGator for Gemini, Google Workspace status
+- NVIDIA: developer.nvidia.com (DGX Spark June 2026 release)
+- Langflow: github.com/langflow-ai/langflow/security/advisories; VulnCheck KEV; SecurityWeek; The Hacker News
+- Additional Patch Tuesday: Threat-Modeling.com June 2026 critical CVE analysis; Windows Forum CVE-2026-47291 guide
+- Claude Code releases: github.com/anthropics/claude-code/releases (v2.1.174, v2.1.175)
 - WebSearch fallback used throughout due to 403 blocks on direct fetches from datacenter IP ranges (see memory/source-reliability.md)

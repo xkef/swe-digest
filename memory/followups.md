@@ -65,9 +65,9 @@ Format:
 - Status: open
 - Category: Markets
 - Sources: [TradingKey](https://www.tradingkey.com/analysis/stocks/us-stocks/261960721-spacex-ipo-is-live-at-135-bull-base-and-bear-cases-for-the-first-90-days-tradingkey)
-- Watch for: First-day closing price; S&P 500 committee review; post-IPO lock-up expiry.
+- Watch for: MSCI rebalancing demand on 2026-06-13; S&P 500 committee review; post-IPO lock-up expiry.
 - Last checked: 2026-06-12
-- Notes: Trading started 2026-06-12 at $135/share on Nasdaq as SPCX. $75B raise, $1.75T valuation. MSCI early inclusion effective 2026-06-13 (index fund demand from day 2). S&P 500 fast-track entry blocked (dual-class structure).
+- Notes: Trading started 2026-06-12 at $135/share on Nasdaq as SPCX. $75B raise, $1.75T valuation. First-day close at $135, flat on IPO price. MSCI early inclusion effective 2026-06-13. S&P 500 fast-track entry blocked (dual-class structure).
 
 ## 2026-06-11: Kubernetes v1.33 EOL and v1.37 release
 
@@ -119,9 +119,9 @@ Format:
 - Status: open
 - Category: Security
 - Sources: [Ivanti advisory](https://hub.ivanti.com/s/article/Security-Advisory-Ivanti-Sentry-CVE-2026-10520-CVE-2026-10523), [Help Net Security](https://www.helpnetsecurity.com/2026/06/10/ivanti-sentry-cve-2026-10520-cve-2026-10523/)
-- Watch for: CISA KEV addition; further compromise scope; Ivanti advisory update.
+- Watch for: Further compromise scope; Ivanti advisory update; mandatory remediation deadline from CISA BOD 26-04.
 - Last checked: 2026-06-12
-- Notes: Active exploitation confirmed 2026-06-11 by Shadowserver. At least 19 vulnerable instances; 2 confirmed backdoored. Less than 48h after PoC publication. CVE-2026-10520 CVSS 10.0, unauthenticated root RCE. Fixed in 10.5.2, 10.6.2, 10.7.1. Treat unpatched systems as compromised. CISA KEV addition expected.
+- Notes: CISA KEV formal addition confirmed 2026-06-12. At least 19 vulnerable instances; 2 confirmed backdoored. CVE-2026-10520 CVSS 10.0, unauthenticated root RCE. Fixed in 10.5.2, 10.6.2, 10.7.1. Treat unpatched systems as compromised.
 
 ## 2026-06-11: Homebrew 6.0.0 migration fallout
 
@@ -203,6 +203,24 @@ Format:
 - Watch for: Linus Torvalds 7.1 stable announcement on 2026-06-14.
 - Last checked: 2026-06-12
 - Notes: rc7 released 2026-06-07. Torvalds stated stable expected 2026-06-14. Heavier than usual cycle due to AI-agent patch volume. rc7 disables AMD ROCm CRIU ioctl for security.
+
+## 2026-06-12: Langflow CVE-2026-5027 CISA KEV watch
+
+- Status: open
+- Category: Security
+- Sources: [Langflow security advisories](https://github.com/langflow-ai/langflow/security/advisories), [SecurityWeek](https://www.securityweek.com/hackers-exploit-langflow-vulnerability-for-remote-code-execution/)
+- Watch for: CISA KEV formal addition; additional exploitation activity; remediation rates.
+- Last checked: 2026-06-12
+- Notes: CVE-2026-5027 (CVSS 8.8) path traversal in POST /api/v2/files, unauthenticated by default. Active exploitation since 2026-06-08. ~7,000 exposed instances. Fixed in 1.9.0 (2026-04-15); recommend 1.10.0. VulnCheck KEV added 2026-06-08; CISA KEV addition pending. Langflow also published GHSA-79ph-745m-6wxq and GHSA-9c59-2mvc-vfr8 on 2026-06-11 (path traversal in Knowledge Bases, IDOR in Monitor API).
+
+## 2026-06-12: CVE-2026-47291 HTTP.sys RCE exploit development
+
+- Status: open
+- Category: Security
+- Sources: [Threat-Modeling.com](https://threat-modeling.com/microsoft-june-2026-patch-tuesday-critical-cves/)
+- Watch for: Public exploit or active exploitation of CVE-2026-47291; Shodan/Censys reports on non-default MaxRequestBytes deployments.
+- Last checked: 2026-06-12
+- Notes: CVSS 9.8 integer overflow in http.sys. Unauthenticated, no user interaction. Exploitation More Likely rating. No exploit as of 2026-06-12. Only non-default MaxRequestBytes configurations affected. Patched in June 2026 Windows cumulative update.
 
 ## 2026-06-12: PostgreSQL 19 Beta 1 testing cycle
 
