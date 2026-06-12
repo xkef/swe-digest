@@ -92,15 +92,21 @@ Backend order per collection:
    fetched corpus.
 3. Front page HTML (`news.ycombinator.com`).
 4. Community JSON mirrors: `api.hackerwebapp.com` (node-hnapi, fresh), then
-   `api.hnpwa.com` (CDN-cached, points lag). Both are CDN-fronted and expected
-   to be reachable where the first-party endpoints return 403. Mirror data is
+   `api.hnpwa.com` (CDN-cached, points lag). Confirmed blocked (403) from the
+   unattended harness on 2026-06-12; useful locally. Mirror data is
    discovery only: verify stories against primary sources and always link
    canonical `news.ycombinator.com` item URLs, never mirror URLs.
 5. hnrss.org RSS.
+6. Committed snapshot (`data/hn/`): the `hn-snapshot` GitHub Actions workflow
+   runs the fetcher every six hours and commits the day's JSON to `data/hn/`.
+   The script uses the newest snapshot when every network backend fails and
+   its `fetched_at` is under 12 hours old. A fresh snapshot counts as full
+   structured coverage; a stale or missing one keeps the nonzero exit.
 
-The Algolia and Firebase APIs return HTTP 403 from cloud datacenter IP ranges
-but 200 from local or residential networks. The script walks the fallback
-chain automatically and exits nonzero when any collection is degraded. On a
+All six network endpoints return HTTP 403 from the unattended harness's
+datacenter IP range but 200 from local networks and from GitHub Actions
+runners (hn-probe run, 2026-06-12). The script walks the fallback chain
+automatically and exits nonzero when any collection is degraded. On a
 nonzero exit: retry later in the run, use WebSearch only as a supplement, and
 state the degraded coverage in `Sources checked`. Never publish a digest whose
 HN coverage came from WebSearch alone without saying so.

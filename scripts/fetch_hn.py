@@ -3,9 +3,10 @@
 
 Collects the front page, top stories from the last 24 hours, Ask HN,
 Show HN, and the watchlist queries. Tries structured backends in order
-(Algolia API, Firebase API, front page HTML, hnrss.org) and exits
-nonzero when any collection is degraded, so the routine never silently
-falls back to web search.
+(Algolia API, Firebase API, front page HTML, community mirrors,
+hnrss.org, then the committed data/hn snapshot from the hn-snapshot
+workflow) and exits nonzero when any collection is degraded, so the
+routine never silently falls back to web search.
 """
 from __future__ import annotations
 
@@ -25,6 +26,7 @@ from xml.etree import ElementTree
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE_DIR = ROOT / ".cache" / "hn"
+SNAPSHOT_DIR = ROOT / "data" / "hn"
 WATCHLIST = ROOT / "data" / "watchlist.toml"
 
 ALGOLIA = "https://hn.algolia.com/api/v1"
@@ -36,6 +38,7 @@ TIMEOUT = 15
 RETRIES = 2
 WINDOW_SECONDS = 24 * 3600
 QUERY_CORPUS_NEW_IDS = 300
+SNAPSHOT_MAX_AGE_HOURS = 12
 
 
 def fetch_bytes(url: str) -> bytes:
@@ -208,6 +211,30 @@ def hnrss_front_page() -> list[dict]:
     return stories
 
 
+def load_snapshot() -> dict:
+    """Committed snapshot from the hn-snapshot workflow (data/hn/). Last
+    resort for environments where every network backend is blocked."""
+    paths = sorted(SNAPSHOT_DIR.glob("*.json"))
+    if not paths:
+        raise RuntimeError("no committed snapshot in data/hn")
+    data = json.loads(paths[-1].read_text())
+    fetched = datetime.fromisoformat(data["fetched_at"])
+    age_hours = (datetime.now(timezone.utc) - fetched).total_seconds() / 3600
+    if age_hours > SNAPSHOT_MAX_AGE_HOURS:
+        raise RuntimeError(
+            f"snapshot {paths[-1].name} is {age_hours:.1f}h old"
+            f" (max {SNAPSHOT_MAX_AGE_HOURS}h)"
+        )
+    return data
+
+
+def snapshot_collection(name: str) -> list[dict]:
+    items = load_snapshot()["collections"][name]["items"]
+    if not items:
+        raise RuntimeError(f"snapshot has no {name} items")
+    return items
+
+
 def collect(label: str, backends: list[tuple[str, callable]], failures: list[str]):
     for backend_name, backend in backends:
         try:
@@ -250,6 +277,7 @@ def main() -> int:
             ("hnapi-mirror", lambda: mirror_stories(f"{HNAPI}/news?page=1")),
             ("hnpwa-mirror", lambda: mirror_stories(f"{HNPWA}/news/1.json")),
             ("hnrss", hnrss_front_page),
+            ("repo-snapshot", lambda: snapshot_collection("front_page")),
         ],
         failures,
     )
@@ -287,6 +315,7 @@ def main() -> int:
                     [f"{HNPWA}/news/1.json", f"{HNPWA}/news/2.json"], since
                 ),
             ),
+            ("repo-snapshot", lambda: snapshot_collection("top_day")),
         ],
         failures,
     )
@@ -306,6 +335,7 @@ def main() -> int:
             ("firebase", lambda: firebase_list("askstories", 30)),
             ("hnapi-mirror", lambda: mirror_stories(f"{HNAPI}/ask?page=1")),
             ("hnpwa-mirror", lambda: mirror_stories(f"{HNPWA}/ask/1.json")),
+            ("repo-snapshot", lambda: snapshot_collection("ask_hn")),
         ],
         failures,
     )
@@ -325,6 +355,7 @@ def main() -> int:
             ("firebase", lambda: firebase_list("showstories", 30)),
             ("hnapi-mirror", lambda: mirror_stories(f"{HNAPI}/show?page=1")),
             ("hnpwa-mirror", lambda: mirror_stories(f"{HNPWA}/show/1.json")),
+            ("repo-snapshot", lambda: snapshot_collection("show_hn")),
         ],
         failures,
     )
@@ -345,29 +376,47 @@ def main() -> int:
         }
     except RuntimeError as error:
         print(f"warn: queries: algolia: {error}", file=sys.stderr)
-        query_backend = "title-match"
-        corpus = {
-            story["id"]: story
-            for section in (front_page, top_day, ask, show)
-            for story in section["items"]
-        }
         try:
-            for story in firebase_list("newstories", QUERY_CORPUS_NEW_IDS):
-                corpus.setdefault(story["id"], story)
-        except RuntimeError as corpus_error:
-            print(f"warn: queries: corpus: {corpus_error}", file=sys.stderr)
+            snapshot_queries = load_snapshot()["collections"]["queries"]
+            if snapshot_queries["backend"] != "algolia":
+                raise RuntimeError(
+                    f"snapshot queries came from {snapshot_queries['backend']}"
+                )
+            missing = [q for q in queries if q not in snapshot_queries["items"]]
+            if missing:
+                raise RuntimeError(f"snapshot missing queries: {missing[:3]}")
+            query_backend = "repo-snapshot"
+            query_results = {q: snapshot_queries["items"][q] for q in queries}
+        except RuntimeError as snapshot_error:
+            print(f"warn: queries: repo-snapshot: {snapshot_error}", file=sys.stderr)
+            query_backend = "title-match"
+            corpus = {
+                story["id"]: story
+                for section in (front_page, top_day, ask, show)
+                for story in section["items"]
+            }
             try:
-                urls = [f"{HNAPI}/newest?page={page}" for page in (1, 2, 3)]
-                for story in mirror_window(urls, since):
+                for story in firebase_list("newstories", QUERY_CORPUS_NEW_IDS):
                     corpus.setdefault(story["id"], story)
-            except RuntimeError as mirror_error:
-                print(f"warn: queries: corpus mirror: {mirror_error}", file=sys.stderr)
-        if corpus:
-            query_results = match_queries(queries, list(corpus.values()), since)
-            failures.append("queries (title-match fallback, Algolia search unavailable)")
-        else:
-            query_results = {}
-            failures.append("queries")
+            except RuntimeError as corpus_error:
+                print(f"warn: queries: corpus: {corpus_error}", file=sys.stderr)
+                try:
+                    urls = [f"{HNAPI}/newest?page={page}" for page in (1, 2, 3)]
+                    for story in mirror_window(urls, since):
+                        corpus.setdefault(story["id"], story)
+                except RuntimeError as mirror_error:
+                    print(
+                        f"warn: queries: corpus mirror: {mirror_error}",
+                        file=sys.stderr,
+                    )
+            if corpus:
+                query_results = match_queries(queries, list(corpus.values()), since)
+                failures.append(
+                    "queries (title-match fallback, Algolia search unavailable)"
+                )
+            else:
+                query_results = {}
+                failures.append("queries")
 
     result = {
         "fetched_at": datetime.fromtimestamp(now, tz=timezone.utc).isoformat(),

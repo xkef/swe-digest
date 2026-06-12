@@ -1,0 +1,37 @@
+name: hn-snapshot
+
+on:
+  schedule:
+    - cron: "30 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hn-snapshot
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - name: Fetch HN
+        run: python3 scripts/fetch_hn.py
+      - name: Commit snapshot
+        run: |
+          day=$(date -u +%F)
+          mkdir -p data/hn
+          cp ".cache/hn/$day.json" "data/hn/$day.json"
+          ls data/hn/*.json | sort | head -n -7 | xargs -r git rm -q --
+          git add "data/hn/$day.json"
+          if git diff --cached --quiet; then
+            echo "no changes"
+            exit 0
+          fi
+          git config user.name "hn-snapshot"
+          git config user.email "actions@users.noreply.github.com"
+          git commit -m "chore: hn snapshot for $day"
+          git pull --rebase origin main
+          git push origin main
