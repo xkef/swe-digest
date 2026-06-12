@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 87
+source_count = 96
 +++
 
 ## Top stories
@@ -93,6 +93,14 @@ source_count = 87
 - **Summary:** The June 2026 DGX Spark system software update disables over-the-air update installation during initial device setup to reduce out-of-box time, improves inference throughput for Qwen3.6 on the Grace Blackwell architecture, and adds guided multi-node cluster configuration for teams scaling beyond a single unit. DGX Spark delivers one petaflop of AI compute with 128 GB unified memory in a desktop form factor.
 - **Why it matters:** Multi-node clustering makes local frontier-model inference practical for small teams that want to run 200B+ parameter models without cloud dependencies.
 
+### Kimi K2.7-Code: open-source coding model with token efficiency focus
+
+- **Category:** AI
+- **Status:** confirmed
+- **Sources:** [HuggingFace model card](https://huggingface.co/moonshotai/Kimi-K2.7-Code), [HN discussion](https://news.ycombinator.com/item?id=48502347)
+- **Summary:** Moonshot AI released Kimi K2.7-Code, a coding-focused open-weight model available on HuggingFace under a Modified MIT license with attribution requirements. The model targets improved token efficiency for coding workloads compared to its K2.6 predecessor. Vendor-reported coding benchmark results place it below GPT-5.5 and Opus 4.8 but ahead of several mid-tier models on coding task geometric mean. Available as open weights for self-hosted deployment.
+- **Why it matters:** Open-weight coding models with permissive licenses provide a self-hosted alternative to API-only services for teams with data-residency or cost constraints.
+
 ## ML research
 
 ### DRPO improves RL stability for LLM post-training
@@ -110,6 +118,14 @@ source_count = 87
 - **Sources:** [Hugging Face Papers](https://huggingface.co/papers)
 - **Summary:** WorldOlympiad evaluates video-based generative world models on physical faithfulness, geometric consistency, and interaction fidelity across diverse scenarios. Current results show significant gaps in all three categories across evaluated models, establishing a concrete target for future work.
 - **Why it matters:** As world models are proposed for robot planning and simulation, a rigorous benchmark for physical plausibility identifies where current models fail before deployment.
+
+### HuggingFace Open R1: reproducible open-source implementation of DeepSeek-R1 reasoning
+
+- **Category:** ML research
+- **Status:** developing
+- **Sources:** [GitHub repository](https://github.com/huggingface/open-r1), [HN discussion](https://news.ycombinator.com/item?id=48489917)
+- **Summary:** HuggingFace's Open R1 project reproduces DeepSeek-R1 chain-of-thought reasoning capabilities with open-source training recipes. Step 1 is complete: the Mixture-of-Thoughts dataset (350,000 verified reasoning traces) and OpenR1-Distill-7B are published, matching DeepSeek-R1 on standard reasoning benchmarks (AIME 2024, MATH-500, GPQA Diamond, LiveCodeBench). Steps 2 and 3, the full RL training pipeline, are ongoing. Model sizes from 0.6B to 70B parameters are supported. The HN thread reached 231 points.
+- **Why it matters:** Reproducible, open training recipes for reasoning models let practitioners build domain-specific reasoning models without proprietary data or training infrastructure.
 
 ## Agentic coding
 
@@ -238,6 +254,14 @@ source_count = 87
 - **Sources:** [MrBruh disclosure](https://mrbruh.com/amd2/), [HN discussion](https://news.ycombinator.com/item?id=48492215)
 - **Summary:** A researcher disclosure published when the embargo ended on 2026-06-09 shows AMD AutoUpdate fetched its download manifest over HTTPS but downloaded the referenced executables over unencrypted HTTP and ran them immediately with no signature verification, enabling man-in-the-middle remote code execution. AMD first rejected the report as out of scope on 2026-02-06, reversed the next day, committed to a CVE, and shipped a fix that removes the installer auto-updater and moves updates to the application layer with HTTPS and signature verification. A CVE number and affected version ranges are not yet published. An unrelated redirection bug had left the vulnerable code path unreachable in practice, and no in-the-wild exploitation is reported.
 - **Why it matters:** Unsigned update channels over plain HTTP remain a recurring supply chain weakness in vendor tooling; the timeline also documents how initial vendor triage dismissed an RCE-class report.
+
+### AUR supply chain attack: 400+ packages injected with infostealer and eBPF rootkit
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Phoronix](https://www.phoronix.com/news/Arch-Linux-AUR-400-Compromised), [ioctl.fail analysis](https://ioctl.fail/preliminary-analysis-of-aur-malware/), [HN discussion](https://news.ycombinator.com/item?id=48500447)
+- **Summary:** A malicious maintainer identified as "arojas" adopted over 400 orphaned AUR packages on 2026-06-11 and modified their PKGBUILD files to add npm as a build dependency and execute a malicious npm install during package builds. The injected payload ("deps") operates as a credential stealer targeting browser secrets, Electron app credentials, Slack, Teams, Discord, GitHub tokens, npm credentials, Vault secrets, Docker and Podman configs, SSH keys, VPN configs, and shell histories. An optional eBPF-based rootkit component was also included for persistence and evasion. Arch Linux maintainers reset and deleted the malicious PKGBUILD content and banned the account on discovery. Official Arch Linux repository packages were unaffected; only AUR was compromised. Mitigation: audit installed AUR packages with `pacman -Qi` for suspicious recent build dates, inspect PKGBUILD files for unexpected npm installs, and use tools such as `traur` to detect orphan takeovers.
+- **Why it matters:** The attack targeted developer credentials at build time, when package managers implicitly trust PKGBUILD scripts; the eBPF rootkit component makes post-compromise detection harder than conventional file-based malware.
 
 ### Windows DHCP Client CVE-2026-44815: unauthenticated RCE on every Windows host (CVSS 9.8)
 
@@ -458,6 +482,14 @@ source_count = 87
 - **Summary:** Chrome 150, expected 2026-06-30, removes the last technical workaround that allowed the full uBlock Origin Manifest V2 extension to function. Chrome users are directed to uBlock Origin Lite, a Manifest V3 version with reduced blocking capability built on the more limited `declarativeNetRequest` API. Firefox has committed to maintaining MV2 support; Brave implements workarounds to preserve full blocking capability.
 - **Why it matters:** Developers and organizations using Chrome lose full-capability content blocking; managed Chrome deployments relying on uBlock Origin for malicious-ad blocking need to assess migration before the end of June.
 
+### "Nobody ever gets credit for fixing problems that never happened" resurfaces at 558 points
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [Repenning and Sterman 2001 paper (PDF)](https://web.mit.edu/nelsonr/www/Repenning=Sterman_CMR_su01_.pdf), [HN discussion](https://news.ycombinator.com/item?id=48498385)
+- **Summary:** A 2001 MIT paper by Repenning and Sterman documenting why proactive problem-solvers are systematically undervalued resurfaced with 558 points and 151 comments. The paper identifies a reinforcing feedback loop where managers who prevent failures receive no visible credit while those who heroically resolve crises are rewarded, causing organizations to disinvest in reliability work over time. The HN thread connects the paper to current practices: on-call engineers who prevent incidents, platform teams that absorb technical debt, and SREs who automate away operational toil.
+- **Why it matters:** The dynamic documented in the paper is a primary structural reason reliability and platform engineering teams are chronically underfunded relative to their operational value.
+
 ### Microsoft shares Dutch regulatory officials' emails with US Congress under CLOUD Act
 
 - **Category:** Pulse
@@ -586,4 +618,8 @@ source_count = 87
 - Korte: digital sovereignty / Dutch emails
 - René Mayrhofer: mayrhofer.eu.org
 - PCWorld: uBlock Origin Chrome MV2 removal
+- Phoronix / ioctl.fail / GamingOnLinux: AUR package supply chain compromise (400+ packages, infostealer + eBPF rootkit, 2026-06-11)
+- HuggingFace: Kimi K2.7-Code model card (Moonshot AI open-weight coding model)
+- GitHub (huggingface/open-r1): Open R1 open-source reproduction of DeepSeek-R1 reasoning
+- MIT (Repenning and Sterman 2001): "Nobody ever gets credit for fixing problems that never happened" resurfaced on HN at 558 points
 - WebSearch fallback used throughout due to 403 blocks on direct fetches from datacenter IP ranges (see memory/source-reliability.md)
