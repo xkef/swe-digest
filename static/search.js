@@ -34,6 +34,11 @@
     return [];
   };
 
+  const safeUrl = (value) => {
+    const url = text(value);
+    return /^(https?:\/\/|\/|\.\/|#)/i.test(url) ? url : "#";
+  };
+
   const escapeHtml = (value) => text(value).replace(/[&<>"]/g, (char) => ({
     "&": "&amp;",
     "<": "&lt;",
@@ -84,7 +89,7 @@
 
     results.innerHTML = matches.map(({ doc }) => `
       <li>
-        <a href="${escapeHtml(doc.url)}">${escapeHtml(doc.title)}</a>
+        <a href="${escapeHtml(safeUrl(doc.url))}">${escapeHtml(doc.title)}</a>
         <p>${escapeHtml(snippet(doc, terms))}</p>
       </li>
     `).join("");

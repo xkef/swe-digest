@@ -67,6 +67,13 @@ SECRETS = [
     (re.compile(r"\bsk-[A-Za-z0-9]{20,}"), "secret key (sk-...)"),
 ]
 
+# URL shorteners hide the destination, so a published link cannot be vetted.
+SHORTENERS = re.compile(
+    r"https?://(www\.)?"
+    r"(bit\.ly|t\.co|tinyurl\.com|goo\.gl|ow\.ly|is\.gd|buff\.ly|lnkd\.in|rb\.gy|cutt\.ly)/",
+    re.I,
+)
+
 
 def split_front_matter(text: str) -> tuple[str, str] | None:
     if not text.startswith("+++"):
@@ -98,6 +105,14 @@ def check_structure(path: Path, front: str, body: str) -> list[str]:
     return errors
 
 
+def scan_secrets(path: Path, text: str) -> list[str]:
+    return [
+        f"{path}: contains a {label} pattern. Do not publish secrets."
+        for pattern, label in SECRETS
+        if pattern.search(text)
+    ]
+
+
 def scan_unsafe(path: Path, text: str) -> list[str]:
     errors = []
     prose = strip_code(text)
@@ -107,10 +122,9 @@ def scan_unsafe(path: Path, text: str) -> list[str]:
                 f"{path}: contains {label}. Digests are plain markdown; "
                 f"wrap any HTML example in `backticks`."
             )
-    for pattern, label in SECRETS:
-        if pattern.search(text):
-            errors.append(f"{path}: contains a {label} pattern. Do not publish secrets.")
-    return errors
+    if SHORTENERS.search(prose):
+        errors.append(f"{path}: contains a URL-shortener link. Link the resolved URL.")
+    return errors + scan_secrets(path, text)
 
 
 def check_digest(path: Path) -> list[str]:
@@ -149,6 +163,8 @@ def main() -> int:
         errors.extend(check_digest(path))
     for path in sorted(MEMORY.glob("*.md")):
         errors.extend(scan_unsafe(path, path.read_text(encoding="utf-8")))
+    for path in sorted((ROOT / "data" / "runs").rglob("*.json")):
+        errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))
     errors.extend(check_private_context())
 
     if errors:

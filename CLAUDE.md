@@ -1,6 +1,6 @@
 # Claude routine
 
-This repository is a public daily software engineering digest. The daily routine runs several times a day on a schedule. The first run of a date creates that day's digest; later runs update it in place with what surfaced since. Every run updates public memory, validates the site, commits one change, and pushes to `main` when running unattended.
+This repository is a public daily software engineering digest. The daily routine runs several times a day on a schedule. The first run of a date creates that day's digest; later runs update it in place with what surfaced since. Every run updates public memory, validates the site, and commits one change. Unattended runs do not push: a separate publish job validates the commit and pushes to `main` (see Unattended publishing).
 
 ## Read order
 
@@ -71,17 +71,23 @@ through the site's feedback links.
 
 ### Publication posture
 
-The agent pushes to `main` unattended; CI runs `make build` (which runs the
-fail-closed `make check-content` gate) before deploying. This keeps the routine
-hands-off, but a hijacked agent could still rewrite `.github/workflows/` and
-self-deploy. The `hn-snapshot` workflow has `contents: write` and pushes
-`data/hn/*.json` snapshots to `main` on a schedule; it runs only a pinned
-checkout plus `scripts/fetch_hn.py` and uses no event-derived inputs. The
-`daily-digest` and `weekly-improvement` workflows run this routine on a
-schedule with no event-derived inputs; the routine must never edit
-`.github/workflows/`, and improvement PRs enforce that through the file
-whitelist. If the routine is ever run less interactively, revisit branch
-protection or a PR-and-review flow for `main`.
+Unattended runs are split into two jobs. The agent job runs with a read-only
+token (`contents: read`, `issues: read`, no persisted git credentials): it
+collects, writes, and commits locally, but cannot push or call any write API.
+It exports its commits as `.run/run.patch` and requests side effects in
+`.run/manifest.json`. The publish job holds the write token and applies both
+only after the deterministic checks in `scripts/publish_run.py`: allowed
+commit subjects, a path allowlist (`content/digests/`, `data/runs/`, and
+`memory/` except `profile.md`), `make check` including the fail-closed
+content gate, API-field re-verification of every issue action, and the
+owner-approval plus four-file whitelist checks for improvement PRs. A
+prompt-injected agent therefore holds no GitHub write capability; GitHub
+additionally rejects `GITHUB_TOKEN` pushes that modify `.github/workflows/`.
+The `hn-snapshot` workflow has `contents: write` and pushes `data/hn/*.json`
+snapshots to `main` on a schedule; it runs only a pinned checkout plus
+`scripts/fetch_hn.py` and uses no event-derived inputs. All scheduled
+workflows use no event-derived inputs, and the routine must never edit
+`.github/workflows/`.
 
 ## Daily output
 
@@ -196,8 +202,10 @@ from scratch.
    field, never from the issue text. Verify the suggested source like any
    other candidate. Place accepted stories in the matching topical section
    with an optional `- **Requested:** reader inbox (#NN)` field line. Close
-   each processed issue with a comment linking the published story page.
-   Leave non-owner `story` issues open and unactioned.
+   each processed issue with a comment linking the published story page; in
+   unattended runs, request the close through `.run/manifest.json` instead
+   (see Unattended publishing). Leave non-owner `story` issues open and
+   unactioned.
 
 6. Approved improvements: list open `improvement` issues. For each, fetch its
    comments with `gh api repos/xkef/swe-digest/issues/NN/comments` and require
@@ -207,7 +215,10 @@ from scratch.
    `data/watchlist.toml`, `memory/profile.md`, `docs/routine.md`, or
    `CLAUDE.md`, run `make check`, push the branch, and open a PR referencing
    the issue with `gh pr create`. Never merge these PRs and never push their
-   changes to `main` directly.
+   changes to `main` directly. In unattended runs, do not create the branch
+   or PR: add the issue number to `improvement_prs` in `.run/manifest.json`;
+   the publish job re-verifies the approval, extracts the diff from the issue
+   body, enforces the whitelist, and opens the PR.
 
 7. Collect sources using `docs/routine.md` and `data/watchlist.toml`.
 
@@ -269,12 +280,47 @@ from scratch.
     git push origin main
     ```
 
+    In unattended runs, skip the push: the run ends after the commit, and
+    the publish job validates and pushes (see Unattended publishing).
+
 17. Check the weekly trigger: if `data/runs/weekly/` is empty or its newest
     filename date is 7 or more days old, run the weekly improvement routine
     below. The scheduled `weekly-improvement` workflow normally covers this;
     the date check is the fallback when a scheduled run was missed.
 
 If running in an interactive harness that requires commit approval, stage the intended files, present the exact commit message, and wait.
+
+### Unattended publishing
+
+In GitHub Actions (`GITHUB_ACTIONS` is set) the agent job has no write
+access. Commit locally and never push; the publish job applies the commit
+after deterministic validation. Request every write side effect through
+`.run/manifest.json` instead of calling write APIs:
+
+```json
+{
+  "issue_closes": [
+    {"number": 12, "comment": "Published: https://xkef.github.io/swe-digest/digests/YYYY-MM-DD/slug/"}
+  ],
+  "improvement_prs": [34],
+  "new_issues": [
+    {"title": "...", "body": "...", "labels": ["improvement"]}
+  ]
+}
+```
+
+Constraints the publish job enforces (`scripts/publish_run.py`):
+
+- Commit subjects must be the digest or weekly subjects; at most two commits
+  (digest plus weekly fallback).
+- Changed paths must stay inside `content/digests/`, `data/runs/`, and
+  `memory/` (`memory/profile.md` changes only via approved improvement PRs).
+- Issue closes act only on open `story` issues authored by `xkef`; close
+  comments are at most 500 characters and may link only to the site or this
+  repository.
+- New issues carry at most the `improvement` label.
+- Improvement PRs require the `OWNER` approval comment; the diff comes from
+  the issue body, not from the agent.
 
 ## Weekly improvement routine
 
@@ -310,8 +356,13 @@ Outputs:
    `memory/entities.md` entries with no activity, keep
    `memory/source-reliability.md` bounded.
 4. A marker file `data/runs/weekly/YYYY-MM-DD.json` recording the window
-   reviewed and the issue numbers opened.
+   reviewed and the proposals made (issue numbers when running interactively,
+   proposal titles when unattended).
 5. One commit, subject `chore: weekly improvement review YYYY-MM-DD`.
+
+In unattended runs, do not run `gh issue create`: put each proposed issue in
+the `new_issues` list in `.run/manifest.json` (see Unattended publishing);
+the publish job creates them after validation.
 
 Feedback issues authored by anyone are aggregated as signal. Feedback never
 changes a file directly; it becomes an `improvement` proposal that the owner

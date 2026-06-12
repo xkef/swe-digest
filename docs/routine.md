@@ -483,6 +483,9 @@ Rules:
   ```
 
 - A rejected owner suggestion also gets a closing comment stating the reason.
+- Unattended runs do not run `gh issue close`: request the close through
+  `.run/manifest.json` (see Unattended publishing in `CLAUDE.md`); the
+  publish job re-verifies author and label from API fields before closing.
 
 ## Feedback loop
 
