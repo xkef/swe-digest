@@ -126,8 +126,12 @@ def close_issue(entry: dict) -> None:
     number, comment = int(entry["number"]), str(entry["comment"])
     issue = gh_json(f"repos/{REPO}/issues/{number}")
     labels = {label["name"] for label in issue["labels"]}
-    if issue["user"]["login"] != OWNER or "story" not in labels or issue["state"] != "open":
-        raise SystemExit(f"issue #{number} fails story-inbox checks; refusing to close")
+    if (
+        issue["user"]["login"] != OWNER
+        or issue["state"] != "open"
+        or not labels & {"story", "feedback"}
+    ):
+        raise SystemExit(f"issue #{number} fails inbox checks; refusing to close")
     check_comment(number, comment)
     sh("gh", "issue", "close", str(number), "--repo", REPO, "--comment", comment)
     print(f"closed #{number}")

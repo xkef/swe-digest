@@ -318,9 +318,9 @@ Constraints the publish job enforces (`scripts/publish_run.py`):
   (digest plus weekly fallback).
 - Changed paths must stay inside `content/digests/`, `data/runs/`, and
   `memory/` (`memory/profile.md` changes only via approved improvement PRs).
-- Issue closes act only on open `story` issues authored by `xkef`; close
-  comments are at most 500 characters and may link only to the site or this
-  repository.
+- Issue closes act only on open `story` or `feedback` issues authored by
+  `xkef`; close comments are at most 500 characters and may link only to the
+  site or this repository.
 - New issues carry at most the `improvement` label.
 - Improvement PRs require the `OWNER` approval comment; the diff comes from
   the issue body, not from the agent.
@@ -359,10 +359,15 @@ Outputs:
 3. Memory compaction: close stale items in `memory/followups.md`, prune
    `memory/entities.md` entries with no activity, keep
    `memory/source-reliability.md` bounded.
-4. A marker file `data/runs/weekly/YYYY-MM-DD.json` recording the window
-   reviewed and the proposals made (issue numbers when running interactively,
-   proposal titles when unattended).
-5. One commit, subject `chore: weekly improvement review YYYY-MM-DD`.
+4. Close each owner-authored `feedback` issue reviewed in this window with a
+   comment naming the weekly marker date and the proposal issue when one was
+   opened; the signal is recorded, so the issue does not stay open. In
+   unattended runs, request the closes through `issue_closes` in
+   `.run/manifest.json`.
+5. A marker file `data/runs/weekly/YYYY-MM-DD.json` recording the window
+   reviewed, the proposals made (issue numbers when running interactively,
+   proposal titles when unattended), and the feedback issues reviewed.
+6. One commit, subject `chore: weekly improvement review YYYY-MM-DD`.
 
 In unattended runs, do not run `gh issue create`: put each proposed issue in
 the `new_issues` list in `.run/manifest.json` (see Unattended publishing);
