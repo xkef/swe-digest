@@ -1,0 +1,27 @@
+name: issue-guard
+
+# Closes and locks issues opened by anyone other than the repository owner
+# or the publish job's bot. Uses only API event fields (user.login, number),
+# never issue text, so untrusted issue content cannot influence the run.
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  guard:
+    if: github.event.issue.user.login != 'xkef' && github.event.issue.user.login != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Close and lock outsider issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue close "$NUMBER" --repo "$GITHUB_REPOSITORY" --reason "not planned" \
+            --comment "This repository does not accept external issues."
+          gh api -X PUT "repos/$GITHUB_REPOSITORY/issues/$NUMBER/lock" -f lock_reason=resolved
