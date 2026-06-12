@@ -267,6 +267,15 @@ Format:
 - Last checked: 2026-06-12
 - Notes: Dashboard and API service issues began ~14:27 UTC 2026-06-12, investigating state. CDN edge serving and security features unaffected. Separate Billing Dashboard UI issue (invoices not visible) opened 2026-06-11 21:42 UTC, monitoring by 2026-06-12 11:50 UTC; automatic billing unaffected. cloudflarestatus.com blocked from datacenter IP; details via aggregators and WebSearch.
 
+## 2026-06-12: WASI 0.3.0 ratified
+
+- Status: open
+- Category: Languages
+- Sources: [Bytecode Alliance](https://bytecodealliance.org/articles/WASI-0.3), [WASI v0.3.0 release](https://github.com/WebAssembly/WASI/releases/tag/v0.3.0)
+- Watch for: Wasmtime stable support; Rust/Go/Python guest toolchain support for WASI 0.3 async reaching stable; WASI 0.3 HTTP/sockets interface adoption.
+- Last checked: 2026-06-12
+- Notes: WASI Subgroup ratified WASI 0.3.0 on 2026-06-11. Rebases WASI onto the Component Model async primitives: stream<T>, future<T>, async as first-class canonical ABI constructs. WASI 0.2 start-foo/finish-foo and pollable patterns collapse to async func. Completion-based model (io_uring/IOCP style). Host manages one shared event loop. HN 48504063 (197 pts). Previews shipped in Wasmtime 37+.
+
 ## 2026-06-12: AUR supply chain attack
 
 - Status: open

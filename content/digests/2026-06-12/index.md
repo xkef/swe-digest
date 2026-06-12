@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 100
+source_count = 103
 +++
 
 ## Top stories
@@ -355,6 +355,15 @@ source_count = 100
 - **Summary:** PostgreSQL 19 Beta 1 released 2026-06-04. Key additions: parallel autovacuum workers with configurable `autovacuum_max_parallel_workers`; `INSERT ... ON CONFLICT DO SELECT` for atomic get-or-create semantics; SQL/PGQ property graph query support; `REPACK` command for online table maintenance; `io_method=worker` auto-scaling I/O workers; JIT disabled by default; native JSON output for `COPY TO`; logical replication sequence support. GA is targeted for September/October 2026.
 - **Why it matters:** Parallel autovacuum directly addresses high-write-rate table bloat that has been a primary scaling pain point; beta testing now identifies regressions before the September freeze.
 
+### WASI 0.3 ratified: native async for WebAssembly components
+
+- **Category:** Languages
+- **Status:** confirmed
+- **Sources:** [Bytecode Alliance announcement](https://bytecodealliance.org/articles/WASI-0.3), [WASI v0.3.0 release](https://github.com/WebAssembly/WASI/releases/tag/v0.3.0), [HN discussion](https://news.ycombinator.com/item?id=48504063)
+- **Summary:** The WASI Subgroup ratified WASI 0.3.0 on 2026-06-11, rebasing WASI onto the WebAssembly Component Model's async primitives. The release makes `stream<T>`, `future<T>`, and `async` first-class constructs in the canonical ABI. The previous WASI 0.2 `start-foo`/`finish-foo` two-call pattern and the `pollable` resource collapse into single `async func` declarations, and input and output streams unify into `stream<u8>` with an accompanying future for completion and error status. The model is completion-based rather than readiness-based polling, closer to `io_uring` and IOCP than epoll. The host manages one shared event loop across all components.
+- **Why it matters:** Native async lets WebAssembly components compose concurrent I/O in-process without per-runtime event loops, removing a primary blocker for WASI-based microservice and plugin architectures; toolchain and runtime support is landing now in Wasmtime and language bindings.
+- **Follow-up:** Track Wasmtime and guest-language (Rust, Go, Python) toolchain support reaching stable for WASI 0.3.
+
 ## Apple platforms
 
 ### Foundation Models gains multimodal input, Python SDK, and third-party provider swap
@@ -641,5 +650,6 @@ source_count = 100
 - Phoronix / ioctl.fail / GamingOnLinux: AUR package supply chain compromise (400+ packages, infostealer + eBPF rootkit, 2026-06-11)
 - HuggingFace: Kimi K2.7-Code model card (Moonshot AI open-weight coding model)
 - GitHub (huggingface/open-r1): Open R1 open-source reproduction of DeepSeek-R1 reasoning
+- WebAssembly/WASI: WASI 0.3.0 ratification (Bytecode Alliance announcement, WASI v0.3.0 release notes)
 - MIT (Repenning and Sterman 2001): "Nobody ever gets credit for fixing problems that never happened" resurfaced on HN at 558 points
 - WebSearch fallback used throughout due to 403 blocks on direct fetches from datacenter IP ranges (see memory/source-reliability.md)
