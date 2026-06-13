@@ -320,3 +320,12 @@ Format:
 - Watch for: Patch availability confirmation; whether AMD revises bug-bounty scope or pays the bounty.
 - Last checked: 2026-06-13
 - Notes: CVSS 7.7 MITM RCE in AMD auto-updater; downloaded executable validated only with CRC32, no cryptographic signature. AMD closed report as out of scope (no bounty); patch took 124 days, embargo ended 2026-06-09. AMD bulletin later acknowledged and credited researcher.
+
+## 2026-06-13: Meta global outage 2026-06-12
+
+- Status: open
+- Category: Outage
+- Sources: [Newsweek](https://www.newsweek.com/facebook-down-not-working-error-query-12065443), [AOL (restored)](https://www.aol.com/facebook-instagram-users-report-widespread-160006542.html)
+- Watch for: Meta root-cause statement.
+- Last checked: 2026-06-13
+- Notes: Facebook, Instagram, WhatsApp, Messenger down worldwide from shortly before 10:00 ET 2026-06-12; 100,000+ Downdetector reports; users logged out and blocked from re-login; lasted about four hours. Andy Stone confirmed; a Meta spokesperson later said the issue was resolved and apologized. No root cause published.

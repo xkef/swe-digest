@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 31
+source_count = 32
 +++
 
 ## Top stories
@@ -102,8 +102,8 @@ No major items found.
 
 - **Category:** Outage
 - **Status:** confirmed
-- **Sources:** [The Next Web](https://thenextweb.com/news/meta-outage-facebook-instagram-whatsapp-down), [Newsweek](https://www.newsweek.com/facebook-down-not-working-error-query-12065443), [HN discussion](https://news.ycombinator.com/item?id=48504034)
-- **Summary:** Facebook, Instagram, WhatsApp, and Messenger went down worldwide starting shortly before 10:00 ET on 2026-06-12, with Downdetector logging over 100,000 reports by 10:00 ET. Facebook was hardest hit, logging users out and blocking re-login; Instagram showed loading and "query error" failures. The outage lasted about four hours. Meta communications VP Andy Stone confirmed the disruption. Meta has not published a root cause.
+- **Sources:** [The Next Web](https://thenextweb.com/news/meta-outage-facebook-instagram-whatsapp-down), [Newsweek](https://www.newsweek.com/facebook-down-not-working-error-query-12065443), [AOL (restored)](https://www.aol.com/facebook-instagram-users-report-widespread-160006542.html), [HN discussion](https://news.ycombinator.com/item?id=48504034)
+- **Summary:** Facebook, Instagram, WhatsApp, and Messenger went down worldwide starting shortly before 10:00 ET on 2026-06-12, with Downdetector logging over 100,000 reports by 10:00 ET. Facebook was hardest hit, logging users out and blocking re-login; Instagram showed loading and "query error" failures. The outage lasted about four hours. Meta communications VP Andy Stone confirmed the disruption. A Meta spokesperson later said the technical issue was resolved as quickly as possible and apologized; Meta has not published a root cause.
 - **Why it matters:** A four-hour authentication and feed failure across Meta's main properties disrupted login-with-Facebook flows and Meta Ads delivery for dependent businesses.
 - **Follow-up:** Watch for a Meta root-cause statement.
 
