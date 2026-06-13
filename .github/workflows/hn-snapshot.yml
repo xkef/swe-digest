@@ -1,5 +1,9 @@
 name: hn-snapshot
 
+# Timing root for every pipeline. This is the only schedule: it runs every
+# three hours, pushes the data/hn/ snapshot, then dispatches the downstream
+# workflows so they start on fresh data instead of guessing a cron offset.
+# Daily digest at 06/12/18 UTC, weekly improvement on Sunday at 09 UTC.
 on:
   schedule:
     - cron: "20 */3 * * *"
@@ -7,6 +11,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: hn-snapshot
@@ -34,3 +39,24 @@ jobs:
           git commit -m "chore: hn snapshot for $day"
           git pull --rebase origin main
           git push origin main
+      - name: Dispatch downstream pipelines
+        if: ${{ !cancelled() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          hour=$(date -u +%H)
+          dow=$(date -u +%u)
+          case "$hour" in
+            06|12|18)
+              gh workflow run daily-digest.yml
+              echo "dispatched daily digest (hour $hour UTC)" ;;
+            09)
+              if [ "$dow" = "7" ]; then
+                gh workflow run weekly-improvement.yml
+                echo "dispatched weekly improvement (Sunday $hour UTC)"
+              else
+                echo "hour $hour UTC, not Sunday: no dispatch"
+              fi ;;
+            *)
+              echo "hour $hour UTC is not a pipeline slot" ;;
+          esac
