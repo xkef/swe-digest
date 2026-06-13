@@ -201,8 +201,8 @@ Format:
 - Category: Linux/Kernel
 - Sources: [Phoronix rc7](https://www.phoronix.com/news/Linux-7.1-rc7)
 - Watch for: Linus Torvalds 7.1 stable announcement on 2026-06-14.
-- Last checked: 2026-06-12
-- Notes: rc7 released 2026-06-07. Torvalds stated stable expected 2026-06-14. Heavier than usual cycle due to AI-agent patch volume. rc7 disables AMD ROCm CRIU ioctl for security.
+- Last checked: 2026-06-13
+- Notes: rc7 (2026-06-07) expected to be the last candidate; stable expected 2026-06-14 unless an rc8 is needed. Late-cycle fixes concentrated in GPU then networking. Heavier than usual cycle due to AI-agent patch volume. rc7 disables AMD ROCm CRIU ioctl for security.
 
 ## 2026-06-12: Langflow CVE-2026-5027 CISA KEV watch
 
@@ -284,3 +284,39 @@ Format:
 - Watch for: Confirmation of compromised user credentials exploited in the wild; improvements to AUR orphan-package adoption policies; further scope of affected packages.
 - Last checked: 2026-06-12
 - Notes: Maintainer "arojas" adopted 400+ orphaned AUR packages and injected infostealer ("deps") + optional eBPF rootkit via modified PKGBUILD npm install calls. Targets developer credentials (browsers, Electron apps, SSH, GitHub, Docker, VPN). Discovered 2026-06-11; Arch maintainers removed malicious content and banned account. Official Arch repos unaffected. No confirmed downstream exploitation reported yet.
+
+## 2026-06-13: US export directive suspends Fable 5 and Mythos 5
+
+- Status: open
+- Category: AI
+- Sources: [Anthropic statement](https://www.anthropic.com/news/fable-mythos-access), [Bloomberg](https://www.bloomberg.com/news/articles/2026-06-13/anthropic-says-us-limits-foreign-access-to-fable-5-mythos-5)
+- Watch for: Directive lifted, narrowed, or extended to other models/providers; official government statement; legal challenge; refund or credit handling.
+- Last checked: 2026-06-13
+- Notes: Anthropic received an export control directive at 17:21 ET 2026-06-12 to block all foreign-national access to Fable 5 and Mythos 5; it disabled both for all customers. Other models unaffected. Stated concern is a narrow jailbreak (ask model to read a codebase and fix flaws), which Anthropic says exists in other models including GPT-5.5. Anthropic disagrees with the recall.
+
+## 2026-06-13: Oracle PeopleSoft CVE-2026-35273 active exploitation
+
+- Status: open
+- Category: Security
+- Sources: [Rapid7](https://www.rapid7.com/blog/post/etr-active-exploitation-of-oracle-peoplesoft-zero-day-cve-2026-35273/), [SecurityWeek](https://www.securityweek.com/google-confirms-exploitation-of-oracle-peoplesoft-zero-day-by-shinyhunters/)
+- Watch for: Victim disclosures, ransomware follow-on, CISA federal remediation deadline.
+- Last checked: 2026-06-13
+- Notes: CVSS 9.8 unauthenticated SSRF-to-RCE in PeopleTools Updates Environment Management. Affects PeopleTools 8.61 and 8.62. Exploited as zero-day 2026-05-27 to 2026-06-09 (ShinyHunters per Google), two weeks before Oracle's 2026-06-10 out-of-band advisory. CISA KEV 2026-06-12.
+
+## 2026-06-13: FFmpeg 21 zero-days found by AI agent
+
+- Status: open
+- Category: Security
+- Sources: [DepthFirst research](https://depthfirst.com/research/21-zero-days-in-ffmpeg)
+- Watch for: CVE assignment for the remaining 12 findings; downstream re-vendoring; maintainer-burden discussion on AI-generated reports.
+- Last checked: 2026-06-13
+- Notes: DepthFirst autonomous agent found 21 vulnerabilities for ~$1,000 across TS demuxer, VP9, swscale, RTP depacketizers, DASH, RTSP server, RTMP client, option parser. 9 CVEs (CVE-2026-39210 to CVE-2026-39218); 12 fixed upstream awaiting numbers. Worst: DFVULN-127, AV1 RTP depacketizer heap overflow, 183-byte packet to unauthenticated RCE over RTSP. Several bugs latent 15-20 years.
+
+## 2026-06-13: AMD auto-updater RCE CVE-2026-40677
+
+- Status: open
+- Category: Security
+- Sources: [researcher write-up](https://mrbruh.com/amd2/), [Tom's Hardware](https://www.tomshardware.com/tech-industry/cyber-security/amd-denies-researcher-a-usd10-000-bug-bounty-after-fixing-critical-auto-updater-vulnerability-security-flaw-took-124-days-to-patch)
+- Watch for: Patch availability confirmation; whether AMD revises bug-bounty scope or pays the bounty.
+- Last checked: 2026-06-13
+- Notes: CVSS 7.7 MITM RCE in AMD auto-updater; downloaded executable validated only with CRC32, no cryptographic signature. AMD closed report as out of scope (no bounty); patch took 124 days, embargo ended 2026-06-09. AMD bulletin later acknowledged and credited researcher.

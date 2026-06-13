@@ -1,0 +1,214 @@
++++
+title = "2026-06-13 digest"
+date = 2026-06-13
+description = "Daily software engineering digest for 2026-06-13."
+
+[taxonomies]
+categories = []
+tags = []
+
+[extra]
+status = "published"
+source_count = 31
++++
+
+## Top stories
+
+### Anthropic suspends Fable 5 and Mythos 5 after US export directive
+
+- **Category:** AI
+- **Status:** confirmed
+- **Sources:** [Anthropic statement](https://www.anthropic.com/news/fable-mythos-access), [Bloomberg](https://www.bloomberg.com/news/articles/2026-06-13/anthropic-says-us-limits-foreign-access-to-fable-5-mythos-5), [CNBC](https://www.cnbc.com/2026/06/12/anthropic-disables-access-to-fable-5-and-mythos-5-to-comply-with-government-directive.html), [HN discussion](https://news.ycombinator.com/item?id=48511072)
+- **Summary:** Anthropic received a US government export control directive at 17:21 ET on 2026-06-12 to suspend all access to Fable 5 and Mythos 5 by any foreign national, inside or outside the United States, including foreign-national Anthropic employees. Anthropic disabled both models for all customers to comply; access to all other Anthropic models is unaffected. Anthropic states the letter gave no specific national security detail and that its understanding is the government is concerned with a method of jailbreaking Fable 5, which it describes as narrow and non-universal and consisting of asking the model to read a codebase and fix software flaws, a capability it says is available in other models including OpenAI GPT-5.5.
+- **Comments:** HN commenters debated refunds, export-control precedent, and whether a narrow jailbreak justifies recalling a model deployed to hundreds of millions; several argued the cited code-analysis capability exists in other frontier models.
+- **Why it matters:** Any integration on `claude-fable-5` or Mythos 5 fails immediately and must fail over to Opus 4.8 or another model; the directive sets a precedent that a single reported jailbreak can force a frontier model offline.
+- **Follow-up:** Track whether the directive is lifted, narrowed, or extended to other models or providers; watch for an official government statement and any legal challenge.
+
+### Oracle PeopleSoft CVE-2026-35273 zero-day actively exploited; CISA KEV
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Rapid7](https://www.rapid7.com/blog/post/etr-active-exploitation-of-oracle-peoplesoft-zero-day-cve-2026-35273/), [Help Net Security](https://www.helpnetsecurity.com/2026/06/11/oracle-peoplesoft-under-attack-cve-2026-35273/), [SecurityWeek (ShinyHunters)](https://www.securityweek.com/google-confirms-exploitation-of-oracle-peoplesoft-zero-day-by-shinyhunters/)
+- **Summary:** CVE-2026-35273 (CVSS 9.8) is an unauthenticated remote vulnerability in the Updates Environment Management component of Oracle PeopleSoft Enterprise PeopleTools, classified as server-side request forgery and leading to remote code execution. It was exploited as a zero-day between 2026-05-27 and 2026-06-09, two weeks before Oracle's 2026-06-10 out-of-band advisory; Google attributes exploitation to ShinyHunters. PeopleTools 8.61 and 8.62 are affected. CISA added it to the Known Exploited Vulnerabilities catalog on 2026-06-12 and ordered federal agencies to patch.
+- **Why it matters:** Internet-exposed PeopleSoft handles HR and financial data, and unauthenticated RCE under active extortion-group use makes unpatched instances an immediate breach risk.
+- **Follow-up:** Watch for confirmed data-theft victims, ransomware follow-on, and the federal remediation deadline.
+
+### AI agent finds 21 zero-days in FFmpeg for about $1,000
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [DepthFirst research](https://depthfirst.com/research/21-zero-days-in-ffmpeg), [HN discussion](https://news.ycombinator.com/item?id=48510046)
+- **Summary:** DepthFirst reports its autonomous security agent found 21 previously unknown vulnerabilities in FFmpeg at a cost of about $1,000, spanning the TS demuxer, VP9 decoder, swscale, RTP depacketizers, DASH demuxer, RTSP server, RTMP client, and the option parser. Nine carry CVE identifiers (CVE-2026-39210 through CVE-2026-39218); the remainder are fixed upstream and awaiting numbers. The most severe, DFVULN-127, is a heap buffer overflow in the AV1 RTP depacketizer where a single 183-byte packet over a network-reachable RTSP stream can redirect execution to an unauthenticated RCE primitive. Several bugs had been latent for 15 to 20 years.
+- **Comments:** HN discussion separated genuine memory-safety findings from agent-volume noise and debated maintainer burden from AI-generated reports against FFmpeg.
+- **Why it matters:** FFmpeg is embedded across media pipelines and browsers, so network-reachable RTP and RTSP overflows are broadly exposed, and the result shows agent-driven bug finding is now cheap enough to scale.
+- **Follow-up:** Track CVE assignment for the remaining 12 findings and downstream re-vendoring of patched FFmpeg.
+
+### Claude Sonnet 4 and Opus 4 retire 2026-06-15
+
+- **Category:** AI
+- **Status:** confirmed
+- **Sources:** [Anthropic model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations)
+- **Summary:** `claude-sonnet-4-20250514` and `claude-opus-4-20250514` are removed from the Claude API at 09:00 PT on 2026-06-15 with no grace period; requests to the retired model IDs fail immediately. Successors are `claude-sonnet-4-6` and `claude-opus-4-8`. The Agent SDK credit split from subscription usage also takes effect 2026-06-15.
+- **Why it matters:** Any production integration still pinning the May 2025 model IDs breaks on Monday morning.
+- **Follow-up:** Confirm migration complete and no breakage after 2026-06-15.
+
+### Linux 7.1 stable expected 2026-06-14
+
+- **Category:** Linux/Kernel
+- **Status:** developing
+- **Sources:** [Phoronix rc7](https://www.phoronix.com/news/Linux-7.1-rc7), [Neowin](https://www.neowin.net/news/linux-71-stable-launch-looms-as-linus-torvalds-releases-the-final-release-candidate/)
+- **Summary:** Linus Torvalds released Linux 7.1-rc7 on 2026-06-07 and stated he expects it to be the last release candidate, with the 7.1 stable release on 2026-06-14 unless an eighth candidate is needed. The biggest area of late-cycle fixes was GPUs, followed by networking, with the rest spread across architecture, driver, filesystem, and build fixes. The cycle ran heavier than usual due to an uptick in AI-agent-generated patches.
+- **Why it matters:** Kernel 7.1 stable lands within a day, and distributions and CI pipelines that test against mainline should prepare for the merge.
+- **Follow-up:** Confirm 7.1 stable on 2026-06-14; review changelog for scheduler, io_uring, and eBPF changes.
+
+## AI
+
+### Kimi K2.7-Code released as open-weight coding model
+
+- **Category:** AI
+- **Status:** developing
+- **Sources:** [Hugging Face model card](https://huggingface.co/moonshotai/Kimi-K2.7-Code), [HN discussion](https://news.ycombinator.com/item?id=48502347)
+- **Summary:** Moonshot AI released Kimi K2.7-Code on 2026-06-12 as an open-weight agentic coding model under a Modified MIT license. The model card describes a Mixture-of-Experts architecture with about 1 trillion total and 32 billion activated parameters, a 256K context window, and roughly a 30 percent reduction in thinking-token usage versus Kimi K2.6. HN discussion focused on cost: commenters noted Chinese open-weight models price far below Anthropic Opus while approaching its quality for many coding tasks, and several reported evaluating a move off proprietary agents to opencode or similar harnesses with K2.7.
+- **Why it matters:** Cheaper open-weight coding models with usable agent harnesses raise migration pressure on teams paying premium per-token rates for proprietary coding agents.
+- **Follow-up:** Track independent coding-benchmark results and real cost comparisons against Claude Code and Codex.
+
+## ML research
+
+No major items found.
+
+## Agentic coding
+
+### How to set up a local coding agent on macOS
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [HN discussion](https://news.ycombinator.com/item?id=48507020)
+- **Summary:** A widely discussed write-up walks through running a local coding agent on macOS with local model inference. HN commenters noted that `llama.cpp` can fetch models directly with `-hf` and `LLAMA_CACHE` without a separate downloader, pointed to ollama and opencode as an alternative stack, and reported mixed speedups from multi-token-prediction draft setups on Apple Silicon.
+- **Why it matters:** Local coding agents avoid per-token API cost and data exposure, and the discussion captures the current practical setup and its limits on Apple Silicon.
+
+## Security
+
+### AMD denies $10,000 bounty for auto-updater RCE; CVE-2026-40677
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Tom's Hardware](https://www.tomshardware.com/tech-industry/cyber-security/amd-denies-researcher-a-usd10-000-bug-bounty-after-fixing-critical-auto-updater-vulnerability-security-flaw-took-124-days-to-patch), [researcher write-up](https://mrbruh.com/amd2/), [HN discussion](https://news.ycombinator.com/item?id=48510357)
+- **Summary:** A researcher (MrBruh) reported a remote code execution flaw in AMD's auto-update software, exploitable via a man-in-the-middle attack because the downloaded executable was validated only with a CRC32 check rather than a cryptographic signature. AMD initially closed the report as out of scope and paid no bounty; the issue was later assigned CVE-2026-40677 (CVSS 7.7) and took 124 days to patch, with the embargo ending 2026-06-09. After the write-up reached HN, AMD's bulletin acknowledged the vulnerability and credited the researcher.
+- **Why it matters:** Software auto-updaters that skip signature verification are a direct supply-chain delivery path, and the disclosure-handling dispute affects whether researchers keep reporting to AMD.
+
+## Outages
+
+### Meta global outage on 2026-06-12
+
+- **Category:** Outage
+- **Status:** confirmed
+- **Sources:** [The Next Web](https://thenextweb.com/news/meta-outage-facebook-instagram-whatsapp-down), [Newsweek](https://www.newsweek.com/facebook-down-not-working-error-query-12065443), [HN discussion](https://news.ycombinator.com/item?id=48504034)
+- **Summary:** Facebook, Instagram, WhatsApp, and Messenger went down worldwide starting shortly before 10:00 ET on 2026-06-12, with Downdetector logging over 100,000 reports by 10:00 ET. Facebook was hardest hit, logging users out and blocking re-login; Instagram showed loading and "query error" failures. The outage lasted about four hours. Meta communications VP Andy Stone confirmed the disruption. Meta has not published a root cause.
+- **Why it matters:** A four-hour authentication and feed failure across Meta's main properties disrupted login-with-Facebook flows and Meta Ads delivery for dependent businesses.
+- **Follow-up:** Watch for a Meta root-cause statement.
+
+### Cloudflare Dashboard and API control-plane incident
+
+- **Category:** Outage
+- **Status:** developing
+- **Sources:** [Cloudflare status history](https://www.cloudflarestatus.com/history), [HN discussion](https://news.ycombinator.com/item?id=48504702)
+- **Summary:** Cloudflare reported Dashboard and API service issues beginning 2026-06-12. CDN edge serving and security features were reported unaffected; the impact was on the control plane. Details were gathered through aggregators and discussion because cloudflarestatus.com returns 403 from the unattended harness.
+- **Why it matters:** Control-plane outages block configuration changes and deploys even when traffic continues to serve.
+- **Follow-up:** Confirm resolution time and whether Cloudflare publishes a root cause.
+
+## Developer tools
+
+No major items found.
+
+## Languages and runtimes
+
+No major items found.
+
+## Apple platforms
+
+### Apple migrates the TrueType hinting interpreter from C to Swift
+
+- **Category:** Apple
+- **Status:** confirmed
+- **Sources:** [Swift.org blog](https://www.swift.org/blog/migrating-truetype-hinting-to-swift/), [HN discussion](https://news.ycombinator.com/item?id=48508726)
+- **Summary:** Apple rewrote the TrueType hinting interpreter from C to memory-safe Swift and shipped it in the fall 2025 releases. The post states the Swift interpreter runs about 13 percent faster than the C code it replaced. Font parsers process untrusted input, making the hinting interpreter a security-critical attack surface that motivated the migration.
+- **Why it matters:** A measured performance gain alongside a memory-safety rewrite of a parser handling untrusted data is a concrete data point for C-to-Swift migration of security-sensitive system code.
+
+## Linux and kernel
+
+No major items found.
+
+## Infrastructure
+
+### Looking forward to PostgreSQL 19
+
+- **Category:** Infrastructure
+- **Status:** discussion
+- **Sources:** [pgEdge blog](https://www.pgedge.com/blog/looking-forward-to-postgres-19-its-about-time), [HN discussion](https://news.ycombinator.com/item?id=48506372)
+- **Summary:** A widely read write-up covers PostgreSQL 19 bringing application-time temporal table support, the half of the SQL:2011 bi-temporal model that Postgres had not yet implemented. PostgreSQL 19 Beta 1 shipped 2026-06-04 and also adds parallel autovacuum, `INSERT ... ON CONFLICT DO SELECT`, SQL/PGQ graph queries, and REPACK, with JIT disabled by default.
+- **Why it matters:** PostgreSQL 19 GA is expected in the autumn, and native application-time temporal tables change how teams model history and audit data instead of hand-rolling validity columns.
+- **Follow-up:** Track Beta 2, the RC schedule, and GA.
+
+## Engineering posts
+
+### Reducing the sloppiness of AI-generated front-end code
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [HN discussion](https://news.ycombinator.com/item?id=48504912)
+- **Summary:** A practitioner post describes concrete steps to reduce low-quality output from AI front-end generation, covering design constraints, component reuse, and review checkpoints. HN discussion debated how much of the improvement comes from prompting versus tighter design systems and linting.
+- **Why it matters:** Teams adopting AI front-end generation need repeatable guardrails to keep generated UI maintainable.
+
+## Markets and companies
+
+### SpaceX MSCI early index inclusion effective 2026-06-13
+
+- **Category:** Markets
+- **Status:** confirmed
+- **Sources:** [TradingKey IPO analysis](https://www.tradingkey.com/analysis/stocks/us-stocks/261960721-spacex-ipo-is-live-at-135-bull-base-and-bear-cases-for-the-first-90-days-tradingkey)
+- **Summary:** SpaceX (NASDAQ: SPCX), which began trading 2026-06-12 at $135 per share after a $75 billion raise at a $1.75 trillion valuation, becomes eligible for early MSCI index inclusion effective 2026-06-13. S&P 500 fast-track entry remains blocked by the index committee over the dual-class share structure.
+- **Why it matters:** Index inclusion drives sustained passive institutional demand and ties SpaceX, through Starlink and xAI compute links, into the AI infrastructure investment cycle.
+- **Follow-up:** Watch post-inclusion demand, S&P 500 review, and lock-up expiry.
+
+## Hacker News
+
+### If you are asking for human attention, demonstrate human effort
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [HN discussion](https://news.ycombinator.com/item?id=48497609)
+- **Summary:** A high-discussion front-page essay (1554 points) argues that low-effort, AI-generated requests for human time should be deprioritized. HN discussion connected it to maintainer burden from AI-generated bug reports and pull requests, echoing the FFmpeg AI-disclosure thread.
+
+### Open source AI must win
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [HN discussion](https://news.ycombinator.com/item?id=48511908)
+- **Summary:** An opinion piece arguing for open-weight AI drew 661 points the same day as the Fable 5 and Mythos 5 suspension. Commenters debated funding models for open-weight training, what "open source" means for hosted models, and whether open weights insulate users from government access controls; several noted the best open weights are roughly at Sonnet level.
+
+## Reddit and social pulse
+
+- Practitioner sentiment around open-weight coding models was visible in the Kimi K2.7-Code thread, where multiple users reported evaluating a move off proprietary agents on cost grounds. Labeled discussion; not independently verified. Direct Reddit collection was not run this cycle; pulse is drawn from Hacker News.
+
+## Watchlist follow-ups
+
+- **Claude Sonnet 4 and Opus 4 retirement:** Retire 2026-06-15 09:00 PT. Covered in Top stories. Last checked 2026-06-13.
+- **US export directive on Fable 5 and Mythos 5:** New. Both models disabled for all customers 2026-06-12. Watch for lift, narrowing, extension, or legal challenge. Last checked 2026-06-13.
+- **Linux 7.1 stable:** Expected 2026-06-14. rc7 was the latest candidate as of 2026-06-07. Last checked 2026-06-13.
+- **Oracle PeopleSoft CVE-2026-35273:** CISA KEV 2026-06-12; active exploitation by ShinyHunters 2026-05-27 to 2026-06-09. Watch for victim disclosures and federal deadline. Last checked 2026-06-13.
+- **FFmpeg 21 zero-days:** 9 CVEs assigned (CVE-2026-39210 to CVE-2026-39218); 12 pending numbers. Watch for remaining CVE assignment and downstream re-vendoring. Last checked 2026-06-13.
+- **Cloudflare control-plane incident:** Dashboard and API issues 2026-06-12; resolution and root cause pending. Last checked 2026-06-13.
+- **Ivanti Sentry CVE-2026-10520:** CISA KEV 2026-06-11; treat unpatched as compromised. Last checked 2026-06-13.
+- **Langflow CVE-2026-5027:** VulnCheck KEV 2026-06-08; CISA KEV still pending. Last checked 2026-06-13.
+
+## Sources checked
+
+- Hacker News via `make hn` (Algolia backend, full structured coverage: front page, top 24h, Ask HN, Show HN, 12 comment threads, 58 of 68 watchlist queries; 0 degraded collections)
+- AI vendor sources (Anthropic news and model docs, Moonshot AI)
+- Security advisories and trackers (CISA KEV JSON feed, Rapid7, Help Net Security, SecurityWeek, DepthFirst)
+- Status and outage reporting (Cloudflare status, Meta outage reporting)
+- GitHub release watchlist (neovim, ghostty, jj, go, rust, zed)
+- Engineering and platform blogs (Swift.org, pganalyze)
+- Markets reporting (SpaceX MSCI inclusion)
+- Reddit not collected directly this cycle; social pulse drawn from Hacker News
+</content>
