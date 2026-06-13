@@ -522,6 +522,8 @@ Comment rules:
 Use Reddit as pulse, not verification.
 
 Check hot and top daily posts for subreddits listed in `data/watchlist.toml`.
+Collect via the public RSS feeds (`/hot/.rss`, `/top/.rss?t=day`), not the JSON
+endpoints, to stay within Reddit's automated-access terms.
 
 Include a Reddit topic when one of these is true:
 
@@ -553,6 +555,8 @@ Rules:
 - Link the primary source first when a post points to one.
 - Place social findings in the `Reddit and social pulse` section.
 - Do not include a post only because the author is well known.
+- Honor any correction or removal request from a tracked person: drop them
+  from `[social]` and omit them from future runs (see the site About page).
 
 ## AI procedure
 

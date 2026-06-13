@@ -158,11 +158,14 @@ Daily hot checks:
 - `r/linux`
 - `r/selfhosted`
 
-Collection URLs:
+Collection URLs (public RSS feeds only):
 
-- `https://www.reddit.com/r/{sub}/hot.json?limit=25`
-- `https://www.reddit.com/r/{sub}/top.json?t=day&limit=25`
-- `https://www.reddit.com/r/{sub}/.rss`
+- `https://www.reddit.com/r/{sub}/hot/.rss`
+- `https://www.reddit.com/r/{sub}/top/.rss?t=day`
+
+Use the public RSS feeds, not the `.json` endpoints or any authenticated
+scrape, to stay within Reddit's automated-access terms. RSS needs no
+credentials, which fits this project's no-secrets posture.
 
 Extraction rules:
 
@@ -189,6 +192,8 @@ Extraction rules:
 - Link the primary source first when a post points to one.
 - Place findings in the `Reddit and social pulse` section.
 - Add a person to `[social]` only when they are a recurring, relevant voice.
+- Honor any correction or removal request from a tracked person: drop them
+  from `[social]` and omit them from future runs (see the site About page).
 
 If a tracked person publishes only on Mastodon or Bluesky, their account RSS
 (`https://{instance}/@{user}.rss`, `https://bsky.app/profile/{handle}/rss`) is

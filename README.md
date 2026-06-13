@@ -88,3 +88,15 @@ Set Pages source to GitHub Actions in repository settings.
 ## Private context
 
 Do not commit private employer details, private travel plans, personal account data, or private contact data. Put local-only personalization in `PRIVATE_CONTEXT.md`; it is ignored by Git.
+
+## License and use
+
+- Source code is licensed under the MIT License (see `LICENSE`).
+- Original digest text and site copy are licensed under CC BY 4.0. Linked
+  third-party sources retain their own rights.
+- The published site carries a no-warranty notice; verify items against their
+  linked primary source before acting.
+
+If you are named in a digest and want a correction or removal, open an issue.
+Such requests are honored, and a tracked person can ask to be dropped from
+`data/watchlist.toml`. See the site `About` page for the full policy.
