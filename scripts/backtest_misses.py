@@ -15,7 +15,7 @@ seen ids and query matches:
 - seen_and_matched: visible and query-matched, so skipping it was a
   relevance decision for the agent to confirm or revisit.
 
-Results are written into data/runs/DATE.json under mechanical.backtest;
+Results are written into data/runs/DATE.yaml under mechanical.backtest;
 the agent records the final cause per candidate in judgment.miss_review.
 """
 from __future__ import annotations

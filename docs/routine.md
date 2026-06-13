@@ -526,7 +526,7 @@ Rules:
 
 - A rejected owner suggestion also gets a closing comment stating the reason.
 - Unattended runs do not run `gh issue close`: request the close through
-  `.run/manifest.json` (see Unattended publishing in `CLAUDE.md`); the
+  `.run/manifest.yaml` (see Unattended publishing in `CLAUDE.md`); the
   publish job re-verifies author and label from API fields before closing.
 
 ## Feedback loop
@@ -536,7 +536,7 @@ evidence. Three scripts own the mechanical parts; the agent only judges.
 
 ### Run log
 
-`make run-log` writes `data/runs/YYYY-MM-DD.json` after the digest is
+`make run-log` writes `data/runs/YYYY-MM-DD.yaml` after the digest is
 written. The script owns `mechanical` and preserves everything else:
 
 - `mechanical.hn`: data source (`cache` or `snapshot`), `fetched_at`,
@@ -553,7 +553,8 @@ The agent adds `judgment`:
 - `judgment.inbox`: story issue numbers processed and the action taken.
 - `judgment.miss_review`: final cause per backtest candidate.
 - `judgment.notes`: degraded sources, unusual calls, anything the weekly
-  routine should see.
+  routine should see. Run logs are YAML; write `notes` as a block scalar
+  (`notes: |`) or a list of short lines, not one long line.
 
 Run logs are the durable evidence store; `data/hn/` snapshots are pruned to
 seven days and `.cache/` is local.
@@ -605,6 +606,16 @@ Proposal discipline:
   star or follow.
 - The proposed diff touches only `data/watchlist.toml`, `memory/profile.md`,
   `docs/routine.md`, or `CLAUDE.md`.
+
+## Daily quality pass
+
+The `digest-quality` workflow runs a deeper sweep over the day's already-built
+digest ~30 minutes after the first ingest (04:20 UTC, its own cron). It forces
+the discovery an incremental update skips: the full GitHub releases and
+trending checks, gap-fill of thin sections, primary-source verification, and
+re-ranking, updating the digest in place. Scope is digest and data only; it
+never edits project files or workflows. The routine steps and constraints are
+in `CLAUDE.md` under "Daily quality pass".
 
 ## Memory updates
 

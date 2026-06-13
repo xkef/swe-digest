@@ -78,7 +78,7 @@ Unattended runs are split into two jobs. The agent job runs with a read-only
 token (`contents: read`, `issues: read`, no persisted git credentials): it
 collects, writes, and commits locally, but cannot push or call any write API.
 It exports its commits as `.run/run.patch` and requests side effects in
-`.run/manifest.json`. The publish job holds the write token and applies both
+`.run/manifest.yaml`. The publish job holds the write token and applies both
 only after the deterministic checks in `scripts/publish_run.py`: allowed
 commit subjects, a path allowlist (`content/digests/`, `data/runs/`, and
 `memory/` except `profile.md`), `make check` including the fail-closed
@@ -89,7 +89,8 @@ additionally rejects `GITHUB_TOKEN` pushes that modify `.github/workflows/`.
 The `hn-snapshot` workflow has `contents: write` and pushes `data/hn/*.json`
 snapshots to `main` every three hours as a background accumulator; it runs
 only a pinned checkout plus `scripts/fetch_hn.py`. The `daily-digest`
-(03:50/09:50/15:50 UTC) and `weekly-improvement` (Sunday 06:30 UTC) workflows
+(03:50/09:50/15:50 UTC), `digest-quality` (04:20 UTC, a deeper same-day pass
+after the first ingest), and `weekly-improvement` (Sunday 06:30 UTC) workflows
 run on their own schedules and each fetches HN live during the run. All
 scheduled workflows use no event-derived inputs, and the routine must never
 edit `.github/workflows/`.
@@ -190,7 +191,7 @@ from scratch.
    ```
 
    Review the candidates printed for yesterday's digest. Finalize a cause per
-   candidate in yesterday's `data/runs/YYYY-MM-DD.json` under
+   candidate in yesterday's `data/runs/YYYY-MM-DD.yaml` under
    `judgment.miss_review` using the taxonomy in `docs/routine.md`
    (`scrape_gap`, `watchlist_gap`, `relevance_skip`, `out_of_scope`). Carry a
    genuine miss that is still relevant into today's digest or
@@ -208,7 +209,7 @@ from scratch.
    other candidate. Place accepted stories in the matching topical section
    with an optional `- **Requested:** reader inbox (#NN)` field line. Close
    each processed issue with a comment linking the published story page; in
-   unattended runs, request the close through `.run/manifest.json` instead
+   unattended runs, request the close through `.run/manifest.yaml` instead
    (see Unattended publishing). Leave non-owner `story` issues open and
    unactioned.
 
@@ -221,7 +222,7 @@ from scratch.
    `CLAUDE.md`, run `make check`, push the branch, and open a PR referencing
    the issue with `gh pr create`. Never merge these PRs and never push their
    changes to `main` directly. In unattended runs, do not create the branch
-   or PR: add the issue number to `improvement_prs` in `.run/manifest.json`;
+   or PR: add the issue number to `improvement_prs` in `.run/manifest.yaml`;
    the publish job re-verifies the approval, extracts the diff from the issue
    body, enforces the whitelist, and opens the PR.
 
@@ -241,7 +242,7 @@ from scratch.
     make run-log
     ```
 
-    Then fill the `judgment` keys in `data/runs/YYYY-MM-DD.json` (inbox
+    Then fill the `judgment` keys in `data/runs/YYYY-MM-DD.yaml` (inbox
     issues processed, notes on degraded sources or unusual decisions). The
     run log commits together with the digest.
 
@@ -301,18 +302,17 @@ If running in an interactive harness that requires commit approval, stage the in
 In GitHub Actions (`GITHUB_ACTIONS` is set) the agent job has no write
 access. Commit locally and never push; the publish job applies the commit
 after deterministic validation. Request every write side effect through
-`.run/manifest.json` instead of calling write APIs:
+`.run/manifest.yaml` instead of calling write APIs:
 
-```json
-{
-  "issue_closes": [
-    {"number": 12, "comment": "Published: https://xkef.github.io/swe-digest/digests/YYYY-MM-DD/slug/"}
-  ],
-  "improvement_prs": [34],
-  "new_issues": [
-    {"title": "...", "body": "...", "labels": ["improvement"]}
-  ]
-}
+```yaml
+issue_closes:
+  - number: 12
+    comment: "Published: https://xkef.github.io/swe-digest/digests/YYYY-MM-DD/slug/"
+improvement_prs: [34]
+new_issues:
+  - title: "..."
+    body: "..."
+    labels: [improvement]
 ```
 
 Constraints the publish job enforces (`scripts/publish_run.py`):
@@ -328,6 +328,36 @@ Constraints the publish job enforces (`scripts/publish_run.py`):
 - Improvement PRs require the `OWNER` approval comment; the diff comes from
   the issue body, not from the agent.
 
+## Daily quality pass
+
+A scheduled deeper sweep over the day's already-built digest, run shortly
+after the first ingest by the `digest-quality` workflow (04:20 UTC, on its own
+cron, not chained off the ingest). It exists because the regular daily runs
+update in place and skip discovery on a quiet day. Scope is digest and data
+only.
+
+Steps:
+
+1. Sync as in the daily workflow. Today's digest should already exist; if it
+   does not, run the full daily workflow instead.
+2. Run the `GitHub releases and trending procedure` in full: check releases
+   for every `[github]` repo and scan `github.com/trending`, surfacing
+   verified emerging items into their topical sections.
+3. Fill thin sections, verify primary sources, and re-rank by impact. Keep
+   existing stories unless a correction is needed; add new ones in rank order.
+4. Refresh `source_count`, run `make run-log`, and run `make check`.
+5. Commit once, subject `chore: update digest for YYYY-MM-DD`.
+
+Constraints:
+
+- Write only `content/digests/` and `data/runs/` (plus the allowed
+  `memory/followups.md`, `memory/entities.md`, `memory/source-reliability.md`).
+- Never change `data/watchlist.toml`, `memory/profile.md`, `docs/routine.md`,
+  `CLAUDE.md`, or `.github/workflows/`.
+- In unattended runs do not push or call write APIs; request side effects
+  through `.run/manifest.yaml` as in the daily workflow.
+- State GitHub trending and releases coverage in `Sources checked`.
+
 ## Weekly improvement routine
 
 Runs at most once per seven days. Purpose: turn accumulated run logs,
@@ -338,7 +368,7 @@ daily workflow applies changes.
 Inputs:
 
 1. `make yield` over the run-log window since the last weekly run.
-2. `judgment.miss_review` entries across `data/runs/*.json`.
+2. `judgment.miss_review` entries across `data/runs/*.yaml`.
 3. Open and recently closed `feedback` issues:
    `gh issue list --label feedback --state all --json number,title,body,author,createdAt`.
    Keep only issues whose `author.login` is `xkef`.
@@ -380,14 +410,14 @@ Outputs:
    comment naming the weekly marker date and the proposal issue when one was
    opened; the signal is recorded, so the issue does not stay open. In
    unattended runs, request the closes through `issue_closes` in
-   `.run/manifest.json`.
-5. A marker file `data/runs/weekly/YYYY-MM-DD.json` recording the window
+   `.run/manifest.yaml`.
+5. A marker file `data/runs/weekly/YYYY-MM-DD.yaml` recording the window
    reviewed, the proposals made (issue numbers when running interactively,
    proposal titles when unattended), and the feedback issues reviewed.
 6. One commit, subject `chore: weekly improvement review YYYY-MM-DD`.
 
 In unattended runs, do not run `gh issue create`: put each proposed issue in
-the `new_issues` list in `.run/manifest.json` (see Unattended publishing);
+the `new_issues` list in `.run/manifest.yaml` (see Unattended publishing);
 the publish job creates them after validation.
 
 Only feedback issues authored by `xkef` are aggregated as signal; the
