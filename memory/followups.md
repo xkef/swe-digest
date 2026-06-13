@@ -280,10 +280,10 @@ Format:
 
 - Status: open
 - Category: Security
-- Sources: [Phoronix](https://www.phoronix.com/news/Arch-Linux-AUR-400-Compromised), [ioctl.fail analysis](https://ioctl.fail/preliminary-analysis-of-aur-malware/)
-- Watch for: Confirmation of compromised user credentials exploited in the wild; improvements to AUR orphan-package adoption policies; further scope of affected packages.
-- Last checked: 2026-06-12
-- Notes: Maintainer "arojas" adopted 400+ orphaned AUR packages and injected infostealer ("deps") + optional eBPF rootkit via modified PKGBUILD npm install calls. Targets developer credentials (browsers, Electron apps, SSH, GitHub, Docker, VPN). Discovered 2026-06-11; Arch maintainers removed malicious content and banned account. Official Arch repos unaffected. No confirmed downstream exploitation reported yet.
+- Sources: [Arch Linux news](https://archlinux.org/news/active-aur-malicious-packages-incident/), [Phoronix 1500+](https://www.phoronix.com/news/Arch-Linux-AUR-More-Than-1500), [ioctl.fail analysis](https://ioctl.fail/preliminary-analysis-of-aur-malware/)
+- Watch for: Confirmation of compromised user credentials exploited in the wild; improvements to AUR orphan-package adoption policies; final scope of affected packages.
+- Last checked: 2026-06-13
+- Notes: Campaign ("Atomic Arch") adopted orphaned AUR packages and injected infostealer + optional eBPF rootkit via modified PKGBUILD npm install calls fetching malicious npm packages (atomic-lockfile, js-digest). Targets developer credentials. Affected count grew from 400+ (2026-06-11, account "arojas") to more than 1,500 packages by 2026-06-12. Arch published official incident notice 2026-06-12 (Campbell Jones); account creation, updates, and adoption disrupted during cleanup. By end of 2026-06-12 maintainers believed all known malicious commits removed and consider it under control. Official Arch binary repos unaffected. No confirmed downstream exploitation reported yet. Added to digest Security section 2026-06-13.
 
 ## 2026-06-13: US export directive suspends Fable 5 and Mythos 5
 

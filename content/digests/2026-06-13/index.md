@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 40
+source_count = 44
 +++
 
 ## Top stories
@@ -87,6 +87,15 @@ No major items found.
 - **Why it matters:** Local coding agents avoid per-token API cost and data exposure, and the discussion captures the current practical setup and its limits on Apple Silicon.
 
 ## Security
+
+### Arch Linux AUR supply-chain attack hits more than 1,500 packages
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Arch Linux news](https://archlinux.org/news/active-aur-malicious-packages-incident/), [Phoronix](https://www.phoronix.com/news/Arch-Linux-AUR-More-Than-1500), [PrivacyGuides](https://www.privacyguides.org/news/2026/06/12/around-1-500-aur-packages-compromised-with-rootkit-like-malware/), [HN discussion](https://news.ycombinator.com/item?id=48516379)
+- **Summary:** Attackers hijacked orphaned packages in the Arch User Repository (AUR) by claiming them through the standard adoption process, then modified each package's `PKGBUILD` build script to silently fetch and install malicious npm packages (reported as `atomic-lockfile` and `js-digest`) during installation, delivering a Linux infostealer with credential-harvesting, anti-debugging, and data-exfiltration functionality plus an optional eBPF rootkit. The affected count grew from more than 400 packages on 2026-06-11 to more than 1,500 by 2026-06-12. Arch published an official incident notice on 2026-06-12 stating it was actively tracking down malicious commits, with AUR account creation, package updates, and package adoption disrupted during cleanup; by the end of 2026-06-12 maintainers believed they had removed all known malicious commits and consider the incident under control. The official Arch binary repositories are unaffected.
+- **Why it matters:** The AUR adopt-orphaned-package model let one actor push credential-stealing build scripts into a large share of community packages, and any AUR helper that runs `PKGBUILD` scripts without review during this window could have executed the payload on developer machines.
+- **Follow-up:** Watch for confirmed credential theft in the wild, AUR adoption-policy changes, and the final affected-package count.
 
 ### AMD denies $10,000 bounty for auto-updater RCE; CVE-2026-40677
 
@@ -233,12 +242,13 @@ No major items found.
 - **Ivanti Sentry CVE-2026-10520:** CISA KEV 2026-06-11; treat unpatched as compromised. Last checked 2026-06-13.
 - **Langflow CVE-2026-5027:** VulnCheck KEV 2026-06-08; CISA KEV still pending. Last checked 2026-06-13.
 - **Homebrew 6.0.0 migration fallout:** 6.0.1 patch released 2026-06-12 fixing tap and bundle regressions. Intel x86_64 macOS still goes Tier 3 in September 2026. Last checked 2026-06-13.
+- **Arch Linux AUR supply-chain attack:** Affected count grew from 400+ (2026-06-11) to more than 1,500 packages; Arch published an official incident notice 2026-06-12 and believes the incident is under control. Official binary repos unaffected. Watch for in-the-wild credential theft and AUR adoption-policy changes. Last checked 2026-06-13.
 
 ## Sources checked
 
-- Hacker News via `make hn` (Algolia backend, full structured coverage: front page 30, top 24h 50, Ask HN 30, Show HN 30, 12 comment threads, 59 of 72 watchlist queries; 0 degraded collections)
+- Hacker News via `make hn` (Algolia backend, full structured coverage: front page 30, top 24h 50, Ask HN 30, Show HN 30, 12 comment threads, 53 of 72 watchlist queries; 0 degraded collections; latest fetch 16:14 UTC)
 - AI vendor sources (Anthropic news and model docs, Moonshot AI)
-- Security advisories and trackers (CISA KEV JSON feed, Rapid7, Help Net Security, SecurityWeek, DepthFirst)
+- Security advisories and trackers (CISA KEV JSON feed, Rapid7, Help Net Security, SecurityWeek, DepthFirst, Arch Linux news, Phoronix)
 - Status and outage reporting (Cloudflare status, Meta outage reporting)
 - GitHub releases checked for all `[github]` watchlist repos; new since the prior digest: Spring Boot 4.1.0 (2026-06-10), tmux 3.7-rc (2026-06-12), Homebrew 6.0.1 (2026-06-12). Rolling prereleases (neovim nightly, ghostty tip) skipped; deno 2.8.3, zed 1.7.2-pre, jj 0.42.0 predate and were already current.
 - GitHub trending (`github.com/trending?since=daily`) scanned: dominant cluster was agent-skill repositories (agent-skills, superpowers, agency-agents); no verified emerging engineering advance met the inclusion bar this pass.
