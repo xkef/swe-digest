@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Aggregate watchlist query yield across daily run logs.
 
-Reads data/runs/*.json for the last N days and reports, per
+Reads data/runs/*.yaml for the last N days and reports, per
 [hacker_news] watchlist query, how often it matched stories and how
 often a matched story was published. Days where the query collection
 ran on the degraded title-match backend are counted separately and
@@ -17,6 +17,8 @@ import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
 RUNS_DIR = ROOT / "data" / "runs"
 
@@ -26,9 +28,9 @@ DEGRADED_BACKENDS = {None, "title-match"}
 def load_window(days: int) -> list[dict]:
     cutoff = (datetime.now(timezone.utc) - timedelta(days=days - 1)).strftime("%Y-%m-%d")
     records = []
-    for path in sorted(RUNS_DIR.glob("*.json")):
+    for path in sorted(RUNS_DIR.glob("*.yaml")):
         if path.stem >= cutoff:
-            records.append(json.loads(path.read_text(encoding="utf-8")))
+            records.append(yaml.safe_load(path.read_text(encoding="utf-8")))
     return records
 
 

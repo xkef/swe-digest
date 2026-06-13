@@ -163,7 +163,7 @@ def main() -> int:
         errors.extend(check_digest(path))
     for path in sorted(MEMORY.glob("*.md")):
         errors.extend(scan_unsafe(path, path.read_text(encoding="utf-8")))
-    for path in sorted((ROOT / "data" / "runs").rglob("*.json")):
+    for path in sorted((ROOT / "data" / "runs").rglob("*.yaml")):
         errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))
     errors.extend(check_private_context())
 

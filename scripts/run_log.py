@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Write the machine-readable run log for one digest day.
 
-Produces data/runs/YYYY-MM-DD.json from the day's HN fetch
+Produces data/runs/YYYY-MM-DD.yaml from the day's HN fetch
 (.cache/hn/, falling back to the committed data/hn/ snapshot), the
 published digest, and the watchlist queries. The script owns the
 "mechanical" keys (hn, digest, query_yield) and rewrites them
@@ -19,6 +19,24 @@ import tomllib
 import urllib.parse
 from datetime import datetime, timezone
 from pathlib import Path
+
+import yaml
+
+
+def _represent_str(dumper, data):
+    """Emit multiline strings as literal `|` blocks and long single lines as
+    folded `>` blocks, so run-log notes read as wrapped prose instead of one
+    long quoted line."""
+    if "\n" in data:
+        style = "|"
+    elif len(data) > 80:
+        style = ">"
+    else:
+        style = None
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data, style=style)
+
+
+yaml.add_representer(str, _represent_str, Dumper=yaml.SafeDumper)
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE_DIR = ROOT / ".cache" / "hn"
@@ -94,17 +112,20 @@ def parse_digest(text: str) -> dict:
 
 
 def load_run_log(date: str) -> dict:
-    path = RUNS_DIR / f"{date}.json"
+    path = RUNS_DIR / f"{date}.yaml"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return yaml.safe_load(path.read_text(encoding="utf-8")) or {"date": date}
     return {"date": date}
 
 
 def save_run_log(date: str, record: dict) -> Path:
     RUNS_DIR.mkdir(parents=True, exist_ok=True)
-    path = RUNS_DIR / f"{date}.json"
-    path.write_text(json.dumps(record, indent=2, ensure_ascii=False) + "\n",
-                    encoding="utf-8")
+    path = RUNS_DIR / f"{date}.yaml"
+    path.write_text(
+        yaml.safe_dump(record, sort_keys=False, default_flow_style=False,
+                       allow_unicode=True, width=80),
+        encoding="utf-8",
+    )
     return path
 
 

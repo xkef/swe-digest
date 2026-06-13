@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 32
+source_count = 37
 +++
 
 ## Top stories
@@ -118,11 +118,33 @@ No major items found.
 
 ## Developer tools
 
-No major items found.
+### tmux 3.7-rc adds floating panes
+
+- **Category:** Dev tools
+- **Status:** developing
+- **Sources:** [GitHub release](https://github.com/tmux/tmux/releases/tag/3.7-rc), [CHANGES](https://raw.githubusercontent.com/tmux/tmux/3.7-rc/CHANGES)
+- **Summary:** tmux published a 3.7 release candidate on 2026-06-12. The headline feature is floating panes, which sit above the tiled layout like non-modal popups, are created with a new `new-pane` command bound to `*` by default, and behave like ordinary panes. Other changes include a `copy-mode-line-numbers` option with off, default, absolute, relative, and hybrid modes, `run-shell` argument expansion as `#{1}`, `#{2}`, and a `-g` flag for `kill-session` that kills all sessions in a session group.
+- **Why it matters:** Floating panes are the first structural layout addition to tmux in several releases and change how popup-style workflows are scripted.
+- **Follow-up:** Watch for the tmux 3.7 stable release and any configuration breakage reports from the new pane model.
+
+### Homebrew 6.0.1 patches the 6.0.0 rollout
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [GitHub release](https://github.com/Homebrew/brew/releases/tag/6.0.1)
+- **Summary:** Homebrew shipped 6.0.1 on 2026-06-12, a bug-fix patch on the 6.0.0 major release from 2026-06-11. Changes include including the cask tap in core taps on all platforms, fixing `brew bundle` kwargs handling for taps and installing taps before packages, and simplifying Bubblewrap sandbox handling for Linux builds.
+- **Why it matters:** The patch addresses tap and bundle regressions from the 6.0.0 tap-trust and sandboxing changes, reducing CI breakage risk for teams that upgraded.
 
 ## Languages and runtimes
 
-No major items found.
+### Spring Boot 4.1.0 released
+
+- **Category:** Languages
+- **Status:** confirmed
+- **Sources:** [GitHub release](https://github.com/spring-projects/spring-boot/releases/tag/v4.1.0), [4.1 release notes](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.1-Release-Notes)
+- **Summary:** Spring Boot 4.1.0 reached general availability on 2026-06-10. New features include first-class gRPC server and client support with standalone Netty and HTTP/2 servlet options, auto-configuration of Jackson read and write features through `spring.jackson.read.` and `spring.jackson.write.` properties, expanded OpenTelemetry configuration (SDK disable toggle, batch log processor, sampler, span and log limits, OTLP exemplars), and SSRF mitigation via an `InetAddressFilter` for both reactive and blocking HTTP clients. The release deprecates Derby database support, removes the deprecated layertools jar mode, and changes Maven so `-DskipTests` no longer skips AOT processing (use `maven.test.skip`). It bundles Spring Framework 7.0.8, Spring Security 7.1.0, Netty 4.2.15, Tomcat 11.0.22, and Hibernate 7.4.1.
+- **Why it matters:** Teams on the Spring Boot 4.x line get native gRPC and built-in SSRF filtering, while the Derby deprecation and layertools and Maven AOT changes are concrete migration steps for upgraders.
+- **Follow-up:** Track 4.1.x patch cadence and any 4.0.x to 4.1 migration friction reports.
 
 ## Apple platforms
 
@@ -200,6 +222,7 @@ No major items found.
 - **Cloudflare control-plane incident:** Dashboard and API issues 2026-06-12; resolution and root cause pending. Last checked 2026-06-13.
 - **Ivanti Sentry CVE-2026-10520:** CISA KEV 2026-06-11; treat unpatched as compromised. Last checked 2026-06-13.
 - **Langflow CVE-2026-5027:** VulnCheck KEV 2026-06-08; CISA KEV still pending. Last checked 2026-06-13.
+- **Homebrew 6.0.0 migration fallout:** 6.0.1 patch released 2026-06-12 fixing tap and bundle regressions. Intel x86_64 macOS still goes Tier 3 in September 2026. Last checked 2026-06-13.
 
 ## Sources checked
 
@@ -207,8 +230,9 @@ No major items found.
 - AI vendor sources (Anthropic news and model docs, Moonshot AI)
 - Security advisories and trackers (CISA KEV JSON feed, Rapid7, Help Net Security, SecurityWeek, DepthFirst)
 - Status and outage reporting (Cloudflare status, Meta outage reporting)
-- GitHub release watchlist (neovim, ghostty, jj, go, rust, zed)
-- Engineering and platform blogs (Swift.org, pganalyze)
+- GitHub releases checked for all `[github]` watchlist repos; new since the prior digest: Spring Boot 4.1.0 (2026-06-10), tmux 3.7-rc (2026-06-12), Homebrew 6.0.1 (2026-06-12). Rolling prereleases (neovim nightly, ghostty tip) skipped; deno 2.8.3, zed 1.7.2-pre, jj 0.42.0 predate and were already current.
+- GitHub trending (`github.com/trending?since=daily`) scanned: dominant cluster was agent-skill repositories (agent-skills, superpowers, agency-agents); no verified emerging engineering advance met the inclusion bar this pass.
+- Engineering and platform blogs (Swift.org, pgEdge)
 - Markets reporting (SpaceX MSCI inclusion)
 - Reddit not collected directly this cycle; social pulse drawn from Hacker News
 </content>

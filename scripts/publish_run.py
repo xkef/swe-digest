@@ -2,7 +2,7 @@
 """Apply and publish an unattended run produced by the read-only agent job.
 
 The agent job runs without a write token: it commits locally, exports the
-commits as .run/run.patch, and requests side effects in .run/manifest.json.
+commits as .run/run.patch, and requests side effects in .run/manifest.yaml.
 This script runs in the publish job, which holds the write token, and applies
 both only after deterministic validation, so a prompt-injected agent cannot
 push outside the allowlist or act on issues that fail API-field checks.
@@ -21,6 +21,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import yaml
+
 REPO = "xkef/swe-digest"
 OWNER = "xkef"
 SITE = "https://xkef.github.io/swe-digest/"
@@ -33,8 +35,8 @@ SUBJECTS = [
 ]
 ALLOWED_PATHS = [
     re.compile(r"^content/digests/\d{4}-\d{2}-\d{2}/index\.md$"),
-    re.compile(r"^data/runs/\d{4}-\d{2}-\d{2}\.json$"),
-    re.compile(r"^data/runs/weekly/\d{4}-\d{2}-\d{2}\.json$"),
+    re.compile(r"^data/runs/\d{4}-\d{2}-\d{2}\.yaml$"),
+    re.compile(r"^data/runs/weekly/\d{4}-\d{2}-\d{2}\.yaml$"),
     re.compile(r"^memory/(followups|entities|source-reliability)\.md$"),
 ]
 IMPROVEMENT_FILES = {
@@ -187,7 +189,8 @@ def improvement_pr(number: int) -> None:
 
 def side_effects(path: str) -> None:
     manifest_path = Path(path)
-    manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
+    manifest = yaml.safe_load(manifest_path.read_text()) if manifest_path.exists() else {}
+    manifest = manifest or {}
     unknown = set(manifest) - {"issue_closes", "improvement_prs", "new_issues"}
     if unknown:
         raise SystemExit(f"unknown manifest keys: {sorted(unknown)}")

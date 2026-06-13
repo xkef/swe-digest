@@ -11,6 +11,7 @@ Recurring entities tracked across digest runs.
 - jj: Jujutsu version control system. Track releases, Git compatibility, workflows, and tooling support.
 - Homebrew: macOS and Linux package manager. Track brew releases via GitHub and the brew.sh blog, tap trust model, deprecations, and platform support timelines. Current: 6.0.0 (2026-06-11). Intel x86_64 macOS goes Tier 3 September 2026, unsupported September 2027.
 - Xcode: Apple IDE. Track agentic coding features, Foundation Models integration, Swift toolchain. Xcode 27 beta (27A5194q) released 2026-06-08 with dual-engine agentic coding and LanguageModel protocol.
+- chezmoi: cross-machine dotfiles manager (twpayne/chezmoi). Track releases, template engine changes, secret-manager integrations, and migration notes.
 - Devin Desktop (formerly Windsurf): AI coding IDE by Cognition. Rebranded from Windsurf to Devin Desktop on 2026-06-02. Default surface is Agent Command Center. Cascade agent EOL 2026-07-01, replaced by Devin Local (Rust rewrite). Ships with Agent Client Protocol (ACP) support.
 
 ## AI
@@ -65,6 +66,13 @@ Recurring entities tracked across digest runs.
 - Cursor and GitHub Copilot: coding agents. Track release notes, model changes, and agent capabilities.
 - Model Context Protocol: track spec changes, new servers and clients, and adoption.
 - Agent Client Protocol (ACP): open protocol (Apache 2.0) for editor-agent communication. Created by Zed Industries in August 2025. JSON-RPC 2.0 over stdin/stdout. Adopted by Zed, JetBrains, Devin Desktop, GitHub, Google, and 25+ AI agents as of June 2026.
+
+## AI for science
+
+- AlphaFold (Google DeepMind) and Isomorphic Labs: protein structure prediction and drug design. Track model releases, license and access terms for AlphaFold 3 weights, and the alphafold3 repository.
+- Boltz (jwohlwend/boltz), Chai (chaidiscovery/chai-lab), OpenFold (aqlaboratory/openfold): open-source structure-prediction and co-folding models. Track releases, benchmarks, and license terms.
+- Protein language models (ESM lineage, EvolutionaryScale): track model and weight releases, sequence-to-structure capability, and licensing.
+- RDKit and DeepChem: open-source cheminformatics and molecular ML toolkits. Track releases and breaking API changes.
 
 ## Markets
 
