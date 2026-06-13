@@ -263,18 +263,18 @@ Format:
 - Status: open
 - Category: Outage
 - Sources: [Cloudflare Status history](https://www.cloudflarestatus.com/history), [StatusGator](https://statusgator.com/services/cloudflare)
-- Watch for: Resolution time; whether Cloudflare publishes a root cause; any escalation beyond control plane.
-- Last checked: 2026-06-12
-- Notes: Dashboard and API service issues began ~14:27 UTC 2026-06-12, investigating state. CDN edge serving and security features unaffected. Separate Billing Dashboard UI issue (invoices not visible) opened 2026-06-11 21:42 UTC, monitoring by 2026-06-12 11:50 UTC; automatic billing unaffected. cloudflarestatus.com blocked from datacenter IP; details via aggregators and WebSearch.
+- Watch for: Whether Cloudflare publishes a root cause; any escalation beyond control plane.
+- Last checked: 2026-06-13
+- Notes: Dashboard and API service issues began ~14:27 UTC 2026-06-12. Fix implemented 14:56 UTC, monitoring 15:03 UTC, resolved 15:27 UTC. CDN edge serving and security features unaffected. No root cause published. Separate Billing Dashboard UI issue (invoices not visible) opened 2026-06-11 21:42 UTC, monitoring by 2026-06-12 11:50 UTC; automatic billing unaffected. cloudflarestatus.com blocked from datacenter IP; details via aggregators and WebSearch.
 
 ## 2026-06-12: WASI 0.3.0 ratified
 
 - Status: open
 - Category: Languages
 - Sources: [Bytecode Alliance](https://bytecodealliance.org/articles/WASI-0.3), [WASI v0.3.0 release](https://github.com/WebAssembly/WASI/releases/tag/v0.3.0)
-- Watch for: Wasmtime stable support; Rust/Go/Python guest toolchain support for WASI 0.3 async reaching stable; WASI 0.3 HTTP/sockets interface adoption.
-- Last checked: 2026-06-12
-- Notes: WASI Subgroup ratified WASI 0.3.0 on 2026-06-11. Rebases WASI onto the Component Model async primitives: stream<T>, future<T>, async as first-class canonical ABI constructs. WASI 0.2 start-foo/finish-foo and pollable patterns collapse to async func. Completion-based model (io_uring/IOCP style). Host manages one shared event loop. HN 48504063 (197 pts). Previews shipped in Wasmtime 37+.
+- Watch for: Wasmtime 46 stable (WASI 0.3 async default-on); jco default-enabled release; Rust/Go/Python guest toolchain support for WASI 0.3 async reaching stable; WASI 0.3 HTTP/sockets interface adoption.
+- Last checked: 2026-06-13
+- Notes: WASI Subgroup ratified WASI 0.3.0 on 2026-06-11. Rebases WASI onto the Component Model async primitives: stream<T>, future<T>, async as first-class canonical ABI constructs. WASI 0.2 pollable and resource-based stream patterns collapse to async. Completion-based model. Host manages one shared event loop for all components. wasi:http reorganized into service and middleware worlds enabling component-to-component service chaining without network calls. Wasmtime 45 supports the RC; Wasmtime 46 ships 0.3.0 with async default-on. jco supports it. Surfaced as 246-pt HN front-page thread 48504063 on 2026-06-13; added to digest Languages and runtimes.
 
 ## 2026-06-12: AUR supply chain attack
 

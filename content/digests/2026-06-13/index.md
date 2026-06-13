@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 37
+source_count = 40
 +++
 
 ## Top stories
@@ -107,14 +107,14 @@ No major items found.
 - **Why it matters:** A four-hour authentication and feed failure across Meta's main properties disrupted login-with-Facebook flows and Meta Ads delivery for dependent businesses.
 - **Follow-up:** Watch for a Meta root-cause statement.
 
-### Cloudflare Dashboard and API control-plane incident
+### Cloudflare Dashboard and API control-plane incident resolved
 
 - **Category:** Outage
-- **Status:** developing
+- **Status:** confirmed
 - **Sources:** [Cloudflare status history](https://www.cloudflarestatus.com/history), [HN discussion](https://news.ycombinator.com/item?id=48504702)
-- **Summary:** Cloudflare reported Dashboard and API service issues beginning 2026-06-12. CDN edge serving and security features were reported unaffected; the impact was on the control plane. Details were gathered through aggregators and discussion because cloudflarestatus.com returns 403 from the unattended harness.
+- **Summary:** Cloudflare reported Dashboard and API service issues on 2026-06-12. CDN edge serving and security features were unaffected; the impact was on the control plane. Cloudflare identified the issue and implemented a fix at 14:56 UTC, began monitoring at 15:03 UTC, and marked the incident resolved at 15:27 UTC. Cloudflare has not published a root cause. Details were gathered through aggregators and discussion because cloudflarestatus.com returns 403 from the unattended harness.
 - **Why it matters:** Control-plane outages block configuration changes and deploys even when traffic continues to serve.
-- **Follow-up:** Confirm resolution time and whether Cloudflare publishes a root cause.
+- **Follow-up:** Watch for a Cloudflare root-cause statement.
 
 ## Developer tools
 
@@ -145,6 +145,15 @@ No major items found.
 - **Summary:** Spring Boot 4.1.0 reached general availability on 2026-06-10. New features include first-class gRPC server and client support with standalone Netty and HTTP/2 servlet options, auto-configuration of Jackson read and write features through `spring.jackson.read.` and `spring.jackson.write.` properties, expanded OpenTelemetry configuration (SDK disable toggle, batch log processor, sampler, span and log limits, OTLP exemplars), and SSRF mitigation via an `InetAddressFilter` for both reactive and blocking HTTP clients. The release deprecates Derby database support, removes the deprecated layertools jar mode, and changes Maven so `-DskipTests` no longer skips AOT processing (use `maven.test.skip`). It bundles Spring Framework 7.0.8, Spring Security 7.1.0, Netty 4.2.15, Tomcat 11.0.22, and Hibernate 7.4.1.
 - **Why it matters:** Teams on the Spring Boot 4.x line get native gRPC and built-in SSRF filtering, while the Derby deprecation and layertools and Maven AOT changes are concrete migration steps for upgraders.
 - **Follow-up:** Track 4.1.x patch cadence and any 4.0.x to 4.1 migration friction reports.
+
+### WASI 0.3 ratified with first-class async
+
+- **Category:** Languages
+- **Status:** confirmed
+- **Sources:** [Bytecode Alliance announcement](https://bytecodealliance.org/articles/WASI-0.3), [WASI v0.3.0 release](https://github.com/WebAssembly/WASI/releases/tag/v0.3.0), [HN discussion](https://news.ycombinator.com/item?id=48504063)
+- **Summary:** The WASI Subgroup ratified WASI 0.3.0 on 2026-06-11. The release moves async into the WebAssembly Component Model canonical ABI, making `stream<T>` and `future<T>` first-class constructs and replacing the WASI 0.2 pollable and resource-based stream patterns. The model shifts from readiness-based to completion-based async, with the host managing one shared event loop for all components instead of each component carrying its own. `wasi:http` is reorganized into `service` and `middleware` worlds, enabling component-to-component service chaining without network calls. Wasmtime 45 supports the release candidate; Wasmtime 46 will ship WASI 0.3.0 with async enabled by default. The `jco` JavaScript toolchain supports it, and guest toolchain support for Rust, Go, JavaScript, Python, and C is in progress.
+- **Why it matters:** First-class async in the canonical ABI removes the per-component event-loop workarounds that made WASI 0.2 async awkward, and direct component composition lets WebAssembly microservices chain without network hops.
+- **Follow-up:** Track Wasmtime 46 stable, jco default-enabled release, and Rust, Go, and Python guest toolchain support reaching stable.
 
 ## Apple platforms
 
@@ -219,20 +228,21 @@ No major items found.
 - **Linux 7.1 stable:** Expected 2026-06-14. rc7 was the latest candidate as of 2026-06-07. Last checked 2026-06-13.
 - **Oracle PeopleSoft CVE-2026-35273:** CISA KEV 2026-06-12; active exploitation by ShinyHunters 2026-05-27 to 2026-06-09. Watch for victim disclosures and federal deadline. Last checked 2026-06-13.
 - **FFmpeg 21 zero-days:** 9 CVEs assigned (CVE-2026-39210 to CVE-2026-39218); 12 pending numbers. Watch for remaining CVE assignment and downstream re-vendoring. Last checked 2026-06-13.
-- **Cloudflare control-plane incident:** Dashboard and API issues 2026-06-12; resolution and root cause pending. Last checked 2026-06-13.
+- **Cloudflare control-plane incident:** Dashboard and API issues 2026-06-12 resolved 15:27 UTC; no root cause published. Last checked 2026-06-13.
+- **WASI 0.3.0 ratified:** Ratified 2026-06-11; async folded into the Component Model canonical ABI. Watch for Wasmtime 46 stable and guest toolchain support. Last checked 2026-06-13.
 - **Ivanti Sentry CVE-2026-10520:** CISA KEV 2026-06-11; treat unpatched as compromised. Last checked 2026-06-13.
 - **Langflow CVE-2026-5027:** VulnCheck KEV 2026-06-08; CISA KEV still pending. Last checked 2026-06-13.
 - **Homebrew 6.0.0 migration fallout:** 6.0.1 patch released 2026-06-12 fixing tap and bundle regressions. Intel x86_64 macOS still goes Tier 3 in September 2026. Last checked 2026-06-13.
 
 ## Sources checked
 
-- Hacker News via `make hn` (Algolia backend, full structured coverage: front page, top 24h, Ask HN, Show HN, 12 comment threads, 58 of 68 watchlist queries; 0 degraded collections)
+- Hacker News via `make hn` (Algolia backend, full structured coverage: front page 30, top 24h 50, Ask HN 30, Show HN 30, 12 comment threads, 59 of 72 watchlist queries; 0 degraded collections)
 - AI vendor sources (Anthropic news and model docs, Moonshot AI)
 - Security advisories and trackers (CISA KEV JSON feed, Rapid7, Help Net Security, SecurityWeek, DepthFirst)
 - Status and outage reporting (Cloudflare status, Meta outage reporting)
 - GitHub releases checked for all `[github]` watchlist repos; new since the prior digest: Spring Boot 4.1.0 (2026-06-10), tmux 3.7-rc (2026-06-12), Homebrew 6.0.1 (2026-06-12). Rolling prereleases (neovim nightly, ghostty tip) skipped; deno 2.8.3, zed 1.7.2-pre, jj 0.42.0 predate and were already current.
 - GitHub trending (`github.com/trending?since=daily`) scanned: dominant cluster was agent-skill repositories (agent-skills, superpowers, agency-agents); no verified emerging engineering advance met the inclusion bar this pass.
-- Engineering and platform blogs (Swift.org, pgEdge)
+- Engineering and platform blogs (Swift.org, pgEdge, Bytecode Alliance)
 - Markets reporting (SpaceX MSCI inclusion)
 - Reddit not collected directly this cycle; social pulse drawn from Hacker News
 </content>
