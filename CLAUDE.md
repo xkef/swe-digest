@@ -86,14 +86,13 @@ content gate, API-field re-verification of every issue action, and the
 owner-approval plus four-file whitelist checks for improvement PRs. A
 prompt-injected agent therefore holds no GitHub write capability; GitHub
 additionally rejects `GITHUB_TOKEN` pushes that modify `.github/workflows/`.
-The `hn-snapshot` workflow has `contents: write` plus `actions: write` and is
-the single scheduled timing root: every three hours it pushes the
-`data/hn/*.json` snapshot, then dispatches the daily digest (06/12/18 UTC) and
-the weekly improvement run (Sunday 09 UTC) so each starts on fresh data. It
-runs only a pinned checkout, `scripts/fetch_hn.py`, and time-gated
-`gh workflow run` dispatches; the daily and weekly workflows are
-`workflow_dispatch` only. No workflow consumes event-derived inputs, and the
-routine must never edit `.github/workflows/`.
+The `hn-snapshot` workflow has `contents: write` and pushes `data/hn/*.json`
+snapshots to `main` every three hours as a background accumulator; it runs
+only a pinned checkout plus `scripts/fetch_hn.py`. The `daily-digest`
+(03:50/09:50/15:50 UTC) and `weekly-improvement` (Sunday 06:30 UTC) workflows
+run on their own schedules and each fetches HN live during the run. All
+scheduled workflows use no event-derived inputs, and the routine must never
+edit `.github/workflows/`.
 
 ## Daily output
 
@@ -291,9 +290,9 @@ from scratch.
 
 17. Check the weekly trigger: if `data/runs/weekly/` is empty or its newest
     filename date is 7 or more days old, run the weekly improvement routine
-    below. The `weekly-improvement` workflow, dispatched by `hn-snapshot` on
-    Sunday at 09 UTC, normally covers this; the date check is the fallback
-    when a dispatch was missed.
+    below. The scheduled `weekly-improvement` workflow (Sunday 06:30 UTC)
+    normally covers this; the date check is the fallback when a scheduled run
+    was missed.
 
 If running in an interactive harness that requires commit approval, stage the intended files, present the exact commit message, and wait.
 

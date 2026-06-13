@@ -1,14 +1,15 @@
 name: Weekly improvement
 
-# Dispatched by the hn-snapshot workflow on Sunday at 09 UTC, after the
-# morning daily run has finished. No own cron: hn-snapshot is the single
-# timing root. Shares the claude-routine concurrency group with daily-digest
-# so the two never run at once.
+# Sunday at 06:30 UTC (08:30 CEST), after the morning daily run. Shares the
+# claude-routine concurrency group with daily-digest so the two never run at
+# once.
 #
 # Same two-job split as daily-digest.yml: the agent job is read-only and the
 # publish job applies the marker commit and issue creation after the
 # deterministic checks in scripts/publish_run.py.
 on:
+  schedule:
+    - cron: "30 6 * * 0"
   workflow_dispatch:
 
 permissions: {}

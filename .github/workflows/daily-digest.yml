@@ -1,8 +1,9 @@
 name: Daily digest
 
-# Dispatched by the hn-snapshot workflow at 06/12/18 UTC, right after the
-# snapshot it depends on is committed, so the data/hn/ snapshot is fresh even
-# if live HN fetches fail. No own cron: hn-snapshot is the single timing root.
+# Self-contained: each run fetches HN live and reads the accumulated data/hn/
+# snapshot as a fallback, then writes and publishes. Runs three times a day at
+# 03:50/09:50/15:50 UTC (05:50/11:50/17:50 CEST) so the morning digest is ready
+# early in the European morning even with GitHub's scheduling delay.
 #
 # Two jobs separate the prompt-injectable agent from the write token. The
 # digest job runs the agent with a read-only token: it commits locally and
@@ -11,6 +12,10 @@ name: Daily digest
 # checks in scripts/publish_run.py (commit subjects, path allowlist,
 # make check, API-field re-verification of every issue action).
 on:
+  schedule:
+    - cron: "50 3 * * *"
+    - cron: "50 9 * * *"
+    - cron: "50 15 * * *"
   workflow_dispatch:
 
 permissions: {}
