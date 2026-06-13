@@ -42,10 +42,10 @@
     <footer class="site-footer">
       <p>
         <span>{{ config.title }}</span>
-        <span>{{ release }}</span>
-        <span>{% if build_date %}{{ build_date }}{% else %}{{ now() | date(format="%Y-%m-%d") }}{% endif %}</span>
-        <span><a href="{{ get_url(path='/about/') | safe }}">About &amp; privacy</a></span>
+        <span>{% if build_date %}{{ build_date }}{% else %}{{ now() | date(format="%Y-%m-%dT%H:%MZ") }}{% endif %}</span>
+        <span><a href="{{ get_url(path='/about/') | safe }}">About</a></span>
         <span><a href="{{ config.extra.repository }}">Repository</a></span>
+        <span>{% if release != "dev" %}<a href="{{ config.extra.repository | safe }}/commit/{{ release }}">{{ release }}</a>{% else %}{{ release }}{% endif %}</span>
       </p>
     </footer>
   </body>
