@@ -19,7 +19,7 @@
   const defaultCount = count.textContent;
 
   const MAX_RESULTS = 100;
-  const active = { category: new Set(), status: new Set() };
+  const active = { category: new Set(), status: new Set(), section: new Set() };
   let query = "";
   let needleSets = [];
   let archive = null;
@@ -60,8 +60,9 @@
   function matches(story) {
     const okCat = active.category.size === 0 || active.category.has(story.category);
     const okStatus = active.status.size === 0 || active.status.has(story.status);
+    const okSection = active.section.size === 0 || active.section.has(story.section);
     const text = (story.title + " " + story.summary + " " + story.category).toLowerCase();
-    return okCat && okStatus && matchesText(text);
+    return okCat && okStatus && okSection && matchesText(text);
   }
 
   function badge(cls, text) {
@@ -125,8 +126,9 @@
     for (const row of rows) {
       const okCat = active.category.size === 0 || active.category.has(row.dataset.category);
       const okStatus = active.status.size === 0 || active.status.has(row.dataset.status);
+      const okSection = active.section.size === 0 || active.section.has(row.dataset.section);
       const okText = matchesText(row.dataset.text);
-      const visible = okCat && okStatus && okText;
+      const visible = okCat && okStatus && okSection && okText;
       row.hidden = !visible;
       if (visible) shown++;
     }
@@ -138,7 +140,7 @@
   }
 
   function apply() {
-    const filtering = active.category.size > 0 || active.status.size > 0 || query;
+    const filtering = active.category.size > 0 || active.status.size > 0 || active.section.size > 0 || query;
     reset.hidden = !filtering;
     if (!filtering) {
       showPage();
@@ -174,6 +176,7 @@
   reset.addEventListener("click", function () {
     active.category.clear();
     active.status.clear();
+    active.section.clear();
     setQuery("");
     if (search) search.value = "";
     for (const button of facets) button.setAttribute("aria-pressed", "false");

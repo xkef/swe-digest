@@ -20,6 +20,9 @@
   </div>
 
   <div class="facet-groups">
+    {% for facet in index.sections %}{% if facet.name == "Hacker News" %}
+    <button type="button" class="facet facet-section" data-facet="section" data-value="{{ facet.name }}" aria-pressed="false">{{ facet.name }} <span>{{ facet.count }}</span></button>
+    {% endif %}{% endfor %}
     {% for facet in index.categories %}
     <button type="button" class="facet" data-facet="category" data-value="{{ facet.name }}" aria-pressed="false">{{ facet.name }} <span>{{ facet.count }}</span></button>
     {% endfor %}
@@ -37,7 +40,7 @@
     </a>
     <ol class="story-list">
       {% for story in digest.stories %}
-      <li class="story-row" data-category="{{ story.category }}" data-status="{{ story.status }}" data-text="{{ story.title | lower }} {{ story.summary | lower }} {{ story.category | lower }}">
+      <li class="story-row" data-category="{{ story.category }}" data-status="{{ story.status }}" data-section="{{ story.section }}" data-text="{{ story.title | lower }} {{ story.summary | lower }} {{ story.category | lower }}">
         <a class="story-link" href="{{ config.base_url | safe }}{{ story.url | safe }}">
           <span class="story-meta">
             {% if story.category %}<span class="badge badge-cat">{{ story.category }}</span>{% endif %}

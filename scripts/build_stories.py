@@ -268,6 +268,7 @@ def main() -> int:
                 "digests": days,
                 "categories": facet_counts(all_stories, "category"),
                 "statuses": facet_counts(all_stories, "status"),
+                "sections": facet_counts(all_stories, "section"),
                 "total_stories": len(all_stories),
                 "total_days": len(digests),
             },
