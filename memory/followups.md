@@ -330,6 +330,15 @@ Format:
 - Last checked: 2026-06-13
 - Notes: Facebook, Instagram, WhatsApp, Messenger down worldwide from shortly before 10:00 ET 2026-06-12; 100,000+ Downdetector reports; users logged out and blocked from re-login; lasted about four hours. Andy Stone confirmed; a Meta spokesperson later said the issue was resolved and apologized. No root cause published.
 
+## 2026-06-14: Anthropic NMR spectral-analysis result
+
+- Status: open
+- Category: AI
+- Sources: [Anthropic research](https://www.anthropic.com/research/making-claude-a-chemist)
+- Watch for: Independent reproduction; method paper or dataset release; evaluation on larger or harder compound sets.
+- Last checked: 2026-06-14
+- Notes: Anthropic research write-up dated 2026-06-05. Evaluated Claude on NMR spectral analysis over 20 post-cutoff synthetic-chemistry preprint compounds (four structural families). Reports Opus 4.7 average errors ~0.079 ppm (H) and ~1.37 ppm (C), comparable to or better than ChemDraw and MestReNova; inverse elucidation recovered all 8 simpler structures and 4 of 7 complex ones with starting-material context. Lab's own internal eval; not independently reproduced. Surfaced on HN 2026-06-14 (48523752). AI-for-science interest.
+
 ## 2026-06-14: GLM 5.2 release
 
 - Status: open

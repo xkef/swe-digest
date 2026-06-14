@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 33
+source_count = 37
 +++
 
 ## Top stories
@@ -65,7 +65,14 @@ source_count = 33
 
 ## ML research
 
-No major items found.
+### Anthropic reports Claude matching NMR software on spectral analysis
+
+- **Category:** ML research
+- **Status:** developing
+- **Sources:** [Anthropic research](https://www.anthropic.com/research/making-claude-a-chemist), [HN discussion](https://news.ycombinator.com/item?id=48523752)
+- **Summary:** In a research write-up dated 2026-06-05, Anthropic reports evaluating Claude on nuclear magnetic resonance (NMR) spectral analysis using 20 compounds drawn from synthetic-chemistry preprints published after the models' training cutoff, across four structural families. The post states Opus 4.7 reached average errors of about 0.079 ppm for hydrogen and 1.37 ppm for carbon shift prediction, comparable to or better than the ChemDraw and MestReNova chemistry tools, and that on inverse structure elucidation it recovered all 8 simpler structures from spectra alone and 4 of 7 more complex structures when given starting-material context. The result is the lab's own internal evaluation and has not been independently reproduced.
+- **Why it matters:** If a general model performs routine NMR prediction at parity with dedicated cheminformatics software, it shifts part of the structure-elucidation workflow from specialized tools toward LLM tool-use pipelines, a direct interest for AI-for-science tooling.
+- **Follow-up:** Watch for independent reproduction, a method paper or dataset release, and evaluation on larger or harder compound sets.
 
 ## Agentic coding
 
@@ -145,6 +152,14 @@ No major items found. PostgreSQL 19 Beta testing remains in progress and is trac
 - **Summary:** Google Research describes repurposing retired smartphones as a distributed low-carbon compute platform, reusing the devices' processors and batteries rather than recycling them, and covers the orchestration, fleet management, and reliability work needed to run workloads across heterogeneous aged hardware. HN discussion debated battery-safety and lifecycle concerns against the embodied-carbon savings.
 - **Why it matters:** Reusing aged mobile silicon as managed compute is a concrete alternative to new-hardware buildout for some edge and batch workloads, with embodied-carbon implications.
 
+### The technical debt of rendering Arabic typography
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [lr0.org](https://lr0.org/blog/p/arabic/), [HN discussion](https://news.ycombinator.com/item?id=48516710)
+- **Summary:** A post dated 2026-06-10 (236 points) walks through why rendering Arabic text correctly is hard: contextual letterforms where one codepoint maps to four positional shapes selected at render time through OpenType features (`isol`, `init`, `medi`, `fina`, `rlig`), classical justification by extending connecting strokes (kashida) rather than inter-word spacing, the Unicode bidirectional algorithm (UAX #9) and how weak characters like digits flip directionality in mixed Arabic-English text, and font architecture using the Amiri typeface as an example of full ligature and mark-stacking support. It frames much of the working infrastructure (HarfBuzz, fonts, specs) as maintained by underfunded volunteers.
+- **Why it matters:** The shaping, bidi, and justification details are a concrete reference for engineers who treat right-to-left and complex-script support as an afterthought and then ship broken layout.
+
 ## Markets and companies
 
 ### State attorneys general open investigation into OpenAI
@@ -198,9 +213,9 @@ No major items found. PostgreSQL 19 Beta testing remains in progress and is trac
 
 ## Sources checked
 
-- Hacker News via `make hn` (Algolia backend, full structured coverage: front page 30, top 24h 50, Ask HN 30, Show HN 30, 12 comment threads, 55 of 72 watchlist queries; 0 degraded collections; re-fetched 05:59 UTC in the quality pass)
-- AI vendor and model sources (Anthropic news and model docs, Z.ai/GLM via HN, OpenAI context)
-- Security advisories and trackers (CISA KEV JSON feed version 2026.06.12, Rapid7, SecurityWeek, Arch Linux news, Phoronix, researcher write-up)
+- Hacker News via `make hn` (Algolia backend, full structured coverage: front page 30, top 24h 50, Ask HN 30, Show HN 30, 12 comment threads, 57 of 72 watchlist queries; 0 degraded collections; re-fetched 10:49 UTC in the 09:50 update run)
+- AI vendor and model sources (Anthropic news, model docs, and research blog; Z.ai/GLM via HN; OpenAI context)
+- Security advisories and trackers (CISA KEV JSON feed re-fetched at the 09:50 run, still version 2026.06.12: PeopleSoft CVE-2026-35273 and Ivanti CVE-2026-10520 present, Langflow CVE-2026-5027 and Microsoft RoguePlanet/wormable CVEs still absent; Rapid7, SecurityWeek, Arch Linux news, Phoronix, researcher write-up)
 - Status and outage reporting (no new major incident; Meta and Cloudflare 2026-06-12 incidents resolved)
 - GitHub releases re-checked for all `[github]` watchlist repos in the quality pass; nothing published since the 2026-06-13 digest. Linux tree newest tag `v7.1-rc7` (stable not yet tagged as of 06:00 UTC); rolling prereleases (neovim nightly, ghostty tip, zed 1.7.2-pre, git v2.55.0-rc0, tmux 3.7-rc) skipped; deno 2.8.3, jj 0.42.0, Spring Boot 4.1.0, Spring Framework 7.0.8, Homebrew 6.0.1, rust 1.96.0, Kotlin 2.4.0, Swift 6.3.2, grafana 12.4.4, OpenTelemetry Collector 0.154.0, AlphaFold 3.0.3, RDKit 2026_03_3 predate and were already current.
 - GitHub trending re-scanned in the quality pass (`trending?since=daily`): an agent-skills and agent-tooling cluster recurs (agent-skills, superpowers, agentsview, SkillSpector), but no single verified concrete advance converged with releases and Hacker News, so nothing was surfaced. The 2026-06-13 quality pass found no carry-forward advance either.
