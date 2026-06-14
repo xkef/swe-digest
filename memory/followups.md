@@ -200,9 +200,9 @@ Format:
 - Status: open
 - Category: Linux/Kernel
 - Sources: [Phoronix rc7](https://www.phoronix.com/news/Linux-7.1-rc7)
-- Watch for: Linus Torvalds 7.1 stable announcement on 2026-06-14.
-- Last checked: 2026-06-13
-- Notes: rc7 (2026-06-07) expected to be the last candidate; stable expected 2026-06-14 unless an rc8 is needed. Late-cycle fixes concentrated in GPU then networking. Heavier than usual cycle due to AI-agent patch volume. rc7 disables AMD ROCm CRIU ioctl for security.
+- Watch for: Linus Torvalds 7.1 stable announcement on 2026-06-14; confirm stable tag.
+- Last checked: 2026-06-14
+- Notes: rc7 (2026-06-07) expected to be the last candidate; stable expected 2026-06-14 unless an rc8 is needed. As of the 2026-06-14 05:50 UTC run the newest tag is still v7.1-rc7 (stable not yet tagged). Headline 7.1 features: FRED on x86, new in-tree NTFS read/write driver, performance work. Late-cycle fixes concentrated in GPU then networking. Heavier than usual cycle due to AI-agent patch volume. rc7 disables AMD ROCm CRIU ioctl for security.
 
 ## 2026-06-12: Langflow CVE-2026-5027 CISA KEV watch
 
@@ -210,8 +210,8 @@ Format:
 - Category: Security
 - Sources: [Langflow security advisories](https://github.com/langflow-ai/langflow/security/advisories), [SecurityWeek](https://www.securityweek.com/hackers-exploit-langflow-vulnerability-for-remote-code-execution/)
 - Watch for: CISA KEV formal addition; additional exploitation activity; remediation rates.
-- Last checked: 2026-06-12
-- Notes: CVE-2026-5027 (CVSS 8.8) path traversal in POST /api/v2/files, unauthenticated by default. Active exploitation since 2026-06-08. ~7,000 exposed instances. Fixed in 1.9.0 (2026-04-15); recommend 1.10.0. VulnCheck KEV added 2026-06-08; CISA KEV addition pending. Langflow also published GHSA-79ph-745m-6wxq and GHSA-9c59-2mvc-vfr8 on 2026-06-11 (path traversal in Knowledge Bases, IDOR in Monitor API).
+- Last checked: 2026-06-14
+- Notes: CVE-2026-5027 (CVSS 8.8) path traversal in POST /api/v2/files, unauthenticated by default. Active exploitation since 2026-06-08. ~7,000 exposed instances. Fixed in 1.9.0 (2026-04-15); recommend 1.10.0. VulnCheck KEV added 2026-06-08; still absent from the CISA KEV catalog as of feed version 2026.06.12 (checked 2026-06-14). Langflow also published GHSA-79ph-745m-6wxq and GHSA-9c59-2mvc-vfr8 on 2026-06-11 (path traversal in Knowledge Bases, IDOR in Monitor API).
 
 ## 2026-06-12: CVE-2026-47291 HTTP.sys RCE exploit development
 
@@ -282,7 +282,7 @@ Format:
 - Category: Security
 - Sources: [Arch Linux news](https://archlinux.org/news/active-aur-malicious-packages-incident/), [Phoronix 1500+](https://www.phoronix.com/news/Arch-Linux-AUR-More-Than-1500), [ioctl.fail analysis](https://ioctl.fail/preliminary-analysis-of-aur-malware/)
 - Watch for: Confirmation of compromised user credentials exploited in the wild; improvements to AUR orphan-package adoption policies; final scope of affected packages.
-- Last checked: 2026-06-13
+- Last checked: 2026-06-14
 - Notes: Campaign ("Atomic Arch") adopted orphaned AUR packages and injected infostealer + optional eBPF rootkit via modified PKGBUILD npm install calls fetching malicious npm packages (atomic-lockfile, js-digest). Targets developer credentials. Affected count grew from 400+ (2026-06-11, account "arojas") to more than 1,500 packages by 2026-06-12. Arch published official incident notice 2026-06-12 (Campbell Jones); account creation, updates, and adoption disrupted during cleanup. By end of 2026-06-12 maintainers believed all known malicious commits removed and consider it under control. Official Arch binary repos unaffected. No confirmed downstream exploitation reported yet. Added to digest Security section 2026-06-13.
 
 ## 2026-06-13: US export directive suspends Fable 5 and Mythos 5
@@ -291,8 +291,8 @@ Format:
 - Category: AI
 - Sources: [Anthropic statement](https://www.anthropic.com/news/fable-mythos-access), [Bloomberg](https://www.bloomberg.com/news/articles/2026-06-13/anthropic-says-us-limits-foreign-access-to-fable-5-mythos-5)
 - Watch for: Directive lifted, narrowed, or extended to other models/providers; official government statement; legal challenge; refund or credit handling.
-- Last checked: 2026-06-13
-- Notes: Anthropic received an export control directive at 17:21 ET 2026-06-12 to block all foreign-national access to Fable 5 and Mythos 5; it disabled both for all customers. Other models unaffected. Stated concern is a narrow jailbreak (ask model to read a codebase and fix flaws), which Anthropic says exists in other models including GPT-5.5. Anthropic disagrees with the recall.
+- Last checked: 2026-06-14
+- Notes: Anthropic received an export control directive at 17:21 ET 2026-06-12 to block all foreign-national access to Fable 5 and Mythos 5; it disabled both for all customers. Other models unaffected. Stated concern is a narrow jailbreak (ask model to read a codebase and fix flaws), which Anthropic says exists in other models including GPT-5.5. Anthropic disagrees with the recall. 2026-06-13: WSJ reports (single-sourced, "people familiar") that Amazon CEO Andy Jassy's talks with Trump administration officials preceded the directive; Amazon researchers reportedly prompted Fable 5 for cyberattack-aiding info. Amazon holds a large (>5%) equity stake in Anthropic. As of 2026-06-14 access still suspended, no restoration timeline.
 
 ## 2026-06-13: Oracle PeopleSoft CVE-2026-35273 active exploitation
 
@@ -329,3 +329,12 @@ Format:
 - Watch for: Meta root-cause statement.
 - Last checked: 2026-06-13
 - Notes: Facebook, Instagram, WhatsApp, Messenger down worldwide from shortly before 10:00 ET 2026-06-12; 100,000+ Downdetector reports; users logged out and blocked from re-login; lasted about four hours. Andy Stone confirmed; a Meta spokesperson later said the issue was resolved and apologized. No root cause published.
+
+## 2026-06-14: GLM 5.2 release
+
+- Status: open
+- Category: AI
+- Sources: [HN discussion](https://news.ycombinator.com/item?id=48518684)
+- Watch for: Open-weight release and license; official model card and benchmarks; standalone API and pricing; independent coding-benchmark results.
+- Last checked: 2026-06-14
+- Notes: Z.ai (Zhipu) announced GLM 5.2 on 2026-06-13 via X (company account and chief scientist Jie Tang). Coding/agent focus, context up to 1M tokens (model id reported glm-5.2[1m]), max output 131,072 tokens. Available immediately on GLM Coding Plan; standalone API and open-weight (permissive/MIT) release expected the following week. No official blog post or benchmarks at announcement. Landed same day as the US directive against Anthropic Fable 5/Mythos 5.
