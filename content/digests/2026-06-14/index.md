@@ -198,12 +198,12 @@ No major items found. PostgreSQL 19 Beta testing remains in progress and is trac
 
 ## Sources checked
 
-- Hacker News via `make hn` (Algolia backend, full structured coverage: front page 30, top 24h 50, Ask HN 30, Show HN 30, 12 comment threads, 55 of 72 watchlist queries; 0 degraded collections; fetch 05:22 UTC)
+- Hacker News via `make hn` (Algolia backend, full structured coverage: front page 30, top 24h 50, Ask HN 30, Show HN 30, 12 comment threads, 55 of 72 watchlist queries; 0 degraded collections; re-fetched 05:59 UTC in the quality pass)
 - AI vendor and model sources (Anthropic news and model docs, Z.ai/GLM via HN, OpenAI context)
 - Security advisories and trackers (CISA KEV JSON feed version 2026.06.12, Rapid7, SecurityWeek, Arch Linux news, Phoronix, researcher write-up)
 - Status and outage reporting (no new major incident; Meta and Cloudflare 2026-06-12 incidents resolved)
-- GitHub releases checked for all `[github]` watchlist repos; nothing new since the 2026-06-13 digest. Linux tree newest tag `v7.1-rc7`; rolling prereleases (neovim nightly, ghostty tip, zed 1.7.2-pre) skipped; deno 2.8.3, jj 0.42.0, Spring Boot 4.1.0, tmux 3.7-rc, Homebrew 6.0.1, rust 1.96.0, Kotlin 2.4.0, Swift 6.3.2 predate and were already current.
-- GitHub trending not re-scanned this run (covered in the 2026-06-13 quality pass); no verified emerging advance carried forward.
+- GitHub releases re-checked for all `[github]` watchlist repos in the quality pass; nothing published since the 2026-06-13 digest. Linux tree newest tag `v7.1-rc7` (stable not yet tagged as of 06:00 UTC); rolling prereleases (neovim nightly, ghostty tip, zed 1.7.2-pre, git v2.55.0-rc0, tmux 3.7-rc) skipped; deno 2.8.3, jj 0.42.0, Spring Boot 4.1.0, Spring Framework 7.0.8, Homebrew 6.0.1, rust 1.96.0, Kotlin 2.4.0, Swift 6.3.2, grafana 12.4.4, OpenTelemetry Collector 0.154.0, AlphaFold 3.0.3, RDKit 2026_03_3 predate and were already current.
+- GitHub trending re-scanned in the quality pass (`trending?since=daily`): an agent-skills and agent-tooling cluster recurs (agent-skills, superpowers, agentsview, SkillSpector), but no single verified concrete advance converged with releases and Hacker News, so nothing was surfaced. The 2026-06-13 quality pass found no carry-forward advance either.
 - Engineering and platform blogs (tonsky.me, Google Research, Pyodide blog, pydantic PEP 783 guide)
 - Markets reporting (New York Times on OpenAI state investigation)
 - Reddit not collected directly this cycle; social pulse drawn from Hacker News and tracked-person blogs (Armin Ronacher)
