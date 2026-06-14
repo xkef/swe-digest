@@ -202,7 +202,7 @@ Format:
 - Sources: [Phoronix rc7](https://www.phoronix.com/news/Linux-7.1-rc7)
 - Watch for: Linus Torvalds 7.1 stable announcement on 2026-06-14; confirm stable tag.
 - Last checked: 2026-06-14
-- Notes: rc7 (2026-06-07) expected to be the last candidate; stable expected 2026-06-14 unless an rc8 is needed. As of the 2026-06-14 05:50 UTC run the newest tag is still v7.1-rc7 (stable not yet tagged). Headline 7.1 features: FRED on x86, new in-tree NTFS read/write driver, performance work. Late-cycle fixes concentrated in GPU then networking. Heavier than usual cycle due to AI-agent patch volume. rc7 disables AMD ROCm CRIU ioctl for security.
+- Notes: rc7 (2026-06-07) expected to be the last candidate; stable expected 2026-06-14 unless an rc8 is needed. As of the 2026-06-14 16:16 UTC run the newest tag is still v7.1-rc7 (stable not yet tagged at this run). Headline 7.1 features: FRED on x86, new in-tree NTFS read/write driver, performance work. Late-cycle fixes concentrated in GPU then networking. Heavier than usual cycle due to AI-agent patch volume. rc7 disables AMD ROCm CRIU ioctl for security.
 
 ## 2026-06-12: Langflow CVE-2026-5027 CISA KEV watch
 
