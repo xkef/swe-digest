@@ -64,6 +64,7 @@ SECRETS = [
     (re.compile(r"\bAKIA[0-9A-Z]{16}\b"), "AWS access key id"),
     (re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"), "private key block"),
     (re.compile(r"xox[baprs]-[A-Za-z0-9-]{10,}"), "Slack token"),
+    (re.compile(r"sk-ant-[A-Za-z0-9_-]{20,}"), "Anthropic key"),
     (re.compile(r"\bsk-[A-Za-z0-9]{20,}"), "secret key (sk-...)"),
 ]
 
