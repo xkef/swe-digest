@@ -348,6 +348,24 @@ Format:
 - Last checked: 2026-06-15
 - Notes: NVIDIA Apache-2.0 Python scanner for AI agent skills (Claude Code, Codex CLI, Gemini CLI, etc.). 64 patterns across 16 categories (prompt injection, data exfiltration, privilege escalation, supply chain, tool poisoning, MCP least privilege). Static pass plus optional LLM pass; OSV.dev live CVE lookup; terminal/JSON/Markdown/SARIF output; 0-100 risk score. ~5,600 stars, trending 2026-06-15. Cites own research that 26.1% of skills contain vulnerabilities and 5.2% show likely malicious intent (project's own figures, not independently verified). No tagged release yet. Ties to the broader agent-skill and AUR supply-chain trust theme.
 
+## 2026-06-15: curl pauses vulnerability report handling for July 2026
+
+- Status: open
+- Category: Dev tools
+- Sources: [curl blog](https://daniel.haxx.se/blog/2026/06/15/curl-summer-of-bliss/)
+- Watch for: Report handling resuming 2026-08-03; any public vulnerability disclosure during the pause window.
+- Last checked: 2026-06-15
+- Notes: Daniel Stenberg announced 2026-06-15 that curl suspends vulnerability report handling for July 2026. HackerOne form paused and security email not processed from 2026-07-01 00:00 CEST through 2026-08-02; resumes 2026-08-03 09:00 CEST. Cited sustained pressure and a vulnerability influx over the prior four months; post does not attribute the pause to AI-generated reports. Release 8.22.0 shifts two weeks to 2026-09-02. Paid support contracts keep full security access; GitHub issues and PRs continue normally. Surfaced as 478-pt HN front-page thread 48537165.
+
+## 2026-06-15: Claude for Foundation Models Swift package
+
+- Status: open
+- Category: Apple
+- Sources: [Anthropic docs](https://platform.claude.com/docs/en/cli-sdks-libraries/libraries/apple-foundation-models), [GitHub repository](https://github.com/anthropics/ClaudeForFoundationModels)
+- Watch for: OS 27 server-side LanguageModel API stabilizing toward GA; first tagged release past 0.1.0; whether the package accepts external PRs after beta.
+- Last checked: 2026-06-15
+- Notes: Anthropic published ClaudeForFoundationModels (Apache-2.0 Swift package) conforming Claude to the LanguageModel protocol in Apple's Foundation Models framework, targeting the server-side language model API introduced in the OS 27 betas. Same LanguageModelSession API as Apple's on-device model (respond(to:), streaming, @Generable guided generation, client- and server-side tools). Requests go app-to-Claude API directly at standard pricing; Apple not in the request path. Requires iOS/macOS/visionOS/watchOS 27 (beta) and Xcode 27 (beta). At 0.1.0; framework server-side API may change before GA; external PRs not accepted during beta. Distinct from the on-device Foundation Models open-source follow-up. Surfaced as 210-pt HN thread 48536776.
+
 ## 2026-06-14: GLM 5.2 release
 
 - Status: open

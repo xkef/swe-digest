@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 25
+source_count = 30
 +++
 
 ## Top stories
@@ -103,7 +103,17 @@ No major items found. No new major cloud, identity, payment, or package-registry
 
 ## Developer tools
 
-No major items found. No new releases landed for the `[github]` watchlist repositories since the 2026-06-14 digest; deno 2.8.3, jj 0.42.0, Homebrew 6.0.1, and tmux 3.7-rc remain the latest, and rolling prereleases (neovim nightly, ghostty tip, zed 1.7.2-pre, git v2.55.0-rc0) were skipped.
+### curl pauses vulnerability report handling for July 2026
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [curl blog (Daniel Stenberg)](https://daniel.haxx.se/blog/2026/06/15/curl-summer-of-bliss/), [HN discussion](https://news.ycombinator.com/item?id=48537165)
+- **Summary:** The curl project will suspend vulnerability report handling for July 2026. The HackerOne submission form is paused and the security email address will not process reports from 2026-07-01 00:00 CEST through 2026-08-02; normal handling resumes 2026-08-03 09:00 CEST. Daniel Stenberg's post cites sustained pressure and a vulnerability influx over the prior four months and the maintainers' need for rest. The 8.22.0 release moves two weeks forward to 2026-09-02. Organizations with paid support contracts keep full security access, and GitHub issue and pull-request handling continues normally. The post does not attribute the pause to AI-generated reports.
+- **Comments:** HN reaction was largely supportive; one commenter noted the paid-support carve-out could create pressure to ship a fix anyway if a vulnerability is disclosed publicly during the pause.
+- **Why it matters:** curl ships in billions of devices and is a core dependency, so a one-month gap in coordinated vulnerability handling shifts when reporters can expect triage and may push some toward public disclosure.
+- **Follow-up:** Confirm report handling resumes 2026-08-03 and watch for any public disclosure during the pause window.
+
+No new releases landed for the `[github]` watchlist repositories since the 2026-06-14 digest; deno 2.8.3, jj 0.42.0, Homebrew 6.0.1, and tmux 3.7-rc remain the latest, and rolling prereleases (neovim nightly, ghostty tip, zed 1.7.2-pre, git v2.55.0-rc0) were skipped.
 
 ## Languages and runtimes
 
@@ -111,7 +121,14 @@ No major items found. No new language or runtime release landed; WASI 0.3.0 adop
 
 ## Apple platforms
 
-No major items found.
+### Anthropic ships Claude for Foundation Models Swift package
+
+- **Category:** Apple
+- **Status:** developing
+- **Sources:** [Anthropic docs](https://platform.claude.com/docs/en/cli-sdks-libraries/libraries/apple-foundation-models), [GitHub repository](https://github.com/anthropics/ClaudeForFoundationModels), [HN discussion](https://news.ycombinator.com/item?id=48536776)
+- **Summary:** Anthropic published ClaudeForFoundationModels, an Apache-2.0 Swift package that conforms Claude to the `LanguageModel` protocol in Apple's Foundation Models framework, targeting the server-side language model API introduced in the OS 27 betas. Apps drive Claude through the same `LanguageModelSession` API as Apple's on-device model (`respond(to:)`, streaming, guided generation via `@Generable`, and client- and server-side tool use), choosing per session whether to call the on-device model or Claude. Requests go directly from the app to the Claude API at standard pricing, with Apple not in the request path. It requires iOS, macOS, visionOS, or watchOS 27 (beta) and Xcode 27 (beta); the package is at 0.1.0 and the framework's server-side API may change before general availability.
+- **Why it matters:** The server-side provider lets a Swift app escalate from the on-device model to a frontier model behind one framework API, enabling hybrid on-device and cloud inference without a separate Messages API client.
+- **Follow-up:** Watch the OS 27 server-side `LanguageModel` API stabilize toward GA and the package's first tagged release past 0.1.0.
 
 ## Linux and kernel
 
@@ -192,12 +209,13 @@ No major items found. The EU Commission's review of the US Anthropic directive i
 
 ## Sources checked
 
-- Hacker News via `make hn` (Algolia backend, full structured coverage: front page 30, top 24h 50, Ask HN 30, Show HN 30, 12 comment threads, 63 of 72 watchlist queries; 0 degraded collections; fetched 05:35 UTC)
+- Hacker News via `make hn` (Algolia backend, full structured coverage: front page 30, top 24h 50, Ask HN 30, Show HN 30, 12 comment threads, 65 of 72 watchlist queries; 0 degraded collections; re-fetched 11:50 UTC). New since the morning run: curl's July vulnerability-report pause (Developer tools) and Anthropic's Claude for Foundation Models Swift package (Apple platforms); the day's other high-point front-page items ("Your ePub Is fine", "What the Fuck Happened to Nerds", Windows 11 account-requirement complaints) are off-topic or opinion.
 - AI vendor and model sources (Anthropic model-deprecation docs, Anthropic news and red-team report; Z.ai/GLM via HN and secondary reporting)
 - Security advisories and trackers (CISA KEV JSON feed re-fetched at run time, still version 2026.06.12 dated 2026-06-12, count 1619: PeopleSoft CVE-2026-35273, Ivanti CVE-2026-10520, Palo Alto CVE-2026-0257 present; Langflow CVE-2026-5027 and Microsoft RoguePlanet/wormable CVEs still absent; Arch Linux incident notice, Phoronix)
 - Status and outage reporting (no new major incident found via WebSearch; Meta and Cloudflare 2026-06-12 incidents resolved)
 - GitHub releases checked for all `[github]` watchlist repos (quality pass re-check): nothing published since the 2026-06-14 digest. Linux tree mirror tag still `v7.1-rc7` at run time although 7.1 stable was announced 2026-06-14 (mirror tag lag); rolling prereleases (neovim nightly, ghostty tip, zed 1.7.2-pre, git v2.55.0-rc0, tmux 3.7-rc) skipped; deno 2.8.3, jj 0.42.0, Spring Boot 4.1.0, Spring Framework 7.0.8, Homebrew 6.0.1, rust 1.96.0, Kotlin 2.4.0, Swift 6.3.2, node 26.3.0, grafana 12.4.4, Prometheus 3.12.0, OpenTelemetry Collector 0.154.0, AlphaFold 3.0.3, RDKit 2026_03_3 predate and were already current
 - GitHub trending checked (`?since=daily` overall plus rust, python, typescript, go language views): mostly established repos; the one emerging cluster is AI agent-skill security, surfaced as NVIDIA/SkillSpector (verified against its README and repo metadata, added to Agentic coding). shiyu-coder/Kronos (financial-markets foundation model) trended but is out of scope.
-- Engineering and platform blogs (Jane Street blog; PlanetScale Postgres delete post verified against the source)
+- Engineering and platform blogs (Jane Street blog; PlanetScale Postgres delete post verified against the source; curl blog post verified against daniel.haxx.se)
+- Apple platforms (Anthropic ClaudeForFoundationModels docs and GitHub repo verified for the new OS 27 server-side LanguageModel provider; no new Swift.org or Apple Developer release at run time)
 - Markets reporting (Reuters and Euronews on the EU Commission review of the Anthropic directive)
 - Reddit RSS attempted; rate-limited this cycle, only r/programming returned; social pulse drawn from Hacker News
