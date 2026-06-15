@@ -92,6 +92,8 @@ directly. When running in the remote environment, use the listed fallback.
 - `status.claude.com` - Anthropic Claude status page returns 200; reliable for incident details and timelines.
 - `github.blog/changelog/` - GitHub Changelog is primary; fetchable and reliable for GitHub product updates.
 - `www.bleepingcomputer.com/news/security/` - Returns 403 from datacenter for direct fetch; WebSearch snippets contain useful exploitation confirmation details. Confirm CVE details from vendor advisory.
+- `planetscale.com/blog/` - PlanetScale engineering blog fetches 200 from datacenter (title and meta description readable; body is JS-heavy but extractable). Vendor blog, technically detailed on database internals; judge each post for promotional framing.
+- `github.com/trending` (and `?since=daily` language views) - Fetchable from datacenter; repo HTML lists parse cleanly. Use `gh api repos/{owner}/{repo}` and `/readme` to verify any surfaced repo before publishing.
 
 ### Secondary/aggregation sources
 

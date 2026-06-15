@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 20
+source_count = 25
 +++
 
 ## Top stories
@@ -76,7 +76,16 @@ No major items found. The Anthropic N-day exploit measurement is covered in the 
 
 ## Agentic coding
 
-No major items found. The open-weight coding-model momentum (GLM 5.2 MIT weights pending, Kimi K2.7-Code) is covered in AI and tracked in follow-ups; today's HN coding-agent items ("Claude Code is dead, the future is open" and similar) are opinion threads without measured results.
+### NVIDIA publishes SkillSpector, a security scanner for AI agent skills
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [GitHub repository](https://github.com/NVIDIA/SkillSpector)
+- **Summary:** NVIDIA published SkillSpector, an Apache-2.0 Python tool that statically scans AI agent skills (the skill bundles used by Claude Code, Codex CLI, Gemini CLI, and similar agents) for vulnerabilities and malicious patterns before installation. It ships 64 detection patterns across 16 categories including prompt injection, data exfiltration, privilege escalation, supply chain, tool poisoning, and MCP least-privilege checks, runs a static pass plus an optional LLM semantic pass, queries OSV.dev for live CVE data, and emits a 0-to-100 risk score with terminal, JSON, Markdown, and SARIF output. The repository trended this cycle (about 5,600 stars) and cites internal research that 26.1 percent of skills contain vulnerabilities and 5.2 percent show likely malicious intent; those figures are the project's own and are not independently verified. No tagged release exists yet.
+- **Why it matters:** Agent skills execute with implicit trust and minimal vetting, the same install-and-run trust model behind the Arch AUR supply-chain wave, so a dedicated scanner that produces SARIF for CI gives teams a way to vet third-party skills before they run.
+- **Follow-up:** Watch for a tagged release, the underlying skill-vulnerability research, and false-positive rates from practitioner use.
+
+The open-weight coding-model momentum (GLM 5.2 MIT weights pending, Kimi K2.7-Code) is covered in AI and tracked in follow-ups; today's HN coding-agent items ("Claude Code is dead, the future is open" and similar) are opinion threads without measured results.
 
 ## Security
 
@@ -110,7 +119,14 @@ No major items found. Linux 7.1 stable is covered in Top stories.
 
 ## Infrastructure
 
-No major items found. PostgreSQL 19 Beta testing remains in progress and is tracked in Watchlist follow-ups.
+### PlanetScale argues the only scalable delete in Postgres is DROP TABLE
+
+- **Category:** Infrastructure
+- **Status:** discussion
+- **Sources:** [PlanetScale blog](https://planetscale.com/blog/the-only-scalable-delete), [HN discussion](https://news.ycombinator.com/item?id=48492822)
+- **Summary:** A PlanetScale engineering post argues that large `DELETE` statements add work to a Postgres database rather than reclaiming it: deleted rows become dead tuples that still consume space until vacuum runs, indexes are not immediately shrunk, and a big delete generates WAL and vacuum pressure proportional to the rows removed. The recommendation is to structure schemas so removal maps to `DROP TABLE` or `TRUNCATE`, for example by partitioning time-series or tenant data so retention becomes dropping whole partitions instead of row-by-row deletes. It surfaced on Hacker News (152 points).
+- **Comments:** HN commenters discussed partition-drop retention patterns and noted the same dead-tuple and vacuum cost applies to large updates, not only deletes.
+- **Why it matters:** Teams running retention or cleanup jobs as bulk `DELETE` on large Postgres tables hit MVCC bloat and vacuum load, and partition-drop designs avoid that cost.
 
 ## Engineering posts
 
@@ -144,6 +160,14 @@ No major items found. The EU Commission's review of the US Anthropic directive i
 - **Summary:** A new Paul Graham essay (526 points) drew heavy discussion on startup wealth creation. The thread is opinion and career discussion rather than a technical artifact.
 - **Comments:** Commenters debated the essay's premises on luck versus skill and the durability of startup-driven wealth, with limited technical content.
 
+### Rio de Janeiro "homegrown" LLM alleged to be a model merge
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [GitHub issue](https://github.com/nex-agi/Nex-N2/issues/4), [HN discussion](https://news.ycombinator.com/item?id=48528371)
+- **Summary:** A GitHub issue and a 321-point Hacker News thread allege that a model promoted as a Rio de Janeiro city-government LLM is a merge or fine-tune of existing open-weight models rather than a model trained from scratch, with a separate thread questioning benchmark claims that it beats Qwen. The provenance allegation rests on community inspection of the published weights and configuration and is not confirmed by the project. Treat both the "homegrown" framing and the rebuttal as unverified.
+- **Comments:** Commenters pointed to tokenizer and config artifacts they read as evidence of an upstream base model, and warned that self-reported benchmark wins from undisclosed merges are easy to game; none of this is independently confirmed.
+
 ## Reddit and social pulse
 
 - **Reddit (degraded):** Direct Reddit RSS collection was rate-limited from the run environment this cycle; only r/programming returned, where the top daily post is Jane Street's "Formal methods and the future of programming" (cross-referenced in Engineering posts). Treat the rest of the Reddit pulse as not collected this cycle.
@@ -172,7 +196,8 @@ No major items found. The EU Commission's review of the US Anthropic directive i
 - AI vendor and model sources (Anthropic model-deprecation docs, Anthropic news and red-team report; Z.ai/GLM via HN and secondary reporting)
 - Security advisories and trackers (CISA KEV JSON feed re-fetched at run time, still version 2026.06.12 dated 2026-06-12, count 1619: PeopleSoft CVE-2026-35273, Ivanti CVE-2026-10520, Palo Alto CVE-2026-0257 present; Langflow CVE-2026-5027 and Microsoft RoguePlanet/wormable CVEs still absent; Arch Linux incident notice, Phoronix)
 - Status and outage reporting (no new major incident found via WebSearch; Meta and Cloudflare 2026-06-12 incidents resolved)
-- GitHub releases checked for all `[github]` watchlist repos: nothing published since the 2026-06-14 digest. Linux tree mirror tag still `v7.1-rc7` at run time although 7.1 stable was announced 2026-06-14 (mirror tag lag); rolling prereleases (neovim nightly, ghostty tip, zed 1.7.2-pre, git v2.55.0-rc0, tmux 3.7-rc) skipped; deno 2.8.3, jj 0.42.0, Spring Boot 4.1.0, Spring Framework 7.0.8, Homebrew 6.0.1, rust 1.96.0, Kotlin 2.4.0, Swift 6.3.2, node 26.3.0, grafana 12.4.4, Prometheus 3.12.0, OpenTelemetry Collector 0.154.0, AlphaFold 3.0.3, RDKit 2026_03_3 predate and were already current
-- Engineering and platform blogs (Jane Street blog)
+- GitHub releases checked for all `[github]` watchlist repos (quality pass re-check): nothing published since the 2026-06-14 digest. Linux tree mirror tag still `v7.1-rc7` at run time although 7.1 stable was announced 2026-06-14 (mirror tag lag); rolling prereleases (neovim nightly, ghostty tip, zed 1.7.2-pre, git v2.55.0-rc0, tmux 3.7-rc) skipped; deno 2.8.3, jj 0.42.0, Spring Boot 4.1.0, Spring Framework 7.0.8, Homebrew 6.0.1, rust 1.96.0, Kotlin 2.4.0, Swift 6.3.2, node 26.3.0, grafana 12.4.4, Prometheus 3.12.0, OpenTelemetry Collector 0.154.0, AlphaFold 3.0.3, RDKit 2026_03_3 predate and were already current
+- GitHub trending checked (`?since=daily` overall plus rust, python, typescript, go language views): mostly established repos; the one emerging cluster is AI agent-skill security, surfaced as NVIDIA/SkillSpector (verified against its README and repo metadata, added to Agentic coding). shiyu-coder/Kronos (financial-markets foundation model) trended but is out of scope.
+- Engineering and platform blogs (Jane Street blog; PlanetScale Postgres delete post verified against the source)
 - Markets reporting (Reuters and Euronews on the EU Commission review of the Anthropic directive)
 - Reddit RSS attempted; rate-limited this cycle, only r/programming returned; social pulse drawn from Hacker News

@@ -339,6 +339,15 @@ Format:
 - Last checked: 2026-06-14
 - Notes: Anthropic research write-up dated 2026-06-05. Evaluated Claude on NMR spectral analysis over 20 post-cutoff synthetic-chemistry preprint compounds (four structural families). Reports Opus 4.7 average errors ~0.079 ppm (H) and ~1.37 ppm (C), comparable to or better than ChemDraw and MestReNova; inverse elucidation recovered all 8 simpler structures and 4 of 7 complex ones with starting-material context. Lab's own internal eval; not independently reproduced. Surfaced on HN 2026-06-14 (48523752). AI-for-science interest.
 
+## 2026-06-15: NVIDIA SkillSpector AI agent-skill scanner
+
+- Status: open
+- Category: Agentic coding
+- Sources: [GitHub repository](https://github.com/NVIDIA/SkillSpector)
+- Watch for: First tagged release; the underlying skill-vulnerability research and dataset; practitioner false-positive rates; adoption in agent-skill CI.
+- Last checked: 2026-06-15
+- Notes: NVIDIA Apache-2.0 Python scanner for AI agent skills (Claude Code, Codex CLI, Gemini CLI, etc.). 64 patterns across 16 categories (prompt injection, data exfiltration, privilege escalation, supply chain, tool poisoning, MCP least privilege). Static pass plus optional LLM pass; OSV.dev live CVE lookup; terminal/JSON/Markdown/SARIF output; 0-100 risk score. ~5,600 stars, trending 2026-06-15. Cites own research that 26.1% of skills contain vulnerabilities and 5.2% show likely malicious intent (project's own figures, not independently verified). No tagged release yet. Ties to the broader agent-skill and AUR supply-chain trust theme.
+
 ## 2026-06-14: GLM 5.2 release
 
 - Status: open
