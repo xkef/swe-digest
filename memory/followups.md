@@ -197,12 +197,12 @@ Format:
 
 ## 2026-06-12: Linux kernel 7.1 stable release
 
-- Status: open
+- Status: closed
 - Category: Linux/Kernel
-- Sources: [Phoronix rc7](https://www.phoronix.com/news/Linux-7.1-rc7)
-- Watch for: Linus Torvalds 7.1 stable announcement on 2026-06-14; confirm stable tag.
-- Last checked: 2026-06-14
-- Notes: rc7 (2026-06-07) expected to be the last candidate; stable expected 2026-06-14 unless an rc8 is needed. As of the 2026-06-14 16:16 UTC run the newest tag is still v7.1-rc7 (stable not yet tagged at this run). Headline 7.1 features: FRED on x86, new in-tree NTFS read/write driver, performance work. Late-cycle fixes concentrated in GPU then networking. Heavier than usual cycle due to AI-agent patch volume. rc7 disables AMD ROCm CRIU ioctl for security.
+- Sources: [Phoronix release](https://www.phoronix.com/news/Linux-7.1-Released)
+- Watch for: Stable tag confirmed; remaining check is changelog review and first point-release regressions (tracked ad hoc, not a standing follow-up).
+- Last checked: 2026-06-15
+- Notes: Linux 7.1 stable released 2026-06-14 (half a day early, Linus traveling). Headline 7.1 features: new in-tree NTFS read/write driver, Intel FRED on supporting hardware including Panther Lake, faster Intel Arc Battlemage graphics, expanded AMD GPU defaults, Intel 486 CPU support dropped. Heavier than usual cycle due to AI-agent patch volume. GitHub torvalds/linux mirror tag lagged at v7.1-rc7 at the 2026-06-15 run despite the stable announcement. Closed.
 
 ## 2026-06-12: Langflow CVE-2026-5027 CISA KEV watch
 
@@ -280,19 +280,19 @@ Format:
 
 - Status: open
 - Category: Security
-- Sources: [Arch Linux news](https://archlinux.org/news/active-aur-malicious-packages-incident/), [Phoronix 1500+](https://www.phoronix.com/news/Arch-Linux-AUR-More-Than-1500), [ioctl.fail analysis](https://ioctl.fail/preliminary-analysis-of-aur-malware/)
-- Watch for: Confirmation of compromised user credentials exploited in the wild; improvements to AUR orphan-package adoption policies; final scope of affected packages.
-- Last checked: 2026-06-14
-- Notes: Campaign ("Atomic Arch") adopted orphaned AUR packages and injected infostealer + optional eBPF rootkit via modified PKGBUILD npm install calls fetching malicious npm packages (atomic-lockfile, js-digest). Targets developer credentials. Affected count grew from 400+ (2026-06-11, account "arojas") to more than 1,500 packages by 2026-06-12. Arch published official incident notice 2026-06-12 (Campbell Jones); account creation, updates, and adoption disrupted during cleanup. By end of 2026-06-12 maintainers believed all known malicious commits removed and consider it under control. Official Arch binary repos unaffected. No confirmed downstream exploitation reported yet. Added to digest Security section 2026-06-13.
+- Sources: [Arch Linux news](https://archlinux.org/news/active-aur-malicious-packages-incident/), [Phoronix 1500+](https://www.phoronix.com/news/Arch-Linux-AUR-More-Than-1500), [Phoronix second wave](https://www.phoronix.com/news/Arch-Linux-AUR-More-Malware), [ioctl.fail analysis](https://ioctl.fail/preliminary-analysis-of-aur-malware/)
+- Watch for: Final scope of the second wave; confirmation of compromised user credentials exploited in the wild; improvements to AUR orphan-package adoption policies.
+- Last checked: 2026-06-15
+- Notes: Campaign ("Atomic Arch") adopted orphaned AUR packages and injected infostealer + optional eBPF rootkit via modified PKGBUILD npm install calls fetching malicious npm packages (atomic-lockfile, js-digest). Targets developer credentials. First wave grew from 400+ (2026-06-11) to more than 1,500 packages by 2026-06-12; Arch published official incident notice 2026-06-12 and by end of day believed all malicious commits removed (under control). SECOND WAVE surfaced 2026-06-13 to 2026-06-14 (reported by AUR developer a821): more sophisticated, uses code obfuscation to conceal intent; spans Node.js packages, a Plasma 6 applets package, Firefox packages, the Aura browser, LibreWolf extensions, and a Neovim plugin. Maintainers again removing content and banning accounts. Official Arch binary repos unaffected. No confirmed downstream exploitation reported yet.
 
 ## 2026-06-13: US export directive suspends Fable 5 and Mythos 5
 
 - Status: open
 - Category: AI
 - Sources: [Anthropic statement](https://www.anthropic.com/news/fable-mythos-access), [Bloomberg](https://www.bloomberg.com/news/articles/2026-06-13/anthropic-says-us-limits-foreign-access-to-fable-5-mythos-5)
-- Watch for: Directive lifted, narrowed, or extended to other models/providers; official government statement; legal challenge; refund or credit handling.
-- Last checked: 2026-06-14
-- Notes: Anthropic received an export control directive at 17:21 ET 2026-06-12 to block all foreign-national access to Fable 5 and Mythos 5; it disabled both for all customers. Other models unaffected. Stated concern is a narrow jailbreak (ask model to read a codebase and fix flaws), which Anthropic says exists in other models including GPT-5.5. Anthropic disagrees with the recall. 2026-06-13: WSJ reports (single-sourced, "people familiar") that Amazon CEO Andy Jassy's talks with Trump administration officials preceded the directive; Amazon researchers reportedly prompted Fable 5 for cyberattack-aiding info. Amazon holds a large (>5%) equity stake in Anthropic. As of 2026-06-14 access still suspended, no restoration timeline.
+- Watch for: Directive lifted, narrowed, or extended to other models/providers; official US government statement; formal EU response; legal challenge; refund or credit handling.
+- Last checked: 2026-06-15
+- Notes: Anthropic received an export control directive at 17:21 ET 2026-06-12 to block all foreign-national access to Fable 5 and Mythos 5; it disabled both for all customers. Other models unaffected. Stated concern is a narrow jailbreak (ask model to read a codebase and fix flaws), which Anthropic says exists in other models including GPT-5.5. Anthropic disagrees with the recall. 2026-06-13: WSJ reports (single-sourced, "people familiar") that Amazon CEO Andy Jassy's talks with Trump administration officials preceded the directive; Amazon researchers reportedly prompted Fable 5 for cyberattack-aiding info. Amazon holds a large (>5%) equity stake in Anthropic. 2026-06-14: EU Commission spokesperson said it is assessing the practical consequences of the directive and that measures should not discriminate against partners (Reuters, Euronews). As of 2026-06-15 access still suspended, no restoration timeline.
 
 ## 2026-06-13: Oracle PeopleSoft CVE-2026-35273 active exploitation
 

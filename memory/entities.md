@@ -57,7 +57,7 @@ Recurring entities tracked across digest runs.
 
 ## Linux and kernel
 
-- Linux kernel: track releases, merge windows, scheduler, io_uring, eBPF, filesystems, memory management, and security hardening. Linux 7.1-rc7 released 2026-06-07; stable expected 2026-06-14 (as of 2026-06-14 05:50 UTC newest tag still v7.1-rc7). Headline 7.1 features: FRED on x86, new in-tree NTFS read/write driver, performance work. Development cycle heavier than usual due to AI-agent patch flood. splice()/vmsplice() removal under discussion due to LLM-discovered security bugs.
+- Linux kernel: track releases, merge windows, scheduler, io_uring, eBPF, filesystems, memory management, and security hardening. Linux 7.1 stable released 2026-06-14 (half a day early). Headline 7.1 features: new in-tree NTFS read/write driver, Intel FRED on supporting hardware including Panther Lake, faster Intel Arc Battlemage graphics, expanded AMD GPU defaults, Intel 486 CPU support dropped. Development cycle heavier than usual due to AI-agent patch flood. GitHub torvalds/linux mirror tag lagged at v7.1-rc7 even after the stable announcement. splice()/vmsplice() removal under discussion due to LLM-discovered security bugs.
 - LWN.net: kernel and systems reporting. Track subscriber and free articles on kernel development and ecosystem changes.
 - Rust for Linux: track upstream progress, supported drivers, and toolchain requirements.
 
