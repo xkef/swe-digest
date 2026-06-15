@@ -21,6 +21,7 @@ import json
 import re
 import shutil
 import tomllib
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,6 +30,7 @@ STORIES_DIR = ROOT / "content" / "stories"
 HOME_PAGES_DIR = ROOT / "content" / "home"
 DAY_JSON_DIR = ROOT / "data" / "digests"
 HOME_JSON_DIR = ROOT / "data" / "home"
+RUNS_DIR = ROOT / "data" / "runs"
 CLIENT_INDEX = ROOT / "static" / "stories.json"
 ALIASES = ROOT / "data" / "search-aliases.toml"
 
@@ -43,6 +45,7 @@ FIELD = re.compile(r"^- \*\*(?P<label>[^:*]+):\*\*\s*(?P<value>.*)$")
 SECTION = re.compile(r"^##\s+(?P<title>.+?)\s*$")
 STORY = re.compile(r"^###\s+(?P<title>.+?)\s*$")
 FM_KEY = re.compile(r"^\s*(?P<key>\w+)\s*=\s*(?P<value>.+?)\s*$")
+RUN_GENERATED = re.compile(r"^\s*generated_at:\s*'?(?P<value>[^'\n]+?)'?\s*$", re.MULTILINE)
 
 
 def slugify(text: str) -> str:
@@ -79,6 +82,27 @@ def parse_front_matter(text: str) -> dict[str, str]:
         if m:
             out[m.group("key")] = m.group("value").strip().strip('"')
     return out
+
+
+def digest_updated(date: str) -> tuple[str | None, str | None]:
+    """When a digest was last updated, read from its run log's
+    mechanical.generated_at. The run log commits alongside the digest, so this
+    survives the shallow checkout the Pages build uses, unlike git history,
+    and reflects the latest same-day run rather than the global build time.
+
+    Returns the UTC label shown without JS and the ISO instant the client
+    script localizes to the visitor's timezone."""
+    path = RUNS_DIR / f"{date}.yaml"
+    if not path.exists():
+        return None, None
+    match = RUN_GENERATED.search(path.read_text(encoding="utf-8"))
+    if not match:
+        return None, None
+    try:
+        moment = datetime.fromisoformat(match.group("value")).astimezone(timezone.utc)
+    except ValueError:
+        return None, None
+    return moment.strftime("%Y-%m-%d %H:%M UTC"), moment.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def parse_digest(path: Path) -> tuple[str, list[dict]]:
@@ -240,9 +264,16 @@ def main() -> int:
     for path in sorted(DIGESTS.glob("*/index.md"), reverse=True):
         date, stories = parse_digest(path)
         pub = [public(s) for s in stories]
+        updated, updated_at = digest_updated(date)
         write_json(
             DAY_JSON_DIR / f"{date}.json",
-            {"date": date, "count": len(pub), "sections": group_sections(pub)},
+            {
+                "date": date,
+                "count": len(pub),
+                "updated": updated,
+                "updated_at": updated_at,
+                "sections": group_sections(pub),
+            },
         )
         if not stories:
             continue

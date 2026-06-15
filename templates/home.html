@@ -19,19 +19,6 @@
     <p class="filter-count" id="story-count" aria-live="polite">{{ index.total_stories }} stories across {{ index.total_days }} days</p>
   </div>
 
-  <div class="facet-groups">
-    {% for facet in index.sections %}{% if facet.name == "Hacker News" %}
-    <button type="button" class="facet facet-section" data-facet="section" data-value="{{ facet.name }}" aria-pressed="false">{{ facet.name }} <span>{{ facet.count }}</span></button>
-    {% endif %}{% endfor %}
-    {% for facet in index.categories %}
-    <button type="button" class="facet" data-facet="category" data-value="{{ facet.name }}" aria-pressed="false">{{ facet.name }} <span>{{ facet.count }}</span></button>
-    {% endfor %}
-    {% for facet in index.statuses %}
-    <button type="button" class="facet facet-status" data-facet="status" data-value="{{ facet.name }}" aria-pressed="false">{{ facet.name }}</button>
-    {% endfor %}
-    <button type="button" class="facet facet-reset" id="filter-reset" hidden>Clear</button>
-  </div>
-
   {% for digest in index.digests %}
   <section class="digest-group" data-date="{{ digest.date }}">
     <a class="digest-group-head" href="{{ config.base_url | safe }}{{ digest.url | safe }}">

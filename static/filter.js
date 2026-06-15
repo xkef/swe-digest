@@ -1,25 +1,22 @@
 // Story search for the home index. Without JS every story on the current
-// page is rendered and visible. With JS, any query or facet searches the
-// full archive index fetched from /stories.json; clearing it restores the
-// server-rendered page.
+// page is rendered and visible. With JS, any query searches the full archive
+// index fetched from /stories.json; clearing it restores the server-rendered
+// page.
 (function () {
   const index = document.querySelector(".story-index");
   if (!index) return;
 
   const rows = Array.from(index.querySelectorAll(".story-row"));
   const groups = Array.from(index.querySelectorAll(".digest-group"));
-  const facets = Array.from(index.querySelectorAll(".facet[data-facet]"));
   const search = document.getElementById("story-search");
   const count = document.getElementById("story-count");
   const empty = document.getElementById("story-empty");
-  const reset = document.getElementById("filter-reset");
   const results = document.getElementById("archive-results");
   const pagination = index.querySelector(".pagination");
   const base = index.dataset.base || "";
   const defaultCount = count.textContent;
 
   const MAX_RESULTS = 100;
-  const active = { category: new Set(), status: new Set(), section: new Set() };
   let query = "";
   let needleSets = [];
   let archive = null;
@@ -58,11 +55,8 @@
   }
 
   function matches(story) {
-    const okCat = active.category.size === 0 || active.category.has(story.category);
-    const okStatus = active.status.size === 0 || active.status.has(story.status);
-    const okSection = active.section.size === 0 || active.section.has(story.section);
     const text = (story.title + " " + story.summary + " " + story.category).toLowerCase();
-    return okCat && okStatus && okSection && matchesText(text);
+    return matchesText(text);
   }
 
   function badge(cls, text) {
@@ -124,11 +118,7 @@
   function filterPageRows() {
     let shown = 0;
     for (const row of rows) {
-      const okCat = active.category.size === 0 || active.category.has(row.dataset.category);
-      const okStatus = active.status.size === 0 || active.status.has(row.dataset.status);
-      const okSection = active.section.size === 0 || active.section.has(row.dataset.section);
-      const okText = matchesText(row.dataset.text);
-      const visible = okCat && okStatus && okSection && okText;
+      const visible = matchesText(row.dataset.text);
       row.hidden = !visible;
       if (visible) shown++;
     }
@@ -140,9 +130,7 @@
   }
 
   function apply() {
-    const filtering = active.category.size > 0 || active.status.size > 0 || active.section.size > 0 || query;
-    reset.hidden = !filtering;
-    if (!filtering) {
+    if (!query) {
       showPage();
     } else if (archive) {
       showArchive();
@@ -151,35 +139,10 @@
     }
   }
 
-  for (const button of facets) {
-    button.addEventListener("click", function () {
-      const set = active[button.dataset.facet];
-      const value = button.dataset.value;
-      if (set.has(value)) {
-        set.delete(value);
-        button.setAttribute("aria-pressed", "false");
-      } else {
-        set.add(value);
-        button.setAttribute("aria-pressed", "true");
-      }
-      apply();
-    });
-  }
-
   if (search) {
     search.addEventListener("input", function () {
       setQuery(search.value.trim().toLowerCase());
       apply();
     });
   }
-
-  reset.addEventListener("click", function () {
-    active.category.clear();
-    active.status.clear();
-    active.section.clear();
-    setQuery("");
-    if (search) search.value = "";
-    for (const button of facets) button.setAttribute("aria-pressed", "false");
-    apply();
-  });
 })();

@@ -168,6 +168,9 @@
   .meta { display: flex; flex-wrap: wrap; gap: 0.55rem; color: var(--muted); font-size: 0.82rem; }
   .meta span:not(:first-child)::before { content: "/"; margin-right: 0.55rem; color: var(--quiet); }
 
+  .page-header p.schedule { font-size: 0.8rem; color: var(--quiet); }
+  .schedule time { color: var(--muted); font-variant-numeric: tabular-nums; letter-spacing: 0.01em; }
+
   .tags, .tag-row {
     display: flex;
     flex-wrap: wrap;
@@ -207,6 +210,22 @@
   .digest-list h2 a { color: var(--fg); text-decoration: none; }
   .digest-list h2 a:hover { color: var(--accent); }
   .digest-list p { color: var(--muted); }
+
+  .digest-month {
+    border: 0;
+    background: transparent;
+    padding: 1.2rem 0 0.1rem;
+    color: var(--quiet);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .digest-row { align-items: baseline; }
+  .digest-row time a { color: var(--fg); text-decoration: none; }
+  .digest-row time a:hover { color: var(--accent); }
+  .digest-count { color: var(--quiet); font-size: 0.82rem; }
 
   .toc {
     margin-bottom: 1.5rem;
@@ -277,39 +296,6 @@
     font-size: 0.82rem;
     white-space: nowrap;
   }
-
-  .facet-groups {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .facet {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.35rem;
-    padding: 0.28rem 0.65rem;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: var(--surface);
-    color: var(--fg);
-    font-size: 0.84rem;
-    cursor: pointer;
-  }
-
-  .facet > span { color: var(--quiet); font-size: 0.74rem; }
-  .facet:hover { border-color: var(--accent); }
-  .facet-status { color: var(--muted); }
-
-  .facet[aria-pressed="true"] {
-    border-color: var(--accent);
-    background: color-mix(in oklab, var(--accent) 14%, var(--surface));
-    color: var(--fg);
-  }
-
-  .facet[aria-pressed="true"] > span { color: inherit; }
-  .facet-reset { color: var(--muted); }
 
   .digest-group { margin-top: 2rem; }
 
@@ -469,7 +455,7 @@
 }
 
 @media print {
-  .site-header, .site-footer, .skip, .filter-bar, .facet-groups { display: none; }
+  .site-header, .site-footer, .skip, .filter-bar { display: none; }
   body { background: white; color: black; }
   a { color: black; }
 }

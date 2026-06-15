@@ -42,10 +42,10 @@
     <footer class="site-footer">
       <p>
         <span>{{ config.title }}</span>
-        <span>{% if build_date %}{{ build_date }}{% else %}{{ now() | date(format="%Y-%m-%dT%H:%MZ") }}{% endif %}</span>
-        <span><a href="{{ get_url(path='/about/') | safe }}">About</a></span>
+        <time class="js-localtime" datetime="{% if build_date %}{{ build_date }}{% else %}{{ now() | date(format='%Y-%m-%dT%H:%M:%SZ') }}{% endif %}">{% if build_date %}{{ build_date | replace(from="T", to=" ") | replace(from="Z", to=" UTC") }}{% else %}{{ now() | date(format='%Y-%m-%d %H:%M UTC') }}{% endif %}</time>
         <span>{% if release != "dev" %}<a href="{{ config.extra.repository | safe }}/commit/{{ release }}">{{ release }}</a>{% else %}{{ release }}{% endif %}</span>
       </p>
     </footer>
+    <script src="{{ get_url(path='/localtime.js') | safe }}" defer></script>
   </body>
 </html>
