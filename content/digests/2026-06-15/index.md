@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 30
+source_count = 37
 +++
 
 ## Top stories
@@ -136,6 +136,23 @@ No major items found. Linux 7.1 stable is covered in Top stories.
 
 ## Infrastructure
 
+### Iroh 1.0 freezes its peer-to-peer networking wire protocol
+
+- **Category:** Infrastructure
+- **Status:** confirmed
+- **Sources:** [Iroh 1.0 announcement](https://www.iroh.computer/blog/v1), [HN discussion](https://news.ycombinator.com/item?id=48542480)
+- **Summary:** The n0 team released Iroh 1.0 on 2026-06-15. Iroh is a Rust networking library that addresses devices by cryptographic public key rather than IP, using QUIC with multipath and NAT traversal to open direct peer-to-peer connections and falling back to public relays when no direct path exists. The 1.0 release freezes the wire protocol: a v1 endpoint interoperates with any other v1 endpoint across minor versions and across the language bindings (the Rust crate plus Python, Node.js, Swift, and Kotlin). The project reports that about 95 percent of transferred data typically passes directly between devices. The prior 0.35 line receives no further releases, and public-relay support for it ends 2026-12-31.
+- **Why it matters:** A frozen wire protocol with a cross-version and cross-language interoperability guarantee makes Iroh safer to depend on in production for direct device-to-device transport (file sync, streaming, AI training data movement) without routing every byte through cloud servers.
+- **Follow-up:** Watch the 0.35 public-relay deprecation on 2026-12-31 and guest-language binding maturity.
+
+### Hetzner raises cloud and dedicated server prices
+
+- **Category:** Infrastructure
+- **Status:** confirmed
+- **Sources:** [Hetzner price adjustment docs](https://docs.hetzner.com/general/infrastructure-and-availability/price-adjustment/), [HN discussion](https://news.ycombinator.com/item?id=48542064)
+- **Summary:** Hetzner raised prices on cloud and dedicated servers effective 2026-06-15 at 08:00 CEST, applying to new orders and cloud instance rescales. Published cloud-server increases vary by instance: for example CAX11 from EUR 0.0072 to EUR 0.0096 per hour (about 33 percent), CPX22 from EUR 0.0128 to EUR 0.0312 per hour (about 144 percent), and CCX13 from EUR 0.0256 to EUR 0.0689 per hour (about 169 percent). Dedicated-server prices also rose; the 262-point Hacker News thread reports increases of roughly 3 to 4 times on some dedicated lines, which is the discussion framing rather than a per-line figure in the price table. Orders placed before the cutoff but delivered after it keep the previous price.
+- **Why it matters:** Hetzner's low pricing made it a default for self-hosters and cost-sensitive infrastructure, so increases reaching about 169 percent on some cloud instances change the rent-versus-build math and may push workloads toward other providers.
+
 ### PlanetScale argues the only scalable delete in Postgres is DROP TABLE
 
 - **Category:** Infrastructure
@@ -157,7 +174,15 @@ No major items found. Linux 7.1 stable is covered in Top stories.
 
 ## Markets and companies
 
-No major items found. The EU Commission's review of the US Anthropic directive is covered in Top stories; Anthropic and OpenAI confidential S-1 processes and the state attorneys general investigation into OpenAI remain tracked in Watchlist follow-ups.
+### Salesforce to acquire Fin (formerly Intercom) for $3.6 billion
+
+- **Category:** Markets
+- **Status:** confirmed
+- **Sources:** [Salesforce press release](https://www.salesforce.com/news/press-releases/2026/06/15/salesforce-signs-definitive-agreement-to-acquire-fin/), [TechCrunch](https://techcrunch.com/2026/06/15/salesforce-acquires-ai-customer-service-platform-fin-for-3-6b/), [HN discussion](https://news.ycombinator.com/item?id=48540126)
+- **Summary:** Salesforce announced on 2026-06-15 a definitive agreement to acquire Fin, the AI customer-service company formerly known as Intercom, for approximately $3.6 billion subject to customary adjustments. Fin's AI agent resolves support queries across live chat, email, WhatsApp, SMS, phone, and Slack using its proprietary support-tuned model branded Apex. Salesforce plans to fold Fin's team and technology into Agentforce, its enterprise agent-building platform. The transaction is expected to close in the fourth quarter of Salesforce's fiscal year 2027.
+- **Why it matters:** A $3.6 billion acquisition consolidates the AI customer-support agent market under a major enterprise vendor and puts the future of the independent Intercom and Fin products, which many product teams integrate with, under Salesforce ownership.
+
+The EU Commission's review of the US Anthropic directive is covered in Top stories; Anthropic and OpenAI confidential S-1 processes and the state attorneys general investigation into OpenAI remain tracked in Watchlist follow-ups.
 
 ## Hacker News
 
@@ -197,6 +222,9 @@ No major items found. The EU Commission's review of the US Anthropic directive i
 - **US export directive on Fable 5 and Mythos 5:** Still suspended for all customers; EU Commission assessing practical consequences and warning against discriminatory measures (2026-06-14). Covered in Top stories. Watch for restoration, narrowing, or legal challenge. Last checked 2026-06-15.
 - **Arch Linux AUR supply-chain attack:** Second, more sophisticated obfuscated wave surfaced 2026-06-13 to 2026-06-14 after the first wave was declared under control; official binary repos unaffected. Covered in Top stories and Security. Last checked 2026-06-15.
 - **GLM 5.2:** Available on GLM Coding Plan; standalone API and MIT open weights stated for "the following week" after the 2026-06-13 announcement, not yet released. No official benchmarks. Last checked 2026-06-15.
+- **Iroh 1.0:** Released 2026-06-15 with a frozen v1 wire protocol and Rust, Python, Node.js, Swift, and Kotlin bindings. Watch the 0.35 public-relay deprecation on 2026-12-31. Last checked 2026-06-15.
+- **Hetzner price increase:** Cloud and dedicated server prices rose effective 2026-06-15 08:00 CEST (cloud instances up about 33 to 169 percent). Watch for migration reports and competitor responses. Last checked 2026-06-15.
+- **Salesforce acquisition of Fin (Intercom):** Definitive agreement announced 2026-06-15 for about $3.6B; expected to close in Salesforce fiscal Q4 2027. Watch for regulatory review and Intercom/Fin product roadmap changes. Last checked 2026-06-15.
 - **Oracle PeopleSoft CVE-2026-35273:** CISA KEV 2026-06-12 (confirmed in feed version 2026.06.12); active exploitation by ShinyHunters 2026-05-27 to 2026-06-09. Watch for victim disclosures and the federal deadline. Last checked 2026-06-15.
 - **Langflow CVE-2026-5027:** VulnCheck KEV 2026-06-08; still absent from the CISA KEV catalog (feed version 2026.06.12, dated 2026-06-12). Fixed in 1.9.0; recommend 1.10.0. Last checked 2026-06-15.
 - **Ivanti Sentry CVE-2026-10520:** CISA KEV 2026-06-11 (confirmed in feed); treat unpatched instances as compromised; patched in 10.5.2/10.6.2/10.7.1. Last checked 2026-06-15.
@@ -209,7 +237,7 @@ No major items found. The EU Commission's review of the US Anthropic directive i
 
 ## Sources checked
 
-- Hacker News via `make hn` (Algolia backend, full structured coverage: front page 30, top 24h 50, Ask HN 30, Show HN 30, 12 comment threads, 65 of 72 watchlist queries; 0 degraded collections; re-fetched 11:50 UTC). New since the morning run: curl's July vulnerability-report pause (Developer tools) and Anthropic's Claude for Foundation Models Swift package (Apple platforms); the day's other high-point front-page items ("Your ePub Is fine", "What the Fuck Happened to Nerds", Windows 11 account-requirement complaints) are off-topic or opinion.
+- Hacker News via `make hn` (Algolia backend, full structured coverage: front page 30, top 24h 50, Ask HN 30, Show HN 30, 12 comment threads, 66 of 72 watchlist queries; 0 degraded collections; re-fetched ~17:30 UTC). New since the 11:50 UTC run: Iroh 1.0 (Infrastructure, 367 points), Hetzner cloud and dedicated price increase (Infrastructure, 262 points), and the Salesforce acquisition of Fin/Intercom (Markets, 214 points). Earlier in the day this run added curl's July vulnerability-report pause (Developer tools) and Anthropic's Claude for Foundation Models Swift package (Apple platforms). The day's other high-point front-page items ("Your ePub Is fine", "CrankGPT", "What the Fuck Happened to Nerds", Windows 11 account-requirement complaints, Fox to buy Roku, an Emacs roundup) are off-topic, novelty, or opinion; OpenRouter Fusion (a multi-model panel API, 162 points) is a product launch without measured results and was left out.
 - AI vendor and model sources (Anthropic model-deprecation docs, Anthropic news and red-team report; Z.ai/GLM via HN and secondary reporting)
 - Security advisories and trackers (CISA KEV JSON feed re-fetched at run time, still version 2026.06.12 dated 2026-06-12, count 1619: PeopleSoft CVE-2026-35273, Ivanti CVE-2026-10520, Palo Alto CVE-2026-0257 present; Langflow CVE-2026-5027 and Microsoft RoguePlanet/wormable CVEs still absent; Arch Linux incident notice, Phoronix)
 - Status and outage reporting (no new major incident found via WebSearch; Meta and Cloudflare 2026-06-12 incidents resolved)
@@ -217,5 +245,5 @@ No major items found. The EU Commission's review of the US Anthropic directive i
 - GitHub trending checked (`?since=daily` overall plus rust, python, typescript, go language views): mostly established repos; the one emerging cluster is AI agent-skill security, surfaced as NVIDIA/SkillSpector (verified against its README and repo metadata, added to Agentic coding). shiyu-coder/Kronos (financial-markets foundation model) trended but is out of scope.
 - Engineering and platform blogs (Jane Street blog; PlanetScale Postgres delete post verified against the source; curl blog post verified against daniel.haxx.se)
 - Apple platforms (Anthropic ClaudeForFoundationModels docs and GitHub repo verified for the new OS 27 server-side LanguageModel provider; no new Swift.org or Apple Developer release at run time)
-- Markets reporting (Reuters and Euronews on the EU Commission review of the Anthropic directive)
+- Markets reporting (Reuters and Euronews on the EU Commission review of the Anthropic directive; Salesforce press release and TechCrunch on the $3.6B Fin/Intercom acquisition; Iroh 1.0 verified against iroh.computer; Hetzner price change verified against docs.hetzner.com)
 - Reddit RSS attempted; rate-limited this cycle, only r/programming returned; social pulse drawn from Hacker News

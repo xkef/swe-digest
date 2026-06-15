@@ -366,6 +366,33 @@ Format:
 - Last checked: 2026-06-15
 - Notes: Anthropic published ClaudeForFoundationModels (Apache-2.0 Swift package) conforming Claude to the LanguageModel protocol in Apple's Foundation Models framework, targeting the server-side language model API introduced in the OS 27 betas. Same LanguageModelSession API as Apple's on-device model (respond(to:), streaming, @Generable guided generation, client- and server-side tools). Requests go app-to-Claude API directly at standard pricing; Apple not in the request path. Requires iOS/macOS/visionOS/watchOS 27 (beta) and Xcode 27 (beta). At 0.1.0; framework server-side API may change before GA; external PRs not accepted during beta. Distinct from the on-device Foundation Models open-source follow-up. Surfaced as 210-pt HN thread 48536776.
 
+## 2026-06-15: Iroh 1.0 peer-to-peer networking library
+
+- Status: open
+- Category: Infrastructure
+- Sources: [Iroh 1.0](https://www.iroh.computer/blog/v1)
+- Watch for: 0.35 public-relay deprecation 2026-12-31; canary/RC support end 2026-09-30; guest-language binding maturity.
+- Last checked: 2026-06-15
+- Notes: n0 team released Iroh 1.0 on 2026-06-15. Rust networking library addressing devices by cryptographic public key rather than IP; QUIC multipath plus NAT traversal for direct peer-to-peer connections, public relays as fallback. 1.0 freezes the wire protocol: a v1 endpoint interoperates with any other v1 endpoint across minor versions and language bindings (Rust crate plus Python, Node.js, Swift, Kotlin). Reports about 95% of transferred data passes directly between devices; relays saw 200M+ endpoints created in 30 days. 0.35 gets no further releases. HN 48542480 (367 pts).
+
+## 2026-06-15: Hetzner cloud and dedicated price increase
+
+- Status: open
+- Category: Markets
+- Sources: [Hetzner price adjustment](https://docs.hetzner.com/general/infrastructure-and-availability/price-adjustment/)
+- Watch for: Migration reports off Hetzner; competitor pricing responses; whether dedicated-server increases match the HN "3-4x" framing.
+- Last checked: 2026-06-15
+- Notes: Hetzner raised cloud and dedicated server prices effective 2026-06-15 08:00 CEST (new orders and cloud rescales). Verified cloud examples: CAX11 EUR 0.0072 -> 0.0096/hr (+33%), CPX22 EUR 0.0128 -> 0.0312/hr (+144%), CCX13 EUR 0.0256 -> 0.0689/hr (+169%). Dedicated prices also rose; HN thread 48542064 (262 pts) reports ~3-4x on some dedicated lines (discussion framing, not a per-line table figure). Pre-cutoff orders delivered later keep old price. Stated reason not given in docs.
+
+## 2026-06-15: Salesforce acquires Fin (formerly Intercom)
+
+- Status: open
+- Category: Markets
+- Sources: [Salesforce press release](https://www.salesforce.com/news/press-releases/2026/06/15/salesforce-signs-definitive-agreement-to-acquire-fin/), [TechCrunch](https://techcrunch.com/2026/06/15/salesforce-acquires-ai-customer-service-platform-fin-for-3-6b/)
+- Watch for: Regulatory review; close in Salesforce fiscal Q4 2027; Intercom/Fin product roadmap and Agentforce integration; pricing changes for existing Intercom customers.
+- Last checked: 2026-06-15
+- Notes: Salesforce announced 2026-06-15 a definitive agreement to acquire Fin (formerly Intercom) for ~$3.6B (subject to adjustments). Fin AI agent resolves support queries across chat, email, WhatsApp, SMS, phone, Slack using its proprietary support-tuned model "Apex". Folding into Agentforce. Expected close Salesforce fiscal Q4 2027. HN 48540126 (214 pts).
+
 ## 2026-06-14: GLM 5.2 release
 
 - Status: open
