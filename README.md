@@ -15,7 +15,7 @@ leaves no trace; the system learns only from these channels.
 
 - **Suggest a story.** Use the "Suggest a story" link on any digest page, or
   open a [story issue](../../issues/new?template=story.yml). The next
-  scheduled run (03:50, 09:50, or 15:50 UTC) verifies the source and closes
+  scheduled run (01:30, 09:50, or 15:50 UTC) verifies the source and closes
   the issue with a link to the published story. Suggestions are acted on only
   when opened by the repository owner; others remain open as discussion.
 - **React to a story.** Every story page has a "Send feedback on this story"

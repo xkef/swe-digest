@@ -89,7 +89,7 @@ additionally rejects `GITHUB_TOKEN` pushes that modify `.github/workflows/`.
 The `hn-snapshot` workflow has `contents: write` and pushes `data/hn/*.json`
 snapshots to `main` every three hours as a background accumulator; it runs
 only a pinned checkout plus `scripts/fetch_hn.py`. The `daily-digest`
-(03:50/09:50/15:50 UTC), `digest-quality` (04:20 UTC, a deeper same-day pass
+(01:30/09:50/15:50 UTC), `digest-quality` (04:20 UTC, a deeper same-day pass
 after the first ingest), and `weekly-improvement` (Sunday 06:30 UTC) workflows
 run on their own schedules and each fetches HN live during the run. All
 scheduled workflows use no event-derived inputs, and the routine must never
