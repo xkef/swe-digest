@@ -429,6 +429,15 @@ Format:
 - Last checked: 2026-06-16
 - Notes: North Mini Code 1.0 released 2026-06-09. MoE 30B total / 3B active, 256K context, up to 64K generation. Apache 2.0; on Hugging Face, Cohere API, Model Vault, OpenRouter. Vendor figures (not independently reproduced): 33.4 on Artificial Analysis Coding Index; up to 2.8x output throughput and 30% inter-token-latency advantage over Devstral Small 2; evaluated on SWE-Bench Verified/Pro, Terminal Bench v2/Hard with SWE-agent and ReAct harnesses. Min hardware 1x H100 at FP8. Adds to open-weight coding-model pressure alongside GLM 5.2 and Kimi K2.7-Code.
 
+## 2026-06-16: OpenRouter Fusion multi-model deliberation API
+
+- Status: open
+- Category: AI
+- Sources: [OpenRouter Fusion](https://openrouter.ai/openrouter/fusion)
+- Watch for: Launch post with full model list and pricing; independent quality and cost comparisons against single-model calls; whether the fusion plugin format stabilizes.
+- Last checked: 2026-06-16
+- Notes: OpenRouter Fusion routing model runs a prompt through a panel of expert models in parallel (web search/fetch enabled), then a judge model synthesizes consensus, contradictions, partial coverage, unique insights, blind spots. Accessed by model slug over the existing OpenAI-compatible API; preset panels (Quality, Budget, General-High) or custom via fusion plugin analysis_models/model fields. Billed as sum of underlying completions. Vendor product page only, no usage data, no independent eval. Surfaced as 201-pt HN front-page thread 48537641. Packages a mixture-of-agents pattern behind one API slug.
+
 ## 2026-06-16: Typst 0.15.0 release
 
 - Status: open
