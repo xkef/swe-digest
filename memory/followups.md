@@ -447,6 +447,15 @@ Format:
 - Last checked: 2026-06-16
 - Notes: JEP 401 (Value Classes and Objects), Project Valhalla's central language feature, set to land as opt-in preview in JDK 28 (expected March 2027). The Register reported 2026-06-15 that Oracle engineer Lois Foltan confirmed merge to OpenJDK mainline early July 2026; first-preview PR adds 197,000+ lines across 1,816 files. Value objects have no identity (distinguished by field values, not memory location), letting the JVM flatten/inline them. JEP 401 migrates some JDK classes (e.g. Integer) to value classes. Brian Goetz cautioned a JDK 29 preview exit "seems optimistic". Surfaced on HN 48544384.
 
+## 2026-06-16: SpaceX acquires Anysphere (Cursor) for $60B
+
+- Status: open
+- Category: Markets
+- Sources: [CNBC](https://www.cnbc.com/2026/06/16/-spacex-to-buy-cursor-ai-parent-anysphere-for-60-billion.html), [Reuters via TradingView](https://www.tradingview.com/news/reuters.com,2026:newsml_L4N42O0W5:0-spacex-to-buy-cursor-ai-coding-agent-operator-anysphere-for-60-billion/)
+- Watch for: Regulatory review; Q3 2026 close; changes to Cursor pricing, model routing, or independence under SpaceX.
+- Last checked: 2026-06-16
+- Notes: SpaceX agreed 2026-06-16 to acquire Anysphere (maker of the Cursor coding agent) in an all-stock deal at a $60B implied valuation. SpaceX subsidiary X67 Inc. merges with Anysphere; Anysphere shares convert into SpaceX Class A stock priced on a seven-day VWAP before close. Expected close Q3 2026 subject to regulatory approval. Exercises an April option (acquire for $60B or pay $10B for a partnership). Cursor reported at ~$2.6B annualized B2B revenue. SpaceX public since 2026-06-12 (Nasdaq SPCX); deal disclosed in an 8-K. HN 48553224.
+
 ## 2026-06-16: Typst 0.15.0 release
 
 - Status: open
