@@ -12,6 +12,7 @@ Recurring entities tracked across digest runs.
 - Homebrew: macOS and Linux package manager. Track brew releases via GitHub and the brew.sh blog, tap trust model, deprecations, and platform support timelines. Current: 6.0.0 (2026-06-11). Intel x86_64 macOS goes Tier 3 September 2026, unsupported September 2027.
 - Xcode: Apple IDE. Track agentic coding features, Foundation Models integration, Swift toolchain. Xcode 27 beta (27A5194q) released 2026-06-08 with dual-engine agentic coding and LanguageModel protocol.
 - chezmoi: cross-machine dotfiles manager (twpayne/chezmoi). Track releases, template engine changes, secret-manager integrations, and migration notes.
+- Typst: typesetting system and markup language (Rust compiler). Track releases, breaking changes, HTML/PDF export, and package ecosystem. 0.15.0 (2026-06-15): variable fonts, bundle export, MathML in HTML, multiple bibliographies, project-relative file-path type; breaking forward-slash paths, removed path/pattern/pdf.embed, minified output by default, typst eval supersedes typst query, MSRV 1.92.
 - Devin Desktop (formerly Windsurf): AI coding IDE by Cognition. Rebranded from Windsurf to Devin Desktop on 2026-06-02. Default surface is Agent Command Center. Cascade agent EOL 2026-07-01, replaced by Devin Local (Rust rewrite). Ships with Agent Client Protocol (ACP) support.
 
 ## AI
@@ -27,6 +28,7 @@ Recurring entities tracked across digest runs.
 - NVIDIA: track CUDA releases, driver updates, GPU architecture, inference serving, and developer tools.
 - Microsoft AI: track MAI model family (MAI-Code-1-Flash in GitHub Copilot as of Build 2026-06-02), Azure OpenAI, and Foundry.
 - Apple Foundation Models: track framework releases, LanguageModel protocol, open-source timeline. Foundation Models going open source in 2026.
+- Cohere: Canadian AI lab. Track model releases, open-weight licenses, and coding/agent capability. North Mini Code 1.0 released 2026-06-09: Apache-2.0 MoE 30B total / 3B active, 256K context, on Hugging Face/Cohere API/Model Vault/OpenRouter; vendor benchmarks only.
 
 ## Infrastructure
 
@@ -41,7 +43,7 @@ Recurring entities tracked across digest runs.
 - Check Point: track VPN and gateway security advisories. CVE-2026-50751 actively exploited by Qilin ransomware affiliate; CISA KEV 2026-06-08.
 - Microsoft Patch Tuesday: track monthly releases. June 2026: 206 CVEs (record), 1 exploited (CVE-2026-41091 Defender EoP), CVE-2026-45657 wormable kernel RCE (CVSS 9.8), CVE-2026-44815 DHCP Client RCE (CVSS 9.8, stack overflow, every Windows host, no active exploitation as of 2026-06-12). RoguePlanet CVE-2026-47281 (CVSS 9.6) assigned 2026-06-12; TOCTOU race in Defender/VS Code; LPE to SYSTEM; active exploitation confirmed; patch status in June cumulative update disputed. CVE-2026-45657 no public exploit as of 2026-06-12.
 - Palo Alto Networks: track PAN-OS and Prisma security advisories. CVE-2026-0257 (CVSS 9.1, GlobalProtect auth bypass via forged cookie) actively exploited since 2026-05-17; CISA KEV federal deadline 2026-06-01; Rapid7 confirmed exploitation in 8/10 MDR customers; mitigation: disable auth override or dedicated cert; patched PAN-OS available.
-- Cisco SD-WAN: track CVEs and security advisories. CVE-2026-20245 actively exploited, no patch available as of 2026-06-11.
+- Cisco SD-WAN: track CVEs and security advisories. CVE-2026-20245 (Catalyst SD-WAN Manager/Controller/Validator authenticated privilege escalation) actively exploited; CISA KEV 2026-06-09. CVE-2026-20262 (Catalyst SD-WAN Manager path traversal on file upload to root, advisory cisco-sa-sdwan-mltvnps2) exploited as zero-day, now patched; CISA KEV 2026-06-15; IOCs are index.jsp/.war upload attempts in vmanage-server/appserver/serviceproxy-access logs. Recurring SD-WAN Manager zero-day target through 2026-05/06 (also CVE-2026-20182 auth bypass).
 - Ivanti Sentry: track CVEs and security advisories. CVE-2026-10520 (CVSS 10.0, unauthenticated RCE) and CVE-2026-10523 (CVSS 9.9, auth bypass) disclosed 2026-06-09; PoC published 2026-06-10; active exploitation and backdoors confirmed by Shadowserver 2026-06-11; patched in 10.5.2/10.6.2/10.7.1. At least 2 confirmed backdoored instances. Treat unpatched as compromised. CISA KEV added 2026-06-12.
 - Langflow: open-source visual AI agent and RAG workflow platform (langflow-ai/langflow). Track security advisories. CVE-2026-5027 (CVSS 8.8, path traversal in POST /api/v2/files, unauthenticated by default) actively exploited since 2026-06-08; ~7,000 exposed instances; fixed in 1.9.0 (2026-04-15); recommend 1.10.0. VulnCheck KEV 2026-06-08; CISA KEV pending. Multiple other advisories published 2026-03 to 2026-06; recurring high-severity security issues.
 - Veeam Backup and Replication: track CVEs and security advisories. CVE-2026-44963 (CVSS v4 9.4, domain-user RCE on v12 domain-joined servers) patched in 12.3.2.4854 (KB4696, 2026-06-09).

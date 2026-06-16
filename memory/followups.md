@@ -401,3 +401,39 @@ Format:
 - Watch for: Open-weight release and license; official model card and benchmarks; standalone API and pricing; independent coding-benchmark results.
 - Last checked: 2026-06-14
 - Notes: Z.ai (Zhipu) announced GLM 5.2 on 2026-06-13 via X (company account and chief scientist Jie Tang). Coding/agent focus, context up to 1M tokens (model id reported glm-5.2[1m]), max output 131,072 tokens. Available immediately on GLM Coding Plan; standalone API and open-weight (permissive/MIT) release expected the following week. No official blog post or benchmarks at announcement. Landed same day as the US directive against Anthropic Fable 5/Mythos 5.
+
+## 2026-06-16: Developer-targeted npm backdoor via fake LinkedIn job offer
+
+- Status: open
+- Category: Security
+- Sources: [Roman Imankulov write-up](https://roman.pt/posts/linkedin-backdoor/), [HN 48546294](https://news.ycombinator.com/item?id=48546294)
+- Watch for: Takedown of rest-icon-handler.store; attribution to the broader fake-recruiter campaign against package maintainers; any victim reports.
+- Last checked: 2026-06-16
+- Notes: Post dated 2026-06-15. Fake LinkedIn recruiter (stolen identity) asked dev to review a crypto-startup "broken PoC" GitHub repo. Backdoor hidden in app/test/index.js (~250 lines disguised as beginner test code) assembles https://rest-icon-handler.store/icons/77 and runs remote commands. Triggers on npm install via the npm prepare lifecycle script (runs node app/index.js, which requires the malicious test file). Repo commit history and recruiter profile reused real people's identities. Author inspected via read-only AI agent, not direct execution. HN: recurring npm-maintainer compromise vector (axios-ecosystem maintainer reportedly hit similarly). Ties to AUR/supply-chain dev-credential theft theme.
+
+## 2026-06-16: Cisco Catalyst SD-WAN Manager CVE-2026-20262 zero-day
+
+- Status: open
+- Category: Security
+- Sources: [Cisco advisory sdwan-mltvnps2](https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-sdwan-mltvnps2-JxpWm7R), [CISA KEV alert](https://www.cisa.gov/news-events/alerts/2026/06/15/cisa-adds-two-known-exploited-vulnerabilities-catalog), [BleepingComputer](https://www.bleepingcomputer.com/news/security/cisco-fixes-sd-wan-vmanage-flaw-exploited-in-zero-day-attacks/)
+- Watch for: Per-branch fixed releases; public exploit code; federal remediation deadline; victim disclosures.
+- Last checked: 2026-06-16
+- Notes: Path traversal in Catalyst SD-WAN Manager (formerly vManage). Insufficient validation on file uploads lets a low-privilege remote attacker run commands as root via crafted HTTP to an affected API endpoint. Affects all deployment types incl. FedRAMP gov. Exploited as zero-day; Cisco PSIRT aware "earlier this month"; now patched. IOCs: check vmanage-server, vmanage-appserver, serviceproxy-access logs for index.jsp and .war upload attempts. CISA KEV 2026-06-15 (catalog version 2026.06.15, count 1621). Distinct from CVE-2026-20245 (privesc, tracked separately). Same KEV batch added CVE-2026-54420 (LiteSpeed cPanel plugin symlink following).
+
+## 2026-06-16: Cohere North Mini Code open-weight coding model
+
+- Status: open
+- Category: AI
+- Sources: [Cohere blog](https://cohere.com/blog/north-mini-code)
+- Watch for: Independent coding-benchmark results; real agent-harness adoption; standalone pricing.
+- Last checked: 2026-06-16
+- Notes: North Mini Code 1.0 released 2026-06-09. MoE 30B total / 3B active, 256K context, up to 64K generation. Apache 2.0; on Hugging Face, Cohere API, Model Vault, OpenRouter. Vendor figures (not independently reproduced): 33.4 on Artificial Analysis Coding Index; up to 2.8x output throughput and 30% inter-token-latency advantage over Devstral Small 2; evaluated on SWE-Bench Verified/Pro, Terminal Bench v2/Hard with SWE-agent and ReAct harnesses. Min hardware 1x H100 at FP8. Adds to open-weight coding-model pressure alongside GLM 5.2 and Kimi K2.7-Code.
+
+## 2026-06-16: Typst 0.15.0 release
+
+- Status: open
+- Category: Dev tools
+- Sources: [Typst 0.15.0 changelog](https://typst.app/docs/changelog/0.15.0/), [HN 48544396](https://news.ycombinator.com/item?id=48544396)
+- Watch for: Migration reports from the forward-slash path requirement and removed deprecated elements; package-ecosystem updates to the file-path type.
+- Last checked: 2026-06-16
+- Notes: Released 2026-06-15. New: variable fonts, bundle export (multiple output files from one project), MathML in HTML export, multiple bibliographies per document, spot colors, project-relative file-path type crossing package boundaries, within selector. Breaking: file paths must use forward slashes (no backslashes), non-Unicode input paths dropped, removed path/pattern/pdf.embed/scoped decode functions, HTML/SVG/PDF minified by default (--pretty), typst eval supersedes typst query, MSRV 1.92.
