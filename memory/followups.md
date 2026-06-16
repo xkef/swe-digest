@@ -438,6 +438,15 @@ Format:
 - Last checked: 2026-06-16
 - Notes: OpenRouter Fusion routing model runs a prompt through a panel of expert models in parallel (web search/fetch enabled), then a judge model synthesizes consensus, contradictions, partial coverage, unique insights, blind spots. Accessed by model slug over the existing OpenAI-compatible API; preset panels (Quality, Budget, General-High) or custom via fusion plugin analysis_models/model fields. Billed as sum of underlying completions. Vendor product page only, no usage data, no independent eval. Surfaced as 201-pt HN front-page thread 48537641. Packages a mixture-of-agents pattern behind one API slug.
 
+## 2026-06-16: Project Valhalla JEP 401 value classes preview for JDK 28
+
+- Status: open
+- Category: Languages
+- Sources: [JEP 401](https://openjdk.org/jeps/401), [The Register](https://www.theregister.com/devops/2026/06/15/javas-project-valhalla-finally-lands-a-preview-in-jdk-28/5255557)
+- Watch for: Mainline merge in early July 2026; whether JEP 401 stays in preview through JDK 29 (LTS, September 2027); follow-on flattened-generics work.
+- Last checked: 2026-06-16
+- Notes: JEP 401 (Value Classes and Objects), Project Valhalla's central language feature, set to land as opt-in preview in JDK 28 (expected March 2027). The Register reported 2026-06-15 that Oracle engineer Lois Foltan confirmed merge to OpenJDK mainline early July 2026; first-preview PR adds 197,000+ lines across 1,816 files. Value objects have no identity (distinguished by field values, not memory location), letting the JVM flatten/inline them. JEP 401 migrates some JDK classes (e.g. Integer) to value classes. Brian Goetz cautioned a JDK 29 preview exit "seems optimistic". Surfaced on HN 48544384.
+
 ## 2026-06-16: Typst 0.15.0 release
 
 - Status: open

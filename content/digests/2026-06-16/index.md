@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 21
+source_count = 24
 +++
 
 ## Top stories
@@ -108,7 +108,17 @@ No major items found. No new major cloud, identity, payment, or package-registry
 
 ## Languages and runtimes
 
-No major item with a new release landed beyond Typst (Developer tools). The Rust versus C/C++ memory-safety CVE analysis is covered in Engineering posts; WASI 0.3.0 adoption remains tracked in Watchlist follow-ups.
+### Project Valhalla value classes (JEP 401) reach preview, targeting JDK 28
+
+- **Category:** Languages
+- **Status:** developing
+- **Sources:** [JEP 401](https://openjdk.org/jeps/401), [The Register](https://www.theregister.com/devops/2026/06/15/javas-project-valhalla-finally-lands-a-preview-in-jdk-28/5255557), [HN discussion](https://news.ycombinator.com/item?id=48544384)
+- **Summary:** JEP 401, Value Classes and Objects, the central language feature of the long-running Project Valhalla, is set to land as a preview in JDK 28. The Register reported on 2026-06-15 that Oracle engineer Lois Foltan confirmed the change will merge into the OpenJDK mainline early in July 2026; the first-preview pull request adds more than 197,000 lines across 1,816 files. Value classes create objects with no identity, distinguished only by their field values rather than their location in memory, which lets the JVM flatten and inline them for performance instead of forcing heap allocation and pointer indirection. The feature ships as an opt-in preview, not enabled by default, and JEP 401 migrates some existing JDK classes such as `Integer` to value classes, with more to follow over later releases. JDK 28 is expected in March 2027.
+- **Comments:** Brian Goetz cautioned against expecting a short preview window, saying hoping for the feature to exit preview by JDK 29 (the next LTS, expected September 2027) "seems optimistic," so production-ready value classes remain at least a year out.
+- **Why it matters:** Value classes are the largest Java language change in a decade and the foundation for flattened generics and value-based numerics, so teams tracking JVM memory layout, allocation pressure, and data-oriented APIs should begin reading JEP 401 now even though general availability is years away.
+- **Follow-up:** Confirm the mainline merge in early July 2026 and watch whether JEP 401 stays preview through JDK 29.
+
+No other language release landed beyond Typst (Developer tools). The Rust versus C/C++ memory-safety CVE analysis is covered in Engineering posts; WASI 0.3.0 adoption remains tracked in Watchlist follow-ups.
 
 ## Apple platforms
 
@@ -189,8 +199,8 @@ No major item with clear engineering impact surfaced at run time. The Salesforce
 - AI vendor and model sources: Anthropic statement on Fable 5/Mythos 5 access; Cohere blog for North Mini Code (verified against cohere.com); OpenRouter product page for Fusion (vendor-described, no independent evaluation); Axios and Stratechery for the directive dispute.
 - Security advisories and trackers: CISA KEV JSON feed re-fetched at run time (version 2026.06.15, dated 2026-06-15, count 1621; two new additions CVE-2026-20262 and CVE-2026-54420); Cisco security advisory and BleepingComputer for CVE-2026-20262; roman.pt for the npm backdoor write-up.
 - Status and outage reporting: no new major incident found via WebSearch; only scheduled Cloudflare Lisbon maintenance.
-- GitHub releases checked for all `[github]` watchlist repos: the only new release since the 2026-06-15 digest is Homebrew 6.0.2 (2026-06-15, sandbox hardening); rolling prereleases (neovim nightly, ghostty tip, zed 1.7.2-pre, tmux 3.7-rc) skipped; deno 2.8.3, jj 0.42.0, rust 1.96.0, Kotlin 2.4.0, Swift 6.3.2, node 26.3.0, Spring Boot 4.1.0, Spring Framework 7.0.8, grafana 12.4.4, Prometheus 3.12.0, OpenTelemetry Collector 0.154.0, AlphaFold 3.0.3, RDKit 2026_03_3, chezmoi 2.70.5 predate the last digest and were already current.
-- GitHub trending checked (`?since=daily` overall plus rust, python, typescript, go views): no new cross-source theme beyond items already surfaced via Hacker News.
-- Engineering and platform blogs: Kobzol on Rust vs C/C++ memory-safety CVEs (verified at kobzol.github.io); TimescaleDB compression write-up (roszigit.com); Raymond Chen's Old New Thing x86-emulator post (verified at devblogs.microsoft.com).
+- GitHub releases re-checked in full for all `[github]` watchlist repos during the quality pass: the only release published after the 2026-06-15 digest is Homebrew 6.0.2 (2026-06-15 14:05 UTC, sandbox hardening); rolling prereleases (neovim nightly, ghostty tip, zed 1.7.2-pre, tmux 3.7-rc, git v2.55.0-rc0) skipped; deno 2.8.3, jj 0.42.0, rust 1.96.0, Kotlin 2.4.0, Swift 6.3.2, node 26.3.0, Spring Boot 4.1.0, Spring Framework 7.0.8, grafana 12.4.4, Prometheus 3.12.0, OpenTelemetry Collector 0.154.0, AlphaFold 3.0.3, RDKit 2026_03_3, chezmoi 2.70.5 predate the last digest and were already current. Tag-based repos (git latest stable v2.54.0, go, cpython 3.15.0b2, cargo) carry no new stable release.
+- GitHub trending re-scanned in full (`?since=daily` overall plus rust, python, typescript, go views): no new cross-source engineering theme; NVIDIA SkillSpector (agent-skill scanner) recurs and is already tracked in Watchlist follow-ups, and the remaining top entries are educational, IPTV, and self-hosting repos.
+- Engineering and platform blogs: Kobzol on Rust vs C/C++ memory-safety CVEs (verified at kobzol.github.io); TimescaleDB compression write-up (roszigit.com); Raymond Chen's Old New Thing x86-emulator post (verified at devblogs.microsoft.com). Languages: Project Valhalla JEP 401 (Value Classes and Objects) preview targeting JDK 28 verified against the OpenJDK JEP page and The Register (2026-06-15), surfaced on Hacker News (48544384).
 - Markets reporting: Salesforce/Fin and Hetzner tracked in follow-ups; Fox/Roku out of scope; an unverified runtimewire.com claim about Microsoft shifting GitHub workloads to AWS was not published.
 - Reddit RSS attempted; r/programming returned, r/netsec and r/rust empty or rate-limited; social pulse drawn from Hacker News and analysis sources.
