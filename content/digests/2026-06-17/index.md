@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 43
+source_count = 51
 +++
 
 ## Top stories
@@ -116,6 +116,15 @@ No major items found. Hugging Face daily papers trended toward agent-evolution a
 
 ## Developer tools
 
+### Epic Games releases Lore, an open-source content-addressed version control system
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [Lore](https://lore.org/), [EpicGames/lore](https://github.com/EpicGames/lore), [discussion](https://news.ycombinator.com/item?id=48571081)
+- **Summary:** Epic Games published Lore on 2026-06-17, an MIT-licensed version control system aimed at projects that mix source code with large binary assets. Lore uses content-addressed storage with Merkle trees, an immutable revision chain with cryptographic integrity, chunked storage to deduplicate large files, and on-demand data hydration so workspaces stay lightweight against a service-backed, cached repository. The project ships SDKs for C/C++, C#, Rust, Go, Python, and JavaScript and is available at github.com/EpicGames/lore.
+- **Why it matters:** Game and media teams have long used Perforce or Git LFS for large-asset workflows that Git handles poorly; an MIT-licensed, scalability-focused alternative from a major engine vendor is a concrete option for those repositories.
+- **Follow-up:** Track production-readiness statements, real-world adoption beyond Unreal workflows, and a tagged stable release.
+
 ### TIL post on making HTTP requests with Bash /dev/tcp circulates
 
 - **Category:** Dev tools
@@ -175,7 +184,14 @@ No new stable releases were published for the watchlist developer-tool repositor
 
 ## Infrastructure
 
-No major items found.
+### RFC 10008 standardizes the HTTP QUERY method
+
+- **Category:** Infrastructure
+- **Status:** confirmed
+- **Sources:** [RFC 10008](https://www.rfc-editor.org/info/rfc10008/), [discussion](https://news.ycombinator.com/item?id=48568502)
+- **Summary:** The IETF published RFC 10008 defining QUERY, a new HTTP method, as a Proposed Standard on the Internet Standards Track. QUERY requests that the target process content carried in the request body in a safe and idempotent manner and return the result, filling the gap between GET, which cannot carry a body, and POST, which is neither safe nor idempotent. It lets clients send complex query parameters in the body instead of the URI, avoiding URI length limits and keeping sensitive parameters out of request-path logs. Authors are Julian Reschke (greenbytes), James M Snell (Cloudflare), and Mike Bishop (Akamai).
+- **Why it matters:** A standardized safe, idempotent, body-carrying method gives APIs a sanctioned alternative to overloading POST or stuffing large filters into URIs, and server and framework support will follow the RFC.
+- **Follow-up:** Track HTTP server, proxy, and framework implementations adding QUERY support.
 
 ## Engineering posts
 
@@ -237,6 +253,8 @@ Other HN-native threads today: an Ask HN on coding-agent skill atrophy (cross-re
 
 - r/programming top posts on 2026-06-17 centered on the Pragmatic Engineer Meta piece, "Don't run SQL migrations in tests" (the database-snapshot technique covered in Engineering posts), "Nginx explained in plain English," and a post on British Columbia, time zones, and Postgres. These are pulse signals, not independently verified beyond their primary links.
 - John Carmack posted on his verified account admiring Fabrice Bellard as one of the best overall programmers; the post reached the HN front page ([discussion](https://news.ycombinator.com/item?id=48550779)). Label: discussion.
+- Charity Majors published "AI demands more engineering discipline, not less" on 2026-06-17 ([primary](https://charitydotwtf.substack.com/p/ai-demands-more-engineering-discipline), [discussion](https://news.ycombinator.com/item?id=48570948)), arguing that heavier AI-assisted coding raises, not lowers, the need for review, testing, and operational rigor. Tracked-person commentary; label: discussion.
+- A GrapheneOS forum thread reporting that a Volkswagen app started blocking GrapheneOS users reached the front page on 2026-06-17 ([discussion](https://news.ycombinator.com/item?id=48571526)), a renewed instance of hardened-Android users being locked out by app integrity attestation. Ties to the Android 17 GrapheneOS port in Top stories. Label: discussion.
 
 ## Watchlist follow-ups
 
@@ -248,11 +266,11 @@ Other HN-native threads today: an Ask HN on coding-agent skill atrophy (cross-re
 
 ## Sources checked
 
-- Hacker News via `make hn` (Algolia backend, full structured coverage: front page 30, top 24h 50, Ask HN 30, Show HN 30, 12 comment threads, 65 of 72 watchlist queries; re-fetched 2026-06-17 11:24 UTC, 0 degraded collections). Afternoon re-fetch surfaced GLM-5.2 (added to AI); no other new front-page item required a new story.
+- Hacker News via `make hn` (Algolia backend, full structured coverage: front page 30, top 24h 50, Ask HN 30, Show HN 30, 12 comment threads, 61 of 72 watchlist queries; re-fetched 2026-06-17 16:50 UTC, 0 degraded collections). The 16:50 UTC re-fetch surfaced Epic Games Lore (added to Developer tools), RFC 10008 HTTP QUERY (added to Infrastructure), and the Charity Majors and Volkswagen/GrapheneOS items (added to Reddit and social pulse). The earlier 11:24 UTC re-fetch had surfaced GLM-5.2 (in AI). Items skipped: a Photobucket business-practice rant (out of scope) and an IIS pentest-techniques guide dated 2026-03-18 (resurfaced old post, not news).
 - AI evaluation source: Artificial Analysis Intelligence Index v4.1 (GLM-5.2 article, 2026-06-17).
 - Reddit public RSS (r/programming returned; r/netsec, r/rust, r/LocalLLaMA empty this fetch).
 - AI sources: Anthropic status, vendor blogs, Hugging Face daily papers.
-- Security advisories: CISA KEV catalog (version 2026.06.16, count 1622).
+- Security advisories: CISA KEV catalog (re-checked 16:50 UTC, still version 2026.06.16, count 1622; no entries added since the 2026-06-16 Joomla CVE already covered).
 - Status pages: Claude (incident), GitHub (resolved Copilot model degradation), no new major cloud incident found for 2026-06-17.
 - GitHub releases: all `[github]` watchlist repos re-checked in the quality pass; no new stable release since the 2026-06-16 digest (newest stable: Homebrew 6.0.2 2026-06-15, Deno 2.8.3 2026-06-11, Spring Boot 4.1.0 2026-06-10). Rolling prereleases (Ghostty tip, Neovim nightly, tmux 3.7-rc, Zed pre, git 2.55.0-rc0, CPython 3.15 betas, JDK 28 EA) skipped. GitHub trending (`?since=daily`) re-checked; no new cross-source theme beyond HN-surfaced items (Iroh re-trended).
 - Linux and kernel: Phoronix Linux 7.2 merge-window coverage.

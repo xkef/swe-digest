@@ -483,6 +483,24 @@ Format:
 - Last checked: 2026-06-17
 - Notes: 2026-06-16 incident. Phase 1 10:23-11:00 PT: all Sonnet and Opus models ~10% error rate. Phase 2 11:00-12:20 PT: Opus 4.8 and Haiku 4.5. Surfaces: claude.ai, Claude API, Claude Code, Claude Cowork. Resolved 12:20 PT (19:20 UTC). No root cause. GitHub Status logged a related resolved incident for degraded Opus 4.8 in Copilot products (upstream model-provider issue). Closed; resolved.
 
+## 2026-06-17: Epic Games Lore open-source version control system
+
+- Status: open
+- Category: Dev tools
+- Sources: [Lore](https://lore.org/), [EpicGames/lore](https://github.com/EpicGames/lore)
+- Watch for: Production-readiness statement; first tagged stable release; adoption beyond Unreal/game-dev large-asset workflows; benchmarks vs Perforce and Git LFS.
+- Last checked: 2026-06-17
+- Notes: Epic Games published Lore 2026-06-17, MIT-licensed VCS for code plus large binary assets. Content-addressed storage with Merkle trees, immutable revision chain with cryptographic integrity, chunked storage to deduplicate large files, on-demand data hydration for lightweight workspaces against a service-backed cached repository. SDKs for C/C++, C#, Rust, Go, Python, JavaScript. Positioned against Perforce and Git LFS. HN 48571081 (370 pts).
+
+## 2026-06-17: RFC 10008 HTTP QUERY method standardized
+
+- Status: open
+- Category: Infrastructure
+- Sources: [RFC 10008](https://www.rfc-editor.org/info/rfc10008/)
+- Watch for: HTTP server, proxy, CDN, and web-framework implementations adding QUERY support.
+- Last checked: 2026-06-17
+- Notes: IETF published RFC 10008 (Proposed Standard) defining the HTTP QUERY method: safe and idempotent, processes a request body and returns the result, filling the gap between GET (no body) and POST (not safe/idempotent). Keeps complex filters out of the URI and out of request-path logs. Authors Julian Reschke (greenbytes), James M Snell (Cloudflare), Mike Bishop (Akamai). HN 48568502 (189 pts).
+
 ## 2026-06-16: Alibaba Qwen-RobotSuite embodied AI models
 
 - Status: open

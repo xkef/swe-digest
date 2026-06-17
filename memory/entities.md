@@ -13,6 +13,7 @@ Recurring entities tracked across digest runs.
 - Xcode: Apple IDE. Track agentic coding features, Foundation Models integration, Swift toolchain. Xcode 27 beta (27A5194q) released 2026-06-08 with dual-engine agentic coding and LanguageModel protocol.
 - chezmoi: cross-machine dotfiles manager (twpayne/chezmoi). Track releases, template engine changes, secret-manager integrations, and migration notes.
 - Typst: typesetting system and markup language (Rust compiler). Track releases, breaking changes, HTML/PDF export, and package ecosystem. 0.15.0 (2026-06-15): variable fonts, bundle export, MathML in HTML, multiple bibliographies, project-relative file-path type; breaking forward-slash paths, removed path/pattern/pdf.embed, minified output by default, typst eval supersedes typst query, MSRV 1.92.
+- Lore: open-source version control system from Epic Games (github.com/EpicGames/lore), released 2026-06-17 under MIT. Content-addressed (Merkle trees), immutable revision chain, chunked storage for large binary assets, on-demand data hydration, service-backed with caching. SDKs for C/C++, C#, Rust, Go, Python, JavaScript. Targets code-plus-large-asset workflows (Perforce and Git LFS territory). Track production-readiness, tagged releases, and adoption.
 - Devin Desktop (formerly Windsurf): AI coding IDE by Cognition. Rebranded from Windsurf to Devin Desktop on 2026-06-02. Default surface is Agent Command Center. Cascade agent EOL 2026-07-01, replaced by Devin Local (Rust rewrite). Ships with Agent Client Protocol (ACP) support.
 
 ## AI
