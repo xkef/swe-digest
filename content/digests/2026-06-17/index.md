@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 35
+source_count = 41
 +++
 
 ## Top stories
@@ -115,6 +115,14 @@ No major items found. Hugging Face daily papers trended toward agent-evolution a
 - **Summary:** A short TIL post showing how to issue HTTP requests using Bash's built-in /dev/tcp pseudo-device, with no curl or wget, reached the front page on 2026-06-17. The technique opens a TCP socket through the shell's redirection and writes a raw request, useful in minimal containers that lack HTTP clients.
 - **Why it matters:** The pattern is a practical fallback for debugging and health checks in stripped-down environments, though it lacks TLS without extra tooling.
 
+### KDE Plasma 6.7 ships per-screen virtual desktops and a CSS theming preview
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [KDE announcement](https://kde.org/announcements/plasma/6/6.7.0/), [discussion](https://news.ycombinator.com/item?id=48552535)
+- **Summary:** KDE released Plasma 6.7 on 2026-06-16. The release adds per-screen virtual desktops after 21 years of requests, a tech preview of the Union theming system that applies CSS-based styling across Plasma, QtQuick, and QtWidgets at once, simultaneous ICC color profile and HDR support, and expanded coverage of Wayland protocols and portals. Performance work targets CPU-rendered apps and Intel integrated GPUs.
+- **Why it matters:** Plasma is a primary Linux desktop for developers, and the Wayland protocol coverage plus the CSS theming preview affect how desktop applications are styled and composited.
+
 No new stable releases were published for the watchlist developer-tool repositories since the 2026-06-16 digest; Homebrew 6.0.2 (2026-06-15) was the last and is already covered. Rolling prereleases (Ghostty tip, Neovim nightly, Zed pre, tmux 3.7-rc) were skipped.
 
 ## Languages and runtimes
@@ -126,6 +134,14 @@ No new stable releases were published for the watchlist developer-tool repositor
 - **Sources:** [cutile-rs repository](https://github.com/nvlabs/cutile-rs)
 - **Summary:** NVIDIA Labs published cuTile-rs, a Show HN project exposing a tile-based programming model for writing GPU kernels in Rust with compile-time data-race freedom. It builds on the cuTile abstraction, letting kernels operate on tiles rather than individual threads. The project is early and unproven outside its own examples.
 - **Why it matters:** A memory-safe, data-race-free path to GPU kernels in Rust would lower the correctness burden of hand-written CUDA, if it matures and benchmarks hold.
+
+### Wolfram Language and Mathematica 15 ship with a built-in AI assistant
+
+- **Category:** Languages
+- **Status:** confirmed
+- **Sources:** [Stephen Wolfram](https://writings.stephenwolfram.com/2026/06/launching-version-15-of-wolfram-language-mathematica-built-in-useful-ai-lots-of-new-core-functionality/), [discussion](https://news.ycombinator.com/item?id=48563609)
+- **Summary:** Stephen Wolfram announced Version 15 of the Wolfram Language and Mathematica on 2026-06-16, adding a built-in AI assistant alongside new core symbolic-computation functionality. The release continues the language's pattern of folding LLM-assisted interaction into the notebook environment while expanding the symbolic and numeric function set. The post is the primary release announcement.
+- **Why it matters:** A long-running symbolic-computation toolchain integrating an in-product AI assistant is a reference point for how established languages embed LLM workflows rather than bolt them on.
 
 ## Apple platforms
 
@@ -139,7 +155,14 @@ No new stable releases were published for the watchlist developer-tool repositor
 
 ## Linux and kernel
 
-No major items found.
+### Linux 7.2 merge window lands pipe and filesystem performance work
+
+- **Category:** Linux/Kernel
+- **Status:** developing
+- **Sources:** [Phoronix anon-pipe](https://www.phoronix.com/news/Linux-72-Faster-Anon-Pipe-Write), [Phoronix IOmap EXT4/XFS](https://www.phoronix.com/news/Linux-7.2-IOmap-EXT4-XFS)
+- **Summary:** The Linux 7.2 merge window is taking performance changes after the 7.1 stable release on 2026-06-14. A patch from Breno Leitao of Meta speeds up anon_pipe_write, the function that backs shell pipelines and standard streams, by pre-allocating outside the pipe lock to cut mutex contention found while profiling caching code. A separate VFS change for the IOmap framework skips a redundant memset in iomap_iter() once iteration completes, which Phoronix reports improves IOPS by about 5 percent on ext4 and xfs with NVMe storage under io_uring.
+- **Why it matters:** Pipe throughput and filesystem IOPS gains land in a mainline cycle that many distributions will ship, benefiting shell-heavy and io_uring workloads without configuration changes.
+- **Follow-up:** Track the Linux 7.2 merge-window close and the final feature set.
 
 ## Infrastructure
 
@@ -220,6 +243,7 @@ Other HN-native threads today: an Ask HN on coding-agent skill atrophy (cross-re
 - AI sources: Anthropic status, vendor blogs, Hugging Face daily papers.
 - Security advisories: CISA KEV catalog (version 2026.06.16, count 1622).
 - Status pages: Claude (incident), GitHub (resolved Copilot model degradation), no new major cloud incident found for 2026-06-17.
-- GitHub releases: all `[github]` watchlist repos checked; no new stable release since the 2026-06-16 digest. GitHub trending (`?since=daily`) checked; no new cross-source theme beyond HN-surfaced items (Iroh re-trended).
-- Engineering blogs: reflex.dev, gaultier.github.io, Pragmatic Engineer.
+- GitHub releases: all `[github]` watchlist repos re-checked in the quality pass; no new stable release since the 2026-06-16 digest (newest stable: Homebrew 6.0.2 2026-06-15, Deno 2.8.3 2026-06-11, Spring Boot 4.1.0 2026-06-10). Rolling prereleases (Ghostty tip, Neovim nightly, tmux 3.7-rc, Zed pre, git 2.55.0-rc0, CPython 3.15 betas, JDK 28 EA) skipped. GitHub trending (`?since=daily`) re-checked; no new cross-source theme beyond HN-surfaced items (Iroh re-trended).
+- Linux and kernel: Phoronix Linux 7.2 merge-window coverage.
+- Engineering blogs: reflex.dev, gaultier.github.io, Pragmatic Engineer, kde.org, writings.stephenwolfram.com.
 - Markets and company sources: TechCrunch, Reuters reporting, secondary outlets.
