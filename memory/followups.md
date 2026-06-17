@@ -399,8 +399,8 @@ Format:
 - Category: AI
 - Sources: [HN discussion](https://news.ycombinator.com/item?id=48518684)
 - Watch for: Open-weight release and license; official model card and benchmarks; standalone API and pricing; independent coding-benchmark results.
-- Last checked: 2026-06-14
-- Notes: Z.ai (Zhipu) announced GLM 5.2 on 2026-06-13 via X (company account and chief scientist Jie Tang). Coding/agent focus, context up to 1M tokens (model id reported glm-5.2[1m]), max output 131,072 tokens. Available immediately on GLM Coding Plan; standalone API and open-weight (permissive/MIT) release expected the following week. No official blog post or benchmarks at announcement. Landed same day as the US directive against Anthropic Fable 5/Mythos 5.
+- Last checked: 2026-06-17
+- Notes: Z.ai (Zhipu) announced GLM 5.2 on 2026-06-13 via X (company account and chief scientist Jie Tang). Coding/agent focus, context up to 1M tokens (model id reported glm-5.2[1m]), max output 131,072 tokens. Available immediately on GLM Coding Plan; standalone API and open-weight (permissive/MIT) release expected the following week. No official blog post or benchmarks at announcement. Landed same day as the US directive against Anthropic Fable 5/Mythos 5. 2026-06-17: Artificial Analysis published an independent evaluation scoring GLM-5.2 at 51 on Intelligence Index v4.1, the top open-weights score, ahead of MiniMax-M3 (44) and DeepSeek V4 Pro (44); GDPval-AA v2 1524 vs GPT-5.5 1514. Confirmed MIT license, 1M context (up from 200K on GLM-5.1), pricing 1.4/0.26/4.4 USD per 1M input/cache-hit/output. HN 48567759.
 
 ## 2026-06-16: Developer-targeted npm backdoor via fake LinkedIn job offer
 

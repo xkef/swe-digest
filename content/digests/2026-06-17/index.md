@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 41
+source_count = 43
 +++
 
 ## Top stories
@@ -60,6 +60,15 @@ source_count = 41
 - **Follow-up:** Track the first official GrapheneOS Android 17 stable release and supported device list.
 
 ## AI
+
+### GLM-5.2 leads Artificial Analysis open-weights index at 51
+
+- **Category:** AI
+- **Status:** confirmed
+- **Sources:** [Artificial Analysis](https://artificialanalysis.ai/articles/glm-5-2-is-the-new-leading-open-weights-model-on-the-artificial-analysis-intelligence-index), [discussion](https://news.ycombinator.com/item?id=48567759)
+- **Summary:** Artificial Analysis published an evaluation on 2026-06-17 placing Z.ai's GLM-5.2 at 51 on its Intelligence Index v4.1, the highest open-weights score, ahead of MiniMax-M3 and DeepSeek V4 Pro at 44. On the GDPval-AA v2 benchmark it reports GLM-5.2 at 1524 against GPT-5.5 at 1514. GLM-5.2 ships under the MIT license with a 1M-token context window, up from 200K on GLM-5.1, priced at 1.4 USD input, 0.26 USD cache-hit, and 4.4 USD output per 1M tokens. This is the independent benchmark and license confirmation following the model's 2026-06-13 announcement.
+- **Why it matters:** An MIT-licensed model topping the open-weights intelligence index while matching a frontier proprietary model on one benchmark raises migration pressure on paid coding and agent APIs.
+- **Follow-up:** Track open-weight checkpoint publication and independent coding-benchmark reproduction.
 
 ### GPT-NL, a sovereign Dutch-English model trained on lawfully sourced data, surfaces
 
@@ -235,10 +244,12 @@ Other HN-native threads today: an Ask HN on coding-agent skill atrophy (cross-re
 - 2026-06-16 SpaceX acquires Anysphere (Cursor): now confirmed via an 8-K and Reuters reporting at a 60B USD implied valuation, all stock, expected close Q3 2026. Status moved from agreed to confirmed-pending-close.
 - 2026-06-13 US directive suspending Fable 5 and Mythos 5: The Register reported on 2026-06-15 that the demonstrated capability was a "fix this code" prompt rather than a guardrail bypass, per Katie Moussouris, the only outside expert to read the third-party paper. Access remained suspended as of 2026-06-16.
 - 2026-06-15 Iroh 1.0: the n0 networking library trended again on GitHub on 2026-06-17; no new release. Watch the 0.35 public-relay deprecation on 2026-12-31.
+- 2026-06-14 GLM 5.2: Artificial Analysis published an independent evaluation on 2026-06-17 placing GLM-5.2 first on its open-weights Intelligence Index at 51, and confirmed the MIT license and 1M-token context. Covered in AI. Watch for the open-weight checkpoint publication promised the week of the 2026-06-13 announcement.
 
 ## Sources checked
 
-- Hacker News via `make hn` (Algolia backend, full structured coverage: front page 30, top 24h 50, Ask HN 30, Show HN 30, 12 comment threads, 67 of 72 watchlist queries; fetched 2026-06-17, 0 degraded collections).
+- Hacker News via `make hn` (Algolia backend, full structured coverage: front page 30, top 24h 50, Ask HN 30, Show HN 30, 12 comment threads, 65 of 72 watchlist queries; re-fetched 2026-06-17 11:24 UTC, 0 degraded collections). Afternoon re-fetch surfaced GLM-5.2 (added to AI); no other new front-page item required a new story.
+- AI evaluation source: Artificial Analysis Intelligence Index v4.1 (GLM-5.2 article, 2026-06-17).
 - Reddit public RSS (r/programming returned; r/netsec, r/rust, r/LocalLLaMA empty this fetch).
 - AI sources: Anthropic status, vendor blogs, Hugging Face daily papers.
 - Security advisories: CISA KEV catalog (version 2026.06.16, count 1622).
