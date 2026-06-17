@@ -453,8 +453,8 @@ Format:
 - Category: Markets
 - Sources: [CNBC](https://www.cnbc.com/2026/06/16/-spacex-to-buy-cursor-ai-parent-anysphere-for-60-billion.html), [Reuters via TradingView](https://www.tradingview.com/news/reuters.com,2026:newsml_L4N42O0W5:0-spacex-to-buy-cursor-ai-coding-agent-operator-anysphere-for-60-billion/)
 - Watch for: Regulatory review; Q3 2026 close; changes to Cursor pricing, model routing, or independence under SpaceX.
-- Last checked: 2026-06-16
-- Notes: SpaceX agreed 2026-06-16 to acquire Anysphere (maker of the Cursor coding agent) in an all-stock deal at a $60B implied valuation. SpaceX subsidiary X67 Inc. merges with Anysphere; Anysphere shares convert into SpaceX Class A stock priced on a seven-day VWAP before close. Expected close Q3 2026 subject to regulatory approval. Exercises an April option (acquire for $60B or pay $10B for a partnership). Cursor reported at ~$2.6B annualized B2B revenue. SpaceX public since 2026-06-12 (Nasdaq SPCX); deal disclosed in an 8-K. HN 48553224.
+- Last checked: 2026-06-17
+- Notes: SpaceX agreed 2026-06-16 to acquire Anysphere (maker of the Cursor coding agent) in an all-stock deal at a $60B implied valuation. SpaceX subsidiary X67 Inc. merges with Anysphere; Anysphere shares convert into SpaceX Class A stock priced on a seven-day VWAP before close. Expected close Q3 2026 subject to regulatory approval. Exercises an April option (acquire for $60B or pay $10B for a partnership). Cursor reported at ~$2.6B annualized B2B revenue. SpaceX public since 2026-06-12 (Nasdaq SPCX); deal disclosed in an 8-K. Confirmed 2026-06-17 via 8-K and Reuters/TechCrunch reporting (was single-source CNBC at disclosure). HN 48553224.
 
 ## 2026-06-16: Typst 0.15.0 release
 
@@ -464,3 +464,30 @@ Format:
 - Watch for: Migration reports from the forward-slash path requirement and removed deprecated elements; package-ecosystem updates to the file-path type.
 - Last checked: 2026-06-16
 - Notes: Released 2026-06-15. New: variable fonts, bundle export (multiple output files from one project), MathML in HTML export, multiple bibliographies per document, spot colors, project-relative file-path type crossing package boundaries, within selector. Breaking: file paths must use forward slashes (no backslashes), non-Unicode input paths dropped, removed path/pattern/pdf.embed/scoped decode functions, HTML/SVG/PDF minified by default (--pretty), typst eval supersedes typst query, MSRV 1.92.
+
+## 2026-06-17: Anthropic pauses the June 15 Agent SDK credit split
+
+- Status: open
+- Category: Agentic coding
+- Sources: [The New Stack](https://thenewstack.io/anthropic-pauses-claude-agent-sdk-subscription-change/), [The Decoder](https://the-decoder.com/anthropic-backs-off-unpopular-billing-overhaul-as-price-war-with-openai-looms/)
+- Watch for: Whether Anthropic reintroduces a revised Agent SDK metering plan; new effective date; how it aligns with usage.
+- Last checked: 2026-06-17
+- Notes: Anthropic paused the billing change announced for 2026-06-15 on the day it was due. The plan would have moved Claude Agent SDK, claude -p, GitHub Actions, and third-party subscription-authenticated tools off the subscription rate-limit bucket onto a separate $200/month pool metered at standard API list prices. Company said "nothing changes for now" and that it is realigning the plan with actual usage. Agent SDK/claude -p/third-party apps keep drawing from regular subscription limits. Reverses the credit-split note tracked since 2026-06-11. Sonnet 4/Opus 4 retirement proceeded 2026-06-15 as scheduled. Surfaced via Tell HN 48557371.
+
+## 2026-06-16: Claude elevated-errors incident across many models
+
+- Status: closed
+- Category: Outage
+- Sources: [Claude status](https://status.claude.com/incidents/xmhsglsz3h3w)
+- Watch for: Anthropic root-cause statement (none published).
+- Last checked: 2026-06-17
+- Notes: 2026-06-16 incident. Phase 1 10:23-11:00 PT: all Sonnet and Opus models ~10% error rate. Phase 2 11:00-12:20 PT: Opus 4.8 and Haiku 4.5. Surfaces: claude.ai, Claude API, Claude Code, Claude Cowork. Resolved 12:20 PT (19:20 UTC). No root cause. GitHub Status logged a related resolved incident for degraded Opus 4.8 in Copilot products (upstream model-provider issue). Closed; resolved.
+
+## 2026-06-16: Alibaba Qwen-RobotSuite embodied AI models
+
+- Status: open
+- Category: AI
+- Sources: [Qwen blog](https://qwen.ai/blog?id=qwen-robotsuite), [Qwen-VLA repository](https://github.com/QwenLM/Qwen-VLA)
+- Watch for: Independent reproduction of RoboChallenge numbers; license terms; which weights are released; downstream adoption in robotics stacks.
+- Last checked: 2026-06-17
+- Notes: Alibaba launched Qwen-RobotSuite 2026-06-16. Three models: Qwen-RobotManip (VLA manipulation on Qwen3.5-4B), Qwen-RobotNav (vision-language navigation on Qwen3-VL, 2B/4B/8B), Qwen-RobotWorld (language-conditioned video world model, 60-layer MMDiT + frozen Qwen2.5-VL encoder). RobotManip and RobotNav have public GitHub repos. Vendor figures: RobotManip trained on 38,000+ hours open-source data, topped RoboChallenge generalist track (process score 59.83, 45% task success). Extends open-weight model race into embodied robotics. HN 48554814.
