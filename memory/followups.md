@@ -527,3 +527,30 @@ Format:
 - Watch for: The chosen replacement platform (unconfirmed; HN speculation OpenShift Virtualization/Proxmox); end-of-2027 migration target; UK High Court outcome; backup/DR retooling off Veeam and Zerto.
 - Last checked: 2026-06-18
 - Notes: Reporting 2026-06-17 drawn from Tesco's UK High Court filings against Broadcom and reseller Computacenter. Tesco migrating ~40,000 server workloads off VMware, aiming to be fully off by end of 2027 (its earliest feasible date). Bought VMware perpetual licenses + Tanzu subscription/support Jan 2021 with a four-year extension option; alleges Broadcom declared perpetual software EOL, moved to subscription-only bundles, refused the extension. Runs tills/logistics/supply-chain on the estate; seeks >100M GBP damages. Replacement platform not publicly named; reportedly incompatible with existing Veeam and Zerto backup/DR. Computacenter and Dell filed counter-claims. HN 48576838.
+
+## 2026-06-18: AMD removes TSME memory encryption from consumer Ryzen CPUs
+
+- Status: open
+- Category: Security
+- Sources: [Tom's Hardware](https://www.tomshardware.com/pc-components/cpus/amd-silently-removes-memory-encryption-from-consumer-ryzen-cpus-leaving-users-unaware-that-they-may-be-vulnerable-security-feature-vanishes-after-newer-agesa-firmware-amd-engineers-go-radio-silent-when-pressed-about-the-change), [TechPowerUp](https://www.techpowerup.com/350080/amd-quietly-drops-memory-encryption-feature-from-consumer-ryzen-cpus)
+- Watch for: AMD official statement; whether the change is reverted or documented; any AGESA update restoring TSME on consumer parts.
+- Last checked: 2026-06-18
+- Notes: AGESA 1.2.7.0 firmware disabled Transparent Secure Memory Encryption (TSME) on consumer Ryzen parts without a BIOS UI change (toggle still shown). Flag DfIsTsmeEnabled set FALSE for consumer, TRUE for PRO/EPYC. Found by Ben Kilpatrick on a Ryzen 7 9700X via Host Security ID. TSME encrypts all RAM under firmware, blocking cold-boot, DRAM snooping, and module-removal attacks. AMD said TSME is "only applied to PRO CPUs as part of AMD PRO Technologies" (first explicit statement); engineers had recommended TSME on consumer parts in 2020 and 2025. HN 48582320.
+
+## 2026-06-18: About 10,000 GitHub repositories distributing Trojan archives
+
+- Status: open
+- Category: Security
+- Sources: [orchidfiles.com](https://orchidfiles.com/github-repositories-distributing-malware/)
+- Watch for: GitHub takedowns of the listed repositories; adoption of the Git Malware Finder pattern; any broader attribution.
+- Last checked: 2026-06-18
+- Notes: 2026-06-18 write-up. ~10,000 fresh non-fork repos copy a legitimate repo's commit history and contributor profiles, then every few hours push an "Update README.md" commit pointing at a trojanized zip. Archive URL scans clean on VirusTotal; the zip itself flags a Trojan. Found by filtering GHArchive events for commit-frequency and README-only pattern. Full list and a Git Malware Finder script published. Some repos persisted over a year; GitHub does not auto-remove. True count likely exceeds 10,000 (API limits). HN 48583928.
+
+## 2026-06-18: Emacs 31.0.90 pretest
+
+- Status: open
+- Category: Dev tools
+- Sources: [emacs-devel announcement](https://lists.gnu.org/archive/html/emacs-devel/2026-06/msg00118.html)
+- Watch for: Emacs 31.1 final release; tree-sitter default behavior changes through the pretest cycle.
+- Last checked: 2026-06-18
+- Notes: First Emacs 31 pretest (31.0.90) announced on emacs-devel in June 2026. Notable: treesit-enabled-modes=t switches modes with a tree-sitter variant to it; treesit-auto-install-grammar offers to fetch/build missing grammars; in-mode grammar sources for TypeScript/TSX/Rust/TOML/YAML/Dockerfile; xref-export-to-grep (bound E) for an editable xref workflow. Pretest, not final. HN 48584135 (283 pts).
