@@ -67,6 +67,16 @@ directly. When running in the remote environment, use the listed fallback.
 - `forums.developer.nvidia.com` - NVIDIA developer forum returns 403 from datacenter.
   Use `developer.nvidia.com/blog` and `nvidianews.nvidia.com` for NVIDIA release
   announcements instead. GitHub issue #9 tracks this.
+- `www.reddit.com` / `old.reddit.com` - Reddit RSS feeds (`/hot/.rss`,
+  `/top/.rss?t=day`) were host-blocked from the unattended run environment on
+  2026-06-18 (both hosts, all probed subreddits failed, not a per-feed 403).
+  When blocked, state degraded Reddit coverage in Sources checked; retry later
+  in the run or collect from another network.
+- `status.openai.com/history` - OpenAI status history accessible from the run
+  environment; reliable for OpenAI incident timelines (verified 2026-06-18).
+- `arstechnica.com` - article bodies block automated WebFetch; use WebSearch
+  snippets plus a corroborating outlet (The Register, Fortune, FT) and confirm
+  the canonical URL before citing.
 
 ### Reliable primary sources
 

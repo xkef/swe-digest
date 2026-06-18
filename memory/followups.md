@@ -399,8 +399,8 @@ Format:
 - Category: AI
 - Sources: [HN discussion](https://news.ycombinator.com/item?id=48518684)
 - Watch for: Open-weight release and license; official model card and benchmarks; standalone API and pricing; independent coding-benchmark results.
-- Last checked: 2026-06-17
-- Notes: Z.ai (Zhipu) announced GLM 5.2 on 2026-06-13 via X (company account and chief scientist Jie Tang). Coding/agent focus, context up to 1M tokens (model id reported glm-5.2[1m]), max output 131,072 tokens. Available immediately on GLM Coding Plan; standalone API and open-weight (permissive/MIT) release expected the following week. No official blog post or benchmarks at announcement. Landed same day as the US directive against Anthropic Fable 5/Mythos 5. 2026-06-17: Artificial Analysis published an independent evaluation scoring GLM-5.2 at 51 on Intelligence Index v4.1, the top open-weights score, ahead of MiniMax-M3 (44) and DeepSeek V4 Pro (44); GDPval-AA v2 1524 vs GPT-5.5 1514. Confirmed MIT license, 1M context (up from 200K on GLM-5.1), pricing 1.4/0.26/4.4 USD per 1M input/cache-hit/output. HN 48567759.
+- Last checked: 2026-06-18
+- Notes: Z.ai (Zhipu) announced GLM 5.2 on 2026-06-13 via X (company account and chief scientist Jie Tang). Coding/agent focus, context up to 1M tokens (model id reported glm-5.2[1m]), max output 131,072 tokens. Available immediately on GLM Coding Plan; standalone API and open-weight (permissive/MIT) release expected the following week. No official blog post or benchmarks at announcement. Landed same day as the US directive against Anthropic Fable 5/Mythos 5. 2026-06-17: Artificial Analysis published an independent evaluation scoring GLM-5.2 at 51 on Intelligence Index v4.1, the top open-weights score, ahead of MiniMax-M3 (44) and DeepSeek V4 Pro (44); GDPval-AA v2 1524 vs GPT-5.5 1514. Confirmed MIT license, 1M context (up from 200K on GLM-5.1), pricing 1.4/0.26/4.4 USD per 1M input/cache-hit/output. HN 48567759. 2026-06-18: open-weight checkpoint now PUBLISHED on Hugging Face (huggingface.co/zai-org/GLM-5.2), MIT license, 753B-parameter MoE in BF16/F32, 1M context, "IndexShare" attention reusing one indexer across every four sparse attention layers; community quantized variants for llama.cpp/Ollama/LM Studio appeared within hours. Open-weight promise fulfilled. Vendor/secondary coding-benchmark numbers still unreproduced.
 
 ## 2026-06-16: Developer-targeted npm backdoor via fake LinkedIn job offer
 
@@ -509,3 +509,21 @@ Format:
 - Watch for: Independent reproduction of RoboChallenge numbers; license terms; which weights are released; downstream adoption in robotics stacks.
 - Last checked: 2026-06-17
 - Notes: Alibaba launched Qwen-RobotSuite 2026-06-16. Three models: Qwen-RobotManip (VLA manipulation on Qwen3.5-4B), Qwen-RobotNav (vision-language navigation on Qwen3-VL, 2B/4B/8B), Qwen-RobotWorld (language-conditioned video world model, 60-layer MMDiT + frozen Qwen2.5-VL encoder). RobotManip and RobotNav have public GitHub repos. Vendor figures: RobotManip trained on 38,000+ hours open-source data, topped RoboChallenge generalist track (process score 59.83, 45% task success). Extends open-weight model race into embodied robotics. HN 48554814.
+
+## 2026-06-18: OpenAI 2025 financials leaked and FT-verified
+
+- Status: open
+- Category: Markets
+- Sources: [Ars Technica](https://arstechnica.com/ai/2026/06/leaked-financial-docs-show-openai-is-losing-billions-of-dollars-a-year/), [originating report](https://www.wheresyoured.at/exclusive-openai-financials/)
+- Watch for: OpenAI confirmation or dispute; the public S-1; whether the one-time conversion charge recurs; 2026 trajectory.
+- Last checked: 2026-06-18
+- Notes: Leaked audited 2025 financials, first surfaced by Ed Zitron (wheresyoured.at) and independently verified by the Financial Times; also reported by Ars Technica and Fortune. Revenue 13.07B USD (more than 3x 2024's ~3.7B), total costs 34B USD, net loss 38.53B USD. Net loss includes a 41.55B USD non-cash charge from the nonprofit-to-for-profit conversion; operating loss ~20.9B USD, cash operating loss estimated nearer 8B USD by some analysts. R&D 19.18B USD; sales/marketing 5.73B USD; cost of revenue 7.5B USD. Paid Microsoft 17.2B USD total (10.59B R&D + 6.047B cost of revenue). Loss-per-dollar-of-revenue improved from 2.37 (2024) to 1.60 (2025). Leak landed during pre-IPO quiet period; OpenAI has not commented. Moves the 2026-06-16 single-source item (tracked in run logs) to multi-source. HN 48577208.
+
+## 2026-06-18: Tesco migrating off VMware amid Broadcom dispute
+
+- Status: open
+- Category: Markets
+- Sources: [Ars Technica](https://arstechnica.com/information-technology/2026/06/tesco-moving-40000-server-workloads-off-vmware-amid-broadcoms-abusive-conduct/), [The Register](https://www.theregister.com/virtualization/2026/06/17/tesco-is-sprinting-to-quit-vmware-and-broadcom-despite-rapid-migration-risks/)
+- Watch for: The chosen replacement platform (unconfirmed; HN speculation OpenShift Virtualization/Proxmox); end-of-2027 migration target; UK High Court outcome; backup/DR retooling off Veeam and Zerto.
+- Last checked: 2026-06-18
+- Notes: Reporting 2026-06-17 drawn from Tesco's UK High Court filings against Broadcom and reseller Computacenter. Tesco migrating ~40,000 server workloads off VMware, aiming to be fully off by end of 2027 (its earliest feasible date). Bought VMware perpetual licenses + Tanzu subscription/support Jan 2021 with a four-year extension option; alleges Broadcom declared perpetual software EOL, moved to subscription-only bundles, refused the extension. Runs tills/logistics/supply-chain on the estate; seeks >100M GBP damages. Replacement platform not publicly named; reportedly incompatible with existing Veeam and Zerto backup/DR. Computacenter and Dell filed counter-claims. HN 48576838.
