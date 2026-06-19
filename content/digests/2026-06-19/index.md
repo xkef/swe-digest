@@ -9,10 +9,19 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 41
+source_count = 50
 +++
 
 ## Top stories
+
+### Splunk Enterprise unauthenticated file-write flaw CVE-2026-20253 is under active exploitation
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Splunk advisory SVD-2026-0603](https://advisory.splunk.com/advisories/SVD-2026-0603), [Horizon3.ai analysis](https://horizon3.ai/attack-research/vulnerabilities/cve-2026-20253/), [SecurityWeek](https://www.securityweek.com/splunk-enterprise-vulnerability-exploited-in-attacks-days-after-disclosure/), [CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
+- **Summary:** CVE-2026-20253 (CVSS 9.8) is a missing-authentication flaw on a Splunk Enterprise PostgreSQL sidecar service endpoint that lets an unauthenticated, network-reachable attacker create or truncate arbitrary files, which can chain to denial of service, log-integrity loss, or remote code execution. It affects Splunk Enterprise 10.0.0 through 10.0.6 and 10.2.0 through 10.2.3; versions 9.4 and earlier are not affected. Splunk patched it in 10.0.7 and 10.2.4. Public exploit analysis appeared on 2026-06-13, three days after disclosure, and CISA added it to the Known Exploited Vulnerabilities catalog on 2026-06-18 with a three-day federal remediation deadline.
+- **Why it matters:** Splunk Enterprise is core SOC and log-analysis infrastructure, so an unauthenticated file-write to remote-code-execution path under active exploitation puts detection pipelines themselves at risk.
+- **Follow-up:** Watch for confirmed RCE chains, ransomware follow-on, and patch adoption. Tracked in `memory/followups.md`.
 
 ### Noam Shazeer leaves Google to join OpenAI as AI architecture lead
 
@@ -113,6 +122,14 @@ No major items found. Hugging Face Papers and arXiv listings were checked; no ne
 
 ## Security
 
+### Splunk Enterprise CVE-2026-20253 under active exploitation
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Splunk advisory SVD-2026-0603](https://advisory.splunk.com/advisories/SVD-2026-0603), [Horizon3.ai analysis](https://horizon3.ai/attack-research/vulnerabilities/cve-2026-20253/)
+- **Summary:** See the Top stories item. Unauthenticated arbitrary file write (CVSS 9.8) via a Splunk Enterprise PostgreSQL sidecar endpoint, affecting 10.0.0 to 10.0.6 and 10.2.0 to 10.2.3, patched in 10.0.7 and 10.2.4. CISA KEV addition 2026-06-18 with a three-day federal deadline.
+- **Why it matters:** Active exploitation of widely deployed log and SIEM infrastructure.
+
 ### AMD removes TSME memory encryption from consumer Ryzen CPUs in firmware
 
 - **Category:** Security
@@ -151,6 +168,14 @@ No major items found. Hugging Face Papers and arXiv listings were checked; no ne
 - **Follow-up:** Watch for resolution of the FedRAMP workspace incident and any OpenAI root-cause note.
 
 ## Developer tools
+
+### Godot 4.7 released as stable
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [Godot 4.7 release notes](https://godotengine.org/releases/4.7/), [GitHub release](https://github.com/godotengine/godot/releases/tag/4.7-stable), [discussion](https://news.ycombinator.com/item?id=48585879)
+- **Summary:** The Godot engine team published 4.7 stable on 2026-06-18, a feature release that preserves compatibility with the 4.x line. Headline changes include HDR output on Windows, macOS, iOS, visionOS, and Linux/Wayland, an AreaLight3D node, a redesigned Asset Store, standalone Android export through a GABE companion app, GDScript implementing Java interfaces, a VirtualJoystick node with gyro aiming, and day-one Android XR and Steam Frame support with Vulkan subsampled foveated rendering. The team recommends reviewing the migration guide for breaking changes before upgrading existing projects.
+- **Why it matters:** Godot is a widely used open-source game engine, and 4.7 broadens its mobile, XR, and HDR reach without breaking the 4.x compatibility line.
 
 ### Practitioner write-up: migrating dotfiles from GNU Stow to chezmoi
 
@@ -253,6 +278,15 @@ Tracked infrastructure releases (Prometheus 3.5.4 LTS on 2026-06-17, PostgreSQL 
 - **Summary:** A Show HN project lets people probe whether information about them appears to be memorized in large language model weights. The thread debates memorization, training-data provenance, and privacy implications.
 - **Why it matters:** It surfaces ongoing practitioner concern about what training corpora retain about individuals.
 
+### Project Valhalla explainer trends as JEP 401 nears JDK 28
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [jvm-weekly.com](https://www.jvm-weekly.com/p/project-valhalla-explained-how-a), [discussion](https://news.ycombinator.com/item?id=48595511)
+- **Summary:** A JVM Weekly explainer of Project Valhalla reached the HN front page at 173 points as JEP 401 (Value Classes and Objects) heads for an opt-in preview in JDK 28. Value objects have no identity, which lets the JVM flatten and inline them. The underlying JEP 401 merge to OpenJDK mainline is tracked in `memory/followups.md`.
+- **Comments:** HN commenters note the first preview does not yet deliver a flat `ArrayList<Point>`, debate whether dropping object identity was necessary, and compare the decade-long retrofit to .NET structs that shipped years earlier.
+- **Why it matters:** It is practitioner signal on how Java developers read the Valhalla tradeoffs as the feature finally approaches a preview.
+
 ### Ask HN: Is anyone using the A2A protocol?
 
 - **Category:** Pulse
@@ -279,11 +313,12 @@ Social: Simon Willison published Datasette Apps (covered under Agentic coding). 
 - Reddit RSS for watchlist subreddits: degraded (HTTP 403 host block from the run environment).
 - AI sources: Anthropic, OpenAI, DeepSeek, model and policy reporting (The Decoder, SCMP, Wired, Korea JoongAng Daily).
 - ML research: Hugging Face Papers and arXiv listings checked; no verified new primary item. Google TimesFM (2.0.1, 2026-06-11) trended but carried no new 2026-06-19 result.
-- Security: orchidfiles.com write-up, Tom's Hardware, CISA KEV catalog (no new addition dated 2026-06-18 or 2026-06-19).
+- Security: orchidfiles.com write-up, Tom's Hardware, Splunk advisory SVD-2026-0603, Horizon3.ai, SecurityWeek. CISA KEV catalog rechecked (version 2026.06.18): CVE-2026-20253 Splunk Enterprise added 2026-06-18 (surfaced this run); no KEV addition dated 2026-06-19.
 - Status pages: Let's Encrypt status (production ACME API incident from 2026-06-18 16:04 UTC), OpenAI status history (incidents 2026-06-18). No new major cloud-provider outage verified for 2026-06-19.
-- GitHub releases: re-checked every `[github]` watchlist repo. No release dated 2026-06-19; the newest tracked releases were Node.js 26.3.1 (2026-06-18) and Prometheus 3.5.4 (2026-06-17), both already covered. TypeScript 7.0 RC (2026-06-18) added this pass.
+- GitHub releases: re-checked every `[github]` watchlist repo. No release dated 2026-06-19; the newest tracked releases were Node.js 26.3.1 (2026-06-18) and Prometheus 3.5.4 (2026-06-17), both already covered. TypeScript 7.0 RC (2026-06-18) added earlier. Godot 4.7-stable (2026-06-18), surfaced via HN, added this pass after verifying its release notes and GitHub release.
 - GitHub trending: scanned `?since=daily` plus language views. Recurring agent-tooling cluster (obra/superpowers, withastro/flue, Kilo-Org/kilocode, codebase-memory MCP) and Lightricks/LTX-2 noted; none surfaced as a verified primary advance beyond items already covered.
-- Languages and runtimes: TypeScript blog (7.0 RC).
+- Languages and runtimes: TypeScript blog (7.0 RC); JVM Weekly Project Valhalla explainer (HN front page) cross-referenced to the tracked JEP 401 follow-up.
+- Developer tools: Godot 4.7-stable release notes and GitHub release.
 - Infrastructure: Ubiquiti blog (Enterprise NAS).
 - Engineering blogs: American Express engineering, Simon Willison.
 - Markets and company sources: BBC, Yahoo Finance, The Decoder.

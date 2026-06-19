@@ -591,6 +591,24 @@ Format:
 - Last checked: 2026-06-19
 - Notes: Announced 2026-06-18. ZFS-based appliance: 8 Arm Neoverse N2 cores, 64GB ECC, 16 drive bays expandable past 1PB raw, dual NVMe cache, dual 25GbE SFP28, redundant PSU. Targets file storage, iSCSI for virtualization, identity-driven sharing. HN 48585866 (310 pts); commenters note no recurring subscription cost and ask about Time Machine/network backup. Product launch, labeled discussion.
 
+## 2026-06-19: Splunk Enterprise CVE-2026-20253 active exploitation
+
+- Status: open
+- Category: Security
+- Sources: [Splunk SVD-2026-0603](https://advisory.splunk.com/advisories/SVD-2026-0603), [Horizon3.ai](https://horizon3.ai/attack-research/vulnerabilities/cve-2026-20253/), [SecurityWeek](https://www.securityweek.com/splunk-enterprise-vulnerability-exploited-in-attacks-days-after-disclosure/)
+- Watch for: Confirmed RCE chains; ransomware follow-on; patch adoption; federal remediation deadline passing.
+- Last checked: 2026-06-19
+- Notes: CVSS 9.8 missing-authentication flaw on a Splunk Enterprise PostgreSQL sidecar service endpoint. Unauthenticated, network-reachable create or truncate of arbitrary files, chainable to DoS, log-integrity loss, or RCE. Affects 10.0.0-10.0.6 and 10.2.0-10.2.3; 9.4 and earlier not affected. Patched in 10.0.7 and 10.2.4. Public exploit analysis 2026-06-13, three days after disclosure. CISA KEV added 2026-06-18 (catalog version 2026.06.18, count 1623), three-day federal deadline. Splunk Enterprise is core SOC/SIEM infrastructure.
+
+## 2026-06-18: Godot 4.7 stable release
+
+- Status: open
+- Category: Dev tools
+- Sources: [release notes](https://godotengine.org/releases/4.7/), [GitHub release](https://github.com/godotengine/godot/releases/tag/4.7-stable)
+- Watch for: Breaking-change migration reports from the 4.7 migration guide; first 4.7.x point release regressions.
+- Last checked: 2026-06-19
+- Notes: Godot 4.7 stable released 2026-06-18, feature release preserving 4.x compatibility. Headline: HDR output (Windows/macOS/iOS/visionOS/Linux-Wayland), AreaLight3D, redesigned Asset Store, standalone Android export via GABE companion app, GDScript implementing Java interfaces, VirtualJoystick node with gyro aiming, day-one Android XR and Steam Frame support, Vulkan subsampled foveated rendering. Migration guide flags breaking changes for existing projects. Not in the [github] watchlist table; surfaced via HN 48585879.
+
 ## 2026-06-18: Emacs 31.0.90 pretest
 
 - Status: open
