@@ -564,6 +564,33 @@ Format:
 - Last checked: 2026-06-19
 - Notes: Tim Cook told WSJ price increases are unavoidable and the memory situation is unsustainable, citing AI data-center demand draining DRAM and NAND. Apple willing to use its balance sheet to secure memory. No timing, magnitude, or affected product lines given. Broad signal that the AI memory crunch is reaching consumer hardware pricing and server costs.
 
+## 2026-06-18: TypeScript 7.0 release candidate (native Go compiler)
+
+- Status: open
+- Category: Languages
+- Sources: [TypeScript blog](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0-rc/)
+- Watch for: 7.0 stable release (planned within a month of the RC); 7.1 stable programmatic APIs (several months later); ecosystem migration reports from the changed config defaults.
+- Last checked: 2026-06-19
+- Notes: Microsoft published the TypeScript 7.0 RC on 2026-06-18, the compiler rebuilt from the bootstrapped TS codebase to Go. Reported ~10x faster than 6.0. Install `typescript@rc`. Breaking config-default changes: `rootDir` defaults to `./` (no inference), `types` defaults to `[]` (no auto-load of `@types`), removed `target: es5` and `node`/`node10` module resolution; JS support reworked. Compatibility promise: code that compiles cleanly on 6.0 should compile identically on 7.0. Surfaced as HN 48586001.
+
+## 2026-06-18: Let's Encrypt production ACME API upstream network incident
+
+- Status: open
+- Category: Outage
+- Sources: [Let's Encrypt status](https://letsencrypt.status.io/)
+- Watch for: Full redundancy restoration; any Let's Encrypt post-incident note; whether renewal errors recur.
+- Last checked: 2026-06-19
+- Notes: Incident on acme-v02.api.letsencrypt.org (production) starting 2026-06-18 16:04 UTC. An upstream network event disrupted traffic between two datacenters; some clients saw 400/500 responses while most requests succeeded. By the latest status update the API was operating normally but with reduced redundancy. HN thread 48594715 surfaced 2026-06-19 framed as "renewals had errors today." letsencrypt.status.io fetched 200 from the run environment.
+
+## 2026-06-18: Ubiquiti Enterprise NAS (ENAS) on ZFS
+
+- Status: open
+- Category: Infrastructure
+- Sources: [Ubiquiti blog](https://blog.ui.com/article/introducing-enterprise-nas)
+- Watch for: Shipping availability and price; real ZFS feature exposure (snapshots, replication); cross-site backup orchestration (listed coming soon); third-party reviews.
+- Last checked: 2026-06-19
+- Notes: Announced 2026-06-18. ZFS-based appliance: 8 Arm Neoverse N2 cores, 64GB ECC, 16 drive bays expandable past 1PB raw, dual NVMe cache, dual 25GbE SFP28, redundant PSU. Targets file storage, iSCSI for virtualization, identity-driven sharing. HN 48585866 (310 pts); commenters note no recurring subscription cost and ask about Time Machine/network backup. Product launch, labeled discussion.
+
 ## 2026-06-18: Emacs 31.0.90 pretest
 
 - Status: open

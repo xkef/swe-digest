@@ -104,6 +104,9 @@ directly. When running in the remote environment, use the listed fallback.
 - `www.bleepingcomputer.com/news/security/` - Returns 403 from datacenter for direct fetch; WebSearch snippets contain useful exploitation confirmation details. Confirm CVE details from vendor advisory.
 - `planetscale.com/blog/` - PlanetScale engineering blog fetches 200 from datacenter (title and meta description readable; body is JS-heavy but extractable). Vendor blog, technically detailed on database internals; judge each post for promotional framing.
 - `github.com/trending` (and `?since=daily` language views) - Fetchable from datacenter; repo HTML lists parse cleanly. Use `gh api repos/{owner}/{repo}` and `/readme` to verify any surfaced repo before publishing.
+- `devblogs.microsoft.com/typescript/` - Microsoft TypeScript blog is primary; fetched 200 from the run environment with full release-note detail. Reliable for TS release and RC announcements.
+- `letsencrypt.status.io` - Let's Encrypt status page is primary; fetched 200 from the run environment with incident timestamps and root-cause notes. Reliable for ACME API incident timelines.
+- `blog.ui.com` - Ubiquiti product blog; fetched 200 from the run environment. Product-launch source (judge for marketing framing); reliable for hardware spec confirmation.
 
 ### Secondary/aggregation sources
 

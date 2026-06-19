@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 34
+source_count = 41
 +++
 
 ## Top stories
@@ -31,6 +31,15 @@ source_count = 34
 - **Summary:** Tim Cook told the Wall Street Journal that Apple will raise product prices to offset rising memory and storage chip costs, saying increases are unavoidable and the situation has become unsustainable. He cited AI data-center demand draining DRAM and NAND supply, and said Apple is willing to use its balance sheet to help secure memory. No timing, magnitude, or affected product lines were given.
 - **Why it matters:** The AI memory crunch is now reaching consumer hardware pricing, and the same DRAM and NAND contention raises bill-of-materials and server costs across the industry.
 - **Follow-up:** Watch for the magnitude and timing of Apple price changes and for memory-pricing pass-through from Samsung, SK hynix, and Micron.
+
+### TypeScript 7.0 reaches release candidate with the native Go compiler
+
+- **Category:** Languages
+- **Status:** confirmed
+- **Sources:** [TypeScript blog](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0-rc/), [discussion](https://news.ycombinator.com/item?id=48586001)
+- **Summary:** Microsoft published the TypeScript 7.0 release candidate on 2026-06-18. 7.0 is the compiler rewritten from the bootstrapped TypeScript codebase to Go, and the team reports it is often about 10 times faster than 6.0. Install is `npm install -D typescript@rc`; a stable release is planned within a month, with stable programmatic APIs arriving in 7.1 several months later. Breaking changes include `rootDir` defaulting to `./` instead of inference, `types` defaulting to `[]` instead of auto-loading `@types` packages, and removal of `target` `es5` plus the `node`/`node10` module resolution modes.
+- **Why it matters:** The native compiler cuts type-checking and build times across the JavaScript ecosystem, and the changed config defaults create migration work for existing projects.
+- **Follow-up:** Watch for the 7.0 stable release within a month and the 7.1 stable programmatic API.
 
 ### MCP Enterprise-Managed Authorization extension reaches stable
 
@@ -123,6 +132,15 @@ No major items found. Hugging Face Papers and arXiv listings were checked; no ne
 
 ## Outages
 
+### Let's Encrypt production ACME API logs errors after an upstream network event
+
+- **Category:** Outage
+- **Status:** developing
+- **Sources:** [Let's Encrypt status](https://letsencrypt.status.io/), [discussion](https://news.ycombinator.com/item?id=48594715)
+- **Summary:** Let's Encrypt's status page recorded an incident on its production ACME API (acme-v02.api.letsencrypt.org) starting 2026-06-18 16:04 UTC. An upstream network event disrupted traffic between two of its datacenters, and some clients received 400 and 500 responses while most requests still succeeded. By the latest update the API was operating normally but with reduced redundancy. The matching HN thread surfaced on 2026-06-19 as renewal errors.
+- **Why it matters:** Let's Encrypt issues certificates for a large share of the public web, so renewal failures during the window risk expired certificates for clients without retry headroom.
+- **Follow-up:** Watch for full redundancy restoration and any Let's Encrypt post-incident note.
+
 ### OpenAI logs FedRAMP and enterprise SSO incidents on 2026-06-18
 
 - **Category:** Outage
@@ -160,7 +178,15 @@ No major items found. Hugging Face Papers and arXiv listings were checked; no ne
 
 ## Languages and runtimes
 
-No major items found. No new release dated 2026-06-19 surfaced for the tracked language repos; Node.js 26.3.1 and its coordinated security releases (2026-06-18) were covered in the prior digest.
+### TypeScript 7.0 release candidate
+
+- **Category:** Languages
+- **Status:** confirmed
+- **Sources:** [TypeScript blog](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0-rc/)
+- **Summary:** See the Top stories item. The Go-port compiler reaches RC at roughly 10 times the speed of 6.0, with config-default breaking changes (`rootDir`, `types`, removed `es5` and `node10` resolution).
+- **Why it matters:** It is the largest TypeScript toolchain change in years and sets near-term migration work.
+
+Node.js 26.3.1 and its coordinated security releases (2026-06-18) were covered in the prior digest; no other new release dated 2026-06-19 surfaced for the tracked language repos.
 
 ## Apple platforms
 
@@ -178,7 +204,16 @@ No major items found. The Apple memory-pricing item is a markets story and appea
 
 ## Infrastructure
 
-No major items found. Tracked infrastructure releases (Prometheus 3.5.4 LTS on 2026-06-17, PostgreSQL 19 Beta 1) were covered earlier; no new primary item surfaced today.
+### Ubiquiti launches an Enterprise NAS built on ZFS
+
+- **Category:** Infrastructure
+- **Status:** discussion
+- **Sources:** [Ubiquiti blog](https://blog.ui.com/article/introducing-enterprise-nas), [discussion](https://news.ycombinator.com/item?id=48585866)
+- **Summary:** Ubiquiti announced its Enterprise NAS (ENAS) on 2026-06-18: a ZFS-based appliance with 8 Arm Neoverse N2 cores, 64GB ECC memory, 16 drive bays expandable past one petabyte raw, dual NVMe cache, and dual 25 Gigabit SFP28 ports with redundant power. It targets file storage, iSCSI for virtualization, and identity-driven sharing; cross-site backup orchestration is listed as coming soon.
+- **Comments:** HN commenters highlight the absence of a recurring subscription as the main draw and ask about Time Machine and network-backup integration, with interest in replacing DIY NAS builds.
+- **Why it matters:** A ZFS appliance integrated into an existing Ubiquiti network is a lower-cost on-prem storage option versus subscription-based competitors.
+
+Tracked infrastructure releases (Prometheus 3.5.4 LTS on 2026-06-17, PostgreSQL 19 Beta 1) were covered earlier; no new primary release surfaced today.
 
 ## Engineering posts
 
@@ -218,6 +253,14 @@ No major items found. Tracked infrastructure releases (Prometheus 3.5.4 LTS on 2
 - **Summary:** A Show HN project lets people probe whether information about them appears to be memorized in large language model weights. The thread debates memorization, training-data provenance, and privacy implications.
 - **Why it matters:** It surfaces ongoing practitioner concern about what training corpora retain about individuals.
 
+### Ask HN: Is anyone using the A2A protocol?
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [discussion](https://news.ycombinator.com/item?id=48582679)
+- **Summary:** An Ask HN thread asks whether practitioners are actually deploying the Agent2Agent (A2A) protocol for agent interoperability, weighing real adoption against MCP and newer agent-interop standards.
+- **Why it matters:** It is practitioner signal on whether agent-to-agent interop protocols see production use beyond announcements, the same governance theme as the MCP EMA item above.
+
 ## Reddit and social pulse
 
 Reddit RSS feeds (`/hot/.rss`, `/top/.rss?t=day`) returned HTTP 403 from the unattended run environment for every probed subreddit, continuing the host-level block recorded on 2026-06-18. Reddit pulse is degraded for this run.
@@ -235,10 +278,12 @@ Social: Simon Willison published Datasette Apps (covered under Agentic coding). 
 - Hacker News via `make hn` (Algolia backend, full structured coverage; front page, top 24h, Ask HN, Show HN, top comments, 61 of 72 watchlist queries matched; snapshot fetched 2026-06-19 02:27 UTC, 0 degraded collections).
 - Reddit RSS for watchlist subreddits: degraded (HTTP 403 host block from the run environment).
 - AI sources: Anthropic, OpenAI, DeepSeek, model and policy reporting (The Decoder, SCMP, Wired, Korea JoongAng Daily).
-- ML research: Hugging Face Papers and arXiv listings checked; no verified new primary item.
+- ML research: Hugging Face Papers and arXiv listings checked; no verified new primary item. Google TimesFM (2.0.1, 2026-06-11) trended but carried no new 2026-06-19 result.
 - Security: orchidfiles.com write-up, Tom's Hardware, CISA KEV catalog (no new addition dated 2026-06-18 or 2026-06-19).
-- Status pages: OpenAI status history (incidents 2026-06-18). No new major cloud outage verified for 2026-06-19.
-- GitHub releases: checked all `[github]` watchlist repos; no release dated 2026-06-19 (latest were Node.js 26.3.1 and Prometheus 3.5.4 on 2026-06-17/18).
-- GitHub trending: scanned; no new verified cluster beyond items already covered.
+- Status pages: Let's Encrypt status (production ACME API incident from 2026-06-18 16:04 UTC), OpenAI status history (incidents 2026-06-18). No new major cloud-provider outage verified for 2026-06-19.
+- GitHub releases: re-checked every `[github]` watchlist repo. No release dated 2026-06-19; the newest tracked releases were Node.js 26.3.1 (2026-06-18) and Prometheus 3.5.4 (2026-06-17), both already covered. TypeScript 7.0 RC (2026-06-18) added this pass.
+- GitHub trending: scanned `?since=daily` plus language views. Recurring agent-tooling cluster (obra/superpowers, withastro/flue, Kilo-Org/kilocode, codebase-memory MCP) and Lightricks/LTX-2 noted; none surfaced as a verified primary advance beyond items already covered.
+- Languages and runtimes: TypeScript blog (7.0 RC).
+- Infrastructure: Ubiquiti blog (Enterprise NAS).
 - Engineering blogs: American Express engineering, Simon Willison.
 - Markets and company sources: BBC, Yahoo Finance, The Decoder.
