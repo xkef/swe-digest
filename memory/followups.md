@@ -289,10 +289,10 @@ Format:
 
 - Status: open
 - Category: AI
-- Sources: [Anthropic statement](https://www.anthropic.com/news/fable-mythos-access), [Bloomberg](https://www.bloomberg.com/news/articles/2026-06-13/anthropic-says-us-limits-foreign-access-to-fable-5-mythos-5)
+- Sources: [Anthropic statement](https://www.anthropic.com/news/fable-mythos-access), [Bloomberg](https://www.bloomberg.com/news/articles/2026-06-13/anthropic-says-us-limits-foreign-access-to-fable-5-mythos-5), [Korea JoongAng Daily](https://www.koreajoongangdaily.com/business/anthropic-confident-of-reenabling-mythos-fable-5-access-in-coming-days-executive/12727522), [Wired SK Telecom](https://www.wired.com/story/sk-telecom-anthropic-mythos)
 - Watch for: Directive lifted, narrowed, or extended to other models/providers; official US government statement; formal EU response; legal challenge; refund or credit handling.
-- Last checked: 2026-06-15
-- Notes: Anthropic received an export control directive at 17:21 ET 2026-06-12 to block all foreign-national access to Fable 5 and Mythos 5; it disabled both for all customers. Other models unaffected. Stated concern is a narrow jailbreak (ask model to read a codebase and fix flaws), which Anthropic says exists in other models including GPT-5.5. Anthropic disagrees with the recall. 2026-06-13: WSJ reports (single-sourced, "people familiar") that Amazon CEO Andy Jassy's talks with Trump administration officials preceded the directive; Amazon researchers reportedly prompted Fable 5 for cyberattack-aiding info. Amazon holds a large (>5%) equity stake in Anthropic. 2026-06-14: EU Commission spokesperson said it is assessing the practical consequences of the directive and that measures should not discriminate against partners (Reuters, Euronews). As of 2026-06-15 access still suspended, no restoration timeline.
+- Last checked: 2026-06-19
+- Notes: Anthropic received an export control directive at 17:21 ET 2026-06-12 to block all foreign-national access to Fable 5 and Mythos 5; it disabled both for all customers. Other models unaffected. Stated concern is a narrow jailbreak (ask model to read a codebase and fix flaws), which Anthropic says exists in other models including GPT-5.5. Anthropic disagrees with the recall. 2026-06-13: WSJ reports (single-sourced, "people familiar") that Amazon CEO Andy Jassy's talks with Trump administration officials preceded the directive; Amazon researchers reportedly prompted Fable 5 for cyberattack-aiding info. Amazon holds a large (>5%) equity stake in Anthropic. 2026-06-14: EU Commission spokesperson said it is assessing the practical consequences of the directive and that measures should not discriminate against partners (Reuters, Euronews). As of 2026-06-15 access still suspended, no restoration timeline. 2026-06-18: Anthropic MD International Chris Ciauri said in Seoul the company is confident access returns "in coming days" (no restoration yet); Wired identified SK Telecom as the Korean telecom at the center of the Mythos dispute. As of 2026-06-19 still suspended.
 
 ## 2026-06-13: Oracle PeopleSoft CVE-2026-35273 active exploitation
 
@@ -545,6 +545,24 @@ Format:
 - Watch for: GitHub takedowns of the listed repositories; adoption of the Git Malware Finder pattern; any broader attribution.
 - Last checked: 2026-06-18
 - Notes: 2026-06-18 write-up. ~10,000 fresh non-fork repos copy a legitimate repo's commit history and contributor profiles, then every few hours push an "Update README.md" commit pointing at a trojanized zip. Archive URL scans clean on VirusTotal; the zip itself flags a Trojan. Found by filtering GHArchive events for commit-frequency and README-only pattern. Full list and a Git Malware Finder script published. Some repos persisted over a year; GitHub does not auto-remove. True count likely exceeds 10,000 (API limits). HN 48583928.
+
+## 2026-06-19: Noam Shazeer leaves Google for OpenAI
+
+- Status: open
+- Category: AI
+- Sources: [The Decoder](https://the-decoder.com/googles-gemini-co-lead-noam-shazeer-joins-openai-after-two-year-return-stint/), [Yahoo Finance](https://finance.yahoo.com/technology/ai/articles/googles-gemini-co-lead-noam-002548928.html)
+- Watch for: OpenAI confirmation of role and team; further Gemini-team departures; impact on Gemini model roadmap.
+- Last checked: 2026-06-19
+- Notes: Shazeer announced 2026-06-18 (via X, corroborated by multiple outlets) he is leaving Google to join OpenAI as Lead for AI Architecture Research. Co-led Gemini with Jeff Dean and Oriol Vinyals; returned to Google in 2024 in a reported 2.7B USD Character.AI deal; co-author of "Attention Is All You Need". Talent concentration during OpenAI's pre-IPO period.
+
+## 2026-06-19: Apple to raise prices on AI-driven memory shortage
+
+- Status: open
+- Category: Markets
+- Sources: [BBC](https://www.bbc.com/news/articles/c3wyxvqdx1zo), [Yahoo Finance](https://finance.yahoo.com/technology/articles/apple-raise-prices-due-memory-212327523.html)
+- Watch for: Magnitude and timing of Apple price changes; DRAM/NAND price pass-through from Samsung, SK hynix, Micron; server bill-of-materials impact.
+- Last checked: 2026-06-19
+- Notes: Tim Cook told WSJ price increases are unavoidable and the memory situation is unsustainable, citing AI data-center demand draining DRAM and NAND. Apple willing to use its balance sheet to secure memory. No timing, magnitude, or affected product lines given. Broad signal that the AI memory crunch is reaching consumer hardware pricing and server costs.
 
 ## 2026-06-18: Emacs 31.0.90 pretest
 
