@@ -580,7 +580,7 @@ Format:
 - Sources: [Let's Encrypt status](https://letsencrypt.status.io/)
 - Watch for: Full redundancy restoration; any Let's Encrypt post-incident note; whether renewal errors recur.
 - Last checked: 2026-06-19
-- Notes: Incident on acme-v02.api.letsencrypt.org (production) starting 2026-06-18 16:04 UTC. An upstream network event disrupted traffic between two datacenters; some clients saw 400/500 responses while most requests succeeded. By the latest status update the API was operating normally but with reduced redundancy. HN thread 48594715 surfaced 2026-06-19 framed as "renewals had errors today." letsencrypt.status.io fetched 200 from the run environment.
+- Notes: Incident on acme-v02.api.letsencrypt.org (production) starting 2026-06-18 16:04 UTC. An upstream network event disrupted traffic between two datacenters; some clients saw 400/500 responses while most requests succeeded. As of the 2026-06-19 04:45 UTC update the API was operating normally but still with reduced redundancy, with Let's Encrypt continuing to work with its upstream ISP on the root cause (incident not yet fully resolved). HN thread 48594715 surfaced 2026-06-19 framed as "renewals had errors today." letsencrypt.status.io fetched 200 from the run environment.
 
 ## 2026-06-18: Ubiquiti Enterprise NAS (ENAS) on ZFS
 

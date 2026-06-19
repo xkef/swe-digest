@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 50
+source_count = 52
 +++
 
 ## Top stories
@@ -154,7 +154,7 @@ No major items found. Hugging Face Papers and arXiv listings were checked; no ne
 - **Category:** Outage
 - **Status:** developing
 - **Sources:** [Let's Encrypt status](https://letsencrypt.status.io/), [discussion](https://news.ycombinator.com/item?id=48594715)
-- **Summary:** Let's Encrypt's status page recorded an incident on its production ACME API (acme-v02.api.letsencrypt.org) starting 2026-06-18 16:04 UTC. An upstream network event disrupted traffic between two of its datacenters, and some clients received 400 and 500 responses while most requests still succeeded. By the latest update the API was operating normally but with reduced redundancy. The matching HN thread surfaced on 2026-06-19 as renewal errors.
+- **Summary:** Let's Encrypt's status page recorded an incident on its production ACME API (acme-v02.api.letsencrypt.org) starting 2026-06-18 16:04 UTC. An upstream network event disrupted traffic between two of its datacenters, and some clients received 400 and 500 responses while most requests still succeeded. As of the 2026-06-19 04:45 UTC update the API was operating normally but with reduced redundancy, with Let's Encrypt still working with its upstream ISP to resolve the root cause. The matching HN thread surfaced on 2026-06-19 as renewal errors.
 - **Why it matters:** Let's Encrypt issues certificates for a large share of the public web, so renewal failures during the window risk expired certificates for clients without retry headroom.
 - **Follow-up:** Watch for full redundancy restoration and any Let's Encrypt post-incident note.
 
@@ -250,6 +250,14 @@ Tracked infrastructure releases (Prometheus 3.5.4 LTS on 2026-06-17, PostgreSQL 
 - **Summary:** Benjamin Cane describes how American Express runs core payments on independent cells, each holding its own microservices, databases, and infrastructure. Static reference data is replicated to every cell to avoid synchronous lookups; a Global Transaction Router is the only cross-cell path and routes by deterministic data locality. On a mid-transaction cell failure, the system reroutes and restarts in a healthy cell with idempotency keys rather than resuming across boundaries, and critical-path components avoid blocking on logging or config.
 - **Why it matters:** It is a concrete, production account of bounding failure domains and preserving predictable latency in a high-volume payments system.
 
+### Mark Nottingham on how to define a well-known URI
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [mnot.net](https://mnot.net/blog/2026/well_known_uris), [discussion](https://news.ycombinator.com/item?id=48595331)
+- **Summary:** Mark Nottingham, co-author of RFC 8615 and the IANA well-known URI registry expert, published guidance on 2026-06-19 for designing `.well-known/` URIs. He argues they fit discovery of facts about a site as a whole, such as access policies, and cautions against using them as URL shorteners or legitimacy signals because that locks deployments into rigid one-to-one site-to-service relationships. The post covers discovery mechanisms, content-metadata tradeoffs, transition planning, and registering new well-known locations through the IANA GitHub process.
+- **Why it matters:** It is authoritative design guidance for a widely used web-platform mechanism, pairing with the HTTP QUERY method (RFC 10008) standardized this week as part of the same protocol-hygiene theme.
+
 ## Markets and companies
 
 ### AI talent and hardware cost signals
@@ -320,5 +328,5 @@ Social: Simon Willison published Datasette Apps (covered under Agentic coding). 
 - Languages and runtimes: TypeScript blog (7.0 RC); JVM Weekly Project Valhalla explainer (HN front page) cross-referenced to the tracked JEP 401 follow-up.
 - Developer tools: Godot 4.7-stable release notes and GitHub release.
 - Infrastructure: Ubiquiti blog (Enterprise NAS).
-- Engineering blogs: American Express engineering, Simon Willison.
+- Engineering blogs: American Express engineering, Simon Willison, Mark Nottingham (well-known URIs).
 - Markets and company sources: BBC, Yahoo Finance, The Decoder.
