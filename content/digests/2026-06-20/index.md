@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 37
+source_count = 39
 +++
 
 ## Top stories
@@ -208,6 +208,15 @@ No major items found.
 - **Comments:** Discussion centers on the decade-long timeline and whether a JDK 29 preview exit is realistic, echoing Brian Goetz's own caution that it "seems optimistic."
 - **Why it matters:** Value classes are the central Valhalla feature and would change how performance-sensitive JVM code represents data.
 
+### GPT-5.5 versus GLM-5.2 hallucination post drives benchmark-methodology debate
+
+- **Category:** AI
+- **Status:** discussion
+- **Sources:** [blog post](https://arrowtsx.dev/bigger-models/), [discussion](https://news.ycombinator.com/item?id=48600167)
+- **Summary:** A blog post (377 points) cites the Artificial Analysis AA-Omniscience benchmark to claim GPT-5.5 answers incorrectly far more often than the MIT-licensed GLM-5.2 when it lacks knowledge, arguing larger models are worse at saying "I do not know." The benchmark scores correct answers +100, incorrect answers -100, and abstentions 0.
+- **Comments:** HN commenters dispute the framing. The hallucination rate is conditional on the model not knowing the answer, so it does not compare across models with different base accuracy; scoring that rewards only correct answers incentivizes guessing over abstaining; and raw parameter count is confounded by training method, inference-time compute, and quantization.
+- **Why it matters:** Hallucination-rate comparisons hinge on benchmark design, and the conditional metric undercuts a simple "bigger is worse" conclusion when teams pick coding and assistant models.
+
 ### Ask HN: is anyone else leaving AUR?
 
 - **Category:** Pulse
@@ -246,7 +255,7 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News: `make hn` succeeded via Algolia (front page, top 24h, Ask HN, Show HN, comments, 58 of 72 watchlist queries), cache fetched 2026-06-20 02:22 UTC, zero degraded collections.
+- Hacker News: `make hn` succeeded via Algolia on each run (front page, top 24h, Ask HN, Show HN, comments, watchlist queries), zero degraded collections; the fourth-run fetch (cache 2026-06-20 16:13 UTC) matched 61 of 72 queries. Newly surfaced high-discussion item this run: the GPT-5.5 versus GLM-5.2 hallucination-benchmark post (48600167, 377 points), added to Hacker News as discussion.
 - Reddit: RSS feeds reachable again (HTTP 200) after the 2026-06-18 host block; collected r/programming hot and probed others; weekend pulse light.
 - AI sources: checked for new model releases on 2026-06-19/20 (no confirmed release; Gemini 3.5 Pro still undated, Mythos limited to Project Glasswing); Anthropic Fable 5 and Mythos 5 still suspended.
 - Security advisories: CISA KEV JSON feed (catalog 2026.06.18, count 1623, no 2026-06-19/20 addition); Splunk and Palo Alto advisories; Help Net Security; Unit 42.
