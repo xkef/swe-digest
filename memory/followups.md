@@ -636,6 +636,24 @@ Format:
 - Last checked: 2026-06-20
 - Notes: Reporting 2026-06-19 says Hyundai will acquire SoftBank's remaining Boston Dynamics stake for ~325M USD, reaching full ownership. Follows a put option from Hyundai's 2021 purchase of an 80% stake (~1.1B USD valuation). Board approval reported for ~2026-06-22. HN 48600312 (669 pts). Developing until board approval/completion confirmed; primary Hyundai newsroom page currently serves the 2021 completion PR.
 
+## 2026-06-20: John Jumper leaves Google DeepMind for Anthropic
+
+- Status: open
+- Category: AI
+- Sources: [CNBC](https://www.cnbc.com/2026/06/19/john-jumper-to-leave-google-deepmind-for-anthropic.html), [HN 48601162](https://news.ycombinator.com/item?id=48601162)
+- Watch for: Anthropic confirmation of role and team; effect on AlphaFold/Isomorphic Labs roadmap; further DeepMind departures.
+- Last checked: 2026-06-20
+- Notes: John Jumper (AlphaFold co-creator, 2024 Nobel laureate in chemistry, at DeepMind since 2017, VP and engineering fellow) announced via X on 2026-06-19 he is leaving Google DeepMind for Anthropic; confirmed by CNBC and multiple outlets. Plans a short break first. Framed move around building AI for real science that is trustworthy to deploy. Follows Noam Shazeer (Gemini co-lead) leaving Google for OpenAI 2026-06-18. AI-for-science talent concentration during pre-IPO period.
+
+## 2026-06-20: usbliter8 SecureROM exploit for Apple A12/A13 chips
+
+- Status: open
+- Category: Apple
+- Sources: [AppleInsider](https://appleinsider.com/articles/26/06/18/a12-a13-apple-devices-face-an-unpatchable-securerom-vulnerability), [9to5Mac](https://9to5mac.com/2026/06/18/new-unpatchable-exploit-targets-apple-devices-with-a12-and-a13-chips/), [HN 48595295](https://news.ycombinator.com/item?id=48595295)
+- Watch for: Apple statement or advisory; CVE assignment; any in-the-wild use; jailbreak/forensic tooling built on it.
+- Last checked: 2026-06-20
+- Notes: Paradigm Shift researchers published usbliter8 on 2026-06-18 after coordinated disclosure with Apple. SecureROM (BootROM) exploit on A12/A13 chips plus S4/S5 Apple Watch SoCs; chains a USB controller hardware bug with a firmware config weakness for code execution at the earliest boot stage. Unpatchable (burned into silicon). Affects iPhone XS-iPhone 11, iPhone SE 2nd gen, some iPads, Apple Watch Series 4/5, HomePod mini. Requires physical possession, DFU mode, dedicated RP2350 board over USB; completes under two seconds. Full write-up and working PoC public. No CVE, CVSS, Apple advisory, or in-the-wild exploitation as of 2026-06-19. checkm8 successor for newer SoCs.
+
 ## 2026-06-20: Google Workspace steering Firefox users to Chrome
 
 - Status: open
