@@ -291,8 +291,8 @@ Format:
 - Category: AI
 - Sources: [Anthropic statement](https://www.anthropic.com/news/fable-mythos-access), [Bloomberg](https://www.bloomberg.com/news/articles/2026-06-13/anthropic-says-us-limits-foreign-access-to-fable-5-mythos-5), [Korea JoongAng Daily](https://www.koreajoongangdaily.com/business/anthropic-confident-of-reenabling-mythos-fable-5-access-in-coming-days-executive/12727522), [Wired SK Telecom](https://www.wired.com/story/sk-telecom-anthropic-mythos)
 - Watch for: Directive lifted, narrowed, or extended to other models/providers; official US government statement; formal EU response; legal challenge; refund or credit handling.
-- Last checked: 2026-06-19
-- Notes: Anthropic received an export control directive at 17:21 ET 2026-06-12 to block all foreign-national access to Fable 5 and Mythos 5; it disabled both for all customers. Other models unaffected. Stated concern is a narrow jailbreak (ask model to read a codebase and fix flaws), which Anthropic says exists in other models including GPT-5.5. Anthropic disagrees with the recall. 2026-06-13: WSJ reports (single-sourced, "people familiar") that Amazon CEO Andy Jassy's talks with Trump administration officials preceded the directive; Amazon researchers reportedly prompted Fable 5 for cyberattack-aiding info. Amazon holds a large (>5%) equity stake in Anthropic. 2026-06-14: EU Commission spokesperson said it is assessing the practical consequences of the directive and that measures should not discriminate against partners (Reuters, Euronews). As of 2026-06-15 access still suspended, no restoration timeline. 2026-06-18: Anthropic MD International Chris Ciauri said in Seoul the company is confident access returns "in coming days" (no restoration yet); Wired identified SK Telecom as the Korean telecom at the center of the Mythos dispute. As of 2026-06-19 still suspended.
+- Last checked: 2026-06-20
+- Notes: Anthropic received an export control directive at 17:21 ET 2026-06-12 to block all foreign-national access to Fable 5 and Mythos 5; it disabled both for all customers. Other models unaffected. Stated concern is a narrow jailbreak (ask model to read a codebase and fix flaws), which Anthropic says exists in other models including GPT-5.5. Anthropic disagrees with the recall. 2026-06-13: WSJ reports (single-sourced, "people familiar") that Amazon CEO Andy Jassy's talks with Trump administration officials preceded the directive; Amazon researchers reportedly prompted Fable 5 for cyberattack-aiding info. Amazon holds a large (>5%) equity stake in Anthropic. 2026-06-14: EU Commission spokesperson said it is assessing the practical consequences of the directive and that measures should not discriminate against partners (Reuters, Euronews). As of 2026-06-15 access still suspended, no restoration timeline. 2026-06-18: Anthropic MD International Chris Ciauri said in Seoul the company is confident access returns "in coming days" (no restoration yet); Wired identified SK Telecom as the Korean telecom at the center of the Mythos dispute. As of 2026-06-20 still suspended.
 
 ## 2026-06-13: Oracle PeopleSoft CVE-2026-35273 active exploitation
 
@@ -579,7 +579,7 @@ Format:
 - Category: Outage
 - Sources: [Let's Encrypt status](https://letsencrypt.status.io/)
 - Watch for: Full redundancy restoration; any Let's Encrypt post-incident note; whether renewal errors recur.
-- Last checked: 2026-06-19
+- Last checked: 2026-06-20
 - Notes: Incident on acme-v02.api.letsencrypt.org (production) starting 2026-06-18 16:04 UTC. An upstream network event disrupted traffic between two datacenters; some clients saw 400/500 responses while most requests succeeded. As of the 2026-06-19 04:45 UTC update the API was operating normally but still with reduced redundancy, with Let's Encrypt continuing to work with its upstream ISP on the root cause (incident not yet fully resolved). HN thread 48594715 surfaced 2026-06-19 framed as "renewals had errors today." letsencrypt.status.io fetched 200 from the run environment.
 
 ## 2026-06-18: Ubiquiti Enterprise NAS (ENAS) on ZFS
@@ -597,7 +597,7 @@ Format:
 - Category: Security
 - Sources: [Splunk SVD-2026-0603](https://advisory.splunk.com/advisories/SVD-2026-0603), [Horizon3.ai](https://horizon3.ai/attack-research/vulnerabilities/cve-2026-20253/), [SecurityWeek](https://www.securityweek.com/splunk-enterprise-vulnerability-exploited-in-attacks-days-after-disclosure/)
 - Watch for: Confirmed RCE chains; ransomware follow-on; patch adoption; federal remediation deadline passing.
-- Last checked: 2026-06-19
+- Last checked: 2026-06-20
 - Notes: CVSS 9.8 missing-authentication flaw on a Splunk Enterprise PostgreSQL sidecar service endpoint. Unauthenticated, network-reachable create or truncate of arbitrary files, chainable to DoS, log-integrity loss, or RCE. Affects 10.0.0-10.0.6 and 10.2.0-10.2.3; 9.4 and earlier not affected. Patched in 10.0.7 and 10.2.4. Public exploit analysis 2026-06-13, three days after disclosure. CISA KEV added 2026-06-18 (catalog version 2026.06.18, count 1623), three-day federal deadline. Splunk Enterprise is core SOC/SIEM infrastructure.
 
 ## 2026-06-18: Godot 4.7 stable release
@@ -617,3 +617,30 @@ Format:
 - Watch for: Emacs 31.1 final release; tree-sitter default behavior changes through the pretest cycle.
 - Last checked: 2026-06-18
 - Notes: First Emacs 31 pretest (31.0.90) announced on emacs-devel in June 2026. Notable: treesit-enabled-modes=t switches modes with a tree-sitter variant to it; treesit-auto-install-grammar offers to fetch/build missing grammars; in-mode grammar sources for TypeScript/TSX/Rust/TOML/YAML/Dockerfile; xref-export-to-grep (bound E) for an editable xref workflow. Pretest, not final. HN 48584135 (283 pts).
+
+## 2026-06-20: GitHub availability strained by AI coding traffic
+
+- Status: open
+- Category: Infrastructure
+- Sources: [The Register](https://www.theregister.com/software/2026/06/12/github-outages-persist-as-ai-coding-drives-traffic-surge/5255125), [GitHub Status](https://www.githubstatus.com/)
+- Watch for: Official GitHub availability report or Microsoft statement confirming the AWS overflow capacity and Azure migration milestones; whether June availability recovers above the 99.9% enterprise threshold.
+- Last checked: 2026-06-20
+- Notes: The Register reports GitHub logged nine service-degrading incidents in May 2026 and is below the 99.9% enterprise availability threshold as AI coding agents drive a traffic surge (~275M commits/week). GitHub SVP software engineering Jakub Oleksy quoted on structural changes; ~40% of monolith traffic on Azure by May 2026, target ~50% by July; multiple outlets report Microsoft added AWS capacity for overflow. No single GitHub/Microsoft primary statement consolidates the figures. Previously published as a single-source rumor (RuntimeWire) on 2026-06-17; upgraded to developing 2026-06-20 on The Register corroboration.
+
+## 2026-06-20: Hyundai to take full control of Boston Dynamics
+
+- Status: open
+- Category: Markets
+- Sources: [Invezz](https://invezz.com/in/news/2026/06/19/hyundai-nears-full-control-of-boston-dynamics-in-dollar325m-softbank-deal/), [EconoTimes](https://www.econotimes.com/Hyundai-to-Acquire-SoftBanks-Remaining-Boston-Dynamics-Stake-for-325-Million-1744675)
+- Watch for: Hyundai board vote (reported ~2026-06-22); official Hyundai newsroom completion statement; stated robotics-roadmap or Atlas production plans.
+- Last checked: 2026-06-20
+- Notes: Reporting 2026-06-19 says Hyundai will acquire SoftBank's remaining Boston Dynamics stake for ~325M USD, reaching full ownership. Follows a put option from Hyundai's 2021 purchase of an 80% stake (~1.1B USD valuation). Board approval reported for ~2026-06-22. HN 48600312 (669 pts). Developing until board approval/completion confirmed; primary Hyundai newsroom page currently serves the 2021 completion PR.
+
+## 2026-06-20: Google Workspace steering Firefox users to Chrome
+
+- Status: open
+- Category: Dev tools
+- Sources: [Tales from Prod](https://tales.fromprod.com/2026/169/google-workspace-threatening-to-block-firefox.html), [Google Developers Blog](https://developers.googleblog.com/guidance-to-developers-affected-by-our-effort-to-block-less-secure-browsers-and-applications/)
+- Watch for: Google support note defining an enforcement timeline; which Workspace surfaces are affected for Firefox; whether warnings become a hard block.
+- Last checked: 2026-06-20
+- Notes: Practitioner write-up dated 2026-06-18 reports Workspace shows Firefox users a device-security remediation prompt urging a switch to Chrome; Firefox access still works at time of writing. Google developer guidance frames this as blocking "less secure" browsers and requires honest User-Agent reporting on accounts.google.com. HN 48600345 (437 pts). Discussion/developing.

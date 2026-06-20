@@ -35,7 +35,7 @@ Recurring entities tracked across digest runs.
 
 ## Infrastructure
 
-- GitHub: track outages, incident write-ups, postmortems, release changes, and security advisories.
+- GitHub: track outages, incident write-ups, postmortems, release changes, and security advisories. 2026-06: sustained availability strain attributed to AI coding-agent traffic; The Register (2026-06-12) reports nine May 2026 service-degrading incidents, ~275M commits/week, June availability below the 99.9% enterprise threshold, ~40% of monolith traffic on Azure by May (target ~50% by July, SVP Jakub Oleksy quoted), and multiple outlets report Microsoft added AWS overflow capacity. No single GitHub/Microsoft primary statement consolidates the figures. Earlier RuntimeWire-only version was held as rumor on 2026-06-16/17.
 - Cloudflare: track outages, engineering blog posts (Agents Week 2026 major release), Workers, Mesh, and security advisories.
 - AWS, Azure, Google Cloud, Vercel, Netlify, Fastly, Datadog, Sentry, npm, PyPI, Docker Hub: track outages, incident write-ups, postmortems, release changes, and security advisories.
 
@@ -84,6 +84,7 @@ Recurring entities tracked across digest runs.
 ## Markets
 
 - Developer infrastructure, AI, security, databases, cloud, semiconductors, payments, and open source companies: track acquisitions, IPO filings, governance changes, and licensing changes when engineering impact is clear.
+- Boston Dynamics / Hyundai: robotics (Atlas humanoid, Spot quadruped). Hyundai bought 80% in 2021 (~1.1B USD valuation); reporting 2026-06-19 says Hyundai will buy SoftBank's remaining stake for ~325M USD for full ownership, board vote reported ~2026-06-22. Track completion, robotics roadmap, and Atlas production plans.
 - SpaceX: IPO priced 2026-06-11 at $135/share; Nasdaq listing 2026-06-12 as SPCX. First-day close at $135, flat. MSCI early inclusion 2026-06-13. Positioned as AI compute infrastructure. S&P 500 fast-track entry blocked by index committee (dual-class structure). On 2026-06-16 agreed to acquire Anysphere (maker of Cursor) in an all-stock deal at a $60B implied valuation (subsidiary X67 Inc.), exercising an April option; expected close Q3 2026 subject to regulatory approval; disclosed via 8-K, confirmed 2026-06-17 by Reuters/TechCrunch. Enterprise-AI push.
 - Anysphere (Cursor): maker of the Cursor AI coding agent (~$2.6B annualized B2B revenue). SpaceX agreed to acquire it 2026-06-16 at a $60B implied valuation (all-stock, close Q3 2026). Track roadmap, pricing, and model-routing changes under SpaceX ownership.
 - Anthropic: confidential S-1 filed 2026-06-01.

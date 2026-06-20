@@ -70,8 +70,16 @@ directly. When running in the remote environment, use the listed fallback.
 - `www.reddit.com` / `old.reddit.com` - Reddit RSS feeds (`/hot/.rss`,
   `/top/.rss?t=day`) were host-blocked from the unattended run environment on
   2026-06-18 (both hosts, all probed subreddits failed, not a per-feed 403).
-  When blocked, state degraded Reddit coverage in Sources checked; retry later
-  in the run or collect from another network.
+  Access returned (HTTP 200) on 2026-06-20 from the run environment; r/programming
+  hot fetched cleanly, though rapid sequential fetches of many subreddits can be
+  rate-limited (space them out). When blocked, state degraded Reddit coverage in
+  Sources checked; retry later in the run or collect from another network.
+- `www.theregister.com` - reputable secondary tech outlet; article bodies return
+  403/404 from the datacenter IP, but WebSearch summaries carry named officials
+  and figures. Used 2026-06-20 to upgrade the GitHub-availability/AWS story from
+  a single-source rumor (RuntimeWire) to developing. Link the canonical
+  `/software/YYYY/MM/DD/...` URL; confirm specifics against a primary statement
+  when one exists.
 - `status.openai.com/history` - OpenAI status history accessible from the run
   environment; reliable for OpenAI incident timelines (verified 2026-06-18).
 - `arstechnica.com` - article bodies block automated WebFetch; use WebSearch
