@@ -509,15 +509,23 @@ back to the committed `data/books/` snapshot. The `books-snapshot` workflow
 accumulates results every twelve hours. Feeds are sparse, so coverage is
 best-effort; supplement with Hacker News `Show HN` and book threads.
 
+Presses without a usable new-release feed are listed in
+`[books].search_targets` (O'Reilly, Manning, Packt, MIT Press, and others), the
+same name-based web-search pattern as `[social]`. Each run, search for recent
+notable releases from these presses and verify each against the publisher's own
+catalog or title page before publishing.
+
 Place findings in the `Books` section.
 
 Selection rules:
 
 - Include a book only with clear engineering relevance: a new or revised
   technical title from a tracked publisher, or a widely discussed release.
-- Link the publisher's page first. Paraphrase feed titles and descriptions;
-  never paste verbatim.
-- Label items `discussion` unless the release is independently confirmed.
+- Link the publisher's own title or catalog page first. Paraphrase feed and
+  search-result titles and descriptions; never paste verbatim.
+- Label items `discussion` unless independently confirmed against the
+  publisher's page.
+- Note which presses were searched in `Sources checked`.
 
 ## YouTube and streaming checks
 
