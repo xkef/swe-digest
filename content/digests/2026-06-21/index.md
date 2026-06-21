@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 37
+source_count = 40
 +++
 
 ## Top stories
@@ -238,6 +238,14 @@ No major items found.
 - **Summary:** The Bun shared-memory threads PR (covered in Top stories and Languages) drew a 216-comment HN thread debating whether shared-heap threading belongs in a JavaScript runtime and how application code that assumes single-threaded semantics would cope with real data races.
 - **Why it matters:** The volume and substance of the discussion reflect practitioner interest in JavaScript parallelism beyond the worker model.
 
+### Google IPv6 share at 50 percent resurfaces on the front page
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [Google IPv6 statistics](https://www.google.com/intl/en/ipv6/statistics.html), [APNIC blog](https://blog.apnic.net/2026/04/28/google-hits-50-ipv6/), [discussion](https://news.ycombinator.com/item?id=48616800)
+- **Summary:** An HN thread (120 points) resurfaced Google's measurement that the share of users reaching Google over native IPv6 first crossed 50 percent on 2026-03-28, at 50.10 percent, up from 46.33 percent a year earlier. The figure fluctuates around the 50 percent mark with weekday and weekend variation rather than holding above it. Other vantage points report lower shares: Cloudflare Radar rates IPv6 at about 40 percent of HTTP requests and APNIC labs measures about 43 percent of networks as IPv6-capable. The milestone dates to March and April 2026, not this week.
+- **Why it matters:** Crossing the halfway point in one large operator's traffic is a long-arc deployment marker, but it is not a new event and adoption remains uneven by region and by measurement method.
+
 ## Reddit and social pulse
 
 ### r/programming pulse: maintainer burnout and performance retrospectives
@@ -269,12 +277,12 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News: `make hn` succeeded via Algolia (front page, top 24h, Ask HN, Show HN, comments, watchlist queries), zero degraded collections; cache 2026-06-21 02:21 UTC, 61 of 72 queries matched; full structured coverage.
+- Hacker News: `make hn` succeeded via Algolia (front page, top 24h, Ask HN, Show HN, comments, watchlist queries), zero degraded collections; latest fetch 2026-06-21 10:56 UTC, 59 of 72 queries matched; full structured coverage. The only new front-page engineering item since the prior run, Google IPv6 at 50 percent (HN 48616800), is a resurfacing of a 2026-03-28 milestone, added to Hacker News as discussion, not as fresh news.
 - Reddit: RSS reachable (HTTP 200); collected r/programming and r/LocalLLaMA hot. r/rust and several other subreddits were rate-limited on rapid sequential fetch and not fully collected this run.
 - AI sources: checked for new model releases dated 2026-06-20 or 2026-06-21; no confirmed new release (Qwen3-Coder-Next and the trending Qwen and MiniMax listings are re-surfacings of February-to-June models, not new). Anthropic Fable 5 and Mythos 5 still suspended.
 - ML research: Hugging Face Papers daily list checked; top entries (image inpainting, dexterous hand-object interaction, Multi-LCB multi-language code benchmark) are low-attention and lack standout engineering relevance, so no ML research item was added.
-- Security advisories: CISA KEV JSON feed (catalog 2026.06.18, count 1623, no 2026-06-19 or 2026-06-20 addition); Splunk SVD-2026-0603 and Horizon3.ai for the Splunk deadline; Tom's Hardware and TechPowerUp for the AMD TSME reinstatement.
-- Status pages: OpenAI status history (no 2026-06-20 or 2026-06-21 incident); Let's Encrypt status (reduced redundancy); Cloudflare status (Durable Objects metric discrepancy fix, Workers AI degraded). Several other status pages block the run environment, so absence elsewhere is unverified.
+- Security advisories: CISA KEV JSON feed re-checked at 2026-06-21 (catalog 2026.06.18, count 1623, no addition past Splunk CVE-2026-20253 on 2026-06-18); Splunk SVD-2026-0603 and Horizon3.ai for the Splunk deadline; Tom's Hardware and TechPowerUp for the AMD TSME reinstatement.
+- Status pages: Let's Encrypt status re-checked (still reduced redundancy, no update past 2026-06-19 04:45 UTC); Anthropic Fable 5 and Mythos 5 news page re-checked (unchanged from the 2026-06-12 statement, access still suspended); OpenAI status history (no 2026-06-20 or 2026-06-21 incident); Cloudflare status (Durable Objects metric discrepancy fix, Workers AI degraded). Several other status pages block the run environment, so absence elsewhere is unverified.
 - GitHub releases: re-checked every `[github]` watchlist repo in the quality pass; no release dated 2026-06-21. Newest across the table are Node.js 26.3.1 (2026-06-18), neovim nightly (rolling, 2026-06-20), Homebrew 6.0.2 (2026-06-15), Prometheus 3.5.4 (2026-06-17), jj 0.42.0 (2026-06-04), zed v1.8.0-pre (prerelease), tmux 3.7-rc (prerelease), all previously covered or rolling/prerelease; tag-only repos (go, git, cpython, linux, openjdk) showed no new stable tag past prior coverage (git v2.55.0-rc1, cpython 3.15.0b2, linux v7.1, openjdk jdk-28+3).
 - GitHub trending: scanned the daily and rust/python/go/typescript language views. Theme: agent-skills and agent-sandbox repos (mattpocock/skills, withastro/flue, Kilo-Org/kilocode, DeusData/codebase-memory-mcp), surfaced in Agentic coding; the rest are established projects (turso, uv, ruff, iroh, cilium, weaviate, timesfm). None is a new release; no other new verified cluster.
 - Engineering blogs and primary write-ups: Cloudflare blog (temporary accounts), Phoronix (kernel strncpy removal), greybeam.ai (DuckDB internals), sibexi.co (epoll vs io_uring), The Register (GitHub availability, Tesco and VMware), TechCrunch (export-control history).
