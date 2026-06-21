@@ -558,3 +558,84 @@ people = [
   "Demis Hassabis",
   "John Jumper",
 ]
+
+[[events]]
+# Curated tech conferences, keynotes, livestreams, and scheduled release
+# events. scripts/fetch_events.py filters this list by date to surface
+# upcoming events (lead time) and ones active today; it does no network call,
+# so the dates here are the source of truth. Keep them current and verified
+# against each event's official page. Schema per entry: name, start, end
+# (ISO dates; end may equal start for a one-day event), url, topic (one of the
+# digest section labels). Remove an event once it is well past.
+name = "KubeCon + CloudNativeCon North America 2026"
+start = "2026-11-10"
+end = "2026-11-13"
+url = "https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/"
+topic = "Infrastructure"
+
+[[events]]
+name = "AWS re:Invent 2026"
+start = "2026-11-30"
+end = "2026-12-04"
+url = "https://reinvent.awsevents.com/"
+topic = "Infrastructure"
+
+[[events]]
+name = "RustConf 2026"
+start = "2026-09-08"
+end = "2026-09-11"
+url = "https://rustconf.com/"
+topic = "Languages and runtimes"
+
+[[events]]
+name = "PyTorch Conference 2026"
+start = "2026-10-22"
+end = "2026-10-23"
+url = "https://events.linuxfoundation.org/pytorch-conference/"
+topic = "ML research"
+
+[[events]]
+name = "GitHub Universe 2026"
+start = "2026-10-28"
+end = "2026-10-29"
+url = "https://githubuniverse.com/"
+topic = "Developer tools"
+
+[[events]]
+name = "NeurIPS 2026"
+start = "2026-12-07"
+end = "2026-12-13"
+url = "https://neurips.cc/"
+topic = "ML research"
+
+[papers]
+# arXiv categories and free-text queries pulled by scripts/fetch_papers.py via
+# the arXiv API and per-category RSS. Feeds the ML research section. Keep the
+# category set tight; include a paper only when it has clear engineering
+# relevance, never because it trends.
+categories = [
+  "cs.LG",
+  "cs.CL",
+  "cs.AI",
+  "cs.CR",
+  "cs.SE",
+  "cs.DC",
+  "cs.PL",
+]
+queries = [
+  "language model agents",
+  "retrieval augmented generation",
+  "inference optimization",
+  "quantization",
+]
+
+[books]
+# Publisher and imprint RSS feeds pulled by scripts/fetch_books.py for new
+# technical-book releases. Format: "Label|https://feed-url". Coverage is thin
+# industry-wide, so this is best-effort and supplemented by Hacker News. Verify
+# a feed resolves before adding it; the fetcher warns and continues past a dead
+# feed but cannot recover missing coverage.
+feeds = [
+  "No Starch Press|https://nostarch.com/rss.xml",
+  "Pragmatic Bookshelf|https://pragprog.com/rss.xml",
+]

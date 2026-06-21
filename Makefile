@@ -7,7 +7,7 @@ TODAY      = $(shell date -u +%Y-%m-%d)
 RELEASE    = $(if $(GITHUB_SHA),$(shell git rev-parse --short HEAD 2>/dev/null || echo dev),$(shell git describe --tags --always 2>/dev/null || echo dev))
 BUILD_DATE = $(shell date -u +%Y-%m-%dT%H:%MZ)
 
-.PHONY: build serve check check-content stories clean new-digest hn yt run-log backtest yield
+.PHONY: build serve check check-content stories clean new-digest hn yt events papers books run-log backtest yield
 
 stories:
 	@python3 scripts/build_stories.py
@@ -17,6 +17,15 @@ hn:
 
 yt:
 	@python3 scripts/fetch_youtube.py
+
+events:
+	@python3 scripts/fetch_events.py
+
+papers:
+	@python3 scripts/fetch_papers.py
+
+books:
+	@python3 scripts/fetch_books.py
 
 run-log:
 	@python3 scripts/run_log.py

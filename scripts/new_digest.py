@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 SECTIONS = [
     "Top stories",
+    "Conferences and events",
     "AI",
     "ML research",
     "Agentic coding",
@@ -20,6 +21,7 @@ SECTIONS = [
     "Linux and kernel",
     "Infrastructure",
     "Engineering posts",
+    "Books",
     "Markets and companies",
     "Hacker News",
     "Reddit and social pulse",
@@ -29,7 +31,7 @@ SECTIONS = [
 
 TEMPLATE_ITEM = """### Story title
 
-- **Category:** AI | ML research | Agentic coding | Security | Outage | Dev tools | Languages | Apple | Linux/Kernel | Infrastructure | Engineering post | Markets | Pulse
+- **Category:** AI | ML research | Agentic coding | Security | Outage | Dev tools | Languages | Apple | Linux/Kernel | Infrastructure | Engineering post | Event | Book | Paper | Markets | Pulse
 - **Status:** confirmed | developing | rumor | discussion
 - **Sources:** [primary](https://example.com), [discussion](https://news.ycombinator.com/item?id=0)
 - **Summary:** Replace with one to three factual sentences.
@@ -69,7 +71,7 @@ def body() -> str:
         if section == "Top stories":
             parts.append(TEMPLATE_ITEM)
         elif section == "Sources checked":
-            parts.append("- Hacker News\n- Reddit\n- AI sources\n- Security advisories\n- Status pages\n- GitHub watchlist\n- Engineering blogs\n- Markets and company sources\n")
+            parts.append("- Hacker News\n- Reddit\n- AI sources\n- ML research and arXiv papers\n- Conferences and events\n- Books and publisher feeds\n- Security advisories\n- Status pages\n- GitHub watchlist\n- Engineering blogs\n- YouTube channels\n- Markets and company sources\n")
         else:
             parts.append("No entries yet.\n")
     return "\n".join(parts)

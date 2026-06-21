@@ -16,32 +16,36 @@ Create or update `content/digests/YYYY-MM-DD/index.md`.
 Each digest contains:
 
 1. `Top stories`: 3 to 7 items.
-2. `AI`: model releases, tooling, infra, policy, notable product changes.
-3. `ML research`: papers with engineering relevance from arXiv, Papers with Code, and Hugging Face Papers.
-4. `Agentic coding`: coding-agent usage, tooling, MCP, and practitioner write-ups.
-5. `Security`: CVEs, exploited vulnerabilities, supply chain attacks, breaches, malware campaigns.
-6. `Outages`: major cloud, SaaS, developer infrastructure, payment, identity, package registry, CDN, DNS incidents.
-7. `Developer tools`: Ghostty, Neovim, terminals, editors, shells, Git, jj, CI, build tools, package managers.
-8. `Languages and runtimes`: Java, Kotlin, Rust, Go, Python, TypeScript, Zig, Swift, C, C++, WebAssembly, Spring Boot and the JVM ecosystem.
-9. `Apple platforms`: iOS, macOS, Swift, SwiftUI, Xcode, Foundation Models, Apple Silicon, and Darwin internals.
-10. `Linux and kernel`: kernel releases, LWN topics, scheduler, io_uring, eBPF, filesystems, and Rust for Linux.
-11. `Infrastructure`: Kubernetes, databases, queues, observability, networking, security infrastructure.
-12. `Engineering posts`: durable technical write-ups from company blogs and independent authors.
-13. `Markets and companies`: acquisitions, IPOs, S-1 filings, funding events only when they change engineering context.
-14. `Hacker News`: HN-native signal. High-discussion threads, Ask HN, Show HN, and notable comment threads, with paraphrased technical comment takeaways.
-15. `Reddit and social pulse`: Reddit and tracked-person findings, separated from verified fact.
-16. `Watchlist follow-ups`: updates to stories tracked in `memory/followups.md`.
-17. `Sources checked`: concise list of source classes checked.
+2. `Conferences and events`: upcoming tech conferences, keynotes, livestreams, and release events with lead time, plus live coverage of active ones.
+3. `AI`: model releases, tooling, infra, policy, notable product changes.
+4. `ML research`: papers with engineering relevance from arXiv, Papers with Code, and Hugging Face Papers.
+5. `Agentic coding`: coding-agent usage, tooling, MCP, and practitioner write-ups.
+6. `Security`: CVEs, exploited vulnerabilities, supply chain attacks, breaches, malware campaigns.
+7. `Outages`: major cloud, SaaS, developer infrastructure, payment, identity, package registry, CDN, DNS incidents.
+8. `Developer tools`: Ghostty, Neovim, terminals, editors, shells, Git, jj, CI, build tools, package managers.
+9. `Languages and runtimes`: Java, Kotlin, Rust, Go, Python, TypeScript, Zig, Swift, C, C++, WebAssembly, Spring Boot and the JVM ecosystem.
+10. `Apple platforms`: iOS, macOS, Swift, SwiftUI, Xcode, Foundation Models, Apple Silicon, and Darwin internals.
+11. `Linux and kernel`: kernel releases, LWN topics, scheduler, io_uring, eBPF, filesystems, and Rust for Linux.
+12. `Infrastructure`: Kubernetes, databases, queues, observability, networking, security infrastructure.
+13. `Engineering posts`: durable technical write-ups from company blogs and independent authors.
+14. `Books`: new technical-book releases with engineering relevance.
+15. `Markets and companies`: acquisitions, IPOs, S-1 filings, funding events only when they change engineering context.
+16. `Hacker News`: HN-native signal. High-discussion threads, Ask HN, Show HN, and notable comment threads, with paraphrased technical comment takeaways.
+17. `Reddit and social pulse`: Reddit and tracked-person findings, separated from verified fact.
+18. `Watchlist follow-ups`: updates to stories tracked in `memory/followups.md`.
+19. `Sources checked`: concise list of source classes checked.
 
-Digests dated before 2026-06-13 keep the older single `HN and Reddit pulse`
-section; the content check enforces layout by digest date.
+The content check enforces layout by digest date. Digests dated before
+2026-06-13 keep the older single `HN and Reddit pulse` section. Digests from
+2026-06-13 through 2026-06-21 omit the `Conferences and events` and `Books`
+sections, which were added on 2026-06-22.
 
 Each story uses this shape:
 
 ```md
 ### Story title
 
-- **Category:** AI | ML research | Agentic coding | Security | Outage | Dev tools | Languages | Apple | Linux/Kernel | Infrastructure | Engineering post | Markets | Pulse
+- **Category:** AI | ML research | Agentic coding | Security | Outage | Dev tools | Languages | Apple | Linux/Kernel | Infrastructure | Engineering post | Event | Book | Paper | Markets | Pulse
 - **Status:** confirmed | developing | rumor | discussion
 - **Sources:** [primary](https://example.com), [discussion](https://news.ycombinator.com/item?id=0)
 - **Summary:** One to three factual sentences.
@@ -221,6 +225,12 @@ Daily queries:
 - AI security issues: prompt injection, data exfiltration, model supply chain, dependency compromise, jailbreaks with real impact.
 
 ## ML research checks
+
+Collection: `make papers` (`scripts/fetch_papers.py`) pulls the `[papers]`
+categories and queries from the watchlist via the arXiv API, with arXiv RSS and
+the committed `data/papers/` snapshot as fallbacks. The `papers-snapshot`
+workflow accumulates results every six hours. Paper findings go in the
+`ML research` section.
 
 Primary sources:
 
@@ -466,6 +476,48 @@ Selection rules:
 - Prefer posts with diagrams, code, benchmarks, or failure analysis.
 - Include independent blogs when HN, Lobsters, or RSS show technical depth.
 - Avoid listicles and marketing posts unless they contain a concrete release or migration impact.
+
+## Conferences and events checks
+
+Collection: `make events` (`scripts/fetch_events.py`) reads the `[[events]]`
+table in `data/watchlist.toml` and partitions it by date into events upcoming
+within 30 days (with a `days_until` countdown, flagged `soon` within 7 days) and
+events active today. It makes no network call; the committed dates are the
+source of truth and must be kept current and verified against each event's
+official page.
+
+Place findings in the `Conferences and events` section.
+
+Selection rules:
+
+- One entry per upcoming event, status `developing`, summary stating "starts in
+  N days (YYYY-MM-DD)". Emphasize events flagged `soon`.
+- For an active event, status `developing`, with live coverage drawn from the
+  HN, YouTube, and web sources already collected: keynote announcements, notable
+  talks, shipped releases.
+- Route a concrete release announced at an event to its topical section and
+  cross-reference it here.
+- Link the event's official page first. Paraphrase any event-page text.
+- Write `No major items found.` when nothing is upcoming in the window or
+  active.
+
+## Books checks
+
+Collection: `make books` (`scripts/fetch_books.py`) reads the `[books]`
+publisher feeds in `data/watchlist.toml`, pulls each RSS/Atom feed, and falls
+back to the committed `data/books/` snapshot. The `books-snapshot` workflow
+accumulates results every twelve hours. Feeds are sparse, so coverage is
+best-effort; supplement with Hacker News `Show HN` and book threads.
+
+Place findings in the `Books` section.
+
+Selection rules:
+
+- Include a book only with clear engineering relevance: a new or revised
+  technical title from a tracked publisher, or a widely discussed release.
+- Link the publisher's page first. Paraphrase feed titles and descriptions;
+  never paste verbatim.
+- Label items `discussion` unless the release is independently confirmed.
 
 ## YouTube and streaming checks
 

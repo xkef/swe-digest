@@ -1,0 +1,40 @@
+name: papers-snapshot
+
+# Background accumulator. Runs every six hours and merges each fetch into the
+# day's data/papers/ file by paper id, so coverage builds up across the day and
+# survives a digest run whose live arXiv fetch is degraded. It only collects;
+# the digest and weekly workflows run on their own schedules and fetch live.
+on:
+  schedule:
+    - cron: "50 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: papers-snapshot
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Fetch papers
+        run: python3 scripts/fetch_papers.py
+      - name: Commit snapshot
+        run: |
+          day=$(date -u +%F)
+          python3 scripts/merge_papers_snapshot.py ".cache/papers/$day.json" "data/papers/$day.json"
+          ls data/papers/*.json | sort | head -n -7 | xargs -r git rm -q --
+          git add "data/papers/$day.json"
+          if git diff --cached --quiet; then
+            echo "no changes"
+            exit 0
+          fi
+          git config user.name "papers-snapshot"
+          git config user.email "actions@users.noreply.github.com"
+          git commit -m "chore: papers snapshot for $day"
+          git pull --rebase origin main
+          git push origin main

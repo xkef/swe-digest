@@ -17,7 +17,33 @@ ROOT = Path(__file__).resolve().parents[1]
 DIGESTS = ROOT / "content" / "digests"
 MEMORY = ROOT / "memory"
 
+# Current layout, used for digests on or after SECTIONS_V3_CUTOVER. Adds the
+# Conferences and events and Books sections.
 SECTIONS = [
+    "Top stories",
+    "Conferences and events",
+    "AI",
+    "ML research",
+    "Agentic coding",
+    "Security",
+    "Outages",
+    "Developer tools",
+    "Languages and runtimes",
+    "Apple platforms",
+    "Linux and kernel",
+    "Infrastructure",
+    "Engineering posts",
+    "Books",
+    "Markets and companies",
+    "Hacker News",
+    "Reddit and social pulse",
+    "Watchlist follow-ups",
+    "Sources checked",
+]
+
+# Layout from the Hacker News section split (2026-06-13) until the events/books
+# sections were added.
+SECTIONS_V2 = [
     "Top stories",
     "AI",
     "ML research",
@@ -39,8 +65,18 @@ SECTIONS = [
 
 # Digests published before the Hacker News section split keep their layout.
 SECTIONS_CUTOVER = "2026-06-13"
+# First digest built with the Conferences and events and Books sections.
+SECTIONS_V3_CUTOVER = "2026-06-22"
 
-SECTIONS_LEGACY = SECTIONS[:13] + ["HN and Reddit pulse"] + SECTIONS[15:]
+SECTIONS_LEGACY = SECTIONS_V2[:13] + ["HN and Reddit pulse"] + SECTIONS_V2[15:]
+
+
+def expected_sections(folder: str) -> list[str]:
+    if folder >= SECTIONS_V3_CUTOVER:
+        return SECTIONS
+    if folder >= SECTIONS_CUTOVER:
+        return SECTIONS_V2
+    return SECTIONS_LEGACY
 
 REQUIRED_KEYS = ["title", "date", "status", "source_count"]
 
@@ -95,7 +131,7 @@ def check_structure(path: Path, front: str, body: str) -> list[str]:
     for key in REQUIRED_KEYS:
         if not re.search(rf"^\s*{key}\s*=", front, re.MULTILINE):
             errors.append(f"{path}: front matter missing '{key}'")
-    expected = SECTIONS if path.parent.name >= SECTIONS_CUTOVER else SECTIONS_LEGACY
+    expected = expected_sections(path.parent.name)
     headers = re.findall(r"^##\s+(.+?)\s*$", body, re.MULTILINE)
     if headers != expected:
         errors.append(
@@ -166,8 +202,9 @@ def main() -> int:
         errors.extend(scan_unsafe(path, path.read_text(encoding="utf-8")))
     for path in sorted((ROOT / "data" / "runs").rglob("*.yaml")):
         errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))
-    for path in sorted((ROOT / "data" / "youtube").glob("*.json")):
-        errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))
+    for snapshot_dir in ("youtube", "papers", "books"):
+        for path in sorted((ROOT / "data" / snapshot_dir).glob("*.json")):
+            errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))
     errors.extend(check_private_context())
 
     if errors:
