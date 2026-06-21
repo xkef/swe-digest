@@ -136,8 +136,8 @@ The digest must contain these sections in this order:
 
 `make check-content` enforces the layout by date. Digests dated before
 2026-06-13 keep the older single `HN and Reddit pulse` section. Digests from
-2026-06-13 through 2026-06-21 use the 17-section layout without the
-`Conferences and events` and `Books` sections; both were added on 2026-06-22.
+2026-06-13 through 2026-06-20 use the 17-section layout without the
+`Conferences and events` and `Books` sections; both were added on 2026-06-21.
 
 Use this story shape:
 

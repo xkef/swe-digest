@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 54
+source_count = 57
 +++
 
 ## Top stories
@@ -58,6 +58,24 @@ source_count = 54
 - **Summary:** GitHub continues to log service-degrading incidents as AI coding agents drive a traffic surge. The Register reports nine such incidents in May 2026 and availability below the 99.9 percent enterprise threshold, with about 275 million commits per week and roughly 40 percent of monolith traffic on Azure by May, targeting near 50 percent by July; multiple outlets report Microsoft added AWS capacity for overflow. GitHub Status recorded further degradations on 2026-06-17 (Copilot code completions and webhook deliveries). GitHub and Microsoft have not published a single primary statement consolidating the figures.
 - **Why it matters:** GitHub is critical developer infrastructure, and a sustained availability shortfall driven by agent traffic affects CI, releases, and enterprise SLAs across the ecosystem.
 - **Follow-up:** Watch for an official GitHub availability report or Microsoft statement confirming the AWS arrangement and Azure migration milestones.
+
+## Conferences and events
+
+### ICML 2026
+
+- **Category:** Event
+- **Status:** developing
+- **Sources:** [ICML 2026 dates](https://icml.cc/Conferences/2026/Dates)
+- **Summary:** ICML 2026, the 43rd International Conference on Machine Learning, starts in 15 days (2026-07-06) and runs through 2026-07-11 at the Coex Convention and Exhibition Center in Seoul. Tutorials and the expo are on 2026-07-06, the main conference 2026-07-07 to 2026-07-09, and workshops 2026-07-10 to 2026-07-11.
+- **Why it matters:** ICML is one of the three top machine learning research venues, so its accepted work signals near-term direction for training and model methods.
+
+### EuroPython 2026
+
+- **Category:** Event
+- **Status:** developing
+- **Sources:** [EuroPython 2026](https://ep2026.europython.eu/)
+- **Summary:** EuroPython 2026, the largest European Python conference, starts in 22 days (2026-07-13) and runs through 2026-07-19 at the ICE Kraków Congress Centre in Kraków. Tutorials are 2026-07-13 to 2026-07-14, the conference 2026-07-15 to 2026-07-17, and sprints 2026-07-18 to 2026-07-19.
+- **Why it matters:** EuroPython tracks cover CPython internals, packaging, and MLOps, which feed changes into the wider Python toolchain.
 
 ## AI
 
@@ -259,6 +277,16 @@ No major items found.
 - **Sources:** [brooker.co.za](https://brooker.co.za/blog/2026/06/19/waiting.html), [discussion](https://news.ycombinator.com/item?id=48612740)
 - **Summary:** Marc Brooker's post, dated 2026-06-19, applies the inspection paradox to service latency and outage recovery: a customer who is waiting is disproportionately likely to be inside a long request or a long outage, so the experience is a time-weighted distribution rather than the mean, expressed as E_a[X] = E[X] + Var(X)/E[X]. He works an example where a 30-minute median and 10-hour p99 recovery yield a one-hour mean time to recovery but a roughly six-hour customer-perceived recovery time, and notes that timeout-and-retry can hide latency some of the time but offers no such mitigation during recovery. He argues against trimming measurements and for understanding the shape of the tail distribution, with an interactive log-normal fitting tool in the post.
 - **Why it matters:** It gives a concrete reason that tail variance, not the mean, drives perceived latency and recovery, which informs how SLOs and MTTR are measured and communicated.
+
+## Books
+
+### Practical Programming, Fourth Edition
+
+- **Category:** Book
+- **Status:** discussion
+- **Sources:** [Pragmatic Bookshelf](https://pragprog.com/titles/gwpy4/practical-programming-fourth-edition-4th-edition/)
+- **Summary:** The Pragmatic Bookshelf published the fourth edition of Practical Programming, an introduction to computer science using Python 3, surfaced through the publisher RSS feed. The release was not independently corroborated beyond the publisher page.
+- **Why it matters:** Updated editions of introductory programming texts track which language versions and tooling publishers treat as current.
 
 ## Markets and companies
 
