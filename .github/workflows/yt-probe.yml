@@ -1,0 +1,18 @@
+name: yt-probe
+
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe YouTube feed endpoints
+        run: |
+          for url in \
+            "https://www.youtube.com/feeds/videos.xml?channel_id=UCsBjURrPoezykLs9EqgamOA" \
+            "https://www.youtube.com/feeds/videos.xml?channel_id=UC_iD0xppBwwsrM9DegC5cQQ"; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$url" || echo "ERR")
+            echo "$code  $url"
+          done

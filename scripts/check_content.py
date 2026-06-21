@@ -166,6 +166,8 @@ def main() -> int:
         errors.extend(scan_unsafe(path, path.read_text(encoding="utf-8")))
     for path in sorted((ROOT / "data" / "runs").rglob("*.yaml")):
         errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))
+    for path in sorted((ROOT / "data" / "youtube").glob("*.json")):
+        errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))
     errors.extend(check_private_context())
 
     if errors:

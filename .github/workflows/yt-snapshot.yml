@@ -1,0 +1,40 @@
+name: yt-snapshot
+
+# Background accumulator. Runs every six hours and merges each fetch into the
+# day's data/youtube/ file by video id, so coverage builds up across the day and
+# survives a digest run whose live YouTube fetch is degraded. It only collects;
+# the digest and weekly workflows run on their own schedules and fetch live.
+on:
+  schedule:
+    - cron: "40 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: yt-snapshot
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Fetch YouTube
+        run: python3 scripts/fetch_youtube.py
+      - name: Commit snapshot
+        run: |
+          day=$(date -u +%F)
+          python3 scripts/merge_yt_snapshot.py ".cache/yt/$day.json" "data/youtube/$day.json"
+          ls data/youtube/*.json | sort | head -n -7 | xargs -r git rm -q --
+          git add "data/youtube/$day.json"
+          if git diff --cached --quiet; then
+            echo "no changes"
+            exit 0
+          fi
+          git config user.name "yt-snapshot"
+          git config user.email "actions@users.noreply.github.com"
+          git commit -m "chore: yt snapshot for $day"
+          git pull --rebase origin main
+          git push origin main
