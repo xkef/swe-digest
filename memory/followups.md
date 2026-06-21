@@ -26,12 +26,12 @@ Format:
 
 ## 2026-06-11: Claude Sonnet 4 and Opus 4 retirement
 
-- Status: open
+- Status: closed
 - Category: AI
 - Sources: [model deprecations](https://platform.claude.com/docs/en/about-claude/models/overview)
 - Watch for: Retirement confirmation; any production breakage reports.
-- Last checked: 2026-06-12
-- Notes: Claude Sonnet 4 (claude-sonnet-4-20250514) and Opus 4 (claude-opus-4-20250514) retire 2026-06-15 at 09:00 PT. No grace period; requests to retired model IDs fail immediately. Successors: claude-sonnet-4-6 and claude-opus-4-8. Agent SDK credit split also takes effect 2026-06-15.
+- Last checked: 2026-06-21
+- Notes: Claude Sonnet 4 (claude-sonnet-4-20250514) and Opus 4 (claude-opus-4-20250514) retire 2026-06-15 at 09:00 PT. No grace period; requests to retired model IDs fail immediately. Successors: claude-sonnet-4-6 and claude-opus-4-8. Retirement proceeded 2026-06-15 as scheduled; no production breakage reports surfaced. The bundled Agent SDK credit split was separately paused on 2026-06-15 (tracked in the 2026-06-17 follow-up). Closed.
 
 ## 2026-06-11: Check Point CVE-2026-50751 Qilin ransomware campaign
 
@@ -62,12 +62,12 @@ Format:
 
 ## 2026-06-11: SpaceX Nasdaq listing
 
-- Status: open
+- Status: closed
 - Category: Markets
 - Sources: [TradingKey](https://www.tradingkey.com/analysis/stocks/us-stocks/261960721-spacex-ipo-is-live-at-135-bull-base-and-bear-cases-for-the-first-90-days-tradingkey)
 - Watch for: MSCI rebalancing demand on 2026-06-13; S&P 500 committee review; post-IPO lock-up expiry.
-- Last checked: 2026-06-12
-- Notes: Trading started 2026-06-12 at $135/share on Nasdaq as SPCX. $75B raise, $1.75T valuation. First-day close at $135, flat on IPO price. MSCI early inclusion effective 2026-06-13. S&P 500 fast-track entry blocked (dual-class structure).
+- Last checked: 2026-06-21
+- Notes: Trading started 2026-06-12 at $135/share on Nasdaq as SPCX. $75B raise, $1.75T valuation. First-day close at $135, flat on IPO price. MSCI early inclusion effective 2026-06-13. S&P 500 fast-track entry blocked (dual-class structure). Near-term index events resolved (MSCI inclusion done, S&P fast-track blocked); lock-up expiry is long-dated. SpaceX now tracked as an entity in memory/entities.md (Anysphere/Cursor acquisition); close this listing-specific follow-up.
 
 ## 2026-06-11: Kubernetes v1.33 EOL and v1.37 release
 
