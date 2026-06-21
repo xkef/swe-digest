@@ -66,7 +66,7 @@ SECTIONS_V2 = [
 # Digests published before the Hacker News section split keep their layout.
 SECTIONS_CUTOVER = "2026-06-13"
 # First digest built with the Conferences and events and Books sections.
-SECTIONS_V3_CUTOVER = "2026-06-22"
+SECTIONS_V3_CUTOVER = "2026-06-21"
 
 SECTIONS_LEGACY = SECTIONS_V2[:13] + ["HN and Reddit pulse"] + SECTIONS_V2[15:]
 

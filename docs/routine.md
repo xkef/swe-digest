@@ -37,8 +37,8 @@ Each digest contains:
 
 The content check enforces layout by digest date. Digests dated before
 2026-06-13 keep the older single `HN and Reddit pulse` section. Digests from
-2026-06-13 through 2026-06-21 omit the `Conferences and events` and `Books`
-sections, which were added on 2026-06-22.
+2026-06-13 through 2026-06-20 omit the `Conferences and events` and `Books`
+sections, which were added on 2026-06-21.
 
 Each story uses this shape:
 
