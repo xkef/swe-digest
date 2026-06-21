@@ -689,3 +689,30 @@ Format:
 - Watch for: Abuse controls and rate limits on temporary accounts; adoption of a claim-later model by other deploy platforms; whether agents lean on it in real harnesses.
 - Last checked: 2026-06-21
 - Notes: Cloudflare published Temporary Accounts 2026-06-19. wrangler deploy --temporary provisions a temporary account, returns an API token and a claim URL; the Worker stays live 60 minutes, a human can claim it to make it permanent, unclaimed accounts auto-expire. Removes OAuth/credential friction for autonomous agents in code-deploy-verify loops. HN 48608394 (175 pts).
+
+## 2026-06-21: Anthropic consumer identity verification from July 8
+
+- Status: open
+- Category: AI
+- Sources: [Anthropic privacy policy](https://www.anthropic.com/legal/privacy), [The Register](https://www.theregister.com/ai-and-ml/2026/06/15/anthropic-reserves-right-to-check-id-for-claude-subs/5255804)
+- Watch for: What triggers a verification check; biometric-data retention period; consequence of refusal; whether other providers add consumer ID gates; any link to the export-control enforcement posture.
+- Last checked: 2026-06-21
+- Notes: Anthropic revised privacy policy (effective 2026-07-08) reserves the right to require identity verification from consumer Claude users (Free, Pro, Max) before granting or maintaining access. Methods may collect a government-ID image and its fields, a photo/video of the user, and facial-geometry templates (biometric data in some jurisdictions); runs via third-party vendor Persona, in limited use since 2026-04-14. Trigger, retention period, and refusal consequence unspecified. Business subscriptions excluded. Lands amid export-control pressure on Fable 5/Mythos 5. HN 48618455. The Register 2026-06-15.
+
+## 2026-06-21: Anthropic Project Fetch Phase Two robot-quadruped result
+
+- Status: open
+- Category: AI
+- Sources: [Anthropic research](https://www.anthropic.com/research/project-fetch-phase-two)
+- Watch for: Independent reproduction; the closed-loop precise-control gap; any method or environment release; follow-on phases.
+- Last checked: 2026-06-21
+- Notes: Anthropic published Project Fetch Phase Two 2026-06-18. Newer Claude models autonomously controlled a robotic quadruped on tasks a human team did in August 2025 (connect to sensors, write control programs, detect a beach ball, attempt retrieval). Reports Claude Opus 4.7 without human help averaged 9m35s across the four tasks all participants completed vs 181m for the fastest human team using Claude (~20x faster). Model still struggled with precise closed-loop control (the fetching motion). Lab self-eval; not independently reproduced. HN 48614311. Embodied-AI angle alongside Qwen-RobotSuite.
+
+## 2026-06-21: systemd 261 native installer, IMDSD, storagectl
+
+- Status: open
+- Category: Linux/Kernel
+- Sources: [systemd v261 release](https://github.com/systemd/systemd/releases/tag/v261), [Phoronix](https://www.phoronix.com/news/systemd-261)
+- Watch for: Distribution adoption of systemd-sysinstall and IMDSD in H2 2026 releases; security review of the new metadata and storage surfaces.
+- Last checked: 2026-06-21
+- Notes: systemd 261 released. systemd-sysinstall: textual OS installer wrapping systemd partitioning/credential/config tools from boot media. IMDSD: Instance Metadata Service subsystem (systemd-imdsd) exposing cloud instance metadata to local programs, with an hwdb recognizing public clouds (EC2, Azure, GCE, Oracle Cloud, Tencent, Hetzner) via SMBIOS. storagectl: CLI plus Varlink interface exposing storage resources uniformly for managed user storage. HN 48613328.
