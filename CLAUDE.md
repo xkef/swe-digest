@@ -156,6 +156,17 @@ Use this story shape:
 Bold each field label as shown. The site styles the bold label as the row
 header.
 
+Each story appears once. A story gets one full `### story` block, and that
+block is its canonical location; `Top stories` is canonical for any item it
+contains. Do not emit a second `### story` block that only restates a block
+already in the digest, for example a topical-section block whose summary is
+"Covered in Top stories" or "See the Top stories item". A cross-reference to a
+story covered elsewhere is allowed only when it carries new signal absent from
+the canonical block, such as an HN comment thread in `Hacker News` or a
+tracked-person primary post in `Reddit and social pulse`, and it states that
+signal rather than repeating the summary. On a same-date update run, do not add
+a story whose title or primary source already appears in that day's digest.
+
 Set front matter at publish time:
 
 ```toml
@@ -878,6 +889,7 @@ Before publishing, verify:
   live coverage.
 - GitHub releases for `[github]` repos and `github.com/trending` were checked.
 - `Comments:` fields paraphrase threads; no verbatim comment text.
+- No story appears as more than one `### story` block in a digest; any cross-reference adds new signal and never only restates another section.
 - Yesterday's backtest was reviewed and causes recorded.
 - The story inbox was checked; owner-authored items handled and closed.
 - Today's run log exists and its `judgment` keys are filled.
