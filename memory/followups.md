@@ -533,9 +533,9 @@ Format:
 - Status: open
 - Category: Security
 - Sources: [Tom's Hardware](https://www.tomshardware.com/pc-components/cpus/amd-silently-removes-memory-encryption-from-consumer-ryzen-cpus-leaving-users-unaware-that-they-may-be-vulnerable-security-feature-vanishes-after-newer-agesa-firmware-amd-engineers-go-radio-silent-when-pressed-about-the-change), [TechPowerUp](https://www.techpowerup.com/350080/amd-quietly-drops-memory-encryption-feature-from-consumer-ryzen-cpus)
-- Watch for: AMD official statement; whether the change is reverted or documented; any AGESA update restoring TSME on consumer parts.
-- Last checked: 2026-06-18
-- Notes: AGESA 1.2.7.0 firmware disabled Transparent Secure Memory Encryption (TSME) on consumer Ryzen parts without a BIOS UI change (toggle still shown). Flag DfIsTsmeEnabled set FALSE for consumer, TRUE for PRO/EPYC. Found by Ben Kilpatrick on a Ryzen 7 9700X via Host Security ID. TSME encrypts all RAM under firmware, blocking cold-boot, DRAM snooping, and module-removal attacks. AMD said TSME is "only applied to PRO CPUs as part of AMD PRO Technologies" (first explicit statement); engineers had recommended TSME on consumer parts in 2020 and 2025. HN 48582320.
+- Watch for: July 2026 AGESA/BIOS update actually restoring TSME; which Ryzen 9000 SKUs and boards are covered; whether older consumer generations get the same restoration; any formal AMD documentation.
+- Last checked: 2026-06-21
+- Notes: AGESA 1.2.7.0 firmware disabled Transparent Secure Memory Encryption (TSME) on consumer Ryzen parts without a BIOS UI change (toggle still shown). Flag DfIsTsmeEnabled set FALSE for consumer, TRUE for PRO/EPYC. Found by Ben Kilpatrick on a Ryzen 7 9700X via Host Security ID. TSME encrypts all RAM under firmware, blocking cold-boot, DRAM snooping, and module-removal attacks. AMD said TSME is "only applied to PRO CPUs as part of AMD PRO Technologies" (first explicit statement); engineers had recommended TSME on consumer parts in 2020 and 2025. HN 48582320. UPDATE 2026-06-19: AMD reversed course; it will reinstate TSME on non-PRO Ryzen 9000 desktop CPUs via a July 2026 BIOS update, citing "valuable community feedback" (Tom's Hardware, TechPowerUp, VideoCardz; HN 48612098). Protection gap remains until the BIOS ships; SKU/board coverage and older generations unconfirmed.
 
 ## 2026-06-18: About 10,000 GitHub repositories distributing Trojan archives
 

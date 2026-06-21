@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 26
+source_count = 37
 +++
 
 ## Top stories
@@ -70,6 +70,14 @@ source_count = 26
 - **Why it matters:** The two flagship models remain unavailable to all customers, so teams that relied on them must keep building on Opus 4.8 and other supported models.
 - **Follow-up:** Watch for the directive being lifted, narrowed, or extended, and any official US government statement.
 
+### Export-control history piece reframes the Mythos restriction
+
+- **Category:** AI
+- **Status:** discussion
+- **Sources:** [TechCrunch](https://techcrunch.com/2026/06/19/encryption-spyware-and-now-mythos-history-shows-why-cyber-export-control-doesnt-work/), [discussion](https://news.ycombinator.com/item?id=48609194)
+- **Summary:** A TechCrunch analysis dated 2026-06-19 places the US directive against Claude Fable 5 and Mythos 5 in the lineage of prior cyber export controls, from 1990s PGP and strong-cryptography rules to later spyware controls, arguing those regimes slowed legitimate users more than determined actors. The piece reached the HN front page (147 points) and ties directly to the suspended-access story above.
+- **Why it matters:** It frames the open engineering question behind the directive: whether restricting access to a model capability that exists in competing models meaningfully reduces misuse.
+
 ## ML research
 
 No major items found.
@@ -83,6 +91,14 @@ No major items found.
 - **Sources:** [Cloudflare blog](https://blog.cloudflare.com/temporary-accounts/)
 - **Summary:** Covered in Top stories. The `wrangler deploy --temporary` flow provisions a claimable, auto-expiring account so an agent can deploy a Worker without an OAuth signup, addressing credential friction in autonomous deploy loops.
 - **Why it matters:** It standardizes one of the recurring blockers for agents that need to ship code to a hosting platform without a human authenticating first.
+
+### Practitioner essay: rejecting agent code that works but does not fit
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [vinibrasil.com](https://vinibrasil.com/when-i-reject-ai-code-even-if-it-works/), [discussion](https://news.ycombinator.com/item?id=48614631)
+- **Summary:** A practitioner essay argues for rejecting agent-generated code that passes tests but ignores the codebase's conventions, abstractions, or intent, on the grounds that code is read and maintained far more than it is written. The post reached the HN front page (124 points).
+- **Why it matters:** It frames a recurring review tension as coding agents produce more functionally correct but stylistically divergent diffs that still cost maintenance effort.
 
 ### Agent skills and sandbox frameworks dominate GitHub trending
 
@@ -102,6 +118,15 @@ No major items found.
 - **Sources:** [Splunk SVD-2026-0603](https://advisory.splunk.com/advisories/SVD-2026-0603), [Horizon3.ai](https://horizon3.ai/attack-research/vulnerabilities/cve-2026-20253/)
 - **Summary:** Covered in Top stories. The CISA KEV federal remediation deadline is 2026-06-21. Patch to 10.0.7, 10.2.4, or 10.4.0, or disable the PostgreSQL sidecar service as an interim mitigation. The CISA KEV catalog held at version 2026.06.18 (count 1623) on the publish-time check, with no addition dated 2026-06-19 or 2026-06-20.
 - **Why it matters:** An unauthenticated file-write reachable over the network gives attackers a direct path into the monitoring layer, and the deadline arriving today raises the stakes for unpatched SIEM deployments.
+
+### AMD will reinstate TSME memory encryption on Ryzen 9000 desktop CPUs
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Tom's Hardware](https://www.tomshardware.com/pc-components/cpus/amd-will-reinstate-memory-encryption-on-ryzen-9000-cpus-through-a-bios-update-in-july-tsme-is-coming-back-after-valuable-community-feedback), [TechPowerUp](https://www.techpowerup.com/350142/amd-to-restore-tsme-memory-encryption-on-consumer-ryzen-processors-after-backlash), [discussion](https://news.ycombinator.com/item?id=48612098)
+- **Summary:** AMD said it will restore Transparent Secure Memory Encryption (TSME) on non-PRO Ryzen 9000 desktop processors through a BIOS update in July 2026, reversing the silent removal that shipped in AGESA 1.2.7.0 and was reported around 2026-06-16. AMD attributed the reversal to "valuable community feedback." TSME encrypts all system memory at the firmware level, defending against cold-boot and physical DRAM extraction attacks; after the firmware change it had remained enabled only on PRO and EPYC parts.
+- **Why it matters:** It restores a baseline physical-memory protection on mainstream desktop parts that users had lost without notice, though the gap persists until the July BIOS ships.
+- **Follow-up:** Watch for the July AGESA and BIOS update actually delivering TSME, which Ryzen 9000 SKUs and boards are covered, and whether older consumer generations get the same restoration.
 
 ## Outages
 
@@ -138,7 +163,13 @@ No major items found.
 
 ## Apple platforms
 
-No major items found.
+### UHF X11 turns Apple Vision Pro into a spatial X11 display server
+
+- **Category:** Apple
+- **Status:** discussion
+- **Sources:** [UHF X11](https://www.lispm.net/apps/uhf-x11/), [discussion](https://news.ycombinator.com/item?id=48610853)
+- **Summary:** Ian Finder released UHF X11, a visionOS app that runs a full X11 display server on Apple Vision Pro. X11 clients on remote or legacy machines connect over standard TCP and render each window as a native spatial window, with rootless windowing, pixel-perfect output with optional CRT effects, experimental GLX/OpenGL, and MIT-MAGIC-COOKIE-1 authentication. It is a paid App Store app, not open source. The thread reached the HN front page (188 points).
+- **Why it matters:** It maps a decades-old network display protocol onto a spatial-computing headset, letting existing X11 software run as floating windows without per-app porting.
 
 ## Linux and kernel
 
@@ -169,6 +200,14 @@ No major items found.
 - **Sources:** [greybeam.ai](https://www.greybeam.ai/blog/duckdb-internals-part-1), [discussion](https://news.ycombinator.com/item?id=48553388)
 - **Summary:** A deep-dive on DuckDB internals (dated 2026-05-04, part one of three) resurfaced on the HN front page (431 points). It walks the in-process execution architecture, columnar storage with compression and zone maps (min, max, and null count per row group), row groups of up to 122,880 rows, the 256 KB default block size, the native file format with checksum verification, pipeline breakers in the query pipeline, and dynamic join-filter pushdown that turns into an `IN` list when the build side has fewer than 50 distinct join keys.
 - **Why it matters:** Concrete storage-layout and query-pipeline detail helps engineers reason about when DuckDB's columnar, in-process design fits an analytics workload.
+
+### Epoll versus io_uring: a Linux I/O model explainer
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [sibexi.co](https://sibexi.co/posts/epoll-vs-io_uring/), [discussion](https://news.ycombinator.com/item?id=48613872)
+- **Summary:** An explainer dated 2026-06-20 contrasts the epoll readiness model, where the kernel signals that a socket is ready and the program then issues the I/O at the cost of extra syscalls, with the io_uring completion model, where operations are submitted in batches and the kernel reports when each I/O is done. The author reports a TinyGate proxy gained a large throughput improvement moving from a worker pool to epoll and again to io_uring, but the post gives code examples rather than benchmark numbers.
+- **Why it matters:** It lays out the syscall-overhead difference that pushes high-throughput Linux network services toward io_uring.
 
 ## Markets and companies
 
@@ -226,14 +265,16 @@ No major items found.
 - **Tesco migrating off VMware (2026-06-18):** UK High Court dispute resurfaced on HN; replacement platform still unnamed, end-of-2027 migration target. Open.
 - **John Jumper to Anthropic (2026-06-20):** No update; awaiting Anthropic role confirmation and any AlphaFold or Isomorphic Labs roadmap effect. Open.
 - **usbliter8 Apple A12/A13 SecureROM exploit (2026-06-20):** No update; public PoC, coordinated disclosure with Apple, no CVE or Apple advisory yet. Open.
+- **AMD TSME memory encryption (2026-06-18):** AMD reversed course; it will reinstate TSME on non-PRO Ryzen 9000 desktop CPUs via a July 2026 BIOS update, citing community feedback. Protection gap persists until the BIOS ships. Open.
 
 ## Sources checked
 
 - Hacker News: `make hn` succeeded via Algolia (front page, top 24h, Ask HN, Show HN, comments, watchlist queries), zero degraded collections; cache 2026-06-21 02:21 UTC, 61 of 72 queries matched; full structured coverage.
 - Reddit: RSS reachable (HTTP 200); collected r/programming and r/LocalLLaMA hot. r/rust and several other subreddits were rate-limited on rapid sequential fetch and not fully collected this run.
 - AI sources: checked for new model releases dated 2026-06-20 or 2026-06-21; no confirmed new release (Qwen3-Coder-Next and the trending Qwen and MiniMax listings are re-surfacings of February-to-June models, not new). Anthropic Fable 5 and Mythos 5 still suspended.
-- Security advisories: CISA KEV JSON feed (catalog 2026.06.18, count 1623, no 2026-06-19 or 2026-06-20 addition); Splunk SVD-2026-0603 and Horizon3.ai for the Splunk deadline.
+- ML research: Hugging Face Papers daily list checked; top entries (image inpainting, dexterous hand-object interaction, Multi-LCB multi-language code benchmark) are low-attention and lack standout engineering relevance, so no ML research item was added.
+- Security advisories: CISA KEV JSON feed (catalog 2026.06.18, count 1623, no 2026-06-19 or 2026-06-20 addition); Splunk SVD-2026-0603 and Horizon3.ai for the Splunk deadline; Tom's Hardware and TechPowerUp for the AMD TSME reinstatement.
 - Status pages: OpenAI status history (no 2026-06-20 or 2026-06-21 incident); Let's Encrypt status (reduced redundancy); Cloudflare status (Durable Objects metric discrepancy fix, Workers AI degraded). Several other status pages block the run environment, so absence elsewhere is unverified.
-- GitHub releases: checked every `[github]` watchlist repo; no release dated 2026-06-21. Newest across the table are Node.js 26.3.1 (2026-06-18), neovim nightly (rolling, 2026-06-20), Homebrew 6.0.2 (2026-06-15), Prometheus 3.5.4 (2026-06-17), jj 0.42.0 (2026-06-04), zed v1.8.0-pre (prerelease), all previously covered or rolling/prerelease; tag-only repos (go, git, cpython, linux) showed no new stable tag past prior coverage (git v2.55.0-rc1, cpython 3.15.0b2, linux v7.1, openjdk jdk-28+3).
-- GitHub trending: scanned the daily and language views. Theme: agent-skills and agent-sandbox repos (mattpocock/skills, withastro/flue, Kilo-Org/kilocode, codebase-memory MCP), surfaced in Agentic coding; none is a new release. No other new verified cluster.
-- Engineering blogs and primary write-ups: Cloudflare blog (temporary accounts), Phoronix (kernel strncpy removal), greybeam.ai (DuckDB internals), The Register (GitHub availability, Tesco and VMware).
+- GitHub releases: re-checked every `[github]` watchlist repo in the quality pass; no release dated 2026-06-21. Newest across the table are Node.js 26.3.1 (2026-06-18), neovim nightly (rolling, 2026-06-20), Homebrew 6.0.2 (2026-06-15), Prometheus 3.5.4 (2026-06-17), jj 0.42.0 (2026-06-04), zed v1.8.0-pre (prerelease), tmux 3.7-rc (prerelease), all previously covered or rolling/prerelease; tag-only repos (go, git, cpython, linux, openjdk) showed no new stable tag past prior coverage (git v2.55.0-rc1, cpython 3.15.0b2, linux v7.1, openjdk jdk-28+3).
+- GitHub trending: scanned the daily and rust/python/go/typescript language views. Theme: agent-skills and agent-sandbox repos (mattpocock/skills, withastro/flue, Kilo-Org/kilocode, DeusData/codebase-memory-mcp), surfaced in Agentic coding; the rest are established projects (turso, uv, ruff, iroh, cilium, weaviate, timesfm). None is a new release; no other new verified cluster.
+- Engineering blogs and primary write-ups: Cloudflare blog (temporary accounts), Phoronix (kernel strncpy removal), greybeam.ai (DuckDB internals), sibexi.co (epoll vs io_uring), The Register (GitHub availability, Tesco and VMware), TechCrunch (export-control history).
