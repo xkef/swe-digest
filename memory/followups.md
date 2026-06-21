@@ -292,7 +292,7 @@ Format:
 - Sources: [Anthropic statement](https://www.anthropic.com/news/fable-mythos-access), [Bloomberg](https://www.bloomberg.com/news/articles/2026-06-13/anthropic-says-us-limits-foreign-access-to-fable-5-mythos-5), [Korea JoongAng Daily](https://www.koreajoongangdaily.com/business/anthropic-confident-of-reenabling-mythos-fable-5-access-in-coming-days-executive/12727522), [Wired SK Telecom](https://www.wired.com/story/sk-telecom-anthropic-mythos)
 - Watch for: Directive lifted, narrowed, or extended to other models/providers; official US government statement; formal EU response; legal challenge; refund or credit handling.
 - Last checked: 2026-06-20
-- Notes: Anthropic received an export control directive at 17:21 ET 2026-06-12 to block all foreign-national access to Fable 5 and Mythos 5; it disabled both for all customers. Other models unaffected. Stated concern is a narrow jailbreak (ask model to read a codebase and fix flaws), which Anthropic says exists in other models including GPT-5.5. Anthropic disagrees with the recall. 2026-06-13: WSJ reports (single-sourced, "people familiar") that Amazon CEO Andy Jassy's talks with Trump administration officials preceded the directive; Amazon researchers reportedly prompted Fable 5 for cyberattack-aiding info. Amazon holds a large (>5%) equity stake in Anthropic. 2026-06-14: EU Commission spokesperson said it is assessing the practical consequences of the directive and that measures should not discriminate against partners (Reuters, Euronews). As of 2026-06-15 access still suspended, no restoration timeline. 2026-06-18: Anthropic MD International Chris Ciauri said in Seoul the company is confident access returns "in coming days" (no restoration yet); Wired identified SK Telecom as the Korean telecom at the center of the Mythos dispute. As of 2026-06-20 still suspended.
+- Notes: Anthropic received an export control directive at 17:21 ET 2026-06-12 to block all foreign-national access to Fable 5 and Mythos 5; it disabled both for all customers. Other models unaffected. Stated concern is a narrow jailbreak (ask model to read a codebase and fix flaws), which Anthropic says exists in other models including GPT-5.5. Anthropic disagrees with the recall. 2026-06-13: WSJ reports (single-sourced, "people familiar") that Amazon CEO Andy Jassy's talks with Trump administration officials preceded the directive; Amazon researchers reportedly prompted Fable 5 for cyberattack-aiding info. Amazon holds a large (>5%) equity stake in Anthropic. 2026-06-14: EU Commission spokesperson said it is assessing the practical consequences of the directive and that measures should not discriminate against partners (Reuters, Euronews). As of 2026-06-15 access still suspended, no restoration timeline. 2026-06-18: Anthropic MD International Chris Ciauri said in Seoul the company is confident access returns "in coming days" (no restoration yet); Wired identified SK Telecom as the Korean telecom at the center of the Mythos dispute. As of 2026-06-21 still suspended (Anthropic news page unchanged from the 2026-06-12 statement).
 
 ## 2026-06-13: Oracle PeopleSoft CVE-2026-35273 active exploitation
 
@@ -579,7 +579,7 @@ Format:
 - Category: Outage
 - Sources: [Let's Encrypt status](https://letsencrypt.status.io/)
 - Watch for: Full redundancy restoration; any Let's Encrypt post-incident note; whether renewal errors recur.
-- Last checked: 2026-06-20
+- Last checked: 2026-06-21
 - Notes: Incident on acme-v02.api.letsencrypt.org (production) starting 2026-06-18 16:04 UTC. An upstream network event disrupted traffic between two datacenters; some clients saw 400/500 responses while most requests succeeded. As of the 2026-06-19 04:45 UTC update the API was operating normally but still with reduced redundancy, with Let's Encrypt continuing to work with its upstream ISP on the root cause (incident not yet fully resolved). HN thread 48594715 surfaced 2026-06-19 framed as "renewals had errors today." letsencrypt.status.io fetched 200 from the run environment.
 
 ## 2026-06-18: Ubiquiti Enterprise NAS (ENAS) on ZFS
@@ -597,8 +597,8 @@ Format:
 - Category: Security
 - Sources: [Splunk SVD-2026-0603](https://advisory.splunk.com/advisories/SVD-2026-0603), [Horizon3.ai](https://horizon3.ai/attack-research/vulnerabilities/cve-2026-20253/), [SecurityWeek](https://www.securityweek.com/splunk-enterprise-vulnerability-exploited-in-attacks-days-after-disclosure/)
 - Watch for: Confirmed RCE chains; ransomware follow-on; patch adoption; federal remediation deadline passing.
-- Last checked: 2026-06-20
-- Notes: CVSS 9.8 missing-authentication flaw on a Splunk Enterprise PostgreSQL sidecar service endpoint. Unauthenticated, network-reachable create or truncate of arbitrary files, chainable to DoS, log-integrity loss, or RCE. Affects 10.0.0-10.0.6 and 10.2.0-10.2.3; 9.4 and earlier not affected. Patched in 10.0.7 and 10.2.4. Public exploit analysis 2026-06-13, three days after disclosure. CISA KEV added 2026-06-18 (catalog version 2026.06.18, count 1623), three-day federal deadline. Splunk Enterprise is core SOC/SIEM infrastructure.
+- Last checked: 2026-06-21
+- Notes: CVSS 9.8 missing-authentication flaw on a Splunk Enterprise PostgreSQL sidecar service endpoint. Unauthenticated, network-reachable create or truncate of arbitrary files, chainable to DoS, log-integrity loss, or RCE. Affects 10.0.0-10.0.6 and 10.2.0-10.2.3; 9.4 and earlier not affected. Patched in 10.0.7 and 10.2.4 (also 10.4.0). Public exploit analysis 2026-06-13, three days after disclosure. CISA KEV added 2026-06-18 (catalog version 2026.06.18, count 1623), three-day federal deadline = 2026-06-21 (today). Splunk Enterprise is core SOC/SIEM infrastructure. As of 2026-06-21 KEV catalog still 2026.06.18, count 1623, no newer addition.
 
 ## 2026-06-18: Godot 4.7 stable release
 
@@ -662,3 +662,30 @@ Format:
 - Watch for: Google support note defining an enforcement timeline; which Workspace surfaces are affected for Firefox; whether warnings become a hard block.
 - Last checked: 2026-06-20
 - Notes: Practitioner write-up dated 2026-06-18 reports Workspace shows Firefox users a device-security remediation prompt urging a switch to Chrome; Firefox access still works at time of writing. Google developer guidance frames this as blocking "less secure" browsers and requires honest User-Agent reporting on accounts.google.com. HN 48600345 (437 pts). Discussion/developing.
+
+## 2026-06-21: Linux removes the strncpy API ahead of 7.2
+
+- Status: open
+- Category: Linux/Kernel
+- Sources: [Phoronix](https://www.phoronix.com/news/Linux-7.2-Drops-strncpy)
+- Watch for: Linux 7.2 release carrying the change; any regressions in subsystems converted off strncpy; whether the broader unsafe-string-API removal drive continues.
+- Last checked: 2026-06-21
+- Notes: Work queued for the Linux 7.2 merge window eliminates the last in-kernel users of strncpy, completing a ~six-year, ~362-commit effort. strncpy was a recurring bug source due to counter-intuitive NUL-termination semantics and redundant zero-filling. Replacements by intent: strscpy (NUL-terminated), strscpy_pad (NUL-terminated + zero pad), strtomem_pad (non-NUL fixed-width fields), memcpy_and_pad (bounded + explicit pad), memcpy (known-length). HN 48612943 (94 pts).
+
+## 2026-06-21: Bun proposes shared-memory threads for JavaScriptCore
+
+- Status: open
+- Category: Languages
+- Sources: [oven-sh/WebKit PR #249](https://github.com/oven-sh/WebKit/pull/249)
+- Watch for: PR moving from experimental to working; merge into Bun's JavaScriptCore fork; a shipped Bun release exposing new Thread(fn); memory-safety guarantees holding under real workloads.
+- Last checked: 2026-06-21
+- Notes: Jarred Sumner opened a PR adding shared-heap threads to JavaScriptCore: new Thread(fn) runs on another thread in the same heap with the same objects (Java/Go/C# model), versus the worker model of separate heaps + postMessage/structured clone/SharedArrayBuffer. VM guarantees memory safety for engine internals (no torn JSValues, type confusion); application data races are the program's responsibility. Labeled experimental, not yet working. HN 48610841 (116 pts, 216 cmt).
+
+## 2026-06-21: Cloudflare temporary accounts for AI agents
+
+- Status: open
+- Category: Agentic coding
+- Sources: [Cloudflare blog](https://blog.cloudflare.com/temporary-accounts/)
+- Watch for: Abuse controls and rate limits on temporary accounts; adoption of a claim-later model by other deploy platforms; whether agents lean on it in real harnesses.
+- Last checked: 2026-06-21
+- Notes: Cloudflare published Temporary Accounts 2026-06-19. wrangler deploy --temporary provisions a temporary account, returns an API token and a claim URL; the Worker stays live 60 minutes, a human can claim it to make it permanent, unclaimed accounts auto-expire. Removes OAuth/credential friction for autonomous agents in code-deploy-verify loops. HN 48608394 (175 pts).
