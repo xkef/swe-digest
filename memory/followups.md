@@ -752,3 +752,12 @@ Format:
 - Watch for: OpenAI maintainer response or logging-volume fix; independent confirmation of the write rate; any default-log-level change.
 - Last checked: 2026-06-22
 - Notes: Issue filed 2026-06-14 (user 1996fanrui). Codex CLI continuously writes TRACE/INFO to ~/.codex/logs_2.sqlite; reporter measured ~37 TB written after ~21 days uptime, extrapolated ~640 TB/year, approaching a 1 TB consumer SSD's ~600 TBW endurance within a year. ~70% of logged bytes from one TRACE target codex_api::endpoint::responses_websocket. One user's report; OpenAI had not posted a fix/confirmation as of 2026-06-22. HN 48626930 (~139 pts).
+
+## 2026-06-22: Fil-C memory-safe inline assembly
+
+- Status: open
+- Category: Languages
+- Sources: [Fil-C inline asm](https://fil-c.org/inlineasm)
+- Watch for: A tagged stable release exposing safe inline asm past pre-release v0.679; AVX-512 and broader instruction coverage; adoption in real memory-safe C/C++ ports.
+- Last checked: 2026-06-22
+- Notes: Fil-C (memory-safe C/C++ compiler) documented pre-release (v0.679) statically validated inline assembly. The FilPizlonator pass parses inline-asm strings and constraints at LLVM IR level and cross-checks declared register/flag effects against the actual instructions; mismatch triggers a runtime panic rather than silent miscompilation. An agent-driven workflow allowlisted hundreds of pre-AVX-512 x86-64 instructions. Inline asm is a common memory-safety escape hatch; this narrows it. HN 48606096 (164 pts).
