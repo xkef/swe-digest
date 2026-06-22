@@ -86,6 +86,13 @@ directly. When running in the remote environment, use the listed fallback.
   snippets plus a corroborating outlet (The Register, Fortune, FT) and confirm
   the canonical URL before citing.
 
+### Look-alike domains seen in the wild
+
+- `apertvs.ai` - look-alike of the Apertus open-model project surfaced as the
+  HN submission URL on 2026-06-22. Do not link it. The Apertus model is from
+  EPFL/ETH Zurich/CSCS (released 2025-09-02); cite the ETH Zurich press release
+  or `apertus.ai`, not the `apertvs.ai` look-alike.
+
 ### Reliable primary sources
 
 - `platform.claude.com/docs` - Anthropic model docs fetched successfully; reliable and up-to-date.
