@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 36
+source_count = 40
 +++
 
 ## Top stories
@@ -41,6 +41,16 @@ source_count = 36
 - **Summary:** The Economist reported that NSA and Cyber Command director General Joshua Rudd told Senator Mark Warner that Anthropic's Mythos model "broke into almost all of our classified systems, not in weeks, but in hours." Warner raised the example to argue for faster pre-release testing of frontier models, not as criticism. The Economist editor later cautioned the quote should not be read literally; the more likely reading is an internal red-team assessment against replicas of classified environments under Project Glasswing, not an actual breach. Some industry figures, including BitGo's CEO, publicly disputed the breach framing.
 - **Why it matters:** The claim is the loudest public data point in the export-control debate that has kept Fable 5 and Mythos 5 offline, and it shapes how regulators weigh frontier-model cyber capability.
 - **Follow-up:** Watch for the full Economist account, any official NSA or Anthropic clarification, and whether it affects the Fable 5/Mythos 5 access timeline.
+
+### Deno Desktop turns web projects into native desktop apps
+
+- **Category:** Dev tools
+- **Status:** developing
+- **Sources:** [Deno Desktop docs](https://docs.deno.com/runtime/desktop/), [HN](https://news.ycombinator.com/item?id=48626137)
+- **Summary:** Deno documented `deno desktop`, which packages a Deno project (from a single TypeScript file to a Next.js, Astro, Fresh, Remix, Nuxt, or SvelteKit app) into a self-contained, redistributable desktop binary bundling the code, the Deno runtime, and a rendering engine per platform. It targets macOS, Windows, and Linux, with selectable backends (native WebView, bundled Chromium/CEF, or raw), in-process backend-to-UI bindings instead of IPC, cross-compilation from one machine, binary-diff auto-update with rollback, native OS integrations, and npm access via Node compatibility. It ships in Deno 2.9.0 and is not yet in a stable release; testing requires the canary build.
+- **Comments:** HN commenters weighed it against Electron, Tauri, and Electrobun; one noted web tech is not itself a native UI toolkit and cross-platform WebView apps tend to miss host-OS UX patterns. Another asked how it interacts with Deno's permission model and observed that compile-time permissions are baked into the produced binary.
+- **Why it matters:** A first-party desktop packaging path inside the Deno runtime adds another Electron alternative with built-in sandboxing and auto-update, relevant to teams choosing a cross-platform desktop stack.
+- **Follow-up:** Watch for Deno 2.9.0 stable shipping `deno desktop` out of canary and the permission-model details for produced binaries.
 
 ## Conferences and events
 
@@ -99,6 +109,15 @@ No major items found.
 - **Sources:** [cognee](https://github.com/topoteretes/cognee), [headroom](https://github.com/chopratejas/headroom), [codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp), [GitHub trending](https://github.com/trending)
 - **Summary:** Several tools addressing agent memory and prompt-token reduction trended together on GitHub on 2026-06-22: cognee (self-hosted knowledge-graph long-term memory for agents), headroom (compresses tool outputs, logs, and RAG chunks before they reach the model), and codebase-memory-mcp (an MCP server that indexes a codebase into a persistent graph for low-token queries). They share the goal of cutting per-session context cost, the same gap the Show HN tool Recall targets for Claude Code.
 - **Why it matters:** Persistent memory and context compaction are forming a distinct tooling layer as token cost and session-context limits become the binding constraint on coding agents.
+
+### Codex SQLite trace logs reported to write terabytes to local SSDs
+
+- **Category:** Agentic coding
+- **Status:** developing
+- **Sources:** [openai/codex issue #28224](https://github.com/openai/codex/issues/28224), [HN](https://news.ycombinator.com/item?id=48626930)
+- **Summary:** An open issue filed 2026-06-14 against openai/codex reports that the Codex CLI continuously writes a large volume of TRACE and INFO data to a local SQLite feedback log (`~/.codex/logs_2.sqlite`). The reporter measured about 37 TB written after roughly 21 days of uptime, extrapolating to about 640 TB per year, enough to approach the rated write endurance (around 600 TBW) of a 1 TB consumer SSD within a year. About 70% of the logged bytes come from a single TRACE target, `codex_api::endpoint::responses_websocket`. The figures are one user's report; OpenAI has not posted a fix or confirmation in the issue.
+- **Why it matters:** A coding agent generating sustained background disk writes at this rate is an unbudgeted hardware-wear cost for developers running it continuously.
+- **Follow-up:** Watch for an OpenAI maintainer response, a logging-volume fix, and independent confirmation of the write rate.
 
 ## Security
 
@@ -227,7 +246,7 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News: `make hn` via Algolia, 0 degraded collections, 56/72 queries with hits; full structured coverage (front page, top 24h, Ask HN, Show HN, top comments). Fetch 2026-06-22 02:22 UTC.
+- Hacker News: `make hn` via Algolia, 0 degraded collections; full structured coverage (front page, top 24h, Ask HN, Show HN, top comments). First fetch 2026-06-22 02:22 UTC; re-fetched 2026-06-22 11:49 UTC (57/72 queries with hits), which surfaced Deno Desktop (added to Top stories) and the openai/codex SSD-write issue (added to Agentic coding).
 - Reddit: r/programming hot reachable (HTTP 200); r/LocalLLaMA and r/rust rate-limited on sequential fetch and not collected. Coverage partial.
 - AI sources: Anthropic news and privacy policy, Claude status, support article; open-model discussion; Sakana AI Fugu product page; Apertus (ETH Zurich release).
 - ML research and arXiv papers: `make papers` (arXiv API and RSS empty in-window; repo snapshot 8 items, all low-attention; no item met the engineering-relevance bar). Hugging Face Papers not surfacing a standout.

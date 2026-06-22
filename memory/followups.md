@@ -734,3 +734,21 @@ Format:
 - Watch for: opam ecosystem updates against the 5.5 breaking type-system changes; 5.5.x point releases.
 - Last checked: 2026-06-22
 - Notes: OCaml 5.5.0 released 2026-06-19. Language: module-dependent functions (modular explicits, lightweight functor form taking a module argument), polymorphic function parameters, extended local definitions (let module/let exception/let open in most structure items), external types. Runtime/compiler: relocatable compiler, Windows uses WinAPI directly (drops Winpthreads), GC idle phase + generational stack scanning, ~60 new stdlib functions. Multiple breaking type-system changes. ~90 improvements, 40 bug fixes. Surfaced via r/programming; not on HN front page this run.
+
+## 2026-06-22: Deno Desktop (deno desktop) packaging
+
+- Status: open
+- Category: Dev tools
+- Sources: [Deno Desktop docs](https://docs.deno.com/runtime/desktop/)
+- Watch for: Deno 2.9.0 stable shipping `deno desktop` out of canary; permission-model details for produced binaries; adoption vs Electron/Tauri/Electrobun.
+- Last checked: 2026-06-22
+- Notes: `deno desktop` packages a Deno project (single TS file up to Next.js/Astro/Fresh/Remix/Nuxt/SvelteKit) into a self-contained desktop binary bundling code + runtime + rendering engine per platform (macOS/Windows/Linux). Backends: native WebView, bundled Chromium/CEF, or raw. In-process backend-to-UI bindings (no IPC), cross-compilation from one machine, binary-diff auto-update with rollback, native OS integrations, npm via Node compat. Ships in Deno 2.9.0, not yet stable; requires canary build. HN 48626137 (~508 pts). Compile-time permissions baked into the produced binary.
+
+## 2026-06-22: Codex CLI SQLite trace logs write terabytes to local SSDs
+
+- Status: open
+- Category: Agentic coding
+- Sources: [openai/codex issue #28224](https://github.com/openai/codex/issues/28224)
+- Watch for: OpenAI maintainer response or logging-volume fix; independent confirmation of the write rate; any default-log-level change.
+- Last checked: 2026-06-22
+- Notes: Issue filed 2026-06-14 (user 1996fanrui). Codex CLI continuously writes TRACE/INFO to ~/.codex/logs_2.sqlite; reporter measured ~37 TB written after ~21 days uptime, extrapolated ~640 TB/year, approaching a 1 TB consumer SSD's ~600 TBW endurance within a year. ~70% of logged bytes from one TRACE target codex_api::endpoint::responses_websocket. One user's report; OpenAI had not posted a fix/confirmation as of 2026-06-22. HN 48626930 (~139 pts).
