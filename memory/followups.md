@@ -291,8 +291,8 @@ Format:
 - Category: AI
 - Sources: [Anthropic statement](https://www.anthropic.com/news/fable-mythos-access), [Bloomberg](https://www.bloomberg.com/news/articles/2026-06-13/anthropic-says-us-limits-foreign-access-to-fable-5-mythos-5), [Korea JoongAng Daily](https://www.koreajoongangdaily.com/business/anthropic-confident-of-reenabling-mythos-fable-5-access-in-coming-days-executive/12727522), [Wired SK Telecom](https://www.wired.com/story/sk-telecom-anthropic-mythos)
 - Watch for: Directive lifted, narrowed, or extended to other models/providers; official US government statement; formal EU response; legal challenge; refund or credit handling.
-- Last checked: 2026-06-20
-- Notes: Anthropic received an export control directive at 17:21 ET 2026-06-12 to block all foreign-national access to Fable 5 and Mythos 5; it disabled both for all customers. Other models unaffected. Stated concern is a narrow jailbreak (ask model to read a codebase and fix flaws), which Anthropic says exists in other models including GPT-5.5. Anthropic disagrees with the recall. 2026-06-13: WSJ reports (single-sourced, "people familiar") that Amazon CEO Andy Jassy's talks with Trump administration officials preceded the directive; Amazon researchers reportedly prompted Fable 5 for cyberattack-aiding info. Amazon holds a large (>5%) equity stake in Anthropic. 2026-06-14: EU Commission spokesperson said it is assessing the practical consequences of the directive and that measures should not discriminate against partners (Reuters, Euronews). As of 2026-06-15 access still suspended, no restoration timeline. 2026-06-18: Anthropic MD International Chris Ciauri said in Seoul the company is confident access returns "in coming days" (no restoration yet); Wired identified SK Telecom as the Korean telecom at the center of the Mythos dispute. As of 2026-06-21 still suspended (Anthropic news page unchanged from the 2026-06-12 statement).
+- Last checked: 2026-06-22
+- Notes: Anthropic received an export control directive at 17:21 ET 2026-06-12 to block all foreign-national access to Fable 5 and Mythos 5; it disabled both for all customers. Other models unaffected. Stated concern is a narrow jailbreak (ask model to read a codebase and fix flaws), which Anthropic says exists in other models including GPT-5.5. Anthropic disagrees with the recall. 2026-06-13: WSJ reports (single-sourced, "people familiar") that Amazon CEO Andy Jassy's talks with Trump administration officials preceded the directive; Amazon researchers reportedly prompted Fable 5 for cyberattack-aiding info. Amazon holds a large (>5%) equity stake in Anthropic. 2026-06-14: EU Commission spokesperson said it is assessing the practical consequences of the directive and that measures should not discriminate against partners (Reuters, Euronews). As of 2026-06-15 access still suspended, no restoration timeline. 2026-06-18: Anthropic MD International Chris Ciauri said in Seoul the company is confident access returns "in coming days" (no restoration yet); Wired identified SK Telecom as the Korean telecom at the center of the Mythos dispute. As of 2026-06-21 still suspended (Anthropic news page unchanged from the 2026-06-12 statement). 2026-06-22: still suspended. The Economist (briefing dated 2026-06-14, surfaced on HN 48617278) reported NSA/Cyber Command director Gen. Joshua Rudd told Sen. Mark Warner that Mythos "broke into almost all of our classified systems, not in weeks, but in hours"; Warner cited it to argue for faster pre-release testing, not as criticism. The Economist editor cautioned the quote is not literal; likely an internal red-team assessment against replicas under Project Glasswing, not a real breach. BitGo's CEO and others publicly disputed the breach framing. Treat the claim as contested discussion, not confirmed capability.
 
 ## 2026-06-13: Oracle PeopleSoft CVE-2026-35273 active exploitation
 
@@ -579,8 +579,8 @@ Format:
 - Category: Outage
 - Sources: [Let's Encrypt status](https://letsencrypt.status.io/)
 - Watch for: Full redundancy restoration; any Let's Encrypt post-incident note; whether renewal errors recur.
-- Last checked: 2026-06-21
-- Notes: Incident on acme-v02.api.letsencrypt.org (production) starting 2026-06-18 16:04 UTC. An upstream network event disrupted traffic between two datacenters; some clients saw 400/500 responses while most requests succeeded. As of the 2026-06-19 04:45 UTC update the API was operating normally but still with reduced redundancy, with Let's Encrypt continuing to work with its upstream ISP on the root cause (incident not yet fully resolved). HN thread 48594715 surfaced 2026-06-19 framed as "renewals had errors today." letsencrypt.status.io fetched 200 from the run environment.
+- Last checked: 2026-06-22
+- Notes: Incident on acme-v02.api.letsencrypt.org (production) starting 2026-06-18 16:04 UTC. An upstream network event disrupted traffic between two datacenters; some clients saw 400/500 responses while most requests succeeded. As of the 2026-06-19 04:45 UTC update the API was operating normally but still with reduced redundancy, with Let's Encrypt continuing to work with its upstream ISP on the root cause (incident not yet fully resolved). HN thread 48594715 surfaced 2026-06-19 framed as "renewals had errors today." letsencrypt.status.io fetched 200 from the run environment. 2026-06-22: still operating normally with reduced redundancy; no status update past 2026-06-19 04:45 UTC.
 
 ## 2026-06-18: Ubiquiti Enterprise NAS (ENAS) on ZFS
 
@@ -633,8 +633,8 @@ Format:
 - Category: Markets
 - Sources: [Invezz](https://invezz.com/in/news/2026/06/19/hyundai-nears-full-control-of-boston-dynamics-in-dollar325m-softbank-deal/), [EconoTimes](https://www.econotimes.com/Hyundai-to-Acquire-SoftBanks-Remaining-Boston-Dynamics-Stake-for-325-Million-1744675)
 - Watch for: Hyundai board vote (reported ~2026-06-22); official Hyundai newsroom completion statement; stated robotics-roadmap or Atlas production plans.
-- Last checked: 2026-06-20
-- Notes: Reporting 2026-06-19 says Hyundai will acquire SoftBank's remaining Boston Dynamics stake for ~325M USD, reaching full ownership. Follows a put option from Hyundai's 2021 purchase of an 80% stake (~1.1B USD valuation). Board approval reported for ~2026-06-22. HN 48600312 (669 pts). Developing until board approval/completion confirmed; primary Hyundai newsroom page currently serves the 2021 completion PR.
+- Last checked: 2026-06-22
+- Notes: Reporting 2026-06-19 says Hyundai will acquire SoftBank's remaining Boston Dynamics stake (~9.65%) for ~325M USD, reaching full ownership; implied valuation ~3.4B USD. Follows a put option from Hyundai's 2021 purchase of an 80% stake (~1.1B USD valuation). Board approval reported for ~2026-06-22. HN 48600312 (669 pts). Developing until board approval/completion confirmed; primary Hyundai newsroom page still serves the 2021 completion PR (verified 2026-06-22, dated 2021-06-21). 2026-06-22: board vote expected today; no completion statement confirmed at run time. Hyundai and SoftBank have not publicly confirmed the deal.
 
 ## 2026-06-20: John Jumper leaves Google DeepMind for Anthropic
 
@@ -696,8 +696,8 @@ Format:
 - Category: AI
 - Sources: [Anthropic privacy policy](https://www.anthropic.com/legal/privacy), [The Register](https://www.theregister.com/ai-and-ml/2026/06/15/anthropic-reserves-right-to-check-id-for-claude-subs/5255804)
 - Watch for: What triggers a verification check; biometric-data retention period; consequence of refusal; whether other providers add consumer ID gates; any link to the export-control enforcement posture.
-- Last checked: 2026-06-21
-- Notes: Anthropic revised privacy policy (effective 2026-07-08) reserves the right to require identity verification from consumer Claude users (Free, Pro, Max) before granting or maintaining access. Methods may collect a government-ID image and its fields, a photo/video of the user, and facial-geometry templates (biometric data in some jurisdictions); runs via third-party vendor Persona, in limited use since 2026-04-14. Trigger, retention period, and refusal consequence unspecified. Business subscriptions excluded. Lands amid export-control pressure on Fable 5/Mythos 5. HN 48618455. The Register 2026-06-15.
+- Last checked: 2026-06-22
+- Notes: Anthropic revised privacy policy (effective 2026-07-08) reserves the right to require identity verification from consumer Claude users (Free, Pro, Max) before granting or maintaining access. Methods may collect a government-ID image and its fields, a photo/video of the user, and facial-geometry templates (biometric data in some jurisdictions); runs via third-party vendor Persona, in limited use since 2026-04-14. Trigger, retention period, and refusal consequence unspecified. Business subscriptions excluded. Lands amid export-control pressure on Fable 5/Mythos 5. HN 48618455. The Register 2026-06-15. 2026-06-22: Anthropic published a Claude support article operationalizing the policy (support.claude.com/en/articles/14328960): a verification prompt may appear "when accessing certain capabilities" or as routine platform-integrity checks; asks for a government photo ID plus a live selfie collected and held by Persona (not on Anthropic systems); states data is used only to confirm identity and not for training; still no stated retention period or refusal consequence. Top HN thread of the day (586 pts); commenters note OpenAI's analogous check permanently locks accounts that fail with no retry, and cite China's 2023 real-name generative-AI requirement as a two-tier-access precedent.
 
 ## 2026-06-21: Anthropic Project Fetch Phase Two robot-quadruped result
 
@@ -716,3 +716,21 @@ Format:
 - Watch for: Distribution adoption of systemd-sysinstall and IMDSD in H2 2026 releases; security review of the new metadata and storage surfaces.
 - Last checked: 2026-06-21
 - Notes: systemd 261 released. systemd-sysinstall: textual OS installer wrapping systemd partitioning/credential/config tools from boot media. IMDSD: Instance Metadata Service subsystem (systemd-imdsd) exposing cloud instance metadata to local programs, with an hwdb recognizing public clouds (EC2, Azure, GCE, Oracle Cloud, Tencent, Hetzner) via SMBIOS. storagectl: CLI plus Varlink interface exposing storage resources uniformly for managed user storage. HN 48613328.
+
+## 2026-06-22: Claude multi-model elevated error rates incident
+
+- Status: closed
+- Category: Outage
+- Sources: [Claude status](https://status.claude.com/incidents/lv35v0q9nsj2)
+- Watch for: Anthropic root-cause statement (none published); recurrence.
+- Last checked: 2026-06-22
+- Notes: 2026-06-22 incident. Elevated error rates across Opus 4.8/4.7/4.6, Sonnet 4.6, Haiku 4.5 on claude.ai, Claude API, Claude Code, Claude Cowork. Investigation began 00:37 UTC; models recovered in sequence (Opus 4.8 01:16, Haiku 4.5 01:33, Opus 4.7 01:56 UTC); resolved 02:06 UTC (~1.5h). No root cause published. Resolved; closed.
+
+## 2026-06-22: OCaml 5.5.0 release
+
+- Status: open
+- Category: Languages
+- Sources: [release notes](https://ocaml.org/releases/5.5.0), [announcement](https://discuss.ocaml.org/t/ocaml-5-5-0-released/18265)
+- Watch for: opam ecosystem updates against the 5.5 breaking type-system changes; 5.5.x point releases.
+- Last checked: 2026-06-22
+- Notes: OCaml 5.5.0 released 2026-06-19. Language: module-dependent functions (modular explicits, lightweight functor form taking a module argument), polymorphic function parameters, extended local definitions (let module/let exception/let open in most structure items), external types. Runtime/compiler: relocatable compiler, Windows uses WinAPI directly (drops Winpthreads), GC idle phase + generational stack scanning, ~60 new stdlib functions. Multiple breaking type-system changes. ~90 improvements, 40 bug fixes. Surfaced via r/programming; not on HN front page this run.
