@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 41
+source_count = 46
 +++
 
 ## Top stories
@@ -81,6 +81,15 @@ source_count = 41
 - **Summary:** Researchers from Huazhong University of Science and Technology and the VIVO AI Lab describe Moebius, a 226M-parameter image-inpainting model they report matches or exceeds FLUX.1-Fill-Dev (11.9B) and SD3.5 Large-Inpainting across six Places2/CelebA-HQ/FFHQ benchmarks at under 2% of the size. The method uses an LλMI block that condenses spatial context into fixed-size linear matrices to avoid quadratic attention cost, plus multi-granularity distillation from a PixelHacker teacher; the authors report 26ms per step and over 15x runtime speedup.
 - **Why it matters:** A sub-billion-parameter model claiming parity with 10B-class inpainting would cut serving cost and latency for an editing workload if the result reproduces.
 - **Follow-up:** Confirm the license and released weights, and watch for independent benchmark reproduction.
+
+### VibeThinker-3B small reasoning model
+
+- **Category:** ML research
+- **Status:** developing
+- **Sources:** [arXiv 2606.16140](https://arxiv.org/abs/2606.16140), [discussion](https://news.ycombinator.com/item?id=48639240)
+- **Summary:** A team led by Sen Xu describes VibeThinker-3B, a 3-billion-parameter reasoning model trained with a "Spectrum-to-Signal" post-training recipe: curriculum-based supervised fine-tuning, multi-domain reinforcement learning, then offline self-distillation. The paper (submitted 2026-06-15) reports AIME26 94.3 (97.1 with test-time scaling), LiveCodeBench v6 80.2 Pass@1, LeetCode-contest 96.1% acceptance, and IFEval 93.4, and claims parity on these tasks with models "orders of magnitude larger" such as DeepSeek V3.2, GLM-5, and Gemini 3 Pro. The reported numbers are the authors' own and not independently reproduced.
+- **Why it matters:** If the recipe reproduces, it pushes competition-grade math and coding reasoning into a 3B model that runs on commodity hardware, lowering the cost floor for local reasoning workloads.
+- **Follow-up:** Watch for released weights, the license, and independent evaluation on held-out contest problems.
 
 ## Agentic coding
 
@@ -189,6 +198,15 @@ No major items found.
 - **Why it matters:** Rising DRAM/NAND prices feed directly into server bill-of-materials and consumer-hardware costs, raising the cost floor for build-out and self-hosting.
 - **Follow-up:** Watch for vendor price changes and any pass-through to cloud instance pricing.
 
+### SpaceX shares fall 16% post-IPO, pressuring the all-stock Anysphere deal
+
+- **Category:** Markets
+- **Status:** developing
+- **Sources:** [Yahoo Finance](https://finance.yahoo.com/markets/stocks/article/spacex-stock-tumbles-164-shaving-off-most-ipo-gains-since-debut-141725657.html), [FT](https://www.ft.com/content/c11d08ed-6668-4678-b829-1d50acbd12d4), [discussion](https://news.ycombinator.com/item?id=48639057)
+- **Summary:** SpaceX (Nasdaq SPCX) fell 16.4% on 2026-06-22 to close at $154.60, erasing most of its post-IPO rally; the stock peaked near $225 intraday last week and remains above the $135 IPO price (about +14%). Reporting ties the selloff to SpaceX filing for its first bond sale, which Bloomberg said is in the $20 billion range and would repay a bridge loan. SpaceX's pending acquisition of Anysphere (maker of Cursor) is all-stock, with Anysphere shares converting into SpaceX Class A stock priced on a seven-day VWAP before close, so a sustained SPCX decline lowers the implied value Anysphere holders receive.
+- **Why it matters:** The acquirer's share-price swing directly changes the value of the Cursor deal for Anysphere shareholders, a developer-tools ownership event this digest tracks.
+- **Follow-up:** Watch the VWAP window around the Q3 2026 close and whether SPCX volatility changes deal terms or Cursor's roadmap.
+
 ## Hacker News
 
 ### GLM-5.2 vs Opus comparison thread
@@ -229,18 +247,19 @@ No major items found.
 - 2026-06-22 Codex CLI logging bug: resolved. PRs #29432 and #29457 merged and shipped in `rust-v0.142.0` on 2026-06-22; reporter closed the issue as completed. See the Top stories item.
 - 2026-06-13 Anthropic Fable 5 / Mythos 5 export-control suspension: still suspended as of 2026-06-23. No reactivation date confirmed; Anthropic's [statement page](https://www.anthropic.com/news/fable-mythos-access) is unchanged and a low-traffic "Ask HN: Is Fable Back?" confirmed no restoration.
 - 2026-06-18 Let's Encrypt production ACME API: still operating normally with reduced redundancy per [letsencrypt.status.io](https://letsencrypt.status.io/); no status update past 2026-06-19 04:45 UTC.
+- 2026-06-16 SpaceX/Anysphere (Cursor) acquisition: SPCX fell 16.4% on 2026-06-22 to $154.60 (still above the $135 IPO price), down from a ~$225 peak, on news of a planned ~$20B debut bond sale. Because the Anysphere deal is all-stock priced on a seven-day VWAP, the decline lowers the implied deal value. See the Markets and companies item.
 
 ## Sources checked
 
 - Hacker News via `make hn` (Algolia backend, 0 degraded collections, 61/72 queries matched; front page, top 24h, Ask HN, Show HN, and top-thread comments).
 - Reddit: r/programming hot reachable (HTTP 200); other subreddits not sampled this run (partial coverage).
 - AI sources: GLM-5.2 local quants, Fable/Mythos status re-verification.
-- ML research and arXiv papers via `make papers` (arXiv API, 100 items); Moebius and the role-confusion ICML paper verified against arXiv.
+- ML research and arXiv papers via `make papers` (arXiv API, 134 items); Moebius, VibeThinker-3B, and the role-confusion ICML paper verified against arXiv.
 - Conferences and events via `make events` (2 upcoming within 30 days, 0 active).
 - Books via `make books` (Pragmatic RSS hit verified; O'Reilly, Manning, No Starch, MIT Press search targets checked, no confirmed new June 2026 release).
 - Security advisories: CISA KEV JSON feed (catalog 2026.06.18, count 1623, no new addition); Spur smart-TV proxy report.
 - Status pages: Let's Encrypt status; no new major incident found.
-- GitHub watchlist releases checked across `[github]` repos (newest stable: Homebrew 6.0.3 2026-06-22; Node 26.3.1, jj 0.42.0, Spring Boot 4.1.0, Kotlin 2.4.0, Swift 6.3.2; Prometheus 3.13.0-rc.1 and Zed/Neovim prereleases skipped). GitHub trending scanned (AI-agent infrastructure cluster: agentic video, agent dev tooling, turso, codebase-memory MCP).
+- GitHub watchlist releases re-checked across all `[github]` repos this pass (newest stable: Homebrew 6.0.3 2026-06-22; Node 26.3.1, jj 0.42.0, Spring Boot 4.1.0, Kotlin 2.4.0, Swift 6.3.2; no stable release published since the first ingest; Prometheus 3.13.0-rc.1, Zed 1.8.2-pre, Neovim nightly, tmux 3.7-rc, CPython 3.15.0b2, Git 2.55.0-rc1, JDK 28+3 prereleases skipped). GitHub trending scanned (overall plus rust/python/go/typescript views): AI-agent infrastructure cluster persists (agentic video/media, agent dev tooling, agent-skill repos including NVIDIA/skills, turso, codebase-memory MCP); no new release-plus-HN convergence to surface.
 - Engineering blogs: Crunchy Data.
-- YouTube via `make yt` (22 videos / 89 channels; MLST John Jumper interview surfaced).
-- Markets and company sources: The Register memory-crunch report.
+- YouTube via `make yt` (1 new video / 89 channels, several channel feeds returned 404/500; MLST John Jumper interview carried from the first ingest).
+- Markets and company sources: The Register memory-crunch report; SpaceX SPCX post-IPO selloff (Yahoo Finance, FT).
