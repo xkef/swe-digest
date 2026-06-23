@@ -291,8 +291,8 @@ Format:
 - Category: AI
 - Sources: [Anthropic statement](https://www.anthropic.com/news/fable-mythos-access), [Bloomberg](https://www.bloomberg.com/news/articles/2026-06-13/anthropic-says-us-limits-foreign-access-to-fable-5-mythos-5), [Korea JoongAng Daily](https://www.koreajoongangdaily.com/business/anthropic-confident-of-reenabling-mythos-fable-5-access-in-coming-days-executive/12727522), [Wired SK Telecom](https://www.wired.com/story/sk-telecom-anthropic-mythos)
 - Watch for: Directive lifted, narrowed, or extended to other models/providers; official US government statement; formal EU response; legal challenge; refund or credit handling.
-- Last checked: 2026-06-22
-- Notes: Anthropic received an export control directive at 17:21 ET 2026-06-12 to block all foreign-national access to Fable 5 and Mythos 5; it disabled both for all customers. Other models unaffected. Stated concern is a narrow jailbreak (ask model to read a codebase and fix flaws), which Anthropic says exists in other models including GPT-5.5. Anthropic disagrees with the recall. 2026-06-13: WSJ reports (single-sourced, "people familiar") that Amazon CEO Andy Jassy's talks with Trump administration officials preceded the directive; Amazon researchers reportedly prompted Fable 5 for cyberattack-aiding info. Amazon holds a large (>5%) equity stake in Anthropic. 2026-06-14: EU Commission spokesperson said it is assessing the practical consequences of the directive and that measures should not discriminate against partners (Reuters, Euronews). As of 2026-06-15 access still suspended, no restoration timeline. 2026-06-18: Anthropic MD International Chris Ciauri said in Seoul the company is confident access returns "in coming days" (no restoration yet); Wired identified SK Telecom as the Korean telecom at the center of the Mythos dispute. As of 2026-06-21 still suspended (Anthropic news page unchanged from the 2026-06-12 statement). 2026-06-22: still suspended. The Economist (briefing dated 2026-06-14, surfaced on HN 48617278) reported NSA/Cyber Command director Gen. Joshua Rudd told Sen. Mark Warner that Mythos "broke into almost all of our classified systems, not in weeks, but in hours"; Warner cited it to argue for faster pre-release testing, not as criticism. The Economist editor cautioned the quote is not literal; likely an internal red-team assessment against replicas under Project Glasswing, not a real breach. BitGo's CEO and others publicly disputed the breach framing. Treat the claim as contested discussion, not confirmed capability.
+- Last checked: 2026-06-23
+- Notes: Anthropic received an export control directive at 17:21 ET 2026-06-12 to block all foreign-national access to Fable 5 and Mythos 5; it disabled both for all customers. Other models unaffected. Stated concern is a narrow jailbreak (ask model to read a codebase and fix flaws), which Anthropic says exists in other models including GPT-5.5. Anthropic disagrees with the recall. 2026-06-13: WSJ reports (single-sourced, "people familiar") that Amazon CEO Andy Jassy's talks with Trump administration officials preceded the directive; Amazon researchers reportedly prompted Fable 5 for cyberattack-aiding info. Amazon holds a large (>5%) equity stake in Anthropic. 2026-06-14: EU Commission spokesperson said it is assessing the practical consequences of the directive and that measures should not discriminate against partners (Reuters, Euronews). As of 2026-06-15 access still suspended, no restoration timeline. 2026-06-18: Anthropic MD International Chris Ciauri said in Seoul the company is confident access returns "in coming days" (no restoration yet); Wired identified SK Telecom as the Korean telecom at the center of the Mythos dispute. As of 2026-06-21 still suspended (Anthropic news page unchanged from the 2026-06-12 statement). 2026-06-22: still suspended. The Economist (briefing dated 2026-06-14, surfaced on HN 48617278) reported NSA/Cyber Command director Gen. Joshua Rudd told Sen. Mark Warner that Mythos "broke into almost all of our classified systems, not in weeks, but in hours"; Warner cited it to argue for faster pre-release testing, not as criticism. The Economist editor cautioned the quote is not literal; likely an internal red-team assessment against replicas under Project Glasswing, not a real breach. BitGo's CEO and others publicly disputed the breach framing. Treat the claim as contested discussion, not confirmed capability. 2026-06-23: still suspended; Anthropic news page unchanged, no reactivation date; a low-traffic "Ask HN: Is Fable Back?" (48629948) confirmed no restoration.
 
 ## 2026-06-13: Oracle PeopleSoft CVE-2026-35273 active exploitation
 
@@ -579,8 +579,8 @@ Format:
 - Category: Outage
 - Sources: [Let's Encrypt status](https://letsencrypt.status.io/)
 - Watch for: Full redundancy restoration; any Let's Encrypt post-incident note; whether renewal errors recur.
-- Last checked: 2026-06-22
-- Notes: Incident on acme-v02.api.letsencrypt.org (production) starting 2026-06-18 16:04 UTC. An upstream network event disrupted traffic between two datacenters; some clients saw 400/500 responses while most requests succeeded. As of the 2026-06-19 04:45 UTC update the API was operating normally but still with reduced redundancy, with Let's Encrypt continuing to work with its upstream ISP on the root cause (incident not yet fully resolved). HN thread 48594715 surfaced 2026-06-19 framed as "renewals had errors today." letsencrypt.status.io fetched 200 from the run environment. 2026-06-22: still operating normally with reduced redundancy; no status update past 2026-06-19 04:45 UTC.
+- Last checked: 2026-06-23
+- Notes: Incident on acme-v02.api.letsencrypt.org (production) starting 2026-06-18 16:04 UTC. An upstream network event disrupted traffic between two datacenters; some clients saw 400/500 responses while most requests succeeded. As of the 2026-06-19 04:45 UTC update the API was operating normally but still with reduced redundancy, with Let's Encrypt continuing to work with its upstream ISP on the root cause (incident not yet fully resolved). HN thread 48594715 surfaced 2026-06-19 framed as "renewals had errors today." letsencrypt.status.io fetched 200 from the run environment. 2026-06-22: still operating normally with reduced redundancy; no status update past 2026-06-19 04:45 UTC. 2026-06-23: unchanged, still reduced redundancy, no new status update.
 
 ## 2026-06-18: Ubiquiti Enterprise NAS (ENAS) on ZFS
 
@@ -746,12 +746,12 @@ Format:
 
 ## 2026-06-22: Codex CLI SQLite trace logs write terabytes to local SSDs
 
-- Status: open
+- Status: closed
 - Category: Agentic coding
-- Sources: [openai/codex issue #28224](https://github.com/openai/codex/issues/28224)
-- Watch for: OpenAI maintainer response or logging-volume fix; independent confirmation of the write rate; any default-log-level change.
-- Last checked: 2026-06-22
-- Notes: Issue filed 2026-06-14 (user 1996fanrui). Codex CLI continuously writes TRACE/INFO to ~/.codex/logs_2.sqlite; reporter measured ~37 TB written after ~21 days uptime, extrapolated ~640 TB/year, approaching a 1 TB consumer SSD's ~600 TBW endurance within a year. ~70% of logged bytes from one TRACE target codex_api::endpoint::responses_websocket. One user's report; OpenAI had not posted a fix/confirmation as of 2026-06-22. HN 48626930 (~139 pts).
+- Sources: [openai/codex issue #28224](https://github.com/openai/codex/issues/28224), [PR #29432](https://github.com/openai/codex/pull/29432), [rust-v0.142.0](https://github.com/openai/codex/releases/tag/rust-v0.142.0)
+- Watch for: Whether the volume reduction holds in rust-v0.142.0; whether Codex Desktop on Windows gets the same fix.
+- Last checked: 2026-06-23
+- Notes: Issue filed 2026-06-14 (user 1996fanrui). Codex CLI continuously wrote TRACE/INFO to ~/.codex/logs_2.sqlite; reporter measured ~37 TB written after ~21 days uptime, extrapolated ~640 TB/year, approaching a 1 TB consumer SSD's ~600 TBW endurance within a year. ~70% of logged bytes from one TRACE target codex_api::endpoint::responses_websocket. RESOLVED 2026-06-22: PR #29432 ("Stop logging every Responses WebSocket event", merged 15:43 UTC) and PR #29457 ("Filter noisy targets from persistent logs", merged 16:17 UTC) landed; shipped in rust-v0.142.0 (published 22:19 UTC); reporter closed the issue as completed (20:13 UTC). HN 48626930 grew to ~469 pts on 2026-06-23. A Windows Codex Desktop data point was reported on the same thread. Closed; covered in 2026-06-23 Top stories.
 
 ## 2026-06-22: Fil-C memory-safe inline assembly
 
@@ -761,3 +761,30 @@ Format:
 - Watch for: A tagged stable release exposing safe inline asm past pre-release v0.679; AVX-512 and broader instruction coverage; adoption in real memory-safe C/C++ ports.
 - Last checked: 2026-06-22
 - Notes: Fil-C (memory-safe C/C++ compiler) documented pre-release (v0.679) statically validated inline assembly. The FilPizlonator pass parses inline-asm strings and constraints at LLVM IR level and cross-checks declared register/flag effects against the actual instructions; mismatch triggers a runtime panic rather than silent miscompilation. An agent-driven workflow allowlisted hundreds of pre-AVX-512 x86-64 instructions. Inline asm is a common memory-safety escape hatch; this narrows it. HN 48606096 (164 pts).
+
+## 2026-06-23: Prompt injection as role confusion (ICML 2026)
+
+- Status: open
+- Category: Security
+- Sources: [arXiv 2603.12277](https://arxiv.org/abs/2603.12277), [project](https://role-confusion.github.io)
+- Watch for: Independent reproduction of the destyling result (61% -> 10% CoT-forgery success); any vendor adoption of structural (non-style) role tags or "destyling" defenses.
+- Last checked: 2026-06-23
+- Notes: Ye, Cui, Hadfield-Menell (MIT). Thesis: models infer roles (user/assistant/think/tool) from writing style, not provider-applied tags, so attacker text styled as a privileged role overrides the boundary. Linear probes for internal "Userness"/"CoTness". CoT-forgery attack injecting fake reasoning succeeds ~60%; destyling spoofed reasoning drops success 61% -> 10%. Surfaced HN 48631888 (157 pts). Covered 2026-06-23 Top stories.
+
+## 2026-06-23: Moebius 0.22B image-inpainting model
+
+- Status: open
+- Category: ML research
+- Sources: [project](https://hustvl.github.io/Moebius/), [arXiv 2606.19195](https://arxiv.org/abs/2606.19195)
+- Watch for: License and released weights; independent benchmark reproduction vs FLUX.1-Fill-Dev / SD3.5 Large-Inpainting.
+- Last checked: 2026-06-23
+- Notes: HUST + VIVO AI Lab. 226M params, claims parity/superiority vs 10B-class inpainting across 6 Places2/CelebA-HQ/FFHQ benchmarks at <2% size. LλMI block condenses spatial context into fixed-size linear matrices (avoids quadratic attention); multi-granularity distillation from PixelHacker teacher; reports 26ms/step, >15x runtime speedup. Authors' own benchmarks; not independently reproduced. HN 48630171 (237 pts).
+
+## 2026-06-23: Rhombus v1.0
+
+- Status: open
+- Category: Languages
+- Sources: [Racket blog](https://blog.racket-lang.org/2026/06/rhombus-v1.0.html)
+- Watch for: Package-ecosystem growth and editor/LSP tooling around the 1.0 shrubbery syntax; first point releases.
+- Last checked: 2026-06-23
+- Notes: Rhombus v1.0 released 2026-06-22. General-purpose functional language on the Racket platform (#lang rhombus), relating to Racket as Elixir to Erlang. Keeps Racket macros/metaprogramming but conventional non-parenthesized "shrubbery" syntax; pervasive pattern matching, new class system, hierarchical namespaces. 1.0 framed as stability/support commitment. HN 48635417.
