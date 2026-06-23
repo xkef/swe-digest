@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 52
+source_count = 59
 +++
 
 ## Top stories
@@ -72,6 +72,15 @@ source_count = 52
 
 ## AI
 
+### Mistral OCR 4 released with structured-document output
+
+- **Category:** AI
+- **Status:** confirmed
+- **Sources:** [Mistral](https://mistral.ai/news/ocr-4/), [discussion](https://news.ycombinator.com/item?id=48645152)
+- **Summary:** Mistral released OCR 4 on 2026-06-23 (model id `mistral-ocr-latest`). It moves past plain text extraction to return a structured document representation: text with bounding boxes, block classification (titles, tables, equations, signatures), and per-element confidence scores, across 170 languages and PDF/DOC/PPT/OpenDocument inputs. Mistral reports OlmOCRBench 85.20 (highest among the models it tested), OmniDocBench 93.07, and a human-preference evaluation with average 72% win rates over competing systems, while noting ground-truth and formatting artifacts limit such benchmarks. API pricing is $4 per 1,000 pages ($2 batch, $5 Document AI); available via Mistral Studio, Amazon SageMaker, Microsoft Foundry, and self-hosting for enterprise.
+- **Why it matters:** Structured OCR output with localized elements and confidence scores feeds RAG and agent document pipelines directly, and the per-page pricing sets a concrete cost point for document-ingestion workloads.
+- **Follow-up:** Watch for independent OlmOCRBench/OmniDocBench reproduction and self-hosted throughput figures.
+
 ### GLM-5.2 local-inference quantizations documented
 
 - **Category:** AI
@@ -82,6 +91,15 @@ source_count = 52
 - **Follow-up:** Watch for independent local-throughput and quality measurements of the 2-bit and 4-bit GLM-5.2 quants.
 
 ## ML research
+
+### Baidu releases Unlimited-OCR, building on DeepSeek-OCR
+
+- **Category:** ML research
+- **Status:** developing
+- **Sources:** [GitHub](https://github.com/baidu/Unlimited-OCR), [weights](https://huggingface.co/baidu/Unlimited-OCR), [discussion](https://news.ycombinator.com/item?id=48643426)
+- **Summary:** Baidu published Unlimited-OCR on 2026-06-22, an MIT-licensed document-parsing model with weights on Hugging Face and ModelScope, framed around "one-shot long-horizon parsing" of multi-page documents. The README states the work builds on and aims to push DeepSeek-OCR "one step further," and the inference code handles single images and multi-page PDFs. The repository does not yet document model size, architecture, or benchmark numbers.
+- **Why it matters:** It lands the same week as Mistral OCR 4 and continues the move toward dense, structure-aware document OCR; an open-weight MIT release lets teams self-host the pipeline rather than meter a closed API.
+- **Follow-up:** Confirm parameter count, architecture, and benchmarks against DeepSeek-OCR once a model card or paper is published.
 
 ### Moebius: 0.22B image-inpainting model matching 10B-class quality
 
@@ -235,6 +253,15 @@ No major items found.
 - **Summary:** A head-to-head post pitting GLM-5.2 against Claude Opus 4.8 on a one-shot WebGL platformer prompt drew a large HN thread (about 480 points).
 - **Comments:** Top commenters pushed back that a single one-shot prompt is not a benchmark and not representative of collaborative agent use; some said price comparisons should include Claude subscription tiers, not only pay-as-you-go output cost; practitioners reported GLM-5.2 is slow to start and strays during planning but corrects, while one called it the most interesting open-weight release of the year and another said Chinese models over-optimize for benchmarks.
 
+### "Will It Mythos?" benchmark of AI vulnerability finding
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [swelljoe.com](https://swelljoe.com/post/will-it-mythos/), [discussion](https://news.ycombinator.com/item?id=48640196)
+- **Summary:** An independent benchmark post (Joe, swelljoe.com, dated 2026-05-30 with updates through 2026-06-22) tests whether Claude Mythos is uniquely strong at finding security vulnerabilities or whether its restriction is mainly economic. The author reports Mythos found four bugs no other model caught, but argues public models could plausibly find them with better prompts or tooling, and that several cheaper models (Qwen 3.6, DeepSeek, MiMo) were competitive with Opus 4.8 and GPT-5.5 at roughly an order of magnitude lower cost. The author flags sparse data and single runs per case as limitations.
+- **Comments:** The thread (about 249 points) ties into the contested Mythos export-control claims tracked in follow-ups; commenters debated whether vulnerability-finding capability is a genuine model differentiator or a function of prompting, tooling, and budget.
+- **Why it matters:** It adds an independent data point to the AI-found-vulnerability debate around Mythos and OpenAI's Daybreak, where capability claims have outrun reproducible method.
+
 ### Deno Desktop remains high on the front page
 
 - **Category:** Pulse
@@ -263,21 +290,21 @@ No major items found.
 ## Watchlist follow-ups
 
 - 2026-06-22 Codex CLI logging bug: resolved. PRs #29432 and #29457 merged and shipped in `rust-v0.142.0` on 2026-06-22; reporter closed the issue as completed. See the Top stories item.
-- 2026-06-13 Anthropic Fable 5 / Mythos 5 export-control suspension: still suspended as of 2026-06-23. No reactivation date confirmed; Anthropic's [statement page](https://www.anthropic.com/news/fable-mythos-access) is unchanged and a low-traffic "Ask HN: Is Fable Back?" confirmed no restoration.
+- 2026-06-13 Anthropic Fable 5 / Mythos 5 export-control suspension: still suspended as of 2026-06-23. No reactivation date confirmed; Anthropic's [statement page](https://www.anthropic.com/news/fable-mythos-access) is unchanged and a low-traffic "Ask HN: Is Fable Back?" confirmed no restoration. An independent benchmark ("Will It Mythos?", see the Hacker News item) argues Mythos's edge on vulnerability finding may be narrow and partly economic; treat as discussion, not confirmation.
 - 2026-06-18 Let's Encrypt production ACME API: still operating normally with reduced redundancy per [letsencrypt.status.io](https://letsencrypt.status.io/); no status update past 2026-06-19 04:45 UTC.
 - 2026-06-16 SpaceX/Anysphere (Cursor) acquisition: SPCX fell 16.4% on 2026-06-22 to $154.60 (still above the $135 IPO price), down from a ~$225 peak, on news of a planned ~$20B debut bond sale. Because the Anysphere deal is all-stock priced on a seven-day VWAP, the decline lowers the implied deal value. See the Markets and companies item.
 
 ## Sources checked
 
-- Hacker News via `make hn` (Algolia backend, 0 degraded collections, 61/72 queries matched; front page, top 24h, Ask HN, Show HN, and top-thread comments).
+- Hacker News via `make hn` (Algolia backend, 0 degraded collections, 62/72 queries matched on the latest fetch; front page, top 24h, Ask HN, Show HN, and top-thread comments).
 - Reddit: r/programming hot reachable (HTTP 200); other subreddits not sampled this run (partial coverage).
-- AI sources: OpenAI Daybreak announcement and GPT-5.5-Cyber trusted-access page; GLM-5.2 local quants; Fable/Mythos status re-verification.
-- ML research and arXiv papers via `make papers` (arXiv API, 134 items); Moebius, VibeThinker-3B, and the role-confusion ICML paper verified against arXiv.
+- AI sources: OpenAI Daybreak announcement and GPT-5.5-Cyber trusted-access page; Mistral OCR 4 release page; Baidu Unlimited-OCR repository and Hugging Face weights; GLM-5.2 local quants; Fable/Mythos status re-verification.
+- ML research and arXiv papers via `make papers` (arXiv API); Moebius, VibeThinker-3B, and the role-confusion ICML paper verified against arXiv; Baidu Unlimited-OCR verified against its repository.
 - Conferences and events via `make events` (2 upcoming within 30 days, 0 active).
 - Books via `make books` (Pragmatic RSS hit verified; O'Reilly, Manning, No Starch, MIT Press search targets checked, no confirmed new June 2026 release).
-- Security advisories: CISA KEV JSON feed re-verified this run (catalog 2026.06.18, count 1623, no new addition); Spur smart-TV proxy report.
+- Security advisories: CISA KEV JSON feed re-verified again this run (catalog 2026.06.18, count 1623, newest entry still Splunk CVE-2026-20253 added 2026-06-18; no new addition); Spur smart-TV proxy report.
 - Status pages: Let's Encrypt status; no new major incident found.
-- GitHub watchlist releases re-checked across all `[github]` repos this pass (newest stable: Homebrew 6.0.3 2026-06-22; Node 26.3.1, jj 0.42.0, Spring Boot 4.1.0, Kotlin 2.4.0, Swift 6.3.2; no stable release published since the first ingest; Prometheus 3.13.0-rc.1, Zed 1.8.2-pre, Neovim nightly, tmux 3.7-rc, CPython 3.15.0b2, Git 2.55.0-rc1, JDK 28+3 prereleases skipped). GitHub trending scanned (overall plus rust/python/go/typescript views): AI-agent infrastructure cluster persists (agentic video/media, agent dev tooling, agent-skill repos including NVIDIA/skills, turso, codebase-memory MCP); no new release-plus-HN convergence to surface.
+- GitHub watchlist releases re-checked across all `[github]` repos this pass (Grafana 13.0.3 published 2026-06-23 is a minor patch: Alpine base-image bump and provisioning/datasource bug fixes, below the story bar; Homebrew 6.0.3 2026-06-22; Node 26.3.1, jj 0.42.0, Spring Boot 4.1.0, Kotlin 2.4.0, Swift 6.3.2; no other stable release since the first ingest; Prometheus 3.13.0-rc.1, Zed 1.8.2-pre, Neovim nightly, tmux 3.7-rc, CPython 3.15.0b2, Git 2.55.0-rc1, JDK 28+3 prereleases skipped). GitHub trending scanned (overall plus rust/python/go/typescript views): AI-agent infrastructure cluster persists (agentic video/media, agent dev tooling, agent-skill repos including NVIDIA/skills, turso, codebase-memory MCP); no new release-plus-HN convergence to surface.
 - Engineering blogs: Crunchy Data; jchri.st (memcached).
-- YouTube via `make yt` (1 new video / 89 channels, several channel feeds returned 404/500; MLST John Jumper interview carried from the first ingest).
+- YouTube via `make yt` (29 videos in-window across 89 channels, several channel feeds returned 404/500; all talks, tutorials, or commentary with no new written primary source, including an Apple Developer "What's new in Swift" session; MLST John Jumper interview carried from the first ingest).
 - Markets and company sources: The Register memory-crunch report; SpaceX SPCX post-IPO selloff (Yahoo Finance, FT).
