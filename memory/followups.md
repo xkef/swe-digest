@@ -788,3 +788,12 @@ Format:
 - Watch for: Package-ecosystem growth and editor/LSP tooling around the 1.0 shrubbery syntax; first point releases.
 - Last checked: 2026-06-23
 - Notes: Rhombus v1.0 released 2026-06-22. General-purpose functional language on the Racket platform (#lang rhombus), relating to Racket as Elixir to Erlang. Keeps Racket macros/metaprogramming but conventional non-parenthesized "shrubbery" syntax; pervasive pattern matching, new class system, hierarchical namespaces. 1.0 framed as stability/support commitment. HN 48635417.
+
+## 2026-06-23: OpenAI Daybreak cybersecurity program and GPT-5.5-Cyber
+
+- Status: open
+- Category: AI
+- Sources: [Daybreak](https://openai.com/index/daybreak-securing-the-world/), [GPT-5.5-Cyber trusted access](https://openai.com/index/gpt-5-5-with-trusted-access-for-cyber/), [The Register](https://www.theregister.com/security/2026/06/23/openai-yoo-hoo-look-over-here-we-do-that-security-stuff-too/5259842)
+- Watch for: Patch the Planet accepted-fix rate and maintainer-burden reports; whether TAC access expands beyond the initial ~30 partners; independent reproduction of the GPT-5.5-Cyber benchmark deltas; any abuse or misuse reporting.
+- Last checked: 2026-06-23
+- Notes: OpenAI announced Daybreak 2026-06-23: updated GPT-5.5-Cyber model (limited preview behind Trusted Access for Cyber identity gate for vetted defenders; trained more permissive on security tasks, not significantly more capable than GPT-5.5; CyberGym 85.6% from 81.8%, ExploitGym 39.5% from 25.95%, SEC-bench Pro 69.8% from 63.1%), Codex Security plugin, ~30-partner Daybreak Cyber Partner Program, and Patch the Planet (OSS vuln finding/fixing with Trail of Bits and HackerOne; 30+ committed projects incl. curl, Go, Python, Sigstore, pyca/cryptography; first week 64 PRs and 51 issues across 19 projects). The Register: OpenAI gates GPT-5.5-Cyber to ~30 vetted partners after criticizing Anthropic's similar gating, tied to the Mythos access dispute. HN 48639063. Ties to the AI-found-vulnerability and maintainer-burden theme (FFmpeg AI-found zero-days, curl pausing vuln-report handling for July 2026).

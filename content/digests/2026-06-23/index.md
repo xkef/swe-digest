@@ -9,10 +9,20 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 46
+source_count = 52
 +++
 
 ## Top stories
+
+### OpenAI launches Daybreak cybersecurity program and updated GPT-5.5-Cyber
+
+- **Category:** AI
+- **Status:** confirmed
+- **Sources:** [Daybreak announcement](https://openai.com/index/daybreak-securing-the-world/), [GPT-5.5-Cyber trusted access](https://openai.com/index/gpt-5-5-with-trusted-access-for-cyber/), [discussion](https://news.ycombinator.com/item?id=48639063), [The Register](https://www.theregister.com/security/2026/06/23/openai-yoo-hoo-look-over-here-we-do-that-security-stuff-too/5259842)
+- **Summary:** OpenAI announced Daybreak on 2026-06-23, a cybersecurity push bundling an updated GPT-5.5-Cyber model, a Codex Security plugin, a roughly 30-partner Daybreak Cyber Partner Program, and a "Patch the Planet" open-source vulnerability initiative run with Trail of Bits and HackerOne. GPT-5.5-Cyber stays in limited preview behind a Trusted Access for Cyber (TAC) identity gate for vetted defenders; OpenAI says it is trained to be more permissive on security tasks rather than significantly more capable than GPT-5.5, and reports CyberGym 85.6% (from 81.8%), ExploitGym 39.5% (from 25.95%), and SEC-bench Pro 69.8% (from 63.1%). Patch the Planet lists more than 30 committed projects including cURL, Go, Python, Sigstore, and pyca/cryptography, and reported 64 pull requests and 51 issues across 19 projects in its first week.
+- **Comments:** The Register noted OpenAI gates GPT-5.5-Cyber to about 30 vetted partners after having criticized Anthropic for similar gatekeeping, and tied the contrast to the ongoing Mythos access dispute.
+- **Why it matters:** It moves AI-assisted vulnerability finding and fixing into named, widely deployed open-source projects such as curl, Go, and Python while keeping the strongest cyber model access-gated, the same trusted-access posture now contested around Anthropic's Mythos.
+- **Follow-up:** Watch Patch the Planet's accepted-fix rate and maintainer-burden reports, and whether TAC access expands beyond the initial partners.
 
 ### OpenAI Codex CLI excessive-logging bug fixed in rust-v0.142.0
 
@@ -177,6 +187,14 @@ No major items found.
 - **Summary:** A Crunchy Data post uses British Columbia's plan to stop observing daylight saving time as a worked example of how Postgres handles time zones, showing why `timestamptz` plus named IANA zones (not fixed UTC offsets) is the correct storage choice and how `tzdata` updates propagate to stored values.
 - **Why it matters:** Time-zone-rule changes are a recurring source of date-math bugs; the post gives a concrete pattern for keeping Postgres correct across rule changes.
 
+### In praise of memcached
+
+- **Category:** Engineering post
+- **Status:** confirmed
+- **Sources:** [jchri.st](https://jchri.st/blog/in-praise-of-memcached/), [discussion](https://news.ycombinator.com/item?id=48638886)
+- **Summary:** A post dated 2026-06-02 argues for memcached over Redis as a pure cache on operational grounds: client libraries treat a connection failure as a cache miss and return a default, scaling uses client-side consistent hashing rather than built-in clustering (a failed node drops from the hash ring and is retried periodically), and the absence of disk persistence keeps the cache strictly ephemeral. The author frames Redis-as-cache as an antipattern because teams come to depend on its persistence and cannot later remove it.
+- **Why it matters:** It restates a clear boundary between an ephemeral cache and a datastore, a recurring source of coupling bugs when a cache is quietly treated as a database.
+
 ## Books
 
 ### Practical Programming, Fourth Edition (Pragmatic Bookshelf)
@@ -253,13 +271,13 @@ No major items found.
 
 - Hacker News via `make hn` (Algolia backend, 0 degraded collections, 61/72 queries matched; front page, top 24h, Ask HN, Show HN, and top-thread comments).
 - Reddit: r/programming hot reachable (HTTP 200); other subreddits not sampled this run (partial coverage).
-- AI sources: GLM-5.2 local quants, Fable/Mythos status re-verification.
+- AI sources: OpenAI Daybreak announcement and GPT-5.5-Cyber trusted-access page; GLM-5.2 local quants; Fable/Mythos status re-verification.
 - ML research and arXiv papers via `make papers` (arXiv API, 134 items); Moebius, VibeThinker-3B, and the role-confusion ICML paper verified against arXiv.
 - Conferences and events via `make events` (2 upcoming within 30 days, 0 active).
 - Books via `make books` (Pragmatic RSS hit verified; O'Reilly, Manning, No Starch, MIT Press search targets checked, no confirmed new June 2026 release).
-- Security advisories: CISA KEV JSON feed (catalog 2026.06.18, count 1623, no new addition); Spur smart-TV proxy report.
+- Security advisories: CISA KEV JSON feed re-verified this run (catalog 2026.06.18, count 1623, no new addition); Spur smart-TV proxy report.
 - Status pages: Let's Encrypt status; no new major incident found.
 - GitHub watchlist releases re-checked across all `[github]` repos this pass (newest stable: Homebrew 6.0.3 2026-06-22; Node 26.3.1, jj 0.42.0, Spring Boot 4.1.0, Kotlin 2.4.0, Swift 6.3.2; no stable release published since the first ingest; Prometheus 3.13.0-rc.1, Zed 1.8.2-pre, Neovim nightly, tmux 3.7-rc, CPython 3.15.0b2, Git 2.55.0-rc1, JDK 28+3 prereleases skipped). GitHub trending scanned (overall plus rust/python/go/typescript views): AI-agent infrastructure cluster persists (agentic video/media, agent dev tooling, agent-skill repos including NVIDIA/skills, turso, codebase-memory MCP); no new release-plus-HN convergence to surface.
-- Engineering blogs: Crunchy Data.
+- Engineering blogs: Crunchy Data; jchri.st (memcached).
 - YouTube via `make yt` (1 new video / 89 channels, several channel feeds returned 404/500; MLST John Jumper interview carried from the first ingest).
 - Markets and company sources: The Register memory-crunch report; SpaceX SPCX post-IPO selloff (Yahoo Finance, FT).
