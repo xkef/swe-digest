@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 35
+source_count = 37
 +++
 
 ## Top stories
@@ -78,6 +78,16 @@ source_count = 35
 - **Why it matters:** It is the main European gathering for CPython core and library maintainers, with talks that often surface upcoming runtime changes.
 
 ## AI
+
+### FUTO Swipe ships an on-device neural swipe-typing model
+
+- **Category:** AI
+- **Status:** discussion
+- **Sources:** [swipe.futo.tech](https://swipe.futo.tech), [discussion](https://news.ycombinator.com/item?id=48648619)
+- **Summary:** FUTO published a neural swipe-typing model used in its Android keyboard and as a standalone library. The system combines a layout- and language-agnostic encoder (635,140 parameters), a layout/language-specific decoder (304,155 parameters), and a small ContextLM (about 1.5M parameters, mostly embeddings) totaling about 2.49M parameters, with beam search (width 300) reporting an approximately 4 percent top-4 failure rate and below 1 percent excluding out-of-vocabulary cases. It was trained on one million voluntarily contributed English QWERTY swipes (August 2024 to March 2025, sourced primarily from Wikipedia), released as an MIT-licensed dataset on Hugging Face. Inference code is GPL; the models use FUTO's own model license.
+- **Comments:** HN commenters report accuracy comparable to Gboard and a clear improvement over earlier FUTO versions, with debate over whether the non-commercial model and keyboard licenses meet the OSI open-source definition.
+- **Why it matters:** It is a small, fully on-device gesture-typing model with a released dataset and a reusable inference library, an alternative to cloud or proprietary keyboard prediction.
+- **Follow-up:** Track multilingual support, the standalone library's adoption, and independent accuracy comparisons.
 
 ### David Rosenthal frames AI's affordability crisis
 
@@ -244,13 +254,13 @@ No major items found.
 
 - Hacker News (make hn: Algolia, full coverage, 0 degraded collections, 62/72 queries matched; front page, top 24h, Ask HN, Show HN, top-thread comments)
 - Reddit (degraded: RSS feeds host-blocked from the run environment this run; r/programming and r/netsec returned "Blocked")
-- AI sources (Anthropic Claude Tag, AI economics commentary, Claude status incident)
+- AI sources (Anthropic Claude Tag, AI economics commentary, FUTO Swipe on-device model verified against swipe.futo.tech, Claude status incident)
 - ML research and arXiv papers (make papers: arXiv API timed out, arXiv RSS fallback, 1729 items; YOLO26 verified against arXiv)
 - Conferences and events (make events: 2 upcoming within 30 days, 0 active)
 - Books and publisher feeds (make books: Pragmatic Bookshelf; O'Reilly, Manning, Packt, No Starch, MIT Press search targets checked, no new confirmed June 2026 release)
-- Security advisories (CISA KEV JSON live: catalog 2026.06.23, count 1627; Ubiquiti Bulletin 064; LastPass/Klue reporting)
+- Security advisories (CISA KEV JSON re-checked live: catalog 2026.06.23, count 1627, no new 2026-06-24 additions; Ubiquiti Bulletin 064; LastPass/Klue reporting)
 - Status pages (status.claude.com)
-- GitHub watchlist (releases checked across all [github] repos: new stable Node.js v24.18.0, OpenTelemetry Collector v0.155.0, Grafana v13.0.3 minor patch; others unchanged or prereleases. Trending scanned: agentic-infrastructure cluster, no new convergent release-plus-HN theme)
+- GitHub watchlist (quality pass re-checked releases across all [github] repos: new stable Node.js v24.18.0, OpenTelemetry Collector v0.155.0, Grafana v13.0.3 bug-fix only; others unchanged or prereleases (neovim nightly, tmux 3.7-rc, prometheus v3.13.0-rc.1, zed pre). Trending re-scanned (overall plus language views): Claude Code plugin and agent-tooling cluster (anthropics/claude-plugins-official, garrytan/gstack), no new convergent release-plus-HN theme to surface)
 - Engineering blogs (Filippo Valsorda, David Rosenthal, Armin Ronacher)
 - YouTube channels (make yt: 33 videos across 89 channels)
 - Markets and company sources
