@@ -806,3 +806,39 @@ Format:
 - Watch for: Independent reproduction of Mistral OCR 4 benchmarks (OlmOCRBench 85.20, OmniDocBench 93.07) and self-hosted throughput; Unlimited-OCR model card with size/architecture/benchmarks vs DeepSeek-OCR; downstream RAG/agent pipeline adoption.
 - Last checked: 2026-06-23
 - Notes: Two document-OCR releases landed the same week. Mistral OCR 4 (2026-06-23, model id mistral-ocr-latest): structured-document output (text + bounding boxes, block classification of titles/tables/equations/signatures, per-element confidence), 170 languages, PDF/DOC/PPT/ODF; reports OlmOCRBench 85.20 (top of its tested set), OmniDocBench 93.07, 72% avg human-preference win rate (vendor figures, benchmark caveats noted); API $4/1k pages ($2 batch, $5 Document AI); via Mistral Studio, Amazon SageMaker, Microsoft Foundry, self-host for enterprise. HN 48645152 (200 pts). Baidu Unlimited-OCR (2026-06-22, MIT, weights on Hugging Face baidu/Unlimited-OCR and ModelScope): "one-shot long-horizon parsing" of multi-page docs, README says it pushes DeepSeek-OCR "one step further"; no size/architecture/benchmarks documented yet. HN 48643426 (296 pts). Open-weight vs closed-API contrast in the OCR space.
+
+## 2026-06-24: Ubiquiti UniFi OS triple-CVE unauthenticated root chain (KEV)
+
+- Status: open
+- Category: Security
+- Sources: [Ubiquiti Bulletin 064](https://community.ui.com/releases/Security-Advisory-Bulletin-064-064/84811c09-4cf4-42ab-bd61-cc994445963b), [CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog), [exploit chain](https://www.it-connect.tech/critical-3-exploit-chain-grants-root-access-on-unifi-os-server/)
+- Watch for: Internet-exposure/exploitation scope; per-version patched-build coverage; any worming or ransomware follow-on.
+- Last checked: 2026-06-24
+- Notes: CVE-2026-34908 (improper access control), CVE-2026-34909 (path traversal), CVE-2026-34910 (command injection), each CVSS 10.0 on UniFi OS Server; chain to unauthenticated root RCE. Patched 2026-05-21 in Bulletin 064. CISA KEV added all three 2026-06-23 (catalog 2026.06.23, count 1627); active exploitation of CVE-2026-34910 confirmed. Same KEV batch added CVE-2025-67038 (Lantronix EDS5000).
+
+## 2026-06-24: Swift Package Index joins Apple
+
+- Status: open
+- Category: Apple
+- Sources: [SPI blog](https://swiftpackageindex.com/blog/swift-package-index-joins-apple), [9to5Mac](https://9to5mac.com/2026/06/23/swift-package-index-joins-apple-pledges-to-remain-open-source/)
+- Watch for: Whether open-source operation holds; the announced comprehensive Swift package registry; hosting/governance changes; team continuity (Dave Verwer, Sven A. Schmidt).
+- Last checked: 2026-06-24
+- Notes: Announced 2026-06-23 by Ted Kremenek, Dave Verwer, Sven A. Schmidt. SPI (community-run Swift package discovery, 10,000+ indexed packages) joins Apple; post says it stays open source and little changes near term, with a stated goal of a comprehensive package registry. HN 48648779 (173 pts).
+
+## 2026-06-24: LastPass customer data exposed via Klue supply-chain breach
+
+- Status: open
+- Category: Security
+- Sources: [TechCrunch](https://techcrunch.com/2026/06/23/password-manager-maker-lastpass-says-hackers-stole-customer-support-case-data-during-klue-breach/), [Cybersecurity Dive](https://www.cybersecuritydive.com/news/klue-investigating-supply-chain-attack-salesforce-integrations/823532/)
+- Watch for: Full list of affected Klue customers; phishing follow-on using stolen support-case data; whether the Icarus group escalates.
+- Last checked: 2026-06-24
+- Notes: LastPass confirmed 2026-06-23 that Salesforce customer data (names, phone, email/physical addresses, support-case contents) was accessed after OAuth tokens were stolen in a breach of Klue, a third-party market-intelligence platform. Products/infra/vaults unaffected. Klue compromise claimed by Icarus extortion group via compromised legacy integration credentials; also hit Recorded Future, Tanium, Jamf, Sprout Social, Gong, Insurity. Salesforce-integration OAuth-token supply-chain pattern.
+
+## 2026-06-24: Recurring Claude multi-model elevated-error incidents
+
+- Status: open
+- Category: Outage
+- Sources: [Claude status 2026-06-23](https://status.claude.com/incidents/jbhf20wjmzrf)
+- Watch for: Recurrence frequency; any Anthropic root-cause statement.
+- Last checked: 2026-06-24
+- Notes: 2026-06-23 incident: elevated error rates across multiple Claude models on claude.ai, Console, API, Claude Code, Claude Cowork, 14:08-15:33 UTC (fix 14:53, resolved 15:33), no root cause. Third multi-model reliability incident in ~a week (after 2026-06-16 and 2026-06-22), all resolved with no published root cause.
