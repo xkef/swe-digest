@@ -834,6 +834,15 @@ Format:
 - Last checked: 2026-06-24
 - Notes: LastPass confirmed 2026-06-23 that Salesforce customer data (names, phone, email/physical addresses, support-case contents) was accessed after OAuth tokens were stolen in a breach of Klue, a third-party market-intelligence platform. Products/infra/vaults unaffected. Klue compromise claimed by Icarus extortion group via compromised legacy integration credentials; also hit Recorded Future, Tanium, Jamf, Sprout Social, Gong, Insurity. Salesforce-integration OAuth-token supply-chain pattern.
 
+## 2026-06-24: Qwen-AgentWorld language world models
+
+- Status: open
+- Category: AI
+- Sources: [arXiv 2606.24597](https://arxiv.org/abs/2606.24597)
+- Watch for: Independent reproduction of AgentWorldBench gains; released weights and license terms; adoption as an RL environment simulator in agent training stacks.
+- Last checked: 2026-06-24
+- Notes: Alibaba Qwen team, arXiv 2606.24597 dated 2026-06-23. Two large language world models (35B and 397B params) that simulate agentic environments via long chain-of-thought reasoning. Three-stage pipeline: continued pre-training on state-transition dynamics, SFT for next-state prediction, RL with hybrid rubric-and-rule rewards over 10M+ environment-interaction trajectories across seven domains. Serve as decoupled environment simulators for scalable RL and as unified agent foundation models. Authors report gains over frontier models on their AgentWorldBench (built from real interactions of 5 frontier models on 9 benchmarks) and across seven agentic benchmarks. Authors' own numbers, not independently reproduced. HN 48654351. Distinct from the Qwen-RobotSuite embodied series (2026-06-16).
+
 ## 2026-06-24: Recurring Claude multi-model elevated-error incidents
 
 - Status: open

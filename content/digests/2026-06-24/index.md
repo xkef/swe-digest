@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 37
+source_count = 41
 +++
 
 ## Top stories
@@ -109,6 +109,15 @@ source_count = 37
 - **Why it matters:** YOLO is a widely used production detection framework, and native NMS-free inference removes a common deployment and latency complication.
 - **Follow-up:** Independent reproduction of the COCO/LVIS numbers and the released weights and license terms.
 
+### Qwen-AgentWorld releases language world models for agent training
+
+- **Category:** Paper
+- **Status:** developing
+- **Sources:** [arXiv 2606.24597](https://arxiv.org/abs/2606.24597), [discussion](https://news.ycombinator.com/item?id=48654351)
+- **Summary:** Researchers from the Alibaba Qwen team posted Qwen-AgentWorld (arXiv 2606.24597, dated 2026-06-23), two large language world models (35B and 397B parameters) that simulate agentic environments through long chain-of-thought reasoning. They are trained in a three-stage pipeline (continued pre-training on state-transition dynamics, supervised fine-tuning for next-state prediction, reinforcement learning with hybrid rubric-and-rule rewards) over more than 10 million environment-interaction trajectories across seven domains. The models serve both as decoupled environment simulators for scalable reinforcement-learning training and as unified agent foundation models, and the authors report gains over frontier models on their AgentWorldBench and across seven agentic benchmarks.
+- **Why it matters:** Using a world model as a synthetic environment simulator targets the data and infrastructure bottleneck in training agentic models without live environment access.
+- **Follow-up:** Independent reproduction of the AgentWorldBench results and the released weights and license terms.
+
 ## Agentic coding
 
 No major items found.
@@ -176,6 +185,15 @@ No major items found.
 - **Summary:** The OpenTelemetry Collector core released v0.155.0 on 2026-06-23. Breaking changes remove several stabilized feature gates (confighttp.framedSnappy, configoptional.AddEnabledField, confmap.newExpandedValueSanitizer, exporter.PersistRequestContext, otelcol.printInitialConfig, telemetry.UseLocalHostAsDefaultMetricsAddress, pdata.enableRefCounting) and rename memory_limiter processor metrics to carry a memory_limiter prefix. The schemagen CLI moved into the core repository, and mdatagen gains versioned-metrics support for migrating to new semantic conventions.
 - **Why it matters:** Removing stabilized gates and renaming processor metrics can break collector configs and dashboards that still reference the old names.
 - **Follow-up:** Track config and dashboard migration reports from the renamed memory_limiter metrics.
+
+### Bunny.net drops query fees for its authoritative DNS
+
+- **Category:** Infrastructure
+- **Status:** discussion
+- **Sources:** [Bunny.net blog](https://bunny.net/blog/were-making-bunny-dns-free/), [discussion](https://news.ycombinator.com/item?id=48657030)
+- **Summary:** Bunny.net announced on 2026-06-24 that it is removing all per-query fees from Bunny DNS, offering free authoritative DNS for up to 500 domains per account with unlimited queries, DNSSEC, smart records, health-monitoring failover, and modern record types (HTTPS, SVCB, TLSA, CDS, CDNSKEY). The account must keep a $1 per month minimum platform spend, and Bunny frames DNS as foundational infrastructure for its CDN and security products rather than a standalone paid service.
+- **Why it matters:** Free authoritative DNS with DNSSEC and failover lowers the cost floor for managed DNS, a recurring infrastructure dependency.
+- **Follow-up:** None.
 
 ## Engineering posts
 
@@ -252,15 +270,16 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News (make hn: Algolia, full coverage, 0 degraded collections, 62/72 queries matched; front page, top 24h, Ask HN, Show HN, top-thread comments)
-- Reddit (degraded: RSS feeds host-blocked from the run environment this run; r/programming and r/netsec returned "Blocked")
-- AI sources (Anthropic Claude Tag, AI economics commentary, FUTO Swipe on-device model verified against swipe.futo.tech, Claude status incident)
-- ML research and arXiv papers (make papers: arXiv API timed out, arXiv RSS fallback, 1729 items; YOLO26 verified against arXiv)
+- Hacker News (make hn: Algolia, full coverage, 0 degraded collections, 60/72 queries matched on the latest fetch; front page, top 24h, Ask HN, Show HN, top-thread comments)
+- Reddit (RSS reachable this run: r/programming top/day fetched cleanly; r/netsec, r/devops, r/rust rate-limited on rapid sequential fetch and returned empty; no new Reddit-only item rose above the bar)
+- AI sources (Anthropic Claude Tag, AI economics commentary, FUTO Swipe on-device model verified against swipe.futo.tech, Claude status incident; Grok Build 0.1 eval considered and skipped as thin aggregator-only signal)
+- ML research and arXiv papers (make papers: arXiv RSS, full coverage; YOLO26 and Qwen-AgentWorld verified against arXiv abstracts)
 - Conferences and events (make events: 2 upcoming within 30 days, 0 active)
 - Books and publisher feeds (make books: Pragmatic Bookshelf; O'Reilly, Manning, Packt, No Starch, MIT Press search targets checked, no new confirmed June 2026 release)
 - Security advisories (CISA KEV JSON re-checked live: catalog 2026.06.23, count 1627, no new 2026-06-24 additions; Ubiquiti Bulletin 064; LastPass/Klue reporting)
 - Status pages (status.claude.com)
-- GitHub watchlist (quality pass re-checked releases across all [github] repos: new stable Node.js v24.18.0, OpenTelemetry Collector v0.155.0, Grafana v13.0.3 bug-fix only; others unchanged or prereleases (neovim nightly, tmux 3.7-rc, prometheus v3.13.0-rc.1, zed pre). Trending re-scanned (overall plus language views): Claude Code plugin and agent-tooling cluster (anthropics/claude-plugins-official, garrytan/gstack), no new convergent release-plus-HN theme to surface)
+- GitHub watchlist (releases re-checked across all [github] repos this run: no new stable release published since the 05:51 UTC run; Node.js v24.18.0 and OpenTelemetry Collector v0.155.0 already covered, Grafana v13.0.3 bug-fix only; others unchanged or prereleases (neovim nightly, tmux 3.7-rc, prometheus v3.13.0-rc.1, zed pre). Trending re-scanned: no new convergent release-plus-HN theme)
+- Infrastructure (Bunny DNS free-tier announcement verified against bunny.net blog)
 - Engineering blogs (Filippo Valsorda, David Rosenthal, Armin Ronacher)
-- YouTube channels (make yt: 33 videos across 89 channels)
+- YouTube channels (make yt: 48 videos across 89 channels)
 - Markets and company sources
