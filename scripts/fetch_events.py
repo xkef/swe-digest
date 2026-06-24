@@ -7,6 +7,10 @@ active today. There is no network call: the committed dates are the source of
 truth, so this runs live during every digest and is the basis for the
 "notify before" lead time in the Conferences and events section.
 
+The lead window is deliberately short (3 days) so an event surfaces only as a
+brief heads-up just before it starts and then while it runs, instead of
+repeating in every digest for weeks.
+
 Takes an optional YYYY-MM-DD argument (default today UTC) so the lead-time math
 is testable without mocking the clock.
 
@@ -25,8 +29,8 @@ ROOT = Path(__file__).resolve().parents[1]
 CACHE_DIR = ROOT / ".cache" / "events"
 WATCHLIST = ROOT / "data" / "watchlist.toml"
 
-LEAD_DAYS = 30
-SOON_DAYS = 7
+LEAD_DAYS = 3
+SOON_DAYS = 3
 
 
 def parse_day(value: str | None) -> date:

@@ -481,20 +481,26 @@ Selection rules:
 
 Collection: `make events` (`scripts/fetch_events.py`) reads the `[[events]]`
 table in `data/watchlist.toml` and partitions it by date into events upcoming
-within 30 days (with a `days_until` countdown, flagged `soon` within 7 days) and
-events active today. It makes no network call; the committed dates are the
-source of truth and must be kept current and verified against each event's
-official page.
+within 3 days (with a `days_until` countdown, flagged `soon`) and events active
+today. It makes no network call; the committed dates are the source of truth and
+must be kept current and verified against each event's official page.
+
+The window is short on purpose. An event is a brief heads-up in the few days
+before it starts and gets live coverage while it runs; it does not repeat in
+every digest for weeks of lead time. Do not list an event whose start is more
+than 3 days out, and do not carry a past event after its end date.
 
 Place findings in the `Conferences and events` section.
 
 Selection rules:
 
 - One entry per upcoming event, status `developing`, summary stating "starts in
-  N days (YYYY-MM-DD)". Emphasize events flagged `soon`.
+  N days (YYYY-MM-DD)". Surface it only once the fetcher reports it within the
+  3-day window.
 - For an active event, status `developing`, with live coverage drawn from the
   HN, YouTube, and web sources already collected: keynote announcements, notable
-  talks, shipped releases.
+  talks, shipped releases, and links to any official livestream or session
+  recordings once they are posted.
 - Route a concrete release announced at an event to its topical section and
   cross-reference it here.
 - Link the event's official page first. Paraphrase any event-page text.
@@ -519,8 +525,15 @@ Place findings in the `Books` section.
 
 Selection rules:
 
-- Include a book only with clear engineering relevance: a new or revised
-  technical title from a tracked publisher, or a widely discussed release.
+- Set a high bar. Include a book only when it is advanced or state-of-the-art
+  and likely to get real practitioner traction: a title by a recognized author
+  or industry leader, a definitive reference on a hard topic, or a release that
+  is itself widely discussed (significant Hacker News or Reddit thread).
+- Exclude introductory, beginner, entry-level, and "learn X" tutorial titles,
+  even when a tracked publisher just released them. Sparse feeds tend to surface
+  these; skip them rather than padding the section.
+- Prefer `No major items found.` over a weak entry. A quiet day with no
+  qualifying release is the normal case, not a gap to fill.
 - Link the publisher's own title or catalog page first. Paraphrase feed and
   search-result titles and descriptions; never paste verbatim.
 - Label items `discussion` unless independently confirmed against the
