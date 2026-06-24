@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 41
+source_count = 45
 +++
 
 ## Top stories
@@ -61,21 +61,7 @@ source_count = 41
 
 ## Conferences and events
 
-### ICML 2026 starts in 12 days
-
-- **Category:** Event
-- **Status:** developing
-- **Sources:** [ICML 2026 dates](https://icml.cc/Conferences/2026/Dates)
-- **Summary:** The International Conference on Machine Learning 2026 starts in 12 days (2026-07-06) and runs through 2026-07-11.
-- **Why it matters:** ICML is a primary venue for the training, reasoning, and evaluation work tracked in ML research.
-
-### EuroPython 2026 starts in 19 days
-
-- **Category:** Event
-- **Status:** developing
-- **Sources:** [EuroPython 2026](https://ep2026.europython.eu/)
-- **Summary:** EuroPython 2026 starts in 19 days (2026-07-13) and runs through 2026-07-19.
-- **Why it matters:** It is the main European gathering for CPython core and library maintainers, with talks that often surface upcoming runtime changes.
+No major items found.
 
 ## AI
 
@@ -97,6 +83,24 @@ source_count = 41
 - **Summary:** In a 2026-06-23 post, David Rosenthal argues that AI platforms have subsidized token pricing to drive demand and that unsustainable burn rates are forcing premature price increases. He cites estimates that providers subsidize usage well above realized token cost (claimed up to roughly 40x for Anthropic and 70x for OpenAI enterprise tiers) and reuses OpenAI's leaked 2025 numbers (13.07B USD revenue, 34B USD costs, 38.53B USD net loss). The piece is commentary synthesizing reporting from Ed Zitron, SemiAnalysis, and business press, not original financials.
 - **Why it matters:** It connects the AI pricing changes practitioners are seeing (Copilot AI Credits, the paused Anthropic Agent SDK split) to provider unit economics.
 - **Follow-up:** Track whether the subsidy-ratio claims are corroborated by primary filings as the OpenAI and Anthropic S-1 processes proceed.
+
+### OpenAI and Broadcom unveil Jalapeño, a custom LLM inference chip
+
+- **Category:** AI
+- **Status:** confirmed
+- **Sources:** [OpenAI](https://openai.com/index/openai-broadcom-jalapeno-inference-chip/), [Broadcom press release](https://investors.broadcom.com/news-releases/news-release-details/openai-and-broadcom-unveil-llm-optimized-intelligence-processor), [discussion](https://news.ycombinator.com/item?id=48659257)
+- **Summary:** On 2026-06-24 OpenAI and Broadcom announced Jalapeño, OpenAI's first custom Intelligence Processor, an accelerator designed around OpenAI's LLM inference workloads (kernels, memory movement, networking, and serving patterns). The companies say it went from design to tape-out in about nine months and that engineering samples are running ML workloads in the lab at production target frequency and power, including GPT-5.3-Codex-Spark. They report early testing shows performance per watt substantially better than current state of the art (vendor figure). It is the first accelerator in a multi-generation platform pairing OpenAI-designed silicon with Broadcom implementation and Celestica systems, targeting initial deployment by the end of 2026 at gigawatt-scale data centers with Microsoft and other partners.
+- **Why it matters:** OpenAI moving to custom inference silicon reduces dependence on merchant GPUs and signals vertical integration of frontier-model serving.
+- **Follow-up:** Track tape-out to production timeline, independent performance-per-watt validation, and deployment partners beyond Microsoft.
+
+### Krea releases Krea 2, a 12B open-weights image model
+
+- **Category:** AI
+- **Status:** confirmed
+- **Sources:** [Krea 2 technical report](https://www.krea.ai/blog/krea-2-technical-report), [Hugging Face](https://huggingface.co/krea/Krea-2-Turbo), [discussion](https://news.ycombinator.com/item?id=48646659)
+- **Summary:** On 2026-06-24 Krea published open weights for Krea 2, a 12-billion-parameter diffusion-transformer image model, in two checkpoints: Krea 2 Raw, a pre-distillation mid-training checkpoint intended as a base for LoRAs and full fine-tunes, and Krea 2 Turbo, an 8-step distilled, post-trained checkpoint for fast generation at 1K to 2K resolution. The weights are on Hugging Face under a custom license that requires paid enterprise terms above 50 seats and mandates safeguards against illegal, non-consensual, and abusive imagery.
+- **Why it matters:** It adds a high-parameter, locally runnable open-weights image model with a fine-tuning-ready base checkpoint, an alternative to closed image-generation APIs.
+- **Follow-up:** Track independent quality comparisons, the license's open-source classification debate, and ecosystem fine-tunes.
 
 ## ML research
 
@@ -271,15 +275,15 @@ No major items found.
 ## Sources checked
 
 - Hacker News (make hn: Algolia, full coverage, 0 degraded collections, 60/72 queries matched on the latest fetch; front page, top 24h, Ask HN, Show HN, top-thread comments)
-- Reddit (RSS reachable this run: r/programming top/day fetched cleanly; r/netsec, r/devops, r/rust rate-limited on rapid sequential fetch and returned empty; no new Reddit-only item rose above the bar)
-- AI sources (Anthropic Claude Tag, AI economics commentary, FUTO Swipe on-device model verified against swipe.futo.tech, Claude status incident; Grok Build 0.1 eval considered and skipped as thin aggregator-only signal)
+- Reddit (RSS partially reachable this run: r/programming top/day fetched cleanly; r/netsec returned empty on rapid sequential fetch; no new Reddit-only item rose above the bar)
+- AI sources (OpenAI/Broadcom Jalapeño verified against openai.com and Broadcom investor release; Krea 2 open-weights image model verified against krea.ai technical report and Hugging Face; Anthropic Claude Tag, AI economics commentary, FUTO Swipe on-device model, Claude status incident)
 - ML research and arXiv papers (make papers: arXiv RSS, full coverage; YOLO26 and Qwen-AgentWorld verified against arXiv abstracts)
-- Conferences and events (make events: 2 upcoming within 30 days, 0 active)
+- Conferences and events (make events: 0 upcoming within the 3-day lead window, 0 active; ICML 2026 (12 days out) and EuroPython 2026 (19 days out) now fall outside the shortened lead window and were dropped)
 - Books and publisher feeds (make books: Pragmatic Bookshelf; O'Reilly, Manning, Packt, No Starch, MIT Press search targets checked, no new confirmed June 2026 release)
 - Security advisories (CISA KEV JSON re-checked live: catalog 2026.06.23, count 1627, no new 2026-06-24 additions; Ubiquiti Bulletin 064; LastPass/Klue reporting)
 - Status pages (status.claude.com)
-- GitHub watchlist (releases re-checked across all [github] repos this run: no new stable release published since the 05:51 UTC run; Node.js v24.18.0 and OpenTelemetry Collector v0.155.0 already covered, Grafana v13.0.3 bug-fix only; others unchanged or prereleases (neovim nightly, tmux 3.7-rc, prometheus v3.13.0-rc.1, zed pre). Trending re-scanned: no new convergent release-plus-HN theme)
+- GitHub watchlist (releases re-checked across all [github] repos this run: no new stable release published since the 10:50 UTC run; Node.js v24.18.0 and OpenTelemetry Collector v0.155.0 already covered, Grafana v13.0.3 bug-fix only; Kotlin v2.4.20-Beta1 (2026-06-24) is a beta prerelease, below bar; others unchanged or prereleases (neovim nightly, tmux 3.7-rc, prometheus v3.13.0-rc.1, zed pre). Trending re-scanned: no new convergent release-plus-HN theme)
 - Infrastructure (Bunny DNS free-tier announcement verified against bunny.net blog)
 - Engineering blogs (Filippo Valsorda, David Rosenthal, Armin Ronacher)
-- YouTube channels (make yt: 48 videos across 89 channels)
+- YouTube channels (make yt: 50 videos across 89 channels)
 - Markets and company sources

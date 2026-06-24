@@ -843,6 +843,24 @@ Format:
 - Last checked: 2026-06-24
 - Notes: Alibaba Qwen team, arXiv 2606.24597 dated 2026-06-23. Two large language world models (35B and 397B params) that simulate agentic environments via long chain-of-thought reasoning. Three-stage pipeline: continued pre-training on state-transition dynamics, SFT for next-state prediction, RL with hybrid rubric-and-rule rewards over 10M+ environment-interaction trajectories across seven domains. Serve as decoupled environment simulators for scalable RL and as unified agent foundation models. Authors report gains over frontier models on their AgentWorldBench (built from real interactions of 5 frontier models on 9 benchmarks) and across seven agentic benchmarks. Authors' own numbers, not independently reproduced. HN 48654351. Distinct from the Qwen-RobotSuite embodied series (2026-06-16).
 
+## 2026-06-24: OpenAI and Broadcom Jalapeño custom inference chip
+
+- Status: open
+- Category: AI
+- Sources: [OpenAI](https://openai.com/index/openai-broadcom-jalapeno-inference-chip/), [Broadcom](https://investors.broadcom.com/news-releases/news-release-details/openai-and-broadcom-unveil-llm-optimized-intelligence-processor)
+- Watch for: Tape-out to production timeline; independent performance-per-watt validation; deployment partners beyond Microsoft; later generations in the multi-generation platform.
+- Last checked: 2026-06-24
+- Notes: Announced 2026-06-24. Jalapeño is OpenAI's first custom Intelligence Processor, an inference accelerator co-designed with Broadcom around OpenAI LLM serving patterns (kernels, memory movement, networking). Companies say design-to-tape-out ~9 months; engineering samples running ML workloads in lab at production target frequency/power, including GPT-5.3-Codex-Spark; early testing reports performance-per-watt substantially better than current SOTA (vendor figure, unverified). First accelerator in a multi-generation platform (OpenAI silicon + Broadcom implementation + Celestica systems); initial deployment targeted end of 2026 at gigawatt-scale data centers with Microsoft and other partners. HN 48659257. Vertical-integration signal reducing merchant-GPU dependence.
+
+## 2026-06-24: Krea 2 open-weights 12B image model
+
+- Status: open
+- Category: AI
+- Sources: [Krea 2 technical report](https://www.krea.ai/blog/krea-2-technical-report), [Hugging Face](https://huggingface.co/krea/Krea-2-Turbo)
+- Watch for: Independent quality comparisons vs FLUX/SD-class models; the custom-license open-source classification debate; ecosystem LoRAs/fine-tunes; whether a non-Turbo inference checkpoint ships.
+- Last checked: 2026-06-24
+- Notes: Krea published open weights for Krea 2 on 2026-06-24, a 12B-parameter diffusion-transformer image model built from scratch, in two checkpoints: Krea 2 Raw (pre-distillation mid-training checkpoint, base for LoRAs/full fine-tunes, not for direct inference) and Krea 2 Turbo (8-step distilled, post-trained, production generation at 1K-2K resolution). On Hugging Face under a custom license requiring paid enterprise terms above 50 seats and mandating safeguards against illegal/NCII/CSAM/defamatory imagery. Available in ComfyUI. HN 48646659. Adds a locally runnable high-parameter open-weights image model.
+
 ## 2026-06-24: Recurring Claude multi-model elevated-error incidents
 
 - Status: open
