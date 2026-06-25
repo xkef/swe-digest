@@ -831,8 +831,8 @@ Format:
 - Category: Security
 - Sources: [TechCrunch](https://techcrunch.com/2026/06/23/password-manager-maker-lastpass-says-hackers-stole-customer-support-case-data-during-klue-breach/), [Cybersecurity Dive](https://www.cybersecuritydive.com/news/klue-investigating-supply-chain-attack-salesforce-integrations/823532/)
 - Watch for: Full list of affected Klue customers; phishing follow-on using stolen support-case data; whether the Icarus group escalates.
-- Last checked: 2026-06-24
-- Notes: LastPass confirmed 2026-06-23 that Salesforce customer data (names, phone, email/physical addresses, support-case contents) was accessed after OAuth tokens were stolen in a breach of Klue, a third-party market-intelligence platform. Products/infra/vaults unaffected. Klue compromise claimed by Icarus extortion group via compromised legacy integration credentials; also hit Recorded Future, Tanium, Jamf, Sprout Social, Gong, Insurity. Salesforce-integration OAuth-token supply-chain pattern.
+- Last checked: 2026-06-25
+- Notes: LastPass confirmed 2026-06-23 that Salesforce customer data (names, phone, email/physical addresses, support-case contents) was accessed after OAuth tokens were stolen in a breach of Klue, a third-party market-intelligence platform. Products/infra/vaults unaffected. Klue compromise claimed by Icarus extortion group via compromised legacy integration credentials; also hit Recorded Future, Tanium, Jamf, Sprout Social, Gong, Insurity. Salesforce-integration OAuth-token supply-chain pattern. 2026-06-25: surfaced as a 309-pt HN thread (48671468); added to the 2026-06-25 digest Security section.
 
 ## 2026-06-24: Qwen-AgentWorld language world models
 

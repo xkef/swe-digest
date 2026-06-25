@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 51
+source_count = 56
 +++
 
 ## Top stories
@@ -108,6 +108,15 @@ No major items found.
 - **Follow-up:** None.
 
 ## Security
+
+### LastPass confirms customer data exposed in Klue supply-chain breach
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [TechCrunch](https://techcrunch.com/2026/06/23/password-manager-maker-lastpass-says-hackers-stole-customer-support-case-data-during-klue-breach/), [Cybersecurity Dive](https://www.cybersecuritydive.com/news/klue-investigating-supply-chain-attack-salesforce-integrations/823532/), [discussion](https://news.ycombinator.com/item?id=48671468)
+- **Summary:** LastPass confirmed on 2026-06-23 that Salesforce customer data, including names, phone numbers, email and physical addresses, and the contents of support cases, was accessed after OAuth tokens were stolen in a breach of Klue, a third-party market-intelligence platform. LastPass says its products, infrastructure, and password vaults were not affected. The Klue compromise, claimed by the Icarus extortion group through compromised legacy integration credentials, also hit Recorded Future, Tanium, Jamf, Sprout Social, Gong, and Insurity. The Hacker News thread reached 309 points.
+- **Why it matters:** Stolen Salesforce-integration OAuth tokens are a recurring supply-chain vector, and exposed support-case data is usable for targeted phishing against LastPass users even though vaults were untouched.
+- **Follow-up:** Tracked in `memory/followups.md`; watch for the full list of affected Klue customers and any phishing follow-on.
 
 ### Researcher details exploited vulnerabilities in Johnson & Johnson web apps
 
@@ -264,6 +273,15 @@ No major items found.
 - **Why it matters:** It is a lighter path to Bun-style ergonomics that stays on the standard Node runtime, reducing migration risk for teams that want TypeScript-first tooling without switching engines.
 - **Follow-up:** None.
 
+### Ford rehires quality inspectors after AI fell short
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [Bloomberg](https://www.bloomberg.com/news/articles/2026-06-25/ford-has-been-rehiring-quality-inspectors-after-ai-fell-short), [discussion](https://news.ycombinator.com/item?id=48674446)
+- **Summary:** A Bloomberg report that Ford has been rehiring quality inspectors after an AI-based system fell short reached 342 points on Hacker News, where the thread reframed it as AI failing to preserve expertise or train junior staff. The discussion centered on the limits of replacing experienced workers with automation rather than on any specific engineering release. The Hacker News title says "350 engineers"; the Bloomberg report describes quality inspectors.
+- **Why it matters:** It is a widely discussed data point in the practitioner debate over where automation displaces versus fails to replace human expertise.
+- **Follow-up:** None.
+
 ## Reddit and social pulse
 
 - r/programming hot surfaced engineering discussion on running database drivers as sandboxed external processes (treating a process boundary as a security boundary) and a Java-versus-Go microservice latency benchmark; both are practitioner discussion, not verified results, and benchmark claims lack a shared method. Source: [r/programming](https://www.reddit.com/r/programming/hot/). Other watchlist subreddits were not retrieved this run (see Sources checked).
@@ -273,18 +291,19 @@ No major items found.
 
 - **Fable 5 and Mythos 5 export-control suspension:** The New York Times reported 2026-06-23 that the NSA lost access to the Mythos model amid the Anthropic export-control dispute, which surfaced as a 227-point Hacker News thread ([NYT](https://www.nytimes.com/2026/06/23/us/politics/nsa-lost-access-anthropic-tool.html), [discussion](https://news.ycombinator.com/item?id=48658300)). The suspension of foreign-national access to Fable 5 and Mythos 5 remains in place. Tracked in `memory/followups.md`.
 - **GLM 5.2:** Independent analyst commentary now frames GLM-5.2 as the open-weights step change for agentic use; covered in the AI section. No new license or benchmark change.
+- **LastPass / Klue supply-chain breach:** Now covered with a full block in the Security section above as it surfaced as a 309-point Hacker News thread this run. Tracked in `memory/followups.md`.
 
 ## Sources checked
 
-- Hacker News via `make hn` (Algolia backend, full structured coverage: front page, top 24h, Ask HN, Show HN, top-thread comments; 61 of 72 watchlist queries matched, 0 degraded collections).
+- Hacker News via `make hn` (Algolia backend, full structured coverage: front page, top 24h, Ask HN, Show HN, top-thread comments; 62 of 72 watchlist queries matched, 0 degraded collections on the latest fetch).
 - Reddit: degraded this run. r/programming RSS returned hot items; other watchlist subreddits (r/rust, r/MachineLearning, r/LocalLLaMA, r/netsec, and others) returned empty on rapid sequential fetch and were not retrieved.
 - AI sources: OpenAI, Anthropic, Google, Z.ai coverage; Reuters and Bloomberg for the Anthropic-Alibaba accusation.
 - ML research and arXiv papers via `make papers` (arXiv API, 145 items).
 - Conferences and events via `make events`: 0 upcoming within the 3-day window, 0 active.
 - Books via `make books`: one Pragmatic Bookshelf RSS item (intro programming title, below bar); O'Reilly, Manning, Packt, Addison-Wesley, No Starch, and MIT Press search targets checked, no qualifying new release.
-- Security advisories: CISA KEV catalog (unchanged at version 2026.06.23, no 2026-06-24/25 additions).
+- Security advisories: CISA KEV catalog (unchanged at version 2026.06.23, no 2026-06-24/25 additions); LastPass/Klue supply-chain breach via TechCrunch and Cybersecurity Dive.
 - Status pages: GitHub, Cloudflare, AWS, Azure, Google Cloud, OpenAI, Anthropic checked; no major active outage found.
 - GitHub watchlist releases and `github.com/trending`: full release check across all `[github]` repos and a `github.com/trending?since=daily` scan in the quality pass. Node.js v26.4.0 (Current) was the notable new stable release; Grafana v13.0.3 and OpenTelemetry Collector v0.155.0 (both 2026-06-23) were patch releases without digest-worthy changes; Kotlin 2.4.20-Beta1, Zed v1.9.0-pre, Prometheus v3.13.0-rc.1, neovim nightly, and tmux 3.7-rc were prereleases and skipped. Trending showed no new cross-source theme beyond agent tooling already covered; no unverified repo surfaced into the digest.
 - Engineering blogs and infrastructure: PostHog, Tigris, NVIDIA, Greptile, iximiuz Labs, Bunny.net (DNS), Cloudflare (self-managed OAuth).
 - YouTube channels via `make yt` (43 videos across 89 channels; no item added information beyond written sources this run).
-- Markets and company sources: Reuters, Bloomberg, Elastic, Modular.
+- Markets and company sources: Reuters, Bloomberg (Anthropic-Alibaba, Ford), Elastic, Modular.
