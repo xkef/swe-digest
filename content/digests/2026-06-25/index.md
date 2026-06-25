@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 45
+source_count = 51
 +++
 
 ## Top stories
@@ -153,6 +153,15 @@ No major items found.
 - **Why it matters:** Smaller base images reduce the vulnerability surface and patch load for container fleets, and a free tier lowers the barrier to switching from full distribution images.
 - **Follow-up:** None.
 
+### Cloudflare opens self-managed OAuth clients to all customers
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [Cloudflare blog](https://blog.cloudflare.com/oauth-for-all/), [discussion](https://news.ycombinator.com/item?id=48668033)
+- **Summary:** Cloudflare published a 2026-06-24 post making self-managed OAuth clients available to all customers, letting developers create and manage their own OAuth applications for delegated access to the Cloudflare API instead of relying on long-lived API tokens. The flow supports user consent, scoped permissions, and token revocation, and targets SaaS integrations, internal developer platforms, and agentic tools. The capability was previously limited to a small set of manually onboarded integrations.
+- **Why it matters:** Delegated, scoped OAuth with revocation is a safer credential model than shared API tokens for third-party and agent-driven access to infrastructure control planes.
+- **Follow-up:** None.
+
 ## Languages and runtimes
 
 ### LuaJIT proposes syntax extensions for a 3.0 line
@@ -180,6 +189,15 @@ No major items found.
 No major items found.
 
 ## Infrastructure
+
+### Bunny DNS drops usage-based pricing and becomes free
+
+- **Category:** Infrastructure
+- **Status:** confirmed
+- **Sources:** [Bunny blog](https://bunny.net/blog/were-making-bunny-dns-free/), [discussion](https://news.ycombinator.com/item?id=48657030)
+- **Summary:** Bunny.net announced 2026-06-24 that it is removing all usage-based charges from Bunny DNS, offering free authoritative DNS hosting for up to 500 domains per account with no query limits or per-request billing. The free tier includes DNSSEC (NSEC Black Lies), full IPv6, advanced record types (HTTPS, SVCB, TLSA, CDS, CDNSKEY), smart records, health monitoring, automatic zone scanning for migrations, and one-click CDN and Bunny Shield integration. Accounts remain subject to the standard $1/month minimum platform spend, but DNS itself no longer incurs usage charges. The thread reached 870 points, the highest-discussed Hacker News item of the day.
+- **Why it matters:** Free anycast authoritative DNS with DNSSEC and modern record types lowers the cost of resilient DNS for small operators and shifts competitive pressure on paid managed-DNS providers.
+- **Follow-up:** None.
 
 ### NVIDIA describes 45C warm-water cooling to cut data center water use
 
@@ -236,6 +254,16 @@ No major items found.
 - **Why it matters:** AI-generated PR and report spam is becoming a real maintainer-time cost, connecting to recent moves like curl pausing vulnerability-report handling.
 - **Follow-up:** None.
 
+### Show HN: Nub, a purely additive Bun-like toolkit for Node.js
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [nubjs/nub](https://github.com/nubjs/nub), [discussion](https://news.ycombinator.com/item?id=48660267)
+- **Summary:** A Show HN for Nub, a Node.js toolkit by Colin McDonnell (author of Zod), reached 222 points. Rather than replacing the runtime like Bun, Nub wraps the standard `node` command with a preload hook to add oxc-powered TypeScript transpilation, custom module resolution, and polyfills such as `Worker` and `Temporal`, plus script and package runner helpers, while introducing no Nub-specific APIs, config, or environment variables. The author cites a `--require` hook with about 0.5ms overhead against 4.6ms for `--import`, using Node's synchronous `module.registerHooks()` API.
+- **Comments:** Commenters favored the additive approach over a full runtime rewrite as less ecosystem-fragmenting; one reported migrating a monorepo with no issues.
+- **Why it matters:** It is a lighter path to Bun-style ergonomics that stays on the standard Node runtime, reducing migration risk for teams that want TypeScript-first tooling without switching engines.
+- **Follow-up:** None.
+
 ## Reddit and social pulse
 
 - r/programming hot surfaced engineering discussion on running database drivers as sandboxed external processes (treating a process boundary as a security boundary) and a Java-versus-Go microservice latency benchmark; both are practitioner discussion, not verified results, and benchmark claims lack a shared method. Source: [r/programming](https://www.reddit.com/r/programming/hot/). Other watchlist subreddits were not retrieved this run (see Sources checked).
@@ -256,7 +284,7 @@ No major items found.
 - Books via `make books`: one Pragmatic Bookshelf RSS item (intro programming title, below bar); O'Reilly, Manning, Packt, Addison-Wesley, No Starch, and MIT Press search targets checked, no qualifying new release.
 - Security advisories: CISA KEV catalog (unchanged at version 2026.06.23, no 2026-06-24/25 additions).
 - Status pages: GitHub, Cloudflare, AWS, Azure, Google Cloud, OpenAI, Anthropic checked; no major active outage found.
-- GitHub watchlist releases and `github.com/trending`: checked across `[github]` repos; Node.js v26.4.0 (Current) was the notable new stable release; Kotlin 2.4.20-Beta1, Zed v1.9.0-pre, and Prometheus v3.13.0-rc.1 were prereleases and skipped.
-- Engineering blogs: PostHog, Tigris, NVIDIA, Greptile, iximiuz Labs.
+- GitHub watchlist releases and `github.com/trending`: full release check across all `[github]` repos and a `github.com/trending?since=daily` scan in the quality pass. Node.js v26.4.0 (Current) was the notable new stable release; Grafana v13.0.3 and OpenTelemetry Collector v0.155.0 (both 2026-06-23) were patch releases without digest-worthy changes; Kotlin 2.4.20-Beta1, Zed v1.9.0-pre, Prometheus v3.13.0-rc.1, neovim nightly, and tmux 3.7-rc were prereleases and skipped. Trending showed no new cross-source theme beyond agent tooling already covered; no unverified repo surfaced into the digest.
+- Engineering blogs and infrastructure: PostHog, Tigris, NVIDIA, Greptile, iximiuz Labs, Bunny.net (DNS), Cloudflare (self-managed OAuth).
 - YouTube channels via `make yt` (43 videos across 89 channels; no item added information beyond written sources this run).
 - Markets and company sources: Reuters, Bloomberg, Elastic, Modular.
