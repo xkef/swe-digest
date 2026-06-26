@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 44
+source_count = 49
 +++
 
 ## Top stories
@@ -75,6 +75,15 @@ No major items found.
 - **Why it matters:** It frames the cost pressure that open-weight releases are putting on proprietary coding-agent pricing, a recurring theme across recent GLM, Kimi, and Cohere releases.
 
 ## ML research
+
+### Vesuvius Challenge reads an entire Herculaneum scroll for the first time
+
+- **Category:** ML research
+- **Status:** confirmed
+- **Sources:** [Vesuvius Challenge](https://scrollprize.org/firstscroll), [The Register](https://www.theregister.com/offbeat/2026/06/25/they-read-the-scroll-thing-ai-helps-decipher-ancient-document-charred-by-vesuvius/5262525), [HN](https://news.ycombinator.com/item?id=48675179)
+- **Summary:** The Vesuvius Challenge team announced on 2026-06-25 that PHerc. 1667, a Herculaneum papyrus carbonized by the 79 AD eruption of Vesuvius, has been digitally unrolled and read end to end without physically opening it, about 1.4 meters of papyrus and roughly 22 columns of ancient Greek identified as a philosophical treatise. The pipeline scanned the scroll with high-resolution phase-contrast X-ray microtomography at the European Synchrotron Radiation Facility, reconstructed a flat readable surface, then used machine learning to detect faint ink traces on the carbonized fibers. Higher-resolution imaging of PHerc. Paris 4 independently confirmed the 2023 Grand Prize readings, and PHerc. 139 was identified as Philodemus, On Gods, Book 8. All tomographic data, reconstructed surfaces, and transcriptions were released under a Creative Commons license.
+- **Why it matters:** It is the clearest demonstration yet that an imaging plus machine-learning pipeline can recover entire lost texts from damaged media, and the open data release lets others reproduce and extend the method.
+- **Follow-up:** Track the rest of the scroll corpus being read, independent reproduction against the released data, and method or model details.
 
 ### Un-0 generates images with a simulated coupled-oscillator system
 
@@ -153,7 +162,14 @@ No major items found.
 
 ## Linux and kernel
 
-No major items found.
+### AMD submits open-source HDMI 2.1 FRL patches for the Linux kernel
+
+- **Category:** Linux/Kernel
+- **Status:** developing
+- **Sources:** [KitGuru](https://www.kitguru.net/gaming/joao-silva/amd-submits-hdmi-2-1-frl-patches-for-open-source-linux-driver/), [HN](https://news.ycombinator.com/item?id=48684722)
+- **Summary:** AMD submitted the first set of kernel patches adding HDMI 2.1 Fixed Rate Link (FRL) signalling to the open-source AMDGPU driver, after years in which the HDMI Forum's licensing requirements blocked an open HDMI 2.1 implementation, an effort reportedly helped along by Valve. FRL replaces the legacy TMDS mechanism used in HDMI 2.0 and has passed representative compliance testing; other HDMI 2.1 features such as Display Stream Compression and Variable Refresh Rate remain in testing. If approved, the code targets the Linux 7.2 kernel.
+- **Why it matters:** It closes a long-standing gap that capped open-source AMD HDMI output below the 4K120 and 8K modes HDMI 2.1 enables, affecting Linux desktop and handheld users on AMD graphics.
+- **Follow-up:** Track HDMI Forum approval, the merge into the 7.2 window, and DSC and VRR support landing.
 
 ## Infrastructure
 
@@ -247,16 +263,17 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 64 of 72 queries matched; full front page, top 24h, Ask HN, Show HN, and top-thread comments)
+- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 63 of 72 queries matched on the evening re-fetch; full front page, top 24h, Ask HN, Show HN, and top-thread comments)
 - Reddit (r/programming hot and top returned items; r/netsec empty on this fetch, likely rate-limited; partial coverage)
 - AI sources (OpenAI GPT-5.6 reporting, open-weight economics)
-- ML research and arXiv papers (`make papers`, arXiv API, 149 items; Un-0 surfaced via HN)
+- ML research and arXiv papers (`make papers`, arXiv API; Un-0 surfaced via HN; Vesuvius Challenge full Herculaneum scroll reading added on the evening run, verified against scrollprize.org and The Register)
 - Conferences and events (`make events`, 0 upcoming within window, 0 active; AI Engineer World's Fair 2026 videos seen on YouTube but not in the events watchlist and dates unverified)
 - Books and publisher feeds (`make books`, one Pragmatic Bookshelf intro title below the advanced bar; O'Reilly, Manning, Packt, Addison-Wesley, No Starch, MIT Press search targets checked, no qualifying new release)
 - Security advisories (CISA KEV catalog 2026.06.25 count 1629, two new additions: CVE-2026-20230 Cisco Unified CM and CVE-2026-12569 PTC Windchill; KEV re-checked on the afternoon run, no newer additions; curl 8.21.0 advisories; LastPass/BeyondTrust Klue Salesforce OAuth supply-chain breach added in the quality pass)
 - Status pages (Claude, GitHub, OpenAI re-checked on the afternoon run; GitHub all operational after resolving the 2026-06-25 Actions/PRs/Webhooks incident; OpenAI shows only the long-running minor FedRAMP/API degraded-performance notice open since 2026-06-15; no major active outage)
 - GitHub watchlist (quality-pass release re-check across all `[github]` repos: Deno v2.9.0 new stable carried to Top stories; Spring Boot v3.5.16, Homebrew 6.0.4, Grafana v13.0.3, OpenTelemetry Collector v0.155.0 are patch releases; Node.js v26.4.0 was the 2026-06-24 stable already covered in the 2026-06-25 digest; Kotlin 2.4.10-RC, Zed v1.9.0-pre, Prometheus v3.13.0-rc.1, tmux 3.7-rc, Neovim nightly are prereleases; `github.com/trending?since=daily` plus rust and python views scanned, no new cross-source theme)
 - Engineering blogs (Oxide rack explorer, Zig devlog)
+- Linux and kernel (AMD open-source HDMI 2.1 FRL kernel patches targeting Linux 7.2 added on the evening run, verified via KitGuru and the HN discussion)
 - YouTube channels (`make yt`, 56 videos from 89 channels; no item added information beyond written sources)
 - Markets and company sources (EU DMA cloud gatekeeper, IBM sub-1nm, OpenAI IPO timing, Apple pricing, Micron five-year memory price-floor agreements)
 - Agentic coding and AI security (hackmyclaw.com prompt-injection challenge writeup added on the afternoon run)

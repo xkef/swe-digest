@@ -959,3 +959,21 @@ Format:
 - Watch for: Samsung and SK hynix signing comparable long-term floor-price contracts; pass-through to server/cloud/device bills of materials; any softening if memory supply recovers.
 - Last checked: 2026-06-26
 - Notes: On its fiscal Q3 2026 earnings call (reported 2026-06-25), Micron said it signed 16 strategic customer agreements setting floor and ceiling prices for memory, most running through 2030 and covering ~40% of revenue; floor prices carry gross margins well above any prior-cycle peak quarter. 14 of 16 represent ~$100B cumulative revenue at minimum contracted prices; customers pay up front, funding fab expansion. Supply-side confirmation of the AI memory crunch behind Apple's 2026-06-25 consumer price hikes (tracked in the 2026-06-19 Apple follow-up). HN 48683041. Covered in 2026-06-26 Markets and companies.
+
+## 2026-06-26: Vesuvius Challenge reads an entire Herculaneum scroll
+
+- Status: open
+- Category: ML research
+- Sources: [Vesuvius Challenge](https://scrollprize.org/firstscroll)
+- Watch for: Remaining scroll corpus read end to end; independent reproduction against the released data; any method or model paper; new author/title identifications.
+- Last checked: 2026-06-26
+- Notes: Announced 2026-06-25. PHerc. 1667 digitally unrolled and read end to end (~1.4m papyrus, ~22 columns of ancient Greek, a philosophical treatise) without physically opening it: phase-contrast X-ray microtomography at the ESRF, surface reconstruction, then ML ink detection on carbonized fibers. Higher-resolution imaging of PHerc. Paris 4 confirmed the 2023 Grand Prize readings; PHerc. 139 identified as Philodemus, On Gods, Book 8. All tomographic data, surfaces, and transcriptions released under Creative Commons. Multi-source (scrollprize.org, WaPo, CNN, The Register). HN 48675179 (1514 pts, top of the day). AI-for-science milestone. Covered in 2026-06-26 ML research.
+
+## 2026-06-26: AMD open-source HDMI 2.1 FRL patches for the Linux kernel
+
+- Status: open
+- Category: Linux/Kernel
+- Sources: [KitGuru](https://www.kitguru.net/gaming/joao-silva/amd-submits-hdmi-2-1-frl-patches-for-open-source-linux-driver/)
+- Watch for: HDMI Forum approval; merge into the Linux 7.2 window; DSC and VRR support landing; per-GPU coverage.
+- Last checked: 2026-06-26
+- Notes: AMD submitted the first kernel patches adding HDMI 2.1 Fixed Rate Link (FRL) signalling to the open-source AMDGPU driver, after years in which HDMI Forum licensing blocked an open HDMI 2.1 implementation; effort reportedly helped by Valve. FRL replaces the HDMI 2.0 TMDS mechanism and has passed representative compliance testing; DSC and VRR remain in testing. If approved, code targets Linux 7.2. Closes a gap that capped open AMD HDMI output below 4K120/8K. HN 48684722 (48 pts). Ties to the Linux 7.2 merge-window tracking. Covered in 2026-06-26 Linux and kernel.
