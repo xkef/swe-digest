@@ -941,3 +941,12 @@ Format:
 - Watch for: OpenAI confirmation; preview scope/timeline; how EO 14409 pre-release review applies to other labs; contrast with Anthropic foreign-access limits.
 - Last checked: 2026-06-26
 - Notes: Reporting 2026-06-25 (single-sourced) says OpenAI will stagger GPT-5.6 after a request from the Office of the National Cyber Director and OSTP; Altman reportedly told staff it enters a limited enterprise preview with government approving access customer by customer. Maps onto Executive Order 14409 (signed 2026-06-02) asking developers to give the government up to 30 days pre-release access to most-capable models. More permissive than the Anthropic Fable 5/Mythos 5 foreign-access limits. First public US-agency coordination on a frontier model release sequence. HN 48678789.
+
+## 2026-06-26: LastPass and BeyondTrust Klue OAuth supply-chain breach
+
+- Status: open
+- Category: Security
+- Sources: [LastPass blog](https://blog.lastpass.com/posts/klue-supply-chain-incident-and-lastpass-response), [SecurityWeek](https://www.securityweek.com/beyondtrust-lastpass-impacted-by-klue-salesforce-incident/), [BleepingComputer](https://www.bleepingcomputer.com/news/security/lastpass-confirms-data-breach-in-klue-supply-chain-attack/)
+- Watch for: Full list of Klue customers affected; phishing follow-on against exposed contacts; token-scope/rotation guidance from Salesforce-integrated vendors; whether vault-touching impact is ever revised.
+- Notes: LastPass learned 2026-06-12 of a breach at Klue, a third-party market-intelligence platform (integrates with Salesforce and Gong). An attacker obtained OAuth tokens Klue held for many customers and used them to pull LastPass customer data from its Salesforce environment. Exposed: business contact/CRM data (names, phone, email, physical address), support-case and sales data. LastPass says products, infrastructure, and customer vaults unaffected. SecurityWeek: BeyondTrust also impacted in the same Klue incident; threat actor "Icarus" used a compromised legacy credential to generate OAuth tokens against integrated SaaS platforms (actor name from secondary reporting, not LastPass's disclosure). Same OAuth-token-theft-via-SaaS-integration pattern as earlier Salesforce-connected app compromises. HN 48671468 (490 pts). Covered in 2026-06-26 Security.
+- Last checked: 2026-06-26

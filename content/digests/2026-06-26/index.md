@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 36
+source_count = 40
 +++
 
 ## Top stories
@@ -99,6 +99,15 @@ No major items found.
 - **Summary:** CVE-2026-12569 is an unauthenticated remote code execution flaw in PTC Windchill and FlexPLM, reachable from the network via deserialization of untrusted data and described as easily automatable. It affects Windchill and FlexPLM releases prior to 11.0 M030. CISA added it to the KEV catalog on 2026-06-25 (catalog 2026.06.25, count 1629), citing active exploitation. PTC is releasing patches for supported versions.
 - **Why it matters:** Windchill and FlexPLM are product-lifecycle-management systems in manufacturing and retail supply chains, so an unauthenticated, automatable RCE exposes high-value engineering and supply-chain data.
 - **Follow-up:** Track per-version patched builds, internet-exposure scans, and federal remediation deadline under BOD 26-04.
+
+### LastPass and BeyondTrust exposed in Klue OAuth supply chain breach
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [LastPass blog](https://blog.lastpass.com/posts/klue-supply-chain-incident-and-lastpass-response), [SecurityWeek](https://www.securityweek.com/beyondtrust-lastpass-impacted-by-klue-salesforce-incident/), [BleepingComputer](https://www.bleepingcomputer.com/news/security/lastpass-confirms-data-breach-in-klue-supply-chain-attack/), [HN](https://news.ycombinator.com/item?id=48671468)
+- **Summary:** LastPass said it learned on 2026-06-12 of a breach at Klue, a third-party market-intelligence platform its go-to-market teams use that integrates with Salesforce and Gong. An attacker obtained OAuth tokens Klue held for many of its customers and used them to pull LastPass customer data from its Salesforce environment. The exposed data is limited to business contact and CRM records (customer names, phone numbers, email and physical addresses) plus support-case and sales data; LastPass says its products, infrastructure, and customer vaults were not affected. SecurityWeek reports BeyondTrust was hit in the same Klue incident, and that a threat actor calling itself Icarus used a compromised legacy credential to generate OAuth tokens against integrated SaaS platforms.
+- **Why it matters:** It is another OAuth-token-theft supply-chain campaign against SaaS integrations, the same pattern as earlier Salesforce-connected app token compromises, exposing downstream customer data without touching the victim's core product.
+- **Follow-up:** Track the full set of Klue customers affected, phishing follow-on against exposed contacts, and any token-scope or rotation guidance from Salesforce-integrated vendors.
 
 ## Outages
 
@@ -229,9 +238,9 @@ No major items found.
 - ML research and arXiv papers (`make papers`, arXiv API, 149 items; Un-0 surfaced via HN)
 - Conferences and events (`make events`, 0 upcoming within window, 0 active; AI Engineer World's Fair 2026 videos seen on YouTube but not in the events watchlist and dates unverified)
 - Books and publisher feeds (`make books`, one Pragmatic Bookshelf intro title below the advanced bar; O'Reilly, Manning, Packt, Addison-Wesley, No Starch, MIT Press search targets checked, no qualifying new release)
-- Security advisories (CISA KEV catalog 2026.06.25 count 1629, two new additions: CVE-2026-20230 Cisco Unified CM and CVE-2026-12569 PTC Windchill; curl 8.21.0 advisories)
+- Security advisories (CISA KEV catalog 2026.06.25 count 1629, two new additions: CVE-2026-20230 Cisco Unified CM and CVE-2026-12569 PTC Windchill; curl 8.21.0 advisories; LastPass/BeyondTrust Klue Salesforce OAuth supply-chain breach added in the quality pass)
 - Status pages (Claude, GitHub, OpenAI; GitHub resolved a 2026-06-25 Actions/PRs/Webhooks incident, no other major active outage)
-- GitHub watchlist (releases checked across all `[github]` repos: Deno v2.9.0 new stable carried to Top stories; Spring Boot v3.5.16 and Homebrew 6.0.4 are patch releases; Kotlin 2.4.10-RC, Zed v1.9.0-pre, Prometheus v3.13.0-rc.1, Neovim nightly are prereleases; `github.com/trending` scanned, no new cross-source theme)
+- GitHub watchlist (quality-pass release re-check across all `[github]` repos: Deno v2.9.0 new stable carried to Top stories; Spring Boot v3.5.16, Homebrew 6.0.4, Grafana v13.0.3, OpenTelemetry Collector v0.155.0 are patch releases; Node.js v26.4.0 was the 2026-06-24 stable already covered in the 2026-06-25 digest; Kotlin 2.4.10-RC, Zed v1.9.0-pre, Prometheus v3.13.0-rc.1, tmux 3.7-rc, Neovim nightly are prereleases; `github.com/trending?since=daily` plus rust and python views scanned, no new cross-source theme)
 - Engineering blogs (Oxide rack explorer, Zig devlog)
 - YouTube channels (`make yt`, 56 videos from 89 channels; no item added information beyond written sources)
 - Markets and company sources (EU DMA cloud gatekeeper, IBM sub-1nm, OpenAI IPO timing, Apple pricing)
