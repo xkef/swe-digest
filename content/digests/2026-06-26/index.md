@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 40
+source_count = 44
 +++
 
 ## Top stories
@@ -87,7 +87,13 @@ No major items found.
 
 ## Agentic coding
 
-No major items found.
+### A 2,000-person challenge fails to make an email AI assistant leak its secrets
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [writeup](https://www.fernandoi.cl/posts/hackmyclaw/), [HN](https://news.ycombinator.com/item?id=48681687)
+- **Summary:** Fernando Irarrazaval published results from hackmyclaw.com, an open challenge to make Fiu, an email-connected OpenClaw assistant, leak a `secrets.env` file. After reaching the Hacker News front page the assistant received more than 6,000 emails from over 2,000 people, and the secrets never leaked. The defense was a short system-prompt rule set forbidding revealing credentials, modifying its own files, running code from emails, or exfiltrating data. Attacks included fake emergencies, compliance-audit framing, future-self framing, and messages in multiple languages; side effects were a three-day Google Gmail suspension on fraud detection, over $500 in API costs, and the model noting in memory around email 500 that the volume looked like a coordinated security exercise.
+- **Why it matters:** It is a concrete if informal data point that a minimal prompt-level guardrail held against thousands of real prompt-injection attempts on an agent with email and file access, though the secrets stayed reachable by the agent rather than isolated from it.
 
 ## Security
 
@@ -187,6 +193,15 @@ No major items found.
 - **Why it matters:** A credible sub-1nm path signals continued density scaling for AI-class silicon, though the multi-year horizon limits near-term engineering impact.
 - **Follow-up:** Track foundry commitments and any move from research demonstration toward a manufacturable node.
 
+### Micron locks in historically high memory prices through 2030
+
+- **Category:** Markets
+- **Status:** developing
+- **Sources:** [The Register](https://www.theregister.com/systems/2026/06/25/micron-locks-in-historically-high-memory-prices-for-five-years/5261854), [HN](https://news.ycombinator.com/item?id=48683041)
+- **Summary:** Reporting on 2026-06-25 from Micron's fiscal Q3 2026 earnings call says Micron has signed 16 strategic customer agreements that set floor and ceiling prices for memory, with most deals running through 2030 and covering about 40% of its revenue. Micron described the floor prices as carrying gross margins well above its best quarters in any prior cycle. Fourteen of the 16 agreements represent roughly $100 billion in cumulative revenue at minimum contracted prices, and customers pay up front, which helps fund Micron's fab expansion.
+- **Why it matters:** Multi-year floor-price contracts at historically high margins signal that elevated DRAM and NAND costs, the same pressure behind Apple's 2026-06-25 consumer price hikes, are being locked into server and device bills of materials for years.
+- **Follow-up:** Track whether Samsung and SK hynix sign similar long contracts and how the floor prices pass through to server and cloud hardware costs.
+
 ### OpenAI reportedly leans toward a 2027 IPO
 
 - **Category:** Markets
@@ -232,15 +247,16 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 62 of 72 queries matched; full front page, top 24h, Ask HN, Show HN, and top-thread comments)
+- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 64 of 72 queries matched; full front page, top 24h, Ask HN, Show HN, and top-thread comments)
 - Reddit (r/programming hot and top returned items; r/netsec empty on this fetch, likely rate-limited; partial coverage)
 - AI sources (OpenAI GPT-5.6 reporting, open-weight economics)
 - ML research and arXiv papers (`make papers`, arXiv API, 149 items; Un-0 surfaced via HN)
 - Conferences and events (`make events`, 0 upcoming within window, 0 active; AI Engineer World's Fair 2026 videos seen on YouTube but not in the events watchlist and dates unverified)
 - Books and publisher feeds (`make books`, one Pragmatic Bookshelf intro title below the advanced bar; O'Reilly, Manning, Packt, Addison-Wesley, No Starch, MIT Press search targets checked, no qualifying new release)
-- Security advisories (CISA KEV catalog 2026.06.25 count 1629, two new additions: CVE-2026-20230 Cisco Unified CM and CVE-2026-12569 PTC Windchill; curl 8.21.0 advisories; LastPass/BeyondTrust Klue Salesforce OAuth supply-chain breach added in the quality pass)
-- Status pages (Claude, GitHub, OpenAI; GitHub resolved a 2026-06-25 Actions/PRs/Webhooks incident, no other major active outage)
+- Security advisories (CISA KEV catalog 2026.06.25 count 1629, two new additions: CVE-2026-20230 Cisco Unified CM and CVE-2026-12569 PTC Windchill; KEV re-checked on the afternoon run, no newer additions; curl 8.21.0 advisories; LastPass/BeyondTrust Klue Salesforce OAuth supply-chain breach added in the quality pass)
+- Status pages (Claude, GitHub, OpenAI re-checked on the afternoon run; GitHub all operational after resolving the 2026-06-25 Actions/PRs/Webhooks incident; OpenAI shows only the long-running minor FedRAMP/API degraded-performance notice open since 2026-06-15; no major active outage)
 - GitHub watchlist (quality-pass release re-check across all `[github]` repos: Deno v2.9.0 new stable carried to Top stories; Spring Boot v3.5.16, Homebrew 6.0.4, Grafana v13.0.3, OpenTelemetry Collector v0.155.0 are patch releases; Node.js v26.4.0 was the 2026-06-24 stable already covered in the 2026-06-25 digest; Kotlin 2.4.10-RC, Zed v1.9.0-pre, Prometheus v3.13.0-rc.1, tmux 3.7-rc, Neovim nightly are prereleases; `github.com/trending?since=daily` plus rust and python views scanned, no new cross-source theme)
 - Engineering blogs (Oxide rack explorer, Zig devlog)
 - YouTube channels (`make yt`, 56 videos from 89 channels; no item added information beyond written sources)
-- Markets and company sources (EU DMA cloud gatekeeper, IBM sub-1nm, OpenAI IPO timing, Apple pricing)
+- Markets and company sources (EU DMA cloud gatekeeper, IBM sub-1nm, OpenAI IPO timing, Apple pricing, Micron five-year memory price-floor agreements)
+- Agentic coding and AI security (hackmyclaw.com prompt-injection challenge writeup added on the afternoon run)

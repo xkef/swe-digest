@@ -950,3 +950,12 @@ Format:
 - Watch for: Full list of Klue customers affected; phishing follow-on against exposed contacts; token-scope/rotation guidance from Salesforce-integrated vendors; whether vault-touching impact is ever revised.
 - Notes: LastPass learned 2026-06-12 of a breach at Klue, a third-party market-intelligence platform (integrates with Salesforce and Gong). An attacker obtained OAuth tokens Klue held for many customers and used them to pull LastPass customer data from its Salesforce environment. Exposed: business contact/CRM data (names, phone, email, physical address), support-case and sales data. LastPass says products, infrastructure, and customer vaults unaffected. SecurityWeek: BeyondTrust also impacted in the same Klue incident; threat actor "Icarus" used a compromised legacy credential to generate OAuth tokens against integrated SaaS platforms (actor name from secondary reporting, not LastPass's disclosure). Same OAuth-token-theft-via-SaaS-integration pattern as earlier Salesforce-connected app compromises. HN 48671468 (490 pts). Covered in 2026-06-26 Security.
 - Last checked: 2026-06-26
+
+## 2026-06-26: Micron five-year memory price-floor agreements
+
+- Status: open
+- Category: Markets
+- Sources: [The Register](https://www.theregister.com/systems/2026/06/25/micron-locks-in-historically-high-memory-prices-for-five-years/5261854)
+- Watch for: Samsung and SK hynix signing comparable long-term floor-price contracts; pass-through to server/cloud/device bills of materials; any softening if memory supply recovers.
+- Last checked: 2026-06-26
+- Notes: On its fiscal Q3 2026 earnings call (reported 2026-06-25), Micron said it signed 16 strategic customer agreements setting floor and ceiling prices for memory, most running through 2030 and covering ~40% of revenue; floor prices carry gross margins well above any prior-cycle peak quarter. 14 of 16 represent ~$100B cumulative revenue at minimum contracted prices; customers pay up front, funding fab expansion. Supply-side confirmation of the AI memory crunch behind Apple's 2026-06-25 consumer price hikes (tracked in the 2026-06-19 Apple follow-up). HN 48683041. Covered in 2026-06-26 Markets and companies.
