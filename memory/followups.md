@@ -560,9 +560,9 @@ Format:
 - Status: open
 - Category: Markets
 - Sources: [BBC](https://www.bbc.com/news/articles/c3wyxvqdx1zo), [Yahoo Finance](https://finance.yahoo.com/technology/articles/apple-raise-prices-due-memory-212327523.html)
-- Watch for: Magnitude and timing of Apple price changes; DRAM/NAND price pass-through from Samsung, SK hynix, Micron; server bill-of-materials impact.
-- Last checked: 2026-06-19
-- Notes: Tim Cook told WSJ price increases are unavoidable and the memory situation is unsustainable, citing AI data-center demand draining DRAM and NAND. Apple willing to use its balance sheet to secure memory. No timing, magnitude, or affected product lines given. Broad signal that the AI memory crunch is reaching consumer hardware pricing and server costs.
+- Watch for: DRAM/NAND price pass-through from Samsung, SK hynix, Micron; server bill-of-materials impact; whether other OEMs (Dell, HP, Lenovo) follow.
+- Last checked: 2026-06-26
+- Notes: Tim Cook told WSJ price increases are unavoidable and the memory situation is unsustainable, citing AI data-center demand draining DRAM and NAND. Apple willing to use its balance sheet to secure memory. REALIZED 2026-06-25: Apple raised base MacBook and iPad prices, reportedly about 17-25% (MacBook Neo $599->$699, 512GB MacBook Air $1,099->$1,299, 1TB MacBook Pro $1,699->$1,999, iPad base +$100-$150); Apple said it had never seen a component price rise this fast; APPL closed ~6% lower, worst day since April 2025 (Reuters, CNBC; HN 48672732/48674096). Covered in 2026-06-26 Top stories. AI memory crunch now hitting consumer hardware pricing.
 
 ## 2026-06-18: TypeScript 7.0 release candidate (native Go compiler)
 
@@ -896,3 +896,48 @@ Format:
 - Watch for: Published OSWorld numbers with method; real-world reliability reports; how the built-in prompt-injection stop performs against adversarial pages; pricing of computer-use tool calls on the Flash tier.
 - Last checked: 2026-06-25
 - Notes: Google made computer use a built-in tool in Gemini 3.5 Flash on 2026-06-24 (see/reason/act across browser, mobile, desktop), via Gemini API with reference implementation, the Gemini Enterprise Agent Platform, and a Browserbase demo. Two enterprise safeguards: explicit user confirmation for sensitive actions and automatic task stoppage on detected prompt injection. Post shows an OSWorld chart but no numeric result in text. Moves GUI-driving agents to the cheaper Flash tier. HN 48662999.
+
+## 2026-06-26: curl 8.21.0 record 18-CVE security release
+
+- Status: open
+- Category: Security
+- Sources: [curl 8.21.0](https://daniel.haxx.se/blog/2026/06/24/curl-8-21-0/), [advisories](https://curl.se/docs/vuln-8.21.0.html), [AISLE](https://aisle.com/blog/aisle-discovers-6-new-cves-in-curl-including-the-oldest-issue-ever-reported)
+- Watch for: Downstream re-vendoring; interaction with curl's July 2026 vuln-handling pause; whether AI-found report volume keeps rising.
+- Last checked: 2026-06-26
+- Notes: Daniel Stenberg released curl 8.21.0 on 2026-06-24 fixing 18 CVEs, a single-release and calendar-year record; 4 medium, 14 low, no high/critical. CVE-2026-8932 (low, incomplete mTLS config match on connection reuse, auth reuse across mismatched setups) first shipped 2001-03-22, the oldest curl issue ever reported. AISLE claims its AI agents found 6 of the 18 (its own figure), framing it as small models outperforming larger ones on scoped vuln tasks; curl post does not attribute the flood to any tool. Ties to AI-found-vulnerability and maintainer-burden theme (FFmpeg AI zero-days, curl July pause, OpenAI Patch the Planet). HN 48670411.
+
+## 2026-06-26: Cisco Unified CM CVE-2026-20230 SSRF active exploitation
+
+- Status: open
+- Category: Security
+- Sources: [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-20230), [SecurityWeek](https://www.securityweek.com/hackers-exploiting-cisco-unified-cm-vulnerability/)
+- Watch for: Federal remediation deadline; confirmed RCE chains from the file-write primitive; victim disclosures.
+- Last checked: 2026-06-26
+- Notes: CVE-2026-20230 (CVSS 8.6) unauthenticated SSRF in Cisco Unified Communications Manager, improper HTTP input validation; crafted request writes files to the OS via file:// payloads, chainable to root code execution. Cisco advisory + patches 2026-06-03 (no exploitation known at disclosure); exploitation observed weeks later from a single IP; SSD published PoC. CISA KEV 2026-06-25 (catalog 2026.06.25, count 1629). Covered in 2026-06-26 Top stories.
+
+## 2026-06-26: PTC Windchill and FlexPLM CVE-2026-12569 unauthenticated RCE (KEV)
+
+- Status: open
+- Category: Security
+- Sources: [PTC advisory](https://www.ptc.com/en/about/trust-center/advisory-center/active-advisories/windchill-flexplm-rce-vulnerability), [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-12569)
+- Watch for: Per-version patched builds; internet-exposure scans; federal remediation deadline under BOD 26-04.
+- Last checked: 2026-06-26
+- Notes: CVE-2026-12569 unauthenticated network-reachable RCE in PTC Windchill and FlexPLM via deserialization of untrusted data, described as easily automatable; affects releases prior to 11.0 M030. CISA KEV 2026-06-25 (catalog 2026.06.25, count 1629), active exploitation cited; PTC releasing patches. PLM software in manufacturing/retail supply chains. Covered in 2026-06-26 Security.
+
+## 2026-06-26: Deno 2.9 desktop builds and npm migration
+
+- Status: open
+- Category: Languages
+- Sources: [Deno 2.9](https://deno.com/blog/v2.9)
+- Watch for: deno desktop leaving experimental; permission model for produced binaries; npm-lockfile-import adoption.
+- Last checked: 2026-06-26
+- Notes: Deno 2.9 released 2026-06-25. deno desktop (experimental) compiles web-framework projects (Next.js/Astro/Fresh) to a single native binary (native webview or bundled Chromium); deno install reads npm/pnpm/yarn/Bun lockfiles directly. Reports 2x faster cold start (34->17ms), 2.2-3.1x lower peak memory, Node.js 26 compat with bare import "fs", post-quantum + ChaCha20-Poly1305 Web Crypto. Breaking: Deno.serve auto-compression now defaults off. HN 48675717. Parallels Deno Desktop packaging push tracked 2026-06-22. Covered in 2026-06-26 Top stories.
+
+## 2026-06-26: OpenAI to stagger GPT-5.6 release at US government request
+
+- Status: open
+- Category: AI
+- Sources: [CNBC](https://www.cnbc.com/video/2026/06/25/openai-will-stagger-gpt-5-point-6-release-following-trump-admin-request-for-review-source.html)
+- Watch for: OpenAI confirmation; preview scope/timeline; how EO 14409 pre-release review applies to other labs; contrast with Anthropic foreign-access limits.
+- Last checked: 2026-06-26
+- Notes: Reporting 2026-06-25 (single-sourced) says OpenAI will stagger GPT-5.6 after a request from the Office of the National Cyber Director and OSTP; Altman reportedly told staff it enters a limited enterprise preview with government approving access customer by customer. Maps onto Executive Order 14409 (signed 2026-06-02) asking developers to give the government up to 30 days pre-release access to most-capable models. More permissive than the Anthropic Fable 5/Mythos 5 foreign-access limits. First public US-agency coordination on a frontier model release sequence. HN 48678789.
