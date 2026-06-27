@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 22
+source_count = 32
 +++
 
 ## Top stories
@@ -44,6 +44,16 @@ source_count = 22
 - **Why it matters:** A managed Firecracker sandbox with suspend and resume gives agent and code-execution platforms a first-party isolation primitive instead of a self-built one.
 - **Follow-up:** Watch for the pricing detail, GPU support, and whether the 8-hour cap changes for persistent environments.
 
+### Linux Foundation launches Akrites to defend open source against AI-found vulnerabilities
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Linux Foundation](https://www.linuxfoundation.org/press/linux-foundation-and-industry-leaders-launch-akrites-to-defend-critical-open-source-software-against-ai-enabled-cyber-threats), [Akrites letter](https://akrites.org/letter/), [discussion](https://news.ycombinator.com/item?id=48682737)
+- **Summary:** The Linux Foundation announced Akrites on 2026-06-25, a cross-industry effort to coordinate confidential vulnerability remediation and disclosure for critical open source software as AI compresses vulnerability discovery from weeks to minutes. Akrites runs a shared Security Incident Response Team and a single standardized coordinated-disclosure process so maintainers face one predictable partner rather than a flood of uncoordinated AI-generated reports, and commits to acting as maintainer of last resort for critical packages with no active maintainer. Founding members include Amazon Web Services, Anthropic, Chainguard, Cisco, Citi, Endor Labs, Ericsson, Google, IBM, JPMorganChase, Microsoft and GitHub, NVIDIA, OpenAI, RapidFort, Red Hat, the Rust Foundation, Sonatype, Vodafone, and Zscaler.
+- **Comments:** HN commenters questioned who staffs and funds the maintainer-of-last-resort commitment, noting Akrites itself employs no engineers, and were skeptical of the heavy corporate membership; one asked why the effort covers only open source and not widely depended-on closed-source software.
+- **Why it matters:** It is the first industry-wide governance response to the AI-found-vulnerability and maintainer-burden theme running through curl pausing report handling, the FFmpeg AI zero-days, and OpenAI Patch the Planet.
+- **Follow-up:** Watch the SIRT staffing and funding model, which projects Akrites adopts as maintainer of last resort, and whether the coordinated-disclosure process reduces maintainer report load in practice.
+
 ## Conferences and events
 
 No major items found.
@@ -60,7 +70,14 @@ No major items found.
 
 ## ML research
 
-No major items found.
+### Autoregressive Boltzmann Generators sample molecular equilibria with a transformer
+
+- **Category:** Paper
+- **Status:** developing
+- **Sources:** [arXiv](https://arxiv.org/abs/2606.27361), [code](https://github.com/danyalrehman/autobg)
+- **Summary:** Rehman, Tan, Bengio, Bose, and Tong published Autoregressive Boltzmann Generators (ArBG), an ICML 2026 spotlight, on 2026-06-25. The method replaces the normalizing-flow backbone used in prior Boltzmann generators with an autoregressive transformer plus sequential inference-time interventions, removing the invertibility constraint that limits flow-based equilibrium sampling of molecular systems. The authors introduce Robin, a 132M-parameter transferable model, and report cutting the zero-shot energy error (E-W2) on 8-residue peptide systems by over 60%. The numbers are the authors' own; code is released.
+- **Why it matters:** Transferable equilibrium sampling with an LLM-style architecture lowers the cost of generating molecular conformations, relevant to molecular dynamics and drug-discovery pipelines.
+- **Follow-up:** Watch for independent reproduction of the 8-residue energy-error result, transfer to larger peptides or proteins, and adoption of Robin as a pretrained sampler.
 
 ## Agentic coding
 
@@ -101,7 +118,13 @@ No major items found.
 
 ## Languages and runtimes
 
-No major items found.
+### GCC 14.4 released
+
+- **Category:** Languages
+- **Status:** confirmed
+- **Sources:** [GCC 14 series](https://gcc.gnu.org/gcc-14/), [releases](https://gcc.gnu.org/releases.html), [discussion](https://news.ycombinator.com/item?id=48685749)
+- **Summary:** GCC 14.4 was released on 2026-06-26 as a bug-fix point release in the GCC 14 series, containing fixes for regressions in GCC 14.3 relative to previous releases. The release page lists no new language features; it is a maintenance update for users on the 14.x line.
+- **Why it matters:** Teams pinned to GCC 14 get regression fixes without moving to a newer series, reducing toolchain upgrade pressure.
 
 ## Apple platforms
 
@@ -117,7 +140,13 @@ No major items found.
 
 ## Engineering posts
 
-No major items found.
+### A human postmortem of the 1996 AOL outage
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [post](https://ngrok.com/blog/aol-was-down-1996), [discussion](https://news.ycombinator.com/item?id=48660522)
+- **Summary:** Mac Chaffee, a platform engineer, revisited AOL's 19-hour 1996 outage. Drawing on an interview with AOL's then VP of Operations Matt Korn, the post attributes the outage to a routine maintenance procedure that did not come back online cleanly, and a separate May 1996 incident to a single phase of a three-phase power feed failing before generators could start. The piece argues SRE reliability cases should center human impact, not only cost, and profiles a user who relied on an online bulletin board for medical information during the downtime.
+- **Why it matters:** It is a durable reliability-culture write-up with concrete incident detail, useful as an argument for reliability investment beyond financial framing.
 
 ## Books
 
@@ -165,13 +194,13 @@ No major items found.
 - Hacker News via `make hn` (Algolia backend, 0 degraded collections, 60/72 queries with hits; front page, top 24h, Ask HN, Show HN, top-thread comments)
 - Reddit RSS, partial: r/programming returned; r/netsec, r/LocalLLaMA, r/rust empty or rate-limited this run
 - Tracked social people (web search): Karpathy on Claude Tag surfaced
-- AI sources: OpenAI, Anthropic/Mythos clearance, Doubleword open-weights analysis
-- ML research via `make papers` (arXiv API; no item cleared the relevance bar)
+- AI sources: OpenAI, Anthropic/Mythos clearance, Doubleword open-weights analysis, Linux Foundation Akrites launch
+- ML research via `make papers` (arXiv API; Autoregressive Boltzmann Generators ICML 2026 spotlight surfaced for AI-for-science)
 - Conferences and events via `make events` (0 upcoming within the 3-day window, 0 active)
 - Books via `make books` (publisher RSS; one below-bar Pragmatic intro title excluded; O'Reilly, Manning, Packt, Addison-Wesley, No Starch, MIT Press search targets checked, no qualifying release)
 - Security advisories: CISA KEV catalog 2026.06.25 (count 1629), unchanged today
 - Status pages: GitHub, Cloudflare, AWS, Claude, OpenAI; no major active outage
-- GitHub releases across all `[github]` repos and `github.com/trending`: tmux 3.7 new stable; Homebrew 6.0.5 and Spring Boot 3.5.16 patch releases; Kotlin 2.4.10-RC, Zed 1.9.0-pre, Prometheus 3.13.0-rc.1, Neovim nightly prereleases
+- GitHub releases across all `[github]` repos and `github.com/trending` (overall, rust, python views): tmux 3.7 new stable; Homebrew 6.0.5, Spring Boot 3.5.16, Grafana 13.0.3, OpenTelemetry Collector 0.155.0, Node 26.4.0 patch releases; Kotlin 2.4.10-RC, Zed 1.9.0-pre, Prometheus 3.13.0-rc.1, Neovim nightly prereleases; trending clustered on agent tooling and document parsing (agent-browser, agent-toolkit-for-aws, MinerU) with no new convergent theme; GCC 14.4 stable surfaced via HN and verified on gcc.gnu.org
 - Engineering blogs
 - YouTube via `make yt` (channel RSS; no item added information beyond written sources)
 - Markets and company sources

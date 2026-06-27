@@ -122,6 +122,8 @@ directly. When running in the remote environment, use the listed fallback.
 - `devblogs.microsoft.com/typescript/` - Microsoft TypeScript blog is primary; fetched 200 from the run environment with full release-note detail. Reliable for TS release and RC announcements.
 - `letsencrypt.status.io` - Let's Encrypt status page is primary; fetched 200 from the run environment with incident timestamps and root-cause notes. Reliable for ACME API incident timelines.
 - `blog.ui.com` - Ubiquiti product blog; fetched 200 from the run environment. Product-launch source (judge for marketing framing); reliable for hardware spec confirmation.
+- `gcc.gnu.org/gcc-14/` and `gcc.gnu.org/releases.html` - GCC release-series and releases pages are primary; fetched cleanly with release dates and bug-fix-vs-feature classification (used 2026-06-27 to verify GCC 14.4). The pipermail announcement URL guessed from the HN link 404'd; use the releases pages instead.
+- `www.linuxfoundation.org/press/` - Linux Foundation press releases are primary; the canonical slug fetched cleanly (used 2026-06-27 for Akrites). A guessed short slug 404'd; resolve the full slug via search first. `akrites.org` is the project's official site (Linux Foundation legal footer).
 - `blog.lastpass.com/posts/` - LastPass incident blog; fetched 200 from the run environment with full disclosure text. Primary for LastPass breach timelines and scope (used 2026-06-26 for the Klue OAuth supply-chain incident). Threat-actor naming came from SecurityWeek/BleepingComputer, not the LastPass post; attribute accordingly.
 
 ### Secondary/aggregation sources

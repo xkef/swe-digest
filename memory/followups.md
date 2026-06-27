@@ -1004,3 +1004,21 @@ Format:
 - Watch for: HDMI Forum approval; merge into the Linux 7.2 window; DSC and VRR support landing; per-GPU coverage.
 - Last checked: 2026-06-26
 - Notes: AMD submitted the first kernel patches adding HDMI 2.1 Fixed Rate Link (FRL) signalling to the open-source AMDGPU driver, after years in which HDMI Forum licensing blocked an open HDMI 2.1 implementation; effort reportedly helped by Valve. FRL replaces the HDMI 2.0 TMDS mechanism and has passed representative compliance testing; DSC and VRR remain in testing. If approved, code targets Linux 7.2. Closes a gap that capped open AMD HDMI output below 4K120/8K. HN 48684722 (48 pts). Ties to the Linux 7.2 merge-window tracking. Covered in 2026-06-26 Linux and kernel.
+
+## 2026-06-27: Linux Foundation Akrites open-source AI-vulnerability defense
+
+- Status: open
+- Category: Security
+- Sources: [Linux Foundation](https://www.linuxfoundation.org/press/linux-foundation-and-industry-leaders-launch-akrites-to-defend-critical-open-source-software-against-ai-enabled-cyber-threats), [Akrites](https://akrites.org/letter/)
+- Watch for: SIRT staffing and funding model past launch; which unmaintained critical packages Akrites adopts as maintainer of last resort; whether the single coordinated-disclosure process measurably cuts maintainer report load; governance and who controls pre-disclosure embargo.
+- Last checked: 2026-06-27
+- Notes: Linux Foundation announced Akrites 2026-06-25, a cross-industry effort to coordinate confidential vulnerability remediation and disclosure for critical open source software as AI compresses vulnerability discovery from weeks to minutes. Runs a shared Security Incident Response Team (SIRT) and one standardized coordinated vulnerability disclosure (CVD) process so maintainers face one partner rather than a flood of uncoordinated AI-generated reports; commits to acting as maintainer of last resort for critical packages with no active maintainer. Founding members: AWS, Anthropic, Chainguard, Cisco, Citi, Endor Labs, Ericsson, Google, IBM, JPMorganChase, Microsoft and GitHub, NVIDIA, OpenAI, RapidFort, Red Hat, Rust Foundation, Sonatype, Vodafone, Zscaler. Supporting: CNCF, LF Energy, OpenInfra, OpenJS, OpenSSF, PyTorch Foundation. HN 48682737 (443 pts). First industry-wide governance response to the AI-found-vulnerability and maintainer-burden theme (curl July 2026 vuln-handling pause, FFmpeg AI zero-days, OpenAI Patch the Planet, GPT-5.5-Cyber). Covered in 2026-06-27 Top stories.
+
+## 2026-06-27: Autoregressive Boltzmann Generators (ArBG / Robin)
+
+- Status: open
+- Category: ML research
+- Sources: [arXiv 2606.27361](https://arxiv.org/abs/2606.27361), [code](https://github.com/danyalrehman/autobg)
+- Watch for: Independent reproduction of the 8-residue energy-error result; transfer to larger peptides or full proteins; adoption of Robin as a pretrained equilibrium sampler in molecular-dynamics or drug-discovery pipelines.
+- Last checked: 2026-06-27
+- Notes: Rehman, Tan, Bengio, Bose, Tong. ICML 2026 spotlight, arXiv 2606.27361 dated 2026-06-25. Replaces the normalizing-flow backbone of prior Boltzmann generators with an autoregressive transformer plus sequential inference-time interventions, removing the invertibility constraint that limits flow-based equilibrium sampling of molecular systems. Introduces Robin, a 132M-parameter transferable model; reports reducing zero-shot energy error (E-W2) on 8-residue peptide systems by over 60%. Authors' own numbers; code released. AI-for-science (molecular dynamics, molecular generation) interest. Covered in 2026-06-27 ML research.
