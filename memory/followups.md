@@ -1022,3 +1022,12 @@ Format:
 - Watch for: Independent reproduction of the 8-residue energy-error result; transfer to larger peptides or full proteins; adoption of Robin as a pretrained equilibrium sampler in molecular-dynamics or drug-discovery pipelines.
 - Last checked: 2026-06-27
 - Notes: Rehman, Tan, Bengio, Bose, Tong. ICML 2026 spotlight, arXiv 2606.27361 dated 2026-06-25. Replaces the normalizing-flow backbone of prior Boltzmann generators with an autoregressive transformer plus sequential inference-time interventions, removing the invertibility constraint that limits flow-based equilibrium sampling of molecular systems. Introduces Robin, a 132M-parameter transferable model; reports reducing zero-shot energy error (E-W2) on 8-residue peptide systems by over 60%. Authors' own numbers; code released. AI-for-science (molecular dynamics, molecular generation) interest. Covered in 2026-06-27 ML research.
+
+## 2026-06-27: DeepSeek DSpark speculative decoding and DeepSpec codebase
+
+- Status: open
+- Category: AI
+- Sources: [DeepSpec](https://github.com/deepseek-ai/DeepSpec), [DSpark paper](https://github.com/deepseek-ai/DeepSpec/blob/main/DSpark_paper.pdf), [model card](https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-DSpark)
+- Watch for: Independent throughput reproduction; integration into serving stacks (vLLM, SGLang); per-target acceptance-length numbers; whether DSpark ships for other DeepSeek checkpoints.
+- Last checked: 2026-06-27
+- Notes: DeepSeek published DeepSpec 2026-06-26 (MIT, repo created 2026-06-26), a full-stack codebase for training and evaluating speculative-decoding draft models, alongside DSpark, a draft module attached to DeepSeek-V4 checkpoints. Speculative decoding is lossless; the model card states DeepSeek-V4-Pro-DSpark is not a new model but the same checkpoint with a speculative-decoding module attached. Repo also implements DFlash and Eagle3 draft models, evaluates over gsm8k/math500/aime25/humaneval/mbpp/livecodebench/mt-bench/alpaca/arena-hard-v2, and trains drafts for non-DeepSeek targets including Qwen3 and Gemma. HN 48696585 (157 pts) submission cites 60-85% faster generation (project's own figure; community summaries cite a broader 51-400% throughput range across models); not independently reproduced. Adapts SpecForge (Apache-2.0) and DFlash (MIT). Covered in 2026-06-27 AI. Ties to the open-weight inference-cost theme alongside GLM 5.2 and the Doubleword open-vs-closed gap analysis.

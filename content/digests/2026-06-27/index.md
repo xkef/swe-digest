@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 32
+source_count = 36
 +++
 
 ## Top stories
@@ -59,6 +59,15 @@ source_count = 32
 No major items found.
 
 ## AI
+
+### DeepSeek open-sources DSpark speculative decoding and the DeepSpec codebase
+
+- **Category:** AI
+- **Status:** developing
+- **Sources:** [DeepSpec repo](https://github.com/deepseek-ai/DeepSpec), [DSpark paper](https://github.com/deepseek-ai/DeepSpec/blob/main/DSpark_paper.pdf), [model card](https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-DSpark), [discussion](https://news.ycombinator.com/item?id=48696585)
+- **Summary:** On 2026-06-26 DeepSeek published DeepSpec, an MIT-licensed full-stack codebase for training and evaluating speculative-decoding draft models, alongside DSpark, a draft module attached to DeepSeek-V4 checkpoints. Speculative decoding is lossless, so output is identical to standard decoding; the model card states DeepSeek-V4-Pro-DSpark is not a new model but the same checkpoint with a speculative-decoding module attached. The repository also implements the DFlash and Eagle3 draft models, evaluates over gsm8k, math500, aime25, humaneval, mbpp, and livecodebench, and trains drafts for non-DeepSeek targets including Qwen3 and Gemma. The Hacker News submission cites 60 to 85 percent faster generation; these are the project's own figures and are not independently reproduced.
+- **Why it matters:** A lossless, open-source inference speedup that transfers across model families lowers serving cost for self-hosted LLM deployments.
+- **Follow-up:** Watch for independent throughput reproduction, integration into serving stacks such as vLLM and SGLang, and per-target acceptance-length numbers.
 
 ### Doubleword measures the open-weights to closed-source LLM gap across 18 benchmarks
 
@@ -191,10 +200,10 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News via `make hn` (Algolia backend, 0 degraded collections, 60/72 queries with hits; front page, top 24h, Ask HN, Show HN, top-thread comments)
+- Hacker News via `make hn` (Algolia backend, 0 degraded collections, 63/72 queries with hits; front page, top 24h, Ask HN, Show HN, top-thread comments)
 - Reddit RSS, partial: r/programming returned; r/netsec, r/LocalLLaMA, r/rust empty or rate-limited this run
 - Tracked social people (web search): Karpathy on Claude Tag surfaced
-- AI sources: OpenAI, Anthropic/Mythos clearance, Doubleword open-weights analysis, Linux Foundation Akrites launch
+- AI sources: OpenAI, Anthropic/Mythos clearance, DeepSeek DSpark/DeepSpec speculative decoding, Doubleword open-weights analysis, Linux Foundation Akrites launch
 - ML research via `make papers` (arXiv API; Autoregressive Boltzmann Generators ICML 2026 spotlight surfaced for AI-for-science)
 - Conferences and events via `make events` (0 upcoming within the 3-day window, 0 active)
 - Books via `make books` (publisher RSS; one below-bar Pragmatic intro title excluded; O'Reilly, Manning, Packt, Addison-Wesley, No Starch, MIT Press search targets checked, no qualifying release)
