@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 36
+source_count = 40
 +++
 
 ## Top stories
@@ -108,7 +108,13 @@ No major items found.
 
 ## Security
 
-No major items found.
+### Developer-targeted RAT delivered through a fake VC job interview
+
+- **Category:** Security
+- **Status:** discussion
+- **Sources:** [write-up](https://grack.com/blog/2026/06/25/dissecting-a-failed-nation-state-attack/), [discussion](https://news.ycombinator.com/item?id=48694631)
+- **Summary:** Matt Mastracci, a crates.io package maintainer, published an analysis on 2026-06-25 of a targeted attack that reached him through a fake venture-capital firm ("Lua Ventures") offering advisory work, backed by a fabricated LinkedIn persona and shell company sites. The payload was a TypeScript "ferry app" repository whose `typescript@5.9.2` patch file carried a base64, XOR-encrypted stub that runs when TypeScript executes. A multi-stage loader reads a hidden chunk from an image file, runs embedded WebAssembly, then spawns a detached Node process delivering a RAT ("PinpinRAT") with file exfiltration, arbitrary command execution, environment-variable dumping, and DNS tunneling, with a C2 at 89.124.107.161. The attack failed because the author inspected the repository structure with AI before running it rather than executing the code.
+- **Why it matters:** It is another concrete instance of the fake-recruiter, developer-targeted supply-chain vector seen in the 2026-06-15 npm LinkedIn backdoor, with a fuller technical teardown of the staged loader and persistence.
 
 ## Outages
 
@@ -157,6 +163,14 @@ No major items found.
 - **Summary:** Mac Chaffee, a platform engineer, revisited AOL's 19-hour 1996 outage. Drawing on an interview with AOL's then VP of Operations Matt Korn, the post attributes the outage to a routine maintenance procedure that did not come back online cleanly, and a separate May 1996 incident to a single phase of a three-phase power feed failing before generators could start. The piece argues SRE reliability cases should center human impact, not only cost, and profiles a user who relied on an online bulletin board for medical information during the downtime.
 - **Why it matters:** It is a durable reliability-culture write-up with concrete incident detail, useful as an argument for reliability investment beyond financial framing.
 
+### Fintech Engineering Handbook collects money-system design patterns
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [handbook](https://w.pitula.me/fintech-engineering-handbook/), [discussion](https://news.ycombinator.com/item?id=48696982)
+- **Summary:** Voytek Pitula published a free online Fintech Engineering Handbook, last modified 2026-06-27, as a living document on building money systems. It covers representing money (precision, rounding, currency, FX), recording transactions (double-entry bookkeeping, audit trails, event sourcing), executing money flows (invariants, reservations, idempotency, resumability), external integrations (APIs, webhooks, reconciliation), segregation-of-duties controls, testing strategies, and end-to-end examples such as a crypto withdrawal and a card deposit. It reached the HN front page with over 280 points.
+- **Why it matters:** It consolidates recurring correctness and consistency patterns for payment and ledger systems into one reference, useful for engineers building or auditing financial flows.
+
 ## Books
 
 No major items found.
@@ -200,14 +214,14 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News via `make hn` (Algolia backend, 0 degraded collections, 63/72 queries with hits; front page, top 24h, Ask HN, Show HN, top-thread comments)
+- Hacker News via `make hn` (Algolia backend, 0 degraded collections, 61/72 queries with hits this run; front page, top 24h, Ask HN, Show HN, top-thread comments)
 - Reddit RSS, partial: r/programming returned; r/netsec, r/LocalLLaMA, r/rust empty or rate-limited this run
 - Tracked social people (web search): Karpathy on Claude Tag surfaced
 - AI sources: OpenAI, Anthropic/Mythos clearance, DeepSeek DSpark/DeepSpec speculative decoding, Doubleword open-weights analysis, Linux Foundation Akrites launch
 - ML research via `make papers` (arXiv API; Autoregressive Boltzmann Generators ICML 2026 spotlight surfaced for AI-for-science)
 - Conferences and events via `make events` (0 upcoming within the 3-day window, 0 active)
 - Books via `make books` (publisher RSS; one below-bar Pragmatic intro title excluded; O'Reilly, Manning, Packt, Addison-Wesley, No Starch, MIT Press search targets checked, no qualifying release)
-- Security advisories: CISA KEV catalog 2026.06.25 (count 1629), unchanged today
+- Security advisories: CISA KEV catalog 2026.06.25 (count 1629), unchanged today; developer-targeted fake-recruiter RAT write-up (grack.com) added to Security
 - Status pages: GitHub, Cloudflare, AWS, Claude, OpenAI; no major active outage
 - GitHub releases across all `[github]` repos and `github.com/trending` (overall, rust, python views): tmux 3.7 new stable; Homebrew 6.0.5, Spring Boot 3.5.16, Grafana 13.0.3, OpenTelemetry Collector 0.155.0, Node 26.4.0 patch releases; Kotlin 2.4.10-RC, Zed 1.9.0-pre, Prometheus 3.13.0-rc.1, Neovim nightly prereleases; trending clustered on agent tooling and document parsing (agent-browser, agent-toolkit-for-aws, MinerU) with no new convergent theme; GCC 14.4 stable surfaced via HN and verified on gcc.gnu.org
 - Engineering blogs
