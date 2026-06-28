@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 16
+source_count = 21
 +++
 
 ## Top stories
@@ -97,7 +97,14 @@ No major items found.
 
 ## Infrastructure
 
-No major items found.
+### ClickHouse rewrites WAL-G PostgreSQL backups in Rust as WAL-RUS
+
+- **Category:** Infrastructure
+- **Status:** discussion
+- **Sources:** [ClickHouse blog](https://clickhouse.com/blog/walrus-postgres-backups-in-rust), [repository](https://github.com/ClickHouse/wal-rus), [HN discussion](https://news.ycombinator.com/item?id=48702848)
+- **Summary:** ClickHouse published WAL-RUS on 2026-06-25, a Rust port of the Go-based WAL-G PostgreSQL backup and write-ahead-log archival tool, built to bound memory use on no-overcommit hosts through streaming I/O without full-segment buffering. ClickHouse's own benchmark reports WAL-RUS held virtual memory under 1 GB where WAL-G reached about 2.8 GB, a reduction above 70 percent, while both kept minimal WAL backlog under four concurrent workers. It reuses the existing `WALG_` configuration variables, reads and writes WAL-G-compatible archives, and supports file, S3, and GCS backends with zstd, brotli, lz4, lzma, and gzip compression.
+- **Why it matters:** Memory-bounded WAL archival matters for dense Postgres fleets where WAL-G's per-segment buffering can exhaust constrained hosts, and archive compatibility lets operators adopt it incrementally.
+- **Follow-up:** Watch for a tagged release, an explicit license declaration (the repository currently carries an unrecognized license file), and independent benchmarks outside ClickHouse Cloud.
 
 ## Engineering posts
 
@@ -109,6 +116,14 @@ No major items found.
 - **Summary:** A practitioner write-up collecting patterns for payment and financial systems, covering idempotency keys, monetary-amount representation, and ledger design. It reached the Hacker News front page with substantive technical discussion.
 - **Comments:** HN commenters singled out the idempotency-keys section and warned against using minor-units integer precision as an interchange or API format despite its appeal for fast integer math; one asked whether the content was experience-based or AI-generated.
 - **Why it matters:** Money-handling correctness patterns (idempotency, exact amounts, ledgers) are recurring sources of production bugs, and a consolidated reference has direct reuse value.
+
+### Teardown of Reddit's anti-spam internals
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [lyra.horse post](https://lyra.horse/blog/2026/06/reddit-spam-internals/), [HN discussion](https://news.ycombinator.com/item?id=48699010)
+- **Summary:** Independent researcher Lyra (rebane2001) published a 2026-06-27 reconstruction of Reddit's spam-detection stack, assembled partly from an accidental internal exposure encountered while moderating subreddits in 2021. It describes layered systems: an integration of Google's Perspective API scoring an experimental spam attribute, a likelihood scorer the author calls Spammit, a Lua rules engine with a keyword-filter subsystem, and newer streaming pipelines built on Flink Stateful Functions with OCR, alongside TLS and browser fingerprinting and live URL inspection that follows redirects to correlate embedded analytics identifiers.
+- **Why it matters:** It documents how a large platform combines heuristic scoring, rules engines, and streaming-ML pipelines for abuse detection, a concrete reference for teams building spam and anti-abuse systems.
 
 ## Books
 
@@ -139,7 +154,7 @@ No major items found.
 
 ## Reddit and social pulse
 
-Reddit RSS feeds (`/hot/.rss`, `/top/.rss?t=day`) returned empty from the run environment; Reddit pulse is degraded for this run.
+Reddit pulse is partially degraded. The quality pass reached `r/programming` hot but other subreddit feeds returned empty under rapid sequential fetches. No new verified story surfaced from the available feed; the most-discussed engineering thread was a retrospective of the 2026-05-07 AWS US-EAST-1 data-hall thermal incident, not a new outage. Labeled discussion.
 
 - Theo Browne published a video, "GPT-5.6 is here, and we can't use it," on his verified channel, reacting to OpenAI's 2026-06-26 GPT-5.6 preview being limited to government-vetted trusted partners. Labeled discussion. [video](https://www.youtube.com/watch?v=yzRJDl5GQVg)
 
@@ -153,13 +168,13 @@ Reddit RSS feeds (`/hot/.rss`, `/top/.rss?t=day`) returned empty from the run en
 ## Sources checked
 
 - Hacker News: full structured coverage via `make hn` (Algolia backend, 0 degraded collections, front page, top 24h, Ask HN, Show HN, top-thread comments, 58/72 watchlist queries matched).
-- Reddit: degraded. `/hot/.rss` and `/top/.rss?t=day` returned empty from the run environment.
+- Reddit: partially degraded. `r/programming` hot was reachable in the quality pass; other subreddit feeds returned empty under rapid sequential fetches. No new verified story surfaced.
 - AI sources: HN AI queries, TechCrunch, vendor coverage.
 - ML research and arXiv papers: `make papers` (arXiv API, 116 items).
 - Conferences and events: `make events` (0 upcoming within 3-day window, 0 active).
 - Books and publisher feeds: `make books` (2 items; none met the bar).
 - Security advisories: CISA KEV JSON feed (catalog 2026.06.25, count 1629, unchanged); FemtoSec threat analysis.
 - Status pages: Codeberg status; web search for AWS, Azure, Cloudflare, GitHub, OpenAI incidents (no new outage on 2026-06-28).
-- GitHub watchlist: releases checked for dev-tool, language, and infra repos; `github.com/trending` daily view (AI-agent/Claude Code tooling cluster, no new verified theme).
+- GitHub watchlist: releases checked for all `[github]` repos (dev tools, languages, infra, AI-for-science); newest tags (tmux 3.7, Node 26.4.0, Deno 2.9.0, Homebrew 6.0.5, Grafana 13.0.3, OpenTelemetry Collector 0.155.0, Spring Boot 3.5.16) all predate the 2026-06-28 first ingest and were covered earlier; no release published after that ingest. `github.com/trending` daily view showed the recurring AI-coding-agent tooling cluster (design.md, gstack, claude-howto) plus the dbt-core Rust port, no new verified theme.
 - YouTube channels: `make yt` (40 videos across 89 channels).
 - Markets and company sources: HN markets queries, TechCrunch.
