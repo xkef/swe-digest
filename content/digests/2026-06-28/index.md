@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 21
+source_count = 23
 +++
 
 ## Top stories
@@ -125,6 +125,15 @@ No major items found.
 - **Summary:** Independent researcher Lyra (rebane2001) published a 2026-06-27 reconstruction of Reddit's spam-detection stack, assembled partly from an accidental internal exposure encountered while moderating subreddits in 2021. It describes layered systems: an integration of Google's Perspective API scoring an experimental spam attribute, a likelihood scorer the author calls Spammit, a Lua rules engine with a keyword-filter subsystem, and newer streaming pipelines built on Flink Stateful Functions with OCR, alongside TLS and browser fingerprinting and live URL inspection that follows redirects to correlate embedded analytics identifiers.
 - **Why it matters:** It documents how a large platform combines heuristic scoring, rules engines, and streaming-ML pipelines for abuse detection, a concrete reference for teams building spam and anti-abuse systems.
 
+### Clustering two AMD Strix Halo machines over RDMA for local LLM inference
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [setup guide](https://github.com/kyuz0/amd-strix-halo-vllm-toolboxes/blob/main/rdma_cluster/setup_guide.md), [HN discussion](https://news.ycombinator.com/item?id=48703258)
+- **Summary:** A practitioner setup guide documents clustering two AMD Strix Halo machines (Framework Desktop boards, 128 GB unified memory each) over RDMA using ConnectX-5 100G NICs to run larger open-weight models such as DeepSeek V4 Flash and GLM 5.2 via tensor parallelism. The guide notes the PCIe 4.0 x4 slot (about 64 Gbps) bottlenecks the 100G NIC and that Strix Halo memory bandwidth (around 300 GB/s) trails Apple Silicon (600+ GB/s), with Thunderbolt offered as a lower-latency alternative interconnect.
+- **Comments:** HN commenters reported Strix Halo board prices have risen sharply since launch, narrowing the cost gap to Apple hardware, and debated whether the local-inference build is cost-effective against cloud subscriptions given the bandwidth limits.
+- **Why it matters:** It is a concrete reference for building multi-node local inference on consumer AMD hardware, where memory bandwidth and interconnect choice, not raw compute, govern usable model size and speed.
+
 ## Books
 
 No major items found. The publisher feeds surfaced only an introductory programming title and an opinion post, neither meeting the advanced/state-of-the-art bar.
@@ -167,7 +176,7 @@ Reddit pulse is partially degraded. The quality pass reached `r/programming` hot
 
 ## Sources checked
 
-- Hacker News: full structured coverage via `make hn` (Algolia backend, 0 degraded collections, front page, top 24h, Ask HN, Show HN, top-thread comments, 58/72 watchlist queries matched).
+- Hacker News: full structured coverage via `make hn` (Algolia backend, 0 degraded collections, front page, top 24h, Ask HN, Show HN, top-thread comments; 59/72 watchlist queries matched on the 09:50 refetch).
 - Reddit: partially degraded. `r/programming` hot was reachable in the quality pass; other subreddit feeds returned empty under rapid sequential fetches. No new verified story surfaced.
 - AI sources: HN AI queries, TechCrunch, vendor coverage.
 - ML research and arXiv papers: `make papers` (arXiv API, 116 items).
