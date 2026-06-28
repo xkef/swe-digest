@@ -1,0 +1,80 @@
+date: '2026-06-28'
+window: 2026-06-22..2026-06-28
+run_logs_reviewed:
+- '2026-06-22'
+- '2026-06-23'
+- '2026-06-24'
+- '2026-06-25'
+- '2026-06-26'
+- '2026-06-27'
+- '2026-06-28'
+issues_opened: []
+proposals: []
+new_issues_requested:
+- 'Reddit RSS sustained partial block from the run environment 2026-06-24..2026-06-28 (plain, no label)'
+feedback_reviewed:
+- 20
+notes: |
+  Scheduled Sunday weekly-improvement run (unattended GitHub Actions, read-only
+  token): committed locally, no push, no write API calls. Side effects requested
+  through .run/manifest.yaml (one plain blocked-source issue, one feedback close).
+  Window 2026-06-22..2026-06-28, seven clean run-log days since the 2026-06-21
+  marker.
+
+  No labeled improvement proposal this week: the evidence is thin or already
+  resolved.
+
+  make yield over 7 clean run logs (0 degraded HN days): zero-match queries are
+  "Spring Boot", "drug discovery", and "protein folding". All three are
+  deliberate niche catches for stated high-interest areas (Spring Boot in
+  memory/profile.md; drug discovery and protein folding for AI for science),
+  overlap broader queries that did yield (arXiv, AlphaFold, Java), and cost
+  nothing when they do not fire, so they are kept rather than pruned, same call
+  as the 2026-06-21 marker. backtest miss_review across the seven days is almost
+  entirely out_of_scope (~209) and relevance_skip (~80), with 21 scrape_gap and
+  exactly 1 watchlist_gap. The single watchlist_gap (HN 48631888, "Prompt
+  Injection as Role Confusion", 2026-06-22) is one anecdote whose topic is
+  already covered: "prompt injection" is a [security] topic, and the ICML
+  role-confusion paper was in fact published in the 2026-06-23 digest. One
+  anecdote is below the repeated-miss bar, so no new query and no interest-drift
+  signal. The 21 scrape_gap candidates are timing (items that surfaced after the
+  ~02:2x publish-time fetch and were caught by the accumulating data/hn/
+  snapshot), not a blocked source: HN ran via Algolia with 0 degraded
+  collections all seven days. No watchlist add or prune warranted.
+
+  Feedback #20 (2026-06-23, "[feedback] ICML 2026", kind not interesting: "It
+  should only be shown in one digest, not every day") is ALREADY RESOLVED. The
+  complaint targets the old 30-day event lead window, under which ICML 2026 and
+  EuroPython 2026 appeared in every digest 2026-06-21 through 2026-06-23. Commit
+  c8a567e (2026-06-24, "feat: shorten event lead window and raise the books bar")
+  cut the window to 3 days (LEAD_DAYS = 3 in scripts/fetch_events.py, matching
+  CLAUDE.md and docs/routine.md); from 2026-06-24 ICML and EuroPython dropped out
+  of the Conferences and events section, and the 2026-06-28 digest shows "No
+  major items found" with a one-line note that ICML is 8 days out. The owner's
+  concern is addressed by an already-committed change, so no new proposal; #20 is
+  requested closed via the manifest, naming this marker date and the fix commit.
+
+  GitHub account signal (read-only, bounded): owner non-fork repo languages
+  (Shell, Python, Rust, Jupyter) and a 100-repo starred sample (top languages
+  Rust 26, Python 20, TypeScript 11, Go 9, C++/C, Lua, Zig, Swift, Kotlin, Java;
+  top topics rust, llm, terminal, cli, ai, macos, ai-agents, neovim, linux, mcp,
+  wasm, rag) are all already covered by data/watchlist.toml [languages]/[topics].
+  The 26-account following list is all individuals, no recurring org. No
+  personalization proposal, same conclusion as the 2026-06-21 marker.
+
+  Blocked source: Reddit RSS (www.reddit.com /hot/.rss and /top/.rss?t=day)
+  stayed degraded or partial across most of the window: 2026-06-24 returned
+  "Blocked", 2026-06-25/26/27 partial (only r/programming returned, most subs
+  empty), 2026-06-28 returned empty. No open issue covers Reddit access, so a
+  plain (no label) blocked-source issue is requested via the manifest citing the
+  run-log dates and backend, so the owner can check access from another network.
+  HN was 0 degraded all seven days. The datacenter 403 source blocks remain
+  environment-specific; their tracking issues #8 and #9 are closed.
+
+  Memory compaction: closed three stale outage root-cause follow-ups in
+  memory/followups.md awaiting vendor postmortems that have not appeared and
+  realistically will not (last touched 2026-06-12/13): 2026-06-11 Google Cloud
+  India data center fire, 2026-06-11 Google Gemini outage root cause, 2026-06-13
+  Meta global outage. Updated the Reddit note in memory/source-reliability.md
+  with the 2026-06-24..2026-06-28 degradation pattern. entities.md remains active
+  and bounded; no pruning needed.

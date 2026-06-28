@@ -89,12 +89,12 @@ Format:
 
 ## 2026-06-11: Google Cloud India data center fire
 
-- Status: open
+- Status: closed
 - Category: Outage
 - Sources: [Medianama](https://www.medianama.com/2026/06/223-google-cloud-outage-india-delhi-fire/)
 - Watch for: Facility restoration; end of elevated-latency period.
-- Last checked: 2026-06-12
-- Notes: Fire at third-party Delhi data center on 2026-06-09 at 23:52 IST. Elevated latency and non-optimal routing in Delhi, Mumbai, Chennai persist as of 2026-06-12. Traffic rerouted but demand exceeds rerouted capacity on some ISPs. No restoration timeline published.
+- Last checked: 2026-06-28
+- Notes: Fire at third-party Delhi data center on 2026-06-09 at 23:52 IST. Elevated latency and non-optimal routing in Delhi, Mumbai, Chennai persist as of 2026-06-12. Traffic rerouted but demand exceeds rerouted capacity on some ISPs. No restoration timeline published. Closed 2026-06-28 (weekly compaction): no further reports of elevated latency surfaced after 2026-06-12; Google published no restoration timeline or postmortem. Stale; re-open only if a Google postmortem appears.
 
 ## 2026-06-11: Apple Foundation Models open source
 
@@ -179,12 +179,12 @@ Format:
 
 ## 2026-06-11: Google Gemini outage root cause
 
-- Status: open
+- Status: closed
 - Category: Outage
 - Sources: [StatusGator Gemini](https://statusgator.com/services/gemini)
 - Watch for: Google postmortem with root cause.
-- Last checked: 2026-06-12
-- Notes: ~7-hour outage on 2026-06-11. Errors 1076 and 1099. Resolved ~14:30 PT. Google stopped a background process causing missing conversation metadata. No detailed root cause or postmortem published.
+- Last checked: 2026-06-28
+- Notes: ~7-hour outage on 2026-06-11. Errors 1076 and 1099. Resolved ~14:30 PT. Google stopped a background process causing missing conversation metadata. No detailed root cause or postmortem published. Closed 2026-06-28 (weekly compaction): no postmortem published in 17 days; Google rarely publishes consumer Gemini root causes. Stale; re-open only if a postmortem appears.
 
 ## 2026-06-12: Claude Fable 5 visible safeguards implementation
 
@@ -323,12 +323,12 @@ Format:
 
 ## 2026-06-13: Meta global outage 2026-06-12
 
-- Status: open
+- Status: closed
 - Category: Outage
 - Sources: [Newsweek](https://www.newsweek.com/facebook-down-not-working-error-query-12065443), [AOL (restored)](https://www.aol.com/facebook-instagram-users-report-widespread-160006542.html)
 - Watch for: Meta root-cause statement.
-- Last checked: 2026-06-13
-- Notes: Facebook, Instagram, WhatsApp, Messenger down worldwide from shortly before 10:00 ET 2026-06-12; 100,000+ Downdetector reports; users logged out and blocked from re-login; lasted about four hours. Andy Stone confirmed; a Meta spokesperson later said the issue was resolved and apologized. No root cause published.
+- Last checked: 2026-06-28
+- Notes: Facebook, Instagram, WhatsApp, Messenger down worldwide from shortly before 10:00 ET 2026-06-12; 100,000+ Downdetector reports; users logged out and blocked from re-login; lasted about four hours. Andy Stone confirmed; a Meta spokesperson later said the issue was resolved and apologized. No root cause published. Closed 2026-06-28 (weekly compaction): no Meta root-cause statement published in 15 days; Meta does not publish consumer-outage postmortems. Stale; re-open only if one appears.
 
 ## 2026-06-14: Anthropic NMR spectral-analysis result
 
