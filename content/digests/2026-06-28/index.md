@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 23
+source_count = 30
 +++
 
 ## Top stories
@@ -63,7 +63,14 @@ No major items found. The day's AI items are in Top stories (Asian Mythos-style 
 
 ## Agentic coding
 
-No major items found.
+### Codex still lacks a built-in way to exclude sensitive files from agent reads
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [GitHub issue openai/codex#2847](https://github.com/openai/codex/issues/2847), [HN discussion](https://news.ycombinator.com/item?id=48706714)
+- **Summary:** A long-open OpenAI Codex enhancement request, "A way to exclude sensitive files" (opened 2025-08-28, labeled enhancement and sandbox, 84 comments, still open), resurfaced on Hacker News on 2026-06-28. The request asks for a mechanism to keep files such as `.env` and credential stores out of the set the coding agent can read, so secrets do not enter the agent context or get sent to the model. No resolution had shipped at run time.
+- **Why it matters:** Coding agents read repository files by default, and the absence of a first-class exclude mechanism leaves secret-hygiene to ad hoc sandboxing, a recurring practitioner concern as agent adoption grows.
+- **Follow-up:** Watch for a built-in ignore or exclude feature in Codex and whether other agents standardize a sensitive-file boundary.
 
 ## Security
 
@@ -140,7 +147,23 @@ No major items found. The publisher feeds surfaced only an introductory programm
 
 ## Markets and companies
 
-No major items found.
+### Google caps Meta's Gemini capacity amid compute shortage
+
+- **Category:** Markets
+- **Status:** developing
+- **Sources:** [CNBC](https://www.cnbc.com/2026/06/28/google-limits-metas-use-of-its-gemini-ai-models-ft-reports.html), [HN discussion](https://news.ycombinator.com/item?id=48707103)
+- **Summary:** The Financial Times reported 2026-06-28 that Google limited Meta's use of its Gemini models after Meta sought more capacity than Google could supply, telling Meta around March it could not meet the full purchase. The shortfall disrupted and delayed some Meta AI projects, and Meta told staff to use AI tokens more efficiently. Other Google cloud customers faced capacity limits too, but Meta was hit hardest because its demand was especially high. Reuters and CNBC carried the FT report; Google and Meta did not confirm specifics.
+- **Why it matters:** A frontier-model provider rationing capacity to a major customer shows AI compute scarcity now constrains roadmaps even for the largest buyers, raising the cost of single-provider model dependence.
+- **Follow-up:** Watch for confirmation from Google or Meta, Meta's mitigation (in-house models or alternative providers), and whether quota limits widen to other Gemini API customers.
+
+### Austria lobbies EU to host Anthropic after US foreign-access curbs
+
+- **Category:** Markets
+- **Status:** developing
+- **Sources:** [Bloomberg](https://www.bloomberg.com/news/articles/2026-06-28/austria-lobbies-eu-to-host-anthropic-after-us-access-curbs), [Reuters via Yahoo Finance](https://finance.yahoo.com/technology/ai/articles/austria-lobbies-eu-host-anthropic-125855139.html), [HN discussion](https://news.ycombinator.com/item?id=48707146)
+- **Summary:** Bloomberg reported 2026-06-28 that Austrian State Secretary for Digitalization Alexander Proell wrote to European Commission Executive Vice President Henna Virkkunen proposing the EU explore "the strategic establishment and participation of Anthropic within the European Union," offering legal certainty, market access, and capital. The move responds to the 2026-06-12 US export-control directive that blocked all foreign-national access to Anthropic Fable 5 and Mythos 5.
+- **Why it matters:** A member-state push to host a US AI lab inside the EU signals that the export curbs are reshaping platform-location and sovereignty calculus, with downstream effects on where frontier models can be accessed and governed.
+- **Follow-up:** Watch for a European Commission response, any Anthropic statement on EU establishment, and whether other member states join the proposal.
 
 ## Hacker News
 
@@ -169,14 +192,14 @@ Reddit pulse is partially degraded. The quality pass reached `r/programming` hot
 
 ## Watchlist follow-ups
 
-- **Anthropic Fable 5 / Mythos 5 export controls:** The ban's market effect is now visible. Asian labs (Sakana AI Fugu, 360 Tulongfeng) launched Mythos-style models to fill the gap (Top stories), one day after the US cleared Mythos 5 for 100+ US institutions while keeping Fable 5 out (2026-06-26). [TechCrunch](https://techcrunch.com/2026/06/27/asian-ai-startups-launch-mythos-like-models-as-anthropics-export-ban-drags-on/)
+- **Anthropic Fable 5 / Mythos 5 export controls:** The ban's market effect is now visible. Asian labs (Sakana AI Fugu, 360 Tulongfeng) launched Mythos-style models to fill the gap (Top stories), one day after the US cleared Mythos 5 for 100+ US institutions while keeping Fable 5 out (2026-06-26). On 2026-06-28 Austria asked the EU to host Anthropic inside the bloc in response to the curbs (Markets and companies). [TechCrunch](https://techcrunch.com/2026/06/27/asian-ai-startups-launch-mythos-like-models-as-anthropics-export-ban-drags-on/), [Bloomberg](https://www.bloomberg.com/news/articles/2026-06-28/austria-lobbies-eu-to-host-anthropic-after-us-access-curbs)
 - **AI-found vulnerability and maintainer burden:** The exploitarium PoC dump (Top stories) adds an uncoordinated mass-disclosure data point alongside curl's July 2026 vuln-handling pause, FFmpeg AI-found zero-days, OpenAI Patch the Planet, and the Linux Foundation Akrites effort.
 - **Developer-targeted supply-chain lures:** The grack.com nation-state-style teardown (Hacker News) is a fresh instance of the fake-recruiter vector tracked since 2026-06-16.
 - **DeepSeek DSpark / DeepSpec:** The paper PDF topped Hacker News today (Hacker News section); throughput claims still unreproduced.
 
 ## Sources checked
 
-- Hacker News: full structured coverage via `make hn` (Algolia backend, 0 degraded collections, front page, top 24h, Ask HN, Show HN, top-thread comments; 59/72 watchlist queries matched on the 09:50 refetch).
+- Hacker News: full structured coverage via `make hn` (Algolia backend, 0 degraded collections, front page, top 24h, Ask HN, Show HN, top-thread comments; 60/72 watchlist queries matched on the 16:14 refetch).
 - Reddit: partially degraded. `r/programming` hot was reachable in the quality pass; other subreddit feeds returned empty under rapid sequential fetches. No new verified story surfaced.
 - AI sources: HN AI queries, TechCrunch, vendor coverage.
 - ML research and arXiv papers: `make papers` (arXiv API, 116 items).
@@ -186,4 +209,4 @@ Reddit pulse is partially degraded. The quality pass reached `r/programming` hot
 - Status pages: Codeberg status; web search for AWS, Azure, Cloudflare, GitHub, OpenAI incidents (no new outage on 2026-06-28).
 - GitHub watchlist: releases checked for all `[github]` repos (dev tools, languages, infra, AI-for-science); newest tags (tmux 3.7, Node 26.4.0, Deno 2.9.0, Homebrew 6.0.5, Grafana 13.0.3, OpenTelemetry Collector 0.155.0, Spring Boot 3.5.16) all predate the 2026-06-28 first ingest and were covered earlier; no release published after that ingest. `github.com/trending` daily view showed the recurring AI-coding-agent tooling cluster (design.md, gstack, claude-howto) plus the dbt-core Rust port, no new verified theme.
 - YouTube channels: `make yt` (40 videos across 89 channels).
-- Markets and company sources: HN markets queries, TechCrunch.
+- Markets and company sources: HN markets queries, TechCrunch; FT/CNBC/Reuters (Google-Meta Gemini capacity); Bloomberg/Reuters (Austria EU-Anthropic lobbying), both verified 2026-06-28.
