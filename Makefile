@@ -2,12 +2,14 @@
 
 MISE       = mise
 ZOLA       = $(MISE) exec -- zola
+DPRINT     = $(MISE) exec dprint@0.54.0 --
+RUMDL      = $(MISE) exec rumdl@0.2.9 --
 DIST       = dist
 TODAY      = $(shell date -u +%Y-%m-%d)
 RELEASE    = $(if $(GITHUB_SHA),$(shell git rev-parse --short HEAD 2>/dev/null || echo dev),$(shell git describe --tags --always 2>/dev/null || echo dev))
 BUILD_DATE = $(shell date -u +%Y-%m-%dT%H:%MZ)
 
-.PHONY: build serve check check-content stories clean new-digest hn yt events papers books run-log backtest yield
+.PHONY: build serve check check-content fmt fmt-check stories clean new-digest hn yt events papers books run-log backtest yield
 
 stories:
 	@python3 scripts/build_stories.py
@@ -60,6 +62,18 @@ check: build
 
 check-content:
 	@python3 scripts/check_content.py
+
+# Formatting is owner-side and intentionally not part of `check` or CI, so
+# unattended digest runs are never gated on it. dprint owns TOML/JSON; rumdl
+# owns Markdown. Both skip content/ and data/ (see dprint.json and .rumdl.toml).
+# The tools install on demand here, so they stay out of mise.toml [tools].
+fmt:
+	@$(DPRINT) dprint fmt
+	@$(RUMDL) rumdl fmt
+
+fmt-check:
+	@$(DPRINT) dprint check
+	@$(RUMDL) rumdl check .
 
 new-digest:
 	@python3 scripts/new_digest.py $(TODAY)

@@ -1,3 +1,8 @@
 [tools]
 zola = "0.22.1"
 python = "3.14"
+
+# dprint and rumdl are owner-side formatters, not runtime deps. They are kept
+# out of [tools] on purpose so CI's `mise install` (jdx/mise-action) does not
+# fetch them on every scheduled agent run. `make fmt` installs them on demand
+# at the versions pinned in the Makefile.
