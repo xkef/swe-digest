@@ -962,6 +962,15 @@ Format:
 - Last checked: 2026-06-28
 - Notes: FT reported 2026-06-28 (carried by Reuters/CNBC) that Google limited Meta's use of Gemini after Meta sought more capacity than Google could supply; Google told Meta around March it could not meet the full purchase. Disrupted/delayed some Meta AI projects; Meta told staff to use AI tokens more efficiently. Other Google customers also faced limits but Meta hardest (highest demand). Some reporting cites compute-quota usage limits on Gemini apps from 2026-05-17. Google/Meta did not confirm specifics. Signal: AI compute scarcity now constrains roadmaps even for the largest buyers, raising the cost of single-provider model dependence. Covered 2026-06-28 Markets and companies.
 
+## 2026-06-29: Samsung, SK Hynix, Micron US DRAM price-fixing class action
+
+- Status: open
+- Category: Markets
+- Sources: [Tom's Hardware](https://www.tomshardware.com/tech-industry/samsung-sk-hynix-and-micron-sued-over-alleged-dram-price-fixing-amid-record-memory-costs), [MLex](https://www.mlex.com/mlex/articles/2493973/samsung-sk-hynix-micron-accused-in-us-of-fixing-dram-prices)
+- Watch for: Manufacturers' responses; any motion to dismiss; class certification; parallel DOJ/FTC or foreign regulator probe; whether memory prices soften.
+- Last checked: 2026-06-29
+- Notes: Class-action antitrust complaint filed 2026-06-25 in US District Court N.D. Cal. (Judge Noel Wise). 17 plaintiffs (individuals and small businesses) allege Samsung, SK Hynix, Micron coordinated DRAM supply and pricing from 2022, using the HBM-for-AI transition as a pretext to curtail DDR3/DDR4 output; claim ~700% price rise over four years. Allegations unproven. The three pleaded guilty to DOJ DRAM price-fixing in the 2000s ($731M fines). Supply/demand side of the same memory-crunch theme as Apple's 2026-06-25 consumer price hikes and Micron's 2026-06-26 five-year floor-price agreements. HN 48718102. Covered 2026-06-29 Markets and companies.
+
 ## 2026-06-29: OpenAI Codex lacks a sensitive-file exclusion mechanism
 
 - Status: open

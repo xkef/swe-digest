@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 20
+source_count = 29
 +++
 
 ## Top stories
@@ -107,7 +107,15 @@ No major items found.
 
 ## Apple platforms
 
-No major items found. The Librepods AirPods-protocol work is covered in Top stories.
+### Reverse-engineering Apple's Sparse Image Format (ASIF)
+
+- **Category:** Apple
+- **Status:** discussion
+- **Sources:** [author write-up](https://schamper.dev/dissecting-apples-sparse-image-format-asif/), [discussion](https://news.ycombinator.com/item?id=48708644)
+- **Summary:** Erik Schamper published a 2026-06-18 teardown of ASIF, the sparse virtual-disk format Apple introduced in macOS 26 Tahoe for virtual machines. The format opens with a `shdw` magic signature and metadata (sector count, 1 MiB chunk size, directory offsets), organizes data through directory tables and chunk groups with embedded bitmaps using two-bit per-block allocation flags, and reaches just under 4 PiB maximum virtual size via 55-bit chunk addressing in 64-bit entries. The author recovered the layout from hex dumps and the `diskimagescontroller` binary in IDA Pro and released a reader in the open-source `dissect.hypervisor` project.
+- **Why it matters:** A documented on-disk layout and open-source reader let forensic and VM tooling inspect ASIF images without Apple's frameworks, relevant to anyone running or analyzing macOS virtual machines.
+
+The Librepods AirPods-protocol work is covered in Top stories.
 
 ## Linux and kernel
 
@@ -126,6 +134,14 @@ No major items found.
 
 ## Engineering posts
 
+### Cloudflare traces an intermittent image-truncation bug to a discarded Poll::Pending in hyper
+
+- **Category:** Engineering post
+- **Status:** confirmed
+- **Sources:** [Cloudflare blog](https://blog.cloudflare.com/hyper-bug/), [discussion](https://news.ycombinator.com/item?id=48670314)
+- **Summary:** Cloudflare published a 2026-06-22 write-up of a six-week hunt for a bug in its Rust-based Images service, where larger transformed images intermittently returned a 200 status with the body cut short (a 2 MB response arriving as a few hundred kilobytes). The root cause was in hyper's HTTP/1 connection state machine in `dispatch.rs`: a `let _ =` before `poll_flush` discarded the result, including the `Poll::Pending` that signals an incomplete flush, so the write loop never learned that megabytes were still buffered. The fix was four lines.
+- **Why it matters:** It is a concrete example of how silently dropping a `Poll::Pending` in async Rust produces a data-truncation race that surfaces only under load and large payloads, a failure mode for any service building on hyper or hand-written poll loops.
+
 ### HackerRank open-sourced its resume-scoring agent; analysis finds the scores non-deterministic
 
 - **Category:** Engineering post
@@ -142,9 +158,24 @@ No major items found. The books fetcher returned only beginner and news items fr
 
 ## Markets and companies
 
-No major items found.
+### Samsung, SK Hynix, and Micron hit with US antitrust class action over DRAM prices
+
+- **Category:** Markets
+- **Status:** confirmed
+- **Sources:** [Tom's Hardware](https://www.tomshardware.com/tech-industry/samsung-sk-hynix-and-micron-sued-over-alleged-dram-price-fixing-amid-record-memory-costs), [MLex](https://www.mlex.com/mlex/articles/2493973/samsung-sk-hynix-micron-accused-in-us-of-fixing-dram-prices), [discussion](https://news.ycombinator.com/item?id=48718102)
+- **Summary:** A class-action antitrust complaint filed 2026-06-25 in the US District Court for the Northern District of California (before Judge Noel Wise) names Samsung, SK Hynix, and Micron, which together produce most of the world's DRAM. The 17 plaintiffs (individuals and small businesses) allege the three coordinated supply and pricing from 2022 onward, using the industry's shift to High Bandwidth Memory for AI data centers as a pretext to curtail DDR3 and DDR4 output, with prices rising roughly 700 percent over four years. The allegations are unproven; the three companies pleaded guilty to DOJ DRAM price-fixing charges in the 2000s.
+- **Why it matters:** It is the first US legal challenge to the memory-price surge that this week drove Apple consumer hardware price increases and Micron multi-year floor-price contracts, and a finding either way bears on memory costs across the hardware supply chain.
+- **Follow-up:** Watch for the manufacturers' responses, any motion to dismiss, and whether regulators open a parallel probe.
 
 ## Hacker News
+
+### Essay argues age verification is a precursor to speech attribution tops the front page
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [essay](https://nonogra.ph/age-verification-is-just-a-precursor-to-attribution-of-speech-06-29-2026), [discussion](https://news.ycombinator.com/item?id=48714529)
+- **Summary:** An opinion essay arguing that mandatory online age verification is a stepping stone toward persistent identity attribution of online speech reached the top of the front page (849 points). It is commentary, not a primary technical source.
+- **Why it matters:** The discussion connects to the identity-verification gates spreading across developer-facing AI services, including Anthropic's consumer ID checks effective 2026-07-08 tracked in Watchlist follow-ups.
 
 ### Stanford data page charts memory prices from 1960 to 2026
 
@@ -177,7 +208,7 @@ No verified items. Reddit RSS collection was degraded from the run environment: 
 
 ## Sources checked
 
-- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 58 of 72 watchlist queries with hits on the third 2026-06-29 run; front page, top 24h, Ask HN, Show HN, top comments)
+- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 61 of 72 watchlist queries with hits on the fourth 2026-06-29 run; front page, top 24h, Ask HN, Show HN, top comments)
 - HPC and TOP500 (June 2026 list verified via top500.org; LineShine number 1 added to Infrastructure)
 - Reddit RSS (degraded: r/programming returned 1 entry, others HTTP 429; see Reddit and social pulse)
 - AI sources (Anthropic, OpenAI, Google DeepMind, Zhipu/GLM; web search, no new primary release dated 2026-06-29)
@@ -187,6 +218,6 @@ No verified items. Reddit RSS collection was degraded from the run environment: 
 - Security advisories (CISA KEV feed version 2026.06.25, count 1629, unchanged)
 - Status pages (tracked providers quiet; Codeberg restored)
 - GitHub releases (all 38 watchlist `[github]` repos re-checked via `gh api` in the quality pass; newest releases are neovim nightly 2026-06-28 rolling prerelease, JetBrains/kotlin v2.4.10-RC 2026-06-25, denoland/deno v2.9.0 2026-06-25, nodejs/node v26.4.0 2026-06-24, all predating the first 2026-06-29 digest; no qualifying release published after it) and `github.com/trending` daily and language views re-fetched (agentic-AI repos dominate, no single clustered emerging theme above bar)
-- Engineering blogs (web search; quiet)
+- Engineering blogs (web search; Cloudflare hyper HTTP-bug write-up verified and added to Engineering posts; Apple ASIF reverse-engineering write-up added to Apple platforms)
 - YouTube channels (`make yt`, 31 videos across 89 channels; AI Engineer conference talks dominate, no written primary to anchor a story)
-- Markets and company sources (web search; no new engineering-relevant event)
+- Markets and company sources (web search; Samsung/SK Hynix/Micron DRAM price-fixing class action verified across Tom's Hardware and MLex, added to Markets and companies)
