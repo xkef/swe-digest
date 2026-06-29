@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 11
+source_count = 17
 +++
 
 ## Top stories
@@ -23,6 +23,15 @@ source_count = 11
 - **Comments:** HN commenters were skeptical, noting the headline hides which Claude model is compared and that a single "find IDOR" prompt is pitted against a full multi-agent system; several called IDOR the easiest vulnerability class and read the post as marketing. Others said the same subagent scaffolding Semgrep sells is now reproducible inside Claude Code, Codex, or OpenCode.
 - **Why it matters:** An open-weight model matching a frontier coding model on a security task at roughly one-sixth the cost continues the migration pressure GLM 5.2 and Kimi K2.7-Code put on proprietary agents.
 - **Follow-up:** Watch for a reproduced or expanded benchmark across more vulnerability classes and harnesses.
+
+### OpenAI Codex still lacks a way to exclude sensitive files from the model
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [GitHub issue openai/codex#2847](https://github.com/openai/codex/issues/2847), [discussion](https://news.ycombinator.com/item?id=48706714)
+- **Summary:** A feature request open since 2025-08-28 asks OpenAI Codex for a deterministic ignore mechanism, a proposed `.codexignore` at repository and global scope, so files such as `.env`, `*.pem`, and SSH or cloud credentials are never read or sent to the model while the rest of the tree stays searchable. The issue reached the front page (192 points) because the gap persists in the Rust rewrite (codex-rs); a related earlier request (#205) was closed in favor of that rewrite without the feature landing.
+- **Why it matters:** Without a path-based exclusion boundary, a coding agent can read secrets into its context and transmit them to the provider, a data-exfiltration risk for any team running Codex over a repository that holds credentials.
+- **Follow-up:** Watch for a `.codexignore` or equivalent exclusion mechanism landing in codex-rs.
 
 ### Developer uses Claude Code to get a second opinion on an MRI report
 
@@ -60,6 +69,15 @@ No major items found. The day's main AI item, the GLM 5.2 cyber benchmark, is co
 - **Summary:** A preprint posted 2026-06-26, "Govern the Repository, Not the Agent," argues that evaluating autonomous coding agents one at a time on isolated benchmark tasks misses ecosystem-level harm: agents that each pass their own tests still leave repositories accumulating problems no single contribution accounts for. The authors study "integration friction," the cost of merging a contribution into a codebase that other contributors are concurrently changing, as a repository-level metric.
 - **Why it matters:** It reframes agent evaluation from per-task pass rates toward the integration and maintenance cost that shows up when many agents commit to a shared repository.
 - **Follow-up:** Watch for released measurement code or datasets and independent reproduction.
+
+### ToolPrivacyBench audits whether tool-using agents leak private data to the wrong tools
+
+- **Category:** Paper
+- **Status:** developing
+- **Sources:** [arXiv 2606.28061](https://arxiv.org/abs/2606.28061v1)
+- **Summary:** A preprint posted 2026-06-26 introduces ToolPrivacyBench, a 2,150-case benchmark (1,150 synthetic privacy-sensitive business workflows plus 1,000 cases adapted from existing multi-tool and function-calling benchmarks) that audits an agent's full execution trajectory rather than its final answer. After an agent runs against mock backends, an evaluator compares recorded tool arguments and backend audit logs against a per-case policy to check whether private data reached only authorized tools. Across nine agents the authors report that successful task completion does not imply appropriate disclosure: agents finish tasks while passing unnecessary private information through intermediate tool calls.
+- **Why it matters:** It formalizes a need-to-know disclosure boundary for tool-using agents, the same data-leak surface raised by the Codex file-exclusion gap in Top stories.
+- **Follow-up:** Watch for the dataset or evaluator release and independent reproduction.
 
 ## Agentic coding
 
@@ -101,7 +119,15 @@ No major items found.
 
 ## Engineering posts
 
-No major items found. The MRI write-up is covered in Top stories.
+### HackerRank open-sourced its resume-scoring agent; analysis finds the scores non-deterministic
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [analysis](https://danunparsed.com/p/hackerrank-open-source-ats), [repository](https://github.com/interviewstreet/hiring-agent), [discussion](https://news.ycombinator.com/item?id=48713832)
+- **Summary:** HackerRank published an open-source LLM resume-scoring agent (interviewstreet/hiring-agent, MIT, about 3,250 stars). An analysis ran one resume 100 times through the default gemma3:4b model at temperature 0.1 and recorded scores from 66 to 99 out of 120; at an 85-point cutoff the same candidate would be rejected about 65 percent of the time. The author traces the variance to the subjective project- and experience-scoring prompts, which carry no rubric, examples, or anchors, while the checklist-based technical-skills score stays stable across runs.
+- **Why it matters:** It is a concrete measurement of how LLM-as-judge scoring conflates reliable parsing with unreliable evaluative judgment, a failure mode for any team wiring a language model into automated screening or grading.
+
+The MRI second-opinion write-up is covered in Top stories.
 
 ## Books
 
@@ -152,7 +178,7 @@ No verified items. Reddit RSS collection was degraded from the run environment: 
 - Books and publisher feeds (`make books`, Pragmatic Bookshelf returned 2 items below bar, No Starch feed HTTP 403)
 - Security advisories (CISA KEV feed version 2026.06.25, count 1629, unchanged)
 - Status pages (tracked providers quiet; Codeberg restored)
-- GitHub releases (watchlist `[github]` repos checked via `gh api`; no release published after the 2026-06-28 digest) and `github.com/trending` daily (no clustered emerging theme)
+- GitHub releases (all 38 watchlist `[github]` repos re-checked via `gh api` in the quality pass; newest releases are neovim nightly 2026-06-28 rolling prerelease, JetBrains/kotlin v2.4.10-RC 2026-06-25, denoland/deno v2.9.0 2026-06-25, nodejs/node v26.4.0 2026-06-24, all predating the first 2026-06-29 digest; no qualifying release published after it) and `github.com/trending` daily and language views re-fetched (agentic-AI repos dominate, no single clustered emerging theme above bar)
 - Engineering blogs (web search; quiet)
 - YouTube channels (`make yt`, 31 videos across 89 channels; AI Engineer conference talks dominate, no written primary to anchor a story)
 - Markets and company sources (web search; no new engineering-relevant event)

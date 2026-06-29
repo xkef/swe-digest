@@ -1067,3 +1067,12 @@ Format:
 - Watch for: Any data-integrity statement; post-incident note on power redundancy at the primary location.
 - Last checked: 2026-06-29
 - Notes: Codeberg (nonprofit Forgejo-based code host) went fully offline early 2026-06-28 (reported from ~00:18 CEST) after a power outage at its primary location took down most servers. Provider attributed it to the power event on its status page; no restoration time at run time. Blocks pushes/pulls/issues for dependent open-source workflows. Covered 2026-06-28 Top stories. 2026-06-29: status aggregators report Codeberg operating normally; service restored. No published postmortem or power-redundancy note. Closed; re-open if a postmortem appears.
+
+## 2026-06-29: OpenAI Codex lacks a sensitive-file exclusion mechanism
+
+- Status: open
+- Category: Agentic coding
+- Sources: [GitHub issue openai/codex#2847](https://github.com/openai/codex/issues/2847), [HN 48706714](https://news.ycombinator.com/item?id=48706714)
+- Watch for: A `.codexignore` or equivalent path-based exclusion landing in codex-rs; any OpenAI statement on how Codex avoids reading secrets; downstream incident reports of secret exfiltration via the agent.
+- Last checked: 2026-06-29
+- Notes: Feature request open since 2025-08-28 asks OpenAI Codex for a deterministic ignore mechanism (proposed `.codexignore` at repo and global scope) so files such as `.env`, `*.pem`, and SSH/cloud credentials are never read or sent to the model while the rest of the tree stays searchable. Reached the HN front page 2026-06-29 (192 pts) because the gap persists in the Rust rewrite (codex-rs); a related earlier request (#205) was closed in favor of the rewrite without the feature landing. Agent data-exfiltration surface. Ties to the tool-using-agent privacy theme (ToolPrivacyBench, arXiv 2606.28061, same digest). Covered 2026-06-29 Top stories.
