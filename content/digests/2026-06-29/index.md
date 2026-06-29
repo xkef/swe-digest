@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 17
+source_count = 20
 +++
 
 ## Top stories
@@ -115,7 +115,14 @@ No major items found.
 
 ## Infrastructure
 
-No major items found.
+### China's LineShine debuts at TOP500 number 1, first China system to lead since 2017
+
+- **Category:** Infrastructure
+- **Status:** confirmed
+- **Sources:** [TOP500 June 2026 list](https://top500.org/lists/top500/2026/06/), [HPCwire](https://www.hpcwire.com/2026/06/25/inside-lineshine-the-new-chinese-supercomputer-sitting-atop-the-top500/), [discussion](https://news.ycombinator.com/item?id=48710775)
+- **Summary:** The 67th TOP500 list, released 2026-06-23 at ISC 2026 in Hamburg, places a previously unlisted Chinese system, LineShine, at number 1 with 2.198 Eflop/s on High Performance Linpack across 13,789,440 cores, more than 20 percent ahead of the displaced El Capitan. LineShine is installed at the National Supercomputing Centre in Shenzhen and runs a custom domestic stack: the LingKun platform with 304-core LX2 processors at 1.55 GHz, a proprietary LingQi interconnect, and Kylin OS. It is the first China-based system to top the list since Sunway TaihuLight in 2017 and the fifth exascale system overall.
+- **Why it matters:** A domestically built exascale system leading TOP500 on non-US processors and interconnect signals that export controls have not stalled China's high-end HPC, with implications for compute sovereignty and the semiconductor supply chain.
+- **Follow-up:** Watch for an HPL run audit or independent verification of the LX2/LingQi architecture details and any sustained-workload (HPCG, MLPerf) results.
 
 ## Engineering posts
 
@@ -170,7 +177,8 @@ No verified items. Reddit RSS collection was degraded from the run environment: 
 
 ## Sources checked
 
-- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 57 of 72 watchlist queries with hits; front page, top 24h, Ask HN, Show HN, top comments)
+- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 58 of 72 watchlist queries with hits on the third 2026-06-29 run; front page, top 24h, Ask HN, Show HN, top comments)
+- HPC and TOP500 (June 2026 list verified via top500.org; LineShine number 1 added to Infrastructure)
 - Reddit RSS (degraded: r/programming returned 1 entry, others HTTP 429; see Reddit and social pulse)
 - AI sources (Anthropic, OpenAI, Google DeepMind, Zhipu/GLM; web search, no new primary release dated 2026-06-29)
 - ML research and arXiv papers (`make papers`, arXiv API, 110 items)
