@@ -274,12 +274,18 @@ from scratch.
     issues processed, notes on degraded sources or unusual decisions). The
     run log commits together with the digest.
 
-13. Run validation:
+13. Format what you wrote, then validate:
 
     ```sh
+    make fmt-run
     make check
     git diff --check
     ```
+
+    `make fmt-run` formats only today's digest and the writable memory files,
+    all inside the publish allowlist. It is best-effort: if the formatter is
+    unavailable or errors, note it and continue. Formatting is never a publish
+    gate; `make check` is.
 
 14. Review the diff:
 
@@ -373,7 +379,8 @@ Steps:
    surfacing verified emerging items into their topical sections.
 3. Fill thin sections, verify primary sources, and re-rank by impact. Keep
    existing stories unless a correction is needed; add new ones in rank order.
-4. Refresh `source_count`, run `make run-log`, and run `make check`.
+4. Refresh `source_count`, run `make run-log`, run `make fmt-run`
+   (best-effort), and run `make check`.
 5. Commit once, subject `chore: update digest for YYYY-MM-DD`.
 
 Constraints:

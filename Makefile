@@ -9,7 +9,7 @@ TODAY      = $(shell date -u +%Y-%m-%d)
 RELEASE    = $(if $(GITHUB_SHA),$(shell git rev-parse --short HEAD 2>/dev/null || echo dev),$(shell git describe --tags --always 2>/dev/null || echo dev))
 BUILD_DATE = $(shell date -u +%Y-%m-%dT%H:%MZ)
 
-.PHONY: build serve check check-content fmt fmt-check stories clean new-digest hn yt events papers books run-log backtest yield
+.PHONY: build serve check check-content fmt fmt-check fmt-run stories clean new-digest hn yt events papers books run-log backtest yield
 
 stories:
 	@python3 scripts/build_stories.py
@@ -74,6 +74,15 @@ fmt:
 fmt-check:
 	@$(DPRINT) dprint check
 	@$(RUMDL) rumdl check .
+
+# fmt-run is the agent-safe subset: it formats only files inside the publish
+# allowlist (today's digest, if present, plus the writable memory files), so an
+# unattended run can tidy its own output without touching gated routine files.
+# Tools install on demand; an unattended run treats a failure here as non-fatal.
+fmt-run:
+	@files="memory/followups.md memory/entities.md memory/source-reliability.md memory/access-notes.md"; \
+	[ -f "content/digests/$(TODAY)/index.md" ] && files="content/digests/$(TODAY)/index.md $$files" || true; \
+	$(RUMDL) rumdl fmt --no-exclude $$files
 
 new-digest:
 	@python3 scripts/new_digest.py $(TODAY)
