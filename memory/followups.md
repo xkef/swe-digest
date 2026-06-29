@@ -399,8 +399,8 @@ Format:
 - Category: AI
 - Sources: [HN discussion](https://news.ycombinator.com/item?id=48518684)
 - Watch for: Open-weight release and license; official model card and benchmarks; standalone API and pricing; independent coding-benchmark results.
-- Last checked: 2026-06-18
-- Notes: Z.ai (Zhipu) announced GLM 5.2 on 2026-06-13 via X (company account and chief scientist Jie Tang). Coding/agent focus, context up to 1M tokens (model id reported glm-5.2[1m]), max output 131,072 tokens. Available immediately on GLM Coding Plan; standalone API and open-weight (permissive/MIT) release expected the following week. No official blog post or benchmarks at announcement. Landed same day as the US directive against Anthropic Fable 5/Mythos 5. 2026-06-17: Artificial Analysis published an independent evaluation scoring GLM-5.2 at 51 on Intelligence Index v4.1, the top open-weights score, ahead of MiniMax-M3 (44) and DeepSeek V4 Pro (44); GDPval-AA v2 1524 vs GPT-5.5 1514. Confirmed MIT license, 1M context (up from 200K on GLM-5.1), pricing 1.4/0.26/4.4 USD per 1M input/cache-hit/output. HN 48567759. 2026-06-18: open-weight checkpoint now PUBLISHED on Hugging Face (huggingface.co/zai-org/GLM-5.2), MIT license, 753B-parameter MoE in BF16/F32, 1M context, "IndexShare" attention reusing one indexer across every four sparse attention layers; community quantized variants for llama.cpp/Ollama/LM Studio appeared within hours. Open-weight promise fulfilled. Vendor/secondary coding-benchmark numbers still unreproduced.
+- Last checked: 2026-06-29
+- Notes: Z.ai (Zhipu) announced GLM 5.2 on 2026-06-13 via X (company account and chief scientist Jie Tang). Coding/agent focus, context up to 1M tokens (model id reported glm-5.2[1m]), max output 131,072 tokens. Available immediately on GLM Coding Plan; standalone API and open-weight (permissive/MIT) release expected the following week. No official blog post or benchmarks at announcement. Landed same day as the US directive against Anthropic Fable 5/Mythos 5. 2026-06-17: Artificial Analysis published an independent evaluation scoring GLM-5.2 at 51 on Intelligence Index v4.1, the top open-weights score, ahead of MiniMax-M3 (44) and DeepSeek V4 Pro (44); GDPval-AA v2 1524 vs GPT-5.5 1514. Confirmed MIT license, 1M context (up from 200K on GLM-5.1), pricing 1.4/0.26/4.4 USD per 1M input/cache-hit/output. HN 48567759. 2026-06-18: open-weight checkpoint now PUBLISHED on Hugging Face (huggingface.co/zai-org/GLM-5.2), MIT license, 753B-parameter MoE in BF16/F32, 1M context, "IndexShare" attention reusing one indexer across every four sparse attention layers; community quantized variants for llama.cpp/Ollama/LM Studio appeared within hours. Open-weight promise fulfilled. Vendor/secondary coding-benchmark numbers still unreproduced. 2026-06-29: Semgrep published an IDOR cyber-detection benchmark (blog dated 2026-06-22) in which GLM 5.2 with no scaffolding scored 39 percent F1 vs Claude Code 32 percent at ~0.17 USD/bug; Semgrep's own scaffolded multi-agent pipeline still led (61 percent with GPT-5.5, 53 percent with Opus 4.8). One task, one dataset, one run, non-deterministic; HN 48709670 (471 pts) skeptical of the bare-prompt-vs-pipeline framing. Covered 2026-06-29 Top stories.
 
 ## 2026-06-16: Developer-targeted npm backdoor via fake LinkedIn job offer
 
@@ -1061,9 +1061,9 @@ Format:
 
 ## 2026-06-28: Codeberg full outage after power loss
 
-- Status: open
+- Status: closed
 - Category: Outage
 - Sources: [Codeberg status](https://status.codeberg.org/status/codeberg), [HN 48701342](https://news.ycombinator.com/item?id=48701342)
-- Watch for: Restoration time; any data-integrity statement; post-incident note on power redundancy at the primary location.
-- Last checked: 2026-06-28
-- Notes: Codeberg (nonprofit Forgejo-based code host) went fully offline early 2026-06-28 (reported from ~00:18 CEST) after a power outage at its primary location took down most servers. Provider attributed it to the power event on its status page; no restoration time at run time. Blocks pushes/pulls/issues for dependent open-source workflows. Covered 2026-06-28 Top stories.
+- Watch for: Any data-integrity statement; post-incident note on power redundancy at the primary location.
+- Last checked: 2026-06-29
+- Notes: Codeberg (nonprofit Forgejo-based code host) went fully offline early 2026-06-28 (reported from ~00:18 CEST) after a power outage at its primary location took down most servers. Provider attributed it to the power event on its status page; no restoration time at run time. Blocks pushes/pulls/issues for dependent open-source workflows. Covered 2026-06-28 Top stories. 2026-06-29: status aggregators report Codeberg operating normally; service restored. No published postmortem or power-redundancy note. Closed; re-open if a postmortem appears.
