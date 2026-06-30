@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 26
+source_count = 30
 +++
 
 ## Top stories
@@ -93,6 +93,14 @@ No major items found. Status pages for the tracked providers were quiet; no majo
 
 ## Developer tools
 
+### Git 2.55.0 released
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [tag](https://github.com/git/git/releases/tag/v2.55.0), [release notes](https://raw.githubusercontent.com/git/git/v2.55.0/Documentation/RelNotes/2.55.0.adoc)
+- **Summary:** Git 2.55.0 was tagged 2026-06-29. The fsmonitor daemon is now implemented for Linux, configuration-defined hook scripts can run in parallel, and two new builtins were added: `git format-rev` for pretty-formatting one revision per line and `git url-parse` exposing the internal URL parser. `git checkout -m` now creates a stash so local changes that conflict can be re-resolved, `git rev-list` and the `git log` family gained `--max-count-oldest`, and `git push` learned to target a named remote group to push to multiple remotes at once. Terminal control sequences arriving over the sideband from a remote are now mostly disabled by default, with ANSI color escapes the exception.
+- **Why it matters:** A Linux fsmonitor daemon speeds status and diff on large working trees on the most common server and CI platform, and disabling sideband terminal control sequences by default closes a class of terminal-injection surface in remote operations.
+
 ### WSL Container enters public preview
 
 - **Category:** Dev tools
@@ -116,7 +124,13 @@ No major items found. No watchlist `[github]` language repo published a stable r
 
 ## Apple platforms
 
-No major items found.
+### Reverse-engineered account of the Apple Neural Engine
+
+- **Category:** Apple
+- **Status:** developing
+- **Sources:** [arXiv 2606.22283](https://arxiv.org/abs/2606.22283), [discussion](https://news.ycombinator.com/item?id=48702825)
+- **Summary:** Spencer H. Bryngelson published a guide dated 2026-06-21 documenting the Apple Neural Engine (ANE), the fixed-function matrix accelerator shipped in Apple systems-on-chip since the A11 and M1 generations and normally reachable only through Core ML. Based on direct measurement on M1 and M5 silicon plus static analysis of the private runtime, compiler, kernel driver, and firmware, it documents the datapath and roofline, the dispatch route beneath Core ML, the on-disk program format, the weight-compression scheme, and the command protocol, covering A11 through A18 and M1 through M5 with per-chip target tables. The author labels each claim as measured, decompile-derived, or predicted, and notes the direct user-space route is undocumented, unsupported, and version-fragile.
+- **Why it matters:** It is the most detailed public map of an otherwise closed accelerator, useful for on-device ML measurement and research on Apple Silicon, though it is a single-author reverse-engineered account rather than vendor documentation.
 
 ## Linux and kernel
 
@@ -178,12 +192,12 @@ No verified items. Reddit RSS collection was degraded from the run environment: 
 
 - Hacker News (`make hn`, Algolia backend, 0 degraded collections, 64 of 72 watchlist queries with hits; front page, top 24h, Ask HN, Show HN, top comments)
 - AI sources (Alibaba Qwen, deepreinforce-ai; web search and primary repositories; no new frontier vendor release dated 2026-06-30)
-- ML research and arXiv papers (`make papers`, arXiv API, 134 items; MCP server-architecture-patterns preprint verified)
+- ML research and arXiv papers (`make papers`, arXiv API, 140 items; MCP server-architecture-patterns preprint verified; Apple Neural Engine guide arXiv 2606.22283 surfaced via Hacker News, not the watchlist categories, verified and placed in Apple platforms)
 - Conferences and events (`make events`, 0 upcoming within window, 0 active)
 - Books and publisher feeds (`make books`, Pragmatic Bookshelf returned 2 items below bar, No Starch feed HTTP 403)
 - Security advisories (CISA KEV feed version 2026.06.29, count 1630; SimpleHelp CVE-2026-48558 the only new actively-exploited addition since 2026.06.25; vendor advisory and Horizon3.ai IOCs verified)
 - Status pages (tracked providers quiet; no major incident surfaced)
-- GitHub releases and trending (watchlist `[github]` repos checked via `gh api`; newest stable releases all predate the 2026-06-29 digest, neovim nightly 2026-06-29 is a rolling prerelease; no qualifying release after it; `github.com/trending` daily view shows the usual agentic-AI cluster, no new emerging theme above bar)
+- GitHub releases and trending (full quality-pass check: every watchlist `[github]` repo checked via `gh api`; Git 2.55.0 stable, tagged 2026-06-29 14:59 UTC, was not in the 2026-06-29 digest and is surfaced here in Developer tools; all other newest stable releases predate the 2026-06-29 digest, Homebrew 6.0.5 2026-06-26, deno 2.9.0 and Kotlin 2.4.10-RC 2026-06-25, node 26.4.0 and zed 1.9.0-pre 2026-06-24, grafana 13.0.3 and otel-collector 0.155.0 2026-06-23; neovim and ghostty tags are rolling prereleases; `github.com/trending` overall daily view shows the usual agentic-AI and vulnerability-tooling cluster, no new emerging theme above bar)
 - Engineering blogs (web search; Cloudflare and other tracked blogs quiet; GPU-kernel and WATaBoy write-ups verified and added to Engineering posts)
 - YouTube channels (`make yt`, 39 videos from repo snapshot across 89 channels; AI-hardware and Spring Boot 4.1 explainers dominate, no written primary to anchor a new story)
 - Markets and company sources (web search; South Korea investment plan verified across Korea Times, UPI, and Rappler)

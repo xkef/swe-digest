@@ -21,6 +21,7 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 - Godot: open-source game engine (godotengine/godot, not in the [github] table). Track stable releases, rendering/XR/mobile changes, GDScript, and migration breaking changes. Current 4.7. Last seen 2026-06-18.
 - tmux: terminal multiplexer (tmux/tmux). Track releases, breaking changes, and notable features. Current 3.7. Last seen 2026-06-26.
 - Devin Desktop (formerly Windsurf): AI coding IDE by Cognition. Track releases, the Agent Command Center, Devin Local, and Agent Client Protocol support. Last seen 2026-06-02.
+- Git (git/git): distributed version control. Track stable releases, breaking changes, security-relevant defaults, and performance work. Released as git tags (no GitHub release objects); use the tag page and Documentation/RelNotes/X.Y.Z.adoc. Current 2.55.0 (2026-06-29). Last seen 2026-06-30.
 
 ## AI
 
