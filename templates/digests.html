@@ -24,9 +24,16 @@
     {% set_global current_month = month %}
     {% endif %}
     {% set day_data = load_data(path="data/digests/" ~ day ~ ".json") %}
+    {% set lead = day_data.sections | first %}
     <li class="digest-row">
-      <time datetime="{{ day }}"><a href="{{ page.permalink | safe }}">{{ day }}</a></time>
-      <span class="digest-count">{{ day_data.count }} stories</span>
+      <div class="digest-meta">
+        <time datetime="{{ day }}"><a href="{{ page.permalink | safe }}">{{ page.date | date(format='%a %Y-%m-%d') }}</a></time>
+        <span class="digest-count">{{ day_data.count }} stories</span>
+      </div>
+      {% if lead and lead.stories %}
+      {% set top = lead.stories | first %}
+      <a class="digest-lead" href="{{ page.permalink | safe }}">{{ top.title }}</a>
+      {% endif %}
     </li>
     {% endfor %}
   </ol>

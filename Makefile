@@ -43,12 +43,12 @@ build: stories
 	@command -v $(MISE) >/dev/null || { echo "mise not found"; exit 1; }
 	@rm -rf $(DIST)
 	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) build --output-dir $(DIST)
-	@$(MISE) exec -- pagefind --site $(DIST)
+	@$(MISE) exec -- pagefind --site $(DIST) --glob "digests/[0-9]*/*/index.html"
 
 serve: stories
 	@command -v $(MISE) >/dev/null || { echo "mise not found"; exit 1; }
 	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) build --output-dir $(DIST)
-	@$(MISE) exec -- pagefind --site $(DIST)
+	@$(MISE) exec -- pagefind --site $(DIST) --glob "digests/[0-9]*/*/index.html"
 	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) serve --interface 127.0.0.1 --port 3000 --output-dir $(DIST) --force
 
 check: build
