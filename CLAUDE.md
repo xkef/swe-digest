@@ -84,9 +84,13 @@ only after the deterministic checks in `scripts/publish_run.py`: allowed
 commit subjects, a path allowlist (`content/digests/`, `data/runs/`, and
 `memory/` except `profile.md`), `make check` including the fail-closed
 content gate, API-field re-verification of every issue action, and the
-owner-approval plus four-file whitelist checks for improvement PRs. A
-prompt-injected agent therefore holds no GitHub write capability; GitHub
-additionally rejects `GITHUB_TOKEN` pushes that modify `.github/workflows/`.
+owner-approval plus four-file whitelist checks for improvement PRs. After the
+checks pass, the publish job recreates each validated commit on `main` through
+the GraphQL `createCommitOnBranch` mutation, so the published digest and weekly
+commits are signed by GitHub as `github-actions[bot]` and carry the Verified
+badge. A prompt-injected agent therefore holds no GitHub write capability;
+GitHub additionally rejects `GITHUB_TOKEN` pushes that modify
+`.github/workflows/`.
 Each snapshot workflow commits its data through the GraphQL
 `createCommitOnBranch` mutation (`scripts/commit_snapshot.py`), so GitHub signs
 the commit as `github-actions[bot]` and it carries the Verified badge; the

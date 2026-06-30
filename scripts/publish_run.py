@@ -14,11 +14,13 @@ Subcommands:
 """
 from __future__ import annotations
 
+import base64
 import json
 import os
 import re
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 import yaml
@@ -50,6 +52,13 @@ COMMENT_MAX_CHARS = 500
 APPROVAL = re.compile(r"\bapproved?\b", re.I)
 DIFF_BLOCK = re.compile(r"```diff\n(.*?)```", re.S)
 URL = re.compile(r"https?://[^\s)\"'<>]+")
+
+RETRIES = 4
+COMMIT_MUTATION = """
+mutation($input: CreateCommitOnBranchInput!) {
+  createCommitOnBranch(input: $input) { commit { oid url } }
+}
+"""
 
 
 def sh(*args: str, stdin: str | None = None) -> str:
@@ -110,10 +119,88 @@ def apply(patch: str) -> None:
     print(f"apply ok ({len(subjects)} commit(s), {len(files)} file(s))")
 
 
+def remote_head_oid() -> str:
+    return sh("gh", "api", f"repos/{REPO}/git/refs/heads/main", "--jq", ".object.sha").strip()
+
+
+def commit_file_changes(commit: str) -> tuple[list[dict], list[dict]]:
+    """Additions (full file content at the commit, base64) and deletions for a
+    single commit, parsed from -z name-status so spaced paths survive."""
+    tokens = sh("git", "diff", "--name-status", "-z", f"{commit}^", commit).split("\0")
+    additions: list[dict] = []
+    deletions: list[dict] = []
+    index = 0
+    while index < len(tokens):
+        status = tokens[index]
+        if not status:
+            index += 1
+            continue
+        if status[0] in ("R", "C"):
+            deletions.append({"path": tokens[index + 1]})
+            additions.append(addition(commit, tokens[index + 2]))
+            index += 3
+        elif status[0] == "D":
+            deletions.append({"path": tokens[index + 1]})
+            index += 2
+        else:
+            additions.append(addition(commit, tokens[index + 1]))
+            index += 2
+    return additions, deletions
+
+
+def addition(commit: str, path: str) -> dict:
+    blob = subprocess.run(["git", "show", f"{commit}:{path}"], capture_output=True).stdout
+    return {"path": path, "contents": base64.b64encode(blob).decode("ascii")}
+
+
+def create_verified_commit(commit: str) -> None:
+    """Recreate one applied commit on main through the GraphQL
+    createCommitOnBranch mutation, so GitHub signs it as github-actions[bot]
+    and it carries the Verified badge. Stacks on the live branch head, so it
+    composes with snapshot commits landing on disjoint paths."""
+    headline, _, body = sh("git", "log", "-1", "--format=%B", commit).strip().partition("\n")
+    message = {"headline": headline.strip()}
+    if body.strip():
+        message["body"] = body.strip()
+    additions, deletions = commit_file_changes(commit)
+    for attempt in range(RETRIES):
+        payload = {
+            "query": COMMIT_MUTATION,
+            "variables": {
+                "input": {
+                    "branch": {"repositoryNameWithOwner": REPO, "branchName": "main"},
+                    "message": message,
+                    "expectedHeadOid": remote_head_oid(),
+                    "fileChanges": {"additions": additions, "deletions": deletions},
+                }
+            },
+        }
+        proc = subprocess.run(
+            ["gh", "api", "graphql", "--input", "-"],
+            input=json.dumps(payload),
+            text=True,
+            capture_output=True,
+        )
+        if proc.returncode == 0:
+            response = json.loads(proc.stdout)
+            if not response.get("errors"):
+                print(f"committed {response['data']['createCommitOnBranch']['commit']['oid']}")
+                return
+            sys.stderr.write(json.dumps(response["errors"]) + "\n")
+        else:
+            sys.stderr.write(proc.stderr)
+        time.sleep(2 + attempt * 2)
+    raise SystemExit(f"createCommitOnBranch failed for {commit}")
+
+
 def push() -> None:
-    sh("git", "pull", "--rebase", "origin", "main")
-    sh("git", "push", "origin", "main")
-    print("push ok")
+    commits = sh("git", "rev-list", "--reverse", "origin/main..HEAD").split()
+    if not commits:
+        print("nothing to push")
+        return
+    for commit in commits:
+        create_verified_commit(commit)
+    print(f"push ok ({len(commits)} verified commit(s))")
 
 
 def check_comment(number: int, comment: str) -> None:
