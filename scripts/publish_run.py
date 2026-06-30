@@ -9,7 +9,7 @@ push outside the allowlist or act on issues that fail API-field checks.
 
 Subcommands:
   apply PATCH      git am, then commit-count, subject, and path checks
-  push             rebase on origin/main and push
+  push             recreate each applied commit on main as a signed Verified commit
   side-effects M   close story issues, create issues, open improvement PRs
 """
 from __future__ import annotations
@@ -119,14 +119,15 @@ def apply(patch: str) -> None:
     print(f"apply ok ({len(subjects)} commit(s), {len(files)} file(s))")
 
 
-def remote_head_oid() -> str:
-    return sh("gh", "api", f"repos/{REPO}/git/refs/heads/main", "--jq", ".object.sha").strip()
+def branch_oid(branch: str = "main") -> str:
+    return sh("gh", "api", f"repos/{REPO}/git/refs/heads/{branch}", "--jq", ".object.sha").strip()
 
 
-def commit_file_changes(commit: str) -> tuple[list[dict], list[dict]]:
-    """Additions (full file content at the commit, base64) and deletions for a
-    single commit, parsed from -z name-status so spaced paths survive."""
-    tokens = sh("git", "diff", "--name-status", "-z", f"{commit}^", commit).split("\0")
+def parse_changes(status_output: str, read) -> tuple[list[dict], list[dict]]:
+    """Additions and deletions from a -z name-status stream, so spaced paths
+    survive. `read(path)` returns the addition dict (path plus base64 content)
+    from wherever the caller has the file: a commit object or the working tree."""
+    tokens = status_output.split("\0")
     additions: list[dict] = []
     deletions: list[dict] = []
     index = 0
@@ -137,40 +138,40 @@ def commit_file_changes(commit: str) -> tuple[list[dict], list[dict]]:
             continue
         if status[0] in ("R", "C"):
             deletions.append({"path": tokens[index + 1]})
-            additions.append(addition(commit, tokens[index + 2]))
+            additions.append(read(tokens[index + 2]))
             index += 3
         elif status[0] == "D":
             deletions.append({"path": tokens[index + 1]})
             index += 2
         else:
-            additions.append(addition(commit, tokens[index + 1]))
+            additions.append(read(tokens[index + 1]))
             index += 2
     return additions, deletions
 
 
-def addition(commit: str, path: str) -> dict:
+def commit_addition(commit: str, path: str) -> dict:
     blob = subprocess.run(["git", "show", f"{commit}:{path}"], capture_output=True).stdout
     return {"path": path, "contents": base64.b64encode(blob).decode("ascii")}
 
 
-def create_verified_commit(commit: str) -> None:
-    """Recreate one applied commit on main through the GraphQL
+def working_addition(path: str) -> dict:
+    with open(path, "rb") as handle:
+        return {"path": path, "contents": base64.b64encode(handle.read()).decode("ascii")}
+
+
+def commit_on_branch(branch: str, message: dict, additions: list[dict], deletions: list[dict]) -> None:
+    """Create one signed commit on `branch` through the GraphQL
     createCommitOnBranch mutation, so GitHub signs it as github-actions[bot]
-    and it carries the Verified badge. Stacks on the live branch head, so it
-    composes with snapshot commits landing on disjoint paths."""
-    headline, _, body = sh("git", "log", "-1", "--format=%B", commit).strip().partition("\n")
-    message = {"headline": headline.strip()}
-    if body.strip():
-        message["body"] = body.strip()
-    additions, deletions = commit_file_changes(commit)
+    and it carries the Verified badge. Re-reads the branch head each attempt,
+    so it composes with commits landing concurrently on disjoint paths."""
     for attempt in range(RETRIES):
         payload = {
             "query": COMMIT_MUTATION,
             "variables": {
                 "input": {
-                    "branch": {"repositoryNameWithOwner": REPO, "branchName": "main"},
+                    "branch": {"repositoryNameWithOwner": REPO, "branchName": branch},
                     "message": message,
-                    "expectedHeadOid": remote_head_oid(),
+                    "expectedHeadOid": branch_oid(branch),
                     "fileChanges": {"additions": additions, "deletions": deletions},
                 }
             },
@@ -190,7 +191,15 @@ def create_verified_commit(commit: str) -> None:
         else:
             sys.stderr.write(proc.stderr)
         time.sleep(2 + attempt * 2)
-    raise SystemExit(f"createCommitOnBranch failed for {commit}")
+    raise SystemExit(f"createCommitOnBranch failed on {branch}")
+
+
+def commit_message(commit: str) -> dict:
+    headline, _, body = sh("git", "log", "-1", "--format=%B", commit).strip().partition("\n")
+    message = {"headline": headline.strip()}
+    if body.strip():
+        message["body"] = body.strip()
+    return message
 
 
 def push() -> None:
@@ -199,7 +208,11 @@ def push() -> None:
         print("nothing to push")
         return
     for commit in commits:
-        create_verified_commit(commit)
+        additions, deletions = parse_changes(
+            sh("git", "diff", "--name-status", "-z", f"{commit}^", commit),
+            lambda path, commit=commit: commit_addition(commit, path),
+        )
+        commit_on_branch("main", commit_message(commit), additions, deletions)
     print(f"push ok ({len(commits)} verified commit(s))")
 
 
@@ -256,21 +269,25 @@ def improvement_pr(number: int) -> None:
         raise SystemExit(f"issue #{number} body has no fenced diff block")
     slug = re.sub(r"[^a-z0-9]+", "-", issue["title"].lower()).strip("-")[:40]
     branch = f"improvement/{number}-{slug}"
+    base_oid = branch_oid("main")
     sh("git", "switch", "-c", branch, "origin/main")
     sh("git", "apply", "--index", "-", stdin=block.group(1))
     files = sh("git", "diff", "--cached", "--name-only").split()
     bad = set(files) - IMPROVEMENT_FILES
     if bad or not files:
         raise SystemExit(f"improvement diff touches disallowed files: {sorted(bad)}")
-    sh("git", "commit", "-m", f"chore: apply improvement #{number}")
     sh("make", "check")
-    sh("git", "push", "origin", branch)
+    additions, deletions = parse_changes(
+        sh("git", "diff", "--cached", "--name-status", "-z"), working_addition
+    )
+    sh("gh", "api", f"repos/{REPO}/git/refs", "-f", f"ref=refs/heads/{branch}", "-f", f"sha={base_oid}")
+    commit_on_branch(branch, {"headline": f"chore: apply improvement #{number}"}, additions, deletions)
+    sh("git", "switch", "main")
     sh(
         "gh", "pr", "create", "--repo", REPO, "--base", "main", "--head", branch,
         "--title", f"chore: apply improvement #{number}",
         "--body", f"Applies the approved diff from #{number}. Review and merge manually.",
     )
-    sh("git", "switch", "main")
     print(f"opened improvement PR for #{number}")
 
 
