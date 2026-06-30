@@ -87,17 +87,24 @@ content gate, API-field re-verification of every issue action, and the
 owner-approval plus four-file whitelist checks for improvement PRs. A
 prompt-injected agent therefore holds no GitHub write capability; GitHub
 additionally rejects `GITHUB_TOKEN` pushes that modify `.github/workflows/`.
-The `hn-snapshot` workflow has `contents: write` and pushes `data/hn/*.json`
-snapshots to `main` every three hours as a background accumulator; it runs
-only a pinned checkout plus `scripts/fetch_hn.py`. The `yt-snapshot` workflow
-is the same pattern for YouTube: `contents: write`, a pinned checkout plus
-`scripts/fetch_youtube.py` and `scripts/merge_yt_snapshot.py`, pushing
+Each snapshot workflow commits its data through the GraphQL
+`createCommitOnBranch` mutation (`scripts/commit_snapshot.py`), so GitHub signs
+the commit as `github-actions[bot]` and it carries the Verified badge; the
+`contents: write` `GITHUB_TOKEN` is the only credential, and the mutation is
+still barred from `.github/workflows/`. The `hn-snapshot` workflow has
+`contents: write` and commits `data/hn/*.json` snapshots to `main` every three
+hours as a background accumulator; it runs only a pinned checkout plus
+`scripts/fetch_hn.py`, `scripts/merge_hn_snapshot.py`, and
+`scripts/commit_snapshot.py`. The `yt-snapshot` workflow is the same pattern for
+YouTube: `contents: write`, a pinned checkout plus `scripts/fetch_youtube.py`,
+`scripts/merge_yt_snapshot.py`, and `scripts/commit_snapshot.py`, committing
 `data/youtube/*.json` every six hours. The `papers-snapshot` and
 `books-snapshot` workflows follow the identical pattern: a pinned checkout plus
-`scripts/fetch_papers.py`/`scripts/merge_papers_snapshot.py` pushing
+`scripts/fetch_papers.py`/`scripts/merge_papers_snapshot.py` committing
 `data/papers/*.json` every six hours, and
-`scripts/fetch_books.py`/`scripts/merge_books_snapshot.py` pushing
-`data/books/*.json` every twelve hours. The `daily-digest`
+`scripts/fetch_books.py`/`scripts/merge_books_snapshot.py` committing
+`data/books/*.json` every twelve hours, each through
+`scripts/commit_snapshot.py`. The `daily-digest`
 (01:30/09:50/15:50 UTC), `digest-quality` (04:20 UTC, a deeper same-day pass
 after the first ingest), and `weekly-improvement` (Sunday 06:30 UTC) workflows
 run on their own schedules and each fetches HN, YouTube, papers, and books live

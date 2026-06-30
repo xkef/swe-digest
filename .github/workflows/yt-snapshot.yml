@@ -24,6 +24,8 @@ jobs:
       - name: Fetch YouTube
         run: python3 scripts/fetch_youtube.py
       - name: Commit snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           day=$(date -u +%F)
           python3 scripts/merge_yt_snapshot.py ".cache/yt/$day.json" "data/youtube/$day.json"
@@ -33,8 +35,4 @@ jobs:
             echo "no changes"
             exit 0
           fi
-          git config user.name "yt-snapshot"
-          git config user.email "actions@users.noreply.github.com"
-          git commit -m "chore: yt snapshot for $day"
-          git pull --rebase origin main
-          git push origin main
+          python3 scripts/commit_snapshot.py "chore: yt snapshot for $day"

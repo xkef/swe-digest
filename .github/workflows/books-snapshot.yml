@@ -25,6 +25,8 @@ jobs:
       - name: Fetch books
         run: python3 scripts/fetch_books.py
       - name: Commit snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           day=$(date -u +%F)
           python3 scripts/merge_books_snapshot.py ".cache/books/$day.json" "data/books/$day.json"
@@ -34,8 +36,4 @@ jobs:
             echo "no changes"
             exit 0
           fi
-          git config user.name "books-snapshot"
-          git config user.email "actions@users.noreply.github.com"
-          git commit -m "chore: books snapshot for $day"
-          git pull --rebase origin main
-          git push origin main
+          python3 scripts/commit_snapshot.py "chore: books snapshot for $day"
