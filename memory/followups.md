@@ -17,6 +17,15 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-06-30: Claude Sonnet 5 release and Claude Science launch
+
+- Status: open
+- Category: AI
+- Sources: [Sonnet 5 announcement](https://www.anthropic.com/news/claude-sonnet-5), [Claude Science](https://claude.com/product/claude-science)
+- Watch for: Independent agentic-coding and computer-use benchmarks of Sonnet 5 against Opus 4.8 and GPT-5.5; the stated context window (announcement omitted it); whether intro pricing (2/10 USD per 1M) reverts to 3/15 USD after 2026-08-31; a refreshed Haiku (4.5 is a year old); Claude Science general availability past beta and independent evaluation of its citation/data-verification claims.
+- Last checked: 2026-06-30
+- Notes: Anthropic released Claude Sonnet 5 on 2026-06-30, GA same day across all plans and the Claude Platform API (model id claude-sonnet-5). Vendor describes it as its most agentic Sonnet, gains over Sonnet 4.6 in reasoning/tool use/coding/computer use; BrowseComp curve approaches Opus 4.8 at lower cost, OSWorld-Verified improved cost efficiency. Intro API pricing 2/10 USD per 1M input/output through 2026-08-31, then 3/15 USD. System card published. Benchmark figures vendor-only, no context window stated. Same day Anthropic launched Claude Science (beta desktop app, macOS/Linux), a life-sciences research workbench: native protein/structure/molecule/genomic visualization, reproducible artifacts, background citation/data verification, manuscript drafting, compute management, 60+ scientific databases; capability claims are the vendor's. Google DeepMind also shipped Nano Banana 2 Lite (Gemini 3.1 Flash-Lite Image) the same day. Covered in 2026-06-30 Top stories (Sonnet 5) and AI (Claude Science, Nano Banana 2 Lite).
+
 ## 2026-06-30: Claude Code steganographic request-marking claim
 
 - Status: open

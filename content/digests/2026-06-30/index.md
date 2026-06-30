@@ -9,10 +9,20 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 40
+source_count = 47
 +++
 
 ## Top stories
+
+### Anthropic releases Claude Sonnet 5
+
+- **Category:** AI
+- **Status:** confirmed
+- **Sources:** [Anthropic announcement](https://www.anthropic.com/news/claude-sonnet-5), [system card](https://www-cdn.anthropic.com/d9bb04416ffe1352af84721476c1fa9b.pdf), [discussion](https://news.ycombinator.com/item?id=48736605)
+- **Summary:** Anthropic released Claude Sonnet 5 on 2026-06-30, generally available the same day across Free, Pro, Max, Team, Enterprise, Claude Code, and the Claude Platform API under the model id `claude-sonnet-5`. Anthropic describes it as its most agentic Sonnet model, with gains over Sonnet 4.6 in reasoning, tool use, coding, and computer use; the announcement shows cost-performance curves on BrowseComp (agentic search) approaching Opus 4.8 at lower price points and improved cost efficiency on OSWorld-Verified (computer use). Introductory API pricing is 2 USD per million input tokens and 10 USD per million output tokens through 2026-08-31, then 3 USD and 15 USD. The announcement does not state a context window, and the benchmark figures are the vendor's own.
+- **Comments:** HN commenters noted that at the highest effort setting Sonnet 5 approaches Opus 4.8 cost while scoring slightly lower, asked when a refreshed Haiku will follow the year-old 4.5, and repeated frustration that Fable 5 remains unavailable while Anthropic ships new products.
+- **Why it matters:** Sonnet is the default tier for many coding-agent and API workloads, so a same-day GA upgrade with lower introductory pricing directly changes the cost-performance baseline engineers build against.
+- **Follow-up:** Watch for independent agentic-coding and computer-use benchmarks of Sonnet 5 against Opus 4.8 and GPT-5.5.
 
 ### SimpleHelp OIDC authentication bypass (CVE-2026-48558) added to CISA KEV
 
@@ -56,6 +66,27 @@ source_count = 40
 No major items found. The events fetcher reports nothing within the 3-day lead window; ICML 2026 (starts 2026-07-06) is the next tracked event.
 
 ## AI
+
+Claude Sonnet 5 is covered in Top stories.
+
+### Anthropic launches Claude Science research workbench
+
+- **Category:** AI
+- **Status:** confirmed
+- **Sources:** [Claude Science product page](https://claude.com/product/claude-science), [discussion](https://news.ycombinator.com/item?id=48735770)
+- **Summary:** Anthropic launched Claude Science on 2026-06-30, a beta desktop application positioned as a research workbench for life-sciences work across genomics, single-cell analysis, proteomics, structural biology, and cheminformatics. The product page describes native visualization of proteins, structures, molecules, and genomic data, reproducible artifacts with full code history, background verification that flags incorrect citations and data inconsistencies, manuscript drafting alongside analyses, and compute management across laptops, clusters, and GPU environments, with connections to more than 60 scientific databases. It is downloadable for macOS (Apple Silicon and Intel) and Linux. Named early adopters and the capability claims come from Anthropic.
+- **Comments:** HN commenters questioned shipping new products while Fable 5 remains unavailable and argued that science is constrained by paper quality rather than paper volume, cautioning against tools that ease low-value publication.
+- **Why it matters:** It is a vendor-built agentic application aimed directly at the AI-for-science workflows this digest tracks, packaging database access, structure visualization, and reproducibility into one tool rather than a raw model or API.
+- **Follow-up:** Watch for general availability past beta, independent evaluation of the citation- and data-verification claims, and whether it accepts external scientific-database integrations.
+
+### Google releases Nano Banana 2 Lite image model
+
+- **Category:** AI
+- **Status:** developing
+- **Sources:** [Google DeepMind model page](https://deepmind.google/models/gemini-image/flash-lite/), [discussion](https://news.ycombinator.com/item?id=48735444)
+- **Summary:** Google DeepMind released Gemini 3.1 Flash-Lite Image, branded Nano Banana 2 Lite, on 2026-06-30 as its fastest and lowest-cost Gemini image generation and editing model, available in the Gemini app, Google AI Studio, the Gemini API, and the Gemini Enterprise Agent Platform. Google positions it as a distilled, lower-latency counterpart to the full Nano Banana 2 for high-volume generation, citing lmarena.ai Elo and artificialanalysis.ai latency figures. The comparison and latency numbers are the vendor's own with no reproducible method stated.
+- **Comments:** HN commenters noted the comparison chart omitted OpenAI's image model and read the release as Google competing on cost and latency rather than top-end quality.
+- **Why it matters:** A cheaper, lower-latency image model widens the options for applications generating images at scale, where per-image cost and latency dominate model choice.
 
 ### Meituan announces LongCat-2.0 trillion-parameter MoE model
 
@@ -224,8 +255,8 @@ No verified items. Reddit RSS collection was degraded from the run environment: 
 
 ## Sources checked
 
-- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 63 of 72 watchlist queries with hits on the latest fetch; front page, top 24h, Ask HN, Show HN, top comments; since the earlier run a Claude Code steganographic-marking claim and an EU-digital-ID-wallet attestation critique surfaced on the front page and were added to the Hacker News section as discussion, the Claude Code blog unreachable from the run environment, HTTP 403)
-- AI sources (Alibaba Qwen, deepreinforce-ai, Meituan LongCat; web search and primary repositories; LongCat-2.0 announcement verified via the LongCat blog and Hugging Face model page, weights pending)
+- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 63 of 72 watchlist queries with hits on the latest fetch; front page, top 24h, Ask HN, Show HN, top comments; the latest fetch surfaced the Claude Sonnet 5 GA release at 758 points and the Claude Science launch at 310 points, both added as primary releases to their topical sections; the Claude Code steganographic-marking thread rose to 1223 points)
+- AI sources (Anthropic, Google DeepMind, Alibaba Qwen, deepreinforce-ai, Meituan LongCat; primary announcements and repositories; Claude Sonnet 5 verified via the Anthropic announcement and system card, GA same day across all plans; Claude Science verified via its product page, beta; Nano Banana 2 Lite verified via the Google DeepMind model page; LongCat-2.0 verified via the LongCat blog and Hugging Face model page, weights pending)
 - ML research and arXiv papers (`make papers`, arXiv API, 140 items; MCP server-architecture-patterns preprint verified; Apple Neural Engine guide arXiv 2606.22283 surfaced via Hacker News, not the watchlist categories, verified and placed in Apple platforms)
 - Conferences and events (`make events`, 0 upcoming within window, 0 active)
 - Books and publisher feeds (`make books`, Pragmatic Bookshelf returned 2 items below bar, No Starch feed HTTP 403)
