@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 34
+source_count = 40
 +++
 
 ## Top stories
@@ -129,7 +129,15 @@ No major items found. Status pages for the tracked providers were quiet; no majo
 
 ## Languages and runtimes
 
-No major items found. No watchlist `[github]` language repo published a stable release after the 2026-06-29 digest.
+### Fil-C documents memory-safe context switching
+
+- **Category:** Languages
+- **Status:** developing
+- **Sources:** [Fil-C documentation](https://fil-c.org/context_switches), [discussion](https://news.ycombinator.com/item?id=48727177)
+- **Summary:** Fil-C, the memory-safe C and C++ compiler, published documentation for memory-safe implementations of the `setjmp`/`longjmp` and `ucontext` (`getcontext`, `setcontext`, `makecontext`, `swapcontext`) context-switching APIs. The `setjmp` path stores an opaque jump buffer unreachable from user code, requires direct `setjmp` calls so the compiler cannot optimize away the safety guarantees, validates that each `longjmp` targets a live descendant stack frame, and preserves garbage-collection roots; misuse that would otherwise produce a torn machine state triggers a runtime panic rather than memory corruption. The `ucontext` path uses opaque fiber-context objects with internally allocated stacks, enforces thread affinity so a context cannot migrate between threads, and integrates with the collector through fiber tracking. The documentation states `ucontext` support is new since release 0.680, requires building from source, and is not yet thoroughly tested, while `setjmp`/`longjmp` is described as more solid.
+- **Why it matters:** Context-switching APIs are a recurring memory-safety escape hatch in C, and constraining them to fail closed extends Fil-C's guarantees to coroutine and fiber code that previously relied on raw register and stack manipulation.
+
+No watchlist `[github]` language repo published a stable release after the 2026-06-29 digest.
 
 ## Apple platforms
 
@@ -185,6 +193,23 @@ South Korea's record memory, AI, and robotics investment plan is covered in Top 
 - **Summary:** An opinion essay arguing that mandatory online age verification is a stepping stone toward persistent identity attribution of online speech reached the top of the front page (954 points). It is commentary, not a primary technical source.
 - **Why it matters:** The discussion connects to the identity-verification gates spreading across developer-facing AI services, including Anthropic's consumer ID checks effective 2026-07-08 tracked in Watchlist follow-ups.
 
+### Claim that Claude Code marks requests with invisible characters
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [analysis](https://thereallo.dev/blog/claude-code-prompt-steganography), [discussion](https://news.ycombinator.com/item?id=48734373)
+- **Summary:** A blog post that reached the Hacker News front page on 2026-06-30 (205 points) claims Claude Code embeds invisible Unicode characters into the requests it sends, which the author frames as a steganographic fingerprint to detect resale and model distillation. The blog was not reachable from the run environment (HTTP 403), so the exact encoding and what it encodes were not independently verified; invisible-character and variation-selector steganography against frontier models is a documented technique in prior research. Anthropic has not commented.
+- **Comments:** HN commenters debated whether the marks would drive account bans or degraded "poisoned" output for flagged usage rather than outright blocking, said the behavior was reportedly visible in an earlier source-map leak, and asked whether the marked system prompt is forwarded to third-party endpoints when `ANTHROPIC_BASE_URL` points at another provider, which would matter for distillation detection.
+- **Why it matters:** Hidden request marking in a widely used coding agent raises trust and privacy questions for teams routing Claude Code through proxies or alternative model backends, though the core technical claim is unverified.
+
+### EU digital identity wallets criticized for depending on Google and Apple attestation
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [Waag analysis](https://waag.org/en/article/european-digital-id-wallets-are-gift-google-and-apple/), [discussion](https://news.ycombinator.com/item?id=48730729)
+- **Summary:** A 2026-06-22 article by Danny Laemmerhirt of the Amsterdam digital-rights organization Waag argues that EU digital identity wallets under eIDAS 2.0 depend on Google and Apple device-attestation services (Google's Play Integrity API and Apple's device attestation) to verify that the wallet app runs on unmodified hardware, which can exclude users of de-Googled operating systems such as GrapheneOS and /e/OS from government services. It reached the front page at 574 points.
+- **Why it matters:** Building public identity infrastructure on proprietary attestation ties citizen access to two vendors' platform-integrity gates, a concrete dependency and exclusion risk for anyone targeting alternative Android distributions, extending the device-attestation and identity-gating theme this digest is tracking.
+
 ## Reddit and social pulse
 
 No verified items. Reddit RSS collection was degraded from the run environment: the r/programming top feed returned no entries and the hot feed returned HTTP 429, consistent with the sustained datacenter-IP block tracked in issue #23. No tracked-person social post met the engineering-relevance bar this run.
@@ -199,7 +224,7 @@ No verified items. Reddit RSS collection was degraded from the run environment: 
 
 ## Sources checked
 
-- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 62 of 72 watchlist queries with hits on the latest fetch; front page, top 24h, Ask HN, Show HN, top comments; LongCat-2.0 surfaced on the front page since the earlier run)
+- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 63 of 72 watchlist queries with hits on the latest fetch; front page, top 24h, Ask HN, Show HN, top comments; since the earlier run a Claude Code steganographic-marking claim and an EU-digital-ID-wallet attestation critique surfaced on the front page and were added to the Hacker News section as discussion, the Claude Code blog unreachable from the run environment, HTTP 403)
 - AI sources (Alibaba Qwen, deepreinforce-ai, Meituan LongCat; web search and primary repositories; LongCat-2.0 announcement verified via the LongCat blog and Hugging Face model page, weights pending)
 - ML research and arXiv papers (`make papers`, arXiv API, 140 items; MCP server-architecture-patterns preprint verified; Apple Neural Engine guide arXiv 2606.22283 surfaced via Hacker News, not the watchlist categories, verified and placed in Apple platforms)
 - Conferences and events (`make events`, 0 upcoming within window, 0 active)
@@ -207,7 +232,7 @@ No verified items. Reddit RSS collection was degraded from the run environment: 
 - Security advisories (CISA KEV feed version 2026.06.29, count 1630; SimpleHelp CVE-2026-48558 the only new actively-exploited addition since 2026.06.25; vendor advisory and Horizon3.ai IOCs verified)
 - Status pages (tracked providers quiet; no major incident surfaced)
 - GitHub releases and trending (full quality-pass check: every watchlist `[github]` repo checked via `gh api`; Git 2.55.0 stable, tagged 2026-06-29 14:59 UTC, was not in the 2026-06-29 digest and is surfaced here in Developer tools; all other newest stable releases predate the 2026-06-29 digest, Homebrew 6.0.5 2026-06-26, deno 2.9.0 and Kotlin 2.4.10-RC 2026-06-25, node 26.4.0 and zed 1.9.0-pre 2026-06-24, grafana 13.0.3 and otel-collector 0.155.0 2026-06-23; neovim and ghostty tags are rolling prereleases; `github.com/trending` overall daily view shows the usual agentic-AI and vulnerability-tooling cluster, no new emerging theme above bar)
-- Engineering blogs (web search; Cloudflare and other tracked blogs quiet; GPU-kernel and WATaBoy write-ups verified and added to Engineering posts)
+- Engineering blogs (web search; Cloudflare and other tracked blogs quiet; GPU-kernel and WATaBoy write-ups verified and added to Engineering posts; Fil-C memory-safe context-switching documentation verified at fil-c.org and added to Languages and runtimes)
 - YouTube channels (`make yt`, 39 videos from repo snapshot across 89 channels; AI-hardware and Spring Boot 4.1 explainers dominate, no written primary to anchor a new story)
 - Markets and company sources (web search; South Korea investment plan verified across Korea Times, UPI, and Rappler)
 - Reddit RSS (degraded: r/programming top returned 0 entries, hot HTTP 429; see Reddit and social pulse)

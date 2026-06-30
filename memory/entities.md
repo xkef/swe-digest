@@ -79,6 +79,10 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 - Swift: language and toolchain. Track Swift Evolution proposals, concurrency, releases, and the open-source toolchain. Last seen 2026-06-29.
 - Spring Boot and Spring Framework: JVM application framework. Track releases, breaking changes, migration notes, and security advisories. Last seen 2026-06-29.
 
+## Languages and runtimes
+
+- Fil-C: memory-safe C and C++ compiler (LLVM-based, garbage-collected, FilPizlonator pass). Track tagged releases past the v0.6xx pre-release line and which unsafe-C escape hatches it constrains (inline asm validated 2026-06-22; setjmp/longjmp and ucontext context switching documented 2026-06-30, ucontext new since 0.680). Last seen 2026-06-30.
+
 ## Linux and kernel
 
 - Linux kernel: track releases, merge windows, scheduler, io_uring, eBPF, filesystems, memory management, and security hardening. Current 7.1 stable; 7.2 merge window open. Last seen 2026-06-14.
@@ -87,7 +91,7 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 
 ## Agentic coding
 
-- Claude Code: Anthropic coding agent. Track releases, harness changes, MCP support, subagent features, and credit/billing changes. Current v2.1.175. Last seen 2026-06-17.
+- Claude Code: Anthropic coding agent. Track releases, harness changes, MCP support, subagent features, credit/billing changes, and trust/telemetry claims (e.g. the 2026-06-30 steganographic request-marking claim). Current v2.1.175. Last seen 2026-06-30.
 - Cursor and GitHub Copilot: coding agents. Track release notes, model changes, agent capabilities, and billing/pricing changes. Last seen 2026-06-12.
 - Model Context Protocol: track spec changes, new servers and clients, and adoption. Last seen 2026-06-29.
 - Agent Client Protocol (ACP): open protocol (Apache 2.0) for editor-agent communication, created by Zed Industries; JSON-RPC over stdio. Track adoption and spec changes. Last seen 2026-06-29.

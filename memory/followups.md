@@ -17,6 +17,15 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-06-30: Claude Code steganographic request-marking claim
+
+- Status: open
+- Category: Agentic coding
+- Sources: [analysis](https://thereallo.dev/blog/claude-code-prompt-steganography), [HN 48734373](https://news.ycombinator.com/item?id=48734373)
+- Watch for: Any Anthropic statement or docs change; independent verification of the exact invisible-character encoding and what it encodes; whether the marks are forwarded when ANTHROPIC_BASE_URL points at a third-party endpoint; reports of bans or degraded output tied to flagged usage.
+- Last checked: 2026-06-30
+- Notes: Blog post reaching the HN front page 2026-06-30 (205 pts) claims Claude Code embeds invisible Unicode characters in its requests as a steganographic fingerprint to detect resale and distillation. Primary blog unreachable from the run environment (HTTP 403), so the specific encoding was not independently verified; invisible-character/variation-selector steganography against frontier models is a documented technique (prior arXiv work). Anthropic has not commented. HN commenters: marks could drive bans or "poisoned" degraded output rather than blocking; reportedly seen earlier in a source-map leak; question whether the marked system prompt is forwarded to third-party providers via ANTHROPIC_BASE_URL. Covered in the 2026-06-30 Hacker News section as discussion (unverified).
+
 ## 2026-06-30: Meituan LongCat-2.0 weight release
 
 - Status: open
