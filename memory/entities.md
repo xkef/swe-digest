@@ -39,6 +39,7 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 - Apple Foundation Models: track framework releases, the LanguageModel protocol, and the open-source timeline (planned 2026). Last seen 2026-06-29.
 - Cohere: Canadian AI lab. Track model releases, open-weight licenses, and coding/agent capability. Current North Mini Code 1.0 (Apache-2.0). Last seen 2026-06-09.
 - Baidu: Chinese AI lab. Track open-weight model releases. Current Unlimited-OCR (MIT). Last seen 2026-06-22.
+- Alibaba Qwen (language models): the Qwen LLM line (Apache-2.0 open weights). Track model releases, coding/agent capability, and local-inference viability. Current Qwen3.6-27B dense (released 2026-04-22) plus the Qwen3.6 397B-A17B MoE. Last seen 2026-06-30.
 - Alibaba Qwen (agent world models): language world models for agentic environments (Qwen-AgentWorld). Track reproduction, weights, and license. Last seen 2026-06-25.
 - Alibaba Qwen (embodied AI): Qwen-RobotSuite embodied series (RobotManip, RobotNav, RobotWorld). Track weights, repos, and reproduced results. Last seen 2026-06-16.
 
@@ -51,7 +52,8 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 ## Security
 
 - Akrites (Linux Foundation): cross-industry effort coordinating confidential vulnerability remediation for critical open source in the AI-assisted-discovery era. Track SIRT funding, adopted projects, and embargo governance. Last seen 2026-06-25.
-- CISA KEV, NVD, OSV, GitHub Security Advisories: track active exploitation, ecosystem exposure, patched versions, and mitigations. Last seen 2026-06-25.
+- CISA KEV, NVD, OSV, GitHub Security Advisories: track active exploitation, ecosystem exposure, patched versions, and mitigations. KEV catalog version 2026.06.29 (count 1630). Last seen 2026-06-30.
+- SimpleHelp: remote monitoring and management (RMM) software. Track security advisories (simple-help.com/security); recurring high-value ransomware target. Last seen 2026-06-30.
 - curl: track security releases and the AI-found-report theme; vulnerability handling paused July 2026. Current 8.21.0. Last seen 2026-06-24.
 - Cisco: track security advisories for Unified CM, Catalyst SD-WAN Manager, and related products (recurring zero-day target). Last seen 2026-06-25.
 - PTC Windchill and FlexPLM: product-lifecycle-management software. Track CVEs and patches. Last seen 2026-06-25.

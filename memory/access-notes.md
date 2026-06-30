@@ -70,9 +70,10 @@ execution environment (cloud datacenter IP ranges).
   hot fetched cleanly, though rapid sequential fetches of many subreddits can be
   rate-limited (space them out). When blocked, state degraded Reddit coverage in
   Sources checked; retry later in the run or collect from another network.
-  Degraded again across most of 2026-06-24..2026-06-28: 2026-06-24 RSS returned
+  Degraded again across most of 2026-06-24..2026-06-30: 2026-06-24 RSS returned
   "Blocked"; 2026-06-25/26/27 partial (only r/programming returned, most subs
-  empty); 2026-06-28 /hot/.rss and /top/.rss?t=day returned empty. A sustained
+  empty); 2026-06-28 /hot/.rss and /top/.rss?t=day returned empty; 2026-06-30
+  /top/.rss?t=day returned 0 entries and /hot/.rss returned HTTP 429. A sustained
   partial block from the datacenter IP, not a one-off rate limit; raised as a
   plain blocked-source issue in the 2026-06-28 weekly review so the owner can
   check Reddit access from another network.

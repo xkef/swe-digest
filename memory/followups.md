@@ -193,9 +193,9 @@ Format:
 - Status: open
 - Category: Dev tools
 - Sources: [PCWorld](https://www.pcworld.com/article/3160794/the-last-lifeline-for-ublock-origin-in-chrome-is-almost-gone-for-good.html)
-- Watch for: Chrome 150 release date confirmation; enterprise policy alternatives; uBlock Origin Lite coverage parity improvements.
-- Last checked: 2026-06-12
-- Notes: Chrome 150 expected 2026-06-30. All MV2 workarounds removed. uBlock Origin Lite (MV3) is the in-Chrome option with reduced blocking. Firefox and Brave retain full MV2 support.
+- Watch for: Chrome 151 (about four weeks out) stripping the remaining MV2 flags; uBlock Origin Lite coverage parity improvements; enterprise policy alternatives.
+- Last checked: 2026-06-30
+- Notes: REALIZED 2026-06-30: Chrome 150 reached the stable channel and removed the ExtensionManifestV2Disabled flag, the last override keeping Manifest V2 extensions running, so uBlock Origin and other dynamic content blockers stop working in Chrome. Chrome 151 (~4 weeks later) strips the remaining MV2 flags. uBlock Origin Lite (MV3) is the reduced in-Chrome option; Firefox and Brave retain full MV2 support. Covered in 2026-06-30 Watchlist follow-ups.
 
 ## 2026-06-12: Cloudflare Dashboard and API control-plane incident
 
@@ -979,3 +979,21 @@ Format:
 - Watch for: A `.codexignore` or equivalent path-based exclusion landing in codex-rs; any OpenAI statement on how Codex avoids reading secrets; downstream incident reports of secret exfiltration via the agent.
 - Last checked: 2026-06-29
 - Notes: Feature request open since 2025-08-28 asks OpenAI Codex for a deterministic ignore mechanism (proposed `.codexignore` at repo and global scope) so files such as `.env`, `*.pem`, and SSH/cloud credentials are never read or sent to the model while the rest of the tree stays searchable. Reached the HN front page 2026-06-29 (192 pts) because the gap persists in the Rust rewrite (codex-rs); a related earlier request (#205) was closed in favor of the rewrite without the feature landing. Agent data-exfiltration surface. Ties to the tool-using-agent privacy theme (ToolPrivacyBench, arXiv 2606.28061, same digest). Covered 2026-06-29 Top stories.
+
+## 2026-06-30: SimpleHelp CVE-2026-48558 OIDC authentication bypass (KEV)
+
+- Status: open
+- Category: Security
+- Sources: [SimpleHelp advisory](https://simple-help.com/security/simplehelp-security-update-2026-05), [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-48558), [Horizon3.ai IOCs](https://horizon3.ai/attack-research/disclosures/cve-2026-48558-simplehelp-authentication-bypass-iocs/)
+- Watch for: Confirmed ransomware campaigns using the vector; patch adoption against the 2026-07-02 federal deadline; internet-exposure scans of the ~7.2% on vulnerable OIDC config.
+- Last checked: 2026-06-30
+- Notes: CWE-347 OIDC auth bypass in SimpleHelp RMM: identity tokens accepted without verifying cryptographic signature, so a remote unauthenticated attacker forges a token with arbitrary claims to obtain a fully authenticated technician session (can bypass MFA, remote into managed endpoints, run scripts). Affects <=5.5.15 and all 6.0 pre-release; fixed in 5.5.16 and 6.0 RC 2 (late May 2026). ~14,000 internet-exposed servers, ~7.2% on the vulnerable OIDC config. CISA KEV added 2026-06-29 (catalog 2026.06.29, count 1630), due 2026-07-02. RMM = high-value ransomware foothold. Covered 2026-06-30 Top stories.
+
+## 2026-06-30: South Korea record memory, AI, and robotics investment plan
+
+- Status: open
+- Category: Markets
+- Sources: [Korea Times](https://www.koreatimes.co.kr/southkorea/politics/20260629/samsung-sk-hynix-unveil-585-bil-investment-for-semiconductor-complex-in-southwestern-region), [UPI](https://www.upi.com/Top_News/World-News/2026/06/29/korea-South-Korea-semiconductor-production-cluster-Gwangju-Jeolla-800-trillion-won/8391782723951/), [Rappler](https://www.rappler.com/technology/south-korea-samsung-sk-hynix-ai-chip-drive-june-29-2026/)
+- Watch for: Fab groundbreaking dates in Gwangju/Jeolla; whether the AI-data-center GW targets (8.4 GW by 2029, +10 GW by 2035) convert into committed builds; any effect on DRAM/HBM supply and pricing.
+- Last checked: 2026-06-30
+- Notes: President Lee Jae Myung announced three public-private mega-projects 2026-06-28. Samsung pledged ~1,000 trillion won (~$649B/10yr); Samsung+SK Hynix ~800 trillion won (~$518B) for new fabs in the southwest as a second chip cluster; SK Group/GS Group/Naver ~550 trillion won for AI data centers; humanoid-robot initiative targeting 1%->20% global share. Announced pledges; figures vary by outlet; multi-year build-out. Supply-side counterpart to the AI memory crunch (Apple price hikes 2026-06-25, Micron floor prices 2026-06-26, DRAM price-fixing class action 2026-06-29). Covered 2026-06-30 Top stories.
