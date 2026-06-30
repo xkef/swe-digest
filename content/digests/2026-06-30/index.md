@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 47
+source_count = 50
 +++
 
 ## Top stories
@@ -141,6 +141,15 @@ No major items found. Status pages for the tracked providers were quiet; no majo
 - **Summary:** Git 2.55.0 was tagged 2026-06-29. The fsmonitor daemon is now implemented for Linux, configuration-defined hook scripts can run in parallel, and two new builtins were added: `git format-rev` for pretty-formatting one revision per line and `git url-parse` exposing the internal URL parser. `git checkout -m` now creates a stash so local changes that conflict can be re-resolved, `git rev-list` and the `git log` family gained `--max-count-oldest`, and `git push` learned to target a named remote group to push to multiple remotes at once. Terminal control sequences arriving over the sideband from a remote are now mostly disabled by default, with ANSI color escapes the exception.
 - **Why it matters:** A Linux fsmonitor daemon speeds status and diff on large working trees on the most common server and CI platform, and disabling sideband terminal control sequences by default closes a class of terminal-injection surface in remote operations.
 
+### ZLUDA 6 runs unmodified CUDA on AMD GPUs
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [ZLUDA release notes](https://vosen.github.io/ZLUDA/blog/zluda-update-q1q2-2026/), [discussion](https://news.ycombinator.com/item?id=48730713)
+- **Summary:** ZLUDA, the compatibility layer that runs unmodified CUDA applications on AMD GPUs through ROCm, published Version 6 on 2026-06-29 (equivalent to preview build 6-preview.79). The release adds pre-alpha 32-bit PhysX support so older games using PhysX effects run on AMD hardware, basic texture support that makes Blender functional, and incremental machine-learning improvements through new GPU instructions, compiler bug fixes, and cuBLAS and cuDNN work for PyTorch workloads. The Windows loader now auto-loads performance libraries and prints explicit installation instructions when they are missing. The author lists limitations: PhysX fluid simulation remains glitchy and requires source compilation, texture support is minimal, and Windows users must still source ROCm dependencies from the outdated official SDK or buggy nightly builds.
+- **Comments:** HN commenters noted the project previously took AMD funding before a change of direction, asked how it compares to Vulkan backends for LLM inference, and observed that several Version 6 features had earlier been declared out of scope.
+- **Why it matters:** A maintained path to run CUDA binaries on non-NVIDIA GPUs lowers vendor lock-in for compute and games, part of the broader pressure to break the CUDA moat alongside non-NVIDIA training efforts.
+
 ### WSL Container enters public preview
 
 - **Category:** Dev tools
@@ -233,6 +242,15 @@ South Korea's record memory, AI, and robotics investment plan is covered in Top 
 - **Comments:** HN commenters debated whether the marks would drive account bans or degraded "poisoned" output for flagged usage rather than outright blocking, said the behavior was reportedly visible in an earlier source-map leak, and asked whether the marked system prompt is forwarded to third-party endpoints when `ANTHROPIC_BASE_URL` points at another provider, which would matter for distillation detection.
 - **Why it matters:** Hidden request marking in a widely used coding agent raises trust and privacy questions for teams routing Claude Code through proxies or alternative model backends, though the core technical claim is unverified.
 
+### Tell HN report that installing Cursor on iOS changes device privacy settings
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [discussion](https://news.ycombinator.com/item?id=48737226)
+- **Summary:** A Tell HN post (190 points) reports that installing the Cursor iOS app irreversibly alters the device's privacy settings. It is a single unverified user account with no primary source or vendor confirmation, and the specific settings changed are not independently established.
+- **Comments:** Commenters reported a similar mandatory account-name onboarding in the Claude iOS app that the CLI and web clients do not require, and argued that paying customers should still get a privacy policy that favors the user; the thread links back to the SpaceX-Anysphere acquisition coverage tracked in this digest.
+- **Why it matters:** It is another developer-tool-trust data point alongside the Claude Code request-marking thread, reflecting practitioner unease about what widely used coding clients do on install, though the underlying claim is unverified.
+
 ### EU digital identity wallets criticized for depending on Google and Apple attestation
 
 - **Category:** Pulse
@@ -255,14 +273,14 @@ No verified items. Reddit RSS collection was degraded from the run environment: 
 
 ## Sources checked
 
-- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 63 of 72 watchlist queries with hits on the latest fetch; front page, top 24h, Ask HN, Show HN, top comments; the latest fetch surfaced the Claude Sonnet 5 GA release at 758 points and the Claude Science launch at 310 points, both added as primary releases to their topical sections; the Claude Code steganographic-marking thread rose to 1223 points)
+- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 63 of 72 watchlist queries with hits on the latest fetch; front page, top 24h, Ask HN, Show HN, top comments; the Claude Sonnet 5 GA release (now 768 points) and the Claude Science launch were added as primary releases to their topical sections; the Claude Code steganographic-marking thread rose to 1239 points; the latest fetch surfaced the ZLUDA 6 release (138 points, added to Developer tools) and a Tell HN on Cursor iOS privacy settings (190 points, added to Hacker News))
 - AI sources (Anthropic, Google DeepMind, Alibaba Qwen, deepreinforce-ai, Meituan LongCat; primary announcements and repositories; Claude Sonnet 5 verified via the Anthropic announcement and system card, GA same day across all plans; Claude Science verified via its product page, beta; Nano Banana 2 Lite verified via the Google DeepMind model page; LongCat-2.0 verified via the LongCat blog and Hugging Face model page, weights pending)
 - ML research and arXiv papers (`make papers`, arXiv API, 140 items; MCP server-architecture-patterns preprint verified; Apple Neural Engine guide arXiv 2606.22283 surfaced via Hacker News, not the watchlist categories, verified and placed in Apple platforms)
 - Conferences and events (`make events`, 0 upcoming within window, 0 active)
 - Books and publisher feeds (`make books`, Pragmatic Bookshelf returned 2 items below bar, No Starch feed HTTP 403)
 - Security advisories (CISA KEV feed version 2026.06.29, count 1630; SimpleHelp CVE-2026-48558 the only new actively-exploited addition since 2026.06.25; vendor advisory and Horizon3.ai IOCs verified)
 - Status pages (tracked providers quiet; no major incident surfaced)
-- GitHub releases and trending (full quality-pass check: every watchlist `[github]` repo checked via `gh api`; Git 2.55.0 stable, tagged 2026-06-29 14:59 UTC, was not in the 2026-06-29 digest and is surfaced here in Developer tools; all other newest stable releases predate the 2026-06-29 digest, Homebrew 6.0.5 2026-06-26, deno 2.9.0 and Kotlin 2.4.10-RC 2026-06-25, node 26.4.0 and zed 1.9.0-pre 2026-06-24, grafana 13.0.3 and otel-collector 0.155.0 2026-06-23; neovim and ghostty tags are rolling prereleases; `github.com/trending` overall daily view shows the usual agentic-AI and vulnerability-tooling cluster, no new emerging theme above bar)
+- GitHub releases and trending (full quality-pass check: every watchlist `[github]` repo checked via `gh api`; Git 2.55.0 stable, tagged 2026-06-29 14:59 UTC, was not in the 2026-06-29 digest and is surfaced here in Developer tools; all other newest stable releases predate the 2026-06-29 digest, Homebrew 6.0.5 2026-06-26, deno 2.9.0 and Kotlin 2.4.10-RC 2026-06-25, node 26.4.0 and zed 1.9.0-pre 2026-06-24, grafana 13.0.3 and otel-collector 0.155.0 2026-06-23; neovim and ghostty tags are rolling prereleases; ZLUDA Version 6 (2026-06-29) verified via its release-notes blog and added to Developer tools; `github.com/trending` overall daily view shows the usual agentic-AI and vulnerability-tooling cluster, no new emerging theme above bar)
 - Engineering blogs (web search; Cloudflare and other tracked blogs quiet; GPU-kernel and WATaBoy write-ups verified and added to Engineering posts; Fil-C memory-safe context-switching documentation verified at fil-c.org and added to Languages and runtimes)
 - YouTube channels (`make yt`, 39 videos from repo snapshot across 89 channels; AI-hardware and Spring Boot 4.1 explainers dominate, no written primary to anchor a new story)
 - Markets and company sources (web search; South Korea investment plan verified across Korea Times, UPI, and Rappler)

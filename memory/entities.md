@@ -22,6 +22,7 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 - tmux: terminal multiplexer (tmux/tmux). Track releases, breaking changes, and notable features. Current 3.7. Last seen 2026-06-26.
 - Devin Desktop (formerly Windsurf): AI coding IDE by Cognition. Track releases, the Agent Command Center, Devin Local, and Agent Client Protocol support. Last seen 2026-06-02.
 - Git (git/git): distributed version control. Track stable releases, breaking changes, security-relevant defaults, and performance work. Released as git tags (no GitHub release objects); use the tag page and Documentation/RelNotes/X.Y.Z.adoc. Current 2.55.0 (2026-06-29). Last seen 2026-06-30.
+- ZLUDA (vosen/ZLUDA): compatibility layer running unmodified CUDA applications on AMD GPUs via ROCm. Track releases (blog at vosen.github.io/ZLUDA), workload coverage (PyTorch/ML, Blender, PhysX), and the break-the-CUDA-moat theme. Current Version 6 (2026-06-29). Last seen 2026-06-30.
 
 ## AI
 
