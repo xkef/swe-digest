@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 30
+source_count = 34
 +++
 
 ## Top stories
@@ -56,6 +56,15 @@ source_count = 30
 No major items found. The events fetcher reports nothing within the 3-day lead window; ICML 2026 (starts 2026-07-06) is the next tracked event.
 
 ## AI
+
+### Meituan announces LongCat-2.0 trillion-parameter MoE model
+
+- **Category:** AI
+- **Status:** developing
+- **Sources:** [LongCat blog](https://longcat.chat/blog/longcat-2.0/), [Hugging Face model page](https://huggingface.co/meituan-longcat/LongCat-2.0), [VentureBeat](https://venturebeat.com/technology/meituan-open-sources-longcat-2-0-the-1-6t-near-frontier-agentic-coding-model-thats-been-leading-openrouter-trained-entirely-on-chinese-chips), [discussion](https://news.ycombinator.com/item?id=48727116)
+- **Summary:** Meituan's LongCat team announced LongCat-2.0, a Mixture-of-Experts language model with about 1.6 trillion total parameters and roughly 48 billion activated per token (dynamic activation reported between 33 and 56 billion), a 1-million-token context window, and an MIT license. The blog and reporting state the model was pretrained on more than 35 trillion tokens entirely on AI ASIC superpods rather than GPUs, and that it served as the stealth "Owl Alpha" model on OpenRouter for the prior two months. The Hugging Face model page lists the MIT license but states the weights are "coming soon," so the open-weight checkpoint is not yet published. Benchmark and OpenRouter-ranking claims come from the vendor and secondary reporting and are not independently reproduced.
+- **Why it matters:** A trillion-parameter model with a 1M context and a permissive license, reported as trained on non-NVIDIA domestic accelerators, adds to open-weight competitive pressure and is a data point on training large models off the GPU stack, though the weights and capability claims are unconfirmed.
+- **Follow-up:** Watch for the actual weight release on Hugging Face, a model card with reproducible benchmarks, and independent agentic-coding evaluations.
 
 ### Ornith-1.0 open-weight agentic-coding models released
 
@@ -190,8 +199,8 @@ No verified items. Reddit RSS collection was degraded from the run environment: 
 
 ## Sources checked
 
-- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 64 of 72 watchlist queries with hits; front page, top 24h, Ask HN, Show HN, top comments)
-- AI sources (Alibaba Qwen, deepreinforce-ai; web search and primary repositories; no new frontier vendor release dated 2026-06-30)
+- Hacker News (`make hn`, Algolia backend, 0 degraded collections, 62 of 72 watchlist queries with hits on the latest fetch; front page, top 24h, Ask HN, Show HN, top comments; LongCat-2.0 surfaced on the front page since the earlier run)
+- AI sources (Alibaba Qwen, deepreinforce-ai, Meituan LongCat; web search and primary repositories; LongCat-2.0 announcement verified via the LongCat blog and Hugging Face model page, weights pending)
 - ML research and arXiv papers (`make papers`, arXiv API, 140 items; MCP server-architecture-patterns preprint verified; Apple Neural Engine guide arXiv 2606.22283 surfaced via Hacker News, not the watchlist categories, verified and placed in Apple platforms)
 - Conferences and events (`make events`, 0 upcoming within window, 0 active)
 - Books and publisher feeds (`make books`, Pragmatic Bookshelf returned 2 items below bar, No Starch feed HTTP 403)

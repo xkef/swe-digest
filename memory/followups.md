@@ -17,6 +17,15 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-06-30: Meituan LongCat-2.0 weight release
+
+- Status: open
+- Category: AI
+- Sources: [LongCat blog](https://longcat.chat/blog/longcat-2.0/), [Hugging Face](https://huggingface.co/meituan-longcat/LongCat-2.0)
+- Watch for: Actual open-weight checkpoint publication on Hugging Face (page says "coming soon"); model card with reproducible benchmarks; independent agentic-coding evaluation; confirmation of the AI-ASIC-superpod training claim.
+- Last checked: 2026-06-30
+- Notes: Meituan LongCat team announced LongCat-2.0 on 2026-06-30: MoE ~1.6T total / ~48B active (dynamic 33-56B), 1M context, MIT license, reported pretrained on 35T+ tokens entirely on AI ASIC superpods (non-GPU). Reported to be the stealth "Owl Alpha" model on OpenRouter for the prior two months. HF lists MIT but weights pending. Benchmark/OpenRouter-ranking claims are vendor/secondary, unreproduced. Surfaced as HN front-page thread 48727116 (156 pts). Covered in 2026-06-30 AI section.
+
 ## 2026-06-11: Check Point CVE-2026-50751 Qilin ransomware campaign
 
 - Status: open

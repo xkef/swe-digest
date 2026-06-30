@@ -43,6 +43,7 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 - Alibaba Qwen (language models): the Qwen LLM line (Apache-2.0 open weights). Track model releases, coding/agent capability, and local-inference viability. Current Qwen3.6-27B dense (released 2026-04-22) plus the Qwen3.6 397B-A17B MoE. Last seen 2026-06-30.
 - Alibaba Qwen (agent world models): language world models for agentic environments (Qwen-AgentWorld). Track reproduction, weights, and license. Last seen 2026-06-25.
 - Alibaba Qwen (embodied AI): Qwen-RobotSuite embodied series (RobotManip, RobotNav, RobotWorld). Track weights, repos, and reproduced results. Last seen 2026-06-16.
+- Meituan LongCat: Chinese AI lab (LongCat model line, meituan-longcat org). Track open-weight releases, licenses, and the claim of training/serving on domestic AI ASIC superpods rather than GPUs. Current LongCat-2.0 announced (1.6T MoE, ~48B active, 1M context, MIT; weights pending). Last seen 2026-06-30.
 
 ## Infrastructure
 
