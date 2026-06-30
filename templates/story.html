@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-<article class="layout prose story-page">
+<article class="layout prose story-page" data-pagefind-body>
   <header class="page-header">
-    <p class="eyebrow">{{ page.extra.section }}</p>
+    <p class="eyebrow" data-pagefind-meta="category:{{ page.extra.section }}">{{ page.extra.section }}</p>
     <h1>{{ page.title }}</h1>
     <p class="meta">
-      <a href="{{ config.base_url | safe }}/digests/{{ page.extra.day }}/">{{ page.extra.day }} digest</a>
-      {% if page.extra.status %}<span>{{ page.extra.status }}</span>{% endif %}
+      <a href="{{ config.base_url | safe }}/digests/{{ page.extra.day }}/" data-pagefind-meta="date:{{ page.extra.day }}">{{ page.extra.day }} digest</a>
+      {% if page.extra.status %}<span data-pagefind-meta="status:{{ page.extra.status }}">{{ page.extra.status }}</span>{% endif %}
     </p>
   </header>
   <div class="story-fields">
     {{ page.content | safe }}
   </div>
-  <p class="meta story-feedback">
+  <p class="meta story-feedback" data-pagefind-ignore>
     <a rel="nofollow" href="{{ config.extra.repository | safe }}/issues/new?template=feedback.yml&amp;title=%5Bfeedback%5D%20{{ page.title | urlencode }}&amp;story={{ page.title | urlencode }}&amp;date={{ page.extra.day }}">Send feedback on this story</a>
   </p>
 </article>

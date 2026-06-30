@@ -43,16 +43,19 @@ build: stories
 	@command -v $(MISE) >/dev/null || { echo "mise not found"; exit 1; }
 	@rm -rf $(DIST)
 	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) build --output-dir $(DIST)
+	@$(MISE) exec -- pagefind --site $(DIST)
 
 serve: stories
 	@command -v $(MISE) >/dev/null || { echo "mise not found"; exit 1; }
+	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) build --output-dir $(DIST)
+	@$(MISE) exec -- pagefind --site $(DIST)
 	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) serve --interface 127.0.0.1 --port 3000 --output-dir $(DIST) --force
 
 check: build
 	@test -f $(DIST)/index.html
 	@test -f $(DIST)/feed.xml
-	@test -f $(DIST)/stories.json
-	@find $(DIST) -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' \) -print | while read -r f; do \
+	@test -d $(DIST)/pagefind
+	@find $(DIST) -type f -not -path '$(DIST)/pagefind/*' \( -name '*.html' -o -name '*.css' -o -name '*.js' \) -print | while read -r f; do \
 		size=$$(gzip -c "$$f" | wc -c | tr -d ' '); \
 		if [ "$$size" -gt 32768 ]; then \
 			echo "$$f exceeds 32KB gzip ($$size bytes)"; exit 1; \

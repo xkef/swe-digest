@@ -9,9 +9,9 @@ with `### Story` sections. This script derives, at build time:
 - data/digests/DATE.json, the section data behind each /digests/DATE/ page.
 - data/home/page-N.json plus stub pages under content/home/ (routed to
   /page/N/), the paginated data-driven home index grouped by digest.
-- static/stories.json, the flat full-archive index the home page filter
-  fetches to search across every story client-side, including the search
-  alias groups from data/search-aliases.toml.
+
+Full-text search is built separately by Pagefind, which indexes the rendered
+story pages after `zola build` (see the Makefile build target).
 
 All outputs are generated, gitignored, and rebuilt by `make build`.
 """
@@ -20,7 +20,6 @@ from __future__ import annotations
 import json
 import re
 import shutil
-import tomllib
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -31,8 +30,6 @@ HOME_PAGES_DIR = ROOT / "content" / "home"
 DAY_JSON_DIR = ROOT / "data" / "digests"
 HOME_JSON_DIR = ROOT / "data" / "home"
 RUNS_DIR = ROOT / "data" / "runs"
-CLIENT_INDEX = ROOT / "static" / "stories.json"
-ALIASES = ROOT / "data" / "search-aliases.toml"
 
 SKIP_SECTIONS = {"Watchlist follow-ups", "Sources checked"}
 
@@ -306,17 +303,6 @@ def main() -> int:
         )
         if number > 1:
             write_home_stub(number)
-
-    aliases = tomllib.loads(ALIASES.read_text(encoding="utf-8"))["groups"]
-    write_json(
-        CLIENT_INDEX,
-        {
-            "total_stories": len(all_stories),
-            "total_days": len(digests),
-            "aliases": [[word.lower() for word in group] for group in aliases],
-            "stories": all_stories,
-        },
-    )
 
     print(
         f"build-stories ok ({len(all_stories)} story pages, {len(digests)} digests, "

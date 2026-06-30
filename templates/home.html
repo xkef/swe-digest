@@ -27,7 +27,7 @@
     </a>
     <ol class="story-list">
       {% for story in digest.stories %}
-      <li class="story-row" data-category="{{ story.category }}" data-status="{{ story.status }}" data-section="{{ story.section }}" data-text="{{ story.title | lower }} {{ story.summary | lower }} {{ story.category | lower }}">
+      <li class="story-row" data-category="{{ story.category }}" data-status="{{ story.status }}" data-section="{{ story.section }}">
         <a class="story-link" href="{{ config.base_url | safe }}{{ story.url | safe }}">
           <span class="story-meta">
             {% if story.category %}<span class="badge badge-cat">{{ story.category }}</span>{% endif %}
@@ -43,6 +43,7 @@
   {% endfor %}
   <ol class="story-list" id="archive-results" hidden></ol>
   <p class="story-empty" id="story-empty" hidden>No stories match these filters.</p>
+  <button type="button" class="search-more" id="search-more" hidden>Load more results</button>
   {% if index.total_pages > 1 %}
   <nav class="pagination" aria-label="Pagination">
     {% if index.page > 1 %}
@@ -62,5 +63,5 @@
   {% endif %}
 </section>
 
-<script src="{{ get_url(path='/filter.js') | safe }}" defer></script>
+<script src="{{ get_url(path='/search-init.js', cachebust=true) | safe }}" defer></script>
 {% endblock content %}

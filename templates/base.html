@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
     {% if page is defined %}
@@ -21,7 +21,8 @@
     {% endif %}
     <link rel="canonical" href="{% if page is defined %}{{ page.permalink | safe }}{% elif section is defined %}{{ section.permalink | safe }}{% else %}{{ config.base_url | safe }}{% endif %}">
     <link rel="alternate" type="application/atom+xml" href="{{ get_url(path='/feed.xml') | safe }}" title="{{ config.title }}">
-    <link rel="stylesheet" href="{{ get_url(path='/style.css') | safe }}">
+    <link rel="stylesheet" href="{{ get_url(path='/style.css', cachebust=true) | safe }}">
+    {% block head %}{% endblock head %}
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
@@ -46,6 +47,6 @@
         <span>{% if release != "dev" %}<a href="{{ config.extra.repository | safe }}/commit/{{ release }}">{{ release }}</a>{% else %}{{ release }}{% endif %}</span>
       </p>
     </footer>
-    <script src="{{ get_url(path='/localtime.js') | safe }}" defer></script>
+    <script src="{{ get_url(path='/localtime.js', cachebust=true) | safe }}" defer></script>
   </body>
 </html>
