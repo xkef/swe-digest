@@ -22,6 +22,7 @@ SECTIONS = [
     "Infrastructure",
     "Engineering posts",
     "Books",
+    "New videos",
     "Markets and companies",
     "Hacker News",
     "Reddit and social pulse",
@@ -31,7 +32,7 @@ SECTIONS = [
 
 TEMPLATE_ITEM = """### Story title
 
-- **Category:** AI | ML research | Agentic coding | Security | Outage | Dev tools | Languages | Apple | Linux/Kernel | Infrastructure | Engineering post | Event | Book | Paper | Markets | Pulse
+- **Category:** AI | ML research | Agentic coding | Security | Outage | Dev tools | Languages | Apple | Linux/Kernel | Infrastructure | Engineering post | Event | Book | Paper | Video | Markets | Pulse
 - **Status:** confirmed | developing | rumor | discussion
 - **Sources:** [primary](https://example.com), [discussion](https://news.ycombinator.com/item?id=0)
 - **Summary:** Replace with one to three factual sentences.

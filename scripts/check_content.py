@@ -17,9 +17,34 @@ ROOT = Path(__file__).resolve().parents[1]
 DIGESTS = ROOT / "content" / "digests"
 MEMORY = ROOT / "memory"
 
-# Current layout, used for digests on or after SECTIONS_V3_CUTOVER. Adds the
-# Conferences and events and Books sections.
+# Current layout, used for digests on or after SECTIONS_V4_CUTOVER. Adds the
+# New videos section.
 SECTIONS = [
+    "Top stories",
+    "Conferences and events",
+    "AI",
+    "ML research",
+    "Agentic coding",
+    "Security",
+    "Outages",
+    "Developer tools",
+    "Languages and runtimes",
+    "Apple platforms",
+    "Linux and kernel",
+    "Infrastructure",
+    "Engineering posts",
+    "Books",
+    "New videos",
+    "Markets and companies",
+    "Hacker News",
+    "Reddit and social pulse",
+    "Watchlist follow-ups",
+    "Sources checked",
+]
+
+# Layout from the Conferences and events / Books addition (2026-06-21) until
+# the New videos section was added.
+SECTIONS_V3 = [
     "Top stories",
     "Conferences and events",
     "AI",
@@ -67,13 +92,17 @@ SECTIONS_V2 = [
 SECTIONS_CUTOVER = "2026-06-13"
 # First digest built with the Conferences and events and Books sections.
 SECTIONS_V3_CUTOVER = "2026-06-21"
+# First digest built with the New videos section.
+SECTIONS_V4_CUTOVER = "2026-07-01"
 
 SECTIONS_LEGACY = SECTIONS_V2[:13] + ["HN and Reddit pulse"] + SECTIONS_V2[15:]
 
 
 def expected_sections(folder: str) -> list[str]:
-    if folder >= SECTIONS_V3_CUTOVER:
+    if folder >= SECTIONS_V4_CUTOVER:
         return SECTIONS
+    if folder >= SECTIONS_V3_CUTOVER:
+        return SECTIONS_V3
     if folder >= SECTIONS_CUTOVER:
         return SECTIONS_V2
     return SECTIONS_LEGACY

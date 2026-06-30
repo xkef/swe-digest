@@ -19,6 +19,7 @@ import sys
 import time
 import tomllib
 import urllib.error
+import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
@@ -31,12 +32,16 @@ SNAPSHOT_DIR = ROOT / "data" / "youtube"
 WATCHLIST = ROOT / "data" / "watchlist.toml"
 
 FEED = "https://www.youtube.com/feeds/videos.xml?channel_id="
+ALGOLIA = "https://hn.algolia.com/api/v1/search"
 USER_AGENT = "swe-digest-fetcher/1.0 (daily digest collection script)"
 TIMEOUT = 15
 RETRIES = 2
 WINDOW_SECONDS = 48 * 3600
 SNAPSHOT_MAX_AGE_HOURS = 24
 DESCRIPTION_MAX_CHARS = 2000
+# Cap on per-run Hacker News discussion lookups, ample for the ~50 video
+# window while bounding calls to the public Algolia API.
+DISCUSSION_LOOKUPS = 80
 
 NS = {
     "atom": "http://www.w3.org/2005/Atom",
@@ -84,11 +89,20 @@ def make_video(entry: ElementTree.Element, fallback_channel: str) -> dict | None
     group = entry.find("media:group", NS)
     description = ""
     views = None
+    rating = None
     if group is not None:
         description = (group.findtext("media:description", namespaces=NS) or "").strip()
-        stats = group.find("media:community/media:statistics", NS)
-        if stats is not None and stats.get("views"):
-            views = int(stats.get("views"))
+        community = group.find("media:community", NS)
+        if community is not None:
+            stats = community.find("media:statistics", NS)
+            if stats is not None and stats.get("views"):
+                views = int(stats.get("views"))
+            star = community.find("media:starRating", NS)
+            if star is not None and star.get("count"):
+                rating = {
+                    "average": float(star.get("average")),
+                    "count": int(star.get("count")),
+                }
     return {
         "id": video_id,
         "title": title.strip(),
@@ -97,6 +111,8 @@ def make_video(entry: ElementTree.Element, fallback_channel: str) -> dict | None
         "channel_id": channel_id,
         "published_at": published,
         "views": views,
+        "rating": rating,
+        "discussion": None,
         "description": description[:DESCRIPTION_MAX_CHARS],
     }
 
@@ -132,6 +148,42 @@ def fetch_all_channels(channels: list[tuple[str, str]], since_iso: str) -> list[
         raise RuntimeError("no videos from any channel feed")
     videos.sort(key=lambda video: video["published_at"] or "", reverse=True)
     return videos
+
+
+def fetch_discussion(video_id: str) -> dict | None:
+    """Best-effort Hacker News discussion signal for a video. Queries the
+    public Algolia search API (no key) for stories whose URL links this exact
+    video and returns the highest-scoring one. A good video gets discussed, so
+    this is the New videos ranking signal. Returns None on any miss or error."""
+    params = urllib.parse.urlencode(
+        {"query": video_id, "restrictSearchableAttributes": "url", "tags": "story"}
+    )
+    try:
+        hits = json.loads(fetch_bytes(f"{ALGOLIA}?{params}")).get("hits", [])
+    except (RuntimeError, ValueError):
+        return None
+    best = None
+    for hit in hits:
+        if video_id not in (hit.get("url") or ""):
+            continue
+        points = hit.get("points") or 0
+        if best is None or points > best["points"]:
+            best = {
+                "hn_url": f"https://news.ycombinator.com/item?id={hit['objectID']}",
+                "points": points,
+                "num_comments": hit.get("num_comments") or 0,
+            }
+    return best
+
+
+def attach_discussion(videos: list[dict]) -> None:
+    """Annotate the most recent videos in place with HN discussion signal.
+    Best-effort: a failed lookup leaves discussion as None and never degrades
+    the run."""
+    targets = videos[:DISCUSSION_LOOKUPS]
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        for video, discussion in zip(targets, pool.map(lambda v: fetch_discussion(v["id"]), targets)):
+            video["discussion"] = discussion
 
 
 def load_snapshot() -> dict:
@@ -191,6 +243,9 @@ def main() -> int:
         failures,
     )
 
+    if videos["backend"] == "youtube-rss" and videos["items"]:
+        attach_discussion(videos["items"])
+
     result = {
         "fetched_at": datetime.fromtimestamp(now, tz=timezone.utc).isoformat(),
         "window_hours": WINDOW_SECONDS // 3600,
@@ -208,9 +263,15 @@ def main() -> int:
         f" via {videos['backend']}"
     )
     print(f"wrote {output_path.relative_to(ROOT)}")
+    discussed = sum(1 for video in videos["items"] if video.get("discussion"))
+    print(f"  {discussed} videos with Hacker News discussion")
     for video in videos["items"][:15]:
         views = video["views"] if video["views"] is not None else "?"
-        print(f"  {views:>8} views  {video['channel']}: {video['title']}  [{video['url']}]")
+        rating = video["rating"]
+        stars = f" {rating['average']:.1f}({rating['count']})" if rating else ""
+        discussion = video["discussion"]
+        hn = f" HN {discussion['points']}pts/{discussion['num_comments']}c" if discussion else ""
+        print(f"  {views:>8} views{stars}{hn}  {video['channel']}: {video['title']}  [{video['url']}]")
 
     if failures:
         print(f"DEGRADED: {', '.join(failures)}", file=sys.stderr)
