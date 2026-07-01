@@ -23,6 +23,7 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 - Devin Desktop (formerly Windsurf): AI coding IDE by Cognition. Track releases, the Agent Command Center, Devin Local, and Agent Client Protocol support. Last seen 2026-06-02.
 - Git (git/git): distributed version control. Track stable releases, breaking changes, security-relevant defaults, and performance work. Released as git tags (no GitHub release objects); use the tag page and Documentation/RelNotes/X.Y.Z.adoc. Current 2.55.0 (2026-06-29). Last seen 2026-06-30.
 - ZLUDA (vosen/ZLUDA): compatibility layer running unmodified CUDA applications on AMD GPUs via ROCm. Track releases (blog at vosen.github.io/ZLUDA), workload coverage (PyTorch/ML, Blender, PhysX), and the break-the-CUDA-moat theme. Current Version 6 (2026-06-29). Last seen 2026-06-30.
+- Box2D and Box3D (erincatto): open-source physics engines for games by Erin Catto, C with a C API, MIT license. Box3D is the 3D sibling reusing the Box2D solver architecture. Track releases past Box3D v0.1.0 (2026-06-30), language bindings, and adoption. Last seen 2026-07-01.
 
 ## AI
 

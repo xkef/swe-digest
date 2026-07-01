@@ -10,7 +10,7 @@ months = ["2026-07"]
 
 [extra]
 status = "published"
-source_count = 36
+source_count = 41
 +++
 
 ## Top stories
@@ -111,6 +111,14 @@ No major items found.
 - **Summary:** The Godot Foundation amended its contribution guidelines on 2026-06-30 to require that submitted code be human authored. AI assistance is limited to menial tasks such as code completion, regex, and find and replace, and any AI use in authoring code must be disclosed in the pull request discussion. Autonomous AI agents and fully AI-generated ("vibe coded") submissions are barred and already trigger an automatic ban from the GitHub repository, and AI-generated text in maintainer communication is not allowed. The Foundation cited rising AI-generated contribution volume against flat reviewer capacity, the loss of the mentorship value reviewers expect, and that AI cannot take responsibility for the code it produces. A separate change requires contributors with three or fewer merged pull requests to obtain maintainer approval before new features or significant refactors.
 - **Why it matters:** A major open-source engine formalizing a human-authorship requirement sets a governance precedent for how large projects absorb the AI-contribution and maintainer-burden pressure also seen at curl, FFmpeg, and package registries.
 
+### Box3D open-source 3D physics engine released
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [announcement](https://box2d.org/posts/2026/06/announcing-box3d/), [GitHub release](https://github.com/erincatto/box3d), [HN discussion](https://news.ycombinator.com/item?id=48745445)
+- **Summary:** Erin Catto, the author of Box2D, released Box3D v0.1.0 on 2026-06-30 under the MIT license. Box3D is a 3D physics engine for games written in C17 with a C API and no dependencies beyond the C runtime. It carries over the Box2D solver architecture with a sub-stepping solver, continuous collision detection, SIMD-accelerated contact solving, graph coloring for parallel island groups, and optional multithreading. It adds triangle-mesh and height-field collision, baked compound collision, double-precision coordinates for large worlds, and record and replay. Catto says the 2D and 3D data structures are largely indifferent to spatial dimension, so the two engines share much of their design.
+- **Why it matters:** Box2D is a widely used 2D physics library, so a same-author 3D engine gives game and simulation developers an MIT-licensed, dependency-free option in a space dominated by heavier engines.
+
 ### Xsnow protestware surfaces in Debian
 
 - **Category:** Dev tools
@@ -209,6 +217,15 @@ No major items found.
 - **Summary:** A Tell HN post (206 points) reports that installing the Cursor app on iOS irreversibly changes device privacy settings, prompting discussion about what the app requests and whether the change can be undone. The claim is a user report and was not independently verified this run.
 - **Why it matters:** Privacy-setting changes from a coding-agent mobile app are relevant to developers evaluating the tool on personal devices.
 
+### Google Copybara resurfaces for monorepo-to-open-source syncing
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [repository](https://github.com/google/copybara), [HN discussion](https://news.ycombinator.com/item?id=48740698)
+- **Summary:** Google's Copybara, a tool for moving code between repositories with transformations, reached the Hacker News front page at 278 points and 54 comments. It syncs code from an internal monorepo out to public repositories, remapping paths, excluding files, and rewriting commit metadata in a single pass.
+- **Comments:** HN commenters describe Google's real-world use as one-way export from its Piper monorepo to GitHub, note that history preservation is implemented as cherry-picks with rewritten commits that embed the original hashes in commit trailers, and compare it to git subtree, Josh (used by Rust), and Meta's fbshipit.
+- **Why it matters:** Teams publishing open source from a monorepo face the same path-remapping and history-rewriting problem Copybara automates.
+
 ## Reddit and social pulse
 
 Reddit RSS coverage was degraded from the run environment this run (r/programming, r/rust, and r/golang hot feeds all returned zero entries), consistent with the sustained datacenter-IP block noted since late June. No tracked-person social post cleared the engineering-relevance bar with a verified primary source this run.
@@ -221,7 +238,7 @@ Reddit RSS coverage was degraded from the run environment this run (r/programmin
 
 ## Sources checked
 
-- Hacker News (make hn, full structured coverage via Algolia; 64/72 watchlist queries with hits, 0 degraded collections; this run surfaced the Godot AI-policy, Asahi 7.1, and arXiv-independence front-page items)
+- Hacker News (make hn, full structured coverage via Algolia; 64/72 watchlist queries with hits, 0 degraded collections; this run added the Box3D 3D physics engine release and the Google Copybara resurfacing from the front page)
 - Reddit (RSS degraded from the run environment; r/programming, r/rust, and r/golang hot feeds returned zero entries)
 - AI sources (Anthropic, Mistral, Google Research)
 - ML research and arXiv papers (make papers via arXiv API; no new paper cleared the bar this run)

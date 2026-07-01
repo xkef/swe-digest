@@ -1034,6 +1034,15 @@ Format:
 - Last checked: 2026-06-30
 - Notes: President Lee Jae Myung announced three public-private mega-projects 2026-06-28. Samsung pledged ~1,000 trillion won (~$649B/10yr); Samsung+SK Hynix ~800 trillion won (~$518B) for new fabs in the southwest as a second chip cluster; SK Group/GS Group/Naver ~550 trillion won for AI data centers; humanoid-robot initiative targeting 1%->20% global share. Announced pledges; figures vary by outlet; multi-year build-out. Supply-side counterpart to the AI memory crunch (Apple price hikes 2026-06-25, Micron floor prices 2026-06-26, DRAM price-fixing class action 2026-06-29). Covered 2026-06-30 Top stories.
 
+## 2026-07-01: Box3D open-source 3D physics engine
+
+- Status: open
+- Category: Dev tools
+- Sources: [announcement](https://box2d.org/posts/2026/06/announcing-box3d/), [GitHub](https://github.com/erincatto/box3d)
+- Watch for: First 1.0 stable release past v0.1.0; language bindings; adoption in game engines and simulation stacks; benchmarks vs Jolt, PhysX, and Bullet.
+- Last checked: 2026-07-01
+- Notes: Erin Catto (Box2D author) released Box3D v0.1.0 on 2026-06-30, MIT license. 3D physics engine for games in C17 with a C API, no dependencies beyond the C runtime. Reuses the Box2D solver architecture (sub-stepping solver, continuous collision detection, SIMD contact solving, graph-coloring for parallel islands, optional multithreading) and adds triangle-mesh and height-field collision, baked compound collision, double-precision coordinates for large worlds, and record/replay. Built to support the survival game "The Legend of California". HN 48745445 (173 pts). Covered 2026-07-01 Developer tools.
+
 ## 2026-07-01: Mistral Leanstral 1.5 Lean 4 theorem-proving model
 
 - Status: open
