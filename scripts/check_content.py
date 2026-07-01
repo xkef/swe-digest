@@ -121,6 +121,8 @@ UNSAFE_HTML = [
     (re.compile(r"\son\w+\s*=", re.I), "inline event handler (on*=)"),
     (re.compile(r"javascript:", re.I), "javascript: URI"),
     (re.compile(r"data:\s*text/html", re.I), "data:text/html URI"),
+    (re.compile(r"data:\s*image/svg\+xml", re.I), "data:image/svg+xml URI"),
+    (re.compile(r"data:[^,]*(javascript|ecmascript)", re.I), "data: script URI"),
 ]
 
 # High-signal secret shapes. Digests must never publish credentials.
@@ -130,7 +132,7 @@ SECRETS = [
     (re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"), "private key block"),
     (re.compile(r"xox[baprs]-[A-Za-z0-9-]{10,}"), "Slack token"),
     (re.compile(r"sk-ant-[A-Za-z0-9_-]{20,}"), "Anthropic key"),
-    (re.compile(r"\bsk-[A-Za-z0-9]{20,}"), "secret key (sk-...)"),
+    (re.compile(r"\bsk-[A-Za-z0-9]{16,}"), "secret key (sk-...)"),
 ]
 
 # URL shorteners hide the destination, so a published link cannot be vetted.
