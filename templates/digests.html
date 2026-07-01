@@ -1,48 +1,26 @@
 {% extends "base.html" %}
+{% import "macros.html" as macros %}
 
 {% block content %}
 {% set build_date = get_env(name="BUILD_DATE", default="") %}
+{% set months = get_taxonomy(kind="months") %}
+{% set items = months.items | sort(attribute="name") %}
+{% set current = items | last %}
+{% set label = current.pages | first | get(key="date") | date(format='%B %Y') %}
+{% set_global older = "" %}
+{% set_global prev = "" %}
+{% for item in items %}
+  {% if item.slug == current.slug %}{% set_global older = prev %}{% endif %}
+  {% set_global prev = item.permalink %}
+{% endfor %}
 <section class="layout listing">
   <header class="page-header">
     <p class="eyebrow">Archive</p>
-    <h1>{{ section.title }}</h1>
+    <h1>{{ label }}</h1>
     <p>Last updated <time class="js-localtime" datetime="{% if build_date %}{{ build_date }}{% else %}{{ now() | date(format='%Y-%m-%dT%H:%M:%SZ') }}{% endif %}">{% if build_date %}{{ build_date | replace(from="T", to=" ") | replace(from="Z", to=" UTC") }}{% else %}{{ now() | date(format='%Y-%m-%d %H:%M UTC') }}{% endif %}</time>.</p>
     <p class="schedule">Updated daily at <time datetime="03:50">03:50</time>, <time datetime="09:50">09:50</time>, and <time datetime="15:50">15:50</time> UTC.</p>
   </header>
-  {% if paginator is defined %}
-  {% set pages = paginator.pages %}
-  {% else %}
-  {% set pages = section.pages %}
-  {% endif %}
-  <ol class="digest-list">
-    {% set_global current_month = "" %}
-    {% for page in pages %}
-    {% set day = page.date | date(format='%Y-%m-%d') %}
-    {% set month = page.date | date(format='%B %Y') %}
-    {% if month != current_month %}
-    <li class="digest-month">{{ month }}</li>
-    {% set_global current_month = month %}
-    {% endif %}
-    {% set day_data = load_data(path="data/digests/" ~ day ~ ".json") %}
-    {% set lead = day_data.sections | first %}
-    <li class="digest-row">
-      <div class="digest-meta">
-        <time datetime="{{ day }}"><a href="{{ page.permalink | safe }}">{{ page.date | date(format='%a %Y-%m-%d') }}</a></time>
-        <span class="digest-count">{{ day_data.count }} stories</span>
-      </div>
-      {% if lead and lead.stories %}
-      {% set top = lead.stories | first %}
-      <a class="digest-lead" href="{{ page.permalink | safe }}">{{ top.title }}</a>
-      {% endif %}
-    </li>
-    {% endfor %}
-  </ol>
-  {% if paginator is defined %}
-  <nav class="pagination" aria-label="Pagination">
-    {% if paginator.previous %}<a href="{{ paginator.previous | safe }}">Newer</a>{% endif %}
-    <span>Page {{ paginator.current_index }} of {{ paginator.number_pagers }}</span>
-    {% if paginator.next %}<a href="{{ paginator.next | safe }}">Older</a>{% endif %}
-  </nav>
-  {% endif %}
+  {{ macros::digest_rows(pages=current.pages) }}
+  {{ macros::month_pager(newer="", label=label, older=older) }}
 </section>
 {% endblock content %}

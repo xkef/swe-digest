@@ -6,6 +6,7 @@ description = "Daily software engineering digest for 2026-07-01."
 [taxonomies]
 categories = []
 tags = []
+months = ["2026-07"]
 
 [extra]
 status = "published"
