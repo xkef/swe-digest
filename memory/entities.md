@@ -27,11 +27,11 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 ## AI
 
 - OpenAI: track model releases, API changes, pricing, deprecations, custom silicon, and the IPO process (confidential S-1 filed 2026-06-08). Current GPT-5.5 family; GPT-5.6 in limited preview. Last seen 2026-06-26.
-- Anthropic: track model releases, API changes, pricing, deprecations, export-control and access status, and the IPO process (confidential S-1 filed 2026-06-01). Current Sonnet 5 (GA 2026-06-30, model id claude-sonnet-5), Fable 5, Opus 4.8, Haiku 4.5; Mythos 5 via trusted-partner access. Also ships Claude Science (life-sciences research workbench, beta 2026-06-30, macOS/Linux). Last seen 2026-06-30.
+- Anthropic: track model releases, API changes, pricing, deprecations, export-control and access status, and the IPO process (confidential S-1 filed 2026-06-01). Current Sonnet 5 (GA 2026-06-30, model id claude-sonnet-5), Fable 5, Opus 4.8, Haiku 4.5; Mythos 5. US Department of Commerce lifted the Fable 5 and Mythos 5 export controls on 2026-06-30; Anthropic began restoring full global access 2026-07-01 (ends the mid-June foreign-access suspension). Also ships Claude Science (life-sciences workbench, beta 2026-06-30) and Claude Desktop (now on Linux in beta, macOS/Windows/Linux). Last seen 2026-07-01.
 - Google DeepMind: track Gemini model releases, API changes, pricing, and agent/tool features. Current Gemini 3.1 Ultra, Gemini 3.5 Flash; Gemini Image line Nano Banana 2 and Nano Banana 2 Lite (Gemini 3.1 Flash-Lite Image, released 2026-06-30). Last seen 2026-06-30.
 - Anthropic Claude Tag: Claude as a shared Slack teammate (beta for Enterprise and Team). Track GA, permission/data scoping, and rollout beyond Slack. Last seen 2026-06-23.
 - Meta AI: track Llama releases, open-weight licenses, and PyTorch changes. Last seen 2026-06-29.
-- Mistral: French AI lab. Track model releases, OCR/document models, API pricing, and open-weight licenses. Current Mistral OCR 4. Last seen 2026-06-23.
+- Mistral: French AI lab. Track model releases, OCR/document models, API pricing, and open-weight licenses. Current Mistral OCR 4; Leanstral 1.5 (2026-06-30, Lean 4 theorem-proving/autoformalization model, 119B total / 6.5B active MoE, 256K context, free). Last seen 2026-07-01.
 - Hugging Face: track platform changes, open-weight hosting, dataset policies, and the Open R1 reproduction project. Last seen 2026-06-29.
 - Z.ai (Zhipu AI): Chinese AI lab (GLM series). Track model releases, open-weight licenses, and coding/agent capability. Current GLM 5.2 (MIT, 1M context). Last seen 2026-06-18.
 - DeepSeek: Chinese AI lab (DeepSeek-V/R series). Track model releases, open-weight licenses, and inference/serving work (DeepSpec, speculative decoding). Current DeepSeek-V4 Pro. Last seen 2026-06-26.
@@ -55,9 +55,9 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 ## Security
 
 - Akrites (Linux Foundation): cross-industry effort coordinating confidential vulnerability remediation for critical open source in the AI-assisted-discovery era. Track SIRT funding, adopted projects, and embargo governance. Last seen 2026-06-25.
-- CISA KEV, NVD, OSV, GitHub Security Advisories: track active exploitation, ecosystem exposure, patched versions, and mitigations. KEV catalog version 2026.06.29 (count 1630). Last seen 2026-06-30.
+- CISA KEV, NVD, OSV, GitHub Security Advisories: track active exploitation, ecosystem exposure, patched versions, and mitigations. KEV catalog version 2026.06.29 (count 1630). Last seen 2026-07-01.
 - SimpleHelp: remote monitoring and management (RMM) software. Track security advisories (simple-help.com/security); recurring high-value ransomware target. Last seen 2026-06-30.
-- curl: track security releases and the AI-found-report theme; vulnerability handling paused July 2026. Current 8.21.0. Last seen 2026-06-24.
+- curl: track security releases and the AI-found-report theme; vulnerability-report handling pause in effect 2026-07-01 through 2026-08-02 (resumes 2026-08-03). Current 8.21.0. Last seen 2026-07-01.
 - Cisco: track security advisories for Unified CM, Catalyst SD-WAN Manager, and related products (recurring zero-day target). Last seen 2026-06-25.
 - PTC Windchill and FlexPLM: product-lifecycle-management software. Track CVEs and patches. Last seen 2026-06-25.
 - LiteLLM (BerriAI): track CVEs and security advisories. Last seen 2026-06-08.
