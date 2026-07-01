@@ -77,7 +77,7 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 
 ## Apple platforms
 
-- Swift: language and toolchain. Track Swift Evolution proposals, concurrency, releases, and the open-source toolchain. Last seen 2026-06-29.
+- Swift: language and toolchain. Track Swift Evolution proposals, concurrency, releases, and the open-source toolchain. Toolchain releases ship as `swift-X.Y.Z-RELEASE` GitHub tags with an empty release body; verify the current version via swift.org/install and language changes via the repo CHANGELOG. Current stable toolchain 6.3.3 (2026-06-30, bug-fix patch, no language-level changelog entry). Last seen 2026-07-01.
 - Spring Boot and Spring Framework: JVM application framework. Track releases, breaking changes, migration notes, and security advisories. Last seen 2026-06-29.
 
 ## Languages and runtimes

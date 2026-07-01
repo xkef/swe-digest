@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 26
+source_count = 29
 +++
 
 ## Top stories
@@ -116,18 +116,24 @@ No major items found.
 
 ## Apple platforms
 
-No major items found.
+### Swift 6.3.3 toolchain released
+
+- **Category:** Apple
+- **Status:** confirmed
+- **Sources:** [Swift install](https://www.swift.org/install/), [GitHub release](https://github.com/swiftlang/swift/releases/tag/swift-6.3.3-RELEASE)
+- **Summary:** Swift 6.3.3 was tagged on 2026-06-30 as the current stable toolchain, a patch update to the 6.3 line that follows 6.3.2 (2026-06-04). The release publishes updated toolchains for supported platforms and is what the default Swift install now serves. The GitHub release object carries no detailed changelog, and the repository CHANGELOG lists no language-level change specific to 6.3.3, consistent with a bug-fix toolchain patch.
+- **Why it matters:** 6.3.3 is the baseline toolchain for Swift and SwiftUI builds on the 6.3 line, so teams pinning toolchain versions should track the point bump.
 
 ## Linux and kernel
 
-### NixOS 26.05 released
+### NixOS 26.05 "Yarara" released
 
 - **Category:** Linux/Kernel
 - **Status:** confirmed
-- **Sources:** [HN discussion](https://news.ycombinator.com/item?id=48718753)
-- **Summary:** NixOS 26.05 reached the stable channel, the distribution's scheduled release. It surfaced on Hacker News on 2026-06-30 (102 points). Concrete release-note details were not verified against the NixOS release page this run.
-- **Why it matters:** NixOS releases set the toolchain and package baseline for teams that build reproducible declarative systems on Nix.
-- **Follow-up:** Verify the 26.05 release notes against the official NixOS announcement for headline changes and any breaking migration steps.
+- **Sources:** [NixOS announcement](https://nixos.org/blog/announcements/2026/nixos-2605/), [HN discussion](https://news.ycombinator.com/item?id=48718753)
+- **Summary:** NixOS 26.05 "Yarara" was released on 2026-05-30 and resurfaced on Hacker News on 2026-06-30 (102 points). The release makes systemd stage 1 (initrd) the default and deprecates the old scripted initrd implementation. Nixpkgs added 20,442 packages and updated 20,641, and NixOS added 85 modules and 1,547 configuration options; the release gets bugfixes and security updates through 2026-12-31. The prior release 25.11 "Xantusia" reached end of life on 2026-06-30.
+- **Why it matters:** The 25.11 end of life on 2026-06-30 forces teams on Nix to move to 26.05 to keep security updates, and the systemd stage 1 default changes early-boot behavior.
+- **Follow-up:** Watch for regressions reported from the systemd stage 1 default and from the 25.11 to 26.05 migration.
 
 ## Infrastructure
 
@@ -200,7 +206,7 @@ Reddit RSS coverage was degraded from the run environment this run (r/programmin
 - Books and publisher feeds (make books, 21 items across No Starch, Pragmatic, and Springer; no title cleared the advanced or definitive bar)
 - Security advisories (CISA KEV feed, version 2026.06.29 count 1630, no new additions since SimpleHelp on 2026-06-29)
 - Status pages (Anthropic operational with a 15-minute Opus 4.8 elevated-error blip on 2026-06-30; no major incident found)
-- GitHub watchlist releases (no [github] repo published a new stable release after the 2026-06-30 digest; neovim nightly is rolling)
+- GitHub watchlist releases (full sweep of all [github] repos; Swift 6.3.3 toolchain published 2026-06-30 added to Apple platforms; neovim nightly is rolling; no other repo published a new stable release in the window)
 - GitHub trending (daily view; recurring AI-agent and agentic-framework cluster, no new verified emerging item to surface)
 - Engineering blogs (Snowflake engineering, independent authors)
 - YouTube channels (make yt, 11 recent videos across 89 channels; 0 with a Hacker News discussion; none cleared the New videos bar)

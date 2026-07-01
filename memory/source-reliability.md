@@ -58,6 +58,7 @@ Environment-specific 403 blocks and fallbacks have moved to
 - `gcc.gnu.org/gcc-14/` and `gcc.gnu.org/releases.html` - GCC release-series and releases pages are primary; fetched cleanly with release dates and bug-fix-vs-feature classification (used 2026-06-27 to verify GCC 14.4). The pipermail announcement URL guessed from the HN link 404'd; use the releases pages instead.
 - `www.linuxfoundation.org/press/` - Linux Foundation press releases are primary; the canonical slug fetched cleanly (used 2026-06-27 for Akrites). A guessed short slug 404'd; resolve the full slug via search first. `akrites.org` is the project's official site (Linux Foundation legal footer).
 - `blog.lastpass.com/posts/` - LastPass incident blog; fetched 200 from the run environment with full disclosure text. Primary for LastPass breach timelines and scope (used 2026-06-26 for the Klue OAuth supply-chain incident). Threat-actor naming came from SecurityWeek/BleepingComputer, not the LastPass post; attribute accordingly.
+- `nixos.org/blog/announcements/` - NixOS release announcements are primary; the per-release slug (`.../2026/nixos-2605/`) fetched 200 from the run environment with full release-notes highlights (used 2026-07-01 to verify NixOS 26.05 "Yarara", released 2026-05-30, and correct a first-run recency framing error). Note X.05/X.11 numbering is May/November of the year, so a NixOS release can resurface on HN weeks after its actual date; verify the published date against the announcement.
 
 ### Secondary/aggregation sources
 
