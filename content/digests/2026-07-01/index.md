@@ -9,7 +9,7 @@ tags = []
 
 [extra]
 status = "published"
-source_count = 29
+source_count = 36
 +++
 
 ## Top stories
@@ -28,7 +28,7 @@ source_count = 29
 - **Category:** Agentic coding
 - **Status:** discussion
 - **Sources:** [analysis](https://thereallo.dev/blog/claude-code-prompt-steganography), [HN discussion](https://news.ycombinator.com/item?id=48734373)
-- **Summary:** A blog post claiming Claude Code embeds invisible Unicode characters in its requests as a steganographic fingerprint to detect resale and distillation reached the top of Hacker News with 1,429 points and 409 comments. The primary blog remains unreachable from the run environment (HTTP 403), so the specific encoding was not independently verified this run. Anthropic has not commented.
+- **Summary:** A blog post claiming Claude Code embeds invisible Unicode characters in its requests as a steganographic fingerprint to detect resale and distillation reached the top of Hacker News, at 2,086 points and 604 comments by this run. The primary blog remains unreachable from the run environment (HTTP 403), so the specific encoding was not independently verified this run. Anthropic has not commented.
 - **Comments:** HN commenters compare the technique to anti-observation methods in sophisticated malware, question why the obfuscation is so simple (one asked why a hash or bloom filter was not used), and argue it mostly fingerprints normal developers doing unusual but legitimate work. One called it a "cool fingerprinting avenue."
 - **Why it matters:** If confirmed, request marking affects any team routing Claude Code through third-party endpoints or resale paths and raises telemetry and privacy questions for agent users.
 - **Follow-up:** Watch for any Anthropic statement or docs change, independent verification of the exact encoding, and whether marks are forwarded when ANTHROPIC_BASE_URL points at a third-party endpoint.
@@ -102,6 +102,14 @@ No major items found.
 
 ## Developer tools
 
+### Godot bans AI-authored code contributions
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [Godot policy](https://godotengine.org/article/contribution-policy-2026/), [PC Gamer](https://www.pcgamer.com/gaming-industry/open-source-game-engine-godot-will-no-longer-accept-ai-authored-code-contributions-we-cant-trust-heavy-users-of-ai-to-understand-their-code-enough-to-fix-it/), [HN discussion](https://news.ycombinator.com/item?id=48743472)
+- **Summary:** The Godot Foundation amended its contribution guidelines on 2026-06-30 to require that submitted code be human authored. AI assistance is limited to menial tasks such as code completion, regex, and find and replace, and any AI use in authoring code must be disclosed in the pull request discussion. Autonomous AI agents and fully AI-generated ("vibe coded") submissions are barred and already trigger an automatic ban from the GitHub repository, and AI-generated text in maintainer communication is not allowed. The Foundation cited rising AI-generated contribution volume against flat reviewer capacity, the loss of the mentorship value reviewers expect, and that AI cannot take responsibility for the code it produces. A separate change requires contributors with three or fewer merged pull requests to obtain maintainer approval before new features or significant refactors.
+- **Why it matters:** A major open-source engine formalizing a human-authorship requirement sets a governance precedent for how large projects absorb the AI-contribution and maintainer-burden pressure also seen at curl, FFmpeg, and package registries.
+
 ### Xsnow protestware surfaces in Debian
 
 - **Category:** Dev tools
@@ -125,6 +133,14 @@ No major items found.
 - **Why it matters:** 6.3.3 is the baseline toolchain for Swift and SwiftUI builds on the 6.3 line, so teams pinning toolchain versions should track the point bump.
 
 ## Linux and kernel
+
+### Asahi Linux 7.1 adds Apple M3 support and fixes macOS 27 boot
+
+- **Category:** Linux/Kernel
+- **Status:** confirmed
+- **Sources:** [Asahi progress report](https://asahilinux.org/2026/06/progress-report-7-1/), [HN discussion](https://news.ycombinator.com/item?id=48744518)
+- **Summary:** The Asahi Linux 7.1 progress report, published 2026-06-30, describes bring-up on Apple M3 machines: working PCIe, WiFi, Bluetooth, NVMe, keyboard and trackpad drivers, speaker and headphone audio, and CPU frequency switching with big.LITTLE scheduling. It also fixes a regression where macOS 27 updates dropped Asahi from the boot picker, traced to a new Apple firmware requirement for an APFS bootable flag, and an SMC battery-interface change that caused emergency shutdowns. The m1n1 1.6.0 bootloader release requires Rust for its stage 2 build and adds GPU initialization and M3/M4/A18 Pro support, and custom AVD firmware enables V4L2 hardware AVC decode up to 10-bit 4K.
+- **Why it matters:** M3 support and the macOS 27 boot fix are the practical blockers for running Linux on current Apple Silicon laptops, moving the newer hardware toward daily-driver viability.
 
 ### NixOS 26.05 "Yarara" released
 
@@ -166,7 +182,13 @@ No major items found.
 
 ## Markets and companies
 
-No major items found.
+### arXiv spins out of Cornell into an independent nonprofit
+
+- **Category:** Markets
+- **Status:** confirmed
+- **Sources:** [arXiv blog](https://blog.arxiv.org/2026/06/30/arxivs-next-chapter/), [HN discussion](https://news.ycombinator.com/item?id=48741748)
+- **Summary:** arXiv announced that on 2026-07-01, after 25 years hosted within Cornell University, it becomes an independent nonprofit organization. The post states that its mission, its free-to-read and free-to-submit model, and its open-access focus are unchanged, with staff transitions underway for service continuity. Follow-up posts are promised on a new Engineering Director, a 3 million submission milestone, and an AI article policy change.
+- **Why it matters:** arXiv is core infrastructure for the ML and CS research this digest tracks, so its governance and funding independence affects the long-term stability of the preprint pipeline the field depends on.
 
 ## Hacker News
 
@@ -188,7 +210,7 @@ No major items found.
 
 ## Reddit and social pulse
 
-Reddit RSS coverage was degraded from the run environment this run (r/programming returned a single entry, r/rust returned none), consistent with the sustained datacenter-IP block noted since late June. No tracked-person social post cleared the engineering-relevance bar with a verified primary source this run.
+Reddit RSS coverage was degraded from the run environment this run (r/programming, r/rust, and r/golang hot feeds all returned zero entries), consistent with the sustained datacenter-IP block noted since late June. No tracked-person social post cleared the engineering-relevance bar with a verified primary source this run.
 
 ## Watchlist follow-ups
 
@@ -198,15 +220,15 @@ Reddit RSS coverage was degraded from the run environment this run (r/programmin
 
 ## Sources checked
 
-- Hacker News (make hn, full structured coverage via Algolia; 64/72 watchlist queries with hits, 0 degraded collections)
-- Reddit (RSS degraded from the run environment; r/programming and r/rust returned little or nothing)
+- Hacker News (make hn, full structured coverage via Algolia; 64/72 watchlist queries with hits, 0 degraded collections; this run surfaced the Godot AI-policy, Asahi 7.1, and arXiv-independence front-page items)
+- Reddit (RSS degraded from the run environment; r/programming, r/rust, and r/golang hot feeds returned zero entries)
 - AI sources (Anthropic, Mistral, Google Research)
-- ML research and arXiv papers (make papers, 149 items via arXiv API)
+- ML research and arXiv papers (make papers via arXiv API; no new paper cleared the bar this run)
 - Conferences and events (make events, 0 upcoming within the 3-day window, 0 active; ICML 2026 starts 2026-07-06)
 - Books and publisher feeds (make books, 21 items across No Starch, Pragmatic, and Springer; no title cleared the advanced or definitive bar)
-- Security advisories (CISA KEV feed, version 2026.06.29 count 1630, no new additions since SimpleHelp on 2026-06-29)
-- Status pages (Anthropic operational with a 15-minute Opus 4.8 elevated-error blip on 2026-06-30; no major incident found)
-- GitHub watchlist releases (full sweep of all [github] repos; Swift 6.3.3 toolchain published 2026-06-30 added to Apple platforms; neovim nightly is rolling; no other repo published a new stable release in the window)
+- Security advisories (CISA KEV feed re-checked, still version 2026.06.29 count 1630, no new additions since SimpleHelp on 2026-06-29; SimpleHelp CVE-2026-48558 remediation deadline 2026-07-02)
+- Status pages (no major incident found this run; a minor Cloudflare mTLS header-forwarding issue on 2026-06-30 was resolved same day)
+- GitHub watchlist releases (re-swept all [github] repos; Swift 6.3.3 toolchain remains the latest new stable; neovim nightly is rolling; no repo published a new stable release since the earlier run)
 - GitHub trending (daily view; recurring AI-agent and agentic-framework cluster, no new verified emerging item to surface)
 - Engineering blogs (Snowflake engineering, independent authors)
 - YouTube channels (make yt, 11 recent videos across 89 channels; 0 with a Hacker News discussion; none cleared the New videos bar)

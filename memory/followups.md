@@ -17,6 +17,24 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-01: Godot bans AI-authored code contributions
+
+- Status: open
+- Category: Dev tools
+- Sources: [Godot policy](https://godotengine.org/article/contribution-policy-2026/)
+- Watch for: Enforcement and community reaction; whether other large open-source projects adopt similar human-authorship requirements; measurable effect on PR volume and reviewer load; friction from the three-or-fewer-merged-PR feature-approval gate.
+- Last checked: 2026-07-01
+- Notes: Godot Foundation amended contribution guidelines 2026-06-30. All submitted code must be human authored; AI assistance limited to menial tasks (completion, regex, find/replace) and must be disclosed in the PR. Autonomous AI agents and fully AI-generated (vibe-coded) submissions barred and already auto-banned from the GitHub repo; AI-generated text in maintainer communication disallowed. Cited rising AI-contribution volume vs flat reviewer capacity, loss of mentorship value, and that AI cannot take responsibility. Separate change gates new features/significant refactors from contributors with three or fewer merged PRs. HN 48743472 (194 pts). Covered 2026-07-01 Developer tools. Ties to the maintainer-burden theme (curl pause, FFmpeg AI bug reports, AUR).
+
+## 2026-07-01: arXiv becomes an independent nonprofit
+
+- Status: open
+- Category: Markets
+- Sources: [arXiv blog](https://blog.arxiv.org/2026/06/30/arxivs-next-chapter/)
+- Watch for: The promised AI article policy change; new Engineering Director and governance/funding details; any service disruption during the Cornell-to-independent staff transition.
+- Last checked: 2026-07-01
+- Notes: arXiv announced 2026-06-30 that on 2026-07-01, after 25 years within Cornell University, it becomes an independent nonprofit. Mission, free-to-read/free-to-submit model, and open-access focus stated unchanged; staff transitions underway for continuity. Follow-up posts promised on a new Engineering Director, a 3 million submission milestone, and an AI article policy change. HN 48741748 (138 pts). Covered 2026-07-01 Markets and companies.
+
 ## 2026-06-30: Claude Sonnet 5 release and Claude Science launch
 
 - Status: open
