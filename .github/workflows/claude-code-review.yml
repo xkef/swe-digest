@@ -12,11 +12,9 @@ on:
 
 jobs:
   claude-review:
-    # Optional: Filter by PR author
-    # if: |
-    #   github.event.pull_request.user.login == 'external-contributor' ||
-    #   github.event.pull_request.user.login == 'new-developer' ||
-    #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+    # Only review PRs from trusted authors. author_association is a GitHub API
+    # field, so an outsider's PR cannot spend the owner's CLAUDE_CODE_OAUTH_TOKEN.
+    if: contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association)
 
     runs-on: ubuntu-latest
     permissions:
@@ -26,6 +24,10 @@ jobs:
       id-token: write
 
     steps:
+      # Egress monitor in audit mode: records outbound connections per run.
+      - uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
       - name: Checkout repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
