@@ -70,7 +70,8 @@ and in CI. It rejects raw HTML elements, inline event handlers,
 `javascript:` and scripty `data:` URIs (including HTML-entity-encoded
 forms), URL shorteners, and high-signal secret patterns across digests,
 memory, run logs, and snapshots. The site build escapes raw HTML
-independently (`build_stories.neutralize_html`), so the gate and the
+independently (`swe_digest.digest.stories.neutralize_html`), so the gate
+and the
 renderer back each other up.
 
 ### 4. Memory is bounded and schema-checked
