@@ -10,7 +10,7 @@ months = ["2026-07"]
 
 [extra]
 status = "published"
-source_count = 35
+source_count = 38
 +++
 
 ## Top stories
@@ -108,6 +108,15 @@ No major items found.
 - **Summary:** GitHub made Moonshot AI's open-weight Kimi K2.7 Code model generally available in Copilot on 2026-07-01, rolling out to Copilot Pro, Pro+, and Max plans with Business and Enterprise to follow in the coming weeks. The model appears in the Copilot model picker across VS Code, Visual Studio, JetBrains, Xcode, Eclipse, the Copilot CLI, the cloud coding agent, github.com, and GitHub Mobile. For Business and Enterprise it is off by default until an administrator enables the Kimi K2.7 Code policy, and usage bills under Copilot usage-based billing at provider list pricing.
 - **Why it matters:** An open-weight agentic coding model shipping as a first-class Copilot option widens the non-OpenAI, non-Anthropic model choice inside GitHub's default toolchain.
 - **Follow-up:** Watch Business and Enterprise availability and independent agent-harness comparisons against the incumbent Copilot models.
+
+### Senior SWE-Bench scores coding agents on senior-level tasks
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [Senior SWE-Bench](https://senior-swe-bench.snorkel.ai/), [dataset](https://github.com/snorkel-ai/senior-swe-bench-v2026.06), [HN discussion](https://news.ycombinator.com/item?id=48755928)
+- **Summary:** Researchers at Princeton and the University of Wisconsin-Madison with Snorkel AI published Senior SWE-Bench, an open benchmark (dataset `snorkel-ai/senior-swe-bench-v2026.06`) that evaluates coding agents on 50 tasks across more than 15 repositories in Python, TypeScript, Go, Rust, Elixir, and other stacks. Tasks use natural-language instructions rather than fully specified requirements, bug and performance tasks are drawn from pull requests that required runtime investigation from logs and behavioral reports, and a "taste" score combines correctness tests with code-quality metrics derived from each codebase's own conventions. Reported solve rates are Claude Opus 4.8 at 24.0 percent, Claude Sonnet 5 at 19.4 percent, and GPT-5.5 at 16.0 percent, and the authors state frontier models fail senior-level correctness on more than 75 percent of tasks.
+- **Why it matters:** It measures agents on under-specified, investigation-heavy work closer to real senior engineering, and the low solve rates quantify how far current agents remain from autonomous senior-level output.
+- **Follow-up:** Watch for independent reproduction of the solve rates and coverage of additional models. Cursor also published its own CursorBench 3.1 eval the same day (vendor-run).
 
 ## Security
 
@@ -225,7 +234,7 @@ Reddit RSS remained degraded from the run environment: the later-run probe retur
 - ML research and arXiv papers via `make papers` (150 items, arXiv API)
 - Conferences and events via `make events` (0 upcoming in the 3-day window, 0 active; ICML 2026 starts 2026-07-06)
 - Books and publisher feeds via `make books` (21 items across No Starch, Pragmatic, Springer; none cleared the bar)
-- Security advisories (CISA KEV catalog version 2026.07.01 count 1631, MSRC, NVD)
+- Security advisories (CISA KEV catalog version 2026.07.01 count 1631, unchanged on the later-run recheck, no new additions since CVE-2026-45659; MSRC, NVD)
 - Status pages (GitHub, Cloudflare, AWS, Azure, npm quiet; Cloudflare scheduled maintenance only)
 - GitHub watchlist releases (full sweep of every `[github]` repo: jj 0.43.0, Prometheus 3.13.0, Grafana 13.1.0 surfaced; tmux 3.7b and Deno 2.9.1 are bugfix/patch releases below the bar; re-swept this run, no new qualifying release) and `github.com/trending` daily plus language views (recurring AI-agent and agent-sandboxing cluster, no new verified emerging item)
 - Engineering blogs
