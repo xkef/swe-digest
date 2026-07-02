@@ -17,6 +17,51 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-02: SharePoint deserialization RCE CVE-2026-45659 (KEV)
+
+- Status: open
+- Category: Security
+- Sources: [MSRC](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-45659), [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-45659)
+- Watch for: Confirmed RCE chains; ransomware follow-on (KEV lists ransomware use unknown); internet-exposure scans; whether the 2026-07-04 federal deadline slips for on-premises SharePoint.
+- Last checked: 2026-07-02
+- Notes: CWE-502 deserialization of untrusted data in on-prem SharePoint Server Subscription Edition, 2019, and Enterprise 2016. CVSS 8.8, network, low complexity, no user interaction; requires Site Member permissions. Patched May 2026 Patch Tuesday (KB5002863/KB5002870/KB5002868). CISA KEV added 2026-07-01 (catalog 2026.07.01, count 1631) on confirmed active exploitation; federal due 2026-07-04. Covered 2026-07-02 Top stories.
+
+## 2026-07-02: Anthropic redeploys Fable 5 with new jailbreak classifier
+
+- Status: open
+- Category: AI
+- Sources: [Anthropic](https://www.anthropic.com/news/redeploying-fable-5)
+- Watch for: The published cross-industry jailbreak-severity framework (with Amazon, Microsoft, Google); independent testing of the new classifier's 99%+ block claim; whether Mythos 5 access widens past approved US orgs; the post-2026-07-07 usage-credit terms for Fable 5.
+- Last checked: 2026-07-02
+- Notes: Anthropic began restoring Fable 5 globally 2026-07-01 after the US lifted the 2026-06-12 export controls (lifted 2026-06-30). Redeploy ships a new safety classifier said to block the Amazon-reported jailbreak in over 99% of cases; drafting a jailbreak-severity framework with Amazon/Microsoft/Google and other partners. HN 48752030 notes usage terms: through 2026-07-07 up to 50% of a plan's weekly limit on Fable 5, then usage credits; Fable 5 draws down usage faster than Opus 4.8. Covered 2026-07-02 Top stories. Continues the export-control saga (2026-07-01 lead).
+
+## 2026-07-02: Cloudflare Monetization Gateway (x402)
+
+- Status: open
+- Category: Infrastructure
+- Sources: [Cloudflare blog](https://blog.cloudflare.com/monetization-gateway/)
+- Watch for: Adoption beyond crypto-native use; facilitator and settlement details; whether non-stablecoin rails are added; abuse and rate-limit controls; agent uptake of the pay-per-resource pattern.
+- Last checked: 2026-07-02
+- Notes: Announced 2026-07-01. Control plane to charge for any Cloudflare-protected resource (pages, datasets, APIs, MCP tools); payment verification/enforcement at the edge. At launch payments settle in stablecoins over x402 (open pay-over-HTTP protocol on the 402 status code). Per-verb pricing or variable amounts by task complexity. HN 48746914 (251 pts). Covered 2026-07-02 Top stories.
+
+## 2026-07-02: FFmpeg native AAC encoder rework
+
+- Status: open
+- Category: Dev tools
+- Sources: [HydrogenAudio analysis](https://hydrogenaudio.org/index.php/topic,129691.0.html), [HN 48747116](https://news.ycombinator.com/item?id=48747116)
+- Watch for: The encoder landing in a tagged FFmpeg release (not in the released changelog through 9.0); variable-bitrate support; blind listening-test results; fdk-aac replacement adoption.
+- Last checked: 2026-07-02
+- Notes: Rewritten native AAC encoder for FFmpeg drew HN discussion 2026-07-02, framed as headed for a future release. CBR-only currently, optimized for 48kHz. HydrogenAudio analysis reports it scoring above Apple Core Audio in tested CBR metrics; encoder works around a stereo Perceptual Noise Substitution decoder bug. HN: welcomed as fdk-aac replacement, author explained 48kHz/PNS choices, commenters note scoring tools are imperfect proxies and Opus still beats AAC at comparable bitrates. Covered 2026-07-02 Developer tools as discussion.
+
+## 2026-07-02: ZCode GLM-5.2 coding harness
+
+- Status: open
+- Category: Agentic coding
+- Sources: [ZCode](https://zcode.z.ai/en), [HN 48753715](https://news.ycombinator.com/item?id=48753715)
+- Watch for: Independent agent-harness evaluation; permission and data-scoping model for chat-app task triggers; standalone pricing; adoption vs Claude Code and Cursor.
+- Last checked: 2026-07-02
+- Notes: Z.ai (Zhipu) shipped ZCode, its first-party coding harness for GLM-5.2, on 2026-07-02 (macOS/Windows/Linux, no manual endpoint config). "Goals" with plan/execute/verify loops, 1M context, remote task launch from WeChat/Feishu/Telegram; part of the GLM Coding Plan. Vendor claims. HN 48753715 (213 pts). Covered 2026-07-02 Agentic coding as discussion.
+
 ## 2026-07-01: Godot bans AI-authored code contributions
 
 - Status: open

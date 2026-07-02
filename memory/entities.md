@@ -12,7 +12,7 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 - wincent/wincent: personal tooling and dotfiles repository. Track Neovim, command line, and developer-environment changes. Last seen 2026-06-29.
 - Neovim: editor. Track releases, LSP changes, Lua APIs, performance, plugin ecosystem, and breaking changes. Current stable v0.12.3. Last seen 2026-06-10.
 - LazyVim and lazy.nvim: Neovim distribution and plugin manager. Track release notes and migration issues. Last seen 2026-06-29.
-- jj: Jujutsu version control system. Track releases, Git compatibility, workflows, and tooling support. Last seen 2026-06-29.
+- jj: Jujutsu version control system. Track releases, Git compatibility, workflows, and tooling support. Current 0.43.0 (2026-07-02) adds `jj run` (run a command over a set of changes, each with a private working copy) and removes Git-like symbol resolution and the deprecated `git_head()`/`git_refs()` revset/template functions. Last seen 2026-07-02.
 - Homebrew: macOS and Linux package manager. Track brew releases, tap trust model, deprecations, and platform-support timelines. Current 6.0.0. Last seen 2026-06-11.
 - Xcode: Apple IDE. Track agentic coding features, Foundation Models integration, and the Swift toolchain. Current Xcode 27 beta. Last seen 2026-06-08.
 - chezmoi: cross-machine dotfiles manager (twpayne/chezmoi). Track releases, template engine changes, secret-manager integrations, and migration notes. Last seen 2026-06-29.
@@ -28,13 +28,13 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 ## AI
 
 - OpenAI: track model releases, API changes, pricing, deprecations, custom silicon, and the IPO process (confidential S-1 filed 2026-06-08). Current GPT-5.5 family; GPT-5.6 in limited preview. Last seen 2026-06-26.
-- Anthropic: track model releases, API changes, pricing, deprecations, export-control and access status, and the IPO process (confidential S-1 filed 2026-06-01). Current Sonnet 5 (GA 2026-06-30, model id claude-sonnet-5), Fable 5, Opus 4.8, Haiku 4.5; Mythos 5. US Department of Commerce lifted the Fable 5 and Mythos 5 export controls on 2026-06-30; Anthropic began restoring full global access 2026-07-01 (ends the mid-June foreign-access suspension). Also ships Claude Science (life-sciences workbench, beta 2026-06-30) and Claude Desktop (now on Linux in beta, macOS/Windows/Linux). Last seen 2026-07-01.
+- Anthropic: track model releases, API changes, pricing, deprecations, export-control and access status, and the IPO process (confidential S-1 filed 2026-06-01). Current Sonnet 5 (GA 2026-06-30, model id claude-sonnet-5), Fable 5, Opus 4.8, Haiku 4.5; Mythos 5. US Department of Commerce lifted the Fable 5 and Mythos 5 export controls on 2026-06-30; Anthropic redeployed Fable 5 globally 2026-07-01 with a new safety classifier said to block the reported jailbreak in over 99% of cases, and is drafting a cross-industry jailbreak-severity framework with Amazon, Microsoft, and Google (Mythos 5 restored to approved US orgs). Also ships Claude Science (life-sciences workbench, beta 2026-06-30) and Claude Desktop (now on Linux in beta, macOS/Windows/Linux). Last seen 2026-07-02.
 - Google DeepMind: track Gemini model releases, API changes, pricing, and agent/tool features. Current Gemini 3.1 Ultra, Gemini 3.5 Flash; Gemini Image line Nano Banana 2 and Nano Banana 2 Lite (Gemini 3.1 Flash-Lite Image, released 2026-06-30). Last seen 2026-06-30.
 - Anthropic Claude Tag: Claude as a shared Slack teammate (beta for Enterprise and Team). Track GA, permission/data scoping, and rollout beyond Slack. Last seen 2026-06-23.
 - Meta AI: track Llama releases, open-weight licenses, and PyTorch changes. Last seen 2026-06-29.
 - Mistral: French AI lab. Track model releases, OCR/document models, API pricing, and open-weight licenses. Current Mistral OCR 4; Leanstral 1.5 (2026-06-30, Lean 4 theorem-proving/autoformalization model, 119B total / 6.5B active MoE, 256K context, free). Last seen 2026-07-01.
 - Hugging Face: track platform changes, open-weight hosting, dataset policies, and the Open R1 reproduction project. Last seen 2026-06-29.
-- Z.ai (Zhipu AI): Chinese AI lab (GLM series). Track model releases, open-weight licenses, and coding/agent capability. Current GLM 5.2 (MIT, 1M context). Last seen 2026-06-18.
+- Z.ai (Zhipu AI): Chinese AI lab (GLM series). Track model releases, open-weight licenses, and coding/agent capability. Current GLM 5.2 (MIT, 1M context). Shipped ZCode 2026-07-02, a first-party GLM-5.2 coding harness (macOS/Windows/Linux, "Goals" plan/execute/verify loops, remote task launch via WeChat/Feishu/Telegram, part of the GLM Coding Plan). Last seen 2026-07-02.
 - DeepSeek: Chinese AI lab (DeepSeek-V/R series). Track model releases, open-weight licenses, and inference/serving work (DeepSpec, speculative decoding). Current DeepSeek-V4 Pro. Last seen 2026-06-26.
 - Moonshot AI: Chinese AI lab. Track Kimi model releases. Current Kimi K2.7-Code (open-weight agentic coding). Last seen 2026-06-12.
 - NVIDIA: track CUDA releases, driver updates, GPU architecture, inference serving, and developer tools. Last seen 2026-06-29.
@@ -50,20 +50,20 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 ## Infrastructure
 
 - GitHub: track outages, incident write-ups, postmortems, release changes, security advisories, and AI-traffic capacity strain. Last seen 2026-06-12.
-- Cloudflare: track outages, engineering blog posts, Workers, and security advisories. Last seen 2026-06-29.
+- Cloudflare: track outages, engineering blog posts, Workers, and security advisories. Shipped the Monetization Gateway 2026-07-01 (charge for any Cloudflare-protected resource: pages, datasets, APIs, MCP tools; edge-enforced; stablecoin settlement over the x402 pay-over-HTTP protocol). Track x402 adoption and settlement rails. Last seen 2026-07-02.
 - AWS, Azure, Google Cloud, Vercel, Netlify, Fastly, Datadog, Sentry, npm, PyPI, Docker Hub: track outages, incident write-ups, postmortems, release changes, and security advisories. Last seen 2026-06-29.
 
 ## Security
 
 - Akrites (Linux Foundation): cross-industry effort coordinating confidential vulnerability remediation for critical open source in the AI-assisted-discovery era. Track SIRT funding, adopted projects, and embargo governance. Last seen 2026-06-25.
-- CISA KEV, NVD, OSV, GitHub Security Advisories: track active exploitation, ecosystem exposure, patched versions, and mitigations. KEV catalog version 2026.06.29 (count 1630). Last seen 2026-07-01.
+- CISA KEV, NVD, OSV, GitHub Security Advisories: track active exploitation, ecosystem exposure, patched versions, and mitigations. KEV catalog version 2026.07.01 (count 1631; latest add CVE-2026-45659 Microsoft SharePoint Server deserialization RCE, due 2026-07-04). Last seen 2026-07-02.
 - SimpleHelp: remote monitoring and management (RMM) software. Track security advisories (simple-help.com/security); recurring high-value ransomware target. Last seen 2026-06-30.
 - curl: track security releases and the AI-found-report theme; vulnerability-report handling pause in effect 2026-07-01 through 2026-08-02 (resumes 2026-08-03). Current 8.21.0. Last seen 2026-07-01.
 - Cisco: track security advisories for Unified CM, Catalyst SD-WAN Manager, and related products (recurring zero-day target). Last seen 2026-06-25.
 - PTC Windchill and FlexPLM: product-lifecycle-management software. Track CVEs and patches. Last seen 2026-06-25.
 - LiteLLM (BerriAI): track CVEs and security advisories. Last seen 2026-06-08.
 - Check Point: track VPN and gateway security advisories. Last seen 2026-06-08.
-- Microsoft Patch Tuesday: track monthly releases, exploited CVEs, and wormable issues. Last seen 2026-06-12.
+- Microsoft Patch Tuesday: track monthly releases, exploited CVEs, and wormable issues. SharePoint Server deserialization RCE CVE-2026-45659 (CVSS 8.8, patched May 2026 Patch Tuesday) added to CISA KEV 2026-07-01 on confirmed active exploitation. Last seen 2026-07-02.
 - Palo Alto Networks: track PAN-OS and Prisma security advisories. Last seen 2026-06-01.
 - Ubiquiti UniFi OS: network gateway/controller OS. Track security advisories (community.ui.com bulletins). Last seen 2026-06-23.
 - Ivanti Sentry: track CVEs and security advisories. Last seen 2026-06-12.
