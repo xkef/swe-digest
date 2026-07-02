@@ -6,7 +6,7 @@ name: Weekly improvement
 #
 # Same two-job split as daily-digest.yml: the agent job is read-only and the
 # publish job applies the marker commit and issue creation after the
-# deterministic checks in scripts/publish_run.py.
+# deterministic checks in swe_digest.gate.publish_run.
 on:
   schedule:
     - cron: "30 6 * * 0"
@@ -119,10 +119,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          python3 scripts/publish_run.py apply .run/run.patch
+          PYTHONPATH=src python3 -m swe_digest publish apply .run/run.patch
           make check
-          python3 scripts/publish_run.py push
+          PYTHONPATH=src python3 -m swe_digest publish push
       - name: Side effects
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 scripts/publish_run.py side-effects .run/manifest.yaml
+        run: PYTHONPATH=src python3 -m swe_digest publish side-effects .run/manifest.yaml

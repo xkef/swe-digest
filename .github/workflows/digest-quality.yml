@@ -9,7 +9,7 @@ name: Digest quality pass
 # Runs on its own independent cron, NOT chained off daily-digest, sharing the
 # claude-routine concurrency group so the two never run at once. Same two-job
 # split as daily-digest.yml: a read-only agent job and a write-token publish
-# job that applies the commit only after scripts/publish_run.py validation.
+# job that applies the commit only after swe_digest.gate.publish_run validation.
 # Scope is digest/data only; it never edits project files or workflows.
 on:
   schedule:
@@ -126,11 +126,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          python3 scripts/publish_run.py apply .run/run.patch
+          PYTHONPATH=src python3 -m swe_digest publish apply .run/run.patch
           make check
-          python3 scripts/publish_run.py push
+          PYTHONPATH=src python3 -m swe_digest publish push
           gh workflow run pages.yml
       - name: Side effects
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 scripts/publish_run.py side-effects .run/manifest.yaml
+        run: PYTHONPATH=src python3 -m swe_digest publish side-effects .run/manifest.yaml

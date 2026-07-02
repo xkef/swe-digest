@@ -12,7 +12,7 @@ name: Daily digest
 # digest job runs the agent with a read-only token: it commits locally and
 # exports the commits plus a side-effect manifest as an artifact. The publish
 # job holds the write token and applies both only after the deterministic
-# checks in scripts/publish_run.py (commit subjects, path allowlist,
+# checks in swe_digest.gate.publish_run (commit subjects, path allowlist,
 # make check, API-field re-verification of every issue action).
 on:
   schedule:
@@ -130,11 +130,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          python3 scripts/publish_run.py apply .run/run.patch
+          PYTHONPATH=src python3 -m swe_digest publish apply .run/run.patch
           make check
-          python3 scripts/publish_run.py push
+          PYTHONPATH=src python3 -m swe_digest publish push
           gh workflow run pages.yml
       - name: Side effects
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 scripts/publish_run.py side-effects .run/manifest.yaml
+        run: PYTHONPATH=src python3 -m swe_digest publish side-effects .run/manifest.yaml
