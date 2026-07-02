@@ -47,9 +47,14 @@ IMPROVEMENT_FILES = {
     "docs/routine.md",
     "CLAUDE.md",
 }
-COMMENT_LINK_PREFIXES = (SITE, f"https://github.com/{REPO}")
+REPO_URL = f"https://github.com/{REPO}"
 COMMENT_MAX_CHARS = 500
-APPROVAL = re.compile(r"\bapproved?\b", re.I)
+# Approval must lead a line ("approved" / "approve" / "/approve"), so a
+# negation like "this is not approved yet" does not satisfy the gate.
+APPROVAL = re.compile(r"^\s*/?approved?\b", re.I | re.M)
+# Regular file and executable; a symlink (120000) or gitlink (160000) staged at
+# an allowed path could publish the target's bytes (e.g. a persisted token).
+ALLOWED_MODES = {"100644", "100755"}
 DIFF_BLOCK = re.compile(r"```diff\n(.*?)```", re.S)
 URL = re.compile(r"https?://[^\s)\"'<>]+")
 
@@ -101,6 +106,34 @@ def report_new_domains() -> None:
     print(report, end="")
 
 
+def check_paths(entries: list[tuple[str, str]], scope: str) -> None:
+    """Reject a file mode outside {regular, executable} or a path outside the
+    publish allowlist. Each commit is replayed individually on main, so this
+    runs per commit, not only on the cumulative HEAD diff: a file added in one
+    commit and deleted in another never shows in the net diff yet still lands
+    in main's history."""
+    for mode, path in entries:
+        if mode not in ALLOWED_MODES:
+            raise SystemExit(f"disallowed file mode {mode} for {path} ({scope})")
+        if not any(p.match(path) for p in ALLOWED_PATHS):
+            raise SystemExit(f"path outside the publish allowlist: {path} ({scope})")
+
+
+def added_entries(*rev: str) -> list[tuple[str, str]]:
+    """(dst_mode, path) for every added or modified file in a diff range,
+    skipping pure deletions (dst mode 000000)."""
+    entries: list[tuple[str, str]] = []
+    for line in sh("git", "diff", "--raw", *rev).splitlines():
+        if not line.startswith(":"):
+            continue
+        meta, _, path = line.partition("\t")
+        dst_mode = meta[1:].split()[1]
+        if dst_mode == "000000":
+            continue
+        entries.append((dst_mode, path))
+    return entries
+
+
 def apply(patch: str) -> None:
     sh("git", "config", "user.name", "swe-digest-publisher")
     sh("git", "config", "user.email", "actions@users.noreply.github.com")
@@ -111,10 +144,10 @@ def apply(patch: str) -> None:
     for subject in subjects:
         if len(subject) > 72 or not any(p.match(subject) for p in SUBJECTS):
             raise SystemExit(f"commit subject not allowed: {subject!r}")
+    commits = sh("git", "rev-list", "--reverse", "origin/main..HEAD").split()
+    for commit in commits:
+        check_paths(added_entries(f"{commit}^", commit), f"commit {commit[:9]}")
     files = sh("git", "diff", "--name-only", "origin/main..HEAD").split()
-    bad = [f for f in files if not any(p.match(f) for p in ALLOWED_PATHS)]
-    if bad:
-        raise SystemExit(f"paths outside the publish allowlist: {bad}")
     report_new_domains()
     print(f"apply ok ({len(subjects)} commit(s), {len(files)} file(s))")
 
@@ -220,7 +253,12 @@ def check_comment(number: int, comment: str) -> None:
     if len(comment) > COMMENT_MAX_CHARS:
         raise SystemExit(f"comment for #{number} exceeds {COMMENT_MAX_CHARS} chars")
     for url in URL.findall(comment):
-        if not url.startswith(COMMENT_LINK_PREFIXES):
+        allowed = (
+            url.startswith(SITE)
+            or url == REPO_URL
+            or url.startswith(f"{REPO_URL}/")
+        )
+        if not allowed:
             raise SystemExit(f"comment for #{number} links outside the site/repo: {url}")
 
 
@@ -276,6 +314,9 @@ def improvement_pr(number: int) -> None:
     bad = set(files) - IMPROVEMENT_FILES
     if bad or not files:
         raise SystemExit(f"improvement diff touches disallowed files: {sorted(bad)}")
+    for mode, path in added_entries("--cached"):
+        if mode not in ALLOWED_MODES:
+            raise SystemExit(f"improvement diff stages disallowed file mode {mode} for {path}")
     sh("make", "check")
     additions, deletions = parse_changes(
         sh("git", "diff", "--cached", "--name-status", "-z"), working_addition

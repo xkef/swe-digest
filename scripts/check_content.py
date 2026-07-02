@@ -8,6 +8,7 @@ stops the build before it can be published.
 """
 from __future__ import annotations
 
+import html
 import re
 import subprocess
 import sys
@@ -118,7 +119,7 @@ UNSAFE_HTML = [
     (re.compile(r"<\s*img\b", re.I), "raw <img> tag"),
     (re.compile(r"<\s*svg\b", re.I), "raw <svg> tag"),
     (re.compile(r"<\s*(object|embed|link|meta|style|base)\b", re.I), "raw HTML element"),
-    (re.compile(r"\son\w+\s*=", re.I), "inline event handler (on*=)"),
+    (re.compile(r"(?<![A-Za-z])on\w+\s*=", re.I), "inline event handler (on*=)"),
     (re.compile(r"javascript:", re.I), "javascript: URI"),
     (re.compile(r"data:\s*text/html", re.I), "data:text/html URI"),
     (re.compile(r"data:\s*image/svg\+xml", re.I), "data:image/svg+xml URI"),
@@ -183,7 +184,10 @@ def scan_secrets(path: Path, text: str) -> list[str]:
 
 def scan_unsafe(path: Path, text: str) -> list[str]:
     errors = []
-    prose = strip_code(text)
+    # Markdown link destinations decode HTML entities, so a href written as
+    # `&#106;avascript:` becomes a live javascript: URI after the build. Scan
+    # the entity-decoded prose so encoded payloads cannot slip past the gate.
+    prose = html.unescape(strip_code(text))
     for pattern, label in UNSAFE_HTML:
         if pattern.search(prose):
             errors.append(
