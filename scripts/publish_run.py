@@ -36,7 +36,7 @@ SUBJECTS = [
     re.compile(r"^chore: weekly improvement review \d{4}-\d{2}-\d{2}$"),
 ]
 ALLOWED_PATHS = [
-    re.compile(r"^content/digests/\d{4}-\d{2}-\d{2}/index\.md$"),
+    re.compile(r"^content/digests/(\d{4}-\d{2})/\1-\d{2}/index\.md$"),
     re.compile(r"^data/runs/\d{4}-\d{2}-\d{2}\.yaml$"),
     re.compile(r"^data/runs/weekly/\d{4}-\d{2}-\d{2}\.yaml$"),
     re.compile(r"^memory/(followups|entities|source-reliability|access-notes)\.md$"),

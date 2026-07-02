@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Generate per-story pages and the home index from digest markdown.
 
-Authoring stays single-file: each day is one content/digests/DATE/index.md
-with `### Story` sections. This script derives, at build time:
+Authoring stays single-file: each day is one content/digests/MONTH/DATE/index.md
+(month dirs keep content/digests/ bounded) with `### Story` sections. This script derives, at build time:
 
 - One Zola page per story under content/stories/ (path-routed to
   /digests/DATE/<slug>/) so every story has its own page.
@@ -23,6 +23,8 @@ import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
 DIGESTS = ROOT / "content" / "digests"
 STORIES_DIR = ROOT / "content" / "stories"
@@ -33,16 +35,10 @@ RUNS_DIR = ROOT / "data" / "runs"
 
 SKIP_SECTIONS = {"Watchlist follow-ups", "Sources checked"}
 
-# Each home page renders every story on it inline, so pages must stay bounded
-# as the archive grows. A page holds whole recent days until the cumulative
-# story count would exceed this; older days continue on the next page.
-PAGE_MAX_STORIES = 45
-
 FIELD = re.compile(r"^- \*\*(?P<label>[^:*]+):\*\*\s*(?P<value>.*)$")
 SECTION = re.compile(r"^##\s+(?P<title>.+?)\s*$")
 STORY = re.compile(r"^###\s+(?P<title>.+?)\s*$")
 FM_KEY = re.compile(r"^\s*(?P<key>\w+)\s*=\s*(?P<value>.+?)\s*$")
-RUN_GENERATED = re.compile(r"^\s*generated_at:\s*'?(?P<value>[^'\n]+?)'?\s*$", re.MULTILINE)
 
 
 def slugify(text: str) -> str:
@@ -81,25 +77,72 @@ def parse_front_matter(text: str) -> dict[str, str]:
     return out
 
 
-def digest_updated(date: str) -> tuple[str | None, str | None]:
-    """When a digest was last updated, read from its run log's
-    mechanical.generated_at. The run log commits alongside the digest, so this
-    survives the shallow checkout the Pages build uses, unlike git history,
-    and reflects the latest same-day run rather than the global build time.
-
-    Returns the UTC label shown without JS and the ISO instant the client
-    script localizes to the visitor's timezone."""
+def load_run(date: str) -> dict | None:
+    """The day's run log. It commits alongside the digest, so it survives the
+    shallow checkout the Pages build uses, unlike git history, and reflects
+    the latest same-day run rather than the global build time."""
     path = RUNS_DIR / f"{date}.yaml"
     if not path.exists():
-        return None, None
-    match = RUN_GENERATED.search(path.read_text(encoding="utf-8"))
-    if not match:
-        return None, None
+        return None
+    return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+
+def utc_moment(value) -> datetime | None:
     try:
-        moment = datetime.fromisoformat(match.group("value")).astimezone(timezone.utc)
-    except ValueError:
+        return datetime.fromisoformat(str(value)).astimezone(timezone.utc)
+    except (TypeError, ValueError):
+        return None
+
+
+def digest_updated(run: dict | None) -> tuple[str | None, str | None]:
+    """When a digest was last updated, from the run log's
+    mechanical.generated_at. Returns the UTC label shown without JS and the
+    ISO instant the client script localizes to the visitor's timezone."""
+    moment = utc_moment(((run or {}).get("mechanical") or {}).get("generated_at"))
+    if not moment:
         return None, None
     return moment.strftime("%Y-%m-%d %H:%M UTC"), moment.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def run_meta(run: dict | None) -> dict | None:
+    """Compact aggregate facts from the run log for the digest page footer:
+    HN fetch health, watchlist query yield, section coverage, and the domains
+    linked. The full log stays in data/runs/DATE.yaml; raw ids and notes are
+    not surfaced."""
+    if not run:
+        return None
+    mech = run.get("mechanical") or {}
+    hn = mech.get("hn") or {}
+    dig = mech.get("digest") or {}
+    queries = mech.get("query_yield") or {}
+    published = {i for q in queries.values() for i in q.get("published_ids") or []}
+    sections = {
+        name: count
+        for name, count in (dig.get("sections") or {}).items()
+        if name not in SKIP_SECTIONS
+    }
+    fetched = utc_moment(hn.get("fetched_at"))
+    return {
+        "hn_source": hn.get("source", ""),
+        "hn_backends": sorted(set((hn.get("backends") or {}).values())),
+        "hn_degraded": sorted(hn.get("degraded") or []),
+        "hn_fetched": fetched.strftime("%Y-%m-%d %H:%M UTC") if fetched else "",
+        "hn_threads": len(dig.get("hn_ids") or []),
+        "domains": dig.get("domains") or [],
+        "queries_total": len(queries),
+        "queries_matched": sum(1 for q in queries.values() if q.get("matched")),
+        "published_matches": len(published),
+        "query_breakdown": sorted(
+            (
+                {"query": name, "published": len(set(y.get("published_ids") or []))}
+                for name, y in queries.items()
+                if y.get("published_ids")
+            ),
+            key=lambda item: (-item["published"], item["query"].lower()),
+        ),
+        "sections_filled": sum(1 for count in sections.values() if count),
+        "sections_total": len(sections),
+    }
 
 
 def parse_digest(path: Path) -> tuple[str, list[dict]]:
@@ -195,25 +238,6 @@ def public(story: dict) -> dict:
     return {k: v for k, v in story.items() if k != "lines"}
 
 
-def paginate_days(digests: list[dict], max_stories: int) -> list[list[dict]]:
-    """Split days, newest first, into pages of whole days whose cumulative
-    story count stays within max_stories. A page always holds at least one
-    day, even if that one day exceeds the cap."""
-    pages: list[list[dict]] = []
-    current: list[dict] = []
-    total = 0
-    for day in digests:
-        if current and total + day["count"] > max_stories:
-            pages.append(current)
-            current = []
-            total = 0
-        current.append(day)
-        total += day["count"]
-    if current:
-        pages.append(current)
-    return pages or [[]]
-
-
 def write_json(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
@@ -247,10 +271,11 @@ def main() -> int:
 
     digests: list[dict] = []
     all_stories: list[dict] = []
-    for path in sorted(DIGESTS.glob("*/index.md"), reverse=True):
+    for path in sorted(DIGESTS.glob("*/*/index.md"), reverse=True):
         date, stories = parse_digest(path)
         pub = [public(s) for s in stories]
-        updated, updated_at = digest_updated(date)
+        run = load_run(date)
+        updated, updated_at = digest_updated(run)
         write_json(
             DAY_JSON_DIR / f"{date}.json",
             {
@@ -259,6 +284,7 @@ def main() -> int:
                 "updated": updated,
                 "updated_at": updated_at,
                 "sections": group_sections(pub),
+                "run": run_meta(run),
             },
         )
         if not stories:
@@ -275,18 +301,21 @@ def main() -> int:
         )
         all_stories.extend(pub)
 
-    pages = paginate_days(digests, PAGE_MAX_STORIES)
+    # One day per home page, newest first: /page/N/ is the Nth most recent day.
+    pages = [[day] for day in digests] or [[]]
     for number, days in enumerate(pages, start=1):
-        write_json(
-            HOME_JSON_DIR / f"page-{number}.json",
-            {
-                "page": number,
-                "total_pages": len(pages),
-                "digests": days,
-                "total_stories": len(all_stories),
-                "total_days": len(digests),
-            },
-        )
+        payload = {
+            "page": number,
+            "total_pages": len(pages),
+            "digests": days,
+            "total_stories": len(all_stories),
+            "total_days": len(digests),
+        }
+        if number > 1:
+            payload["newer_date"] = pages[number - 2][0]["date"]
+        if number < len(digests):
+            payload["older_date"] = pages[number][0]["date"]
+        write_json(HOME_JSON_DIR / f"page-{number}.json", payload)
         if number > 1:
             write_home_stub(number)
 

@@ -121,7 +121,7 @@ edit `.github/workflows/`.
 Create or update:
 
 ```text
-content/digests/YYYY-MM-DD/index.md
+content/digests/YYYY-MM/YYYY-MM-DD/index.md
 ```
 
 The digest must contain these sections in this order:

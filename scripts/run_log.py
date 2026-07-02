@@ -154,7 +154,7 @@ def query_yield(hn: dict, digest: dict) -> dict:
 def main() -> int:
     date = sys.argv[1] if len(sys.argv) > 1 else today()
 
-    digest_path = DIGESTS / date / "index.md"
+    digest_path = DIGESTS / date[:7] / date / "index.md"
     if not digest_path.exists():
         print(f"error: no digest at {digest_path.relative_to(ROOT)}", file=sys.stderr)
         return 1

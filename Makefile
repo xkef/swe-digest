@@ -84,7 +84,8 @@ fmt-check:
 # Tools install on demand; an unattended run treats a failure here as non-fatal.
 fmt-run:
 	@files="memory/followups.md memory/entities.md memory/source-reliability.md memory/access-notes.md"; \
-	[ -f "content/digests/$(TODAY)/index.md" ] && files="content/digests/$(TODAY)/index.md $$files" || true; \
+	month=$$(echo "$(TODAY)" | cut -c1-7); \
+	[ -f "content/digests/$$month/$(TODAY)/index.md" ] && files="content/digests/$$month/$(TODAY)/index.md $$files" || true; \
 	$(RUMDL) rumdl fmt --no-exclude $$files
 
 new-digest:

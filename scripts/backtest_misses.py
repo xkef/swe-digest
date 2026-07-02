@@ -70,7 +70,7 @@ def main() -> int:
     args = parser.parse_args()
 
     snapshot_path = SNAPSHOT_DIR / f"{args.date}.json"
-    digest_path = DIGESTS / args.date / "index.md"
+    digest_path = DIGESTS / args.date[:7] / args.date / "index.md"
     for path in (snapshot_path, digest_path):
         if not path.exists():
             print(f"error: missing {path.relative_to(ROOT)}", file=sys.stderr)

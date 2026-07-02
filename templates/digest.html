@@ -31,5 +31,53 @@
     </ol>
   </section>
   {% endfor %}
+
+  {% if digest.run %}
+  <footer class="run-meta">
+    <h2>Run data</h2>
+    <ul class="run-stats">
+      {% if digest.run.queries_total %}
+      <li class="run-stat">
+        <span class="run-stat-value">{{ digest.run.queries_matched }} <small>of {{ digest.run.queries_total }}</small></span>
+        <span class="run-stat-label">Queries matched</span>
+      </li>
+      <li class="run-stat">
+        <span class="run-stat-value">{{ digest.run.published_matches }}</span>
+        <span class="run-stat-label">Matched items published</span>
+      </li>
+      {% endif %}
+      <li class="run-stat">
+        <span class="run-stat-value">{{ digest.run.hn_threads }}</span>
+        <span class="run-stat-label">HN threads linked</span>
+      </li>
+      {% if digest.run.sections_total %}
+      <li class="run-stat">
+        <span class="run-stat-value">{{ digest.run.sections_filled }} <small>of {{ digest.run.sections_total }}</small></span>
+        <span class="run-stat-label">Sections with items</span>
+      </li>
+      {% endif %}
+    </ul>
+    <dl class="run-facts">
+      {% if digest.run.hn_backends %}
+      <dt>Hacker News fetch</dt>
+      <dd>{{ digest.run.hn_backends | join(sep=", ") }}{% if digest.run.hn_source %} ({{ digest.run.hn_source }}){% endif %}{% if digest.run.hn_fetched %}, fetched {{ digest.run.hn_fetched }}{% endif %}{% if digest.run.hn_degraded %}, degraded: {{ digest.run.hn_degraded | join(sep=", ") }}{% else %}, no degraded collections{% endif %}</dd>
+      {% endif %}
+      {% if digest.run.query_breakdown %}
+      <dt>Published from queries</dt>
+      <dd>{% for item in digest.run.query_breakdown %}{{ item.query }}{% if item.published > 1 %} ({{ item.published }}){% endif %}{% if not loop.last %}, {% endif %}{% endfor %}</dd>
+      {% endif %}
+      {% if digest.run.domains %}
+      <dt>Domains linked</dt>
+      <dd>
+        <details class="run-domains">
+          <summary>{{ digest.run.domains | length }} domains</summary>
+          {{ digest.run.domains | join(sep=", ") }}
+        </details>
+      </dd>
+      {% endif %}
+    </dl>
+    <p class="meta"><a rel="nofollow" href="{{ config.extra.repository | safe }}/blob/main/data/runs/{{ day }}.yaml">Full run log</a></p>
+  </footer>
+  {% endif %}
 </article>
 {% endblock content %}

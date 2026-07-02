@@ -53,6 +53,8 @@ def front_matter(day: date) -> str:
     return f"""+++
 title = "{iso} digest"
 date = {iso}
+path = "digests/{iso}"
+template = "digest.html"
 description = "Daily software engineering digest for {iso}."
 
 [taxonomies]
@@ -81,7 +83,7 @@ def body() -> str:
 
 def main() -> int:
     day = parse_day(sys.argv[1] if len(sys.argv) > 1 else None)
-    target = ROOT / "content" / "digests" / day.isoformat() / "index.md"
+    target = ROOT / "content" / "digests" / day.strftime("%Y-%m") / day.isoformat() / "index.md"
     if target.exists():
         print(f"exists: {target.relative_to(ROOT)}")
         return 0

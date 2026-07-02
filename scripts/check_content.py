@@ -225,13 +225,15 @@ def check_private_context() -> list[str]:
 
 
 def main() -> int:
-    files = sorted(DIGESTS.glob("*/index.md"))
+    files = sorted(DIGESTS.glob("*/*/index.md"))
     if not files:
         print("no digests found", file=sys.stderr)
         return 1
 
     errors: list[str] = []
     for path in files:
+        if path.parent.parent.name != path.parent.name[:7]:
+            errors.append(f"{path}: digest must live in its year-month directory")
         errors.extend(check_digest(path))
     for path in sorted(MEMORY.glob("*.md")):
         errors.extend(scan_unsafe(path, path.read_text(encoding="utf-8")))

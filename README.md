@@ -44,7 +44,7 @@ make check-content # validates digest structure with python only (no mise/Zola)
 
 Local preview runs at `http://127.0.0.1:3000`.
 
-Digests stay single-file: each day is one `content/digests/DATE/index.md`
+Digests stay single-file: each day is one `content/digests/MONTH/DATE/index.md`
 with `### Story` sections. `make build` runs `scripts/build_stories.py`, which
 derives generated, uncommitted outputs from those files:
 
@@ -69,7 +69,7 @@ Then follow `CLAUDE.md`. It points to `docs/routine.md`, `data/watchlist.toml`, 
 
 ## Site structure
 
-- `content/digests/`: dated public digests.
+- `content/digests/`: dated public digests, grouped by `YYYY-MM/`.
 - `CLAUDE.md`: canonical agent routine.
 - `AGENTS.md`: pointer for non-Claude agents.
 - `docs/routine.md`: detailed daily collection and writing process.

@@ -45,19 +45,19 @@
   <p class="story-empty" id="story-empty" hidden>No stories match these filters.</p>
   <button type="button" class="search-more" id="search-more" hidden>Load more results</button>
   {% if index.total_pages > 1 %}
-  <nav class="pagination" aria-label="Pagination">
-    {% if index.page > 1 %}
+  <nav class="pagination" aria-label="Archive days">
+    {% if index.newer_date %}
     {% if index.page == 2 %}
-    <a href="{{ config.base_url | safe }}/">Newer</a>
+    <a href="{{ config.base_url | safe }}/">Newer: {{ index.newer_date }}</a>
     {% else %}
     {% set prev = index.page - 1 %}
-    <a href="{{ get_url(path='/page/' ~ prev ~ '/', trailing_slash=true) | safe }}">Newer</a>
+    <a href="{{ get_url(path='/page/' ~ prev ~ '/', trailing_slash=true) | safe }}">Newer: {{ index.newer_date }}</a>
     {% endif %}
     {% endif %}
-    <span>Page {{ index.page }} of {{ index.total_pages }}</span>
-    {% if index.page < index.total_pages %}
+    <span>day {{ index.page }} of {{ index.total_days }}</span>
+    {% if index.older_date %}
     {% set next = index.page + 1 %}
-    <a href="{{ get_url(path='/page/' ~ next ~ '/', trailing_slash=true) | safe }}">Older</a>
+    <a href="{{ get_url(path='/page/' ~ next ~ '/', trailing_slash=true) | safe }}">Older: {{ index.older_date }}</a>
     {% endif %}
   </nav>
   {% endif %}
