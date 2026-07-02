@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
 """Generate per-story pages and the home index from digest markdown.
 
 Authoring stays single-file: each day is one content/digests/MONTH/DATE/index.md
-(month dirs keep content/digests/ bounded) with `### Story` sections. This script derives, at build time:
+(month dirs keep content/digests/ bounded) with `### Story` sections. This
+module derives, at build time:
 
 - One Zola page per story under content/stories/ (path-routed to
   /digests/DATE/<slug>/) so every story has its own page.
@@ -15,17 +15,19 @@ story pages after `zola build` (see the Makefile build target).
 
 All outputs are generated, gitignored, and rebuilt by `make build`.
 """
+
 from __future__ import annotations
 
 import json
 import re
 import shutil
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parents[1]
+from swe_digest.paths import ROOT
+
 DIGESTS = ROOT / "content" / "digests"
 STORIES_DIR = ROOT / "content" / "stories"
 HOME_PAGES_DIR = ROOT / "content" / "home"
@@ -84,12 +86,13 @@ def load_run(date: str) -> dict | None:
     path = RUNS_DIR / f"{date}.yaml"
     if not path.exists():
         return None
-    return yaml.safe_load(path.read_text(encoding="utf-8"))
+    run: dict | None = yaml.safe_load(path.read_text(encoding="utf-8"))
+    return run
 
 
-def utc_moment(value) -> datetime | None:
+def utc_moment(value: object) -> datetime | None:
     try:
-        return datetime.fromisoformat(str(value)).astimezone(timezone.utc)
+        return datetime.fromisoformat(str(value)).astimezone(UTC)
     except (TypeError, ValueError):
         return None
 
@@ -323,7 +326,3 @@ def main() -> int:
         f"{len(pages)} home pages)"
     )
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

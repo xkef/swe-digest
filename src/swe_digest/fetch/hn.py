@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Fetch Hacker News stories for the daily digest.
 
 Collects the front page, top stories from the last 24 hours, Ask HN,
@@ -8,6 +7,7 @@ hnrss.org, then the committed data/hn snapshot from the hn-snapshot
 workflow) and exits nonzero when any collection is degraded, so the
 routine never silently falls back to web search.
 """
+
 from __future__ import annotations
 
 import json
@@ -15,72 +15,44 @@ import re
 import sys
 import time
 import tomllib
-import urllib.error
 import urllib.parse
-import urllib.request
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from html import unescape
-from pathlib import Path
+from typing import Any
 from xml.etree import ElementTree
 
-ROOT = Path(__file__).resolve().parents[1]
+from swe_digest import config, sources
+from swe_digest.http import fetch_bytes, fetch_json
+from swe_digest.paths import ROOT, WATCHLIST
+from swe_digest.sources import FETCH_ERRORS, collect
+
 CACHE_DIR = ROOT / ".cache" / "hn"
 SNAPSHOT_DIR = ROOT / "data" / "hn"
-WATCHLIST = ROOT / "data" / "watchlist.toml"
 
 ALGOLIA = "https://hn.algolia.com/api/v1"
 FIREBASE = "https://hacker-news.firebaseio.com/v0"
 HNAPI = "https://api.hackerwebapp.com"
 HNPWA = "https://api.hnpwa.com/v0"
-USER_AGENT = "swe-digest-fetcher/1.0 (daily digest collection script)"
-TIMEOUT = 15
-RETRIES = 2
-MAX_BYTES = 8 * 1024 * 1024
-WINDOW_SECONDS = 24 * 3600
-QUERY_CORPUS_NEW_IDS = 300
-SNAPSHOT_MAX_AGE_HOURS = 12
-COMMENT_STORIES = 12
-COMMENTS_PER_STORY = 5
-COMMENT_MAX_CHARS = 1200
-
-# A backend failure surfaces as any of these: network (RuntimeError from
-# fetch_bytes/fetch_json), malformed JSON/XML (ValueError/ParseError), or a
-# missing/wrong-typed field in the response (KeyError/TypeError).
-FETCH_ERRORS = (RuntimeError, ValueError, KeyError, TypeError, ElementTree.ParseError)
+WINDOW_SECONDS = config.HN_WINDOW_SECONDS
+QUERY_CORPUS_NEW_IDS = config.HN_QUERY_CORPUS_NEW_IDS
+SNAPSHOT_MAX_AGE_HOURS = config.HN_SNAPSHOT_MAX_AGE_HOURS
+COMMENT_STORIES = config.HN_COMMENT_STORIES
+COMMENTS_PER_STORY = config.HN_COMMENTS_PER_STORY
+COMMENT_MAX_CHARS = config.HN_COMMENT_MAX_CHARS
 
 
-def fetch_bytes(url: str) -> bytes:
-    last_error: Exception | None = None
-    for attempt in range(RETRIES):
-        try:
-            request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-            with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
-                data = response.read(MAX_BYTES + 1)
-                if len(data) > MAX_BYTES:
-                    raise RuntimeError(f"response exceeds {MAX_BYTES} bytes: {url}")
-                return data
-        except (urllib.error.URLError, TimeoutError, OSError) as error:
-            last_error = error
-            time.sleep(1 + attempt)
-    raise RuntimeError(f"fetch failed: {url}: {last_error}")
-
-
-def fetch_json(url: str):
-    try:
-        return json.loads(fetch_bytes(url))
-    except json.JSONDecodeError as error:
-        raise RuntimeError(f"invalid JSON from {url}: {error}") from error
-
-
-def make_story(item_id, title, url, points, comments, created_at_i):
+def make_story(
+    item_id: int | str,
+    title: str,
+    url: str | None,
+    points: int | None,
+    comments: int | None,
+    created_at_i: int | None,
+) -> dict[str, Any]:
     item_id = int(item_id)
     hn_url = f"https://news.ycombinator.com/item?id={item_id}"
-    created = (
-        datetime.fromtimestamp(created_at_i, tz=timezone.utc).isoformat()
-        if created_at_i
-        else None
-    )
+    created = datetime.fromtimestamp(created_at_i, tz=UTC).isoformat() if created_at_i else None
     return {
         "id": item_id,
         "title": title,
@@ -164,7 +136,7 @@ def mirror_stories(url: str) -> list[dict]:
 
 
 def mirror_window(urls: list[str], since: int) -> list[dict]:
-    cutoff = datetime.fromtimestamp(since, tz=timezone.utc).isoformat()
+    cutoff = datetime.fromtimestamp(since, tz=UTC).isoformat()
     seen: dict[int, dict] = {}
     for url in urls:
         for story in mirror_stories(url):
@@ -242,7 +214,7 @@ def algolia_comments(stories: list[dict]) -> dict:
         except RuntimeError as error:
             print(f"warn: comments: algolia item {story['id']}: {error}", file=sys.stderr)
             continue
-        comments = []
+        comments: list[dict[str, Any]] = []
         for child in tree.get("children", []):
             if len(comments) >= COMMENTS_PER_STORY:
                 break
@@ -268,7 +240,7 @@ def firebase_comments(stories: list[dict]) -> dict:
             item = fetch_json(f"{FIREBASE}/item/{story['id']}.json")
         except RuntimeError:
             return story, []
-        comments = []
+        comments: list[dict[str, Any]] = []
         for kid_id in (item or {}).get("kids", [])[: COMMENTS_PER_STORY * 2]:
             if len(comments) >= COMMENTS_PER_STORY:
                 break
@@ -303,48 +275,23 @@ def firebase_comments(stories: list[dict]) -> dict:
     return results
 
 
-def load_snapshot() -> dict:
-    """Committed snapshot from the hn-snapshot workflow (data/hn/). Last
-    resort for environments where every network backend is blocked."""
-    paths = sorted(SNAPSHOT_DIR.glob("*.json"))
-    if not paths:
-        raise RuntimeError("no committed snapshot in data/hn")
-    data = json.loads(paths[-1].read_text())
-    fetched = datetime.fromisoformat(data["fetched_at"])
-    age_hours = (datetime.now(timezone.utc) - fetched).total_seconds() / 3600
-    if age_hours > SNAPSHOT_MAX_AGE_HOURS:
-        raise RuntimeError(
-            f"snapshot {paths[-1].name} is {age_hours:.1f}h old"
-            f" (max {SNAPSHOT_MAX_AGE_HOURS}h)"
-        )
-    return data
+def load_snapshot() -> dict[str, Any]:
+    return sources.load_snapshot(SNAPSHOT_DIR, SNAPSHOT_MAX_AGE_HOURS)
 
 
-def snapshot_collection(name: str):
-    collection = load_snapshot()["collections"].get(name)
-    if not collection or not collection["items"]:
-        raise RuntimeError(f"snapshot has no {name} items")
-    return collection["items"]
+def snapshot_collection(name: str) -> Any:
+    return sources.snapshot_collection(SNAPSHOT_DIR, SNAPSHOT_MAX_AGE_HOURS, name)
 
 
-def collect(label: str, backends, failures: list[str]):
-    # A bad backend degrades to the next one and finally to the snapshot,
-    # instead of killing the whole run. See FETCH_ERRORS.
-    for backend_name, backend in backends:
-        try:
-            stories = backend()
-            return {"backend": backend_name, "items": stories}
-        except FETCH_ERRORS as error:
-            print(f"warn: {label}: {backend_name}: {error}", file=sys.stderr)
-    failures.append(label)
-    return {"backend": None, "items": []}
-
-
-def match_queries(queries: list[str], corpus: list[dict], since: int) -> dict:
-    cutoff = datetime.fromtimestamp(since, tz=timezone.utc).isoformat()
+def match_queries(
+    queries: list[str], corpus: list[dict[str, Any]], since: int
+) -> dict[str, list[dict[str, Any]]]:
+    cutoff = datetime.fromtimestamp(since, tz=UTC).isoformat()
     results = {}
     for query in queries:
-        pattern = re.compile(rf"\b{re.escape(query)}\b", re.IGNORECASE)
+        # Lookarounds instead of \b: a query ending in a non-word char
+        # ("C++", "C#") has no word boundary at its edge, so \b never matches.
+        pattern = re.compile(rf"(?<!\w){re.escape(query)}(?!\w)", re.IGNORECASE)
         results[query] = [
             story
             for story in corpus
@@ -394,21 +341,16 @@ def main() -> int:
                     story
                     for story in firebase_list("beststories", 100)
                     if story["created_at"] is None
-                    or story["created_at"]
-                    >= datetime.fromtimestamp(since, tz=timezone.utc).isoformat()
+                    or story["created_at"] >= datetime.fromtimestamp(since, tz=UTC).isoformat()
                 ],
             ),
             (
                 "hnapi-mirror",
-                lambda: mirror_window(
-                    [f"{HNAPI}/news?page=1", f"{HNAPI}/news?page=2"], since
-                ),
+                lambda: mirror_window([f"{HNAPI}/news?page=1", f"{HNAPI}/news?page=2"], since),
             ),
             (
                 "hnpwa-mirror",
-                lambda: mirror_window(
-                    [f"{HNPWA}/news/1.json", f"{HNPWA}/news/2.json"], since
-                ),
+                lambda: mirror_window([f"{HNPWA}/news/1.json", f"{HNPWA}/news/2.json"], since),
             ),
             ("repo-snapshot", lambda: snapshot_collection("top_day")),
         ],
@@ -490,9 +432,7 @@ def main() -> int:
         try:
             snapshot_queries = load_snapshot()["collections"]["queries"]
             if snapshot_queries["backend"] != "algolia":
-                raise RuntimeError(
-                    f"snapshot queries came from {snapshot_queries['backend']}"
-                )
+                raise RuntimeError(f"snapshot queries came from {snapshot_queries['backend']}")
             missing = [q for q in queries if q not in snapshot_queries["items"]]
             if missing:
                 raise RuntimeError(f"snapshot missing queries: {missing[:3]}")
@@ -522,15 +462,13 @@ def main() -> int:
                     )
             if corpus:
                 query_results = match_queries(queries, list(corpus.values()), since)
-                failures.append(
-                    "queries (title-match fallback, Algolia search unavailable)"
-                )
+                failures.append("queries (title-match fallback, Algolia search unavailable)")
             else:
                 query_results = {}
                 failures.append("queries")
 
-    result = {
-        "fetched_at": datetime.fromtimestamp(now, tz=timezone.utc).isoformat(),
+    result: dict[str, Any] = {
+        "fetched_at": datetime.fromtimestamp(now, tz=UTC).isoformat(),
         "window_hours": WINDOW_SECONDS // 3600,
         "degraded": failures,
         "collections": {
@@ -544,7 +482,7 @@ def main() -> int:
     }
 
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    day = datetime.fromtimestamp(now, tz=timezone.utc).strftime("%Y-%m-%d")
+    day = datetime.fromtimestamp(now, tz=UTC).strftime("%Y-%m-%d")
     output_path = CACHE_DIR / f"{day}.json"
     output_path.write_text(json.dumps(result, indent=2) + "\n")
 
@@ -561,9 +499,7 @@ def main() -> int:
     print(f"queries: {query_hits}/{len(queries)} terms with hits via {query_backend}")
     print(f"wrote {output_path.relative_to(ROOT)}")
 
-    ranked = sorted(
-        front_page["items"], key=lambda story: story["points"] or 0, reverse=True
-    )
+    ranked = sorted(front_page["items"], key=lambda story: story["points"] or 0, reverse=True)
     for story in ranked[:15]:
         points = story["points"] if story["points"] is not None else "?"
         cmt = story["comments"] if story["comments"] is not None else "?"
@@ -578,7 +514,3 @@ def main() -> int:
         )
         return 1
     return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())

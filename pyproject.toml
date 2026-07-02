@@ -1,0 +1,75 @@
+[project]
+name = "swe-digest"
+version = "1.0.0"
+description = "Collection, validation, and publishing code for the daily software engineering digest"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+dependencies = [
+  "pyyaml>=6.0.2",
+]
+
+[project.scripts]
+swe-digest = "swe_digest.cli:main"
+
+[project.urls]
+Repository = "https://github.com/xkef/swe-digest"
+Site = "https://xkef.github.io/swe-digest/"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3",
+  "pytest-cov>=6.0",
+  "mypy>=1.14",
+  "ruff>=0.9",
+  "types-pyyaml>=6.0.2",
+]
+
+[build-system]
+requires = ["uv_build>=0.11,<0.12"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint.per-file-ignores]
+# The digest story template must stay a single literal line.
+"src/swe_digest/digest/new.py" = ["E501"]
+
+[tool.ruff.lint]
+select = [
+  "E", # pycodestyle errors
+  "W", # pycodestyle warnings
+  "F", # pyflakes
+  "I", # isort
+  "UP", # pyupgrade
+  "B", # bugbear
+  "SIM", # simplify
+  "RUF", # ruff-specific
+]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+# The fetchers traffic in untrusted JSON/XML blobs; Any is inherent there.
+# warn_return_any stays on so typed modules cannot leak Any silently.
+disallow_any_generics = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=swe_digest --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["swe_digest"]
+
+[tool.coverage.report]
+# The gates are the security boundary; hold them to a high bar. Fetchers are
+# network code exercised by every scheduled run and excluded from the floor.
+include = [
+  "*/swe_digest/gate/*",
+  "*/swe_digest/snapshot/merge.py",
+]
+fail_under = 85

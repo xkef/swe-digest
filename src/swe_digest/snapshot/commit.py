@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Commit the staged changes onto the default branch with a Verified signature.
 
 Sends the staged index through the GraphQL `createCommitOnBranch` mutation, so
@@ -11,6 +10,7 @@ Usage: commit_snapshot.py "commit headline"
 Reads additions and deletions from the git index, so stage the intended files
 with `git add` / `git rm` first. Exits 0 with a message when nothing is staged.
 """
+
 from __future__ import annotations
 
 import base64
@@ -20,8 +20,10 @@ import subprocess
 import sys
 import time
 
-BRANCH = "main"
-RETRIES = 4
+from swe_digest import config
+
+BRANCH = config.BRANCH
+RETRIES = config.COMMIT_RETRIES
 MUTATION = """
 mutation($input: CreateCommitOnBranchInput!) {
   createCommitOnBranch(input: $input) {
@@ -104,10 +106,7 @@ def create_commit(repo: str, headline: str, additions: list[dict], deletions: li
     return True
 
 
-def main() -> int:
-    if len(sys.argv) != 2:
-        print("usage: commit_snapshot.py 'commit headline'", file=sys.stderr)
-        return 2
+def main(headline: str) -> int:
     repo = os.environ.get("GITHUB_REPOSITORY")
     if not repo:
         print("GITHUB_REPOSITORY is not set", file=sys.stderr)
@@ -122,13 +121,9 @@ def main() -> int:
     delete_changes = [{"path": path} for path in deletions]
 
     for attempt in range(RETRIES):
-        if create_commit(repo, sys.argv[1], additions, delete_changes):
+        if create_commit(repo, headline, additions, delete_changes):
             return 0
         # A concurrent push moved HEAD; re-read the oid and retry.
         time.sleep(2 + attempt * 2)
     print("createCommitOnBranch failed after retries", file=sys.stderr)
     return 1
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

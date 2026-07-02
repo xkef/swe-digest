@@ -4,42 +4,58 @@ MISE       = mise
 ZOLA       = $(MISE) exec -- zola
 DPRINT     = $(MISE) exec dprint@0.54.0 --
 RUMDL      = $(MISE) exec rumdl@0.2.9 --
+UV         = $(MISE) exec -- uv
+# Install-free invocation: works with only python3 + PyYAML, so the scheduled
+# workflows and the publish job never need a package install.
+PY         = PYTHONPATH=src python3 -m swe_digest
 DIST       = dist
 TODAY      = $(shell date -u +%Y-%m-%d)
 RELEASE    = $(if $(GITHUB_SHA),$(shell git rev-parse --short HEAD 2>/dev/null || echo dev),$(shell git describe --tags --always 2>/dev/null || echo dev))
 BUILD_DATE = $(shell date -u +%Y-%m-%dT%H:%MZ)
 
-.PHONY: build serve check check-content fmt fmt-check fmt-run stories clean new-digest hn yt events papers books run-log backtest yield
+.PHONY: build serve check check-content fmt fmt-check fmt-run stories clean new-digest hn yt events papers books run-log backtest yield test lint typecheck
 
 stories:
-	@python3 scripts/build_stories.py
+	@$(PY) build-stories
 
 hn:
-	@python3 scripts/fetch_hn.py
+	@$(PY) fetch hn
 
 yt:
-	@python3 scripts/fetch_youtube.py
+	@$(PY) fetch youtube
 
 events:
-	@python3 scripts/fetch_events.py
+	@$(PY) fetch events
 
 papers:
-	@python3 scripts/fetch_papers.py
+	@$(PY) fetch papers
 
 books:
-	@python3 scripts/fetch_books.py
+	@$(PY) fetch books
 
 run-log:
-	@python3 scripts/run_log.py
+	@$(PY) run-log
 
 backtest:
-	@python3 scripts/backtest_misses.py
+	@$(PY) backtest
 
 yield:
-	@python3 scripts/yield_stats.py
+	@$(PY) yield
+
+# Developer/CI checks for the Python package itself. Not part of `check`, so
+# the publish gate stays runnable with only python3 + PyYAML.
+test:
+	@$(UV) run pytest
+
+lint:
+	@$(UV) run ruff check .
+	@$(UV) run ruff format --check .
+
+typecheck:
+	@$(UV) run mypy
 
 build: stories
-	@python3 scripts/check_content.py
+	@$(PY) check-content
 	@command -v $(MISE) >/dev/null || { echo "mise not found"; exit 1; }
 	@rm -rf $(DIST)
 	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) build --output-dir $(DIST)
@@ -64,7 +80,7 @@ check: build
 	@echo "check ok"
 
 check-content:
-	@python3 scripts/check_content.py
+	@$(PY) check-content
 
 # Formatting is owner-side and intentionally not part of `check` or CI, so
 # unattended digest runs are never gated on it. dprint owns TOML/JSON; rumdl
@@ -89,7 +105,7 @@ fmt-run:
 	$(RUMDL) rumdl fmt --no-exclude $$files
 
 new-digest:
-	@python3 scripts/new_digest.py $(TODAY)
+	@$(PY) new-digest $(TODAY)
 
 clean:
 	@rm -rf $(DIST) public

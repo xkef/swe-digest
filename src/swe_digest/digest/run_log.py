@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Write the machine-readable run log for one digest day.
 
 Produces data/runs/YYYY-MM-DD.yaml from the day's HN fetch
@@ -10,6 +9,7 @@ idempotently; everything else in the file, including the agent's
 the durable evidence store for the weekly improvement routine, since
 data/hn/ snapshots are pruned to seven days and .cache/ is gitignored.
 """
+
 from __future__ import annotations
 
 import json
@@ -17,13 +17,16 @@ import re
 import sys
 import tomllib
 import urllib.parse
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 import yaml
 
+from swe_digest.paths import ROOT, WATCHLIST
 
-def _represent_str(dumper, data):
+
+def _represent_str(dumper: yaml.SafeDumper, data: str) -> yaml.Node:
     """Emit multiline strings as literal `|` blocks and long single lines as
     folded `>` blocks, so run-log notes read as wrapped prose instead of one
     long quoted line."""
@@ -38,12 +41,10 @@ def _represent_str(dumper, data):
 
 yaml.add_representer(str, _represent_str, Dumper=yaml.SafeDumper)
 
-ROOT = Path(__file__).resolve().parents[1]
 CACHE_DIR = ROOT / ".cache" / "hn"
 SNAPSHOT_DIR = ROOT / "data" / "hn"
 RUNS_DIR = ROOT / "data" / "runs"
 DIGESTS = ROOT / "content" / "digests"
-WATCHLIST = ROOT / "data" / "watchlist.toml"
 
 STORY_COLLECTIONS = ["front_page", "top_day", "ask_hn", "show_hn"]
 
@@ -54,7 +55,7 @@ STORY = re.compile(r"^###\s+(.+?)\s*$")
 
 
 def today() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    return datetime.now(UTC).strftime("%Y-%m-%d")
 
 
 def normalize_url(url: str) -> str:
@@ -64,8 +65,10 @@ def normalize_url(url: str) -> str:
 
 
 def load_hn(date: str) -> tuple[dict, str] | None:
-    for path, source in ((CACHE_DIR / f"{date}.json", "cache"),
-                         (SNAPSHOT_DIR / f"{date}.json", "snapshot")):
+    for path, source in (
+        (CACHE_DIR / f"{date}.json", "cache"),
+        (SNAPSHOT_DIR / f"{date}.json", "snapshot"),
+    ):
         if path.exists():
             return json.loads(path.read_text(encoding="utf-8")), source
     return None
@@ -84,7 +87,7 @@ def parse_digest(text: str) -> dict:
     if text.startswith("+++"):
         end = text.find("\n+++", 3)
         if end != -1:
-            front, body = text[3:end], text[end + 4:]
+            front, body = text[3:end], text[end + 4 :]
 
     count_match = re.search(r"^\s*source_count\s*=\s*(\d+)", front, re.MULTILINE)
     sections: dict[str, int] = {}
@@ -122,8 +125,9 @@ def save_run_log(date: str, record: dict) -> Path:
     RUNS_DIR.mkdir(parents=True, exist_ok=True)
     path = RUNS_DIR / f"{date}.yaml"
     path.write_text(
-        yaml.safe_dump(record, sort_keys=False, default_flow_style=False,
-                       allow_unicode=True, width=80),
+        yaml.safe_dump(
+            record, sort_keys=False, default_flow_style=False, allow_unicode=True, width=80
+        ),
         encoding="utf-8",
     )
     return path
@@ -151,8 +155,8 @@ def query_yield(hn: dict, digest: dict) -> dict:
     return out
 
 
-def main() -> int:
-    date = sys.argv[1] if len(sys.argv) > 1 else today()
+def main(date: str | None = None) -> int:
+    date = date or today()
 
     digest_path = DIGESTS / date[:7] / date / "index.md"
     if not digest_path.exists():
@@ -163,7 +167,7 @@ def main() -> int:
     loaded = load_hn(date)
     if loaded is None:
         print(f"warn: no HN data for {date} in .cache/hn or data/hn", file=sys.stderr)
-        hn_record = {"source": None}
+        hn_record: dict[str, Any] = {"source": None}
         yields: dict = {}
         seen_ids: list[int] = []
     else:
@@ -175,7 +179,7 @@ def main() -> int:
             "degraded": hn.get("degraded", []),
             "backends": {
                 name: collections.get(name, {}).get("backend")
-                for name in STORY_COLLECTIONS + ["comments"]
+                for name in [*STORY_COLLECTIONS, "comments"]
             },
             "queries_backend": collections.get("queries", {}).get("backend"),
         }
@@ -189,7 +193,7 @@ def main() -> int:
 
     record = load_run_log(date)
     mechanical = record.setdefault("mechanical", {})
-    mechanical["generated_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    mechanical["generated_at"] = datetime.now(UTC).isoformat(timespec="seconds")
     mechanical["hn"] = hn_record
     mechanical["digest"] = {
         "sections": digest["sections"],
@@ -209,7 +213,3 @@ def main() -> int:
     )
     print(f"wrote {path.relative_to(ROOT)}")
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

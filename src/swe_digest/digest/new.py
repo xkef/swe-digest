@@ -1,11 +1,10 @@
-#!/usr/bin/env python3
+"""Create the daily digest skeleton with the current section layout."""
+
 from __future__ import annotations
 
-import sys
-from datetime import date, datetime, timezone
-from pathlib import Path
+from datetime import UTC, date, datetime
 
-ROOT = Path(__file__).resolve().parents[1]
+from swe_digest.paths import ROOT
 
 SECTIONS = [
     "Top stories",
@@ -41,9 +40,25 @@ TEMPLATE_ITEM = """### Story title
 """
 
 
+SOURCES_CHECKED = [
+    "Hacker News",
+    "Reddit",
+    "AI sources",
+    "ML research and arXiv papers",
+    "Conferences and events",
+    "Books and publisher feeds",
+    "Security advisories",
+    "Status pages",
+    "GitHub watchlist",
+    "Engineering blogs",
+    "YouTube channels",
+    "Markets and company sources",
+]
+
+
 def parse_day(value: str | None) -> date:
     if not value:
-        return datetime.now(timezone.utc).date()
+        return datetime.now(UTC).date()
     return datetime.strptime(value, "%Y-%m-%d").date()
 
 
@@ -74,14 +89,14 @@ def body() -> str:
         if section == "Top stories":
             parts.append(TEMPLATE_ITEM)
         elif section == "Sources checked":
-            parts.append("- Hacker News\n- Reddit\n- AI sources\n- ML research and arXiv papers\n- Conferences and events\n- Books and publisher feeds\n- Security advisories\n- Status pages\n- GitHub watchlist\n- Engineering blogs\n- YouTube channels\n- Markets and company sources\n")
+            parts.append("".join(f"- {source}\n" for source in SOURCES_CHECKED))
         else:
             parts.append("No entries yet.\n")
     return "\n".join(parts)
 
 
-def main() -> int:
-    day = parse_day(sys.argv[1] if len(sys.argv) > 1 else None)
+def main(day_arg: str | None = None) -> int:
+    day = parse_day(day_arg)
     target = ROOT / "content" / "digests" / day.strftime("%Y-%m") / day.isoformat() / "index.md"
     if target.exists():
         print(f"exists: {target.relative_to(ROOT)}")
@@ -90,7 +105,3 @@ def main() -> int:
     target.write_text(front_matter(day) + "\n" + body(), encoding="utf-8")
     print(f"created: {target.relative_to(ROOT)}")
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Aggregate watchlist query yield across daily run logs.
 
 Reads data/runs/*.yaml for the last N days and reports, per
@@ -10,23 +9,24 @@ query matched (watchlist gap evidence) and queries with zero matches
 across the window (pruning candidates). Input for the weekly
 improvement routine; this script changes nothing.
 """
+
 from __future__ import annotations
 
-import argparse
 import json
-from datetime import datetime, timedelta, timezone
-from pathlib import Path
+from datetime import UTC, datetime, timedelta
 
 import yaml
 
-ROOT = Path(__file__).resolve().parents[1]
+from swe_digest import config
+from swe_digest.paths import ROOT
+
 RUNS_DIR = ROOT / "data" / "runs"
 
 DEGRADED_BACKENDS = {None, "title-match"}
 
 
 def load_window(days: int) -> list[dict]:
-    cutoff = (datetime.now(timezone.utc) - timedelta(days=days - 1)).strftime("%Y-%m-%d")
+    cutoff = (datetime.now(UTC) - timedelta(days=days - 1)).strftime("%Y-%m-%d")
     records = []
     for path in sorted(RUNS_DIR.glob("*.yaml")):
         if path.stem >= cutoff:
@@ -34,15 +34,10 @@ def load_window(days: int) -> list[dict]:
     return records
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--days", type=int, default=14)
-    parser.add_argument("--json", action="store_true", dest="as_json")
-    args = parser.parse_args()
-
-    records = load_window(args.days)
+def main(days: int = config.YIELD_DEFAULT_DAYS, as_json: bool = False) -> int:
+    records = load_window(days)
     if not records:
-        print(f"no run logs in data/runs/ for the last {args.days} days")
+        print(f"no run logs in data/runs/ for the last {days} days")
         return 1
 
     queries: dict[str, dict] = {}
@@ -69,34 +64,33 @@ def main() -> int:
         if gap and not degraded:
             unmatched_published[record["date"]] = gap
 
-    clean = {
-        q: e for q, e in queries.items() if e["days"] > e["degraded_days"]
-    }
+    clean = {q: e for q, e in queries.items() if e["days"] > e["degraded_days"]}
     zero_yield = sorted(q for q, e in clean.items() if e["matched"] == 0)
 
-    if args.as_json:
-        print(json.dumps(
-            {
-                "days": args.days,
-                "run_logs": len(records),
-                "queries": queries,
-                "zero_yield": zero_yield,
-                "published_unmatched": unmatched_published,
-            },
-            indent=2,
-            ensure_ascii=False,
-        ))
+    if as_json:
+        print(
+            json.dumps(
+                {
+                    "days": days,
+                    "run_logs": len(records),
+                    "queries": queries,
+                    "zero_yield": zero_yield,
+                    "published_unmatched": unmatched_published,
+                },
+                indent=2,
+                ensure_ascii=False,
+            )
+        )
         return 0
 
-    print(f"yield over {len(records)} run logs (last {args.days} days)\n")
+    print(f"yield over {len(records)} run logs (last {days} days)\n")
     print("| query | days | degraded | matched | published |")
     print("| --- | --- | --- | --- | --- |")
-    ranked = sorted(
-        queries.items(), key=lambda kv: (-kv[1]["published"], -kv[1]["matched"], kv[0])
-    )
+    ranked = sorted(queries.items(), key=lambda kv: (-kv[1]["published"], -kv[1]["matched"], kv[0]))
     for query, e in ranked:
-        print(f"| {query} | {e['days']} | {e['degraded_days']} "
-              f"| {e['matched']} | {e['published']} |")
+        print(
+            f"| {query} | {e['days']} | {e['degraded_days']} | {e['matched']} | {e['published']} |"
+        )
 
     print(f"\nzero-yield queries ({len(zero_yield)}, clean days only):")
     for query in zero_yield:
@@ -109,7 +103,3 @@ def main() -> int:
         links = ", ".join(f"https://news.ycombinator.com/item?id={i}" for i in ids)
         print(f"  {date}: {links}")
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

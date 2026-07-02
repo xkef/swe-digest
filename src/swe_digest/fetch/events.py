@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Surface upcoming and active tech events for the daily digest.
 
 Reads the [[events]] table from the watchlist and partitions it by date into
@@ -17,33 +16,32 @@ is testable without mocking the clock.
 Exits nonzero only when the watchlist table is missing or unparseable, matching
 the degraded-coverage contract of the other fetchers.
 """
+
 from __future__ import annotations
 
 import json
 import sys
 import tomllib
-from datetime import date, datetime, timezone
-from pathlib import Path
+from datetime import UTC, date, datetime
 
-ROOT = Path(__file__).resolve().parents[1]
+from swe_digest import config
+from swe_digest.paths import ROOT, WATCHLIST
+
 CACHE_DIR = ROOT / ".cache" / "events"
-WATCHLIST = ROOT / "data" / "watchlist.toml"
 
-LEAD_DAYS = 3
-# Nearer subset of the lead window; must stay below LEAD_DAYS or every upcoming
-# event is flagged "soon".
-SOON_DAYS = 1
+LEAD_DAYS = config.EVENTS_LEAD_DAYS
+SOON_DAYS = config.EVENTS_SOON_DAYS
 
 
 def parse_day(value: str | None) -> date:
     if not value:
-        return datetime.now(timezone.utc).date()
+        return datetime.now(UTC).date()
     return datetime.strptime(value, "%Y-%m-%d").date()
 
 
 def load_events() -> list[dict]:
     with open(WATCHLIST, "rb") as handle:
-        return tomllib.load(handle).get("events", [])
+        return list(tomllib.load(handle).get("events", []))
 
 
 def parse_event(entry: dict) -> dict | None:
@@ -88,8 +86,8 @@ def strip(event: dict) -> dict:
     return {key: value for key, value in event.items() if not key.startswith("_")}
 
 
-def main() -> int:
-    today = parse_day(sys.argv[1] if len(sys.argv) > 1 else None)
+def main(day: str | None = None) -> int:
+    today = parse_day(day)
     failures: list[str] = []
     try:
         parsed = [event for entry in load_events() if (event := parse_event(entry))]
@@ -101,7 +99,7 @@ def main() -> int:
     upcoming, active = partition(parsed, today)
 
     result = {
-        "fetched_at": datetime.now(timezone.utc).isoformat(),
+        "fetched_at": datetime.now(UTC).isoformat(),
         "today": today.isoformat(),
         "lead_days": LEAD_DAYS,
         "degraded": failures,
@@ -127,7 +125,3 @@ def main() -> int:
         print(f"DEGRADED: {', '.join(failures)}", file=sys.stderr)
         return 1
     return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())

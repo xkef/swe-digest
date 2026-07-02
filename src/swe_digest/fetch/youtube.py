@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Fetch new YouTube videos for the daily digest.
 
 Reads the [youtube] channels from the watchlist and pulls each channel's
@@ -12,59 +11,39 @@ Falls back to the committed data/youtube snapshot from the yt-snapshot
 workflow when the network is blocked, and exits nonzero when collection is
 degraded, so the routine never silently skips YouTube coverage.
 """
+
 from __future__ import annotations
 
 import json
 import sys
 import time
 import tomllib
-import urllib.error
 import urllib.parse
-import urllib.request
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
-from pathlib import Path
+from datetime import UTC, datetime
+from typing import Any
 from xml.etree import ElementTree
 
-ROOT = Path(__file__).resolve().parents[1]
+from swe_digest import config, sources
+from swe_digest.http import fetch_bytes
+from swe_digest.paths import ROOT, WATCHLIST
+from swe_digest.sources import collect
+
 CACHE_DIR = ROOT / ".cache" / "yt"
 SNAPSHOT_DIR = ROOT / "data" / "youtube"
-WATCHLIST = ROOT / "data" / "watchlist.toml"
 
 FEED = "https://www.youtube.com/feeds/videos.xml?channel_id="
 ALGOLIA = "https://hn.algolia.com/api/v1/search"
-USER_AGENT = "swe-digest-fetcher/1.0 (daily digest collection script)"
-TIMEOUT = 15
-RETRIES = 2
-MAX_BYTES = 8 * 1024 * 1024
-WINDOW_SECONDS = 48 * 3600
-SNAPSHOT_MAX_AGE_HOURS = 24
-DESCRIPTION_MAX_CHARS = 2000
-# Cap on per-run Hacker News discussion lookups, ample for the ~50 video
-# window while bounding calls to the public Algolia API.
-DISCUSSION_LOOKUPS = 80
+WINDOW_SECONDS = config.YT_WINDOW_SECONDS
+SNAPSHOT_MAX_AGE_HOURS = config.YT_SNAPSHOT_MAX_AGE_HOURS
+DESCRIPTION_MAX_CHARS = config.YT_DESCRIPTION_MAX_CHARS
+DISCUSSION_LOOKUPS = config.YT_DISCUSSION_LOOKUPS
 
 NS = {
     "atom": "http://www.w3.org/2005/Atom",
     "yt": "http://www.youtube.com/xml/schemas/2015",
     "media": "http://search.yahoo.com/mrss/",
 }
-
-
-def fetch_bytes(url: str) -> bytes:
-    last_error: Exception | None = None
-    for attempt in range(RETRIES):
-        try:
-            request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-            with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
-                data = response.read(MAX_BYTES + 1)
-                if len(data) > MAX_BYTES:
-                    raise RuntimeError(f"response exceeds {MAX_BYTES} bytes: {url}")
-                return data
-        except (urllib.error.URLError, TimeoutError, OSError) as error:
-            last_error = error
-            time.sleep(1 + attempt)
-    raise RuntimeError(f"fetch failed: {url}: {last_error}")
 
 
 def parse_channels() -> list[tuple[str, str]]:
@@ -82,7 +61,7 @@ def parse_channels() -> list[tuple[str, str]]:
     return channels
 
 
-def make_video(entry: ElementTree.Element, fallback_channel: str) -> dict | None:
+def make_video(entry: ElementTree.Element, fallback_channel: str) -> dict[str, Any] | None:
     video_id = entry.findtext("yt:videoId", namespaces=NS)
     title = entry.findtext("atom:title", namespaces=NS)
     if not video_id or not title:
@@ -99,14 +78,14 @@ def make_video(entry: ElementTree.Element, fallback_channel: str) -> dict | None
         community = group.find("media:community", NS)
         if community is not None:
             stats = community.find("media:statistics", NS)
-            if stats is not None and stats.get("views"):
-                views = int(stats.get("views"))
+            views_raw = stats.get("views") if stats is not None else None
+            if views_raw:
+                views = int(views_raw)
             star = community.find("media:starRating", NS)
-            if star is not None and star.get("count") and star.get("average"):
-                rating = {
-                    "average": float(star.get("average")),
-                    "count": int(star.get("count")),
-                }
+            count_raw = star.get("count") if star is not None else None
+            average_raw = star.get("average") if star is not None else None
+            if count_raw and average_raw:
+                rating = {"average": float(average_raw), "count": int(count_raw)}
     return {
         "id": video_id,
         "title": title.strip(),
@@ -154,7 +133,7 @@ def fetch_all_channels(channels: list[tuple[str, str]], since_iso: str) -> list[
     return videos
 
 
-def fetch_discussion(video_id: str) -> dict | None:
+def fetch_discussion(video_id: str) -> dict[str, Any] | None:
     """Best-effort Hacker News discussion signal for a video. Queries the
     public Algolia search API (no key) for stories whose URL links this exact
     video and returns the highest-scoring one. A good video gets discussed, so
@@ -166,7 +145,7 @@ def fetch_discussion(video_id: str) -> dict | None:
         hits = json.loads(fetch_bytes(f"{ALGOLIA}?{params}")).get("hits", [])
     except (RuntimeError, ValueError):
         return None
-    best = None
+    best: dict[str, Any] | None = None
     for hit in hits:
         if video_id not in (hit.get("url") or ""):
             continue
@@ -186,43 +165,14 @@ def attach_discussion(videos: list[dict]) -> None:
     the run."""
     targets = videos[:DISCUSSION_LOOKUPS]
     with ThreadPoolExecutor(max_workers=8) as pool:
-        for video, discussion in zip(targets, pool.map(lambda v: fetch_discussion(v["id"]), targets)):
+        for video, discussion in zip(
+            targets, pool.map(lambda v: fetch_discussion(v["id"]), targets), strict=True
+        ):
             video["discussion"] = discussion
 
 
-def load_snapshot() -> dict:
-    """Committed snapshot from the yt-snapshot workflow (data/youtube/). Last
-    resort for environments where the feed network is blocked."""
-    paths = sorted(SNAPSHOT_DIR.glob("*.json"))
-    if not paths:
-        raise RuntimeError("no committed snapshot in data/youtube")
-    data = json.loads(paths[-1].read_text())
-    fetched = datetime.fromisoformat(data["fetched_at"])
-    age_hours = (datetime.now(timezone.utc) - fetched).total_seconds() / 3600
-    if age_hours > SNAPSHOT_MAX_AGE_HOURS:
-        raise RuntimeError(
-            f"snapshot {paths[-1].name} is {age_hours:.1f}h old"
-            f" (max {SNAPSHOT_MAX_AGE_HOURS}h)"
-        )
-    return data
-
-
-def snapshot_collection(name: str):
-    collection = load_snapshot()["collections"].get(name)
-    if not collection or not collection["items"]:
-        raise RuntimeError(f"snapshot has no {name} items")
-    return collection["items"]
-
-
-def collect(label: str, backends, failures: list[str]):
-    for backend_name, backend in backends:
-        try:
-            items = backend()
-            return {"backend": backend_name, "items": items}
-        except (RuntimeError, ValueError, KeyError, TypeError, ElementTree.ParseError) as error:
-            print(f"warn: {label}: {backend_name}: {error}", file=sys.stderr)
-    failures.append(label)
-    return {"backend": None, "items": []}
+def snapshot_collection(name: str) -> Any:
+    return sources.snapshot_collection(SNAPSHOT_DIR, SNAPSHOT_MAX_AGE_HOURS, name)
 
 
 def main() -> int:
@@ -235,7 +185,7 @@ def main() -> int:
         return 1
 
     now = int(time.time())
-    since_iso = datetime.fromtimestamp(now - WINDOW_SECONDS, tz=timezone.utc).isoformat()
+    since_iso = datetime.fromtimestamp(now - WINDOW_SECONDS, tz=UTC).isoformat()
     failures: list[str] = []
 
     videos = collect(
@@ -251,14 +201,14 @@ def main() -> int:
         attach_discussion(videos["items"])
 
     result = {
-        "fetched_at": datetime.fromtimestamp(now, tz=timezone.utc).isoformat(),
+        "fetched_at": datetime.fromtimestamp(now, tz=UTC).isoformat(),
         "window_hours": WINDOW_SECONDS // 3600,
         "degraded": failures,
         "collections": {"videos": videos},
     }
 
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    day = datetime.fromtimestamp(now, tz=timezone.utc).strftime("%Y-%m-%d")
+    day = datetime.fromtimestamp(now, tz=UTC).strftime("%Y-%m-%d")
     output_path = CACHE_DIR / f"{day}.json"
     output_path.write_text(json.dumps(result, indent=2) + "\n")
 
@@ -275,7 +225,9 @@ def main() -> int:
         stars = f" {rating['average']:.1f}({rating['count']})" if rating else ""
         discussion = video["discussion"]
         hn = f" HN {discussion['points']}pts/{discussion['num_comments']}c" if discussion else ""
-        print(f"  {views:>8} views{stars}{hn}  {video['channel']}: {video['title']}  [{video['url']}]")
+        print(
+            f"  {views:>8} views{stars}{hn}  {video['channel']}: {video['title']}  [{video['url']}]"
+        )
 
     if failures:
         print(f"DEGRADED: {', '.join(failures)}", file=sys.stderr)
@@ -286,7 +238,3 @@ def main() -> int:
         )
         return 1
     return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Fetch recent arXiv papers for the daily digest.
 
 Reads the [papers] categories and queries from the watchlist and pulls the
@@ -10,35 +9,33 @@ before publishing, never restating benchmark numbers without the method.
 Exits nonzero when collection is degraded, so the routine never silently skips
 paper coverage.
 """
+
 from __future__ import annotations
 
 import json
 import sys
 import time
 import tomllib
-import urllib.error
 import urllib.parse
-import urllib.request
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
-from pathlib import Path
+from typing import Any
 from xml.etree import ElementTree
 
-ROOT = Path(__file__).resolve().parents[1]
+from swe_digest import config, http, sources
+from swe_digest.paths import ROOT, WATCHLIST
+from swe_digest.sources import collect
+
 CACHE_DIR = ROOT / ".cache" / "papers"
 SNAPSHOT_DIR = ROOT / "data" / "papers"
-WATCHLIST = ROOT / "data" / "watchlist.toml"
 
 API = "https://export.arxiv.org/api/query"
 RSS = "https://rss.arxiv.org/rss/"
-USER_AGENT = "swe-digest-fetcher/1.0 (daily digest collection script)"
-TIMEOUT = 20
-RETRIES = 2
-MAX_BYTES = 8 * 1024 * 1024
-API_PAUSE = 3
-WINDOW_SECONDS = 72 * 3600
-SNAPSHOT_MAX_AGE_HOURS = 24
-SUMMARY_MAX_CHARS = 2000
+TIMEOUT = config.PAPERS_HTTP_TIMEOUT
+API_PAUSE = config.PAPERS_API_PAUSE
+WINDOW_SECONDS = config.PAPERS_WINDOW_SECONDS
+SNAPSHOT_MAX_AGE_HOURS = config.PAPERS_SNAPSHOT_MAX_AGE_HOURS
+SUMMARY_MAX_CHARS = config.PAPERS_SUMMARY_MAX_CHARS
 
 NS = {
     "atom": "http://www.w3.org/2005/Atom",
@@ -47,19 +44,8 @@ NS = {
 
 
 def fetch_bytes(url: str) -> bytes:
-    last_error: Exception | None = None
-    for attempt in range(RETRIES):
-        try:
-            request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-            with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
-                data = response.read(MAX_BYTES + 1)
-                if len(data) > MAX_BYTES:
-                    raise RuntimeError(f"response exceeds {MAX_BYTES} bytes: {url}")
-                return data
-        except (urllib.error.URLError, TimeoutError, OSError) as error:
-            last_error = error
-            time.sleep(1 + attempt)
-    raise RuntimeError(f"fetch failed: {url}: {last_error}")
+    # arXiv responses are slower than the default HTTP budget allows.
+    return http.fetch_bytes(url, timeout=TIMEOUT)
 
 
 def load_config() -> tuple[list[str], list[str]]:
@@ -98,9 +84,7 @@ def make_paper(entry: ElementTree.Element) -> dict | None:
     if not raw_id or not title:
         return None
     authors = [
-        node.text.strip()
-        for node in entry.findall("atom:author/atom:name", NS)
-        if node.text
+        node.text.strip() for node in entry.findall("atom:author/atom:name", NS) if node.text
     ]
     summary = (entry.findtext("atom:summary", namespaces=NS) or "").strip()
     category = entry.find("arxiv:primary_category", NS)
@@ -166,7 +150,13 @@ def fetch_rss(categories: list[str], since: datetime) -> list[dict]:
                 "id": pid,
                 "title": " ".join(title.split()),
                 "url": f"https://arxiv.org/abs/{pid}",
-                "authors": [a.strip() for a in (item.findtext("{http://purl.org/dc/elements/1.1/}creator") or "").split(",") if a.strip()],
+                "authors": [
+                    a.strip()
+                    for a in (
+                        item.findtext("{http://purl.org/dc/elements/1.1/}creator") or ""
+                    ).split(",")
+                    if a.strip()
+                ],
                 "published_at": rss_published_iso(item.findtext("pubDate")),
                 "summary": (item.findtext("description") or "").strip()[:SUMMARY_MAX_CHARS],
                 "category": category,
@@ -178,32 +168,8 @@ def fetch_rss(categories: list[str], since: datetime) -> list[dict]:
     return sorted(papers.values(), key=lambda p: p["published_at"] or "", reverse=True)
 
 
-def load_snapshot() -> dict:
-    paths = sorted(SNAPSHOT_DIR.glob("*.json"))
-    if not paths:
-        raise RuntimeError("no committed snapshot in data/papers")
-    data = json.loads(paths[-1].read_text())
-    age_hours = (datetime.now(timezone.utc) - datetime.fromisoformat(data["fetched_at"])).total_seconds() / 3600
-    if age_hours > SNAPSHOT_MAX_AGE_HOURS:
-        raise RuntimeError(f"snapshot {paths[-1].name} is {age_hours:.1f}h old (max {SNAPSHOT_MAX_AGE_HOURS}h)")
-    return data
-
-
-def snapshot_collection(name: str):
-    collection = load_snapshot()["collections"].get(name)
-    if not collection or not collection["items"]:
-        raise RuntimeError(f"snapshot has no {name} items")
-    return collection["items"]
-
-
-def collect(label: str, backends, failures: list[str]):
-    for backend_name, backend in backends:
-        try:
-            return {"backend": backend_name, "items": backend()}
-        except (RuntimeError, ValueError, KeyError, TypeError, ElementTree.ParseError) as error:
-            print(f"warn: {label}: {backend_name}: {error}", file=sys.stderr)
-    failures.append(label)
-    return {"backend": None, "items": []}
+def snapshot_collection(name: str) -> Any:
+    return sources.snapshot_collection(SNAPSHOT_DIR, SNAPSHOT_MAX_AGE_HOURS, name)
 
 
 def main() -> int:
@@ -213,7 +179,7 @@ def main() -> int:
         return 1
 
     now = int(time.time())
-    since = datetime.fromtimestamp(now - WINDOW_SECONDS, tz=timezone.utc)
+    since = datetime.fromtimestamp(now - WINDOW_SECONDS, tz=UTC)
     failures: list[str] = []
 
     papers = collect(
@@ -227,14 +193,14 @@ def main() -> int:
     )
 
     result = {
-        "fetched_at": datetime.fromtimestamp(now, tz=timezone.utc).isoformat(),
+        "fetched_at": datetime.fromtimestamp(now, tz=UTC).isoformat(),
         "window_hours": WINDOW_SECONDS // 3600,
         "degraded": failures,
         "collections": {"papers": papers},
     }
 
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    day = datetime.fromtimestamp(now, tz=timezone.utc).strftime("%Y-%m-%d")
+    day = datetime.fromtimestamp(now, tz=UTC).strftime("%Y-%m-%d")
     output_path = CACHE_DIR / f"{day}.json"
     output_path.write_text(json.dumps(result, indent=2) + "\n")
 
@@ -252,7 +218,3 @@ def main() -> int:
         )
         return 1
     return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Validate digest structure and screen content for unsafe output.
 
 Runs anywhere python3 is available, so the gate works in environments where
@@ -6,6 +5,7 @@ mise or Zola are not installed. Fails closed: any structural problem, raw
 HTML/script in a digest, leaked secret pattern, or a tracked PRIVATE_CONTEXT.md
 stops the build before it can be published.
 """
+
 from __future__ import annotations
 
 import html
@@ -14,9 +14,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-DIGESTS = ROOT / "content" / "digests"
-MEMORY = ROOT / "memory"
+from swe_digest.gate.check_memory import check_memory
+from swe_digest.paths import ROOT
 
 # Current layout, used for digests on or after SECTIONS_V4_CUTOVER. Adds the
 # New videos section.
@@ -96,7 +95,7 @@ SECTIONS_V3_CUTOVER = "2026-06-21"
 # First digest built with the New videos section.
 SECTIONS_V4_CUTOVER = "2026-07-01"
 
-SECTIONS_LEGACY = SECTIONS_V2[:13] + ["HN and Reddit pulse"] + SECTIONS_V2[15:]
+SECTIONS_LEGACY = [*SECTIONS_V2[:13], "HN and Reddit pulse", *SECTIONS_V2[15:]]
 
 
 def expected_sections(folder: str) -> list[str]:
@@ -107,6 +106,7 @@ def expected_sections(folder: str) -> list[str]:
     if folder >= SECTIONS_CUTOVER:
         return SECTIONS_V2
     return SECTIONS_LEGACY
+
 
 REQUIRED_KEYS = ["title", "date", "status", "source_count"]
 
@@ -208,11 +208,11 @@ def check_digest(path: Path) -> list[str]:
     return check_structure(path, front, body) + scan_unsafe(path, text)
 
 
-def check_private_context() -> list[str]:
+def check_private_context(root: Path) -> list[str]:
     try:
         tracked = subprocess.run(
             ["git", "ls-files", "PRIVATE_CONTEXT.md"],
-            cwd=ROOT,
+            cwd=root,
             capture_output=True,
             text=True,
             check=False,
@@ -224,8 +224,8 @@ def check_private_context() -> list[str]:
     return []
 
 
-def main() -> int:
-    files = sorted(DIGESTS.glob("*/*/index.md"))
+def main(root: Path = ROOT) -> int:
+    files = sorted((root / "content" / "digests").glob("*/*/index.md"))
     if not files:
         print("no digests found", file=sys.stderr)
         return 1
@@ -235,14 +235,15 @@ def main() -> int:
         if path.parent.parent.name != path.parent.name[:7]:
             errors.append(f"{path}: digest must live in its year-month directory")
         errors.extend(check_digest(path))
-    for path in sorted(MEMORY.glob("*.md")):
+    for path in sorted((root / "memory").glob("*.md")):
         errors.extend(scan_unsafe(path, path.read_text(encoding="utf-8")))
-    for path in sorted((ROOT / "data" / "runs").rglob("*.yaml")):
+    errors.extend(check_memory(root))
+    for path in sorted((root / "data" / "runs").rglob("*.yaml")):
         errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))
     for snapshot_dir in ("youtube", "papers", "books"):
-        for path in sorted((ROOT / "data" / snapshot_dir).glob("*.json")):
+        for path in sorted((root / "data" / snapshot_dir).glob("*.json")):
             errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))
-    errors.extend(check_private_context())
+    errors.extend(check_private_context(root))
 
     if errors:
         for error in errors:
@@ -251,7 +252,3 @@ def main() -> int:
 
     print(f"check-content ok ({len(files)} digests)")
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

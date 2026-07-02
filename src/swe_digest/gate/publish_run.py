@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Apply and publish an unattended run produced by the read-only agent job.
 
 The agent job runs without a write token: it commits locally, exports the
@@ -12,6 +11,7 @@ Subcommands:
   push             recreate each applied commit on main as a signed Verified commit
   side-effects M   close story issues, create issues, open improvement PRs
 """
+
 from __future__ import annotations
 
 import base64
@@ -21,16 +21,19 @@ import re
 import subprocess
 import sys
 import time
+from collections.abc import Callable
+from functools import partial
 from pathlib import Path
+from typing import Any
 
-import yaml
+from swe_digest import config
+from swe_digest.gate.manifest import IssueClose, NewIssue, load_manifest
 
-REPO = "xkef/swe-digest"
-OWNER = "xkef"
-SITE = "https://xkef.github.io/swe-digest/"
+REPO = config.REPO
+OWNER = config.OWNER
+SITE = config.SITE
 
-# One digest commit, optionally followed by the weekly fallback commit.
-MAX_COMMITS = 2
+MAX_COMMITS = config.PUBLISH_MAX_COMMITS
 SUBJECTS = [
     re.compile(r"^chore: (publish|update) digest for \d{4}-\d{2}-\d{2}$"),
     re.compile(r"^chore: weekly improvement review \d{4}-\d{2}-\d{2}$"),
@@ -42,13 +45,14 @@ ALLOWED_PATHS = [
     re.compile(r"^memory/(followups|entities|source-reliability|access-notes)\.md$"),
 ]
 IMPROVEMENT_FILES = {
+    "config.toml",
     "data/watchlist.toml",
     "memory/profile.md",
     "docs/routine.md",
     "CLAUDE.md",
 }
 REPO_URL = f"https://github.com/{REPO}"
-COMMENT_MAX_CHARS = 500
+COMMENT_MAX_CHARS = config.PUBLISH_COMMENT_MAX_CHARS
 # Approval must lead a line ("approved" / "approve" / "/approve"), so a
 # negation like "this is not approved yet" does not satisfy the gate.
 APPROVAL = re.compile(r"^\s*/?approved?\b", re.I | re.M)
@@ -58,7 +62,7 @@ ALLOWED_MODES = {"100644", "100755"}
 DIFF_BLOCK = re.compile(r"```diff\n(.*?)```", re.S)
 URL = re.compile(r"https?://[^\s)\"'<>]+")
 
-RETRIES = 4
+RETRIES = config.COMMIT_RETRIES
 COMMIT_MUTATION = """
 mutation($input: CreateCommitOnBranchInput!) {
   createCommitOnBranch(input: $input) { commit { oid url } }
@@ -74,7 +78,7 @@ def sh(*args: str, stdin: str | None = None) -> str:
     return proc.stdout
 
 
-def gh_json(path: str):
+def gh_json(path: str) -> Any:
     return json.loads(sh("gh", "api", path))
 
 
@@ -156,7 +160,9 @@ def branch_oid(branch: str = "main") -> str:
     return sh("gh", "api", f"repos/{REPO}/git/refs/heads/{branch}", "--jq", ".object.sha").strip()
 
 
-def parse_changes(status_output: str, read) -> tuple[list[dict], list[dict]]:
+def parse_changes(
+    status_output: str, read: Callable[[str], dict[str, str]]
+) -> tuple[list[dict], list[dict]]:
     """Additions and deletions from a -z name-status stream, so spaced paths
     survive. `read(path)` returns the addition dict (path plus base64 content)
     from wherever the caller has the file: a commit object or the working tree."""
@@ -192,7 +198,9 @@ def working_addition(path: str) -> dict:
         return {"path": path, "contents": base64.b64encode(handle.read()).decode("ascii")}
 
 
-def commit_on_branch(branch: str, message: dict, additions: list[dict], deletions: list[dict]) -> None:
+def commit_on_branch(
+    branch: str, message: dict, additions: list[dict], deletions: list[dict]
+) -> None:
     """Create one signed commit on `branch` through the GraphQL
     createCommitOnBranch mutation, so GitHub signs it as github-actions[bot]
     and it carries the Verified badge. Re-reads the branch head each attempt,
@@ -243,7 +251,7 @@ def push() -> None:
     for commit in commits:
         additions, deletions = parse_changes(
             sh("git", "diff", "--name-status", "-z", f"{commit}^", commit),
-            lambda path, commit=commit: commit_addition(commit, path),
+            partial(commit_addition, commit),
         )
         commit_on_branch("main", commit_message(commit), additions, deletions)
     print(f"push ok ({len(commits)} verified commit(s))")
@@ -253,17 +261,13 @@ def check_comment(number: int, comment: str) -> None:
     if len(comment) > COMMENT_MAX_CHARS:
         raise SystemExit(f"comment for #{number} exceeds {COMMENT_MAX_CHARS} chars")
     for url in URL.findall(comment):
-        allowed = (
-            url.startswith(SITE)
-            or url == REPO_URL
-            or url.startswith(f"{REPO_URL}/")
-        )
+        allowed = url.startswith(SITE) or url == REPO_URL or url.startswith(f"{REPO_URL}/")
         if not allowed:
             raise SystemExit(f"comment for #{number} links outside the site/repo: {url}")
 
 
-def close_issue(entry: dict) -> None:
-    number, comment = int(entry["number"]), str(entry["comment"])
+def close_issue(entry: IssueClose) -> None:
+    number, comment = entry.number, entry.comment
     issue = gh_json(f"repos/{REPO}/issues/{number}")
     labels = {label["name"] for label in issue["labels"]}
     if (
@@ -277,12 +281,14 @@ def close_issue(entry: dict) -> None:
     print(f"closed #{number}")
 
 
-def create_issue(entry: dict) -> None:
-    title, body = str(entry["title"]), str(entry["body"])
-    labels = [str(label) for label in entry.get("labels", [])]
+def create_issue(entry: NewIssue) -> None:
+    title, body, labels = entry.title, entry.body, list(entry.labels)
     if not set(labels) <= {"improvement"}:
         raise SystemExit(f"label not allowed on new issue: {labels}")
-    if len(title) > 120 or len(body) > 8000:
+    if (
+        len(title) > config.PUBLISH_ISSUE_TITLE_MAX_CHARS
+        or len(body) > config.PUBLISH_ISSUE_BODY_MAX_CHARS
+    ):
         raise SystemExit("new issue exceeds size limits")
     args = ["gh", "issue", "create", "--repo", REPO, "--title", title, "--body", body]
     for label in labels:
@@ -298,8 +304,7 @@ def improvement_pr(number: int) -> None:
         raise SystemExit(f"issue #{number} is not an open improvement issue")
     comments = gh_json(f"repos/{REPO}/issues/{number}/comments")
     if not any(
-        c["author_association"] == "OWNER" and APPROVAL.search(c["body"] or "")
-        for c in comments
+        c["author_association"] == "OWNER" and APPROVAL.search(c["body"] or "") for c in comments
     ):
         raise SystemExit(f"issue #{number} has no owner approval comment")
     block = DIFF_BLOCK.search(issue["body"] or "")
@@ -321,30 +326,45 @@ def improvement_pr(number: int) -> None:
     additions, deletions = parse_changes(
         sh("git", "diff", "--cached", "--name-status", "-z"), working_addition
     )
-    sh("gh", "api", f"repos/{REPO}/git/refs", "-f", f"ref=refs/heads/{branch}", "-f", f"sha={base_oid}")
-    commit_on_branch(branch, {"headline": f"chore: apply improvement #{number}"}, additions, deletions)
+    sh(
+        "gh",
+        "api",
+        f"repos/{REPO}/git/refs",
+        "-f",
+        f"ref=refs/heads/{branch}",
+        "-f",
+        f"sha={base_oid}",
+    )
+    commit_on_branch(
+        branch, {"headline": f"chore: apply improvement #{number}"}, additions, deletions
+    )
     sh("git", "switch", "main")
     sh(
-        "gh", "pr", "create", "--repo", REPO, "--base", "main", "--head", branch,
-        "--title", f"chore: apply improvement #{number}",
-        "--body", f"Applies the approved diff from #{number}. Review and merge manually.",
+        "gh",
+        "pr",
+        "create",
+        "--repo",
+        REPO,
+        "--base",
+        "main",
+        "--head",
+        branch,
+        "--title",
+        f"chore: apply improvement #{number}",
+        "--body",
+        f"Applies the approved diff from #{number}. Review and merge manually.",
     )
     print(f"opened improvement PR for #{number}")
 
 
 def side_effects(path: str) -> None:
-    manifest_path = Path(path)
-    manifest = yaml.safe_load(manifest_path.read_text()) if manifest_path.exists() else {}
-    manifest = manifest or {}
-    unknown = set(manifest) - {"issue_closes", "improvement_prs", "new_issues"}
-    if unknown:
-        raise SystemExit(f"unknown manifest keys: {sorted(unknown)}")
-    for entry in manifest.get("issue_closes", []):
+    manifest = load_manifest(Path(path))
+    for entry in manifest.issue_closes:
         close_issue(entry)
-    for entry in manifest.get("new_issues", []):
-        create_issue(entry)
-    for number in manifest.get("improvement_prs", []):
-        improvement_pr(int(number))
+    for issue in manifest.new_issues:
+        create_issue(issue)
+    for number in manifest.improvement_prs:
+        improvement_pr(number)
     print("side-effects ok")
 
 
@@ -361,7 +381,3 @@ def main(argv: list[str]) -> int:
     else:
         raise SystemExit(f"unknown subcommand: {command}")
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main(sys.argv))
