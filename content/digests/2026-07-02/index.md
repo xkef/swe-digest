@@ -10,7 +10,7 @@ months = ["2026-07"]
 
 [extra]
 status = "published"
-source_count = 24
+source_count = 26
 +++
 
 ## Top stories
@@ -97,7 +97,7 @@ No major items found.
 - **Category:** Dev tools
 - **Status:** discussion
 - **Sources:** [HydrogenAudio analysis](https://hydrogenaudio.org/index.php/topic,129691.0.html), [HN discussion](https://news.ycombinator.com/item?id=48747116)
-- **Summary:** A rewritten native AAC encoder for FFmpeg drew discussion on 2026-07-02, presented as headed for a future release (the encoder is not in the released changelog through FFmpeg 9.0). It currently supports constant bitrate only and is optimized for 48kHz audio. A HydrogenAudio analysis reports it scoring above Apple Core Audio in tested CBR encoding-quality metrics, and the encoder works around a stereo Perceptual Noise Substitution bug present in AAC decoders.
+- **Summary:** A rewritten native AAC encoder for FFmpeg drew discussion on 2026-07-02 (327 points), presented as headed for a future release. It is not in a released FFmpeg version: the latest stable release is 8.1, and the reworked encoder is targeted at a future release, which the Hacker News thread frames as FFmpeg 9.1. It currently supports constant bitrate only and is optimized for 48kHz audio. A HydrogenAudio analysis reports it scoring above Apple Core Audio in tested CBR encoding-quality metrics, and the encoder works around a stereo Perceptual Noise Substitution bug present in AAC decoders.
 - **Comments:** HN commenters welcomed it as a possible fdk-aac replacement, the encoder author explained the 48kHz optimization and PNS handling, and several noted the scoring tools are imperfect proxies for listening tests and that Opus still outperforms AAC at comparable bitrates.
 - **Why it matters:** FFmpeg's native AAC encoder is a fully open, license-clean option, and a quality-competitive rewrite reduces the reason to depend on external encoders.
 - **Follow-up:** Watch for the encoder landing in a tagged FFmpeg release, variable-bitrate support, and blind listening-test results.
@@ -112,7 +112,14 @@ No major items found.
 
 ## Linux and kernel
 
-No major items found.
+### Asahi Linux 7.1 extends Apple Silicon support to M3 audio and H.264 decode
+
+- **Category:** Linux/Kernel
+- **Status:** confirmed
+- **Sources:** [Asahi Linux progress report](https://asahilinux.org/2026/06/progress-report-7-1/), [HN discussion](https://news.ycombinator.com/item?id=48744518)
+- **Summary:** The Asahi Linux 7.1 progress report, published 2026-06-30, documents work bringing Linux to Apple Silicon. M3 machines gain high-quality audio output (speaker and headphone) plus CPU frequency switching, big.LITTLE task scheduling, and SMC hardware sensors via devicetree additions. The m1n1 bootloader reached v1.6.0, the first version requiring Rust for its stage 2 build, and moved GPU initialization into m1n1 along with SPMI controller and PCIe init improvements. A new V4L2 driver from contributor sofus decodes 10-bit AVC (H.264) video up to 4K through custom AVD firmware and the V4L2 Request API, with VP9, HEVC, and AV1 still pending. Installs from 7.0.12 onward set an APFS metadata flag to fix an issue where macOS 27 dropped Asahi from the boot picker.
+- **Why it matters:** M3 audio and hardware video decode close two long-standing gaps for Linux on recent Apple laptops, and the Rust requirement in m1n1 marks Rust moving into the low-level bootloader path.
+- **Follow-up:** Watch for further M3 GPU/display driver progress, VP9/HEVC/AV1 decode support, and upstreaming of the new drivers.
 
 ## Infrastructure
 
@@ -193,7 +200,7 @@ Reddit RSS remained degraded from the run environment: `r/programming` hot retur
 - Books and publisher feeds via `make books` (21 items across No Starch, Pragmatic, Springer; none cleared the bar)
 - Security advisories (CISA KEV catalog version 2026.07.01 count 1631, MSRC, NVD)
 - Status pages (GitHub, Cloudflare, AWS, Azure, npm quiet; Cloudflare scheduled maintenance only)
-- GitHub watchlist releases (full sweep: jj 0.43.0, Prometheus 3.13.0, Grafana 13.1.0 new; others unchanged) and `github.com/trending` (recurring AI-agent tooling cluster, no new verified emerging item)
+- GitHub watchlist releases (full sweep of every `[github]` repo: jj 0.43.0, Prometheus 3.13.0, Grafana 13.1.0 surfaced; tmux 3.7b and Deno 2.9.1 are bugfix/patch releases below the bar) and `github.com/trending` daily plus language views (recurring AI-agent and agent-sandboxing cluster, no new verified emerging item)
 - Engineering blogs
-- YouTube channels via `make yt` (18 videos, 1 with a Hacker News discussion; none cleared the New videos bar)
+- YouTube channels via `make yt` (34 videos, 1 with a Hacker News discussion; none cleared the New videos bar)
 - Markets and company sources

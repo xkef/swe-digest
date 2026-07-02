@@ -44,14 +44,23 @@ Format:
 - Last checked: 2026-07-02
 - Notes: Announced 2026-07-01. Control plane to charge for any Cloudflare-protected resource (pages, datasets, APIs, MCP tools); payment verification/enforcement at the edge. At launch payments settle in stablecoins over x402 (open pay-over-HTTP protocol on the 402 status code). Per-verb pricing or variable amounts by task complexity. HN 48746914 (251 pts). Covered 2026-07-02 Top stories.
 
+## 2026-07-02: Asahi Linux 7.1 progress report
+
+- Status: open
+- Category: Linux/Kernel
+- Sources: [Asahi progress report](https://asahilinux.org/2026/06/progress-report-7-1/), [HN 48744518](https://news.ycombinator.com/item?id=48744518)
+- Watch for: Further M3 GPU/display driver progress; VP9/HEVC/AV1 hardware decode; upstreaming of the new drivers and m1n1 changes.
+- Last checked: 2026-07-02
+- Notes: Report published 2026-06-30 (HN front page 2026-07-01, 541 pts). M3 gains high-quality audio, CPU freq switching, big.LITTLE scheduling, SMC sensors. m1n1 v1.6.0 first to require Rust for stage 2; GPU init moved into m1n1, SPMI + PCIe init added. New V4L2 driver (contributor sofus) decodes 10-bit AVC/H.264 to 4K via custom AVD firmware; VP9/HEVC/AV1 pending. Installs 7.0.12+ set an APFS flag fixing macOS 27 dropping Asahi from the boot picker. Covered 2026-07-02 Linux and kernel.
+
 ## 2026-07-02: FFmpeg native AAC encoder rework
 
 - Status: open
 - Category: Dev tools
 - Sources: [HydrogenAudio analysis](https://hydrogenaudio.org/index.php/topic,129691.0.html), [HN 48747116](https://news.ycombinator.com/item?id=48747116)
-- Watch for: The encoder landing in a tagged FFmpeg release (not in the released changelog through 9.0); variable-bitrate support; blind listening-test results; fdk-aac replacement adoption.
+- Watch for: The encoder landing in a tagged FFmpeg release (not in any released version; latest stable 8.1, next changelog version 9.0); variable-bitrate support; blind listening-test results; fdk-aac replacement adoption.
 - Last checked: 2026-07-02
-- Notes: Rewritten native AAC encoder for FFmpeg drew HN discussion 2026-07-02, framed as headed for a future release. CBR-only currently, optimized for 48kHz. HydrogenAudio analysis reports it scoring above Apple Core Audio in tested CBR metrics; encoder works around a stereo Perceptual Noise Substitution decoder bug. HN: welcomed as fdk-aac replacement, author explained 48kHz/PNS choices, commenters note scoring tools are imperfect proxies and Opus still beats AAC at comparable bitrates. Covered 2026-07-02 Developer tools as discussion.
+- Notes: Rewritten native AAC encoder for FFmpeg drew HN discussion 2026-07-02 (327 pts), framed as headed for a future release. HN thread titled "FFmpeg 9.1's new AAC encoder"; no FFmpeg 9.x is released (latest git tags n8.1.x stable; master Changelog's next version is 9.0, unreleased), so it is in development only. CBR-only currently, optimized for 48kHz. HydrogenAudio analysis reports it scoring above Apple Core Audio in tested CBR metrics; encoder works around a stereo Perceptual Noise Substitution decoder bug. HN: welcomed as fdk-aac replacement, author explained 48kHz/PNS choices, commenters note scoring tools are imperfect proxies and Opus still beats AAC at comparable bitrates. Covered 2026-07-02 Developer tools as discussion.
 
 ## 2026-07-02: ZCode GLM-5.2 coding harness
 

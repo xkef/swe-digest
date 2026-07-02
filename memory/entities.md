@@ -90,6 +90,7 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 - Linux kernel: track releases, merge windows, scheduler, io_uring, eBPF, filesystems, memory management, and security hardening. Current 7.1 stable; 7.2 merge window open. Last seen 2026-06-14.
 - LWN.net: kernel and systems reporting. Track subscriber and free articles on kernel development and ecosystem changes. Last seen 2026-06-29.
 - Rust for Linux: track upstream progress, supported drivers, and toolchain requirements. Last seen 2026-06-29.
+- Asahi Linux: Linux on Apple Silicon (bootloader m1n1, GPU/audio/display drivers). Track progress reports, per-generation hardware support (M1/M2/M3), and upstreaming. Progress report 7.1 (2026-06-30): M3 high-quality audio, CPU freq switching, big.LITTLE scheduling; m1n1 v1.6.0 first to require Rust for stage 2; new V4L2 driver decodes 10-bit H.264 to 4K (VP9/HEVC/AV1 pending). Last seen 2026-07-02.
 
 ## Agentic coding
 
