@@ -36,7 +36,7 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 - Hugging Face: track platform changes, open-weight hosting, dataset policies, and the Open R1 reproduction project. Last seen 2026-06-29.
 - Z.ai (Zhipu AI): Chinese AI lab (GLM series). Track model releases, open-weight licenses, and coding/agent capability. Current GLM 5.2 (MIT, 1M context). Shipped ZCode 2026-07-02, a first-party GLM-5.2 coding harness (macOS/Windows/Linux, "Goals" plan/execute/verify loops, remote task launch via WeChat/Feishu/Telegram, part of the GLM Coding Plan). Last seen 2026-07-02.
 - DeepSeek: Chinese AI lab (DeepSeek-V/R series). Track model releases, open-weight licenses, and inference/serving work (DeepSpec, speculative decoding). Current DeepSeek-V4 Pro. Last seen 2026-06-26.
-- Moonshot AI: Chinese AI lab. Track Kimi model releases. Current Kimi K2.7-Code (open-weight agentic coding). Last seen 2026-06-12.
+- Moonshot AI: Chinese AI lab. Track Kimi model releases. Current Kimi K2.7-Code (open-weight agentic coding); GitHub made it generally available in Copilot 2026-07-01 (Pro/Pro+/Max first, Business/Enterprise off by default until an admin enables the policy). Last seen 2026-07-02.
 - NVIDIA: track CUDA releases, driver updates, GPU architecture, inference serving, and developer tools. Last seen 2026-06-29.
 - Microsoft AI: track the MAI model family, Azure OpenAI, and Foundry. Last seen 2026-06-02.
 - Apple Foundation Models: track framework releases, the LanguageModel protocol, and the open-source timeline (planned 2026). Last seen 2026-06-29.

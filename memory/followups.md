@@ -17,6 +17,24 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-02: Google Android Developer Verification rollout
+
+- Status: open
+- Category: Markets
+- Sources: [Android Developers Blog](https://android-developers.googleblog.com/2025/08/elevating-android-security.html), [verification timeline](https://support.google.com/android-developer-console/answer/16650243)
+- Watch for: 2026-09-30 activation in Brazil, Indonesia, Singapore, Thailand; friction of the power-user override; whether F-Droid can operate under the verified-developer model; 2027 global rollout regions.
+- Last checked: 2026-07-02
+- Notes: Google ADV requires developers to register a legal identity for apps to install on certified Android devices; applies to sideloaded APKs and third-party stores (F-Droid). First enforcement 2026-09-30 in four countries, global 2027 and beyond. Advanced users can override after a one-time risk acknowledgment; a free tier lets students/hobbyists distribute to a limited number of devices without a government ID; ADB dev installs unaffected. F-Droid post 2026-07-01 (HN 48755965, 599 pts) argues gatekeeping and that Console ToS lets Google define "malware" without a published standard. Program first announced 2025-08. Covered 2026-07-02 Top stories.
+
+## 2026-07-02: Kimi K2.7 Code GA in GitHub Copilot
+
+- Status: open
+- Category: Agentic coding
+- Sources: [GitHub Changelog](https://github.blog/changelog/2026-07-01-kimi-k2-7-is-now-available-in-github-copilot/)
+- Watch for: Business and Enterprise availability; independent agent-harness comparisons vs incumbent Copilot models; usage-based-billing cost in practice.
+- Last checked: 2026-07-02
+- Notes: GitHub made Moonshot AI open-weight Kimi K2.7 Code generally available in Copilot 2026-07-01, on Pro/Pro+/Max first with Business/Enterprise to follow (off by default until an admin enables the Kimi K2.7 Code policy). Selectable in the model picker across VS Code, Visual Studio, JetBrains, Xcode, Eclipse, the Copilot CLI, the cloud coding agent, github.com, and GitHub Mobile. Usage-based billing at provider list pricing. Covered 2026-07-02 Agentic coding.
+
 ## 2026-07-02: SharePoint deserialization RCE CVE-2026-45659 (KEV)
 
 - Status: open

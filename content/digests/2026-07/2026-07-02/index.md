@@ -10,7 +10,7 @@ months = ["2026-07"]
 
 [extra]
 status = "published"
-source_count = 26
+source_count = 32
 +++
 
 ## Top stories
@@ -33,6 +33,15 @@ source_count = 26
 - **Comments:** HN commenters flagged the usage terms: through 2026-07-07 a plan can spend up to 50 percent of its weekly limit on Fable 5, then continue on usage credits, and Fable 5 draws down usage faster than Opus 4.8.
 - **Why it matters:** The episode sets a template for classifier-gated redeployment and government pre-release review of frontier models, and the industry jailbreak-severity framework may standardize how labs triage misuse reports.
 - **Follow-up:** Watch for the published jailbreak-severity framework, independent testing of the new classifier, and whether Mythos 5 access widens.
+
+### Google Android developer verification begins blocking unverified app installs
+
+- **Category:** Markets
+- **Status:** developing
+- **Sources:** [Android Developers Blog](https://android-developers.googleblog.com/2025/08/elevating-android-security.html), [verification timeline](https://support.google.com/android-developer-console/answer/16650243), [F-Droid post](https://f-droid.org/2026/07/01/adv-malware.html), [HN discussion](https://news.ycombinator.com/item?id=48755965)
+- **Summary:** Google's Android Developer Verification requirement reaches its first enforcement milestone on 2026-09-30, when certified Android devices in Brazil, Indonesia, Singapore, and Thailand block installation of apps whose developer has not registered a legal identity with Google; wider rollout follows in 2027. The requirement applies to every install path, including sideloaded APKs and third-party stores such as F-Droid. Google states that advanced users can still install unverified apps after a one-time risk acknowledgment, a free account tier lets students and hobbyists distribute to a limited number of devices without a government ID, and installs over Android Debug Bridge for development are unaffected. An F-Droid post on 2026-07-01 (599 points on Hacker News) argues the program is gatekeeping rather than security, on the grounds that the Developer Console terms let Google decide what counts as "malware" without a published standard.
+- **Why it matters:** The change puts a mandatory developer-identity gate in front of all Android app distribution, including open-source repositories, and reshapes how independent and F-Droid developers ship apps.
+- **Follow-up:** Watch the 2026-09-30 activation in the first four countries, the friction of the power-user override, and whether F-Droid can operate under the verified-developer model.
 
 ### Cloudflare Monetization Gateway charges for any resource over x402
 
@@ -81,6 +90,15 @@ No major items found.
 - **Summary:** Z.ai (Zhipu) released ZCode, its own coding-agent harness for the GLM-5.2 model, for macOS, Windows, and Linux with no manual endpoint configuration. It organizes work as "Goals" with continuous plan, execute, and verify loops, exposes the model's 1M-token context, and can launch and monitor tasks remotely from chat apps including WeChat, Feishu, and Telegram. It is part of the GLM Coding Plan. Capability claims are the vendor's.
 - **Why it matters:** A model vendor shipping a first-party harness with chat-app task triggers is a direct Claude Code and Cursor alternative tied to an open-weight model.
 - **Follow-up:** Watch for independent agent-harness evaluation, the permission and data-scoping model for chat-app triggers, and standalone pricing detail.
+
+### Kimi K2.7 Code reaches general availability in GitHub Copilot
+
+- **Category:** Agentic coding
+- **Status:** confirmed
+- **Sources:** [GitHub Changelog](https://github.blog/changelog/2026-07-01-kimi-k2-7-is-now-available-in-github-copilot/), [HN discussion](https://news.ycombinator.com/item?id=48756602)
+- **Summary:** GitHub made Moonshot AI's open-weight Kimi K2.7 Code model generally available in Copilot on 2026-07-01, rolling out to Copilot Pro, Pro+, and Max plans with Business and Enterprise to follow in the coming weeks. The model appears in the Copilot model picker across VS Code, Visual Studio, JetBrains, Xcode, Eclipse, the Copilot CLI, the cloud coding agent, github.com, and GitHub Mobile. For Business and Enterprise it is off by default until an administrator enables the Kimi K2.7 Code policy, and usage bills under Copilot usage-based billing at provider list pricing.
+- **Why it matters:** An open-weight agentic coding model shipping as a first-class Copilot option widens the non-OpenAI, non-Anthropic model choice inside GitHub's default toolchain.
+- **Follow-up:** Watch Business and Enterprise availability and independent agent-harness comparisons against the incumbent Copilot models.
 
 ## Security
 
@@ -183,7 +201,7 @@ No major items found.
 
 ## Reddit and social pulse
 
-Reddit RSS remained degraded from the run environment: `r/programming` hot returned a single entry and `r/rust`, `r/golang`, `r/devops`, and `r/kubernetes` returned zero, consistent with the sustained late-June datacenter-IP block. No verified tracked-person primary posts surfaced this run.
+Reddit RSS remained degraded from the run environment: the later-run probe returned HTTP 403 for both `r/programming` and `r/rust` hot feeds, consistent with the sustained late-June datacenter-IP block. No verified tracked-person primary posts surfaced this run.
 
 ## Watchlist follow-ups
 
@@ -192,9 +210,9 @@ Reddit RSS remained degraded from the run environment: `r/programming` hot retur
 
 ## Sources checked
 
-- Hacker News via `make hn` (Algolia backend, full structured coverage, 0 degraded collections, 61 of 72 queries with hits)
-- Reddit RSS (degraded: `r/programming` 1 entry, other probed subreddits 0, datacenter-IP block)
-- AI sources (Anthropic newsroom, model vendor news)
+- Hacker News via `make hn` (Algolia backend, full structured coverage, 0 degraded collections; 61 of 72 queries with hits at first ingest, 58 of 72 on the later-run refresh)
+- Reddit RSS (degraded: later-run probe returned HTTP 403 for `r/programming` and `r/rust`, datacenter-IP block)
+- AI sources (Anthropic newsroom, model vendor news, GitHub Changelog)
 - ML research and arXiv papers via `make papers` (150 items, arXiv API)
 - Conferences and events via `make events` (0 upcoming in the 3-day window, 0 active; ICML 2026 starts 2026-07-06)
 - Books and publisher feeds via `make books` (21 items across No Starch, Pragmatic, Springer; none cleared the bar)
