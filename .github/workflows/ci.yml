@@ -1,9 +1,9 @@
 name: CI
 
 # Validates the Python package (lint, format, types, tests with the gate
-# coverage floor) and the full site build on every PR and push to main.
-# Snapshot data commits skip CI: they are bot-authored JSON validated by the
-# snapshot pipeline itself.
+# coverage floor), the full site build, and Markdown/TOML/JSON formatting on
+# every PR and push to main. Snapshot data commits skip CI: they are
+# bot-authored JSON validated by the snapshot pipeline itself.
 on:
   pull_request:
   push:
@@ -65,3 +65,25 @@ jobs:
         run: python3 -m pip install --require-hashes -r requirements.txt
       - name: Build and check site
         run: make check
+
+  # Formatting drift check for owner-edited files (docs, config, memory).
+  # dprint and rumdl exclude content/ and data/, and the tool versions are
+  # pinned in the Makefile, so this job and `make fmt-check` locally always
+  # agree. It reports drift; the publish gate (`make check`) stays
+  # formatting-free so unattended runs are never blocked on it.
+  format:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
+        with:
+          install: true
+          cache: true
+      - name: Check formatting
+        run: make fmt-check

@@ -82,10 +82,11 @@ check: build
 check-content:
 	@$(PY) check-content
 
-# Formatting is owner-side and intentionally not part of `check` or CI, so
-# unattended digest runs are never gated on it. dprint owns TOML/JSON; rumdl
-# owns Markdown. Both skip content/ and data/ (see dprint.json and .rumdl.toml).
-# The tools install on demand here, so they stay out of mise.toml [tools].
+# Formatting is enforced by CI's `format` job (`make fmt-check`) but is
+# intentionally not part of `check`, so unattended digest runs are never gated
+# on it. dprint owns TOML/JSON; rumdl owns Markdown. Both skip content/ and
+# data/ (see dprint.json and .rumdl.toml). The tools install on demand here,
+# so they stay out of mise.toml [tools].
 fmt:
 	@$(DPRINT) dprint fmt
 	@$(RUMDL) rumdl fmt
