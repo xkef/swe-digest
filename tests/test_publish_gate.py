@@ -484,4 +484,4 @@ class TestNewDomainReport:
         commit_all(gate_repo, DIGEST_SUBJECT)
         patch = export_patch(gate_repo)
         publish_run.apply(str(patch))
-        assert "brand-new-domain.example.net" in summary.read_text()
+        assert "- brand-new-domain.example.net" in summary.read_text().splitlines()
