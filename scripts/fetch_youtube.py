@@ -36,6 +36,7 @@ ALGOLIA = "https://hn.algolia.com/api/v1/search"
 USER_AGENT = "swe-digest-fetcher/1.0 (daily digest collection script)"
 TIMEOUT = 15
 RETRIES = 2
+MAX_BYTES = 8 * 1024 * 1024
 WINDOW_SECONDS = 48 * 3600
 SNAPSHOT_MAX_AGE_HOURS = 24
 DESCRIPTION_MAX_CHARS = 2000
@@ -56,7 +57,10 @@ def fetch_bytes(url: str) -> bytes:
         try:
             request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
             with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
-                return response.read()
+                data = response.read(MAX_BYTES + 1)
+                if len(data) > MAX_BYTES:
+                    raise RuntimeError(f"response exceeds {MAX_BYTES} bytes: {url}")
+                return data
         except (urllib.error.URLError, TimeoutError, OSError) as error:
             last_error = error
             time.sleep(1 + attempt)
@@ -98,7 +102,7 @@ def make_video(entry: ElementTree.Element, fallback_channel: str) -> dict | None
             if stats is not None and stats.get("views"):
                 views = int(stats.get("views"))
             star = community.find("media:starRating", NS)
-            if star is not None and star.get("count"):
+            if star is not None and star.get("count") and star.get("average"):
                 rating = {
                     "average": float(star.get("average")),
                     "count": int(star.get("count")),
@@ -137,7 +141,7 @@ def fetch_all_channels(channels: list[tuple[str, str]], since_iso: str) -> list[
         channel_id, label = channel
         try:
             return fetch_channel(channel_id, label, since_iso)
-        except (RuntimeError, ElementTree.ParseError) as error:
+        except (RuntimeError, ElementTree.ParseError, ValueError, TypeError) as error:
             print(f"warn: channel {label} ({channel_id}): {error}", file=sys.stderr)
             return []
 
@@ -210,12 +214,12 @@ def snapshot_collection(name: str):
     return collection["items"]
 
 
-def collect(label: str, backends: list[tuple[str, callable]], failures: list[str]):
+def collect(label: str, backends, failures: list[str]):
     for backend_name, backend in backends:
         try:
             items = backend()
             return {"backend": backend_name, "items": items}
-        except RuntimeError as error:
+        except (RuntimeError, ValueError, KeyError, TypeError, ElementTree.ParseError) as error:
             print(f"warn: {label}: {backend_name}: {error}", file=sys.stderr)
     failures.append(label)
     return {"backend": None, "items": []}

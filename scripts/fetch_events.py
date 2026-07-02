@@ -30,7 +30,9 @@ CACHE_DIR = ROOT / ".cache" / "events"
 WATCHLIST = ROOT / "data" / "watchlist.toml"
 
 LEAD_DAYS = 3
-SOON_DAYS = 3
+# Nearer subset of the lead window; must stay below LEAD_DAYS or every upcoming
+# event is flagged "soon".
+SOON_DAYS = 1
 
 
 def parse_day(value: str | None) -> date:

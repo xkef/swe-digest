@@ -36,12 +36,18 @@ HNPWA = "https://api.hnpwa.com/v0"
 USER_AGENT = "swe-digest-fetcher/1.0 (daily digest collection script)"
 TIMEOUT = 15
 RETRIES = 2
+MAX_BYTES = 8 * 1024 * 1024
 WINDOW_SECONDS = 24 * 3600
 QUERY_CORPUS_NEW_IDS = 300
 SNAPSHOT_MAX_AGE_HOURS = 12
 COMMENT_STORIES = 12
 COMMENTS_PER_STORY = 5
 COMMENT_MAX_CHARS = 1200
+
+# A backend failure surfaces as any of these: network (RuntimeError from
+# fetch_bytes/fetch_json), malformed JSON/XML (ValueError/ParseError), or a
+# missing/wrong-typed field in the response (KeyError/TypeError).
+FETCH_ERRORS = (RuntimeError, ValueError, KeyError, TypeError, ElementTree.ParseError)
 
 
 def fetch_bytes(url: str) -> bytes:
@@ -50,7 +56,10 @@ def fetch_bytes(url: str) -> bytes:
         try:
             request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
             with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
-                return response.read()
+                data = response.read(MAX_BYTES + 1)
+                if len(data) > MAX_BYTES:
+                    raise RuntimeError(f"response exceeds {MAX_BYTES} bytes: {url}")
+                return data
         except (urllib.error.URLError, TimeoutError, OSError) as error:
             last_error = error
             time.sleep(1 + attempt)
@@ -58,7 +67,10 @@ def fetch_bytes(url: str) -> bytes:
 
 
 def fetch_json(url: str):
-    return json.loads(fetch_bytes(url))
+    try:
+        return json.loads(fetch_bytes(url))
+    except json.JSONDecodeError as error:
+        raise RuntimeError(f"invalid JSON from {url}: {error}") from error
 
 
 def make_story(item_id, title, url, points, comments, created_at_i):
@@ -315,12 +327,14 @@ def snapshot_collection(name: str):
     return collection["items"]
 
 
-def collect(label: str, backends: list[tuple[str, callable]], failures: list[str]):
+def collect(label: str, backends, failures: list[str]):
+    # A bad backend degrades to the next one and finally to the snapshot,
+    # instead of killing the whole run. See FETCH_ERRORS.
     for backend_name, backend in backends:
         try:
             stories = backend()
             return {"backend": backend_name, "items": stories}
-        except RuntimeError as error:
+        except FETCH_ERRORS as error:
             print(f"warn: {label}: {backend_name}: {error}", file=sys.stderr)
     failures.append(label)
     return {"backend": None, "items": []}
@@ -379,7 +393,8 @@ def main() -> int:
                 lambda: [
                     story
                     for story in firebase_list("beststories", 100)
-                    if story["created_at"]
+                    if story["created_at"] is None
+                    or story["created_at"]
                     >= datetime.fromtimestamp(since, tz=timezone.utc).isoformat()
                 ],
             ),
@@ -470,7 +485,7 @@ def main() -> int:
             )
             for query in queries
         }
-    except RuntimeError as error:
+    except FETCH_ERRORS as error:
         print(f"warn: queries: algolia: {error}", file=sys.stderr)
         try:
             snapshot_queries = load_snapshot()["collections"]["queries"]
@@ -483,7 +498,7 @@ def main() -> int:
                 raise RuntimeError(f"snapshot missing queries: {missing[:3]}")
             query_backend = "repo-snapshot"
             query_results = {q: snapshot_queries["items"][q] for q in queries}
-        except RuntimeError as snapshot_error:
+        except FETCH_ERRORS as snapshot_error:
             print(f"warn: queries: repo-snapshot: {snapshot_error}", file=sys.stderr)
             query_backend = "title-match"
             corpus = {
@@ -494,13 +509,13 @@ def main() -> int:
             try:
                 for story in firebase_list("newstories", QUERY_CORPUS_NEW_IDS):
                     corpus.setdefault(story["id"], story)
-            except RuntimeError as corpus_error:
+            except FETCH_ERRORS as corpus_error:
                 print(f"warn: queries: corpus: {corpus_error}", file=sys.stderr)
                 try:
                     urls = [f"{HNAPI}/newest?page={page}" for page in (1, 2, 3)]
                     for story in mirror_window(urls, since):
                         corpus.setdefault(story["id"], story)
-                except RuntimeError as mirror_error:
+                except FETCH_ERRORS as mirror_error:
                     print(
                         f"warn: queries: corpus mirror: {mirror_error}",
                         file=sys.stderr,
@@ -551,8 +566,8 @@ def main() -> int:
     )
     for story in ranked[:15]:
         points = story["points"] if story["points"] is not None else "?"
-        comments = story["comments"] if story["comments"] is not None else "?"
-        print(f"  {points:>4} pts {comments:>4} cmt  {story['title']}  [{story['hn_url']}]")
+        cmt = story["comments"] if story["comments"] is not None else "?"
+        print(f"  {points:>4} pts {cmt:>4} cmt  {story['title']}  [{story['hn_url']}]")
 
     if failures:
         print(f"DEGRADED: {', '.join(failures)}", file=sys.stderr)

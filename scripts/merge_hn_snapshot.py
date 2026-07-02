@@ -64,7 +64,8 @@ def main() -> int:
             old_queries.get(query, []), new_queries["items"].get(query, [])
         )
     out["collections"]["queries"] = {
-        "backend": new_queries["backend"],
+        "backend": new_queries["backend"]
+        or old["collections"].get("queries", {}).get("backend"),
         "items": merged_queries,
     }
 

@@ -20,6 +20,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from xml.etree import ElementTree
 
@@ -28,11 +29,12 @@ CACHE_DIR = ROOT / ".cache" / "papers"
 SNAPSHOT_DIR = ROOT / "data" / "papers"
 WATCHLIST = ROOT / "data" / "watchlist.toml"
 
-API = "http://export.arxiv.org/api/query"
+API = "https://export.arxiv.org/api/query"
 RSS = "https://rss.arxiv.org/rss/"
 USER_AGENT = "swe-digest-fetcher/1.0 (daily digest collection script)"
 TIMEOUT = 20
 RETRIES = 2
+MAX_BYTES = 8 * 1024 * 1024
 API_PAUSE = 3
 WINDOW_SECONDS = 72 * 3600
 SNAPSHOT_MAX_AGE_HOURS = 24
@@ -50,7 +52,10 @@ def fetch_bytes(url: str) -> bytes:
         try:
             request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
             with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
-                return response.read()
+                data = response.read(MAX_BYTES + 1)
+                if len(data) > MAX_BYTES:
+                    raise RuntimeError(f"response exceeds {MAX_BYTES} bytes: {url}")
+                return data
         except (urllib.error.URLError, TimeoutError, OSError) as error:
             last_error = error
             time.sleep(1 + attempt)
@@ -69,6 +74,17 @@ def parse_published(value: str | None) -> datetime | None:
     try:
         return datetime.fromisoformat(value.replace("Z", "+00:00"))
     except ValueError:
+        return None
+
+
+def rss_published_iso(value: str | None) -> str | None:
+    """RSS pubDate is RFC 822 (e.g. "Mon, 30 Jun 2026 00:00:00 -0400"). Normalize
+    to ISO so the window filter and the snapshot sort match the API path."""
+    if not value:
+        return None
+    try:
+        return parsedate_to_datetime(value).isoformat()
+    except (TypeError, ValueError):
         return None
 
 
@@ -146,21 +162,20 @@ def fetch_rss(categories: list[str], since: datetime) -> list[dict]:
             if not link or not title:
                 continue
             pid = arxiv_id(link)
-            papers.setdefault(
-                pid,
-                {
-                    "id": pid,
-                    "title": " ".join(title.split()),
-                    "url": f"https://arxiv.org/abs/{pid}",
-                    "authors": [a.strip() for a in (item.findtext("{http://purl.org/dc/elements/1.1/}creator") or "").split(",") if a.strip()],
-                    "published_at": item.findtext("pubDate"),
-                    "summary": (item.findtext("description") or "").strip()[:SUMMARY_MAX_CHARS],
-                    "category": category,
-                },
-            )
+            paper = {
+                "id": pid,
+                "title": " ".join(title.split()),
+                "url": f"https://arxiv.org/abs/{pid}",
+                "authors": [a.strip() for a in (item.findtext("{http://purl.org/dc/elements/1.1/}creator") or "").split(",") if a.strip()],
+                "published_at": rss_published_iso(item.findtext("pubDate")),
+                "summary": (item.findtext("description") or "").strip()[:SUMMARY_MAX_CHARS],
+                "category": category,
+            }
+            if within_window(paper, since):
+                papers.setdefault(pid, paper)
     if not papers:
         raise RuntimeError("no papers from arXiv RSS")
-    return list(papers.values())
+    return sorted(papers.values(), key=lambda p: p["published_at"] or "", reverse=True)
 
 
 def load_snapshot() -> dict:
@@ -181,11 +196,11 @@ def snapshot_collection(name: str):
     return collection["items"]
 
 
-def collect(label: str, backends: list[tuple[str, callable]], failures: list[str]):
+def collect(label: str, backends, failures: list[str]):
     for backend_name, backend in backends:
         try:
             return {"backend": backend_name, "items": backend()}
-        except RuntimeError as error:
+        except (RuntimeError, ValueError, KeyError, TypeError, ElementTree.ParseError) as error:
             print(f"warn: {label}: {backend_name}: {error}", file=sys.stderr)
     failures.append(label)
     return {"backend": None, "items": []}

@@ -33,6 +33,7 @@ WATCHLIST = ROOT / "data" / "watchlist.toml"
 USER_AGENT = "swe-digest-fetcher/1.0 (daily digest collection script)"
 TIMEOUT = 15
 RETRIES = 2
+MAX_BYTES = 8 * 1024 * 1024
 WINDOW_SECONDS = 7 * 24 * 3600
 SNAPSHOT_MAX_AGE_HOURS = 36
 DESCRIPTION_MAX_CHARS = 2000
@@ -46,7 +47,10 @@ def fetch_bytes(url: str) -> bytes:
         try:
             request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
             with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
-                return response.read()
+                data = response.read(MAX_BYTES + 1)
+                if len(data) > MAX_BYTES:
+                    raise RuntimeError(f"response exceeds {MAX_BYTES} bytes: {url}")
+                return data
         except (urllib.error.URLError, TimeoutError, OSError) as error:
             last_error = error
             time.sleep(1 + attempt)
@@ -76,7 +80,9 @@ def to_iso(value: str | None) -> str | None:
         try:
             return datetime.fromisoformat(value.replace("Z", "+00:00")).isoformat()
         except ValueError:
-            return value
+            # An unparseable date must not fail open: a raw string would compare
+            # lexically against the ISO window cutoff and pass permanently.
+            return None
 
 
 def local(tag: str) -> str:
@@ -107,7 +113,12 @@ def parse_rss_item(item: ElementTree.Element, source: str) -> dict | None:
 
 def parse_atom_entry(entry: ElementTree.Element, source: str) -> dict | None:
     title = entry.findtext(f"{{{ATOM}}}title")
-    link_el = entry.find(f"{{{ATOM}}}link[@rel='alternate']") or entry.find(f"{{{ATOM}}}link")
+    # An Element with no children is falsy, so `a or b` would always discard a
+    # found alternate link (childless <link>) and fall through to the first
+    # link, often rel="self". Test for None explicitly.
+    link_el = entry.find(f"{{{ATOM}}}link[@rel='alternate']")
+    if link_el is None:
+        link_el = entry.find(f"{{{ATOM}}}link")
     link = link_el.get("href") if link_el is not None else None
     published = entry.findtext(f"{{{ATOM}}}published") or entry.findtext(f"{{{ATOM}}}updated")
     description = entry.findtext(f"{{{ATOM}}}summary") or entry.findtext(f"{{{ATOM}}}content") or ""
@@ -172,11 +183,11 @@ def snapshot_collection(name: str):
     return collection["items"]
 
 
-def collect(label: str, backends: list[tuple[str, callable]], failures: list[str]):
+def collect(label: str, backends, failures: list[str]):
     for backend_name, backend in backends:
         try:
             return {"backend": backend_name, "items": backend()}
-        except RuntimeError as error:
+        except (RuntimeError, ValueError, KeyError, TypeError, ElementTree.ParseError) as error:
             print(f"warn: {label}: {backend_name}: {error}", file=sys.stderr)
     failures.append(label)
     return {"backend": None, "items": []}
