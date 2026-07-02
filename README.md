@@ -58,6 +58,16 @@ derives generated, uncommitted outputs from those files:
 Each day page at `/digests/DATE/` is a super page that groups and links to its
 story pages.
 
+After the Zola build, `make build` runs Pagefind over the rendered story pages;
+the on-site search queries that sharded index, so nothing downloads the whole
+archive.
+
+Source collection runs through structured fetchers (`make hn`, `make yt`,
+`make events`, `make papers`, `make books`), which cache responses under
+`.cache/`. Scheduled snapshot workflows commit merged fetch results to
+`data/hn/`, `data/youtube/`, `data/papers/`, and `data/books/` as a fallback
+when live fetches fail during a digest run.
+
 ## Daily routine
 
 Run every morning:
@@ -76,15 +86,27 @@ Then follow `CLAUDE.md`. It points to `docs/routine.md`, `data/watchlist.toml`, 
 - `docs/routine.md`: detailed daily collection and writing process.
 - `memory/`: public long-running context, recurring topics, follow-ups, and source reliability notes.
 - `data/watchlist.toml`: maintained topic, source, repo, company, and people watchlist.
+- `data/runs/`: per-run logs with judgment notes, plus weekly review markers.
+- `data/hn/`, `data/youtube/`, `data/papers/`, `data/books/`: committed source
+  snapshots from the scheduled snapshot workflows.
 - `scripts/new_digest.py`: creates the daily digest skeleton.
 - `scripts/build_stories.py`: generates per-story pages and the home index.
 - `scripts/check_content.py`: validates digest structure without a full build.
+- `scripts/fetch_*.py` and `scripts/merge_*_snapshot.py`: source fetchers and
+  snapshot mergers behind the `make` targets and snapshot workflows.
+- `scripts/publish_run.py`: validates unattended run commits before the publish
+  job pushes them to `main`.
 
 ## Publishing
 
 GitHub Actions builds and deploys the site to GitHub Pages on every push to `main`.
 
 Set Pages source to GitHub Actions in repository settings.
+
+Unattended digest runs hold no write token: the agent job commits locally and
+exports its work, and a separate publish job (`scripts/publish_run.py`)
+validates the commits against a path allowlist and content checks before
+recreating them on `main` as verified `github-actions[bot]` commits.
 
 ## Private context
 
