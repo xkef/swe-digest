@@ -57,7 +57,6 @@ description = "Daily software engineering digest for {iso}."
 
 [taxonomies]
 categories = []
-tags = []
 months = ["{month}"]
 
 [extra]

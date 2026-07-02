@@ -32,11 +32,12 @@ belongs in each section:
 12. `Infrastructure`: Kubernetes, databases, queues, observability, networking, security infrastructure.
 13. `Engineering posts`: durable technical write-ups from company blogs and independent authors.
 14. `Books`: new technical-book releases with engineering relevance.
-15. `Markets and companies`: acquisitions, IPOs, S-1 filings, funding events only when they change engineering context.
-16. `Hacker News`: HN-native signal. High-discussion threads, Ask HN, Show HN, and notable comment threads, with paraphrased technical comment takeaways.
-17. `Reddit and social pulse`: Reddit and tracked-person findings, separated from verified fact.
-18. `Watchlist follow-ups`: updates to stories tracked in `memory/followups.md`.
-19. `Sources checked`: concise list of source classes checked.
+15. `New videos`: curated high-value videos (conference talks, maintainer or release explainers, deep walkthroughs, or widely discussed uploads), ranked by discussion signal. Added 2026-07-01.
+16. `Markets and companies`: acquisitions, IPOs, S-1 filings, funding events only when they change engineering context.
+17. `Hacker News`: HN-native signal. High-discussion threads, Ask HN, Show HN, and notable comment threads, with paraphrased technical comment takeaways.
+18. `Reddit and social pulse`: Reddit and tracked-person findings, separated from verified fact.
+19. `Watchlist follow-ups`: updates to stories tracked in `memory/followups.md`.
+20. `Sources checked`: concise list of source classes checked.
 
 ## Ranking rules
 
@@ -759,7 +760,7 @@ Proposal discipline:
 ## Daily quality pass
 
 The `digest-quality` workflow runs a deeper sweep over the day's already-built
-digest ~30 minutes after the first ingest (04:20 UTC, its own cron). It forces
+digest later the same day, after the first ingest (04:20 UTC, its own cron). It forces
 the discovery an incremental update skips: the full GitHub releases and
 trending checks, gap-fill of thin sections, primary-source verification, and
 re-ranking, updating the digest in place. Scope is digest and data only; it

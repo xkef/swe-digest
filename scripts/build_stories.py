@@ -195,17 +195,6 @@ def public(story: dict) -> dict:
     return {k: v for k, v in story.items() if k != "lines"}
 
 
-def facet_counts(stories: list[dict], key: str) -> list[dict]:
-    counts: dict[str, int] = {}
-    for story in stories:
-        value = story.get(key) or "Unlabeled"
-        counts[value] = counts.get(value, 0) + 1
-    return [
-        {"name": name, "count": count}
-        for name, count in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
-    ]
-
-
 def paginate_days(digests: list[dict], max_stories: int) -> list[list[dict]]:
     """Split days, newest first, into pages of whole days whose cumulative
     story count stays within max_stories. A page always holds at least one
@@ -294,9 +283,6 @@ def main() -> int:
                 "page": number,
                 "total_pages": len(pages),
                 "digests": days,
-                "categories": facet_counts(all_stories, "category"),
-                "statuses": facet_counts(all_stories, "status"),
-                "sections": facet_counts(all_stories, "section"),
                 "total_stories": len(all_stories),
                 "total_days": len(digests),
             },
