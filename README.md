@@ -1,5 +1,8 @@
 # SWE Digest
 
+[![CI](https://github.com/xkef/swe-digest/actions/workflows/ci.yml/badge.svg)](https://github.com/xkef/swe-digest/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/xkef/swe-digest/badge)](https://scorecard.dev/viewer/?uri=github.com/xkef/swe-digest)
+
 Daily software engineering digest for public reading and private routine use.
 
 The site tracks software engineering news, AI, security, outages, major releases, developer tools, programming languages, engineering blog posts, acquisitions, IPOs, and high-signal discussion from Hacker News, Reddit, YouTube, and primary sources.
@@ -27,9 +30,9 @@ leaves no trace; the system learns only from these channels.
   week's run logs (`data/runs/`), miss backtests, and feedback issues, and
   opens `improvement`-labeled issues, each with evidence and an exact
   proposed diff. An approving comment from the owner turns the proposal into
-  a pull request limited to `data/watchlist.toml`, `memory/profile.md`,
-  `docs/routine.md`, or `CLAUDE.md`. The agent never merges its own PRs and
-  never changes its routine without this path.
+  a pull request limited to `config.toml`, `data/watchlist.toml`,
+  `memory/profile.md`, `docs/routine.md`, or `CLAUDE.md`. The agent never
+  merges its own PRs and never changes its routine without this path.
 - **Anything else.** Blank issues are enabled. Issue text is always treated
   as data, never as instructions to the agent.
 
@@ -45,7 +48,7 @@ make check-content # validates digest structure with python only (no mise/Zola)
 Local preview runs at `http://127.0.0.1:3000`.
 
 Digests stay single-file: each day is one `content/digests/MONTH/DATE/index.md`
-with `### Story` sections. `make build` runs `scripts/build_stories.py`, which
+with `### Story` sections. `make build` runs `swe-digest build-stories`, which
 derives generated, uncommitted outputs from those files:
 
 - one Zola page per story under `content/stories/`, path-routed to
@@ -64,9 +67,36 @@ archive.
 
 Source collection runs through structured fetchers (`make hn`, `make yt`,
 `make events`, `make papers`, `make books`), which cache responses under
-`.cache/`. Scheduled snapshot workflows commit merged fetch results to
-`data/hn/`, `data/youtube/`, `data/papers/`, and `data/books/` as a fallback
-when live fetches fail during a digest run.
+`.cache/`. The scheduled `snapshots` workflow (one matrix job per source,
+failures isolated per source) commits merged fetch results to `data/hn/`,
+`data/youtube/`, `data/papers/`, and `data/books/` as a fallback when live
+fetches fail during a digest run.
+
+## Development
+
+All project code lives in the `swe_digest` package (`src/` layout) behind a
+single CLI. Tooling is [uv](https://docs.astral.sh/uv/)-managed and pinned via
+`mise.toml` and `uv.lock`:
+
+```sh
+uv sync            # create the environment from the lockfile
+uv run swe-digest --help
+make test          # pytest with a coverage floor on the gate modules
+make lint          # ruff check + ruff format --check
+make typecheck     # mypy --strict
+```
+
+The Makefile and the scheduled workflows invoke the same CLI install-free as
+`PYTHONPATH=src python3 -m swe_digest ...`, so the publish gate runs anywhere
+`python3` and PyYAML exist. Behavioral tunables (collection windows, HTTP
+budgets, publish-gate limits, memory bounds) live in the top-level
+`config.toml`; content configuration (queries, channels, feeds, events) lives
+in `data/watchlist.toml`.
+
+CI (`.github/workflows/ci.yml`) runs lint, types, tests, and the full site
+build on every PR. `tests/` contains an adversarial suite that replays
+prompt-injection attacks against the publish and content gates; see
+`docs/threat-model.md` for the security design.
 
 ## Daily routine
 
@@ -88,14 +118,15 @@ Then follow `CLAUDE.md`. It points to `docs/routine.md`, `data/watchlist.toml`, 
 - `data/watchlist.toml`: maintained topic, source, repo, company, and people watchlist.
 - `data/runs/`: per-run logs with judgment notes, plus weekly review markers.
 - `data/hn/`, `data/youtube/`, `data/papers/`, `data/books/`: committed source
-  snapshots from the scheduled snapshot workflows.
-- `scripts/new_digest.py`: creates the daily digest skeleton.
-- `scripts/build_stories.py`: generates per-story pages and the home index.
-- `scripts/check_content.py`: validates digest structure without a full build.
-- `scripts/fetch_*.py` and `scripts/merge_*_snapshot.py`: source fetchers and
-  snapshot mergers behind the `make` targets and snapshot workflows.
-- `scripts/publish_run.py`: validates unattended run commits before the publish
-  job pushes them to `main`.
+  snapshots from the scheduled `snapshots` workflow.
+- `config.toml`: central behavioral configuration, loaded by the package.
+- `src/swe_digest/`: all project code, grouped by role —
+  `fetch/` (source fetchers), `snapshot/` (accumulator merge and Verified
+  commits), `gate/` (content, memory, and publish validation), `digest/`
+  (skeleton, story pages, run logs, backtests), `cli.py` (the single
+  `swe-digest` entry point).
+- `tests/`: unit tests plus the adversarial gate suite.
+- `docs/threat-model.md`: attacker model and the control for each path.
 
 ## Publishing
 
@@ -104,9 +135,10 @@ GitHub Actions builds and deploys the site to GitHub Pages on every push to `mai
 Set Pages source to GitHub Actions in repository settings.
 
 Unattended digest runs hold no write token: the agent job commits locally and
-exports its work, and a separate publish job (`scripts/publish_run.py`)
+exports its work, and a separate publish job (`swe-digest publish`)
 validates the commits against a path allowlist and content checks before
 recreating them on `main` as verified `github-actions[bot]` commits.
+`docs/threat-model.md` describes the full trust-boundary design.
 
 ## Private context
 

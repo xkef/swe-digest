@@ -15,7 +15,7 @@ normalized facts in memory.
 ## Section contents
 
 `CLAUDE.md` owns the canonical section order, front matter, and story shape, and
-`scripts/check_content.py` enforces the section layout by date. This is what
+The content gate (`swe_digest.gate.check_content`, run by `make check-content`) enforces the section layout by date. This is what
 belongs in each section:
 
 1. `Top stories`: 3 to 7 items.
@@ -71,7 +71,7 @@ Daily check:
 make hn
 ```
 
-`scripts/fetch_hn.py` collects the front page, top stories from the last 24
+`make hn` (`swe_digest.fetch.hn`) collects the front page, top stories from the last 24
 hours, Ask HN, Show HN, top comments for the highest-point threads of the
 day, and every `[hacker_news]` query in `data/watchlist.toml`. It writes
 structured results (item id, title, url, points, comments, created_at, and
@@ -95,7 +95,7 @@ Backend order per collection:
 5. hnrss.org RSS.
 6. Committed snapshot (`data/hn/`): the `hn-snapshot` GitHub Actions workflow
    runs the fetcher every three hours and merges each fetch into the day's
-   JSON in `data/hn/` by item id (`scripts/merge_hn_snapshot.py`), so the
+   JSON in `data/hn/` by item id (`swe_digest.snapshot.merge`), so the
    committed snapshot accumulates every story that surfaced during the day.
    The script uses the newest snapshot when every network backend fails and
    its `fetched_at` is under 12 hours old. A fresh snapshot counts as full
@@ -254,7 +254,7 @@ Always include the model identifier, release date, source, and concrete change w
 
 ## ML research checks
 
-Collection: `make papers` (`scripts/fetch_papers.py`) pulls the `[papers]`
+Collection: `make papers` (`swe_digest.fetch.papers`) pulls the `[papers]`
 categories and queries from the watchlist via the arXiv API, with arXiv RSS and
 the committed `data/papers/` snapshot as fallbacks. The `papers-snapshot`
 workflow accumulates results every six hours. Paper findings go in the
@@ -509,7 +509,7 @@ Selection rules:
 
 ## Conferences and events checks
 
-Collection: `make events` (`scripts/fetch_events.py`) reads the `[[events]]`
+Collection: `make events` (`swe_digest.fetch.events`) reads the `[[events]]`
 table in `data/watchlist.toml` and partitions it by date into events upcoming
 within 3 days (with a `days_until` countdown, flagged `soon`) and events active
 today. It makes no network call; the committed dates are the source of truth and
@@ -539,7 +539,7 @@ Selection rules:
 
 ## Books checks
 
-Collection: `make books` (`scripts/fetch_books.py`) reads the `[books]`
+Collection: `make books` (`swe_digest.fetch.books`) reads the `[books]`
 publisher feeds in `data/watchlist.toml`, pulls each RSS/Atom feed, and falls
 back to the committed `data/books/` snapshot. The `books-snapshot` workflow
 accumulates results every twelve hours. Working feeds are No Starch Press,
@@ -584,7 +584,7 @@ Collect new videos with the structured fetcher:
 make yt
 ```
 
-`scripts/fetch_youtube.py` reads the `[youtube]` channels in
+`make yt` (`swe_digest.fetch.youtube`) reads the `[youtube]` channels in
 `data/watchlist.toml` and pulls each channel's public RSS feed:
 
 ```text
