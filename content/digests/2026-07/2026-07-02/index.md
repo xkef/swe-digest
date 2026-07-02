@@ -10,7 +10,7 @@ months = ["2026-07"]
 
 [extra]
 status = "published"
-source_count = 32
+source_count = 35
 +++
 
 ## Top stories
@@ -51,6 +51,15 @@ source_count = 32
 - **Summary:** Cloudflare announced the Monetization Gateway on 2026-07-01, a control plane that lets customers charge for any Cloudflare-protected resource: web pages, datasets, APIs, or MCP tools. Payment verification and enforcement run at the edge to shield origins from payment volume. At launch, payments settle in stablecoins over x402, an open pay-over-HTTP protocol built around the 402 status code where a server answers a request with a price and payment target and the client repeats the request with proof of payment. Customers can price per REST verb or charge variable amounts by task complexity.
 - **Why it matters:** It packages metered, machine-payable access at the CDN layer, targeting agent and API traffic that lacks a native billing path.
 - **Follow-up:** Watch for adoption beyond crypto-native use, facilitator and settlement details, and whether non-stablecoin rails are added.
+
+### Vite+ enters beta as an MIT-licensed unified JavaScript toolchain
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [VoidZero announcement](https://voidzero.dev/posts/announcing-vite-plus-beta), [GitHub repository](https://github.com/voidzero-dev/vite-plus), [HN discussion](https://news.ycombinator.com/item?id=48759761)
+- **Summary:** VoidZero announced the Vite+ beta on 2026-07-02, a single toolchain that manages the runtime, package manager, and frontend tooling for a web project behind one CLI. It bundles Vite 8 for the dev server and build, Vitest for tests, Rolldown and tsdown for bundling, and Oxlint and Oxfmt for linting and formatting, plus a built-in task runner with monorepo support and caching, exposed through commands such as `vp dev`, `vp check`, `vp test`, `vp build`, and `vp run`. VoidZero states it decided to release Vite+ fully open source under the MIT license after initially considering a paid licensing model, and reports over 1,300 public repositories already depending on the package since the alpha. VoidZero was acquired by Cloudflare on 2026-06-04 and is building Void, a Vite-native deployment platform on top of Cloudflare.
+- **Why it matters:** It consolidates the fragmented JavaScript build, test, lint, and format toolchain behind one MIT-licensed entry point from the team that maintains Vite, which is used across a large share of the frontend ecosystem.
+- **Follow-up:** Watch for the stable release, adoption relative to standalone Vite plus separate tooling, and how the open-source Vite+ relates to the commercial Void platform.
 
 ### Jujutsu 0.43.0 adds jj run and drops Git-symbol resolution
 
@@ -210,15 +219,15 @@ Reddit RSS remained degraded from the run environment: the later-run probe retur
 
 ## Sources checked
 
-- Hacker News via `make hn` (Algolia backend, full structured coverage, 0 degraded collections; 61 of 72 queries with hits at first ingest, 58 of 72 on the later-run refresh)
-- Reddit RSS (degraded: later-run probe returned HTTP 403 for `r/programming` and `r/rust`, datacenter-IP block)
+- Hacker News via `make hn` (Algolia backend, full structured coverage, 0 degraded collections; 61 of 72 queries with hits at first ingest, 60 of 72 on the latest refresh)
+- Reddit RSS (degraded: latest probe returned HTTP 403 for `r/programming` and `r/rust`, datacenter-IP block)
 - AI sources (Anthropic newsroom, model vendor news, GitHub Changelog)
 - ML research and arXiv papers via `make papers` (150 items, arXiv API)
 - Conferences and events via `make events` (0 upcoming in the 3-day window, 0 active; ICML 2026 starts 2026-07-06)
 - Books and publisher feeds via `make books` (21 items across No Starch, Pragmatic, Springer; none cleared the bar)
 - Security advisories (CISA KEV catalog version 2026.07.01 count 1631, MSRC, NVD)
 - Status pages (GitHub, Cloudflare, AWS, Azure, npm quiet; Cloudflare scheduled maintenance only)
-- GitHub watchlist releases (full sweep of every `[github]` repo: jj 0.43.0, Prometheus 3.13.0, Grafana 13.1.0 surfaced; tmux 3.7b and Deno 2.9.1 are bugfix/patch releases below the bar) and `github.com/trending` daily plus language views (recurring AI-agent and agent-sandboxing cluster, no new verified emerging item)
+- GitHub watchlist releases (full sweep of every `[github]` repo: jj 0.43.0, Prometheus 3.13.0, Grafana 13.1.0 surfaced; tmux 3.7b and Deno 2.9.1 are bugfix/patch releases below the bar; re-swept this run, no new qualifying release) and `github.com/trending` daily plus language views (recurring AI-agent and agent-sandboxing cluster, no new verified emerging item)
 - Engineering blogs
 - YouTube channels via `make yt` (34 videos, 1 with a Hacker News discussion; none cleared the New videos bar)
 - Markets and company sources
