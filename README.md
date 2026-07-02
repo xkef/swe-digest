@@ -52,7 +52,8 @@ derives generated, uncommitted outputs from those files:
   `/digests/DATE/<slug>/`, so every story has its own page;
 - `data/digests/DATE.json`, the section data behind each `/digests/DATE/` page;
 - `data/home/page-N.json` plus stub pages under `content/home/` (routed to
-  `/page/N/`), the paginated data behind the filterable home index.
+  `/day/DATE/`), the paginated data behind the filterable home index, one
+  day per page.
 
 Each day page at `/digests/DATE/` is a super page that groups and links to its
 story pages.

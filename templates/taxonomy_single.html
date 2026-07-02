@@ -2,7 +2,6 @@
 {% import "macros.html" as macros %}
 
 {% block content %}
-{% if taxonomy.name == "months" %}
 {% set months = get_taxonomy(kind="months") %}
 {% set items = months.items | sort(attribute="name") %}
 {% set label = term.pages | first | get(key="date") | date(format='%B %Y') %}
@@ -26,23 +25,4 @@
   {{ macros::digest_rows(pages=term.pages) }}
   {{ macros::month_pager(newer=newer, label=label, older=older) }}
 </section>
-{% else %}
-<section class="layout listing">
-  <header class="page-header">
-    <p class="eyebrow">{{ taxonomy.name | capitalize }}</p>
-    <h1>{{ term.name }}</h1>
-  </header>
-  <ol class="digest-list compact">
-    {% for page in term.pages %}
-    <li>
-      {% if page.date %}<time datetime="{{ page.date | date(format='%Y-%m-%d') }}">{{ page.date | date(format='%Y-%m-%d') }}</time>{% endif %}
-      <div>
-        <h2><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h2>
-        {% if page.description %}<p>{{ page.description }}</p>{% endif %}
-      </div>
-    </li>
-    {% endfor %}
-  </ol>
-</section>
-{% endif %}
 {% endblock content %}

@@ -8,7 +8,7 @@ Authoring stays single-file: each day is one content/digests/MONTH/DATE/index.md
   /digests/DATE/<slug>/) so every story has its own page.
 - data/digests/DATE.json, the section data behind each /digests/DATE/ page.
 - data/home/page-N.json plus stub pages under content/home/ (routed to
-  /page/N/), the paginated data-driven home index grouped by digest.
+  /day/DATE/), the paginated data-driven home index, one day per page.
 
 Full-text search is built separately by Pagefind, which indexes the rendered
 story pages after `zola build` (see the Makefile build target).
@@ -209,8 +209,6 @@ def write_story_page(story: dict) -> None:
     ]
     if story["summary"]:
         fm.append(f"description = {toml_str(story['summary'])}")
-    if story["category"]:
-        fm += ["", "[taxonomies]", f"categories = [{toml_str(story['category'])}]"]
     fm += [
         "",
         "[extra]",
@@ -242,11 +240,11 @@ def write_json(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
-def write_home_stub(number: int) -> None:
+def write_home_stub(number: int, date: str) -> None:
     fm = [
         "+++",
-        f'title = "Page {number}"',
-        f'path = "page/{number}"',
+        f'title = "{date}"',
+        f'path = "day/{date}"',
         'template = "home.html"',
         "",
         "[extra]",
@@ -301,7 +299,8 @@ def main() -> int:
         )
         all_stories.extend(pub)
 
-    # One day per home page, newest first: /page/N/ is the Nth most recent day.
+    # One day per home page, newest first: the newest day is the site root and
+    # every older day is addressed by date at /day/DATE/.
     pages = [[day] for day in digests] or [[]]
     for number, days in enumerate(pages, start=1):
         payload = {
@@ -317,7 +316,7 @@ def main() -> int:
             payload["older_date"] = pages[number][0]["date"]
         write_json(HOME_JSON_DIR / f"page-{number}.json", payload)
         if number > 1:
-            write_home_stub(number)
+            write_home_stub(number, days[0]["date"])
 
     print(
         f"build-stories ok ({len(all_stories)} story pages, {len(digests)} digests, "

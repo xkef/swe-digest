@@ -6,7 +6,6 @@ template = "digest.html"
 description = "Daily software engineering digest for 2026-07-02."
 
 [taxonomies]
-categories = []
 months = ["2026-07"]
 
 [extra]

@@ -50,14 +50,12 @@
     {% if index.page == 2 %}
     <a href="{{ config.base_url | safe }}/">Newer: {{ index.newer_date }}</a>
     {% else %}
-    {% set prev = index.page - 1 %}
-    <a href="{{ get_url(path='/page/' ~ prev ~ '/', trailing_slash=true) | safe }}">Newer: {{ index.newer_date }}</a>
+    <a href="{{ get_url(path='/day/' ~ index.newer_date ~ '/', trailing_slash=true) | safe }}">Newer: {{ index.newer_date }}</a>
     {% endif %}
     {% endif %}
     <span>day {{ index.page }} of {{ index.total_days }}</span>
     {% if index.older_date %}
-    {% set next = index.page + 1 %}
-    <a href="{{ get_url(path='/page/' ~ next ~ '/', trailing_slash=true) | safe }}">Older: {{ index.older_date }}</a>
+    <a href="{{ get_url(path='/day/' ~ index.older_date ~ '/', trailing_slash=true) | safe }}">Older: {{ index.older_date }}</a>
     {% endif %}
   </nav>
   {% endif %}

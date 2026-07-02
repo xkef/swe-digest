@@ -58,7 +58,6 @@ template = "digest.html"
 description = "Daily software engineering digest for {iso}."
 
 [taxonomies]
-categories = []
 months = ["{month}"]
 
 [extra]
