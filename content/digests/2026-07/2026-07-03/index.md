@@ -10,7 +10,7 @@ months = ["2026-07"]
 
 [extra]
 status = "published"
-source_count = 39
+source_count = 43
 +++
 
 ## Top stories
@@ -79,6 +79,14 @@ No major items found.
 - **Summary:** Cursor published CursorBench 3.1, a vendor evaluation of coding agents on ambiguous multi-file tasks drawn from real Cursor sessions, covering codebase understanding, bugfinding, planning, and code review. The page ranks 36 model configurations and describes its per-task cost calculation from published per-token pricing, but does not disclose task construction or grading rubrics.
 - **Why it matters:** CursorBench is a signal on how frontier models perform inside one widely used agent harness, though as a vendor benchmark without a published rubric it is not an independent result.
 - **Follow-up:** Track whether Cursor publishes task construction and grading methodology or an independent replication appears.
+
+### Practitioner argues for a short-leash workflow when coding with AI agents
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [okTurtles blog](https://blog.okturtles.org/2026/07/short-leash-ai-method/), [HN discussion](https://news.ycombinator.com/item?id=48766026)
+- **Summary:** Greg Slepak (okTurtles) describes a short-leash method for using coding agents on security-critical software: break work into tracked steps, require a permission prompt that shows each diff before it applies, review and approve or deny every change, commit after each subtask, and record which models assisted in a mandatory pull-request AI-disclosure section. The post is a practitioner opinion drawn from maintaining the Group Income codebase, with no measured results or reproducible benchmark.
+- **Why it matters:** It is a concrete counter-model to autonomous agent workflows and reinforces the day's maintainer-review theme, positioning human diff review as the control that keeps AI-authored code accountable.
 
 ## Security
 
@@ -199,6 +207,14 @@ No major items found.
 - **Summary:** ZeroFS, a Show HN that reached 122 points, is a userspace log-structured filesystem that exposes S3-compatible object storage as POSIX filesystems over NFS and 9P and as raw block devices over NBD. Data is written as immutable segments, compressed with zstd or lz4 and encrypted with XChaCha20-Poly1305 before upload. It is dual-licensed AGPL-3.0 and commercial.
 - **Comments:** Commenters compared it to JuiceFS, SeaweedFS, and s3fs and questioned metadata latency and log-structured compaction pauses over a remote store, and warned that per-object read cost dominates when fetching data in 128 KiB parts. Several were skeptical of trusting storage to what they read as an AI-generated project and codebase.
 
+### Show HN: claude-real-video feeds videos to any LLM by selecting key frames
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [repository](https://github.com/HUANGCHIHHUNGLeo/claude-real-video), [Show HN discussion](https://news.ycombinator.com/item?id=48766005)
+- **Summary:** A Show HN reaching 141 points, claude-real-video (MIT) processes a video locally and emits frames, a transcript, and a manifest that any model can read. It selects frames on scene change rather than at fixed intervals, deduplicates near-identical shots by RGB pixel difference with a per-N-seconds density floor, prefers existing subtitles and falls back to Whisper for audio, and accepts URLs via yt-dlp or local files. The stated goal is to send fewer but more relevant frames to cut token usage while preserving comprehension.
+- **Why it matters:** It is a token-efficiency pattern for giving text or vision models video context without uploading media to a cloud service.
+
 ### Show HN and Ask HN signal
 
 - **Category:** Pulse
@@ -233,7 +249,7 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News: `make hn` succeeded via Algolia, 0 degraded collections, 59 of 72 queries with hits. Full structured coverage.
+- Hacker News: `make hn` succeeded via Algolia, 0 degraded collections, 57 of 72 queries with hits on the mid-day re-fetch. Full structured coverage. This update added the okTurtles short-leash agentic-coding method (HN 48766026) and the claude-real-video Show HN (HN 48766005), both surfaced after the first ingest.
 - Reddit: partially degraded from the run environment (r/programming returned, r/rust and r/netsec HTTP 429).
 - AI sources: OpenAI, Anthropic, Google DeepMind, and web search. No primary model or API release on 2026-07-03.
 - ML research and arXiv papers: `make papers` via arXiv RSS (654 items; API timed out, RSS fallback used).
