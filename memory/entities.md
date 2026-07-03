@@ -24,6 +24,9 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 - Git (git/git): distributed version control. Track stable releases, breaking changes, security-relevant defaults, and performance work. Released as git tags (no GitHub release objects); use the tag page and Documentation/RelNotes/X.Y.Z.adoc. Current 2.55.0 (2026-06-29). Last seen 2026-06-30.
 - ZLUDA (vosen/ZLUDA): compatibility layer running unmodified CUDA applications on AMD GPUs via ROCm. Track releases (blog at vosen.github.io/ZLUDA), workload coverage (PyTorch/ML, Blender, PhysX), and the break-the-CUDA-moat theme. Current Version 6 (2026-06-29). Last seen 2026-06-30.
 - Box2D and Box3D (erincatto): open-source physics engines for games by Erin Catto, C with a C API, MIT license. Box3D is the 3D sibling reusing the Box2D solver architecture. Track releases past Box3D v0.1.0 (2026-06-30), language bindings, and adoption. Last seen 2026-07-01.
+- Podman (containers/podman): daemonless rootless container engine and Docker alternative. Track releases, networking backends, Quadlet, and podman machine. Current 6.0.0 (2026-07-02) moves default networking from slirp4netns/iptables toward Netavark/Pasta/nftables, adds experimental Pesto rootless port forwarding and a Quadlet REST API. Last seen 2026-07-03.
+- Immich (immich-app/immich): self-hosted photo and video platform. Track major releases, breaking API changes, and migration notes. Current 3.0 (2026-07-02) adds Workflows automation (preview), mobile non-destructive editing, HLS transcoding (preview), and integrity checks; drops pgvecto.rs and restructures the API schema. Last seen 2026-07-03.
+- Deno (denoland/deno): JavaScript/TypeScript runtime. Track releases, Node compatibility, and the desktop-bundling path (Laufey framework, `deno desktop`/`--desktop`). Current 2.9.1 (2026-07-01). Last seen 2026-07-03.
 - Vite+ / VoidZero (voidzero-dev/vite-plus): unified JavaScript toolchain (one CLI over Vite 8, Vitest, Rolldown, tsdown, Oxlint, Oxfmt, plus a task runner). Entered beta 2026-07-02, released fully open source under MIT after initially considering a paid model. VoidZero (Vite maintainers) was acquired by Cloudflare 2026-06-04 and is building Void, a Vite-native deployment platform on Cloudflare. Track the stable release, adoption, and the open-source-Vite+/commercial-Void split. Last seen 2026-07-02.
 
 ## AI
@@ -88,7 +91,7 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 
 ## Linux and kernel
 
-- Linux kernel: track releases, merge windows, scheduler, io_uring, eBPF, filesystems, memory management, and security hardening. Current 7.1 stable; 7.2 merge window open. Last seen 2026-06-14.
+- Linux kernel: track releases, merge windows, scheduler, io_uring, eBPF, filesystems, memory management, and security hardening. Current 7.1 stable; 7.2 merge window open. Security regression surfaced 2026-07-03: since 6.9 (May 2024) suspend stopped wiping the LUKS master key from memory (commit a28d893, one-line fix on lore.kernel.org); see [[followups]]. Last seen 2026-07-03.
 - LWN.net: kernel and systems reporting. Track subscriber and free articles on kernel development and ecosystem changes. Last seen 2026-06-29.
 - Rust for Linux: track upstream progress, supported drivers, and toolchain requirements. Last seen 2026-06-29.
 - Asahi Linux: Linux on Apple Silicon (bootloader m1n1, GPU/audio/display drivers). Track progress reports, per-generation hardware support (M1/M2/M3), and upstreaming. Progress report 7.1 (2026-06-30): M3 high-quality audio, CPU freq switching, big.LITTLE scheduling; m1n1 v1.6.0 first to require Rust for stage 2; new V4L2 driver decodes 10-bit H.264 to 4K (VP9/HEVC/AV1 pending). Last seen 2026-07-02.

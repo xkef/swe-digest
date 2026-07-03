@@ -224,15 +224,6 @@ Format:
 - Last checked: 2026-06-12
 - Notes: CVE-2026-47281 (CVSS 9.6) assigned. TOCTOU race in Defender/VS Code interaction path. LPE to SYSTEM. Active exploitation confirmed 2026-06-12. Works on fully patched Win10/Win11. Patch status in June cumulative update disputed; treat as unpatched. Requires local ISO mount capability.
 
-## 2026-06-11: Devin Desktop Cascade EOL 2026-07-01
-
-- Status: open
-- Category: Dev tools
-- Sources: [Devin blog](https://devin.ai/blog/windsurf-is-now-devin-desktop/)
-- Watch for: Cascade EOL enforcement on 2026-07-01; CI pipeline breakage reports from teams still invoking Cascade.
-- Last checked: 2026-06-11
-- Notes: Windsurf rebranded to Devin Desktop 2026-06-02. Cascade (local agent) EOL 2026-07-01, replaced by Devin Local (Rust rewrite). Devin Desktop ships with ACP (Agent Client Protocol) support.
-
 ## 2026-06-11: Linux kernel splice()/vmsplice() removal proposal
 
 - Status: open
@@ -1123,3 +1114,21 @@ Format:
 - Watch for: A technical report with miniF2F or Lean benchmark numbers; weight availability and license; adoption in proof-assistant and verified-code tooling.
 - Last checked: 2026-07-01
 - Notes: Mistral published Leanstral 1.5 on 2026-06-30, optimized for automated theorem proving and autoformalization in Lean 4. Model card: 119B total parameters / 6.5B active (MoE), 256K context, free ($0) access. No benchmark numbers on the model card at release. Surfaced HN 48738938 (102 pts).
+
+## 2026-07-03: LUKS suspend stopped wiping disk-encryption keys since Linux 6.9
+
+- Status: open
+- Category: Security
+- Sources: [author write-up](https://mathstodon.xyz/@iblech/116769502749142438), [culprit commit](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a28d893eb3270cf62c10dd8777af0d8452cdc072), [one-line fix](https://lore.kernel.org/all/ajKwRtP8izwRsMmv@quasitopos/)
+- Watch for: Fix backport into stable kernel trees and distribution updates; the cryptsetup warning MR landing in a release; whether the fix has its own long-range interactions.
+- Last checked: 2026-07-03
+- Notes: Ingo Blechschmidt git-bisected that since Linux 6.9 (May 2024) the suspend path silently stopped flushing the LUKS master key from kernel memory on suspend to RAM, so full-disk-encryption keys stayed resident across suspend for 2+ years (full shutdown still wiped). Culprit is refactoring commit a28d893 with an unexpected long-range interaction with the encryption code; fix is one line (lore.kernel.org). cryptsetup MR 936 adds a warning instead of failing silently; NixOS PR 532499 adds a regression test. Surfaced HN 48763035 (433 pts) on 2026-07-03. Covered 2026-07-03 Top stories.
+
+## 2026-07-03: Podman v6.0.0 rootless networking rework
+
+- Status: open
+- Category: Dev tools
+- Sources: [Podman blog](https://blog.podman.io/2026/07/introducing-podman-v6-0-0/)
+- Watch for: Breaking-change reports from the slirp4netns-to-Pasta and iptables-to-nftables transition; Pesto rootless port forwarding stabilizing past experimental; Quadlet REST API adoption.
+- Last checked: 2026-07-03
+- Notes: Podman 6.0.0 released 2026-07-02. Default networking transitions from slirp4netns and iptables toward Netavark, Pasta, and nftables; adds experimental Pesto rootless port forwarding for custom networks. Quadlet gains a REST API, expanded .volume unit features, more distribution search paths; new `podman machine os update`; improved Docker API compatibility. HN 48762098 (438 pts). Covered 2026-07-03 Top stories.
