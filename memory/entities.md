@@ -99,7 +99,7 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 
 ## Agentic coding
 
-- Claude Code: Anthropic coding agent. Track releases, harness changes, MCP support, subagent features, credit/billing changes, and trust/telemetry claims (e.g. the 2026-06-30 steganographic request-marking claim). Current v2.1.175. Last seen 2026-06-30.
+- Claude Code: Anthropic coding agent. Track releases, harness changes, MCP support, subagent features, credit/billing changes, and trust/telemetry claims. 2026-06-30 steganographic request-marking claim plus a reverse-engineering report that v2.1.91+ (2026-04-02) silently checks proxy config and system time zone; an Anthropic team member said the check detects account resale/distillation and will be removed next update. Alibaba reported (Reuters, source says) to ban Claude Code at work from 2026-07-10 over the alleged backdoor; see [[followups]]. Current v2.1.175. Last seen 2026-07-03.
 - Cursor and GitHub Copilot: coding agents. Track release notes, model changes, agent capabilities, and billing/pricing changes. Last seen 2026-06-12.
 - Model Context Protocol: track spec changes, new servers and clients, and adoption. Last seen 2026-06-29.
 - Agent Client Protocol (ACP): open protocol (Apache 2.0) for editor-agent communication, created by Zed Industries; JSON-RPC over stdio. Track adoption and spec changes. Last seen 2026-06-29.

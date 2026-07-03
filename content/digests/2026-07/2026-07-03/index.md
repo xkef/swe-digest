@@ -10,7 +10,7 @@ months = ["2026-07"]
 
 [extra]
 status = "published"
-source_count = 43
+source_count = 51
 +++
 
 ## Top stories
@@ -34,6 +34,16 @@ source_count = 43
 - **Comments:** HN commenters welcomed the networking rework and asked about migrating existing Docker Compose setups; sentiment leaned toward Podman as the cleaner rootless implementation.
 - **Why it matters:** The networking backend change alters firewall and port-forwarding behavior for rootless containers, so operators upgrading from Podman 5.x should test connectivity and custom network setups.
 - **Follow-up:** Track breaking-change reports from the slirp4netns-to-Pasta and iptables-to-nftables transition and Pesto stabilization.
+
+### Alibaba to ban Claude Code at work over alleged backdoor risk after Anthropic confirms a proxy check
+
+- **Category:** Agentic coding
+- **Status:** developing
+- **Sources:** [Reuters](https://www.reuters.com/world/china/alibaba-ban-claude-code-workplace-over-alleged-backdoor-risks-source-says-2026-07-03/), [HN discussion](https://news.ycombinator.com/item?id=48772443)
+- **Summary:** Reuters reported on 2026-07-03, citing a source, that Alibaba will bar employees from using Claude Code in workplace environments starting 2026-07-10, after Chinese financial outlet Yicai reported Alibaba identified an embedded backdoor risk in the tool. The allegation originated in a 2026-06-30 reverse-engineering writeup claiming that Claude Code since v2.1.91 (2026-04-02) silently inspected users' proxy configuration and system time zone. A member of Anthropic's Claude Code team said on social media that the mechanism existed to detect account resale and model distillation rather than to spy on users, and that it would be removed in the next update. No third-party security firm has independently confirmed a backdoor.
+- **Comments:** HN commenters tied the ban to the request-marking and proxy-check reports of the prior days and argued the incident is a reason to prefer open-source coding agents and local models; others stressed that the reverse-engineering claims remain independently unverified.
+- **Why it matters:** A major cloud vendor banning a widely used coding agent, together with Anthropic acknowledging an undisclosed environment check, turns the running Claude Code telemetry question into a concrete tool-selection and data-governance decision for engineering teams.
+- **Follow-up:** Track the Claude Code update that removes the proxy and time-zone check, any Anthropic statement or documentation change, and whether other firms restrict the tool.
 
 ### crustc translates the Rust compiler to about 46 million lines of C
 
@@ -88,6 +98,15 @@ No major items found.
 - **Summary:** Greg Slepak (okTurtles) describes a short-leash method for using coding agents on security-critical software: break work into tracked steps, require a permission prompt that shows each diff before it applies, review and approve or deny every change, commit after each subtask, and record which models assisted in a mandatory pull-request AI-disclosure section. The post is a practitioner opinion drawn from maintaining the Group Income codebase, with no measured results or reproducible benchmark.
 - **Why it matters:** It is a concrete counter-model to autonomous agent workflows and reinforces the day's maintainer-review theme, positioning human diff review as the control that keeps AI-authored code accountable.
 
+### WebKit ships a Safari MCP server for autonomous web debugging
+
+- **Category:** Agentic coding
+- **Status:** confirmed
+- **Sources:** [WebKit blog](https://webkit.org/blog/18136/introducing-the-safari-mcp-server-for-web-developers/), [HN discussion](https://news.ycombinator.com/item?id=48769639)
+- **Summary:** WebKit published a Safari MCP server on 2026-07-01 that lets any Model Context Protocol client drive a Safari window for debugging. It exposes 16 tools spanning tab and navigation control, DOM inspection, clicks and typing, screenshots, console buffering, network request listing and inspection, JavaScript evaluation, performance timing, accessibility checks, and viewport and media emulation, so an agent can reproduce what a user sees. It requires Safari Technology Preview 247 or later with developer features enabled and is configured per agent (Claude, Codex, and others).
+- **Why it matters:** It gives coding agents a first-party browser-automation and inspection surface on Apple's engine, an alternative to Chromium-based DevTools MCP servers for front-end debugging workflows.
+- **Follow-up:** Track the server moving from Safari Technology Preview into a shipping Safari release and any WebDriver BiDi or DevTools overlap.
+
 ## Security
 
 ### Bernstein calls on standards bodies to reject non-hybrid ML-KEM in TLS
@@ -113,6 +132,15 @@ No major items found.
 - **Summary:** The self-hosted photo platform Immich released 3.0 on 2026-07-02 (patch 3.0.1 same day). It adds a drag-and-drop Workflows automation builder (preview), mobile non-destructive editing, a Recently Added view, HLS and real-time video transcoding (preview, web), mobile OCR, and integrity checks for untracked, missing, and checksum-mismatched files. Breaking changes affect API integrators: pgvecto.rs support is dropped, deprecated environment variables and old timeline sync endpoints are removed, durations move to milliseconds, and the error and validation schema is restructured.
 - **Why it matters:** Self-hosters upgrading across the v2-to-v3 boundary must complete the vectorchord migration first (from before v1.133.0) and update any third-party tooling built on the changed API.
 - **Follow-up:** Track workflow and HLS transcoding moving out of preview and third-party client updates for the new API schema.
+
+### ProseMirror creator releases Wordgard, an MIT semantic rich-text editor
+
+- **Category:** Dev tools
+- **Status:** discussion
+- **Sources:** [Wordgard](https://wordgard.net/), [HN discussion](https://news.ycombinator.com/item?id=48772573)
+- **Summary:** Marijn Haverbeke, author of ProseMirror and CodeMirror, published Wordgard, an open-source (MIT) in-browser rich-text editor library. It models documents as schema-based semantic structure with custom elements rather than free-form HTML, supports tables, nested lists, captioned figures, collaborative editing, accessibility, and right-to-left text, and exposes a programming interface for building customized editors. Commercial users are asked to help fund maintenance under a social, non-legal expectation.
+- **Why it matters:** A new editor foundation from the ProseMirror author is a candidate base layer for teams building structured document tooling, where schema-first content models reduce the HTML-sanitization surface.
+- **Follow-up:** Track a tagged release, versioning stability of the programming interface, and migration notes for ProseMirror users.
 
 ## Languages and runtimes
 
@@ -154,6 +182,14 @@ No major items found.
 - **Sources:** [DBOS blog](https://www.dbos.dev/blog/co-locating-workflow-state-with-your-data), [HN discussion](https://news.ycombinator.com/item?id=48765639)
 - **Summary:** A DBOS post argues that keeping durable-workflow checkpoints in the same Postgres database as application data lets the step checkpoint and the data update commit in one transaction. That removes the failure window that forces application-level idempotency bookkeeping, and it collapses the transactional-outbox pattern: either the update commits and the workflow is enqueued or neither happens.
 - **Why it matters:** It reframes a common distributed-systems problem (exactly-once execution across a workflow engine and a database) as a single-database transaction for teams already standardized on Postgres.
+
+### Ubicloud runs PostgreSQL with strict memory overcommit to avoid OOM-killer cascades
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [Ubicloud blog](https://www.ubicloud.com/blog/postgresql-and-the-oom-killer-why-we-use-strict-memory-overcommit), [HN discussion](https://news.ycombinator.com/item?id=48774509)
+- **Summary:** A Ubicloud post dated 2026-04-27 (front page on 2026-07-03) explains why they set `vm.overcommit_memory=2` for PostgreSQL. When the Linux OOM killer terminates any backend, the postmaster assumes shared memory may be corrupted and kills all backends, dropping every connection and forcing crash recovery. Strict overcommit makes the kernel return ENOMEM to a single allocation instead, so one backend fails its transaction and the postmaster stays up. They size the limit at 80 percent of physical memory plus 2 GB, which they say protects over 99 percent of their fleet, and note a one-character kernel accounting bug in 6.5 that forced them to disable the setting until the 6.8 fix.
+- **Why it matters:** It is a concrete operational recipe for turning a full PostgreSQL outage into a single failed query, relevant to anyone running Postgres on Linux without cgroup memory limits.
 
 ### git-annex maintainer spends about 100 hours excluding LLM-generated dependency code
 
@@ -249,7 +285,7 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News: `make hn` succeeded via Algolia, 0 degraded collections, 57 of 72 queries with hits on the mid-day re-fetch. Full structured coverage. This update added the okTurtles short-leash agentic-coding method (HN 48766026) and the claude-real-video Show HN (HN 48766005), both surfaced after the first ingest.
+- Hacker News: `make hn` succeeded via Algolia, 0 degraded collections, 54 of 72 queries with hits on the afternoon re-fetch. Full structured coverage. This update added the Alibaba Claude Code workplace ban (HN 48772443), the WebKit Safari MCP server (HN 48769639), the Wordgard editor (HN 48772573), and the Ubicloud PostgreSQL OOM-killer post (HN 48774509), all surfaced after the mid-day run.
 - Reddit: partially degraded from the run environment (r/programming returned, r/rust and r/netsec HTTP 429).
 - AI sources: OpenAI, Anthropic, Google DeepMind, and web search. No primary model or API release on 2026-07-03.
 - ML research and arXiv papers: `make papers` via arXiv RSS (654 items; API timed out, RSS fallback used).
