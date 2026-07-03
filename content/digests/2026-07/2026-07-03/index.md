@@ -10,7 +10,7 @@ months = ["2026-07"]
 
 [extra]
 status = "published"
-source_count = 34
+source_count = 39
 +++
 
 ## Top stories
@@ -127,7 +127,15 @@ No major items found.
 
 ## Infrastructure
 
-No major items found.
+### LMDB 1.0 released with a breaking on-disk format change
+
+- **Category:** Infrastructure
+- **Status:** confirmed
+- **Sources:** [upgrade notes](http://www.lmdb.tech/doc/upgrading.html), [documentation](http://www.lmdb.tech/doc/), [HN discussion](https://news.ycombinator.com/item?id=48766598)
+- **Summary:** LMDB (Lightning Memory-Mapped Database), the embedded copy-on-write key-value store used by OpenLDAP, Monero, and many language bindings, tagged 1.0.0 on 2026-06-30, its first 1.0 after more than a decade on the 0.9.x line. The 1.0 on-disk format is incompatible with 0.9 and there is no in-place upgrade, so existing data must be exported with the 0.9 `mdb_dump` and reimported with the 1.0 `mdb_load`. New features listed in the upgrade notes are incremental backup, page-level checksums and encryption, databases on raw block devices, two-phase commit, and page sizes up to 64KB.
+- **Comments:** HN commenters report production caveats: write latency degrading into multi-hour stalls once a database grows to several hundred GB, and iOS not paging dirty mmap pages back to disk causing app OOM under churn; some moved to libmdbx or RocksDB. Several flagged the 0.9-to-1.0 dump-and-restore requirement as the main migration cost.
+- **Why it matters:** Operators running LMDB-backed systems must plan an explicit data migration to adopt 1.0, and the added checksums, encryption, and incremental backup change the durability and operational story for embedded deployments.
+- **Follow-up:** Track 1.0.x point releases, downstream adoption in OpenLDAP and the language bindings, and whether the reported large-database write-stall behavior persists in 1.0.
 
 ## Engineering posts
 
@@ -183,6 +191,14 @@ No major items found.
 - **Summary:** A post arguing that the main value of code review is catching code that will be hard to maintain, rather than finding bugs, drew a large HN thread (334 points).
 - **Comments:** Commenters split on the premise. Some report finding plenty of bugs in review and argue architecture should already be settled in design before a pull request; others agree the durable payoff is steering away from patterns that get copied into future code, and one framed review cynically as gatekeeping hierarchy.
 
+### Show HN: ZeroFS presents S3 as POSIX filesystems and block devices
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [ZeroFS](https://www.zerofs.net/), [Show HN discussion](https://news.ycombinator.com/item?id=48761493)
+- **Summary:** ZeroFS, a Show HN that reached 122 points, is a userspace log-structured filesystem that exposes S3-compatible object storage as POSIX filesystems over NFS and 9P and as raw block devices over NBD. Data is written as immutable segments, compressed with zstd or lz4 and encrypted with XChaCha20-Poly1305 before upload. It is dual-licensed AGPL-3.0 and commercial.
+- **Comments:** Commenters compared it to JuiceFS, SeaweedFS, and s3fs and questioned metadata latency and log-structured compaction pauses over a remote store, and warned that per-object read cost dominates when fetching data in 128 KiB parts. Several were skeptical of trusting storage to what they read as an AI-generated project and codebase.
+
 ### Show HN and Ask HN signal
 
 - **Category:** Pulse
@@ -225,7 +241,7 @@ No major items found.
 - Books and publisher feeds: `make books` (21 items across No Starch, Pragmatic, Springer). None cleared the advanced or definitive bar; Springer entries are conference proceedings and the Pragmatic title is introductory.
 - Security advisories: CISA KEV JSON feed (unchanged), Bernstein post-quantum argument.
 - Status pages: no major provider outage; Cloudflare had only scheduled maintenance windows.
-- GitHub releases and trending: checked dev-tool and language repos (Podman 6.0.0, Immich 3.0, Deno 2.9.1 surfaced; no new releases for the others since 2026-07-02).
+- GitHub releases and trending: full sweep of every `[github]` repo in the quality pass. New qualifying items since the first ingest: none from the watchlist repos. Podman 6.0.0, Immich 3.0, and Deno 2.9.1 were already covered; tmux 3.7b, Neovim nightly, and Zed 1.10.0-pre are bugfix or rolling prereleases below the bar; Prometheus 3.13.0 and Grafana 13.1.0 (both 2026-07-01) were already covered in the 2026-07-02 digest, so not repeated here. `github.com/trending` overall plus rust, python, go, and typescript views showed the recurring AI agent and agent-skills cluster (strix, agentskills, NVIDIA/skills, superpowers, chrome-devtools-mcp) with no new verified emerging item. LMDB 1.0 (2026-06-30) surfaced via Hacker News and was added to Infrastructure.
 - Engineering blogs: DBOS, Joey Hess, and the core blog list.
 - YouTube channels: `make yt` (55 videos across 89 channels; 0 with an HN discussion object).
 - Markets and company sources: web search and Hacker News.

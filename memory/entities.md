@@ -56,6 +56,7 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 - GitHub: track outages, incident write-ups, postmortems, release changes, security advisories, and AI-traffic capacity strain. Last seen 2026-06-12.
 - Cloudflare: track outages, engineering blog posts, Workers, and security advisories. Shipped the Monetization Gateway 2026-07-01 (charge for any Cloudflare-protected resource: pages, datasets, APIs, MCP tools; edge-enforced; stablecoin settlement over the x402 pay-over-HTTP protocol). Track x402 adoption and settlement rails. Last seen 2026-07-02.
 - AWS, Azure, Google Cloud, Vercel, Netlify, Fastly, Datadog, Sentry, npm, PyPI, Docker Hub: track outages, incident write-ups, postmortems, release changes, and security advisories. Last seen 2026-06-29.
+- LMDB (Lightning Memory-Mapped Database, LMDB/lmdb, Howard Chu/Symas): embedded copy-on-write memory-mapped key-value store (OpenLDAP, Monero, many bindings). Tagged 1.0.0 (2026-06-30), first 1.0 after the decade-long 0.9.x line; 1.0 on-disk format is incompatible with 0.9 (dump/restore via mdb_dump/mdb_load), adds incremental backup, page-level checksums/encryption, raw-block-device DBs, two-phase commit, 64KB page sizes. Track 1.0.x adoption, bindings, and whether reported large-DB write stalls persist. Last seen 2026-07-03. Docs at lmdb.tech are HTTP-only (fetch via urllib, not WebFetch which forces HTTPS).
 
 ## Security
 
