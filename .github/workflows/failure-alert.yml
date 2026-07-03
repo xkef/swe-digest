@@ -3,7 +3,10 @@ name: failure-alert
 # Opens (or updates) one ops issue per failing scheduled workflow, so an
 # unattended failure surfaces in the issue list instead of rotting silently
 # in the Actions tab. Issues are created as github-actions[bot], which the
-# issue-guard workflow allowlists.
+# issue-guard workflow allowlists. The scheduled sweep exists because GitHub
+# sometimes drops workflow_run completion events (observed 2026-07-03 for
+# Deploy Pages failures); it re-scans recent failed runs so a dropped event
+# still surfaces within hours.
 on:
   workflow_run:
     workflows:
@@ -14,9 +17,12 @@ on:
       - Deploy Pages
       - CI
     types: [completed]
+  schedule:
+    - cron: "25 */6 * * *"
 
 permissions:
   issues: write
+  actions: read
 
 jobs:
   alert:
@@ -44,3 +50,48 @@ jobs:
           else
             gh issue create --repo "$REPO" --title "$title" --body "$body"
           fi
+
+  sweep:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Alert on failed runs whose workflow_run event was dropped
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          cutoff=$(date -u -d '7 hours ago' '+%Y-%m-%dT%H:%M:%SZ')
+          gh run list --repo "$REPO" --status failure --created ">$cutoff" \
+            --json name,url,headBranch,event \
+            --jq '.[] | select(.event != "pull_request")
+                  | [.name, .headBranch, .url] | @tsv' |
+          while IFS=$'\t' read -r name branch url; do
+            case "$name" in
+              "Daily digest"|"Digest quality pass"|"Weekly improvement"|"snapshots"|"Deploy Pages"|"CI") ;;
+              *) continue ;;
+            esac
+            title="ops: $name workflow failing"
+            body="Run failed on \`$branch\`: $url"
+            already_reported=false
+            for number in $(gh issue list --repo "$REPO" --state all --limit 20 \
+              --search "in:title \"$title\"" --json number,title \
+              --jq ".[] | select(.title == \"$title\") | .number"); do
+              if gh issue view "$number" --repo "$REPO" --json body,comments \
+                --jq '.body, .comments[].body' | grep -qF "$url"; then
+                already_reported=true
+                break
+              fi
+            done
+            if [ "$already_reported" = true ]; then
+              continue
+            fi
+            open_number=$(gh issue list --repo "$REPO" --state open \
+              --search "in:title \"$title\"" --json number,title \
+              --jq ".[] | select(.title == \"$title\") | .number" | head -1)
+            if [ -n "$open_number" ]; then
+              gh issue comment "$open_number" --repo "$REPO" --body "$body"
+            else
+              gh issue create --repo "$REPO" --title "$title" --body "$body"
+            fi
+          done
