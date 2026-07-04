@@ -4,30 +4,8 @@ from __future__ import annotations
 
 from datetime import UTC, date, datetime
 
+from swe_digest.digest.document import SECTIONS, digest_path
 from swe_digest.paths import ROOT
-
-SECTIONS = [
-    "Top stories",
-    "Conferences and events",
-    "AI",
-    "ML research",
-    "Agentic coding",
-    "Security",
-    "Outages",
-    "Developer tools",
-    "Languages and runtimes",
-    "Apple platforms",
-    "Linux and kernel",
-    "Infrastructure",
-    "Engineering posts",
-    "Books",
-    "New videos",
-    "Markets and companies",
-    "Hacker News",
-    "Reddit and social pulse",
-    "Watchlist follow-ups",
-    "Sources checked",
-]
 
 TEMPLATE_ITEM = """### Story title
 
@@ -97,7 +75,7 @@ def body() -> str:
 
 def main(day_arg: str | None = None) -> int:
     day = parse_day(day_arg)
-    target = ROOT / "content" / "digests" / day.strftime("%Y-%m") / day.isoformat() / "index.md"
+    target = digest_path(day.isoformat())
     if target.exists():
         print(f"exists: {target.relative_to(ROOT)}")
         return 0

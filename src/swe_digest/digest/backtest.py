@@ -26,15 +26,8 @@ import sys
 from datetime import UTC, datetime, timedelta
 
 from swe_digest import config
-from swe_digest.digest.run_log import (
-    DIGESTS,
-    SNAPSHOT_DIR,
-    hn_stories,
-    load_run_log,
-    normalize_url,
-    parse_digest,
-    save_run_log,
-)
+from swe_digest.digest import document
+from swe_digest.digest.runs import HN_SNAPSHOT_DIR, hn_stories, load_run_log, save_run_log
 from swe_digest.paths import ROOT
 
 TITLE_RATIO = config.BACKTEST_TITLE_RATIO
@@ -64,17 +57,17 @@ def classify(story_id: int, seen_ids: set[int], query_ids: set[int], have_run_lo
 
 def main(date: str | None = None, min_points: int = config.BACKTEST_MIN_POINTS) -> int:
     date = date or yesterday()
-    snapshot_path = SNAPSHOT_DIR / f"{date}.json"
-    digest_path = DIGESTS / date[:7] / date / "index.md"
+    snapshot_path = HN_SNAPSHOT_DIR / f"{date}.json"
+    digest_path = document.digest_path(date)
     for path in (snapshot_path, digest_path):
         if not path.exists():
             print(f"error: missing {path.relative_to(ROOT)}", file=sys.stderr)
             return 1
 
     snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
-    digest = parse_digest(digest_path.read_text(encoding="utf-8"))
-    digest_ids = set(digest["hn_ids"])
-    digest_urls = set(digest["urls"])
+    digest = document.parse(digest_path.read_text(encoding="utf-8"))
+    digest_ids = set(digest.hn_ids)
+    digest_urls = set(digest.urls)
 
     record = load_run_log(date)
     mechanical = record.get("mechanical", {})
@@ -93,9 +86,9 @@ def main(date: str | None = None, min_points: int = config.BACKTEST_MIN_POINTS) 
             continue
         if story["id"] in digest_ids:
             continue
-        if story.get("url") and normalize_url(story["url"]) in digest_urls:
+        if story.get("url") and document.normalize_url(story["url"]) in digest_urls:
             continue
-        if title_matches(story["title"], digest["titles"]):
+        if title_matches(story["title"], digest.titles):
             continue
         candidates.append(
             {

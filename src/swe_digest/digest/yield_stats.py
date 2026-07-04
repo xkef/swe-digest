@@ -18,9 +18,7 @@ from datetime import UTC, datetime, timedelta
 import yaml
 
 from swe_digest import config
-from swe_digest.paths import ROOT
-
-RUNS_DIR = ROOT / "data" / "runs"
+from swe_digest.digest.runs import RUNS_DIR
 
 DEGRADED_BACKENDS = {None, "title-match"}
 

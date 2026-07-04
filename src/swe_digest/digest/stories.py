@@ -26,20 +26,17 @@ from pathlib import Path
 
 import yaml
 
-from swe_digest.paths import ROOT
+from swe_digest.digest import document
+from swe_digest.digest.runs import RUNS_DIR
+from swe_digest.paths import DIGESTS, ROOT
 
-DIGESTS = ROOT / "content" / "digests"
 STORIES_DIR = ROOT / "content" / "stories"
 HOME_PAGES_DIR = ROOT / "content" / "home"
 DAY_JSON_DIR = ROOT / "data" / "digests"
 HOME_JSON_DIR = ROOT / "data" / "home"
-RUNS_DIR = ROOT / "data" / "runs"
 
 SKIP_SECTIONS = {"Watchlist follow-ups", "Sources checked"}
 
-FIELD = re.compile(r"^- \*\*(?P<label>[^:*]+):\*\*\s*(?P<value>.*)$")
-SECTION = re.compile(r"^##\s+(?P<title>.+?)\s*$")
-STORY = re.compile(r"^###\s+(?P<title>.+?)\s*$")
 FM_KEY = re.compile(r"^\s*(?P<key>\w+)\s*=\s*(?P<value>.+?)\s*$")
 
 
@@ -152,53 +149,26 @@ def parse_digest(path: Path) -> tuple[str, list[dict]]:
     text = path.read_text(encoding="utf-8")
     fm = parse_front_matter(text)
     date = fm.get("date", path.parent.name)
-    body = text.split("+++", 2)[-1]
 
     stories: list[dict] = []
-    section = ""
-    current: dict | None = None
-
-    def flush() -> None:
-        if current and current["section"] not in SKIP_SECTIONS:
-            stories.append(current)
-
-    for line in body.splitlines():
-        sec = SECTION.match(line)
-        if sec:
-            flush()
-            current = None
-            section = sec.group("title")
+    for section, entries in document.parse(text).sections:
+        if section in SKIP_SECTIONS:
             continue
-        sto = STORY.match(line)
-        if sto:
-            flush()
-            title = sto.group("title")
-            slug = slugify(title)
-            current = {
-                "date": date,
-                "section": section,
-                "title": title,
-                "slug": slug,
-                "url": f"/digests/{date}/{slug}/",
-                "category": "",
-                "status": "",
-                "summary": "",
-                "lines": [],
-            }
-            continue
-        if current:
-            field = FIELD.match(line)
-            if field:
-                current["lines"].append(line)
-                label = field.group("label").strip().lower()
-                value = strip_markdown(field.group("value"))
-                if label == "category":
-                    current["category"] = value
-                elif label == "status":
-                    current["status"] = value
-                elif label == "summary":
-                    current["summary"] = value
-    flush()
+        for story in entries:
+            slug = slugify(story.title)
+            stories.append(
+                {
+                    "date": date,
+                    "section": section,
+                    "title": story.title,
+                    "slug": slug,
+                    "url": f"/digests/{date}/{slug}/",
+                    "category": strip_markdown(story.fields.get("category", "")),
+                    "status": strip_markdown(story.fields.get("status", "")),
+                    "summary": strip_markdown(story.fields.get("summary", "")),
+                    "lines": list(story.lines),
+                }
+            )
     return date, stories
 
 

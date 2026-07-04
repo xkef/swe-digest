@@ -4,7 +4,15 @@ from __future__ import annotations
 
 from datetime import date
 
-from swe_digest.digest.run_log import normalize_url, parse_digest
+from swe_digest.digest.document import (
+    SECTIONS,
+    SECTIONS_LEGACY,
+    SECTIONS_V2,
+    SECTIONS_V3,
+    normalize_url,
+    parse,
+    sections_for,
+)
 from swe_digest.fetch.books import to_iso
 from swe_digest.fetch.events import parse_event, partition
 from swe_digest.fetch.hn import comment_text, make_story, match_queries
@@ -71,8 +79,25 @@ class TestRunLogParsing:
         assert normalize_url("https://www.Example.com/a/b/") == "example.com/a/b"
 
     def test_parse_digest_counts_and_links(self) -> None:
-        digest = parse_digest(digest_text())
-        assert digest["source_count"] == 2
-        assert digest["sections"]["Top stories"] == 1
-        assert digest["hn_ids"] == [1]
-        assert "example.com/post" in digest["urls"]
+        digest = parse(digest_text())
+        assert digest.source_count == 2
+        assert digest.section_counts["Top stories"] == 1
+        assert digest.titles == ["Example story"]
+        assert digest.hn_ids == [1]
+        assert "example.com/post" in digest.urls
+
+
+class TestSectionLayouts:
+    def test_cutover_dates(self) -> None:
+        assert sections_for("2026-07-01") == SECTIONS
+        assert sections_for("2026-06-30") == SECTIONS_V3
+        assert sections_for("2026-06-13") == SECTIONS_V2
+        assert sections_for("2026-06-12") == SECTIONS_LEGACY
+
+    def test_historical_layouts(self) -> None:
+        assert len(SECTIONS) == 20
+        assert [s for s in SECTIONS if s != "New videos"] == SECTIONS_V3
+        assert "Conferences and events" not in SECTIONS_V2
+        assert "Books" not in SECTIONS_V2
+        assert SECTIONS_LEGACY[13] == "HN and Reddit pulse"
+        assert "Hacker News" not in SECTIONS_LEGACY

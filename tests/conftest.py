@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from swe_digest.gate.check_content import SECTIONS
+from swe_digest.digest.document import SECTIONS
 
 DIGEST_DATE = "2026-07-02"
 DIGEST_MONTH = "2026-07"
