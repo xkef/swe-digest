@@ -10,7 +10,7 @@ months = ["2026-07"]
 
 [extra]
 status = "published"
-source_count = 32
+source_count = 34
 +++
 
 ## Top stories
@@ -24,15 +24,6 @@ source_count = 32
 - **Why it matters:** A flagship distribution replacing GNU userland with a Rust rewrite exposes the migration cost directly: a single argument-handling gap in one command halted image production and forced a per-command fallback rather than a clean cutover.
 - **Follow-up:** Track the upstream uutils `cp` fix merging and whether Ubuntu re-enables Rust `cp` in the image-build path.
 
-### Serious CVE disclosures spiked around AI autonomous vulnerability discovery
-
-- **Category:** Security
-- **Status:** discussion
-- **Sources:** [Epoch AI data insight](https://epoch.ai/data-insights/cve-severity-spike), [HN discussion](https://news.ycombinator.com/item?id=48780056)
-- **Summary:** An Epoch AI analysis reports that high- and critical-severity CVE disclosures from 21 large organizations reached about 1,500 in June 2026, more than 3.5 times the monthly record before Anthropic announced in April 2026 that Claude Mythos Preview could autonomously discover vulnerabilities. Epoch draws the counts from cve.org and limits them to a fixed set of 21 vendors. It states two caveats: the figures exclude discovered-but-unpublished vulnerabilities (Anthropic claims Project Glasswing alone identified over 10,000 undisclosed high- and critical-severity issues), and the rise may reflect both cheaper discovery and increased interest, so causality is uncertain.
-- **Why it matters:** If AI-assisted discovery is driving a step change in disclosed vulnerabilities, maintainers and vendors face a sustained increase in triage and patch load, which is the concrete cost behind the curl report-handling pause and the FFmpeg AI-found zero-days.
-- **Follow-up:** Track whether the elevated disclosure rate persists past June 2026 and any vendor or coordinated-disclosure process changes in response.
-
 ### Guix discloses four substitute and pull vulnerabilities including archive-extraction RCE
 
 - **Category:** Security
@@ -41,6 +32,15 @@ source_count = 32
 - **Summary:** The GNU Guix project disclosed four vulnerabilities in `guix substitute` and `guix pull`/`guix time-machine` on 2026-07-02, with CVE identifiers pending. The most serious is unsafe archive extraction in `restore-file` (`(guix serialization)`), where archives are extracted before hash verification, allowing arbitrary file writes and remote code execution as the build-daemon user. The others are narinfo substitution spoofing that can serve outdated substitutes, `file://` URI access that follows symlinks to read daemon-accessible files, and a path-traversal cache-key flaw in `authenticate-channel`. All four are fixed in commit 897832f and later.
 - **Why it matters:** The substitution and channel paths are how Guix systems fetch and authenticate software, so a pre-verification extraction bug turns a compromised or spoofed substitute server into daemon-user code execution on client machines.
 - **Follow-up:** Track CVE assignment and whether the fixes land in a tagged Guix release and in distribution packages.
+
+### Serious CVE disclosures spiked around AI autonomous vulnerability discovery
+
+- **Category:** Security
+- **Status:** discussion
+- **Sources:** [Epoch AI data insight](https://epoch.ai/data-insights/cve-severity-spike), [HN discussion](https://news.ycombinator.com/item?id=48780056)
+- **Summary:** An Epoch AI analysis reports that high- and critical-severity CVE disclosures from 21 large organizations reached about 1,500 in June 2026, more than 3.5 times the monthly record before Anthropic announced in April 2026 that Claude Mythos Preview could autonomously discover vulnerabilities. Epoch draws the counts from cve.org and limits them to a fixed set of 21 vendors. It states two caveats: the figures exclude discovered-but-unpublished vulnerabilities (Anthropic claims Project Glasswing alone identified over 10,000 undisclosed high- and critical-severity issues), and the rise may reflect both cheaper discovery and increased interest, so causality is uncertain.
+- **Why it matters:** If AI-assisted discovery is driving a step change in disclosed vulnerabilities, maintainers and vendors face a sustained increase in triage and patch load, which is the concrete cost behind the curl report-handling pause and the FFmpeg AI-found zero-days.
+- **Follow-up:** Track whether the elevated disclosure rate persists past June 2026 and any vendor or coordinated-disclosure process changes in response.
 
 ### 16-year-old SQLite WAL checkpoint corruption bug found with TLA+
 
@@ -121,7 +121,13 @@ No major items found.
 
 ## Developer tools
 
-No major items found.
+### Herdr, a terminal multiplexer built for coding agents, trends on GitHub
+
+- **Category:** Dev tools
+- **Status:** discussion
+- **Sources:** [herdr repository](https://github.com/ogulcancelik/herdr), [herdr.dev](https://herdr.dev)
+- **Summary:** Herdr is a single Rust binary (about 10MB, Linux and macOS, Windows in beta) that runs multiple coding agents in one terminal, each in its own real terminal so full-screen TUIs render correctly, and rolls each agent up to a blocked, working, done, or idle state in a sidebar without hooks. A background server keeps panes and agents alive across detach and reattach over ssh, and a local socket API and CLI let agents drive it. The project describes itself as tmux rebuilt for agents, with no GUI, account, or telemetry. It carries about 10.9k stars with a latest tag of v0.7.1 and reached the GitHub trending list on 2026-07-04.
+- **Why it matters:** Managing many concurrent coding agents is an emerging workflow problem, and a terminal-native, ssh-persistent multiplexer targets it without the Electron or macOS-only wrappers of existing GUI agent managers.
 
 ## Languages and runtimes
 
@@ -237,7 +243,7 @@ No major items found.
 - Books and publisher feeds: `make books` (21 items across No Starch, Pragmatic, Springer). None cleared the advanced or definitive bar; Springer entries are conference proceedings and the Pragmatic title (Practical Programming, 4th edition) is introductory.
 - Security advisories: CISA KEV JSON feed (unchanged at 2026.07.01, count 1631), Guix security post, MSI Center write-up, Epoch AI CVE-spike analysis.
 - Status pages: no major provider outage on 2026-07-03 or 2026-07-04; Cloudflare had only scheduled ARN and MRS maintenance windows.
-- GitHub releases and trending: checked every `[github]` repo. No new qualifying release since the 2026-07-03 digest. Linux v7.2-rc1 (tagged 2026-06-28) predates the last digest; neovim nightly, zed 1.10.0-pre, and tmux 3.7b are rolling or bugfix builds below the bar; Prometheus 3.13.0 and Grafana 13.1.0 (2026-07-01) were already covered.
+- GitHub releases and trending: rechecked every `[github]` repo release and tag. No new qualifying release since the 2026-07-03 digest. Linux v7.2-rc1 (tagged 2026-06-28) predates the last digest; neovim nightly, zed 1.10.0-pre, and tmux 3.7b are rolling or bugfix builds below the bar; Prometheus 3.13.0 and Grafana 13.1.0 (2026-07-01) were already covered; zig 0.15.2 (2025-10-11) and CPython v3.15.0b3 (2026-06-23) predate the window. Scanned `github.com/trending` overall and the Rust, Python, Go, and TypeScript language views: the dominant cluster is agent tooling (agent-skills frameworks agentskills/agentskills and obra/superpowers, the agent sandbox TencentCloud/CubeSandbox, the AI pentest tool usestrix/strix, and ChromeDevTools/chrome-devtools-mcp). Herdr, a Rust terminal multiplexer for coding agents, surfaced there and is added to Developer tools; the rest are established repos with no new dated event to publish.
 - Engineering blogs: Canonical dqlite, crocidb (FreeBSD), Dan Luu, and the core blog list.
 - YouTube channels: `make yt` (39 videos across 89 channels; 0 with an HN discussion object). Selected the Computerphile token-cost explainer and a CppCon Linux-debugging talk for New videos.
 - Markets and company sources: web search and Hacker News. No engineering-relevant acquisition, IPO, or filing on 2026-07-03 or 2026-07-04.
