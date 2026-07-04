@@ -223,6 +223,21 @@ class TestPaths:
             publish_run.check_paths([(mode, "memory/followups.md")], "test")
 
 
+class TestWritablePaths:
+    def test_digest_included_when_present(self, repo_tree: Path) -> None:
+        paths = publish_run.writable_paths(DIGEST_DATE, repo_tree)
+        assert paths[0] == f"content/digests/{DIGEST_MONTH}/{DIGEST_DATE}/index.md"
+        assert "memory/followups.md" in paths
+
+    def test_missing_digest_omitted(self, repo_tree: Path) -> None:
+        paths = publish_run.writable_paths("2031-01-01", repo_tree)
+        assert paths == [f"memory/{name}.md" for name in publish_run.MEMORY_FILES]
+
+    def test_every_writable_path_is_inside_the_allowlist(self, repo_tree: Path) -> None:
+        for path in publish_run.writable_paths(DIGEST_DATE, repo_tree):
+            assert any(p.match(path) for p in publish_run.ALLOWED_PATHS)
+
+
 class TestComments:
     def test_oversized_comment_rejected(self) -> None:
         with pytest.raises(SystemExit, match="exceeds"):

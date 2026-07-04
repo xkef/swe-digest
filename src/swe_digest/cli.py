@@ -39,6 +39,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     sub.add_parser("check-content", help="validate digest structure and screen content")
 
+    check_size = sub.add_parser("check-size", help="enforce the per-page gzip size budget")
+    check_size.add_argument("dist", nargs="?", default="dist")
+
+    fmt_paths = sub.add_parser("fmt-paths", help="list the files a run may format")
+    fmt_paths.add_argument("date", nargs="?", help="YYYY-MM-DD, default today UTC")
+
     publish = sub.add_parser("publish", help="validate and publish an unattended run")
     publish_sub = publish.add_subparsers(dest="step", required=True)
     publish_sub.add_parser("apply").add_argument("patch")
@@ -100,6 +106,21 @@ def run(args: argparse.Namespace) -> int:
         from swe_digest.gate.check_content import main as check_main
 
         return check_main()
+
+    if args.command == "check-size":
+        from swe_digest.gate.check_size import main as check_size_main
+
+        return check_size_main(args.dist)
+
+    if args.command == "fmt-paths":
+        from datetime import UTC, datetime
+
+        from swe_digest.gate.publish_run import writable_paths
+
+        date = args.date or datetime.now(UTC).strftime("%Y-%m-%d")
+        for path in writable_paths(date):
+            print(path)
+        return 0
 
     if args.command == "publish":
         from swe_digest.gate import publish_run

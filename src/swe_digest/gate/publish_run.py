@@ -25,6 +25,7 @@ from pathlib import Path
 from swe_digest import config
 from swe_digest.gate.manifest import IssueClose, NewIssue, load_manifest
 from swe_digest.git_gh import GitGh, commit_addition, parse_changes, working_addition
+from swe_digest.paths import ROOT
 
 REPO = config.REPO
 OWNER = config.OWNER
@@ -35,11 +36,13 @@ SUBJECTS = [
     re.compile(r"^chore: (publish|update) digest for \d{4}-\d{2}-\d{2}$"),
     re.compile(r"^chore: weekly improvement review \d{4}-\d{2}-\d{2}$"),
 ]
+# The memory files an unattended run may write and format.
+MEMORY_FILES = ("followups", "entities", "source-reliability", "access-notes")
 ALLOWED_PATHS = [
     re.compile(r"^content/digests/(\d{4}-\d{2})/\1-\d{2}/index\.md$"),
     re.compile(r"^data/runs/\d{4}-\d{2}-\d{2}\.yaml$"),
     re.compile(r"^data/runs/weekly/\d{4}-\d{2}-\d{2}\.yaml$"),
-    re.compile(r"^memory/(followups|entities|source-reliability|access-notes)\.md$"),
+    re.compile(rf"^memory/({'|'.join(MEMORY_FILES)})\.md$"),
 ]
 IMPROVEMENT_FILES = {
     "config.toml",
@@ -58,6 +61,17 @@ APPROVAL = re.compile(r"^\s*/?approved?\b", re.I | re.M)
 ALLOWED_MODES = {"100644", "100755"}
 DIFF_BLOCK = re.compile(r"```diff\n(.*?)```", re.S)
 URL = re.compile(r"https?://[^\s)\"'<>]+")
+
+
+def writable_paths(date: str, root: Path | None = None) -> list[str]:
+    """The repo-relative files a run may format (make fmt-run): the date's
+    digest when it exists plus the writable memory files. The concrete face
+    of ALLOWED_PATHS, so the formatting allowlist cannot drift from the
+    publish allowlist."""
+    root = root or ROOT
+    digest = f"content/digests/{date[:7]}/{date}/index.md"
+    paths = [digest] if (root / digest).exists() else []
+    return paths + [f"memory/{name}.md" for name in MEMORY_FILES]
 
 
 def domain(url: str) -> str:

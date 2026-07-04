@@ -71,12 +71,7 @@ check: build
 	@test -f $(DIST)/index.html
 	@test -f $(DIST)/feed.xml
 	@test -d $(DIST)/pagefind
-	@find $(DIST) -type f -not -path '$(DIST)/pagefind/*' \( -name '*.html' -o -name '*.css' -o -name '*.js' \) -print | while read -r f; do \
-		size=$$(gzip -c "$$f" | wc -c | tr -d ' '); \
-		if [ "$$size" -gt 32768 ]; then \
-			echo "$$f exceeds 32KB gzip ($$size bytes)"; exit 1; \
-		fi; \
-	done
+	@$(PY) check-size $(DIST)
 	@echo "check ok"
 
 check-content:
@@ -100,10 +95,7 @@ fmt-check:
 # unattended run can tidy its own output without touching gated routine files.
 # Tools install on demand; an unattended run treats a failure here as non-fatal.
 fmt-run:
-	@files="memory/followups.md memory/entities.md memory/source-reliability.md memory/access-notes.md"; \
-	month=$$(echo "$(TODAY)" | cut -c1-7); \
-	[ -f "content/digests/$$month/$(TODAY)/index.md" ] && files="content/digests/$$month/$(TODAY)/index.md $$files" || true; \
-	$(RUMDL) rumdl fmt --no-exclude $$files
+	@$(RUMDL) rumdl fmt --no-exclude $$($(PY) fmt-paths $(TODAY))
 
 new-digest:
 	@$(PY) new-digest $(TODAY)
