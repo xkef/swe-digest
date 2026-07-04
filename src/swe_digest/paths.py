@@ -1,8 +1,8 @@
 """Repository paths shared across the package.
 
 The package always runs from a checkout (installed editable by ``uv sync`` or
-imported via the ``scripts/`` shims), so the repository root is two levels
-above this file: src/swe_digest/paths.py -> src -> repo root.
+run as ``PYTHONPATH=src python3 -m swe_digest``), so the repository root is
+two levels above this file: src/swe_digest/paths.py -> src -> repo root.
 """
 
 from __future__ import annotations

@@ -11,6 +11,7 @@ Subpackages by role:
 - ``digest``: authoring and analysis around the digest itself (skeleton,
   story pages, run logs, backtests, yield stats).
 
-Entry points stay in ``scripts/*.py`` as thin shims so Makefile targets,
-workflows, and docs keep a stable interface.
+All entry points go through ``cli.py`` (``swe-digest ...`` or
+``python3 -m swe_digest ...``), so Makefile targets, workflows, and docs
+keep a stable interface.
 """
