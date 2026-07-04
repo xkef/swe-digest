@@ -4,11 +4,15 @@ Each case models a prompt-injected agent trying to smuggle a write past the
 deterministic validator: commits outside the path allowlist, forged subjects,
 symlinks at allowed paths, oversized or off-site issue comments, third-party
 issues, and manifest abuse. The gate must refuse every one.
+
+The gate crosses the GitGh adapter for every git and gh call. Unit cases pass
+FakeGitGh (in-memory: canned gh api responses, recorded commands); integration
+cases run real git in a temp repo through RepoGitGh, which stubs only the
+network-facing methods.
 """
 
 from __future__ import annotations
 
-import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -16,20 +20,56 @@ import pytest
 
 from swe_digest.gate import publish_run
 from swe_digest.gate.manifest import IssueClose, Manifest, NewIssue, parse_manifest
+from swe_digest.git_gh import GitGh
 
 from .conftest import DIGEST_DATE, DIGEST_MONTH, digest_text, git
 
 DIGEST_SUBJECT = f"chore: publish digest for {DIGEST_DATE}"
 
 
-def record_sh(calls: list[tuple[str, ...]]) -> Any:
-    """A stand-in for publish_run.sh that records invocations."""
+class FakeGitGh(GitGh):
+    """In-memory adapter: canned gh api responses by path, recorded sh calls,
+    recorded commit_on_branch replays. Never touches subprocess."""
 
-    def fake(*args: str, **_: object) -> str:
-        calls.append(args)
+    def __init__(self, responses: dict[str, Any] | None = None) -> None:
+        self.responses = responses or {}
+        self.calls: list[tuple[str, ...]] = []
+        self.commits: list[tuple[str, str, dict, int, int]] = []
+
+    def sh(self, *args: str, stdin: str | None = None) -> str:
+        self.calls.append(args)
         return ""
 
-    return fake
+    def gh_json(self, path: str) -> Any:
+        return self.responses[path]
+
+    def branch_oid(self, repo: str, branch: str) -> str:
+        return "deadbeef"
+
+    def commit_on_branch(
+        self, repo: str, branch: str, message: dict, additions: list[dict], deletions: list[dict]
+    ) -> None:
+        self.commits.append((repo, branch, message, len(additions), len(deletions)))
+
+
+class RepoGitGh(GitGh):
+    """Real git through subprocess, with the network-facing gh methods
+    stubbed, for integration cases that need actual history and an index."""
+
+    def __init__(self, responses: dict[str, Any] | None = None) -> None:
+        self.responses = responses or {}
+        self.commits: list[tuple[str, str, dict, int, int]] = []
+
+    def gh_json(self, path: str) -> Any:
+        return self.responses[path]
+
+    def branch_oid(self, repo: str, branch: str) -> str:
+        return "deadbeef"
+
+    def commit_on_branch(
+        self, repo: str, branch: str, message: dict, additions: list[dict], deletions: list[dict]
+    ) -> None:
+        self.commits.append((repo, branch, message, len(additions), len(deletions)))
 
 
 def commit_all(repo: Path, subject: str) -> None:
@@ -217,55 +257,64 @@ class TestApproval:
         assert not publish_run.APPROVAL.search(body)
 
 
+def issue_response(number: int, payload: dict) -> dict[str, Any]:
+    return {f"repos/{publish_run.REPO}/issues/{number}": payload}
+
+
 class TestIssueSideEffects:
-    def test_close_issue_rejects_non_owner(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr(
-            publish_run,
-            "gh_json",
-            lambda path: {
-                "user": {"login": "attacker"},
-                "state": "open",
-                "labels": [{"name": "story"}],
-            },
+    def test_close_issue_rejects_non_owner(self) -> None:
+        gh = FakeGitGh(
+            issue_response(
+                5,
+                {"user": {"login": "attacker"}, "state": "open", "labels": [{"name": "story"}]},
+            )
         )
         with pytest.raises(SystemExit, match="fails inbox checks"):
-            publish_run.close_issue(IssueClose(number=5, comment="done"))
+            publish_run.close_issue(gh, IssueClose(number=5, comment="done"))
+        assert gh.calls == []
 
-    def test_close_issue_rejects_wrong_label(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr(
-            publish_run,
-            "gh_json",
-            lambda path: {
-                "user": {"login": publish_run.OWNER},
-                "state": "open",
-                "labels": [{"name": "improvement"}],
-            },
+    def test_close_issue_rejects_wrong_label(self) -> None:
+        gh = FakeGitGh(
+            issue_response(
+                5,
+                {
+                    "user": {"login": publish_run.OWNER},
+                    "state": "open",
+                    "labels": [{"name": "improvement"}],
+                },
+            )
         )
         with pytest.raises(SystemExit, match="fails inbox checks"):
-            publish_run.close_issue(IssueClose(number=5, comment="done"))
+            publish_run.close_issue(gh, IssueClose(number=5, comment="done"))
+        assert gh.calls == []
 
-    def test_close_issue_happy_path(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        calls: list[tuple[str, ...]] = []
-        monkeypatch.setattr(
-            publish_run,
-            "gh_json",
-            lambda path: {
-                "user": {"login": publish_run.OWNER},
-                "state": "open",
-                "labels": [{"name": "story"}],
-            },
+    def test_close_issue_happy_path(self) -> None:
+        gh = FakeGitGh(
+            issue_response(
+                5,
+                {
+                    "user": {"login": publish_run.OWNER},
+                    "state": "open",
+                    "labels": [{"name": "story"}],
+                },
+            )
         )
-        monkeypatch.setattr(publish_run, "sh", record_sh(calls))
-        publish_run.close_issue(IssueClose(number=5, comment=f"Published: {publish_run.SITE}"))
-        assert calls and calls[0][:3] == ("gh", "issue", "close")
+        publish_run.close_issue(gh, IssueClose(number=5, comment=f"Published: {publish_run.SITE}"))
+        assert gh.calls and gh.calls[0][:3] == ("gh", "issue", "close")
 
     def test_create_issue_rejects_privileged_label(self) -> None:
         with pytest.raises(SystemExit, match="label not allowed"):
-            publish_run.create_issue(NewIssue(title="t", body="b", labels=("story",)))
+            publish_run.create_issue(FakeGitGh(), NewIssue(title="t", body="b", labels=("story",)))
 
     def test_create_issue_rejects_oversize(self) -> None:
         with pytest.raises(SystemExit, match="size limits"):
-            publish_run.create_issue(NewIssue(title="t" * 121, body="b"))
+            publish_run.create_issue(FakeGitGh(), NewIssue(title="t" * 121, body="b"))
+
+    def test_create_issue_happy_path(self) -> None:
+        gh = FakeGitGh()
+        publish_run.create_issue(gh, NewIssue(title="t", body="b", labels=("improvement",)))
+        assert gh.calls[0][:3] == ("gh", "issue", "create")
+        assert "--label" in gh.calls[0]
 
 
 class TestManifest:
@@ -297,91 +346,54 @@ class TestManifest:
         assert manifest.improvement_prs == (12,)
 
 
-class TestParseChanges:
-    def read(self, path: str) -> dict[str, str]:
-        return {"path": path, "contents": "..."}
-
-    def test_modify_and_delete(self) -> None:
-        additions, deletions = publish_run.parse_changes("M\0a.md\0D\0b.md\0", self.read)
-        assert [a["path"] for a in additions] == ["a.md"]
-        assert deletions == [{"path": "b.md"}]
-
-    def test_rename_becomes_delete_plus_add(self) -> None:
-        additions, deletions = publish_run.parse_changes("R100\0old.md\0new.md\0", self.read)
-        assert [a["path"] for a in additions] == ["new.md"]
-        assert deletions == [{"path": "old.md"}]
-
-    def test_spaced_paths_survive(self) -> None:
-        additions, _ = publish_run.parse_changes("A\0dir/a file.md\0", self.read)
-        assert additions[0]["path"] == "dir/a file.md"
-
-
-def gh_stub(responses: dict[str, Any]) -> Any:
-    def fake(path: str) -> Any:
-        return responses[path]
-
-    return fake
-
-
 class TestImprovementPr:
-    def test_requires_owner_approval(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        repo = publish_run.REPO
-        monkeypatch.setattr(
-            publish_run,
-            "gh_json",
-            gh_stub(
-                {
-                    f"repos/{repo}/issues/9": {
+    def test_requires_owner_approval(self) -> None:
+        gh = FakeGitGh(
+            {
+                **issue_response(
+                    9,
+                    {
                         "state": "open",
                         "labels": [{"name": "improvement"}],
                         "title": "t",
                         "body": "```diff\n--- a\n+++ b\n```",
                     },
-                    f"repos/{repo}/issues/9/comments": [
-                        {"author_association": "NONE", "body": "approved"},
-                        {"author_association": "OWNER", "body": "not approved yet"},
-                    ],
-                }
-            ),
+                ),
+                f"repos/{publish_run.REPO}/issues/9/comments": [
+                    {"author_association": "NONE", "body": "approved"},
+                    {"author_association": "OWNER", "body": "not approved yet"},
+                ],
+            }
         )
         with pytest.raises(SystemExit, match="no owner approval"):
-            publish_run.improvement_pr(9)
+            publish_run.improvement_pr(gh, 9)
 
-    def test_requires_diff_block(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        repo = publish_run.REPO
-        monkeypatch.setattr(
-            publish_run,
-            "gh_json",
-            gh_stub(
-                {
-                    f"repos/{repo}/issues/9": {
+    def test_requires_diff_block(self) -> None:
+        gh = FakeGitGh(
+            {
+                **issue_response(
+                    9,
+                    {
                         "state": "open",
                         "labels": [{"name": "improvement"}],
                         "title": "t",
                         "body": "please just do it",
                     },
-                    f"repos/{repo}/issues/9/comments": [
-                        {"author_association": "OWNER", "body": "approved"}
-                    ],
-                }
-            ),
+                ),
+                f"repos/{publish_run.REPO}/issues/9/comments": [
+                    {"author_association": "OWNER", "body": "approved"}
+                ],
+            }
         )
         with pytest.raises(SystemExit, match="no fenced diff block"):
-            publish_run.improvement_pr(9)
+            publish_run.improvement_pr(gh, 9)
 
-    def test_rejects_issue_without_label(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr(
-            publish_run,
-            "gh_json",
-            lambda path: {"state": "open", "labels": [], "title": "t", "body": ""},
-        )
+    def test_rejects_issue_without_label(self) -> None:
+        gh = FakeGitGh(issue_response(9, {"state": "open", "labels": [], "title": "t", "body": ""}))
         with pytest.raises(SystemExit, match="not an open improvement issue"):
-            publish_run.improvement_pr(9)
+            publish_run.improvement_pr(gh, 9)
 
-    def test_diff_outside_whitelist_rejected(
-        self, gate_repo: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
-        repo = publish_run.REPO
+    def test_diff_outside_whitelist_rejected(self, gate_repo: Path) -> None:
         diff = (
             "diff --git a/.github/workflows/evil.yml b/.github/workflows/evil.yml\n"
             "new file mode 100644\n"
@@ -390,27 +402,26 @@ class TestImprovementPr:
             "@@ -0,0 +1 @@\n"
             "+on: push\n"
         )
-        monkeypatch.setattr(
-            publish_run,
-            "gh_json",
-            gh_stub(
-                {
-                    f"repos/{repo}/issues/9": {
+        gh = RepoGitGh(
+            {
+                **issue_response(
+                    9,
+                    {
                         "state": "open",
                         "labels": [{"name": "improvement"}],
                         "title": "add helpful workflow",
                         "body": f"```diff\n{diff}```",
                     },
-                    f"repos/{repo}/issues/9/comments": [
-                        {"author_association": "OWNER", "body": "approved"}
-                    ],
-                }
-            ),
+                ),
+                f"repos/{publish_run.REPO}/issues/9/comments": [
+                    {"author_association": "OWNER", "body": "approved"}
+                ],
+            }
         )
-        monkeypatch.setattr(publish_run, "branch_oid", lambda branch="main": "deadbeef")
         with pytest.raises(SystemExit, match="disallowed files"):
-            publish_run.improvement_pr(9)
-        subprocess.run(["git", "switch", "-q", "main"], cwd=gate_repo, check=False)
+            publish_run.improvement_pr(gh, 9)
+        assert gh.commits == []
+        git(gate_repo, "switch", "-q", "main")
 
 
 class TestSideEffectsDispatch:
@@ -427,47 +438,32 @@ class TestSideEffectsDispatch:
             "improvement_prs: [8]\n"
         )
         seen: list[str] = []
-        monkeypatch.setattr(publish_run, "close_issue", lambda e: seen.append(f"close:{e.number}"))
-        monkeypatch.setattr(publish_run, "create_issue", lambda e: seen.append(f"new:{e.title}"))
-        monkeypatch.setattr(publish_run, "improvement_pr", lambda n: seen.append(f"pr:{n}"))
-        publish_run.side_effects(str(manifest))
+        monkeypatch.setattr(
+            publish_run, "close_issue", lambda gh, e: seen.append(f"close:{e.number}")
+        )
+        monkeypatch.setattr(
+            publish_run, "create_issue", lambda gh, e: seen.append(f"new:{e.title}")
+        )
+        monkeypatch.setattr(publish_run, "improvement_pr", lambda gh, n: seen.append(f"pr:{n}"))
+        publish_run.side_effects(str(manifest), FakeGitGh())
         assert seen == ["close:3", "new:t", "pr:8"]
 
     def test_missing_manifest_is_noop(self, tmp_path: Path) -> None:
-        publish_run.side_effects(str(tmp_path / "absent.yaml"))
-
-    def test_create_issue_happy_path(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        calls: list[tuple[str, ...]] = []
-        monkeypatch.setattr(publish_run, "sh", record_sh(calls))
-        publish_run.create_issue(NewIssue(title="t", body="b", labels=("improvement",)))
-        assert calls[0][:3] == ("gh", "issue", "create")
-        assert "--label" in calls[0]
+        publish_run.side_effects(str(tmp_path / "absent.yaml"), FakeGitGh())
 
 
 class TestPush:
-    def test_push_replays_each_commit(
-        self, gate_repo: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_push_replays_each_commit(self, gate_repo: Path) -> None:
         touch_digest(gate_repo)
         commit_all(gate_repo, DIGEST_SUBJECT)
-        replayed: list[tuple[str, dict[str, str], int, int]] = []
-        monkeypatch.setattr(
-            publish_run,
-            "commit_on_branch",
-            lambda branch, message, additions, deletions: replayed.append(
-                (branch, message, len(additions), len(deletions))
-            ),
-        )
-        publish_run.push()
-        assert replayed == [("main", {"headline": DIGEST_SUBJECT}, 1, 0)]
+        gh = RepoGitGh()
+        publish_run.push(gh)
+        assert gh.commits == [(publish_run.REPO, "main", {"headline": DIGEST_SUBJECT}, 1, 0)]
 
-    def test_push_without_commits_is_noop(
-        self, gate_repo: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
-        monkeypatch.setattr(
-            publish_run, "commit_on_branch", lambda *a: (_ for _ in ()).throw(AssertionError)
-        )
-        publish_run.push()
+    def test_push_without_commits_is_noop(self, gate_repo: Path) -> None:
+        gh = RepoGitGh()
+        publish_run.push(gh)
+        assert gh.commits == []
 
 
 class TestNewDomainReport:

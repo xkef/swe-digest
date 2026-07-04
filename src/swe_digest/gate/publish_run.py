@@ -10,24 +10,21 @@ Subcommands:
   apply PATCH      git am, then commit-count, subject, and path checks
   push             recreate each applied commit on main as a signed Verified commit
   side-effects M   close story issues, create issues, open improvement PRs
+
+Every git and gh call crosses the GitGh adapter, injected by the entry
+points, so the gate's checks are testable against an in-memory fake.
 """
 
 from __future__ import annotations
 
-import base64
-import json
 import os
 import re
-import subprocess
-import sys
-import time
-from collections.abc import Callable
 from functools import partial
 from pathlib import Path
-from typing import Any
 
 from swe_digest import config
 from swe_digest.gate.manifest import IssueClose, NewIssue, load_manifest
+from swe_digest.git_gh import GitGh, commit_addition, parse_changes, working_addition
 
 REPO = config.REPO
 OWNER = config.OWNER
@@ -62,41 +59,20 @@ ALLOWED_MODES = {"100644", "100755"}
 DIFF_BLOCK = re.compile(r"```diff\n(.*?)```", re.S)
 URL = re.compile(r"https?://[^\s)\"'<>]+")
 
-RETRIES = config.COMMIT_RETRIES
-COMMIT_MUTATION = """
-mutation($input: CreateCommitOnBranchInput!) {
-  createCommitOnBranch(input: $input) { commit { oid url } }
-}
-"""
-
-
-def sh(*args: str, stdin: str | None = None) -> str:
-    proc = subprocess.run(args, text=True, capture_output=True, input=stdin)
-    if proc.returncode != 0:
-        sys.stderr.write(proc.stderr)
-        raise SystemExit(f"command failed: {' '.join(args)}")
-    return proc.stdout
-
-
-def gh_json(path: str) -> Any:
-    return json.loads(sh("gh", "api", path))
-
 
 def domain(url: str) -> str:
     return re.sub(r"^https?://", "", url).split("/")[0].lower()
 
 
-def report_new_domains() -> None:
-    diff = sh("git", "diff", "origin/main..HEAD", "--", "content/digests")
+def report_new_domains(gh: GitGh) -> None:
+    diff = gh.sh("git", "diff", "origin/main..HEAD", "--", "content/digests")
     added = "\n".join(
         line[1:]
         for line in diff.splitlines()
         if line.startswith("+") and not line.startswith("+++")
     )
-    known_grep = subprocess.run(
-        ["git", "grep", "-ohE", r"https?://[^\s)\"'<>]+", "origin/main", "--", "content/digests"],
-        text=True,
-        capture_output=True,
+    known_grep = gh.run(
+        "git", "grep", "-ohE", r"https?://[^\s)\"'<>]+", "origin/main", "--", "content/digests"
     )
     known = {domain(url) for url in known_grep.stdout.split()}
     new = sorted({domain(url) for url in URL.findall(added)} - known)
@@ -123,11 +99,11 @@ def check_paths(entries: list[tuple[str, str]], scope: str) -> None:
             raise SystemExit(f"path outside the publish allowlist: {path} ({scope})")
 
 
-def added_entries(*rev: str) -> list[tuple[str, str]]:
+def added_entries(gh: GitGh, *rev: str) -> list[tuple[str, str]]:
     """(dst_mode, path) for every added or modified file in a diff range,
     skipping pure deletions (dst mode 000000)."""
     entries: list[tuple[str, str]] = []
-    for line in sh("git", "diff", "--raw", *rev).splitlines():
+    for line in gh.sh("git", "diff", "--raw", *rev).splitlines():
         if not line.startswith(":"):
             continue
         meta, _, path = line.partition("\t")
@@ -138,122 +114,45 @@ def added_entries(*rev: str) -> list[tuple[str, str]]:
     return entries
 
 
-def apply(patch: str) -> None:
-    sh("git", "config", "user.name", "swe-digest-publisher")
-    sh("git", "config", "user.email", "actions@users.noreply.github.com")
-    sh("git", "am", patch)
-    subjects = sh("git", "log", "--format=%s", "origin/main..HEAD").splitlines()
+def apply(patch: str, gh: GitGh | None = None) -> None:
+    gh = gh or GitGh()
+    gh.sh("git", "config", "user.name", "swe-digest-publisher")
+    gh.sh("git", "config", "user.email", "actions@users.noreply.github.com")
+    gh.sh("git", "am", patch)
+    subjects = gh.sh("git", "log", "--format=%s", "origin/main..HEAD").splitlines()
     if not 1 <= len(subjects) <= MAX_COMMITS:
         raise SystemExit(f"expected 1 to {MAX_COMMITS} commits, got {len(subjects)}")
     for subject in subjects:
         if len(subject) > 72 or not any(p.match(subject) for p in SUBJECTS):
             raise SystemExit(f"commit subject not allowed: {subject!r}")
-    commits = sh("git", "rev-list", "--reverse", "origin/main..HEAD").split()
+    commits = gh.sh("git", "rev-list", "--reverse", "origin/main..HEAD").split()
     for commit in commits:
-        check_paths(added_entries(f"{commit}^", commit), f"commit {commit[:9]}")
-    files = sh("git", "diff", "--name-only", "origin/main..HEAD").split()
-    report_new_domains()
+        check_paths(added_entries(gh, f"{commit}^", commit), f"commit {commit[:9]}")
+    files = gh.sh("git", "diff", "--name-only", "origin/main..HEAD").split()
+    report_new_domains(gh)
     print(f"apply ok ({len(subjects)} commit(s), {len(files)} file(s))")
 
 
-def branch_oid(branch: str = "main") -> str:
-    return sh("gh", "api", f"repos/{REPO}/git/refs/heads/{branch}", "--jq", ".object.sha").strip()
-
-
-def parse_changes(
-    status_output: str, read: Callable[[str], dict[str, str]]
-) -> tuple[list[dict], list[dict]]:
-    """Additions and deletions from a -z name-status stream, so spaced paths
-    survive. `read(path)` returns the addition dict (path plus base64 content)
-    from wherever the caller has the file: a commit object or the working tree."""
-    tokens = status_output.split("\0")
-    additions: list[dict] = []
-    deletions: list[dict] = []
-    index = 0
-    while index < len(tokens):
-        status = tokens[index]
-        if not status:
-            index += 1
-            continue
-        if status[0] in ("R", "C"):
-            deletions.append({"path": tokens[index + 1]})
-            additions.append(read(tokens[index + 2]))
-            index += 3
-        elif status[0] == "D":
-            deletions.append({"path": tokens[index + 1]})
-            index += 2
-        else:
-            additions.append(read(tokens[index + 1]))
-            index += 2
-    return additions, deletions
-
-
-def commit_addition(commit: str, path: str) -> dict:
-    blob = subprocess.run(["git", "show", f"{commit}:{path}"], capture_output=True).stdout
-    return {"path": path, "contents": base64.b64encode(blob).decode("ascii")}
-
-
-def working_addition(path: str) -> dict:
-    with open(path, "rb") as handle:
-        return {"path": path, "contents": base64.b64encode(handle.read()).decode("ascii")}
-
-
-def commit_on_branch(
-    branch: str, message: dict, additions: list[dict], deletions: list[dict]
-) -> None:
-    """Create one signed commit on `branch` through the GraphQL
-    createCommitOnBranch mutation, so GitHub signs it as github-actions[bot]
-    and it carries the Verified badge. Re-reads the branch head each attempt,
-    so it composes with commits landing concurrently on disjoint paths."""
-    for attempt in range(RETRIES):
-        payload = {
-            "query": COMMIT_MUTATION,
-            "variables": {
-                "input": {
-                    "branch": {"repositoryNameWithOwner": REPO, "branchName": branch},
-                    "message": message,
-                    "expectedHeadOid": branch_oid(branch),
-                    "fileChanges": {"additions": additions, "deletions": deletions},
-                }
-            },
-        }
-        proc = subprocess.run(
-            ["gh", "api", "graphql", "--input", "-"],
-            input=json.dumps(payload),
-            text=True,
-            capture_output=True,
-        )
-        if proc.returncode == 0:
-            response = json.loads(proc.stdout)
-            if not response.get("errors"):
-                print(f"committed {response['data']['createCommitOnBranch']['commit']['oid']}")
-                return
-            sys.stderr.write(json.dumps(response["errors"]) + "\n")
-        else:
-            sys.stderr.write(proc.stderr)
-        time.sleep(2 + attempt * 2)
-    raise SystemExit(f"createCommitOnBranch failed on {branch}")
-
-
-def commit_message(commit: str) -> dict:
-    headline, _, body = sh("git", "log", "-1", "--format=%B", commit).strip().partition("\n")
+def commit_message(gh: GitGh, commit: str) -> dict:
+    headline, _, body = gh.sh("git", "log", "-1", "--format=%B", commit).strip().partition("\n")
     message = {"headline": headline.strip()}
     if body.strip():
         message["body"] = body.strip()
     return message
 
 
-def push() -> None:
-    commits = sh("git", "rev-list", "--reverse", "origin/main..HEAD").split()
+def push(gh: GitGh | None = None) -> None:
+    gh = gh or GitGh()
+    commits = gh.sh("git", "rev-list", "--reverse", "origin/main..HEAD").split()
     if not commits:
         print("nothing to push")
         return
     for commit in commits:
         additions, deletions = parse_changes(
-            sh("git", "diff", "--name-status", "-z", f"{commit}^", commit),
-            partial(commit_addition, commit),
+            gh.sh("git", "diff", "--name-status", "-z", f"{commit}^", commit),
+            partial(commit_addition, gh, commit),
         )
-        commit_on_branch("main", commit_message(commit), additions, deletions)
+        gh.commit_on_branch(REPO, "main", commit_message(gh, commit), additions, deletions)
     print(f"push ok ({len(commits)} verified commit(s))")
 
 
@@ -266,9 +165,9 @@ def check_comment(number: int, comment: str) -> None:
             raise SystemExit(f"comment for #{number} links outside the site/repo: {url}")
 
 
-def close_issue(entry: IssueClose) -> None:
+def close_issue(gh: GitGh, entry: IssueClose) -> None:
     number, comment = entry.number, entry.comment
-    issue = gh_json(f"repos/{REPO}/issues/{number}")
+    issue = gh.gh_json(f"repos/{REPO}/issues/{number}")
     labels = {label["name"] for label in issue["labels"]}
     if (
         issue["user"]["login"] != OWNER
@@ -277,11 +176,11 @@ def close_issue(entry: IssueClose) -> None:
     ):
         raise SystemExit(f"issue #{number} fails inbox checks; refusing to close")
     check_comment(number, comment)
-    sh("gh", "issue", "close", str(number), "--repo", REPO, "--comment", comment)
+    gh.sh("gh", "issue", "close", str(number), "--repo", REPO, "--comment", comment)
     print(f"closed #{number}")
 
 
-def create_issue(entry: NewIssue) -> None:
+def create_issue(gh: GitGh, entry: NewIssue) -> None:
     title, body, labels = entry.title, entry.body, list(entry.labels)
     if not set(labels) <= {"improvement"}:
         raise SystemExit(f"label not allowed on new issue: {labels}")
@@ -293,16 +192,16 @@ def create_issue(entry: NewIssue) -> None:
     args = ["gh", "issue", "create", "--repo", REPO, "--title", title, "--body", body]
     for label in labels:
         args += ["--label", label]
-    sh(*args)
+    gh.sh(*args)
     print(f"created issue: {title}")
 
 
-def improvement_pr(number: int) -> None:
-    issue = gh_json(f"repos/{REPO}/issues/{number}")
+def improvement_pr(gh: GitGh, number: int) -> None:
+    issue = gh.gh_json(f"repos/{REPO}/issues/{number}")
     labels = {label["name"] for label in issue["labels"]}
     if "improvement" not in labels or issue["state"] != "open":
         raise SystemExit(f"issue #{number} is not an open improvement issue")
-    comments = gh_json(f"repos/{REPO}/issues/{number}/comments")
+    comments = gh.gh_json(f"repos/{REPO}/issues/{number}/comments")
     if not any(
         c["author_association"] == "OWNER" and APPROVAL.search(c["body"] or "") for c in comments
     ):
@@ -312,21 +211,21 @@ def improvement_pr(number: int) -> None:
         raise SystemExit(f"issue #{number} body has no fenced diff block")
     slug = re.sub(r"[^a-z0-9]+", "-", issue["title"].lower()).strip("-")[:40]
     branch = f"improvement/{number}-{slug}"
-    base_oid = branch_oid("main")
-    sh("git", "switch", "-c", branch, "origin/main")
-    sh("git", "apply", "--index", "-", stdin=block.group(1))
-    files = sh("git", "diff", "--cached", "--name-only").split()
+    base_oid = gh.branch_oid(REPO, "main")
+    gh.sh("git", "switch", "-c", branch, "origin/main")
+    gh.sh("git", "apply", "--index", "-", stdin=block.group(1))
+    files = gh.sh("git", "diff", "--cached", "--name-only").split()
     bad = set(files) - IMPROVEMENT_FILES
     if bad or not files:
         raise SystemExit(f"improvement diff touches disallowed files: {sorted(bad)}")
-    for mode, path in added_entries("--cached"):
+    for mode, path in added_entries(gh, "--cached"):
         if mode not in ALLOWED_MODES:
             raise SystemExit(f"improvement diff stages disallowed file mode {mode} for {path}")
-    sh("make", "check")
+    gh.sh("make", "check")
     additions, deletions = parse_changes(
-        sh("git", "diff", "--cached", "--name-status", "-z"), working_addition
+        gh.sh("git", "diff", "--cached", "--name-status", "-z"), working_addition
     )
-    sh(
+    gh.sh(
         "gh",
         "api",
         f"repos/{REPO}/git/refs",
@@ -335,11 +234,11 @@ def improvement_pr(number: int) -> None:
         "-f",
         f"sha={base_oid}",
     )
-    commit_on_branch(
-        branch, {"headline": f"chore: apply improvement #{number}"}, additions, deletions
+    gh.commit_on_branch(
+        REPO, branch, {"headline": f"chore: apply improvement #{number}"}, additions, deletions
     )
-    sh("git", "switch", "main")
-    sh(
+    gh.sh("git", "switch", "main")
+    gh.sh(
         "gh",
         "pr",
         "create",
@@ -357,27 +256,13 @@ def improvement_pr(number: int) -> None:
     print(f"opened improvement PR for #{number}")
 
 
-def side_effects(path: str) -> None:
+def side_effects(path: str, gh: GitGh | None = None) -> None:
+    gh = gh or GitGh()
     manifest = load_manifest(Path(path))
     for entry in manifest.issue_closes:
-        close_issue(entry)
+        close_issue(gh, entry)
     for issue in manifest.new_issues:
-        create_issue(issue)
+        create_issue(gh, issue)
     for number in manifest.improvement_prs:
-        improvement_pr(number)
+        improvement_pr(gh, number)
     print("side-effects ok")
-
-
-def main(argv: list[str]) -> int:
-    if len(argv) < 2:
-        raise SystemExit(__doc__)
-    command = argv[1]
-    if command == "apply":
-        apply(argv[2])
-    elif command == "push":
-        push()
-    elif command == "side-effects":
-        side_effects(argv[2])
-    else:
-        raise SystemExit(f"unknown subcommand: {command}")
-    return 0
