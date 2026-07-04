@@ -10,7 +10,7 @@ months = ["2026-07"]
 
 [extra]
 status = "published"
-source_count = 38
+source_count = 40
 +++
 
 ## Top stories
@@ -169,6 +169,14 @@ No major items found.
 - **Summary:** A debugging write-up traces apparent FreeBSD memory exhaustion to how the ZFS ARC and the reporting tools account for cache memory, explaining why free memory looks alarmingly low while the system is healthy. The post walks through the measurement tools and the difference between wired ARC memory and true pressure.
 - **Why it matters:** It is a concrete field guide for operators reading FreeBSD and ZFS memory metrics, where cache accounting routinely reads as exhaustion.
 
+### htop explained walks through every field in the process viewer
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [htop explained](https://peteris.rocks/blog/htop/), [HN discussion](https://news.ycombinator.com/item?id=48784777)
+- **Summary:** A detailed reference (Peteris Krumins, updated 2019-11-17) that annotates every element of the htop and top process-viewer output on Linux: the meters, load average, the difference between virtual, resident, and shared memory columns, the process states, and how the tools read `/proc`. It resurfaced on the Hacker News front page on 2026-07-04 at 189 points. It is an evergreen explainer rather than a new release.
+- **Why it matters:** Reading process and memory columns correctly is a routine operational skill, and the guide clears up common misreadings such as counting shared memory or virtual size as real usage.
+
 ## Books
 
 No major items found.
@@ -258,6 +266,6 @@ No major items found.
 - Security advisories: CISA KEV JSON feed (unchanged at 2026.07.01, count 1631), Guix security post, MSI Center write-up, Epoch AI CVE-spike analysis.
 - Status pages: no major provider outage on 2026-07-03 or 2026-07-04; Cloudflare had only scheduled ARN and MRS maintenance windows.
 - GitHub releases and trending: rechecked every `[github]` repo release and tag. No new qualifying release since the 2026-07-03 digest. Linux v7.2-rc1 (tagged 2026-06-28) predates the last digest; neovim nightly, zed 1.10.0-pre, and tmux 3.7b are rolling or bugfix builds below the bar; Prometheus 3.13.0 and Grafana 13.1.0 (2026-07-01) were already covered; zig 0.15.2 (2025-10-11) and CPython v3.15.0b3 (2026-06-23) predate the window. Scanned `github.com/trending` overall and the Rust, Python, Go, and TypeScript language views: the dominant cluster is agent tooling (agent-skills frameworks agentskills/agentskills and obra/superpowers, the agent sandbox TencentCloud/CubeSandbox, the AI pentest tool usestrix/strix, and ChromeDevTools/chrome-devtools-mcp). Herdr, a Rust terminal multiplexer for coding agents, surfaced there and is added to Developer tools; the rest are established repos with no new dated event to publish.
-- Engineering blogs: Canonical dqlite, crocidb (FreeBSD), Dan Luu, Ubicloud (PostgreSQL overcommit), 12gramsofcarbon (agent memory), and the core blog list.
+- Engineering blogs: Canonical dqlite, crocidb (FreeBSD), Dan Luu, Ubicloud (PostgreSQL overcommit), 12gramsofcarbon (agent memory), peteris.rocks (htop explainer, resurfaced), and the core blog list.
 - YouTube channels: `make yt` (39 videos across 89 channels; 0 with an HN discussion object). Selected the Computerphile token-cost explainer and a CppCon Linux-debugging talk for New videos.
 - Markets and company sources: web search and Hacker News. No engineering-relevant acquisition, IPO, or filing on 2026-07-03 or 2026-07-04.
