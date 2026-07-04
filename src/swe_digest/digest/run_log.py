@@ -15,7 +15,6 @@ from __future__ import annotations
 import json
 import re
 import sys
-import tomllib
 import urllib.parse
 from datetime import UTC, datetime
 from pathlib import Path
@@ -23,7 +22,8 @@ from typing import Any
 
 import yaml
 
-from swe_digest.paths import ROOT, WATCHLIST
+from swe_digest.paths import ROOT
+from swe_digest.sources import load_watchlist
 
 
 def _represent_str(dumper: yaml.SafeDumper, data: str) -> yaml.Node:
@@ -187,9 +187,8 @@ def main(date: str | None = None) -> int:
         seen_ids = sorted(hn_stories(hn))
     hn_record["seen_ids"] = seen_ids
 
-    with open(WATCHLIST, "rb") as handle:
-        for query in tomllib.load(handle)["hacker_news"]["queries"]:
-            yields.setdefault(query, None)
+    for query in load_watchlist()["hacker_news"]["queries"]:
+        yields.setdefault(query, None)
 
     record = load_run_log(date)
     mechanical = record.setdefault("mechanical", {})

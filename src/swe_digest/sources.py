@@ -9,11 +9,14 @@ from __future__ import annotations
 
 import json
 import sys
+import tomllib
 from collections.abc import Callable, Iterable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree
+
+from swe_digest.paths import WATCHLIST
 
 # A backend failure surfaces as any of these: network (RuntimeError from
 # fetch_bytes/fetch_json), malformed JSON/XML (ValueError/ParseError), or a
@@ -21,6 +24,13 @@ from xml.etree import ElementTree
 FETCH_ERRORS = (RuntimeError, ValueError, KeyError, TypeError, ElementTree.ParseError)
 
 Backend = tuple[str, Callable[[], Any]]
+
+
+def load_watchlist() -> dict[str, Any]:
+    """The parsed watchlist. Content config, re-read on every run; callers
+    pluck their own table and normalize its entries."""
+    with WATCHLIST.open("rb") as handle:
+        return tomllib.load(handle)
 
 
 def collect(label: str, backends: Iterable[Backend], failures: list[str]) -> dict[str, Any]:

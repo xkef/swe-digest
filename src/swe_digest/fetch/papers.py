@@ -12,29 +12,31 @@ paper coverage.
 
 from __future__ import annotations
 
-import json
 import sys
 import time
-import tomllib
 import urllib.parse
 from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
-from typing import Any
 from xml.etree import ElementTree
 
-from swe_digest import config, http, sources
-from swe_digest.paths import ROOT, WATCHLIST
-from swe_digest.sources import collect
+from swe_digest import config, http
+from swe_digest.fetch.run import FetchRun, Source
+from swe_digest.paths import CACHE, DATA
+from swe_digest.sources import load_watchlist
 
-CACHE_DIR = ROOT / ".cache" / "papers"
-SNAPSHOT_DIR = ROOT / "data" / "papers"
+SOURCE = Source(
+    name="Paper",
+    cache_dir=CACHE / "papers",
+    snapshot_dir=DATA / "papers",
+    snapshot_max_age_hours=config.PAPERS_SNAPSHOT_MAX_AGE_HOURS,
+    window_seconds=config.PAPERS_WINDOW_SECONDS,
+)
 
 API = "https://export.arxiv.org/api/query"
 RSS = "https://rss.arxiv.org/rss/"
+# arXiv responses are slower than the default HTTP budget allows.
 TIMEOUT = config.PAPERS_HTTP_TIMEOUT
 API_PAUSE = config.PAPERS_API_PAUSE
-WINDOW_SECONDS = config.PAPERS_WINDOW_SECONDS
-SNAPSHOT_MAX_AGE_HOURS = config.PAPERS_SNAPSHOT_MAX_AGE_HOURS
 SUMMARY_MAX_CHARS = config.PAPERS_SUMMARY_MAX_CHARS
 
 NS = {
@@ -43,14 +45,8 @@ NS = {
 }
 
 
-def fetch_bytes(url: str) -> bytes:
-    # arXiv responses are slower than the default HTTP budget allows.
-    return http.fetch_bytes(url, timeout=TIMEOUT)
-
-
 def load_config() -> tuple[list[str], list[str]]:
-    with open(WATCHLIST, "rb") as handle:
-        table = tomllib.load(handle).get("papers", {})
+    table = load_watchlist().get("papers", {})
     return table.get("categories", []), table.get("queries", [])
 
 
@@ -121,7 +117,7 @@ def fetch_api(categories: list[str], queries: list[str], since: datetime) -> lis
                 "max_results": 100 if index == 0 else 25,
             }
         )
-        feed = ElementTree.fromstring(fetch_bytes(f"{API}?{params}"))
+        feed = ElementTree.fromstring(http.fetch_bytes(f"{API}?{params}", timeout=TIMEOUT))
         for entry in feed.findall("atom:entry", NS):
             paper = make_paper(entry)
             if paper is None or not within_window(paper, since):
@@ -136,7 +132,7 @@ def fetch_rss(categories: list[str], since: datetime) -> list[dict]:
     papers: dict[str, dict] = {}
     for category in categories:
         try:
-            feed = ElementTree.fromstring(fetch_bytes(RSS + category))
+            feed = ElementTree.fromstring(http.fetch_bytes(RSS + category, timeout=TIMEOUT))
         except (RuntimeError, ElementTree.ParseError) as error:
             print(f"warn: rss {category}: {error}", file=sys.stderr)
             continue
@@ -168,53 +164,25 @@ def fetch_rss(categories: list[str], since: datetime) -> list[dict]:
     return sorted(papers.values(), key=lambda p: p["published_at"] or "", reverse=True)
 
 
-def snapshot_collection(name: str) -> Any:
-    return sources.snapshot_collection(SNAPSHOT_DIR, SNAPSHOT_MAX_AGE_HOURS, name)
-
-
 def main() -> int:
     categories, queries = load_config()
     if not categories and not queries:
         print("no categories or queries in watchlist [papers]", file=sys.stderr)
         return 1
 
-    now = int(time.time())
-    since = datetime.fromtimestamp(now - WINDOW_SECONDS, tz=UTC)
-    failures: list[str] = []
-
-    papers = collect(
+    run = FetchRun(SOURCE)
+    since = datetime.fromtimestamp(run.since, tz=UTC)
+    papers = run.collect(
         "papers",
         [
             ("arxiv-api", lambda: fetch_api(categories, queries, since)),
             ("arxiv-rss", lambda: fetch_rss(categories, since)),
-            ("repo-snapshot", lambda: snapshot_collection("papers")),
+            ("repo-snapshot", lambda: run.snapshot("papers")),
         ],
-        failures,
     )
 
-    result = {
-        "fetched_at": datetime.fromtimestamp(now, tz=UTC).isoformat(),
-        "window_hours": WINDOW_SECONDS // 3600,
-        "degraded": failures,
-        "collections": {"papers": papers},
-    }
-
-    CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    day = datetime.fromtimestamp(now, tz=UTC).strftime("%Y-%m-%d")
-    output_path = CACHE_DIR / f"{day}.json"
-    output_path.write_text(json.dumps(result, indent=2) + "\n")
-
     print(f"papers: {len(papers['items'])} items via {papers['backend']}")
-    print(f"wrote {output_path.relative_to(ROOT)}")
     for paper in papers["items"][:15]:
         print(f"  {paper['category'] or '?':>8}  {paper['title']}  [{paper['url']}]")
 
-    if failures:
-        print(f"DEGRADED: {', '.join(failures)}", file=sys.stderr)
-        print(
-            "Paper coverage is incomplete. Re-run before publishing and state"
-            " the degradation in Sources checked.",
-            file=sys.stderr,
-        )
-        return 1
-    return 0
+    return run.finish({"papers": papers})

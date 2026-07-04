@@ -25,9 +25,10 @@ import tomllib
 from datetime import UTC, date, datetime
 
 from swe_digest import config
-from swe_digest.paths import ROOT, WATCHLIST
+from swe_digest.paths import CACHE, ROOT
+from swe_digest.sources import load_watchlist
 
-CACHE_DIR = ROOT / ".cache" / "events"
+CACHE_DIR = CACHE / "events"
 
 LEAD_DAYS = config.EVENTS_LEAD_DAYS
 SOON_DAYS = config.EVENTS_SOON_DAYS
@@ -40,8 +41,7 @@ def parse_day(value: str | None) -> date:
 
 
 def load_events() -> list[dict]:
-    with open(WATCHLIST, "rb") as handle:
-        return list(tomllib.load(handle).get("events", []))
+    return list(load_watchlist().get("events", []))
 
 
 def parse_event(entry: dict) -> dict | None:

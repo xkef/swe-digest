@@ -16,26 +16,27 @@ from __future__ import annotations
 
 import json
 import sys
-import time
-import tomllib
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
-from datetime import UTC, datetime
 from typing import Any
 from xml.etree import ElementTree
 
-from swe_digest import config, sources
+from swe_digest import config
+from swe_digest.fetch.run import FetchRun, Source
 from swe_digest.http import fetch_bytes
-from swe_digest.paths import ROOT, WATCHLIST
-from swe_digest.sources import collect
+from swe_digest.paths import CACHE, DATA
+from swe_digest.sources import load_watchlist
 
-CACHE_DIR = ROOT / ".cache" / "yt"
-SNAPSHOT_DIR = ROOT / "data" / "youtube"
+SOURCE = Source(
+    name="YouTube",
+    cache_dir=CACHE / "yt",
+    snapshot_dir=DATA / "youtube",
+    snapshot_max_age_hours=config.YT_SNAPSHOT_MAX_AGE_HOURS,
+    window_seconds=config.YT_WINDOW_SECONDS,
+)
 
 FEED = "https://www.youtube.com/feeds/videos.xml?channel_id="
 ALGOLIA = "https://hn.algolia.com/api/v1/search"
-WINDOW_SECONDS = config.YT_WINDOW_SECONDS
-SNAPSHOT_MAX_AGE_HOURS = config.YT_SNAPSHOT_MAX_AGE_HOURS
 DESCRIPTION_MAX_CHARS = config.YT_DESCRIPTION_MAX_CHARS
 DISCUSSION_LOOKUPS = config.YT_DISCUSSION_LOOKUPS
 
@@ -49,8 +50,7 @@ NS = {
 def parse_channels() -> list[tuple[str, str]]:
     """Watchlist entries are "UC...|Channel Name"; skip the placeholder and
     any entry without a real channel id."""
-    with open(WATCHLIST, "rb") as handle:
-        raw = tomllib.load(handle)["youtube"]["channels"]
+    raw = load_watchlist()["youtube"]["channels"]
     channels = []
     for entry in raw:
         channel_id, _, label = entry.partition("|")
@@ -171,10 +171,6 @@ def attach_discussion(videos: list[dict]) -> None:
             video["discussion"] = discussion
 
 
-def snapshot_collection(name: str) -> Any:
-    return sources.snapshot_collection(SNAPSHOT_DIR, SNAPSHOT_MAX_AGE_HOURS, name)
-
-
 def main() -> int:
     channels = parse_channels()
     if not channels:
@@ -184,39 +180,22 @@ def main() -> int:
         )
         return 1
 
-    now = int(time.time())
-    since_iso = datetime.fromtimestamp(now - WINDOW_SECONDS, tz=UTC).isoformat()
-    failures: list[str] = []
-
-    videos = collect(
+    run = FetchRun(SOURCE)
+    videos = run.collect(
         "videos",
         [
-            ("youtube-rss", lambda: fetch_all_channels(channels, since_iso)),
-            ("repo-snapshot", lambda: snapshot_collection("videos")),
+            ("youtube-rss", lambda: fetch_all_channels(channels, run.since_iso)),
+            ("repo-snapshot", lambda: run.snapshot("videos")),
         ],
-        failures,
     )
 
     if videos["backend"] == "youtube-rss" and videos["items"]:
         attach_discussion(videos["items"])
 
-    result = {
-        "fetched_at": datetime.fromtimestamp(now, tz=UTC).isoformat(),
-        "window_hours": WINDOW_SECONDS // 3600,
-        "degraded": failures,
-        "collections": {"videos": videos},
-    }
-
-    CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    day = datetime.fromtimestamp(now, tz=UTC).strftime("%Y-%m-%d")
-    output_path = CACHE_DIR / f"{day}.json"
-    output_path.write_text(json.dumps(result, indent=2) + "\n")
-
     print(
         f"videos: {len(videos['items'])} items from {len(channels)} channels"
         f" via {videos['backend']}"
     )
-    print(f"wrote {output_path.relative_to(ROOT)}")
     discussed = sum(1 for video in videos["items"] if video.get("discussion"))
     print(f"  {discussed} videos with Hacker News discussion")
     for video in videos["items"][:15]:
@@ -229,12 +208,4 @@ def main() -> int:
             f"  {views:>8} views{stars}{hn}  {video['channel']}: {video['title']}  [{video['url']}]"
         )
 
-    if failures:
-        print(f"DEGRADED: {', '.join(failures)}", file=sys.stderr)
-        print(
-            "YouTube coverage is incomplete. Re-run before publishing and state"
-            " the degradation in Sources checked.",
-            file=sys.stderr,
-        )
-        return 1
-    return 0
+    return run.finish({"videos": videos})

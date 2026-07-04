@@ -10,11 +10,8 @@ routine never silently falls back to web search.
 
 from __future__ import annotations
 
-import json
 import re
 import sys
-import time
-import tomllib
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
@@ -22,21 +19,25 @@ from html import unescape
 from typing import Any
 from xml.etree import ElementTree
 
-from swe_digest import config, sources
+from swe_digest import config
+from swe_digest.fetch.run import FetchRun, Source
 from swe_digest.http import fetch_bytes, fetch_json
-from swe_digest.paths import ROOT, WATCHLIST
-from swe_digest.sources import FETCH_ERRORS, collect
+from swe_digest.paths import CACHE, DATA
+from swe_digest.sources import FETCH_ERRORS, load_watchlist
 
-CACHE_DIR = ROOT / ".cache" / "hn"
-SNAPSHOT_DIR = ROOT / "data" / "hn"
+SOURCE = Source(
+    name="HN",
+    cache_dir=CACHE / "hn",
+    snapshot_dir=DATA / "hn",
+    snapshot_max_age_hours=config.HN_SNAPSHOT_MAX_AGE_HOURS,
+    window_seconds=config.HN_WINDOW_SECONDS,
+)
 
 ALGOLIA = "https://hn.algolia.com/api/v1"
 FIREBASE = "https://hacker-news.firebaseio.com/v0"
 HNAPI = "https://api.hackerwebapp.com"
 HNPWA = "https://api.hnpwa.com/v0"
-WINDOW_SECONDS = config.HN_WINDOW_SECONDS
 QUERY_CORPUS_NEW_IDS = config.HN_QUERY_CORPUS_NEW_IDS
-SNAPSHOT_MAX_AGE_HOURS = config.HN_SNAPSHOT_MAX_AGE_HOURS
 COMMENT_STORIES = config.HN_COMMENT_STORIES
 COMMENTS_PER_STORY = config.HN_COMMENTS_PER_STORY
 COMMENT_MAX_CHARS = config.HN_COMMENT_MAX_CHARS
@@ -275,14 +276,6 @@ def firebase_comments(stories: list[dict]) -> dict:
     return results
 
 
-def load_snapshot() -> dict[str, Any]:
-    return sources.load_snapshot(SNAPSHOT_DIR, SNAPSHOT_MAX_AGE_HOURS)
-
-
-def snapshot_collection(name: str) -> Any:
-    return sources.snapshot_collection(SNAPSHOT_DIR, SNAPSHOT_MAX_AGE_HOURS, name)
-
-
 def match_queries(
     queries: list[str], corpus: list[dict[str, Any]], since: int
 ) -> dict[str, list[dict[str, Any]]]:
@@ -302,14 +295,12 @@ def match_queries(
 
 
 def main() -> int:
-    with open(WATCHLIST, "rb") as handle:
-        queries = tomllib.load(handle)["hacker_news"]["queries"]
+    queries = load_watchlist()["hacker_news"]["queries"]
 
-    now = int(time.time())
-    since = now - WINDOW_SECONDS
-    failures: list[str] = []
+    run = FetchRun(SOURCE)
+    since = run.since
 
-    front_page = collect(
+    front_page = run.collect(
         "front_page",
         [
             ("algolia", lambda: algolia_stories({"tags": "front_page", "hitsPerPage": 30})),
@@ -318,11 +309,10 @@ def main() -> int:
             ("hnapi-mirror", lambda: mirror_stories(f"{HNAPI}/news?page=1")),
             ("hnpwa-mirror", lambda: mirror_stories(f"{HNPWA}/news/1.json")),
             ("hnrss", hnrss_front_page),
-            ("repo-snapshot", lambda: snapshot_collection("front_page")),
+            ("repo-snapshot", lambda: run.snapshot("front_page")),
         ],
-        failures,
     )
-    top_day = collect(
+    top_day = run.collect(
         "top_day",
         [
             (
@@ -352,11 +342,10 @@ def main() -> int:
                 "hnpwa-mirror",
                 lambda: mirror_window([f"{HNPWA}/news/1.json", f"{HNPWA}/news/2.json"], since),
             ),
-            ("repo-snapshot", lambda: snapshot_collection("top_day")),
+            ("repo-snapshot", lambda: run.snapshot("top_day")),
         ],
-        failures,
     )
-    ask = collect(
+    ask = run.collect(
         "ask_hn",
         [
             (
@@ -372,11 +361,10 @@ def main() -> int:
             ("firebase", lambda: firebase_list("askstories", 30)),
             ("hnapi-mirror", lambda: mirror_stories(f"{HNAPI}/ask?page=1")),
             ("hnpwa-mirror", lambda: mirror_stories(f"{HNPWA}/ask/1.json")),
-            ("repo-snapshot", lambda: snapshot_collection("ask_hn")),
+            ("repo-snapshot", lambda: run.snapshot("ask_hn")),
         ],
-        failures,
     )
-    show = collect(
+    show = run.collect(
         "show_hn",
         [
             (
@@ -392,9 +380,8 @@ def main() -> int:
             ("firebase", lambda: firebase_list("showstories", 30)),
             ("hnapi-mirror", lambda: mirror_stories(f"{HNAPI}/show?page=1")),
             ("hnpwa-mirror", lambda: mirror_stories(f"{HNPWA}/show/1.json")),
-            ("repo-snapshot", lambda: snapshot_collection("show_hn")),
+            ("repo-snapshot", lambda: run.snapshot("show_hn")),
         ],
-        failures,
     )
 
     thread_candidates = {story["id"]: story for story in front_page["items"]}
@@ -403,14 +390,13 @@ def main() -> int:
     top_threads = sorted(
         thread_candidates.values(), key=lambda story: story["points"] or 0, reverse=True
     )[:COMMENT_STORIES]
-    comments = collect(
+    comments = run.collect(
         "comments",
         [
             ("algolia", lambda: algolia_comments(top_threads)),
             ("firebase", lambda: firebase_comments(top_threads)),
-            ("repo-snapshot", lambda: snapshot_collection("comments")),
+            ("repo-snapshot", lambda: run.snapshot("comments")),
         ],
-        failures,
     )
 
     query_results: dict
@@ -430,7 +416,7 @@ def main() -> int:
     except FETCH_ERRORS as error:
         print(f"warn: queries: algolia: {error}", file=sys.stderr)
         try:
-            snapshot_queries = load_snapshot()["collections"]["queries"]
+            snapshot_queries = run.load_snapshot()["collections"]["queries"]
             if snapshot_queries["backend"] != "algolia":
                 raise RuntimeError(f"snapshot queries came from {snapshot_queries['backend']}")
             missing = [q for q in queries if q not in snapshot_queries["items"]]
@@ -462,32 +448,22 @@ def main() -> int:
                     )
             if corpus:
                 query_results = match_queries(queries, list(corpus.values()), since)
-                failures.append("queries (title-match fallback, Algolia search unavailable)")
+                run.failures.append("queries (title-match fallback, Algolia search unavailable)")
             else:
                 query_results = {}
-                failures.append("queries")
+                run.failures.append("queries")
 
-    result: dict[str, Any] = {
-        "fetched_at": datetime.fromtimestamp(now, tz=UTC).isoformat(),
-        "window_hours": WINDOW_SECONDS // 3600,
-        "degraded": failures,
-        "collections": {
-            "front_page": front_page,
-            "top_day": top_day,
-            "ask_hn": ask,
-            "show_hn": show,
-            "comments": comments,
-            "queries": {"backend": query_backend, "items": query_results},
-        },
+    collections: dict[str, Any] = {
+        "front_page": front_page,
+        "top_day": top_day,
+        "ask_hn": ask,
+        "show_hn": show,
+        "comments": comments,
+        "queries": {"backend": query_backend, "items": query_results},
     }
 
-    CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    day = datetime.fromtimestamp(now, tz=UTC).strftime("%Y-%m-%d")
-    output_path = CACHE_DIR / f"{day}.json"
-    output_path.write_text(json.dumps(result, indent=2) + "\n")
-
     for name in ("front_page", "top_day", "ask_hn", "show_hn"):
-        section = result["collections"][name]
+        section = collections[name]
         print(f"{name}: {len(section['items'])} items via {section['backend']}")
     comment_entries = comments["items"].values() if comments["items"] else []
     comment_count = sum(len(entry["comments"]) for entry in comment_entries)
@@ -497,7 +473,6 @@ def main() -> int:
     )
     query_hits = sum(1 for items in query_results.values() if items)
     print(f"queries: {query_hits}/{len(queries)} terms with hits via {query_backend}")
-    print(f"wrote {output_path.relative_to(ROOT)}")
 
     ranked = sorted(front_page["items"], key=lambda story: story["points"] or 0, reverse=True)
     for story in ranked[:15]:
@@ -505,12 +480,4 @@ def main() -> int:
         cmt = story["comments"] if story["comments"] is not None else "?"
         print(f"  {points:>4} pts {cmt:>4} cmt  {story['title']}  [{story['hn_url']}]")
 
-    if failures:
-        print(f"DEGRADED: {', '.join(failures)}", file=sys.stderr)
-        print(
-            "HN coverage is incomplete. Re-run before publishing and state the"
-            " degradation in Sources checked.",
-            file=sys.stderr,
-        )
-        return 1
-    return 0
+    return run.finish(collections)
