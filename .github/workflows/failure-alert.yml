@@ -8,6 +8,9 @@ name: failure-alert
 # it because GitHub sometimes drops workflow_run completion events (observed
 # 2026-07-03 for Deploy Pages failures). The URL check makes the scan
 # idempotent, so overlapping triggers never double-report a run.
+# A failed Deploy Pages run is additionally retried (see the retry step):
+# its dominant failure mode is a transient Pages backend rejection that a
+# later rerun of the same artifact absorbs.
 on:
   workflow_run:
     # Timeliness only; the case list in the step below decides which
@@ -25,7 +28,9 @@ on:
 
 permissions:
   issues: write
-  actions: read
+  # write instead of read so the retry step can rerun failed Deploy Pages
+  # runs; alerting itself only reads.
+  actions: write
 
 concurrency:
   group: failure-alert
@@ -80,3 +85,32 @@ jobs:
               gh issue create --repo "$REPO" --title "$title" --body "$body"
             fi
           done
+      - name: Retry a failed Deploy Pages run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          # Retry only the newest Deploy Pages run: rerunning an older one
+          # would redeploy a stale artifact over a newer successful deploy.
+          # An event-triggered scan retries once, right after the failure, to
+          # absorb a short flake; scheduled sweeps keep retrying, spaced
+          # hours apart, to ride out longer Pages incidents (2026-07-04: one
+          # lasted over 80 minutes). The attempt cap stops a permanently
+          # broken deploy from rerunning forever. Alerting above runs first,
+          # so a failure is reported even when a retry later fixes it.
+          if [ "$EVENT" = "schedule" ]; then
+            max_attempt=5
+          else
+            max_attempt=2
+          fi
+          run=$(gh run list --repo "$REPO" --workflow "Deploy Pages" \
+            --branch main --limit 1 --json databaseId,conclusion,attempt)
+          id=$(jq -r '.[0].databaseId // empty' <<<"$run")
+          conclusion=$(jq -r '.[0].conclusion' <<<"$run")
+          attempt=$(jq -r '.[0].attempt' <<<"$run")
+          if [ -n "$id" ] && [ "$conclusion" = "failure" ] &&
+             [ "$attempt" -lt "$max_attempt" ]; then
+            gh run rerun "$id" --failed --repo "$REPO" ||
+              echo "rerun of $id failed; the next sweep retries"
+          fi
