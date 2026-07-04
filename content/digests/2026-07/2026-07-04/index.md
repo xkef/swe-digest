@@ -10,7 +10,7 @@ months = ["2026-07"]
 
 [extra]
 status = "published"
-source_count = 34
+source_count = 38
 +++
 
 ## Top stories
@@ -104,6 +104,14 @@ No major items found.
 - **Comments:** HN commenters note the approach mirrors a DeepSeek write-up on text-as-image tokens and earlier experiments that saved prompt tokens but needed more completion tokens and ran slower and more expensive overall. Several argued it exploits a provider billing quirk (some backends OCR PDFs internally without charging for the recovered text) that would disappear if pricing were adjusted, rather than a durable efficiency gain.
 - **Why it matters:** It highlights how current model pricing across input modalities can be arbitraged, and how fragile such savings are to a provider changing how it meters image versus text tokens.
 
+### Practitioner report finds indexing agent session transcripts adds no benefit
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [12gramsofcarbon post](https://12gramsofcarbon.com/p/agentics-memorizing-session-transcripts), [HN discussion](https://news.ycombinator.com/item?id=48776232)
+- **Summary:** A practitioner write-up (theahura, 2026-07-02) reports that giving coding agents searchable access to prior session transcripts produced no measurable performance gain over months of testing. The author argues agents cannot meaningfully curate or delete their own memory, treat all retrieved context as intentional, and accumulate scratch-pad noise that causes intent drift. The author's company accepts under 20 percent of automatically proposed memory updates and keeps a human diff review in the acceptance path, concluding that curated artifacts such as commit messages and documentation outperform raw transcript recall.
+- **Why it matters:** It pushes back on transcript indexing and automatic agent memory as a default, arguing that curated, human-reviewed memory beats replaying whole session histories.
+
 ## Security
 
 ### MSI Center named-pipe flaw grants SYSTEM to any local user
@@ -143,7 +151,13 @@ No major items found.
 
 ## Infrastructure
 
-No major items found.
+### PostgreSQL strict memory overcommit avoids OOM-killer-induced full outages
+
+- **Category:** Infrastructure
+- **Status:** discussion
+- **Sources:** [Ubicloud post](https://www.ubicloud.com/blog/postgresql-and-the-oom-killer-why-we-use-strict-memory-overcommit), [HN discussion](https://news.ycombinator.com/item?id=48774509)
+- **Summary:** Ubicloud's Burak Yucesoy argues for setting `vm.overcommit_memory=2` on PostgreSQL hosts (post dated 2026-04-27, resurfaced on Hacker News 2026-07-04 at 172 points). When the Linux OOM killer terminates a backend process, the postmaster cannot distinguish the kill from an intentional exit, assumes shared-memory corruption, and shuts down every remaining backend, turning one over-allocating query into a full-instance outage. Strict overcommit instead fails allocations early with `ENOMEM`, so a single backend cancels its own transaction and reports an error to the client while other connections continue. The post recommends sizing `overcommit_kbytes` at about 80 percent of physical memory plus a fixed 2 GB buffer for sidecar processes that reserve large virtual regions.
+- **Why it matters:** The default memory-overcommit behavior lets one memory-hungry query escalate into a database-wide crash, and the write-up gives a concrete kernel setting that contains the failure to a single connection.
 
 ## Engineering posts
 
@@ -235,7 +249,7 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News: `make hn` succeeded via Algolia, 0 degraded collections, 60 of 72 queries with hits. Full structured coverage. Front page and top-of-day were heavy with out-of-scope political, business, and essay items; engineering picks were the SQLite TLA+ bug, the Rust coreutils cp regression, the Guix vulnerabilities, the Epoch CVE-spike analysis, Leanstral 1.5, GLM 5.2 on AMD, MSI Center LPE, the FreeBSD ARC post, the Jamesob local-LLM guide, and the P-vs-NP markets paper.
+- Hacker News: `make hn` succeeded via Algolia, 0 degraded collections, 60 of 72 queries with hits. Full structured coverage. Front page and top-of-day were heavy with out-of-scope political, business, and essay items; engineering picks were the SQLite TLA+ bug, the Rust coreutils cp regression, the Guix vulnerabilities, the Epoch CVE-spike analysis, Leanstral 1.5, GLM 5.2 on AMD, MSI Center LPE, the FreeBSD ARC post, the PostgreSQL strict-overcommit write-up, the agent-memory transcript-indexing post, the Jamesob local-LLM guide, and the P-vs-NP markets paper.
 - Reddit: partially degraded from the run environment (r/programming returned; r/rust and other subreddits rate-limited).
 - AI sources: OpenAI, Anthropic, Google DeepMind, and web search. No new primary model or API release on 2026-07-03 or 2026-07-04; Mistral's Leanstral 1.5 benchmark post and Wafer's GLM 5.2 on AMD benchmark were the notable items.
 - ML research and arXiv papers: `make papers` via the arXiv API (135 items). No paper cleared the engineering-relevance bar for its own item; the P-vs-NP markets preprint is covered as HN discussion.
@@ -244,6 +258,6 @@ No major items found.
 - Security advisories: CISA KEV JSON feed (unchanged at 2026.07.01, count 1631), Guix security post, MSI Center write-up, Epoch AI CVE-spike analysis.
 - Status pages: no major provider outage on 2026-07-03 or 2026-07-04; Cloudflare had only scheduled ARN and MRS maintenance windows.
 - GitHub releases and trending: rechecked every `[github]` repo release and tag. No new qualifying release since the 2026-07-03 digest. Linux v7.2-rc1 (tagged 2026-06-28) predates the last digest; neovim nightly, zed 1.10.0-pre, and tmux 3.7b are rolling or bugfix builds below the bar; Prometheus 3.13.0 and Grafana 13.1.0 (2026-07-01) were already covered; zig 0.15.2 (2025-10-11) and CPython v3.15.0b3 (2026-06-23) predate the window. Scanned `github.com/trending` overall and the Rust, Python, Go, and TypeScript language views: the dominant cluster is agent tooling (agent-skills frameworks agentskills/agentskills and obra/superpowers, the agent sandbox TencentCloud/CubeSandbox, the AI pentest tool usestrix/strix, and ChromeDevTools/chrome-devtools-mcp). Herdr, a Rust terminal multiplexer for coding agents, surfaced there and is added to Developer tools; the rest are established repos with no new dated event to publish.
-- Engineering blogs: Canonical dqlite, crocidb (FreeBSD), Dan Luu, and the core blog list.
+- Engineering blogs: Canonical dqlite, crocidb (FreeBSD), Dan Luu, Ubicloud (PostgreSQL overcommit), 12gramsofcarbon (agent memory), and the core blog list.
 - YouTube channels: `make yt` (39 videos across 89 channels; 0 with an HN discussion object). Selected the Computerphile token-cost explainer and a CppCon Linux-debugging talk for New videos.
 - Markets and company sources: web search and Hacker News. No engineering-relevant acquisition, IPO, or filing on 2026-07-03 or 2026-07-04.
