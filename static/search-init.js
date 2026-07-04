@@ -15,8 +15,10 @@
   const groups = Array.from(index.querySelectorAll(".digest-group"));
   const pagination = index.querySelector(".pagination");
   // The site is served under a base path (GitHub Pages /swe-digest/). Pagefind
-  // records result URLs and loads its chunks relative to the site root, so
-  // derive that prefix from the page's data-base attribute.
+  // auto-detects that prefix from the pagefind.js module location and already
+  // applies it to result URLs, so basePath is needed only to import the module
+  // (see loadPagefind); result URLs must not have it prepended a second time
+  // (see resolveUrl). Derive the prefix from the page's data-base attribute.
   const basePath = new URL(index.dataset.base).pathname.replace(/\/$/, "");
   const defaultCount = count.textContent;
   const BATCH = 20;
@@ -44,6 +46,14 @@
     return pagefind;
   }
 
+  // Pagefind already prefixes result URLs with its auto-detected base path
+  // (equal to basePath). Prepend basePath only if it is somehow absent, so a
+  // differently configured or root-served index still resolves correctly.
+  function resolveUrl(url) {
+    if (!basePath || url.startsWith(basePath + "/")) return url;
+    return basePath + url;
+  }
+
   function badge(cls, text) {
     const span = document.createElement("span");
     span.className = cls;
@@ -57,7 +67,7 @@
     li.className = "story-row";
     const link = document.createElement("a");
     link.className = "story-link";
-    link.href = basePath + data.url;
+    link.href = resolveUrl(data.url);
     const row = document.createElement("span");
     row.className = "story-meta";
     if (meta.date) row.appendChild(badge("badge", meta.date));
