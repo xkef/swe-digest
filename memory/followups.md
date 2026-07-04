@@ -17,6 +17,33 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-04: Guix substitute and pull vulnerabilities
+
+- Status: open
+- Category: Security
+- Sources: [Guix security post](https://guix.gnu.org/en/blog/2026/guix-substitute-pull-vulnerabilities/), [HN 48772363](https://news.ycombinator.com/item?id=48772363)
+- Watch for: CVE assignment for the four issues; the fixes landing in a tagged Guix release and in distribution packages; any exploitation reports against substitute servers.
+- Last checked: 2026-07-04
+- Notes: Four vulnerabilities in `guix substitute` and `guix pull`/`guix time-machine` disclosed 2026-07-02, CVEs pending, fixed in commit 897832f. Worst is unsafe archive extraction in `restore-file` (`(guix serialization)`): archives extracted before hash verification, allowing arbitrary file writes and RCE as the build-daemon user. Others: narinfo substitution spoofing (serve outdated substitutes), `file://` URI access following symlinks (read daemon-accessible files), path-traversal cache key in `authenticate-channel`. Covered 2026-07-04 Top stories and Security.
+
+## 2026-07-04: Leanstral 1.5 theorem-proving benchmarks published
+
+- Status: open
+- Category: AI
+- Sources: [Mistral blog](https://mistral.ai/news/leanstral-1-5/), [HN 48780801](https://news.ycombinator.com/item?id=48780801)
+- Watch for: Independent reproduction of miniF2F (100% saturated) and PutnamBench (587/672); confirmation of the 5 reported repository bug finds across 57 repos; adoption in proof-assistant tooling.
+- Last checked: 2026-07-04
+- Notes: Mistral's 2026-07-02 post adds benchmark numbers to the Lean 4 theorem-proving model first covered 2026-07-01 (model card only). 119B total / ~6B active MoE, Apache-2.0, free `leanstral-1-5` API, weights on Hugging Face. FATE-H 87%, FATE-X 34% reported state-of-the-art; FLTEval Pass@1 28.9%. Vendor figures, unreproduced. Resolves the 2026-07-01 "watch for a technical report with Lean benchmarks" follow-up. Covered 2026-07-04 AI and Watchlist follow-ups.
+
+## 2026-07-04: Rust coreutils cp regression in Ubuntu image builds
+
+- Status: open
+- Category: Dev tools
+- Sources: [Phoronix](https://www.phoronix.com/news/Rust-Coreutils-cp-Ubuntu-Images), [Ubuntu rust-coreutils update](https://discourse.ubuntu.com/t/an-update-on-rust-coreutils/80773), [HN 48776892](https://news.ycombinator.com/item?id=48776892)
+- Watch for: The upstream uutils `cp` `-L` fix merging; whether Ubuntu re-enables Rust `cp` in the image-build path; further per-command GNU-compatibility gaps.
+- Last checked: 2026-07-04
+- Notes: 2026-07-03 a difference in uutils (Rust) coreutils `cp` handling of `-L` broke Ubuntu live-media ISO builds; marked critical on Launchpad, reverted to GNU `cp`, upstream fix proposed but unmerged. Ubuntu switched to Rust coreutils by default in 25.10. Covered 2026-07-04 Top stories and Developer tools.
+
 ## 2026-07-02: Google Android Developer Verification rollout
 
 - Status: open
@@ -122,7 +149,7 @@ Format:
 - Category: Agentic coding
 - Sources: [analysis](https://thereallo.dev/blog/claude-code-prompt-steganography), [HN 48734373](https://news.ycombinator.com/item?id=48734373), [Reuters (Alibaba ban)](https://www.reuters.com/world/china/alibaba-ban-claude-code-workplace-over-alleged-backdoor-risks-source-says-2026-07-03/), [HN 48772443](https://news.ycombinator.com/item?id=48772443)
 - Watch for: The Claude Code update that removes the proxy and time-zone check; any formal Anthropic statement or docs change; independent verification of the invisible-character encoding and the environment checks; whether marks are forwarded when ANTHROPIC_BASE_URL points at a third-party endpoint; other firms restricting the tool.
-- Last checked: 2026-07-03
+- Last checked: 2026-07-04
 - Notes: Blog post 2026-06-30 (205 pts) claims Claude Code embeds invisible Unicode characters as a steganographic fingerprint to detect resale and distillation; primary blog unreachable from the run environment (HTTP 403), encoding not independently verified. 2026-07-03: Reuters reported (source says) Alibaba will bar Claude Code in workplace environments from 2026-07-10 after Chinese outlet Yicai reported an embedded backdoor risk. A 2026-06-30 reverse-engineering writeup claims Claude Code since v2.1.91 (2026-04-02) silently inspects users' proxy configuration and system time zone. An Anthropic Claude Code team member said on social media the mechanism detects account resale and model distillation, not user spying, and will be removed in the next update; no third-party firm has confirmed a backdoor. Covered 2026-07-03 Top stories (developing).
 
 ## 2026-06-30: Meituan LongCat-2.0 weight release
