@@ -111,8 +111,8 @@ steps, verifies the staged paths stay inside its own `data/` directory, and
 commits through the GraphQL `createCommitOnBranch` mutation, so GitHub signs
 the commit as `github-actions[bot]` with the Verified badge; the mutation is
 still barred from `.github/workflows/`. The `daily-digest`
-(01:30/09:50/15:50 UTC), `digest-quality` (04:20 UTC, a deeper same-day pass
-after the first ingest), and `weekly-improvement` (Sunday 06:30 UTC) workflows
+(01:30/09:50/15:50 UTC, the 09:50 run doubling as the deep sweep) and
+`weekly-improvement` (Sunday 06:30 UTC) workflows
 run on their own schedules and each fetches HN, YouTube, papers, and books live
 during the run; events are computed from the committed dates each run.
 All scheduled workflows use no event-derived inputs, and the routine must never
@@ -246,6 +246,12 @@ same date: keep existing stories unless a correction is needed, add new
 stories in rank order, update statuses (`developing` to `confirmed`),
 refresh `source_count`, and re-run the run log. Never rewrite the digest
 from scratch.
+
+The second scheduled run of the day (09:50 UTC) is the deep sweep: run the
+GitHub releases and trending checks in `docs/routine.md` in full (every
+`[github]` repo plus `github.com/trending`), fill thin sections, verify
+primary sources, and re-rank by impact. Other update runs may skip that
+discovery on a quiet day; the deep sweep never skips it.
 
 1. Sync:
 
@@ -422,38 +428,6 @@ Constraints the publish job enforces (`swe_digest.gate.publish_run`):
 - New issues carry at most the `improvement` label.
 - Improvement PRs require the `OWNER` approval comment; the diff comes from
   the issue body, not from the agent.
-
-## Daily quality pass
-
-A scheduled deeper sweep over the day's already-built digest, run shortly
-after the first ingest by the `digest-quality` workflow (04:20 UTC, on its own
-cron, not chained off the ingest). It exists because the regular daily runs
-update in place and skip discovery on a quiet day. Scope is digest and data
-only.
-
-Steps:
-
-1. Sync as in the daily workflow. Today's digest should already exist; if it
-   does not, run the full daily workflow instead.
-2. Run the GitHub releases and trending checks in `docs/routine.md` in full:
-   check releases for every `[github]` repo and scan `github.com/trending`,
-   surfacing verified emerging items into their topical sections.
-3. Fill thin sections, verify primary sources, and re-rank by impact. Keep
-   existing stories unless a correction is needed; add new ones in rank order.
-4. Refresh `source_count`, run `make run-log`, run `make fmt-run`
-   (best-effort), and run `make check`.
-5. Commit once, subject `chore: update digest for YYYY-MM-DD`.
-
-Constraints:
-
-- Write only `content/digests/` and `data/runs/` (plus the allowed
-  `memory/followups.md`, `memory/entities.md`, `memory/source-reliability.md`,
-  `memory/access-notes.md`).
-- Never change `config.toml`, `data/watchlist.toml`, `memory/profile.md`,
-  `docs/routine.md`, `CLAUDE.md`, or `.github/workflows/`.
-- In unattended runs do not push or call write APIs; request side effects
-  through `.run/manifest.yaml` as in the daily workflow.
-- State GitHub trending and releases coverage in `Sources checked`.
 
 ## Weekly improvement routine
 

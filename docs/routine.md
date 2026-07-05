@@ -757,16 +757,6 @@ Proposal discipline:
 - The proposed diff touches only `data/watchlist.toml`, `memory/profile.md`,
   `docs/routine.md`, or `CLAUDE.md`.
 
-## Daily quality pass
-
-The `digest-quality` workflow runs a deeper sweep over the day's already-built
-digest later the same day, after the first ingest (04:20 UTC, its own cron). It forces
-the discovery an incremental update skips: the full GitHub releases and
-trending checks, gap-fill of thin sections, primary-source verification, and
-re-ranking, updating the digest in place. Scope is digest and data only; it
-never edits project files or workflows. The routine steps and constraints are
-in `CLAUDE.md` under "Daily quality pass".
-
 ## Memory updates
 
 During a run, update only `memory/followups.md`, `memory/entities.md`,

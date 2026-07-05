@@ -70,7 +70,10 @@ jobs:
             story inbox, approved improvements, collect, verify, rank, write,
             run log, validation, one commit, weekly trigger check. The first
             run of the day creates the digest; later runs update it in place
-            per the daily workflow rules. This job has no write access: do
+            per the daily workflow rules. The 09:50 UTC run is the deep
+            sweep: run the full GitHub releases and trending checks, fill
+            thin sections, and re-rank by impact per the Daily workflow
+            section. This job has no write access: do
             not push, and do not call any write API. Commit locally and
             request issue closes and improvement PRs through
             .run/manifest.yaml per the Unattended publishing section in

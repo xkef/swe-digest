@@ -13,11 +13,11 @@ name: failure-alert
 # later rerun of the same artifact absorbs.
 on:
   workflow_run:
-    # Timeliness only; the case list in the step below decides which
-    # workflows alert. Keep the two lists in sync.
+    # Timeliness only: a listed workflow alerts immediately on failure. The
+    # scan itself covers every non-PR workflow, so an unlisted one still
+    # alerts on the next scheduled sweep.
     workflows:
       - Daily digest
-      - Digest quality pass
       - Weekly improvement
       - snapshots
       - Deploy Pages
@@ -57,10 +57,6 @@ jobs:
             --jq '.[] | select(.event != "pull_request")
                   | [.name, .headBranch, .url] | @tsv' |
           while IFS=$'\t' read -r name branch url; do
-            case "$name" in
-              "Daily digest"|"Digest quality pass"|"Weekly improvement"|"snapshots"|"Deploy Pages"|"CI") ;;
-              *) continue ;;
-            esac
             title="ops: $name workflow failing"
             body="Run failed on \`$branch\`: $url"
             issues=$(gh issue list --repo "$REPO" --state all --limit 20 \
