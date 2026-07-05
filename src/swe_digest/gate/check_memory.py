@@ -53,13 +53,20 @@ def check_bounds(path: Path, text: str) -> list[str]:
     return errors
 
 
-def check_followups(path: Path, text: str) -> list[str]:
+def check_followups(path: Path, text: str, today: date) -> list[str]:
     errors = []
     body = strip_fences(text)
     entries = FOLLOWUP_HEADING.split(body)
     for match in FOLLOWUP_HEADING.finditer(body):
-        if parse_iso(match.group("date")) is None:
+        heading_date = parse_iso(match.group("date"))
+        if heading_date is None:
             errors.append(f"{path}: heading date is not ISO: {match.group(0).strip()!r}")
+        elif (today - heading_date).days > config.MEMORY_FOLLOWUP_MAX_AGE_DAYS:
+            errors.append(
+                f"{path}: entry dated {heading_date} is older than"
+                f" {config.MEMORY_FOLLOWUP_MAX_AGE_DAYS} days; re-date it after"
+                f" re-verifying, or delete it"
+            )
     # split() yields [preamble, date1, entry1, date2, entry2, ...]
     for entry_date, entry in zip(entries[1::2], entries[2::2], strict=False):
         if "- Status: open" not in entry:
@@ -103,7 +110,7 @@ def check_memory(root: Path, today: date | None = None) -> list[str]:
         text = path.read_text(encoding="utf-8")
         errors.extend(check_bounds(path, text))
         if path.name == "followups.md":
-            errors.extend(check_followups(path, text))
+            errors.extend(check_followups(path, text, today))
         elif path.name == "entities.md":
             errors.extend(check_entities(path, text, today))
     return errors

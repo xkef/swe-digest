@@ -59,6 +59,21 @@ def test_followup_with_bad_date_fails(tmp_path: Path) -> None:
     assert errors and "not ISO" in errors[0]
 
 
+def test_over_age_followup_fails(tmp_path: Path) -> None:
+    root = memory(tmp_path, followups=FOLLOWUPS_OK.replace("## 2026-07-01:", "## 2026-01-01:"))
+    errors = check_memory(root, TODAY)
+    assert errors and "re-date" in errors[0]
+
+
+def test_followup_at_age_limit_passes(tmp_path: Path) -> None:
+    boundary = TODAY.toordinal() - config.MEMORY_FOLLOWUP_MAX_AGE_DAYS
+    boundary_date = date.fromordinal(boundary).isoformat()
+    root = memory(
+        tmp_path, followups=FOLLOWUPS_OK.replace("## 2026-07-01:", f"## {boundary_date}:")
+    )
+    assert check_memory(root, TODAY) == []
+
+
 def test_entity_without_last_seen_fails(tmp_path: Path) -> None:
     root = memory(tmp_path, entities="# Entities\n\n- Mystery tool: no date here.\n")
     errors = check_memory(root, TODAY)

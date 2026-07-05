@@ -69,7 +69,10 @@ title_ratio = 0.75
 [memory]
 # Structure and growth bounds for memory/*.md, enforced by the content gate.
 # Staleness past entity_stale_days is a warning (a nudge to compact), never a
-# gate failure.
+# gate failure. A followups.md entry older than followup_max_age_days fails
+# the gate: re-date it after re-verifying, or delete it, so the file prunes
+# itself instead of drifting into the hard line cap.
 max_file_lines = 1500
 max_line_chars = 2000
 entity_stale_days = 60
+followup_max_age_days = 45
