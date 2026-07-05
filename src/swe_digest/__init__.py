@@ -9,7 +9,7 @@ Subpackages by role:
 - ``gate``: the fail-closed publication boundary (content checks and the
   unattended publish validator).
 - ``digest``: authoring and analysis around the digest itself (skeleton,
-  story pages, run logs, backtests, yield stats).
+  story pages, run logs, backtests).
 
 All entry points go through ``cli.py`` (``swe-digest ...`` or
 ``python3 -m swe_digest ...``), so Makefile targets, workflows, and docs

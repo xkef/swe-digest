@@ -63,10 +63,6 @@ def build_parser() -> argparse.ArgumentParser:
     backtest.add_argument("date", nargs="?", help="YYYY-MM-DD, default yesterday UTC")
     backtest.add_argument("--min-points", type=int, default=None)
 
-    yield_stats = sub.add_parser("yield", help="aggregate watchlist query yield")
-    yield_stats.add_argument("--days", type=int, default=None)
-    yield_stats.add_argument("--json", action="store_true", dest="as_json")
-
     return parser
 
 
@@ -153,12 +149,6 @@ def run(args: argparse.Namespace) -> int:
         from swe_digest.digest.backtest import main as backtest_main
 
         return backtest_main(args.date, args.min_points or config.BACKTEST_MIN_POINTS)
-
-    if args.command == "yield":
-        from swe_digest import config
-        from swe_digest.digest.yield_stats import main as yield_main
-
-        return yield_main(args.days or config.YIELD_DEFAULT_DAYS, args.as_json)
 
     raise AssertionError(f"unhandled command: {args.command}")
 

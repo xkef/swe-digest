@@ -682,7 +682,8 @@ Rules:
 ## Feedback loop
 
 The routine instruments itself so the weekly improvement routine has
-evidence. Three scripts own the mechanical parts; the agent only judges.
+evidence. Two scripts own the mechanical parts; the agent only judges
+exceptions.
 
 ### Run log
 
@@ -712,23 +713,22 @@ seven days and `.cache/` is local.
 ### Backtest causes
 
 `make backtest` compares yesterday's accumulated `data/hn/` snapshot against
-yesterday's digest and pre-classifies each candidate miss. The agent records
-one final cause per candidate in `judgment.miss_review`:
+yesterday's digest, pre-classifies each candidate miss, and seeds a default
+final cause into `judgment.miss_review`. The taxonomy:
 
 - `scrape_gap`: not visible in the publish-time fetch (fetch degradation or
-  timing). Pre-class `not_in_publish_fetch`.
-- `watchlist_gap`: visible but no query matched and it was not acted on.
-  Pre-class `no_query_match`. Candidate for a new query or weight.
-- `relevance_skip`: seen and matched, skipped on purpose. Confirm the skip or
-  flag it as interest drift.
-- `out_of_scope`: not an engineering story. No action.
+  timing). Pre-class `not_in_publish_fetch`; seeded by default.
+- `watchlist_gap`: a genuine engineering miss no query caught. Never seeded;
+  the agent promotes a candidate here by hand. Candidate for a new query or
+  weight.
+- `relevance_skip`: seen and matched, skipped on purpose. Pre-class
+  `seen_and_matched`; seeded by default. Override when the skip was wrong.
+- `out_of_scope`: not an engineering story. Pre-class `no_query_match`;
+  seeded by default. Override when the story was in scope.
 
-### Yield stats
-
-`make yield` aggregates run logs (default 14 days): matches and published
-stories per query, zero-yield queries, and published stories no query
-matched. Days where queries ran on the degraded `title-match` backend are
-excluded from pruning evidence.
+The agent skims the printed candidates and fixes only wrong defaults; a
+promoted `watchlist_gap` also gets carried into today's digest or
+`memory/followups.md`.
 
 ### Weekly improvement routine
 

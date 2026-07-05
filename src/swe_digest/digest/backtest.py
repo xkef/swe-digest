@@ -14,8 +14,12 @@ seen ids and query matches:
 - seen_and_matched: visible and query-matched, so skipping it was a
   relevance decision for the agent to confirm or revisit.
 
-Results are written into data/runs/DATE.yaml under mechanical.backtest;
-the agent records the final cause per candidate in judgment.miss_review.
+Results are written into data/runs/DATE.yaml under mechanical.backtest,
+and each new candidate gets a default cause in judgment.miss_review
+(scrape_gap, out_of_scope, or relevance_skip by pre-class). The agent
+reviews exceptions only: it overrides a default that is wrong, in
+particular promoting a genuine missed story to watchlist_gap or carrying
+it into today's digest.
 """
 
 from __future__ import annotations
@@ -31,6 +35,17 @@ from swe_digest.digest.runs import HN_SNAPSHOT_DIR, hn_stories, load_run_log, sa
 from swe_digest.paths import ROOT
 
 TITLE_RATIO = config.BACKTEST_TITLE_RATIO
+
+# Default final cause per pre-class, seeded into judgment.miss_review for
+# candidates the agent has not labeled. The defaults encode the observed
+# base rates; the agent's job is the exceptions (a real miss becomes
+# watchlist_gap by hand). no_run_log candidates carry no evidence and stay
+# unseeded.
+DEFAULT_CAUSES = {
+    "not_in_publish_fetch": "scrape_gap",
+    "no_query_match": "out_of_scope",
+    "seen_and_matched": "relevance_skip",
+}
 
 
 def yesterday() -> str:
@@ -109,9 +124,19 @@ def main(date: str | None = None, min_points: int = config.BACKTEST_MIN_POINTS) 
         "snapshot_fetched_at": snapshot.get("fetched_at"),
         "candidates": candidates,
     }
+    miss_review = record.setdefault("judgment", {}).setdefault("miss_review", {})
+    seeded = 0
+    for candidate in candidates:
+        cause = DEFAULT_CAUSES.get(candidate["pre_class"])
+        if cause and candidate["id"] not in miss_review:
+            miss_review[candidate["id"]] = cause
+            seeded += 1
     path = save_run_log(date, record)
 
-    print(f"backtest {date}: {len(candidates)} candidate misses (>= {min_points} points)")
+    print(
+        f"backtest {date}: {len(candidates)} candidate misses (>= {min_points} points), "
+        f"{seeded} default cause(s) seeded"
+    )
     for c in candidates:
         print(f"  {c['points']:>5} pts  {c['pre_class']:<22} {c['title']}")
         print(f"        {c['hn_url']}")

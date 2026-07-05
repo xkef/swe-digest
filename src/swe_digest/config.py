@@ -69,9 +69,6 @@ COMMIT_RETRIES: int = _raw["publish"]["commit_retries"]
 BACKTEST_MIN_POINTS: int = _raw["backtest"]["min_points"]
 BACKTEST_TITLE_RATIO: float = _raw["backtest"]["title_ratio"]
 
-# Yield stats
-YIELD_DEFAULT_DAYS: int = _raw["yield"]["default_days"]
-
 # Memory gate
 MEMORY_MAX_FILE_LINES: int = _raw["memory"]["max_file_lines"]
 MEMORY_MAX_LINE_CHARS: int = _raw["memory"]["max_line_chars"]

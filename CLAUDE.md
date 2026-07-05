@@ -285,13 +285,12 @@ discovery on a quiet day; the deep sweep never skips it.
    make backtest
    ```
 
-   Review the candidates printed for yesterday's digest. Finalize a cause per
-   candidate in yesterday's `data/runs/YYYY-MM-DD.yaml` under
-   `judgment.miss_review` using the taxonomy in `docs/routine.md`
-   (`scrape_gap`, `watchlist_gap`, `relevance_skip`, `out_of_scope`). Carry a
-   genuine miss that is still relevant into today's digest or
-   `memory/followups.md`. Skip this step when yesterday's
-   `judgment.miss_review` is already recorded by an earlier run.
+   The script seeds a default cause per candidate into yesterday's
+   `judgment.miss_review` (taxonomy in `docs/routine.md`). Skim the printed
+   candidates and fix only the exceptions: promote a genuine missed story to
+   `watchlist_gap`, and carry it into today's digest or
+   `memory/followups.md`. Skip this step when yesterday's backtest was
+   already reviewed by an earlier run.
 
 5. Story inbox:
 
@@ -438,7 +437,8 @@ daily workflow applies changes.
 
 Inputs:
 
-1. `make yield` over the run-log window since the last weekly run.
+1. `mechanical.query_yield` across the run-log window since the last weekly
+   run (matches and published stories per watchlist query).
 2. `judgment.miss_review` entries across `data/runs/*.yaml`.
 3. Open and recently closed `feedback` issues:
    `gh issue list --label feedback --state all --json number,title,body,author,createdAt`.
@@ -460,7 +460,7 @@ Outputs:
 1. One `improvement` issue per concrete concern, labeled `improvement`, with
    this body shape:
    - **Axis:** scrape gap | watchlist gap | interest drift | format.
-   - **Evidence:** numbers from yield and backtest, issue links, dates.
+   - **Evidence:** numbers from query yield and backtest, issue links, dates.
    - **Proposed diff:** exact change in a fenced diff block, touching only
      `config.toml`, `data/watchlist.toml`, `memory/profile.md`,
      `docs/routine.md`, or `CLAUDE.md`.

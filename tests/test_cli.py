@@ -13,7 +13,6 @@ def test_known_commands_parse() -> None:
     assert parser.parse_args(["merge", "yt", "a.json", "b.json"]).kind == "yt"
     assert parser.parse_args(["publish", "apply", "run.patch"]).patch == "run.patch"
     assert parser.parse_args(["backtest", "2026-07-01", "--min-points", "50"]).min_points == 50
-    assert parser.parse_args(["yield", "--days", "7", "--json"]).as_json is True
 
 
 @pytest.mark.parametrize(
