@@ -35,6 +35,56 @@ def test_section_order_violation_fails(repo_tree: Path) -> None:
     assert main(root=repo_tree) == 1
 
 
+def test_omitted_empty_sections_pass(repo_tree: Path) -> None:
+    # A digest carries only the sections it fills, plus the anchors.
+    text = digest_path(repo_tree).read_text()
+    for section in ("ML research", "Books", "New videos", "Markets and companies"):
+        text = text.replace(f"## {section}\n\nNo major items found.\n\n", "")
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 0
+
+
+def test_unknown_section_header_fails(repo_tree: Path) -> None:
+    text = digest_path(repo_tree).read_text().replace("## AI", "## Sponsored content", 1)
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 1
+
+
+def test_duplicate_section_header_fails(repo_tree: Path) -> None:
+    text = digest_path(repo_tree).read_text()
+    text += "\n## Security\n\nNo major items found.\n"
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 1
+
+
+def test_missing_anchor_section_fails(repo_tree: Path) -> None:
+    text = digest_path(repo_tree).read_text()
+    text = text.replace("## Outages\n\nNo major items found.\n\n", "")
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 1
+
+
+def test_top_stories_must_lead(repo_tree: Path) -> None:
+    text = digest_path(repo_tree).read_text()
+    text = text.replace("## Top stories\n", "## Conferences and events\n", 1)
+    text = text.replace("## Conferences and events\n\nNo major items found.\n\n", "", 1)
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 1
+
+
+def test_legacy_pulse_section_passes(repo_tree: Path) -> None:
+    # Pre-2026-06-13 digests use the single "HN and Reddit pulse" section in
+    # place of the Hacker News / Reddit split; they must keep validating.
+    text = digest_path(repo_tree).read_text()
+    text = text.replace("## Hacker News\n\nNo major items found.\n\n", "")
+    text = text.replace(
+        "## Reddit and social pulse\n\nNo major items found.\n",
+        "## HN and Reddit pulse\n\nNo major items found.\n",
+    )
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 0
+
+
 def test_wrong_month_directory_fails(repo_tree: Path) -> None:
     misfiled = repo_tree / "content" / "digests" / "2026-01" / DIGEST_DATE
     misfiled.mkdir(parents=True)

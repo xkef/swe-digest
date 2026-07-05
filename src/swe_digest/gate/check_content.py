@@ -14,13 +14,18 @@ import subprocess
 import sys
 from pathlib import Path
 
-from swe_digest.digest.document import SECTIONS, sections_for, split_front_matter
+from swe_digest.digest.document import SECTION_VOCABULARY, SECTIONS, split_front_matter
 from swe_digest.gate.check_memory import check_memory
 from swe_digest.paths import ROOT
 
 __all__ = ["SECTIONS", "main", "split_front_matter"]
 
 REQUIRED_KEYS = ["title", "date", "status", "source_count"]
+
+# Sections every digest must carry even when empty: the lead, the two
+# always-checked risk sections, and the coverage statement. Everything else
+# is omitted on a day with nothing to report.
+ANCHOR_SECTIONS = ["Security", "Outages", "Sources checked"]
 
 # Raw HTML / active-content patterns that must never reach a published page.
 # Scanned against prose with code spans removed, so a security story may still
@@ -66,14 +71,24 @@ def check_structure(path: Path, front: str, body: str) -> list[str]:
     for key in REQUIRED_KEYS:
         if not re.search(rf"^\s*{key}\s*=", front, re.MULTILINE):
             errors.append(f"{path}: front matter missing '{key}'")
-    expected = sections_for(path.parent.name)
     headers = re.findall(r"^##\s+(.+?)\s*$", body, re.MULTILINE)
-    if headers != expected:
-        errors.append(
-            f"{path}: section headers do not match the required order.\n"
-            f"  expected: {expected}\n"
-            f"  found:    {headers}"
-        )
+    # Headers must be a strictly increasing subsequence of the vocabulary:
+    # known names only, canonical order, no duplicates.
+    index = {name: i for i, name in enumerate(SECTION_VOCABULARY)}
+    last = -1
+    for header in headers:
+        position = index.get(header)
+        if position is None:
+            errors.append(f"{path}: unknown section header '{header}'")
+        elif position <= last:
+            errors.append(f"{path}: section '{header}' is duplicated or out of order")
+        else:
+            last = position
+    if not headers or headers[0] != "Top stories":
+        errors.append(f"{path}: the first section must be 'Top stories'")
+    for anchor in ANCHOR_SECTIONS:
+        if anchor not in headers:
+            errors.append(f"{path}: missing required section '{anchor}'")
     return errors
 
 

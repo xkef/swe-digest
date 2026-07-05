@@ -14,8 +14,10 @@ normalized facts in memory.
 
 ## Section contents
 
-`CLAUDE.md` owns the canonical section order, front matter, and story shape, and
-The content gate (`swe_digest.gate.check_content`, run by `make check-content`) enforces the section layout by date. This is what
+`CLAUDE.md` owns the canonical section order, front matter, and story shape;
+the content gate (`swe_digest.gate.check_content`, run by `make check-content`)
+enforces the order, the known names, and the anchor sections. Empty sections
+are omitted (see Daily output in `CLAUDE.md`). This is what
 belongs in each section:
 
 1. `Top stories`: 3 to 7 items.

@@ -1,4 +1,4 @@
-"""The digest document format: section layouts by date and the one parser.
+"""The digest document format: the section vocabulary and the one parser.
 
 Every consumer of digest markdown crosses this interface: the skeleton
 generator and the content gate take the section layout from here, and the
@@ -16,8 +16,9 @@ from pathlib import Path
 
 from swe_digest.paths import DIGESTS
 
-# Current layout, used for digests on or after SECTIONS_V4_CUTOVER. Adds the
-# New videos section.
+# The current section order. A digest carries these sections in this order,
+# omitting empty ones; the gate additionally requires the anchors in
+# check_content.check_structure.
 SECTIONS = [
     "Top stories",
     "Conferences and events",
@@ -41,32 +42,11 @@ SECTIONS = [
     "Sources checked",
 ]
 
-# Layout from the Conferences and events / Books addition (2026-06-21) until
-# the New videos section was added.
-SECTIONS_V3 = [name for name in SECTIONS if name != "New videos"]
-
-# Layout from the Hacker News section split (2026-06-13) until the events/books
-# sections were added.
-SECTIONS_V2 = [name for name in SECTIONS_V3 if name not in ("Conferences and events", "Books")]
-
-# Digests published before the Hacker News section split keep their layout.
-SECTIONS_CUTOVER = "2026-06-13"
-# First digest built with the Conferences and events and Books sections.
-SECTIONS_V3_CUTOVER = "2026-06-21"
-# First digest built with the New videos section.
-SECTIONS_V4_CUTOVER = "2026-07-01"
-
-SECTIONS_LEGACY = [*SECTIONS_V2[:13], "HN and Reddit pulse", *SECTIONS_V2[15:]]
-
-
-def sections_for(date: str) -> list[str]:
-    if date >= SECTIONS_V4_CUTOVER:
-        return SECTIONS
-    if date >= SECTIONS_V3_CUTOVER:
-        return SECTIONS_V3
-    if date >= SECTIONS_CUTOVER:
-        return SECTIONS_V2
-    return SECTIONS_LEGACY
+# Every section name a digest may use, in the only order they may appear.
+# "HN and Reddit pulse" is the pre-2026-06-13 name for the Hacker News /
+# Reddit split and slots after it, so every published digest, old or new, is
+# an ordered subsequence of this list.
+SECTION_VOCABULARY = [*SECTIONS[:18], "HN and Reddit pulse", *SECTIONS[18:]]
 
 
 def digest_path(date: str) -> Path:

@@ -5,13 +5,10 @@ from __future__ import annotations
 from datetime import date
 
 from swe_digest.digest.document import (
+    SECTION_VOCABULARY,
     SECTIONS,
-    SECTIONS_LEGACY,
-    SECTIONS_V2,
-    SECTIONS_V3,
     normalize_url,
     parse,
-    sections_for,
 )
 from swe_digest.fetch.books import to_iso
 from swe_digest.fetch.events import parse_event, partition
@@ -87,17 +84,13 @@ class TestRunLogParsing:
         assert "example.com/post" in digest.urls
 
 
-class TestSectionLayouts:
-    def test_cutover_dates(self) -> None:
-        assert sections_for("2026-07-01") == SECTIONS
-        assert sections_for("2026-06-30") == SECTIONS_V3
-        assert sections_for("2026-06-13") == SECTIONS_V2
-        assert sections_for("2026-06-12") == SECTIONS_LEGACY
-
-    def test_historical_layouts(self) -> None:
+class TestSectionVocabulary:
+    def test_vocabulary_extends_current_sections(self) -> None:
         assert len(SECTIONS) == 20
-        assert [s for s in SECTIONS if s != "New videos"] == SECTIONS_V3
-        assert "Conferences and events" not in SECTIONS_V2
-        assert "Books" not in SECTIONS_V2
-        assert SECTIONS_LEGACY[13] == "HN and Reddit pulse"
-        assert "Hacker News" not in SECTIONS_LEGACY
+        assert len(SECTION_VOCABULARY) == 21
+        # The vocabulary is SECTIONS with the one legacy name slotted in, so
+        # every current digest order is a subsequence of it.
+        assert [s for s in SECTION_VOCABULARY if s != "HN and Reddit pulse"] == SECTIONS
+        assert SECTION_VOCABULARY.index("HN and Reddit pulse") == 18
+        assert SECTION_VOCABULARY[0] == "Top stories"
+        assert SECTION_VOCABULARY[-1] == "Sources checked"
