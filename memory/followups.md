@@ -17,6 +17,33 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-05: YouTube Studio "Ask Studio" prompt injection leaks private video data
+
+- Status: open
+- Category: Security
+- Sources: [researcher writeup](https://javoriuski.com/post/youtube), [HN 48786781](https://news.ycombinator.com/item?id=48786781)
+- Watch for: Whether Google reverses its no-fix stance or adds role separation to Ask Studio; a tracking identifier or CVE; independent reproduction; scope beyond private video titles.
+- Last checked: 2026-07-05
+- Notes: Researcher post (published May 2026, resurfaced HN 2026-07-05, 550 pts) reports YouTube Studio's Ask Studio AI assistant treats video comment text as trusted input. Attacker posts a benign comment then edits it to contain instructions; when the creator uses a suggested Studio prompt the assistant follows them, and a demonstrated payload exfiltrates private video titles via a crafted link. Google declined to classify it as a security bug (said it required social engineering) and held that after a PoC. Covered 2026-07-05 Top stories.
+
+## 2026-07-05: GPT-5.5 Codex reasoning-token clustering
+
+- Status: open
+- Category: AI
+- Sources: [codex issue 30364](https://github.com/openai/codex/issues/30364), [HN 48789428](https://news.ycombinator.com/item?id=48789428)
+- Watch for: An OpenAI acknowledgment or serving-side fix; independent confirmation of the error correlation; whether the clustering share keeps rising past the reported 53.30% (May 2026).
+- Last checked: 2026-07-05
+- Notes: Community log analysis (codex#30364) reports GPT-5.5 Codex reasoning token counts cluster at fixed values (516, 1034, 1552, spaced ~518 apart). GPT-5.5 exact-516 rate 44.0% of runs at/above 516 tokens vs 1.3% for non-GPT-5.5; exact-516 share rose 0.11% (Feb 2026) to 53.30% (May 2026); runs stopping at exactly 516 correlate with wrong answers on complex tasks. No OpenAI response on the issue. HN commenters read it as reasoning-inference batching for throughput. Covered 2026-07-05 Top stories.
+
+## 2026-07-05: Zig moves package management from compiler to build system
+
+- Status: open
+- Category: Languages
+- Sources: [Zig devlog 2026-06-30](https://ziglang.org/devlog/2026/#2026-06-30), [HN 48786638](https://news.ycombinator.com/item?id=48786638)
+- Watch for: Zig 0.17.0 shipping the change; the build-server protocol and watch-mode blockers landing; the stated longer-term goal of running the build system in a WebAssembly VM.
+- Last checked: 2026-07-05
+- Notes: Devlog dated 2026-06-30 moves `zig build`/`fetch`/`init`/`libc` into a separate build-system "maker" process and removes package fetching, HTTP client, TLS/crypto, Git protocol, and several compression formats from the compiler binary (14.1 to 13.5 MiB). `--maker-opt` becomes env `ZIG_DEBUG_MAKER`, `--zig-lib-dir` becomes `ZIG_LIB_DIR`; described as almost entirely non-breaking. Covered 2026-07-05 Top stories.
+
 ## 2026-07-04: Guix substitute and pull vulnerabilities
 
 - Status: open
@@ -77,8 +104,8 @@ Format:
 - Category: AI
 - Sources: [Anthropic](https://www.anthropic.com/news/redeploying-fable-5)
 - Watch for: The published cross-industry jailbreak-severity framework (with Amazon, Microsoft, Google); independent testing of the new classifier's 99%+ block claim; whether Mythos 5 access widens past approved US orgs; the post-2026-07-07 usage-credit terms for Fable 5.
-- Last checked: 2026-07-02
-- Notes: Anthropic began restoring Fable 5 globally 2026-07-01 after the US lifted the 2026-06-12 export controls (lifted 2026-06-30). Redeploy ships a new safety classifier said to block the Amazon-reported jailbreak in over 99% of cases; drafting a jailbreak-severity framework with Amazon/Microsoft/Google and other partners. HN 48752030 notes usage terms: through 2026-07-07 up to 50% of a plan's weekly limit on Fable 5, then usage credits; Fable 5 draws down usage faster than Opus 4.8. Covered 2026-07-02 Top stories. Continues the export-control saga (2026-07-01 lead).
+- Last checked: 2026-07-05
+- Notes: Anthropic began restoring Fable 5 globally 2026-07-01 after the US lifted the 2026-06-12 export controls (lifted 2026-06-30). Redeploy ships a new safety classifier said to block the Amazon-reported jailbreak in over 99% of cases; drafting a jailbreak-severity framework with Amazon/Microsoft/Google and other partners. HN 48752030 notes usage terms: through 2026-07-07 up to 50% of a plan's weekly limit on Fable 5, then usage credits; Fable 5 draws down usage faster than Opus 4.8. Covered 2026-07-02 Top stories. Continues the export-control saga (2026-07-01 lead). 2026-07-05: public capability-demo wave built with the model reached HN, led by a native Apple Silicon/iOS/iPad port of Command and Conquer Generals (ammaarreshi/Generals-Mac-iOS-iPad, README credits Claude Code/Fable, HN 48788283, 456 pts); covered 2026-07-05 AI and Watchlist follow-ups.
 
 ## 2026-07-02: Cloudflare Monetization Gateway (x402)
 
