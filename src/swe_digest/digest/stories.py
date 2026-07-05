@@ -100,44 +100,12 @@ def digest_updated(run: dict | None) -> tuple[str | None, str | None]:
 
 
 def run_meta(run: dict | None) -> dict | None:
-    """Compact aggregate facts from the run log for the digest page footer:
-    HN fetch health, watchlist query yield, section coverage, and the domains
-    linked. The full log stays in data/runs/DATE.yaml; raw ids and notes are
-    not surfaced."""
+    """Footer facts for the digest page: the run's degraded HN collections,
+    if any. The full log stays in data/runs/DATE.yaml behind a link."""
     if not run:
         return None
-    mech = run.get("mechanical") or {}
-    hn = mech.get("hn") or {}
-    dig = mech.get("digest") or {}
-    queries = mech.get("query_yield") or {}
-    published = {i for q in queries.values() for i in q.get("published_ids") or []}
-    sections = {
-        name: count
-        for name, count in (dig.get("sections") or {}).items()
-        if name not in SKIP_SECTIONS
-    }
-    fetched = utc_moment(hn.get("fetched_at"))
-    return {
-        "hn_source": hn.get("source", ""),
-        "hn_backends": sorted(set((hn.get("backends") or {}).values())),
-        "hn_degraded": sorted(hn.get("degraded") or []),
-        "hn_fetched": fetched.strftime("%Y-%m-%d %H:%M UTC") if fetched else "",
-        "hn_threads": len(dig.get("hn_ids") or []),
-        "domains": dig.get("domains") or [],
-        "queries_total": len(queries),
-        "queries_matched": sum(1 for q in queries.values() if q.get("matched")),
-        "published_matches": len(published),
-        "query_breakdown": sorted(
-            (
-                {"query": name, "published": len(set(y.get("published_ids") or []))}
-                for name, y in queries.items()
-                if y.get("published_ids")
-            ),
-            key=lambda item: (-item["published"], item["query"].lower()),
-        ),
-        "sections_filled": sum(1 for count in sections.values() if count),
-        "sections_total": len(sections),
-    }
+    hn = (run.get("mechanical") or {}).get("hn") or {}
+    return {"hn_degraded": sorted(hn.get("degraded") or [])}
 
 
 def parse_digest(path: Path) -> tuple[str, list[dict]]:
