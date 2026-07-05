@@ -103,11 +103,13 @@ GitHub additionally rejects `GITHUB_TOKEN` pushes that modify
 is outside the publish allowlist, so a run can never rewrite its own gate;
 the gate's behavior is covered by the adversarial suite in `tests/`.
 The `snapshots` workflow is the background accumulator for every fetched
-source: one matrix job per source (hn every three hours, youtube and papers
-every six, books every twelve), `fail-fast` off so one blocked source never
-stops the others, `contents: write` as the only credential. Each job runs
+source: one job with a fetch step per source (hn every three hours, youtube
+and papers every six, books every twelve), each step `continue-on-error` so
+one blocked source never stops the others, `contents: write` as the only
+credential. The job runs
 only a pinned checkout plus `python3 -m swe_digest fetch/merge/commit-snapshot`
-steps, verifies the staged paths stay inside its own `data/` directory, and
+steps, verifies the staged paths stay inside the snapshot `data/` directories,
+and
 commits through the GraphQL `createCommitOnBranch` mutation, so GitHub signs
 the commit as `github-actions[bot]` with the Verified badge; the mutation is
 still barred from `.github/workflows/`. The `daily-digest`

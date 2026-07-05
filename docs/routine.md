@@ -93,7 +93,7 @@ Backend order per collection:
    discovery only: verify stories against primary sources and always link
    canonical `news.ycombinator.com` item URLs, never mirror URLs.
 5. hnrss.org RSS.
-6. Committed snapshot (`data/hn/`): the `hn-snapshot` GitHub Actions workflow
+6. Committed snapshot (`data/hn/`): the `snapshots` GitHub Actions workflow
    runs the fetcher every three hours and merges each fetch into the day's
    JSON in `data/hn/` by item id (`swe_digest.snapshot.merge`), so the
    committed snapshot accumulates every story that surfaced during the day.
@@ -256,7 +256,7 @@ Always include the model identifier, release date, source, and concrete change w
 
 Collection: `make papers` (`swe_digest.fetch.papers`) pulls the `[papers]`
 categories and queries from the watchlist via the arXiv API, with arXiv RSS and
-the committed `data/papers/` snapshot as fallbacks. The `papers-snapshot`
+the committed `data/papers/` snapshot as fallbacks. The `snapshots`
 workflow accumulates results every six hours. Paper findings go in the
 `ML research` section.
 
@@ -541,7 +541,7 @@ Selection rules:
 
 Collection: `make books` (`swe_digest.fetch.books`) reads the `[books]`
 publisher feeds in `data/watchlist.toml`, pulls each RSS/Atom feed, and falls
-back to the committed `data/books/` snapshot. The `books-snapshot` workflow
+back to the committed `data/books/` snapshot. The `snapshots` workflow
 accumulates results every twelve hours. Working feeds are No Starch Press,
 Pragmatic Bookshelf, and Springer Computer Science. Some publisher feeds (No
 Starch, MIT Press) return HTTP 403 from datacenter ranges, so a feed that
@@ -592,7 +592,7 @@ https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}
 ```
 
 It writes `.cache/yt/YYYY-MM-DD.json` and exits nonzero when every channel feed
-is degraded. The `yt-snapshot` workflow merges each fetch into `data/youtube/`
+is degraded. The `snapshots` workflow merges each fetch into `data/youtube/`
 by video id every six hours, so a snapshot under 24 hours old counts as full
 coverage. RSS only: no transcript scraping (it violates YouTube's terms). Each
 item carries the description, view count, and star rating (average and count)
