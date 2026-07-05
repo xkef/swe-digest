@@ -23,6 +23,7 @@ from functools import partial
 from pathlib import Path
 
 from swe_digest import config
+from swe_digest.digest.document import slugify
 from swe_digest.gate.manifest import IssueClose, NewIssue, load_manifest
 from swe_digest.git_gh import GitGh, commit_addition, parse_changes, working_addition
 from swe_digest.paths import ROOT
@@ -223,7 +224,7 @@ def improvement_pr(gh: GitGh, number: int) -> None:
     block = DIFF_BLOCK.search(issue["body"] or "")
     if not block:
         raise SystemExit(f"issue #{number} body has no fenced diff block")
-    slug = re.sub(r"[^a-z0-9]+", "-", issue["title"].lower()).strip("-")[:40]
+    slug = slugify(issue["title"])[:40]
     branch = f"improvement/{number}-{slug}"
     base_oid = gh.branch_oid(REPO, "main")
     gh.sh("git", "switch", "-c", branch, "origin/main")

@@ -68,6 +68,10 @@ def normalize_url(url: str) -> str:
     return f"{host}{parts.path.rstrip('/')}"
 
 
+def slugify(text: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+
+
 SECTION = re.compile(r"^##\s+(?P<title>.+?)\s*$")
 STORY = re.compile(r"^###\s+(?P<title>.+?)\s*$")
 FIELD = re.compile(r"^- \*\*(?P<label>[^:*]+):\*\*\s*(?P<value>.*)$")

@@ -72,6 +72,74 @@ def test_top_stories_must_lead(repo_tree: Path) -> None:
     assert main(root=repo_tree) == 1
 
 
+SECOND_STORY = """### Another take entirely
+
+- **Category:** Infrastructure
+- **Status:** confirmed
+- **Sources:** [primary](https://example.com/post)
+- **Summary:** Restates the Top stories item.
+"""
+
+
+def later_digest(repo_tree: Path, text: str, date: str = "2026-07-06") -> Path:
+    """Write a digest dated after STORY_URL_DUP_SINCE so URL-dup rules apply."""
+    digest_dir = repo_tree / "content" / "digests" / date[:7] / date
+    digest_dir.mkdir(parents=True)
+    (digest_dir / "index.md").write_text(text, encoding="utf-8")
+    return digest_dir / "index.md"
+
+
+def test_duplicate_story_title_fails(repo_tree: Path) -> None:
+    text = digest_path(repo_tree).read_text()
+    text = text.replace(
+        "## Security\n\nNo major items found.\n",
+        "## Security\n\n### Example story\n\n- **Category:** Security\n"
+        "- **Status:** confirmed\n- **Sources:** [advisory](https://example.com/other)\n",
+    )
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 1
+
+
+def test_duplicate_primary_url_fails_after_cutoff(repo_tree: Path) -> None:
+    text = digest_text(date="2026-07-06").replace(
+        "## Security\n\nNo major items found.\n",
+        f"## Security\n\n{SECOND_STORY}",
+    )
+    later_digest(repo_tree, text)
+    assert main(root=repo_tree) == 1
+
+
+def test_duplicate_primary_url_grandfathered_before_cutoff(repo_tree: Path) -> None:
+    # The published archive predates the primary-URL rule and must keep
+    # validating unchanged.
+    text = digest_path(repo_tree).read_text()
+    text = text.replace("## Security\n\nNo major items found.\n", f"## Security\n\n{SECOND_STORY}")
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 0
+
+
+def test_followup_section_may_repeat_primary_url(repo_tree: Path) -> None:
+    followup = SECOND_STORY.replace("### Another take entirely", "### Tracking the example story")
+    text = digest_text(date="2026-07-06").replace(
+        "## Watchlist follow-ups\n\nNo major items found.\n",
+        f"## Watchlist follow-ups\n\n{followup}",
+    )
+    later_digest(repo_tree, text)
+    assert main(root=repo_tree) == 0
+
+
+def test_top_stories_over_cap_fails(repo_tree: Path) -> None:
+    extra = "".join(
+        f"\n### Filler story {n}\n\n- **Category:** AI\n- **Status:** confirmed\n"
+        f"- **Sources:** [primary](https://example.com/filler-{n})\n"
+        for n in range(8)
+    )
+    text = digest_path(repo_tree).read_text()
+    text = text.replace("## Conferences and events", extra + "\n## Conferences and events", 1)
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 1
+
+
 def test_legacy_pulse_section_passes(repo_tree: Path) -> None:
     # Pre-2026-06-13 digests use the single "HN and Reddit pulse" section in
     # place of the Hacker News / Reddit split; they must keep validating.

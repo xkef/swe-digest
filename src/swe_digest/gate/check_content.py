@@ -14,7 +14,15 @@ import subprocess
 import sys
 from pathlib import Path
 
-from swe_digest.digest.document import SECTION_VOCABULARY, SECTIONS, split_front_matter
+from swe_digest.digest.document import (
+    LINK,
+    SECTION_VOCABULARY,
+    SECTIONS,
+    normalize_url,
+    parse,
+    slugify,
+    split_front_matter,
+)
 from swe_digest.gate.check_memory import check_memory
 from swe_digest.paths import ROOT
 
@@ -26,6 +34,20 @@ REQUIRED_KEYS = ["title", "date", "status", "source_count"]
 # always-checked risk sections, and the coverage statement. Everything else
 # is omitted on a day with nothing to report.
 ANCHOR_SECTIONS = ["Security", "Outages", "Sources checked"]
+
+# Editorial cap on the lead section; the 3-story floor stays prose because a
+# genuinely quiet day may not clear it.
+MAX_TOP_STORIES = 7
+
+# Sections whose blocks track stories covered on other days (or the same
+# day), so a repeated primary URL there is an update, not a duplicate story.
+FOLLOWUP_SECTIONS = {"Watchlist follow-ups"}
+
+# The primary-URL uniqueness rule postdates the archive: 8 already-published
+# digests contain restatement blocks sharing a primary source (they motivated
+# the rule). It applies from this date forward; the title-slug rule and the
+# Top stories cap hold for every digest.
+STORY_URL_DUP_SINCE = "2026-07-06"
 
 # Raw HTML / active-content patterns that must never reach a published page.
 # Scanned against prose with code spans removed, so a security story may still
@@ -92,6 +114,42 @@ def check_structure(path: Path, front: str, body: str) -> list[str]:
     return errors
 
 
+def check_stories(path: Path, text: str) -> list[str]:
+    """Each story appears once: no two ``###`` blocks in a digest may share a
+    title slug or a normalized primary source URL. Also caps Top stories."""
+    digest = parse(text)
+    errors = []
+    top_count = digest.section_counts.get("Top stories", 0)
+    if top_count > MAX_TOP_STORIES:
+        errors.append(f"{path}: Top stories has {top_count} items; the cap is {MAX_TOP_STORIES}")
+    check_url_dups = path.parent.name >= STORY_URL_DUP_SINCE
+    slugs: dict[str, str] = {}
+    primaries: dict[str, str] = {}
+    for section, stories in digest.sections:
+        for story in stories:
+            slug = slugify(story.title)
+            if slug in slugs:
+                errors.append(
+                    f"{path}: story '{story.title}' in '{section}' duplicates a story"
+                    f" in '{slugs[slug]}'; each story appears once"
+                )
+            else:
+                slugs[slug] = section
+            links = LINK.findall(story.fields.get("sources", ""))
+            if not links or section in FOLLOWUP_SECTIONS:
+                continue
+            primary = normalize_url(links[0])
+            if check_url_dups and primary in primaries:
+                errors.append(
+                    f"{path}: story '{story.title}' in '{section}' repeats the primary"
+                    f" source of a story in '{primaries[primary]}'; a cross-reference"
+                    f" must lead with its own new-signal source"
+                )
+            else:
+                primaries.setdefault(primary, section)
+    return errors
+
+
 def scan_secrets(path: Path, text: str) -> list[str]:
     return [
         f"{path}: contains a {label} pattern. Do not publish secrets."
@@ -123,7 +181,7 @@ def check_digest(path: Path) -> list[str]:
     if parts is None:
         return [f"{path}: missing or unterminated +++ front matter"]
     front, body = parts
-    return check_structure(path, front, body) + scan_unsafe(path, text)
+    return check_structure(path, front, body) + check_stories(path, text) + scan_unsafe(path, text)
 
 
 def check_private_context(root: Path) -> list[str]:

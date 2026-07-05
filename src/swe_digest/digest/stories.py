@@ -39,10 +39,6 @@ SKIP_SECTIONS = {"Watchlist follow-ups", "Sources checked"}
 FM_KEY = re.compile(r"^\s*(?P<key>\w+)\s*=\s*(?P<value>.+?)\s*$")
 
 
-def slugify(text: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
-
-
 def strip_markdown(text: str) -> str:
     text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
     text = re.sub(r"[`*_]", "", text)
@@ -154,7 +150,7 @@ def parse_digest(path: Path) -> tuple[str, list[dict]]:
         if section in SKIP_SECTIONS:
             continue
         for story in entries:
-            slug = slugify(story.title)
+            slug = document.slugify(story.title)
             stories.append(
                 {
                     "date": date,
