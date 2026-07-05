@@ -20,7 +20,7 @@ from swe_digest.gate.check_content import (
     split_front_matter,
     strip_code,
 )
-from swe_digest.gate.publish_run import ALLOWED_PATHS, domain
+from swe_digest.gate.publish_run import ALLOWED_PATHS
 
 PATH = Path("digest.md")
 
@@ -110,20 +110,6 @@ class TestSplitFrontMatter:
     def test_missing_marker_returns_none(self, text: str) -> None:
         if not text.startswith("+++"):
             assert split_front_matter(text) is None
-
-
-class TestDomain:
-    @given(
-        host=st.text(
-            alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-",
-            min_size=1,
-            max_size=50,
-        ),
-        path=st.text(max_size=50),
-        scheme=st.sampled_from(["http", "https"]),
-    )
-    def test_extracts_lowercased_host(self, host: str, path: str, scheme: str) -> None:
-        assert domain(f"{scheme}://{host}/{path}") == host.lower()
 
 
 class TestAllowedPaths:

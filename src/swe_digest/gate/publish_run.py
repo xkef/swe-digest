@@ -17,7 +17,6 @@ points, so the gate's checks are testable against an in-memory fake.
 
 from __future__ import annotations
 
-import os
 import re
 from functools import partial
 from pathlib import Path
@@ -75,32 +74,6 @@ def writable_paths(date: str, root: Path | None = None) -> list[str]:
     return paths + [f"memory/{name}.md" for name in MEMORY_FILES]
 
 
-def domain(url: str) -> str:
-    return re.sub(r"^https?://", "", url).split("/")[0].lower()
-
-
-def report_new_domains(gh: GitGh) -> None:
-    diff = gh.sh("git", "diff", "origin/main..HEAD", "--", "content/digests")
-    added = "\n".join(
-        line[1:]
-        for line in diff.splitlines()
-        if line.startswith("+") and not line.startswith("+++")
-    )
-    known_grep = gh.run(
-        "git", "grep", "-ohE", r"https?://[^\s)\"'<>]+", "origin/main", "--", "content/digests"
-    )
-    known = {domain(url) for url in known_grep.stdout.split()}
-    new = sorted({domain(url) for url in URL.findall(added)} - known)
-    if not new:
-        return
-    report = "First-seen link domains in this run:\n" + "".join(f"- {d}\n" for d in new)
-    summary = os.environ.get("GITHUB_STEP_SUMMARY")
-    if summary:
-        with open(summary, "a", encoding="utf-8") as handle:
-            handle.write(report)
-    print(report, end="")
-
-
 def check_paths(entries: list[tuple[str, str]], scope: str) -> None:
     """Reject a file mode outside {regular, executable} or a path outside the
     publish allowlist. Each commit is replayed individually on main, so this
@@ -144,7 +117,6 @@ def apply(patch: str, gh: GitGh | None = None) -> None:
     for commit in commits:
         check_paths(added_entries(gh, f"{commit}^", commit), f"commit {commit[:9]}")
     files = gh.sh("git", "diff", "--name-only", "origin/main..HEAD").split()
-    report_new_domains(gh)
     print(f"apply ok ({len(subjects)} commit(s), {len(files)} file(s))")
 
 

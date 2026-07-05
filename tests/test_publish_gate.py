@@ -479,20 +479,3 @@ class TestPush:
         gh = RepoGitGh()
         publish_run.push(gh)
         assert gh.commits == []
-
-
-class TestNewDomainReport:
-    def test_first_seen_domains_reported(
-        self, gate_repo: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
-        summary = tmp_path / "summary.md"
-        monkeypatch.setenv("GITHUB_STEP_SUMMARY", str(summary))
-        path = gate_repo / "content" / "digests" / DIGEST_MONTH / DIGEST_DATE / "index.md"
-        path.write_text(
-            digest_text("\nNew [source](https://brand-new-domain.example.net/post).\n"),
-            encoding="utf-8",
-        )
-        commit_all(gate_repo, DIGEST_SUBJECT)
-        patch = export_patch(gate_repo)
-        publish_run.apply(str(patch))
-        assert "- brand-new-domain.example.net" in summary.read_text().splitlines()
