@@ -26,17 +26,18 @@ on:
   schedule:
     - cron: "25 */6 * * *"
 
-permissions:
-  issues: write
-  # write instead of read so the retry step can rerun failed Deploy Pages
-  # runs; alerting itself only reads.
-  actions: write
+permissions: {}
 
 concurrency:
   group: failure-alert
 
 jobs:
   alert:
+    permissions:
+      issues: write
+      # write instead of read so the retry step can rerun failed Deploy Pages
+      # runs; alerting itself only reads.
+      actions: write
     if: >-
       github.event_name == 'schedule' ||
       (github.event.workflow_run.conclusion == 'failure' &&
