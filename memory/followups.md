@@ -206,15 +206,6 @@ Format:
 - Last checked: 2026-06-11
 - Notes: Anthropic filed 2026-06-01 ($965B valuation, $47B ARR). OpenAI filed 2026-06-08 ($852B last round). Neither has set a public timeline.
 
-## 2026-06-11: Kubernetes v1.33 EOL and v1.37 release
-
-- Status: open
-- Category: Infrastructure
-- Sources: [Kubernetes releases](https://kubernetes.io/releases/)
-- Watch for: v1.33 EOL on 2026-06-28; v1.37 Enhancements Freeze 2026-06-17.
-- Last checked: 2026-06-11
-- Notes: v1.36.1 is current stable. v1.33 loses security patches 2026-06-28.
-
 ## 2026-06-11: Microsoft Patch Tuesday CVE-2026-45657 exploit development
 
 - Status: open
@@ -349,15 +340,6 @@ Format:
 - Watch for: In-the-wild exploitation; ransomware campaigns leveraging rogue DHCP on compromised networks.
 - Last checked: 2026-06-12
 - Notes: CVSS 9.8. Stack-based buffer overflow in Windows DHCP Client Service. Rogue DHCP server attack vector, no user interaction, no credentials. Present on every Windows installation. No active exploitation as of 2026-06-12. Patched in June 2026 cumulative update.
-
-## 2026-06-12: Chrome 150 uBlock Origin MV2 removal
-
-- Status: open
-- Category: Dev tools
-- Sources: [PCWorld](https://www.pcworld.com/article/3160794/the-last-lifeline-for-ublock-origin-in-chrome-is-almost-gone-for-good.html)
-- Watch for: Chrome 151 (about four weeks out) stripping the remaining MV2 flags; uBlock Origin Lite coverage parity improvements; enterprise policy alternatives.
-- Last checked: 2026-06-30
-- Notes: REALIZED 2026-06-30: Chrome 150 reached the stable channel and removed the ExtensionManifestV2Disabled flag, the last override keeping Manifest V2 extensions running, so uBlock Origin and other dynamic content blockers stop working in Chrome. Chrome 151 (~4 weeks later) strips the remaining MV2 flags. uBlock Origin Lite (MV3) is the reduced in-Chrome option; Firefox and Brave retain full MV2 support. Covered in 2026-06-30 Watchlist follow-ups.
 
 ## 2026-06-12: Cloudflare Dashboard and API control-plane incident
 
@@ -628,15 +610,6 @@ Format:
 - Watch for: OpenAI confirmation of role and team; further Gemini-team departures; impact on Gemini model roadmap.
 - Last checked: 2026-06-19
 - Notes: Shazeer announced 2026-06-18 (via X, corroborated by multiple outlets) he is leaving Google to join OpenAI as Lead for AI Architecture Research. Co-led Gemini with Jeff Dean and Oriol Vinyals; returned to Google in 2024 in a reported 2.7B USD Character.AI deal; co-author of "Attention Is All You Need". Talent concentration during OpenAI's pre-IPO period.
-
-## 2026-06-19: Apple to raise prices on AI-driven memory shortage
-
-- Status: open
-- Category: Markets
-- Sources: [BBC](https://www.bbc.com/news/articles/c3wyxvqdx1zo), [Yahoo Finance](https://finance.yahoo.com/technology/articles/apple-raise-prices-due-memory-212327523.html)
-- Watch for: DRAM/NAND price pass-through from Samsung, SK hynix, Micron; server bill-of-materials impact; whether other OEMs (Dell, HP, Lenovo) follow.
-- Last checked: 2026-06-26
-- Notes: Tim Cook told WSJ price increases are unavoidable and the memory situation is unsustainable, citing AI data-center demand draining DRAM and NAND. Apple willing to use its balance sheet to secure memory. REALIZED 2026-06-25: Apple raised base MacBook and iPad prices, reportedly about 17-25% (MacBook Neo $599->$699, 512GB MacBook Air $1,099->$1,299, 1TB MacBook Pro $1,699->$1,999, iPad base +$100-$150); Apple said it had never seen a component price rise this fast; APPL closed ~6% lower, worst day since April 2025 (Reuters, CNBC; HN 48672732/48674096). Covered in 2026-06-26 Top stories. AI memory crunch now hitting consumer hardware pricing.
 
 ## 2026-06-18: TypeScript 7.0 release candidate (native Go compiler)
 
@@ -988,15 +961,6 @@ Format:
 - Watch for: deno desktop leaving experimental; permission model for produced binaries; npm-lockfile-import adoption.
 - Last checked: 2026-06-26
 - Notes: Deno 2.9 released 2026-06-25. deno desktop (experimental) compiles web-framework projects (Next.js/Astro/Fresh) to a single native binary (native webview or bundled Chromium); deno install reads npm/pnpm/yarn/Bun lockfiles directly. Reports 2x faster cold start (34->17ms), 2.2-3.1x lower peak memory, Node.js 26 compat with bare import "fs", post-quantum + ChaCha20-Poly1305 Web Crypto. Breaking: Deno.serve auto-compression now defaults off. HN 48675717. Parallels Deno Desktop packaging push tracked 2026-06-22. Covered in 2026-06-26 Top stories.
-
-## 2026-06-26: OpenAI to stagger GPT-5.6 release at US government request
-
-- Status: open
-- Category: AI
-- Sources: [Washington Post](https://www.washingtonpost.com/technology/2026/06/26/openai-says-us-government-will-vet-users-its-latest-ai-model/), [OpenAI](https://openai.com/index/previewing-gpt-5-6-sol/)
-- Watch for: Broader ChatGPT/Codex/API rollout date; how EO 14409 pre-release review applies to other labs; contrast with Anthropic foreign-access limits.
-- Last checked: 2026-06-27
-- Notes: Reporting 2026-06-25 (single-sourced) said OpenAI will stagger GPT-5.6 after a request from the Office of the National Cyber Director and OSTP; Altman reportedly told staff it enters a limited enterprise preview with government approving access customer by customer. Maps onto Executive Order 14409 (signed 2026-06-02) asking developers to give the government up to 30 days pre-release access to most-capable models. REALIZED 2026-06-26: OpenAI previewed GPT-5.6 (see the 2026-06-27 GPT-5.6 preview follow-up) and the Washington Post confirmed the US government will vet access customer by customer during the preview; Lutnick called Altman warning against release without sign-off. Altman memo says he hopes general release lands in a couple of weeks and that customer-by-customer vetting is "not our preferred long term model." HN 48678789, 48690101.
 
 ## 2026-06-27: OpenAI previews GPT-5.6 (Sol, Terra, Luna)
 

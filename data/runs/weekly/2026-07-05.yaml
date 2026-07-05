@@ -1,0 +1,86 @@
+date: '2026-07-05'
+window: 2026-06-29..2026-07-05
+run_logs_reviewed:
+- '2026-06-29'
+- '2026-06-30'
+- '2026-07-01'
+- '2026-07-02'
+- '2026-07-03'
+- '2026-07-04'
+- '2026-07-05'
+issues_opened: []
+proposals:
+- '[improvement] Link reader-facing Reddit URLs, not .rss feeds, as digest sources'
+new_issues_requested:
+- '[improvement] Link reader-facing Reddit URLs, not .rss feeds, as digest sources (format axis; diff touches docs/routine.md only)'
+feedback_reviewed: []
+notes: |
+  Weekly improvement review (unattended, read-only token): committed locally, no
+  push, no write API calls. Side effects requested through .run/manifest.yaml
+  (one labeled improvement proposal, no issue closes). Window 2026-06-29..2026-07-05,
+  seven run-log days since the 2026-06-28 marker.
+
+  ONE labeled improvement proposal this week (format axis): link reader-facing
+  Reddit URLs, not `.rss` feeds, as digest sources. Evidence is solid and
+  concrete: owner issue #33 (2026-07-04, "bug: reddit rss incorrect") reports
+  that opening the r/programming source on the published story
+  `/digests/2026-07-04/r-programming-surfaces-the-day-s-engineering-write-ups/`
+  downloads an RSS file. Verified against the digests: both the 2026-07-03 and
+  2026-07-04 "r/programming" stories link
+  `https://www.reddit.com/r/programming/top/.rss?t=day` as the reader-facing
+  `**Sources:**` link, which a browser renders/downloads as raw XML.
+  docs/routine.md (Reddit collection) lists the `.rss` URLs only as collection
+  endpoints and states no rule for the published source URL, so raw feed URLs
+  leak in as sources. Proposed diff adds a one-paragraph rule to docs/routine.md
+  (link a post permalink or the human-readable subreddit URL, never a `/.rss`
+  feed URL); it touches only docs/routine.md, inside the improvement whitelist.
+  Requested via manifest new_issues (label improvement); the embedded fenced diff
+  git-apply-checks clean against main.
+
+  make yield over 14 run logs (0 degraded HN days across the window): the strict
+  zero-yield-across-clean-days pruning list is empty, so no query qualifies for
+  a prune. backtest miss_review across the seven days is dominated by
+  out_of_scope and relevance_skip, with a handful of scrape_gap (timing: items
+  that surfaced after the ~02:2x publish-time fetch and were caught by the
+  accumulating data/hn/ snapshot; HN ran via Algolia with 0 degraded collections
+  all seven days, not a blocked source) and four watchlist_gap total: HN 48720758
+  (native graphical SSH shell), 48720190 (WATaBoy JIT-to-WASM), 48662018 (NUMA
+  deep dive), and herdr (agent terminal multiplexer). All four are individual
+  engineering/dev-tool blog posts that HN front-page discovery already surfaced
+  and published (the native SSH shell, WATaBoy, and Herdr all appeared in the
+  2026-06-30..2026-07-04 digests; NUMA is a one-off post). They do not cluster
+  into a repeated theme a keyword query would catch without adding noise, so no
+  watchlist add or prune, same call as the last two markers.
+
+  Feedback: no feedback issues opened in this window. The most recent feedback
+  issue (#20) was reviewed and closed in the 2026-06-28 marker, so nothing to
+  aggregate or close this week.
+
+  Blocked source: Reddit RSS (www.reddit.com /hot/.rss and /top/.rss?t=day)
+  stayed degraded or partial from the run environment across the window (issue
+  #23 backend detail; run logs 2026-06-29..2026-07-04 state degraded Reddit
+  coverage in Sources checked). It is already covered by two open issues, the
+  agent's own #23 and the owner's #33, so per discipline no new blocked-source
+  issue is filed. HN was 0 degraded all seven days. The datacenter 403 source
+  blocks remain environment-specific.
+
+  GitHub account signal (read-only, bounded): owner non-fork repo languages
+  (Shell, Python, Rust, Jupyter) and a 100-repo starred sample (top languages
+  Rust 29, Python 20, TypeScript 11, Go 9, C++/C, Lua, Zig, Java; top topics
+  rust, cli, terminal, ai, llm, ai-agents, neovim, macos, python, agent,
+  developer-tools, tmux, mcp, linux, wasm) are all already covered by
+  data/watchlist.toml [languages]/[topics] and the youtube/blog lists. The
+  26-account following list is all individuals, no recurring org. No
+  personalization proposal, same conclusion as the 2026-06-21 and 2026-06-28
+  markers.
+
+  Memory compaction: pruned four realized-and-covered or date-passed follow-ups
+  from memory/followups.md: Kubernetes v1.33 EOL/v1.37 (both named watch dates,
+  2026-06-17 freeze and 2026-06-28 EOL, are past; not refreshed since 2026-06-11);
+  Chrome 150 uBlock MV2 removal (REALIZED and covered 2026-06-30, residual Chrome
+  151 minor); Apple AI-memory-driven price increase (REALIZED 2026-06-25, covered
+  2026-06-26); and OpenAI staggered GPT-5.6 release (REALIZED 2026-06-26,
+  superseded by the still-open 2026-06-27 GPT-5.6 preview follow-up). Followups
+  went 131 to 127 entries; the memory gate passes with 0 errors. entities.md has
+  no entries past the 60-day stale window (oldest Last seen ~2026-06-02); it plus
+  source-reliability.md and access-notes.md stay bounded, no change needed.
