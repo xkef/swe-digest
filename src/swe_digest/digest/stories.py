@@ -7,8 +7,8 @@ module derives, at build time:
 - One Zola page per story under content/stories/ (path-routed to
   /digests/DATE/<slug>/) so every story has its own page.
 - data/digests/DATE.json, the section data behind each /digests/DATE/ page.
-- data/home/page-N.json plus stub pages under content/home/ (routed to
-  /day/DATE/), the paginated data-driven home index, one day per page.
+- data/home/page-1.json, the newest day's data behind the home index; older
+  days live at their canonical /digests/DATE/ pages.
 
 Full-text search is built separately by Pagefind, which indexes the rendered
 story pages after `zola build` (see the Makefile build target).
@@ -31,7 +31,6 @@ from swe_digest.digest.runs import RUNS_DIR
 from swe_digest.paths import DIGESTS, ROOT
 
 STORIES_DIR = ROOT / "content" / "stories"
-HOME_PAGES_DIR = ROOT / "content" / "home"
 DAY_JSON_DIR = ROOT / "data" / "digests"
 HOME_JSON_DIR = ROOT / "data" / "home"
 
@@ -213,31 +212,16 @@ def write_json(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
-def write_home_stub(number: int, date: str) -> None:
-    fm = [
-        "+++",
-        f'title = "{date}"',
-        f'path = "day/{date}"',
-        'template = "home.html"',
-        "",
-        "[extra]",
-        f"home_page = {number}",
-        "+++",
-        "",
-    ]
-    (HOME_PAGES_DIR / f"page-{number}.md").write_text("\n".join(fm), encoding="utf-8")
-
-
 def main() -> int:
-    for directory in (STORIES_DIR, HOME_PAGES_DIR, DAY_JSON_DIR, HOME_JSON_DIR):
+    for directory in (STORIES_DIR, DAY_JSON_DIR, HOME_JSON_DIR):
         if directory.exists():
             shutil.rmtree(directory)
         directory.mkdir(parents=True)
+    # Prune stubs from before the /day/ route family was removed, so a stale
+    # local checkout cannot rebuild those pages against missing JSON.
+    shutil.rmtree(ROOT / "content" / "home", ignore_errors=True)
     (STORIES_DIR / "_index.md").write_text(
         '+++\ntitle = "Stories"\nrender = false\n+++\n', encoding="utf-8"
-    )
-    (HOME_PAGES_DIR / "_index.md").write_text(
-        '+++\ntitle = "Home pages"\nrender = false\n+++\n', encoding="utf-8"
     )
 
     digests: list[dict] = []
@@ -272,27 +256,16 @@ def main() -> int:
         )
         all_stories.extend(pub)
 
-    # One day per home page, newest first: the newest day is the site root and
-    # every older day is addressed by date at /day/DATE/.
-    pages = [[day] for day in digests] or [[]]
-    for number, days in enumerate(pages, start=1):
-        payload = {
-            "page": number,
-            "total_pages": len(pages),
-            "digests": days,
+    # The home index shows only the newest day; older days live at their
+    # canonical /digests/DATE/ pages.
+    write_json(
+        HOME_JSON_DIR / "page-1.json",
+        {
+            "digests": digests[:1],
             "total_stories": len(all_stories),
             "total_days": len(digests),
-        }
-        if number > 1:
-            payload["newer_date"] = pages[number - 2][0]["date"]
-        if number < len(digests):
-            payload["older_date"] = pages[number][0]["date"]
-        write_json(HOME_JSON_DIR / f"page-{number}.json", payload)
-        if number > 1:
-            write_home_stub(number, days[0]["date"])
-
-    print(
-        f"build-stories ok ({len(all_stories)} story pages, {len(digests)} digests, "
-        f"{len(pages)} home pages)"
+        },
     )
+
+    print(f"build-stories ok ({len(all_stories)} story pages, {len(digests)} digests)")
     return 0

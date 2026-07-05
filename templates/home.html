@@ -1,12 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% if page is defined %}
-{% set page_number = page.extra.home_page %}
-{% else %}
-{% set page_number = 1 %}
-{% endif %}
-{% set index = load_data(path="data/home/page-" ~ page_number ~ ".json") %}
+{% set index = load_data(path="data/home/page-1.json") %}
 
 <section class="layout story-index" data-base="{{ config.base_url | safe }}" aria-label="Digest index">
   <h1 class="visually-hidden">SWE Digest</h1>
@@ -44,21 +39,9 @@
   <ol class="story-list" id="archive-results" hidden></ol>
   <p class="story-empty" id="story-empty" hidden>No stories match these filters.</p>
   <button type="button" class="search-more" id="search-more" hidden>Load more results</button>
-  {% if index.total_pages > 1 %}
-  <nav class="pagination" aria-label="Archive days">
-    {% if index.newer_date %}
-    {% if index.page == 2 %}
-    <a href="{{ config.base_url | safe }}/">Newer: {{ index.newer_date }}</a>
-    {% else %}
-    <a href="{{ get_url(path='/day/' ~ index.newer_date ~ '/', trailing_slash=true) | safe }}">Newer: {{ index.newer_date }}</a>
-    {% endif %}
-    {% endif %}
-    <span>day {{ index.page }} of {{ index.total_days }}</span>
-    {% if index.older_date %}
-    <a href="{{ get_url(path='/day/' ~ index.older_date ~ '/', trailing_slash=true) | safe }}">Older: {{ index.older_date }}</a>
-    {% endif %}
+  <nav class="pagination" aria-label="Archive">
+    <a href="{{ config.base_url | safe }}/digests/">Older digests</a>
   </nav>
-  {% endif %}
 </section>
 
 <script src="{{ get_url(path='/search-init.js', cachebust=true) | safe }}" defer></script>

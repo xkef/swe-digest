@@ -6,7 +6,9 @@
   <link href="{{ feed_url | safe }}" rel="self" type="application/atom+xml" />
   <updated>{{ last_updated | date(format="%Y-%m-%dT%H:%M:%SZ") }}</updated>
   {% if config.description %}<subtitle>{{ config.description }}</subtitle>{% endif %}
-  {% for page in pages %}
+  {%- set_global emitted = 0 %}
+  {%- for page in pages %}
+  {%- if page.components | length == 2 and page.components.0 == "digests" %}
   <entry>
     <title>{{ page.title }}</title>
     <id>{{ page.permalink | safe }}</id>
@@ -14,5 +16,8 @@
     <updated>{% if page.updated %}{{ page.updated | date(format="%Y-%m-%dT%H:%M:%SZ") }}{% else %}{{ page.date | date(format="%Y-%m-%dT%H:%M:%SZ") }}{% endif %}</updated>
     {% if page.description %}<summary>{{ page.description }}</summary>{% endif %}
   </entry>
-  {% endfor %}
+  {%- set_global emitted = emitted + 1 %}
+  {%- if emitted >= 30 %}{% break %}{% endif %}
+  {%- endif %}
+  {%- endfor %}
 </feed>

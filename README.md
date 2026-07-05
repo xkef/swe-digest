@@ -54,9 +54,7 @@ derives generated, uncommitted outputs from those files:
 - one Zola page per story under `content/stories/`, path-routed to
   `/digests/DATE/<slug>/`, so every story has its own page;
 - `data/digests/DATE.json`, the section data behind each `/digests/DATE/` page;
-- `data/home/page-N.json` plus stub pages under `content/home/` (routed to
-  `/day/DATE/`), the paginated data behind the filterable home index, one
-  day per page.
+- `data/home/page-1.json`, the newest day's data behind the home index.
 
 Each day page at `/digests/DATE/` is a super page that groups and links to its
 story pages.
