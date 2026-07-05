@@ -1,0 +1,118 @@
+name: Content run
+
+# The shared two-job pipeline behind daily-digest and weekly-improvement:
+# a read-only agent job that commits locally and exports its work, and a
+# publish job that holds the write token and applies the run only after the
+# deterministic checks in swe_digest.gate.publish_run. Callers supply the
+# prompt and their cron; this file owns the security scaffolding, so the
+# read-only-agent invariant lives in exactly one place.
+on:
+  workflow_call:
+    inputs:
+      prompt:
+        description: The routine prompt for the agent job
+        required: true
+        type: string
+      agent_timeout:
+        description: Agent job timeout in minutes
+        required: false
+        type: number
+        default: 90
+
+jobs:
+  agent:
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.agent_timeout }}
+    permissions:
+      contents: read
+      issues: read
+    outputs:
+      has_patch: ${{ steps.export.outputs.has_patch }}
+    steps:
+      # Egress monitor in audit mode: records outbound connections per run.
+      - uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
+        with:
+          install: true
+          cache: true
+      - name: Install Python deps
+        run: python3 -m pip install --require-hashes -r requirements.txt
+      - name: Configure git identity
+        run: |
+          git config user.name "swe-digest-agent"
+          git config user.email "actions@users.noreply.github.com"
+      - uses: anthropics/claude-code-action@558b1d6cab4085c7753fe402c10bef0fbb92ac7a # v1.0.165
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ github.token }}
+          prompt: ${{ inputs.prompt }}
+          claude_args: |
+            --model claude-opus-4-8
+            --allowedTools Bash,Read,Edit,Write,Glob,Grep,WebFetch,WebSearch,TodoWrite
+      - name: Export run artifact
+        id: export
+        run: |
+          mkdir -p .run
+          [ -f .run/manifest.yaml ] || echo '{}' > .run/manifest.yaml
+          if [ "$(git rev-list --count origin/main..HEAD)" -gt 0 ]; then
+            git format-patch origin/main --stdout > .run/run.patch
+            echo "has_patch=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_patch=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: run
+          path: .run/
+          include-hidden-files: true
+          if-no-files-found: error
+
+  publish:
+    needs: agent
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      actions: write
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # cache disabled: this privileged job must not restore a tool cache the
+      # untrusted agent job could have poisoned on the shared main scope.
+      - uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
+        with:
+          install: true
+          cache: false
+      - name: Install Python deps
+        run: python3 -m pip install --require-hashes -r requirements.txt
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: run
+          path: .run
+      - name: Apply and push
+        if: needs.agent.outputs.has_patch == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PYTHONPATH=src python3 -m swe_digest publish apply .run/run.patch
+          make check
+          PYTHONPATH=src python3 -m swe_digest publish push
+          gh workflow run pages.yml
+      - name: Side effects
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: PYTHONPATH=src python3 -m swe_digest publish side-effects .run/manifest.yaml

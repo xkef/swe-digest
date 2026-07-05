@@ -31,8 +31,8 @@ to the repository, or corrupt the routine so future runs stay compromised.
 
 ### 1. The agent job holds no write capability
 
-Unattended runs are split into two jobs (`daily-digest.yml`,
-`weekly-improvement.yml`). The agent job runs with a
+Unattended runs are split into two jobs (`content-run.yml`, called by
+`daily-digest.yml` and `weekly-improvement.yml`). The agent job runs with a
 read-only token (`contents: read`, `issues: read`, no persisted git
 credentials): it can fetch, write files, and commit locally, but cannot push
 or call a write API. Its entire output is an artifact: local commits exported
