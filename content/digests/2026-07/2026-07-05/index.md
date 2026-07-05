@@ -10,7 +10,7 @@ months = ["2026-07"]
 
 [extra]
 status = "published"
-source_count = 16
+source_count = 18
 +++
 
 ## Top stories
@@ -97,7 +97,15 @@ No major items found. Status pages were clean; Cloudflare ran scheduled maintena
 
 ## Developer tools
 
-No major items found. No watchlist repo published a qualifying release since 2026-07-04; the Neovim nightly tag (2026-07-04) is a rolling prerelease.
+### shadcn/ui makes Base UI its default component library
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [shadcn/ui changelog](https://ui.shadcn.com/docs/changelog), [HN discussion](https://news.ycombinator.com/item?id=48791328)
+- **Summary:** shadcn/ui changed its default primitive library from Radix UI to Base UI. New projects created with `shadcn init` now scaffold Base UI components, and the documentation shows Base UI first with Radix one click away. The change is non-breaking: Radix is not deprecated, existing projects need no migration, and `shadcn init -b radix` keeps Radix on new projects. shadcn/ui also added a skill-based migration tool that converts existing components progressively while preserving customizations.
+- **Why it matters:** shadcn/ui is a widely used React component distribution, so its default primitive choice shifts which behavior and accessibility library many new projects adopt.
+
+No watchlist repo published a qualifying release since 2026-07-04; the Neovim nightly tag (2026-07-05) is a rolling prerelease.
 
 ## Languages and runtimes
 
@@ -171,7 +179,7 @@ No major items found.
 - Books and publisher feeds (No Starch, Pragmatic, Springer; wider press search targets)
 - Security advisories (CISA KEV feed unchanged at 2026.07.01, count 1631)
 - Status pages (GitHub, Cloudflare, AWS, Azure, npm, PyPI; only Cloudflare Paris scheduled maintenance)
-- GitHub watchlist releases and github.com/trending daily (no new qualifying release; trending clustered on agent tooling and Claude Code skills)
+- GitHub watchlist releases (all [github] repos rechecked; no release published after the first 2026-07-05 run) and github.com/trending daily and language views (trending clustered on agent skills and agent sandboxing: agentskills, dotnet/skills, mattpocock/skills, TencentCloud/CubeSandbox, usestrix/strix)
 - Engineering blogs
 - YouTube channels (25 videos across 89 channels; 0 with a Hacker News discussion thread)
 - Markets and company sources
