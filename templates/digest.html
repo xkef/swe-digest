@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "macros.html" as macros %}
 
 {% block content %}
 {% set day = page.date | date(format='%Y-%m-%d') %}
@@ -12,25 +13,11 @@
     <p class="meta"><a rel="nofollow" href="{{ config.extra.repository | safe }}/issues/new?template=story.yml">Suggest a story</a></p>
   </header>
 
-  {% for section in digest.sections %}
-  <section class="day-section">
-    <h2>{{ section.name }}</h2>
-    <ol class="story-list">
-      {% for story in section.stories %}
-      <li class="story-row">
-        <a class="story-link" href="{{ config.base_url | safe }}{{ story.url | safe }}">
-          <span class="story-meta">
-            {% if story.category %}<span class="badge badge-cat">{{ story.category }}</span>{% endif %}
-            {% if story.status %}<span class="badge badge-status status-{{ story.status }}">{{ story.status }}</span>{% endif %}
-          </span>
-          <span class="story-title">{{ story.title }}</span>
-          {% if story.summary %}<span class="story-summary">{{ story.summary }}</span>{% endif %}
-        </a>
-      </li>
-      {% endfor %}
-    </ol>
-  </section>
-  {% endfor %}
+  {{ macros::day_sections(sections=digest.sections) }}
+
+  {# With sort_by = "date" (newest first), page.lower is the next-newer day
+     and page.higher the next-older day. #}
+  {{ macros::day_pager(newer=page.lower, older=page.higher) }}
 
   {% if digest.run %}
   <footer class="run-meta">

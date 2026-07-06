@@ -50,7 +50,7 @@ SECTION_VOCABULARY = [*SECTIONS[:18], "HN and Reddit pulse", *SECTIONS[18:]]
 
 
 def digest_path(date: str) -> Path:
-    return DIGESTS / date[:7] / date / "index.md"
+    return DIGESTS / date / "index.md"
 
 
 def split_front_matter(text: str) -> tuple[str, str] | None:

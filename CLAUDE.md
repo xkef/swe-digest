@@ -100,7 +100,7 @@ accumulator design, and the control for each attack path live in
 Create or update:
 
 ```text
-content/digests/YYYY-MM/YYYY-MM-DD/index.md
+content/digests/YYYY-MM-DD/index.md
 ```
 
 The digest uses these sections in this order:

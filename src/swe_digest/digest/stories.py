@@ -1,14 +1,12 @@
-"""Generate per-story pages and the home index from digest markdown.
+"""Generate per-story pages and day JSON from digest markdown.
 
-Authoring stays single-file: each day is one content/digests/MONTH/DATE/index.md
-(month dirs keep content/digests/ bounded) with `### Story` sections. This
-module derives, at build time:
+Authoring stays single-file: each day is one content/digests/DATE/index.md
+with `### Story` sections. This module derives, at build time:
 
 - One Zola page per story under content/stories/ (path-routed to
   /digests/DATE/<slug>/) so every story has its own page.
-- data/digests/DATE.json, the section data behind each /digests/DATE/ page.
-- data/home/page-1.json, the newest day's data behind the home index; older
-  days live at their canonical /digests/DATE/ pages.
+- data/digests/DATE.json, the section data behind each /digests/DATE/ page,
+  the home page (newest day), and the archive rows.
 
 Full-text search is built separately by Pagefind, which indexes the rendered
 story pages after `zola build` (see the Makefile build target).
@@ -32,11 +30,8 @@ from swe_digest.paths import DIGESTS, ROOT
 
 STORIES_DIR = ROOT / "content" / "stories"
 DAY_JSON_DIR = ROOT / "data" / "digests"
-HOME_JSON_DIR = ROOT / "data" / "home"
 
 SKIP_SECTIONS = {"Watchlist follow-ups", "Sources checked"}
-
-FM_KEY = re.compile(r"^\s*(?P<key>\w+)\s*=\s*(?P<value>.+?)\s*$")
 
 
 def strip_markdown(text: str) -> str:
@@ -56,19 +51,6 @@ def neutralize_html(text: str) -> str:
 
 def toml_str(value: str) -> str:
     return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
-
-
-def parse_front_matter(text: str) -> dict[str, str]:
-    if not text.startswith("+++"):
-        return {}
-    end = text.find("\n+++", 3)
-    front = text[3:end] if end != -1 else ""
-    out: dict[str, str] = {}
-    for line in front.splitlines():
-        m = FM_KEY.match(line)
-        if m:
-            out[m.group("key")] = m.group("value").strip().strip('"')
-    return out
 
 
 def load_run(date: str) -> dict | None:
@@ -110,8 +92,9 @@ def run_meta(run: dict | None) -> dict | None:
 
 def parse_digest(path: Path) -> tuple[str, list[dict]]:
     text = path.read_text(encoding="utf-8")
-    fm = parse_front_matter(text)
-    date = fm.get("date", path.parent.name)
+    # The content gate enforces directory name == front-matter date, so the
+    # directory name is the date.
+    date = path.parent.name
 
     stories: list[dict] = []
     for section, entries in document.parse(text).sections:
@@ -177,20 +160,21 @@ def write_json(path: Path, payload: dict) -> None:
 
 
 def main() -> int:
-    for directory in (STORIES_DIR, DAY_JSON_DIR, HOME_JSON_DIR):
+    for directory in (STORIES_DIR, DAY_JSON_DIR):
         if directory.exists():
             shutil.rmtree(directory)
         directory.mkdir(parents=True)
-    # Prune stubs from before the /day/ route family was removed, so a stale
-    # local checkout cannot rebuild those pages against missing JSON.
+    # Prune outputs from removed route families (the /day/ stubs, the home
+    # page JSON), so a stale local checkout cannot rebuild against them.
     shutil.rmtree(ROOT / "content" / "home", ignore_errors=True)
+    shutil.rmtree(ROOT / "data" / "home", ignore_errors=True)
     (STORIES_DIR / "_index.md").write_text(
         '+++\ntitle = "Stories"\nrender = false\n+++\n', encoding="utf-8"
     )
 
-    digests: list[dict] = []
-    all_stories: list[dict] = []
-    for path in sorted(DIGESTS.glob("*/*/index.md"), reverse=True):
+    days = 0
+    total_stories = 0
+    for path in sorted(DIGESTS.glob("*/index.md"), reverse=True):
         date, stories = parse_digest(path)
         pub = [public(s) for s in stories]
         run = load_run(date)
@@ -206,30 +190,10 @@ def main() -> int:
                 "run": run_meta(run),
             },
         )
-        if not stories:
-            continue
         for story in stories:
             write_story_page(story)
-        digests.append(
-            {
-                "date": date,
-                "url": f"/digests/{date}/",
-                "count": len(pub),
-                "stories": pub,
-            }
-        )
-        all_stories.extend(pub)
+        days += 1
+        total_stories += len(pub)
 
-    # The home index shows only the newest day; older days live at their
-    # canonical /digests/DATE/ pages.
-    write_json(
-        HOME_JSON_DIR / "page-1.json",
-        {
-            "digests": digests[:1],
-            "total_stories": len(all_stories),
-            "total_days": len(digests),
-        },
-    )
-
-    print(f"build-stories ok ({len(all_stories)} story pages, {len(digests)} digests)")
+    print(f"build-stories ok ({total_stories} story pages, {days} digests)")
     return 0
