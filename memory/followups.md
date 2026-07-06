@@ -17,6 +17,15 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-06: Zuckerberg says Meta agentic development stalled for four months
+
+- Status: open
+- Category: Markets
+- Sources: [Reuters](https://www.reuters.com/business/zuckerberg-says-ai-agent-development-going-slower-than-expected-2026-07-02/), [HN 48767058](https://news.ycombinator.com/item?id=48767058)
+- Watch for: Whether Meta's agentic progress accelerates within the stated three-to-six-month window; concrete product shipping from the AI reorg; further headcount moves; whether the tempered expectations spread to other large AI spenders.
+- Last checked: 2026-07-06
+- Notes: Reuters reported from a recording of a 2026-07-02 internal town hall that Zuckerberg told staff the trajectory of agentic development over at least the prior four months had not accelerated as expected and the reorg bets had not come to fruition yet. Executives were optimistic about coding tools such as Claude Code when planning the January to February reorganization, which cut about 10% of the workforce and moved roughly 7,000 employees to AI teams in May. Resurfaced HN front page 2026-07-06 (288 pts, 503 cmt). Covered 2026-07-06 Hacker News (discussion).
+
 ## 2026-07-06: Rust 1.96.1 patches libssh2 CVEs and a MIR miscompilation
 
 - Status: open

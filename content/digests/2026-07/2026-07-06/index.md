@@ -10,7 +10,7 @@ months = ["2026-07"]
 
 [extra]
 status = "published"
-source_count = 18
+source_count = 20
 +++
 
 ## Top stories
@@ -111,6 +111,14 @@ No major items found.
 - **Summary:** A heise report that the EU Council is advancing the Chat Control messaging-scanning proposal through a fast-track procedure reached the top of Hacker News on 2026-07-06 with more than 400 points. The thread is discussion, not a settled legislative outcome.
 - **Why it matters:** Client-side scanning mandates bear directly on engineers who build or depend on end-to-end encrypted messaging.
 
+### Zuckerberg tells Meta staff agentic development stalled for four months
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [Reuters](https://www.reuters.com/business/zuckerberg-says-ai-agent-development-going-slower-than-expected-2026-07-02/), [HN discussion](https://news.ycombinator.com/item?id=48767058)
+- **Summary:** Reuters reported from a recording of a 2026-07-02 internal town hall that Mark Zuckerberg told staff the trajectory of agentic development over at least the prior four months had not accelerated as expected and that the reorganization bets had not come to fruition yet. He said executives were optimistic about coding tools such as Anthropic's Claude Code when planning a January to February reorganization that cut about 10 percent of the workforce and moved roughly 7,000 employees to AI teams in May, and that the change was less clean than intended. He stated he expects more substantial benefits within three to six months. The thread reached the Hacker News front page on 2026-07-06 with more than 280 points and 500 comments.
+- **Why it matters:** A large AI infrastructure spender publicly lowering near-term expectations for coding-agent progress is a counterweight to agent launch marketing that practitioners weigh when planning tooling adoption.
+
 ## Reddit and social pulse
 
 ### r/programming pulse
@@ -123,7 +131,7 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News (`make hn`, full structured coverage via Algolia; front page, top of day, Ask HN, Show HN, comments, and 56 of 72 watchlist queries with hits)
+- Hacker News (`make hn`, full structured coverage via Algolia; front page, top of day, Ask HN, Show HN, comments, and 57 of 72 watchlist queries with hits)
 - Reddit (r/programming RSS returned 200; other subreddits not exhaustively fetched)
 - AI sources (OpenAI, Anthropic, LongCat, model release checks)
 - ML research and arXiv papers (`make papers`)
