@@ -1,47 +1,38 @@
 {% extends "base.html" %}
+{% import "macros.html" as macros %}
 
 {% block content %}
-{% set index = load_data(path="data/home/page-1.json") %}
+{% set digests = get_section(path="digests/_index.md") %}
+{% set latest = digests.pages | first %}
+{% set day = latest.date | date(format='%Y-%m-%d') %}
+{% set digest = load_data(path="data/digests/" ~ day ~ ".json") %}
 
-<section class="layout story-index" data-base="{{ config.base_url | safe }}" aria-label="Digest index">
-  <h1 class="visually-hidden">SWE Digest</h1>
-
+<section class="layout story-index" data-base="{{ config.base_url | safe }}" aria-label="Latest digest">
   <div class="filter-bar">
     <label class="filter-search">
       <span class="visually-hidden">Search stories</span>
       <input type="search" id="story-search" placeholder="Search all stories" autocomplete="off">
     </label>
-    <p class="filter-count" id="story-count" aria-live="polite">{{ index.total_stories }} stories across {{ index.total_days }} days</p>
+    <p class="filter-count" id="story-count" aria-live="polite"></p>
   </div>
 
-  {% for digest in index.digests %}
-  <section class="digest-group">
-    <a class="digest-group-head" href="{{ config.base_url | safe }}{{ digest.url | safe }}">
-      <time datetime="{{ digest.date }}">{{ digest.date }}</time>
-      <span class="digest-group-count">{{ digest.count }} stories</span>
-    </a>
-    <ol class="story-list">
-      {% for story in digest.stories %}
-      <li class="story-row">
-        <a class="story-link" href="{{ config.base_url | safe }}{{ story.url | safe }}">
-          <span class="story-meta">
-            {% if story.category %}<span class="badge badge-cat">{{ story.category }}</span>{% endif %}
-            {% if story.status %}<span class="badge badge-status status-{{ story.status }}">{{ story.status }}</span>{% endif %}
-          </span>
-          <span class="story-title">{{ story.title }}</span>
-          {% if story.summary %}<span class="story-summary">{{ story.summary }}</span>{% endif %}
-        </a>
-      </li>
-      {% endfor %}
-    </ol>
-  </section>
-  {% endfor %}
+  <div id="browse">
+    <header class="page-header">
+      <p class="eyebrow">Latest digest{% if digest.count %} · {{ digest.count }} stories{% endif %}</p>
+      <h1>{{ day }}</h1>
+      {% if digest.updated %}<p>Updated <time class="js-localtime" datetime="{{ digest.updated_at }}">{{ digest.updated }}</time>.</p>{% endif %}
+    </header>
+    {{ macros::day_sections(sections=digest.sections) }}
+    {% if digests.pages | length > 1 %}
+    {{ macros::day_pager(older=digests.pages | nth(n=1)) }}
+    {% else %}
+    {{ macros::day_pager() }}
+    {% endif %}
+  </div>
+
   <ol class="story-list" id="archive-results" hidden></ol>
-  <p class="story-empty" id="story-empty" hidden>No stories match these filters.</p>
+  <p class="story-empty" id="story-empty" hidden>No stories match this search.</p>
   <button type="button" class="search-more" id="search-more" hidden>Load more results</button>
-  <nav class="pagination" aria-label="Archive">
-    <a href="{{ config.base_url | safe }}/digests/">Older digests</a>
-  </nav>
 </section>
 
 <script src="{{ get_url(path='/search-init.js', cachebust=true) | safe }}" defer></script>

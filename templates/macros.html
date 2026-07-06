@@ -1,27 +1,29 @@
-{% macro digest_rows(pages) %}
-<ol class="digest-list">
-  {% for page in pages %}
-  {% set day = page.date | date(format='%Y-%m-%d') %}
-  {% set day_data = load_data(path="data/digests/" ~ day ~ ".json") %}
-  {% set lead = day_data.sections | first %}
-  <li class="digest-row">
-    <div class="digest-meta">
-      <time datetime="{{ day }}"><a href="{{ page.permalink | safe }}">{{ page.date | date(format='%a %Y-%m-%d') }}</a></time>
-      <span class="digest-count">{{ day_data.count }} stories</span>
-    </div>
-    {% if lead and lead.stories %}
-    {% set top = lead.stories | first %}
-    <a class="digest-lead" href="{{ page.permalink | safe }}">{{ top.title }}</a>
-    {% endif %}
-  </li>
-  {% endfor %}
-</ol>
+{% macro day_sections(sections) %}
+{% for section in sections %}
+<section class="day-section">
+  <h2>{{ section.name }}</h2>
+  <ol class="story-list">
+    {% for story in section.stories %}
+    <li class="story-row">
+      <a class="story-link" href="{{ config.base_url | safe }}{{ story.url | safe }}">
+        <span class="story-meta">
+          {% if story.category %}<span class="badge badge-cat">{{ story.category }}</span>{% endif %}
+          {% if story.status %}<span class="badge badge-status status-{{ story.status }}">{{ story.status }}</span>{% endif %}
+        </span>
+        <span class="story-title">{{ story.title }}</span>
+        {% if story.summary %}<span class="story-summary">{{ story.summary }}</span>{% endif %}
+      </a>
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endfor %}
 {% endmacro %}
 
-{% macro month_pager(newer, label, older) %}
-<nav class="pagination" aria-label="Months">
-  {% if newer %}<a rel="prev" href="{{ newer | safe }}">Newer</a>{% else %}<span></span>{% endif %}
-  <span>{{ label }}</span>
-  {% if older %}<a rel="next" href="{{ older | safe }}">Older</a>{% else %}<span></span>{% endif %}
+{% macro day_pager(newer="", older="") %}
+<nav class="pagination" aria-label="Digests">
+  {% if newer %}<a rel="prev" href="{{ newer.permalink | safe }}">&larr; {{ newer.date | date(format='%Y-%m-%d') }}</a>{% else %}<span></span>{% endif %}
+  <a href="{{ get_url(path='/digests/', trailing_slash=true) | safe }}">Archive</a>
+  {% if older %}<a rel="next" href="{{ older.permalink | safe }}">{{ older.date | date(format='%Y-%m-%d') }} &rarr;</a>{% else %}<span></span>{% endif %}
 </nav>
 {% endmacro %}

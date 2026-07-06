@@ -22,7 +22,7 @@ from swe_digest.gate import publish_run
 from swe_digest.gate.manifest import IssueClose, Manifest, NewIssue, parse_manifest
 from swe_digest.git_gh import GitGh
 
-from .conftest import DIGEST_DATE, DIGEST_MONTH, digest_text, git
+from .conftest import DIGEST_DATE, digest_text, git
 
 DIGEST_SUBJECT = f"chore: publish digest for {DIGEST_DATE}"
 
@@ -92,7 +92,7 @@ def gate_repo(git_repo: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 
 
 def touch_digest(repo: Path) -> None:
-    path = repo / "content" / "digests" / DIGEST_MONTH / DIGEST_DATE / "index.md"
+    path = repo / "content" / "digests" / DIGEST_DATE / "index.md"
     path.write_text(digest_text("\nUpdated by the run.\n"), encoding="utf-8")
 
 
@@ -131,9 +131,9 @@ class TestApply:
 
     def test_too_many_commits_rejected(self, gate_repo: Path) -> None:
         for i in range(3):
-            (
-                gate_repo / "content" / "digests" / DIGEST_MONTH / DIGEST_DATE / "index.md"
-            ).write_text(digest_text(f"\nEdit {i}.\n"), encoding="utf-8")
+            (gate_repo / "content" / "digests" / DIGEST_DATE / "index.md").write_text(
+                digest_text(f"\nEdit {i}.\n"), encoding="utf-8"
+            )
             commit_all(gate_repo, DIGEST_SUBJECT)
         patch = export_patch(gate_repo)
         with pytest.raises(SystemExit, match="expected 1 to 2 commits"):
@@ -192,7 +192,7 @@ class TestPaths:
     @pytest.mark.parametrize(
         "path",
         [
-            "content/digests/2026-07/2026-07-02/index.md",
+            "content/digests/2026-07-02/index.md",
             "data/runs/2026-07-02.yaml",
             "data/runs/weekly/2026-07-06.yaml",
             "memory/followups.md",
@@ -209,8 +209,9 @@ class TestPaths:
             "memory/profile.md",
             "CLAUDE.md",
             "src/swe_digest/gate/publish_run.py",
-            "content/digests/2026-07/2026-08-01/index.md",  # month mismatch
-            "content/digests/2026-07/2026-07-02/../../evil",
+            "content/digests/2026-07/2026-07-02/index.md",  # old month layout
+            "content/digests/2026-7-2/index.md",  # bad date shape
+            "content/digests/2026-07-02/../../evil",
         ],
     )
     def test_rejected(self, path: str) -> None:
@@ -226,7 +227,7 @@ class TestPaths:
 class TestWritablePaths:
     def test_digest_included_when_present(self, repo_tree: Path) -> None:
         paths = publish_run.writable_paths(DIGEST_DATE, repo_tree)
-        assert paths[0] == f"content/digests/{DIGEST_MONTH}/{DIGEST_DATE}/index.md"
+        assert paths[0] == f"content/digests/{DIGEST_DATE}/index.md"
         assert "memory/followups.md" in paths
 
     def test_missing_digest_omitted(self, repo_tree: Path) -> None:

@@ -1,5 +1,19 @@
 @layer reset, base, layout, components, prose, print;
 
+/* Cross-document view transitions: same-origin navigations crossfade in
+   supporting browsers and degrade to instant loads elsewhere. */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
 @layer reset {
   *, *::before, *::after { box-sizing: border-box; }
   * { margin: 0; }
@@ -201,7 +215,6 @@
     background: var(--surface);
   }
 
-  .digest-list.compact > li { grid-template-columns: minmax(0, 1fr); }
   .digest-list time { color: var(--quiet); font-size: 0.82rem; }
   .digest-list h2 { margin: 0; font-size: 1.05rem; letter-spacing: -0.015em; }
   .digest-list h2 a { color: var(--fg); text-decoration: none; }
@@ -236,6 +249,21 @@
   }
   .digest-lead:hover { color: var(--accent); }
 
+  .digest-list > li.digest-month {
+    margin-top: var(--space-md);
+    padding: 0 0 var(--space-2xs);
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    background: none;
+  }
+
+  .digest-month h2 {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    letter-spacing: -0.01em;
+  }
+
   .pagination {
     display: flex;
     justify-content: space-between;
@@ -266,30 +294,14 @@
 
   .filter-search input:focus-visible { outline: none; border-color: var(--accent); }
 
+  /* Stays rendered when empty so the aria-live region keeps announcing. */
   .filter-count {
+    min-height: 1lh;
     color: var(--quiet);
     font-family: var(--font-mono);
     font-size: 0.82rem;
     white-space: nowrap;
   }
-
-  .digest-group { margin-top: var(--space-xl); }
-
-  .digest-group-head {
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-sm);
-    padding-bottom: var(--space-2xs);
-    border-bottom: 1px solid var(--border);
-    color: var(--fg);
-    font-family: var(--font-mono);
-    text-decoration: none;
-  }
-
-  .digest-group-head time { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.01em; }
-  .digest-group-head:hover { color: var(--accent); }
-  .digest-group-count { color: var(--quiet); font-size: 0.78rem; }
 
   .story-list {
     display: grid;
@@ -412,76 +424,7 @@
     font-size: 0.85rem;
   }
 
-  .run-meta h2 {
-    margin-bottom: var(--space-sm);
-    padding-bottom: var(--space-2xs);
-    border-bottom: 1px solid var(--border);
-    color: var(--fg);
-    font-size: 1.1rem;
-    letter-spacing: -0.02em;
-  }
-
-  .run-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
-    gap: var(--space-xs);
-    margin-bottom: var(--space-md);
-    padding: 0;
-    list-style: none;
-  }
-
-  .run-stat {
-    display: grid;
-    gap: var(--space-3xs);
-    padding: var(--space-xs) var(--space-sm);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
-  }
-
-  .run-stat-value {
-    color: var(--fg);
-    font-size: 1.3rem;
-    font-weight: 600;
-    line-height: 1.1;
-  }
-
-  .run-stat-value small {
-    color: var(--quiet);
-    font-size: 0.8rem;
-    font-weight: 400;
-  }
-
-  .run-stat-label {
-    color: var(--quiet);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-  }
-
-  .run-facts {
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    gap: var(--space-2xs) var(--space-md);
-  }
-
-  .run-domains summary { cursor: pointer; color: var(--muted); }
-  .run-domains summary:hover { color: var(--fg); }
-  .run-domains[open] summary { margin-bottom: var(--space-2xs); }
-
-  .run-facts dt {
-    color: var(--quiet);
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    line-height: 1.9;
-    white-space: nowrap;
-  }
-
   .run-meta .meta { margin-top: var(--space-sm); font-size: 0.78rem; }
-
-  @media (max-width: 640px) {
-    .run-facts { grid-template-columns: 1fr; }
-    .run-facts dd { margin-bottom: var(--space-xs); }
-  }
 
   .story-page .meta a { text-decoration: none; }
 }

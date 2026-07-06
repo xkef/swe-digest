@@ -10,7 +10,6 @@ import pytest
 from swe_digest.digest.document import SECTIONS
 
 DIGEST_DATE = "2026-07-02"
-DIGEST_MONTH = "2026-07"
 
 STORY = """### Example story
 
@@ -41,7 +40,7 @@ def digest_text(body_extra: str = "", *, date: str = DIGEST_DATE) -> str:
 @pytest.fixture
 def repo_tree(tmp_path: Path) -> Path:
     """Minimal repo layout that passes check-content."""
-    digest_dir = tmp_path / "content" / "digests" / DIGEST_MONTH / DIGEST_DATE
+    digest_dir = tmp_path / "content" / "digests" / DIGEST_DATE
     digest_dir.mkdir(parents=True)
     (digest_dir / "index.md").write_text(digest_text(), encoding="utf-8")
     (tmp_path / "memory").mkdir()
