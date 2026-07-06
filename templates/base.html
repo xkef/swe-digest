@@ -24,6 +24,7 @@
     <link rel="canonical" href="{% if page is defined %}{{ page.permalink | safe }}{% elif section is defined %}{{ section.permalink | safe }}{% else %}{{ config.base_url | safe }}{% endif %}">
     <link rel="alternate" type="application/atom+xml" href="{{ get_url(path='/feed.xml') | safe }}" title="{{ config.title }}">
     <link rel="stylesheet" href="{{ get_url(path='/style.css', cachebust=true) | safe }}">
+    <script src="{{ get_url(path='/theme.js', cachebust=true) | safe }}"></script>
     {% block head %}{% endblock head %}
   </head>
   <body>
@@ -34,6 +35,15 @@
         <div class="nav-links">
           <a href="{{ get_url(path='/digests/', trailing_slash=true) | safe }}">Archive</a>
           <a href="{{ get_url(path='/about/', trailing_slash=true) | safe }}">About</a>
+          <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle color theme" hidden>
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+              <g class="icon-sun" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/>
+                <path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.3 11.3 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+              </g>
+              <path class="icon-moon" fill="currentColor" d="M20.7 13.9A8.2 8.2 0 1 1 10.1 3.3a6.6 6.6 0 1 0 10.6 10.6Z"/>
+            </svg>
+          </button>
         </div>
       </nav>
     </header>

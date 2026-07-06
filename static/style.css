@@ -26,19 +26,22 @@
 }
 
 @layer base {
+  /* Every color pairs light and dark via light-dark(). The effective theme
+     is whatever color-scheme resolves to: the OS preference by default, or
+     the explicit data-theme override set by theme.js. */
   :root {
-    color-scheme: light;
+    color-scheme: light dark;
     --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    --bg: #f8f7f3;
-    --fg: #1a1d23;
-    --muted: #5b6573;
-    --quiet: #636c79;
-    --surface: #ffffff;
-    --surface-2: #efece4;
-    --border: #ddd8cc;
-    --accent: #245bd6;
-    --accent-2: #0f766e;
+    --bg: light-dark(#f8f7f3, #0f1217);
+    --fg: light-dark(#1a1d23, #eef2f7);
+    --muted: light-dark(#5b6573, #a2acba);
+    --quiet: light-dark(#636c79, #737d8b);
+    --surface: light-dark(#ffffff, #161b22);
+    --surface-2: light-dark(#efece4, #1f2632);
+    --border: light-dark(#ddd8cc, #2c3442);
+    --accent: light-dark(#245bd6, #8db2ff);
+    --accent-2: light-dark(#0f766e, #70d6c8);
 
     --wide: 50rem;
     --gutter: clamp(1rem, 4vw, 2.5rem);
@@ -60,20 +63,8 @@
     --pad-card: var(--space-sm) var(--space-md);
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      color-scheme: dark;
-      --bg: #0f1217;
-      --fg: #eef2f7;
-      --muted: #a2acba;
-      --quiet: #737d8b;
-      --surface: #161b22;
-      --surface-2: #1f2632;
-      --border: #2c3442;
-      --accent: #8db2ff;
-      --accent-2: #70d6c8;
-    }
-  }
+  :root[data-theme="light"] { color-scheme: light; }
+  :root[data-theme="dark"] { color-scheme: dark; }
 
   body {
     display: grid;
@@ -131,6 +122,25 @@
 
   .nav-links a { text-decoration: none; }
   .nav-links a:hover { color: var(--fg); }
+
+  .theme-toggle {
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .theme-toggle:hover { color: var(--fg); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  /* The button shows the theme a click switches to: moon in light mode, sun
+     in dark. Both icons are stacked in one SVG; light-dark() hides the
+     inactive one, so the icon tracks the effective theme with no JS. */
+  .theme-toggle .icon-sun { color: light-dark(transparent, currentColor); }
+  .theme-toggle .icon-moon { color: light-dark(currentColor, transparent); }
 
   .site-footer {
     margin-top: clamp(2.5rem, 8vw, 5rem);
