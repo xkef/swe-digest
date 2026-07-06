@@ -8,10 +8,12 @@ stops the build before it can be published.
 
 from __future__ import annotations
 
+import datetime
 import html
 import re
 import subprocess
 import sys
+import tomllib
 from pathlib import Path
 
 from swe_digest.digest.document import (
@@ -93,6 +95,19 @@ def check_structure(path: Path, front: str, body: str) -> list[str]:
     for key in REQUIRED_KEYS:
         if not re.search(rf"^\s*{key}\s*=", front, re.MULTILINE):
             errors.append(f"{path}: front matter missing '{key}'")
+    # The day-page URL derives from the directory name and everything else
+    # (feed order, latest-day selection, pagers) from the front-matter date;
+    # a mismatch would silently split them. Parsed as real TOML so a
+    # date-shaped line inside a string cannot spoof the check; anything but a
+    # plain date equal to the directory name (datetime, free text, invalid
+    # TOML) fails closed.
+    try:
+        date = tomllib.loads(front).get("date")
+    except tomllib.TOMLDecodeError:
+        date = None
+    day = date.isoformat() if isinstance(date, datetime.date) else str(date)
+    if day != path.parent.name:
+        errors.append(f"{path}: directory name must equal the front-matter date")
     headers = re.findall(r"^##\s+(.+?)\s*$", body, re.MULTILINE)
     # Headers must be a strictly increasing subsequence of the vocabulary:
     # known names only, canonical order, no duplicates.
@@ -201,15 +216,23 @@ def check_private_context(root: Path) -> list[str]:
 
 
 def main(root: Path = ROOT) -> int:
-    files = sorted((root / "content" / "digests").glob("*/*/index.md"))
+    digests_dir = root / "content" / "digests"
+    files = sorted(digests_dir.glob("*/index.md"))
     if not files:
         print("no digests found", file=sys.stderr)
         return 1
 
     errors: list[str] = []
+    # Zola renders every markdown file under content/, so a stray file here
+    # (a leftover from an older layout, a nested _index.md) would publish
+    # without passing the digest checks.
+    allowed = set(files) | {digests_dir / "_index.md"}
+    errors.extend(
+        f"{path}: file outside the digests/DATE/index.md layout"
+        for path in sorted(digests_dir.rglob("*.md"))
+        if path not in allowed
+    )
     for path in files:
-        if path.parent.parent.name != path.parent.name[:7]:
-            errors.append(f"{path}: digest must live in its year-month directory")
         errors.extend(check_digest(path))
     for path in sorted((root / "memory").glob("*.md")):
         errors.extend(scan_unsafe(path, path.read_text(encoding="utf-8")))

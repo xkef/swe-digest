@@ -9,9 +9,10 @@ template = "about.html"
 SWE Digest is an independent, automated software engineering digest. Scheduled
 runs collect public engineering news from primary sources, Hacker News, Reddit,
 blogs, and public posts by named practitioners, then publish dated summaries
-that link back to the original sources. It is a personal editorial project. It
-is not affiliated with, endorsed by, or speaking for any company, vendor, or
-the people and projects it covers.
+that link back to the original sources. Digests update daily at 01:30, 09:50,
+and 15:50 UTC. It is a personal editorial project. It is not affiliated with,
+endorsed by, or speaking for any company, vendor, or the people and projects
+it covers.
 
 ## No warranty and no reliance
 

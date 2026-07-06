@@ -12,11 +12,11 @@ from pathlib import Path
 
 from swe_digest.gate.check_content import main
 
-from .conftest import DIGEST_DATE, DIGEST_MONTH, digest_text
+from .conftest import DIGEST_DATE, digest_text
 
 
 def digest_path(root: Path) -> Path:
-    return root / "content" / "digests" / DIGEST_MONTH / DIGEST_DATE / "index.md"
+    return root / "content" / "digests" / DIGEST_DATE / "index.md"
 
 
 def test_valid_digest_passes(repo_tree: Path) -> None:
@@ -83,7 +83,7 @@ SECOND_STORY = """### Another take entirely
 
 def later_digest(repo_tree: Path, text: str, date: str = "2026-07-06") -> Path:
     """Write a digest dated after STORY_URL_DUP_SINCE so URL-dup rules apply."""
-    digest_dir = repo_tree / "content" / "digests" / date[:7] / date
+    digest_dir = repo_tree / "content" / "digests" / date
     digest_dir.mkdir(parents=True)
     (digest_dir / "index.md").write_text(text, encoding="utf-8")
     return digest_dir / "index.md"
@@ -153,10 +153,49 @@ def test_legacy_pulse_section_passes(repo_tree: Path) -> None:
     assert main(root=repo_tree) == 0
 
 
-def test_wrong_month_directory_fails(repo_tree: Path) -> None:
-    misfiled = repo_tree / "content" / "digests" / "2026-01" / DIGEST_DATE
+def test_directory_date_mismatch_fails(repo_tree: Path) -> None:
+    # The dir name drives the day-page URL and the front-matter date drives
+    # the story-page URLs; the gate rejects a digest where they disagree.
+    misfiled = repo_tree / "content" / "digests" / "2026-01-01"
     misfiled.mkdir(parents=True)
     (misfiled / "index.md").write_text(digest_text(), encoding="utf-8")
+    assert main(root=repo_tree) == 1
+
+
+def test_shadowed_date_line_fails(repo_tree: Path) -> None:
+    # A date-shaped line inside a TOML string must not satisfy the dir==date
+    # check while the real date key points elsewhere.
+    text = (
+        digest_path(repo_tree)
+        .read_text()
+        .replace(
+            f'title = "{DIGEST_DATE} digest"\ndate = {DIGEST_DATE}\n',
+            f'title = """\ndate = {DIGEST_DATE}\n"""\ndate = 2025-01-01\n',
+            1,
+        )
+    )
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 1
+
+
+def test_datetime_front_matter_date_fails(repo_tree: Path) -> None:
+    # Zola accepts TOML datetimes, but the digest contract is a plain date
+    # equal to the directory name; a datetime must fail closed.
+    text = (
+        digest_path(repo_tree)
+        .read_text()
+        .replace(f"date = {DIGEST_DATE}\n", f"date = {DIGEST_DATE}T10:00:00Z\n", 1)
+    )
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 1
+
+
+def test_stray_file_under_digests_fails(repo_tree: Path) -> None:
+    # A leftover old-layout digest (or any stray markdown) would render on
+    # the site without passing the digest checks; the gate rejects it.
+    stray = repo_tree / "content" / "digests" / "2026-07" / DIGEST_DATE
+    stray.mkdir(parents=True)
+    (stray / "index.md").write_text(digest_text(), encoding="utf-8")
     assert main(root=repo_tree) == 1
 
 

@@ -1,8 +1,9 @@
-// Story search for the home index. Without JS every story on the current page
-// is rendered and visible. With JS, a query runs against the Pagefind index
-// (built from the rendered story pages); clearing it restores the
-// server-rendered page. Pagefind shards its index, so only the chunks a query
-// touches are fetched, and the module itself loads lazily on first use.
+// Story search for the home page. Without JS the latest digest is rendered
+// and visible. With JS, a query runs against the Pagefind index (built from
+// the rendered story pages) and swaps the #browse block for results; clearing
+// it restores the server-rendered page. Pagefind shards its index, so only
+// the chunks a query touches are fetched, and the module loads lazily on
+// first use.
 (function () {
   const index = document.querySelector(".story-index");
   if (!index) return;
@@ -12,15 +13,13 @@
   const empty = document.getElementById("story-empty");
   const results = document.getElementById("archive-results");
   const more = document.getElementById("search-more");
-  const groups = Array.from(index.querySelectorAll(".digest-group"));
-  const pagination = index.querySelector(".pagination");
+  const browse = document.getElementById("browse");
   // The site is served under a base path (GitHub Pages /swe-digest/). Pagefind
   // auto-detects that prefix from the pagefind.js module location and already
   // applies it to result URLs, so basePath is needed only to import the module
   // (see loadPagefind); result URLs must not have it prepended a second time
   // (see resolveUrl). Derive the prefix from the page's data-base attribute.
   const basePath = new URL(index.dataset.base).pathname.replace(/\/$/, "");
-  const defaultCount = count.textContent;
   const BATCH = 20;
 
   let pagefind = null;
@@ -100,18 +99,16 @@
   }
 
   function hideBrowse() {
-    for (const group of groups) group.hidden = true;
-    if (pagination) pagination.hidden = true;
+    browse.hidden = true;
   }
 
   function showBrowse() {
-    for (const group of groups) group.hidden = false;
-    if (pagination) pagination.hidden = false;
+    browse.hidden = false;
     results.replaceChildren();
     results.hidden = true;
     empty.hidden = true;
     more.hidden = true;
-    count.textContent = defaultCount;
+    count.textContent = "";
   }
 
   async function run(query) {

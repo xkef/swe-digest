@@ -42,16 +42,11 @@ def parse_day(value: str | None) -> date:
 
 def front_matter(day: date) -> str:
     iso = day.isoformat()
-    month = day.strftime("%Y-%m")
     return f"""+++
 title = "{iso} digest"
 date = {iso}
-path = "digests/{iso}"
 template = "digest.html"
 description = "Daily software engineering digest for {iso}."
-
-[taxonomies]
-months = ["{month}"]
 
 [extra]
 status = "draft"

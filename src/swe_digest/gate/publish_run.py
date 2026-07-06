@@ -39,7 +39,7 @@ SUBJECTS = [
 # The memory files an unattended run may write and format.
 MEMORY_FILES = ("followups", "entities", "source-reliability", "access-notes")
 ALLOWED_PATHS = [
-    re.compile(r"^content/digests/(\d{4}-\d{2})/\1-\d{2}/index\.md$"),
+    re.compile(r"^content/digests/[0-9]{4}-[0-9]{2}-[0-9]{2}/index\.md$"),
     re.compile(r"^data/runs/\d{4}-\d{2}-\d{2}\.yaml$"),
     re.compile(r"^data/runs/weekly/\d{4}-\d{2}-\d{2}\.yaml$"),
     re.compile(rf"^memory/({'|'.join(MEMORY_FILES)})\.md$"),
@@ -69,7 +69,7 @@ def writable_paths(date: str, root: Path | None = None) -> list[str]:
     of ALLOWED_PATHS, so the formatting allowlist cannot drift from the
     publish allowlist."""
     root = root or ROOT
-    digest = f"content/digests/{date[:7]}/{date}/index.md"
+    digest = f"content/digests/{date}/index.md"
     paths = [digest] if (root / digest).exists() else []
     return paths + [f"memory/{name}.md" for name in MEMORY_FILES]
 
