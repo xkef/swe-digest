@@ -10,7 +10,7 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 
 - Ghostty: terminal emulator. Track releases, rendering changes, platform support, configuration, shell integration, and governance. Last seen 2026-06-29.
 - wincent/wincent: personal tooling and dotfiles repository. Track Neovim, command line, and developer-environment changes. Last seen 2026-06-29.
-- Neovim: editor. Track releases, LSP changes, Lua APIs, performance, plugin ecosystem, and breaking changes. Current stable v0.12.3. Last seen 2026-06-10.
+- Neovim: editor. Track releases, LSP changes, Lua APIs, performance, plugin ecosystem, and breaking changes. Current stable v0.12.4 (2026-07-05, fixes-and-features patch on the 0.12 line). Last seen 2026-07-06.
 - LazyVim and lazy.nvim: Neovim distribution and plugin manager. Track release notes and migration issues. Last seen 2026-06-29.
 - jj: Jujutsu version control system. Track releases, Git compatibility, workflows, and tooling support. Current 0.43.0 (2026-07-02) adds `jj run` (run a command over a set of changes, each with a private working copy) and removes Git-like symbol resolution and the deprecated `git_head()`/`git_refs()` revset/template functions. Last seen 2026-07-02.
 - Homebrew: macOS and Linux package manager. Track brew releases, tap trust model, deprecations, and platform-support timelines. Current 6.0.0. Last seen 2026-06-11.

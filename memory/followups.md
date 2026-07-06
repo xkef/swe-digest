@@ -17,6 +17,24 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-06: Rust 1.96.1 patches libssh2 CVEs and a MIR miscompilation
+
+- Status: open
+- Category: Languages
+- Sources: [Rust blog](https://blog.rust-lang.org/2026/06/30/Rust-1.96.1/), [GitHub release](https://github.com/rust-lang/rust/releases/tag/1.96.1), [cargo PR 17140](https://github.com/rust-lang/cargo/pull/17140)
+- Watch for: Exploitation reports against the libssh2 out-of-bounds write (CVE-2026-55200); distribution and CI toolchain images picking up 1.96.1; whether the MIR miscompilation had wider effects.
+- Last checked: 2026-07-06
+- Notes: Point release announced 2026-06-30, GitHub release object published 2026-07-05, not covered in prior digests. Patches three libssh2 CVEs that Cargo links for SSH transport of Git dependencies: CVE-2025-15661 (heap over-read in sftp_symlink), CVE-2026-55199 (compute-bound spin during key exchange past the session timeout), CVE-2026-55200 (out-of-bounds write from an inflated packet_length, heap corruption, potential RCE). Also fixes a MIR-optimization miscompilation and a Cargo HTTP timeout/retry/silent-failure bug. Covered 2026-07-06 Top stories.
+
+## 2026-07-06: GPT-5.6 Sol Ultra coming to Codex
+
+- Status: open
+- Category: AI
+- Sources: [OpenAI preview](https://openai.com/index/previewing-gpt-5-6-sol/), [OpenAI staff post on X](https://twitter.com/thsottiaux/status/2073933490513752151), [HN 48799614](https://news.ycombinator.com/item?id=48799614)
+- Watch for: A dated Codex changelog entry enabling GPT-5.6 Sol Ultra; general availability beyond trusted preview partners; whether individual subscribers get access; independent evaluation of the subagent "ultra mode" in Codex.
+- Last checked: 2026-07-06
+- Notes: OpenAI previewed the GPT-5.6 family (Sol/Terra/Luna tiers, new max reasoning effort, "ultra mode" using subagents) on 2026-06-26, limited to a small set of trusted partner orgs. An OpenAI staff post on X (Thibault Sottiaux) on 2026-07-05 said GPT-5.6 Sol Ultra will be in Codex; the preview post states the models are available during preview through the API and Codex to that partner group. Thin source (staff X post plus preview post). Covered 2026-07-06 Top stories (developing).
+
 ## 2026-07-05: YouTube Studio "Ask Studio" prompt injection leaks private video data
 
 - Status: open
