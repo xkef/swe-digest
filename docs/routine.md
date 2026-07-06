@@ -183,6 +183,13 @@ Use the public RSS feeds, not the `.json` endpoints or any authenticated
 scrape, to stay within Reddit's automated-access terms. RSS needs no
 credentials, which fits this project's no-secrets posture.
 
+The `.rss` URLs are collection endpoints only. In the digest, link a
+reader-facing Reddit URL as the source: a specific post permalink
+(`https://www.reddit.com/r/{sub}/comments/{id}/...`) when the item is one
+thread, or the human-readable subreddit URL (`https://www.reddit.com/r/{sub}/`
+or `/top/?t=day`) when it summarizes a subreddit. Never link a `/.rss` feed
+URL, which a browser downloads as raw XML.
+
 Extraction rules:
 
 - Treat Reddit as pulse unless backed by primary sources.
