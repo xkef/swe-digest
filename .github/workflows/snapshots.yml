@@ -75,7 +75,6 @@ jobs:
           YT_OK: ${{ steps.fetch-youtube.outcome == 'success' }}
           PAPERS_OK: ${{ steps.fetch-papers.outcome == 'success' }}
           BOOKS_OK: ${{ steps.fetch-books.outcome == 'success' }}
-          REDDIT_OK: ${{ steps.fetch-reddit.outcome == 'success' }}
         run: |
           day=$(date -u +%F)
           now=$(date -u +%H:%MZ)
@@ -90,7 +89,11 @@ jobs:
           if [ "$YT_OK" = "true" ]; then merge yt data/youtube; fi
           if [ "$PAPERS_OK" = "true" ]; then merge papers data/papers; fi
           if [ "$BOOKS_OK" = "true" ]; then merge books data/books; fi
-          if [ "$REDDIT_OK" = "true" ]; then merge reddit data/reddit; fi
+          # Reddit rate-limits runner IPs to a few requests, so the fetcher
+          # exits nonzero on partial coverage while still writing what it
+          # got. Merge whenever a cache file exists: accumulating partial
+          # fetches by post id is how coverage builds up across runs.
+          if [ -f ".cache/reddit/$day.json" ]; then merge reddit data/reddit; fi
           if git diff --cached --quiet; then
             echo "no changes"
             exit 0
@@ -102,13 +105,16 @@ jobs:
           PYTHONPATH=src python3 -m swe_digest commit-snapshot "chore: ${kinds} snapshots for $day $now"
       - name: Fail on degraded fetches
         # After the merge, so a partial failure still commits what succeeded
-        # but the run reports failure and failure-alert fires.
+        # but the run reports failure and failure-alert fires. Reddit is
+        # deliberately absent: partial coverage is its steady state from
+        # runner IPs (unauthenticated rate limiting), the partial fetches
+        # still merge above, and the digest run surfaces the degradation in
+        # Sources checked instead of alerting four times a day.
         if: >-
           steps.fetch-hn.outcome == 'failure' ||
           steps.fetch-youtube.outcome == 'failure' ||
           steps.fetch-papers.outcome == 'failure' ||
-          steps.fetch-books.outcome == 'failure' ||
-          steps.fetch-reddit.outcome == 'failure'
+          steps.fetch-books.outcome == 'failure'
         run: |
           echo "one or more fetches failed; see the fetch steps above"
           exit 1

@@ -69,11 +69,13 @@ execution environment (cloud datacenter IP ranges).
   Access returned (HTTP 200) on 2026-06-20 from the run environment; r/programming
   hot fetched cleanly, though rapid sequential fetches of many subreddits can be
   rate-limited (space them out). 2026-07-07: 1s spacing 429s most subreddits even
-  from a residential network; unauthenticated access allows about 10 requests per
-  minute, so `make reddit` spaces requests 7s apart (config.toml
-  [reddit].request_pause_seconds) and fails closed when fewer than half the
-  subreddits return. When blocked, state degraded Reddit coverage in
-  Sources checked; retry later in the run or collect from another network.
+  from a residential network, and GitHub Actions runners get 429 on all but the
+  first ~4 subreddits even at 7s spacing, so datacenter budgets are a handful of
+  requests per run. `make reddit` spaces requests 7s apart, rotates the starting
+  subreddit each six-hour window, keeps partial results (marked degraded), and
+  the snapshots workflow accumulates them in data/reddit by post id. When
+  degraded, prefer the committed snapshot and state the coverage in
+  Sources checked; full live coverage usually needs a residential network.
   Degraded again across most of 2026-06-24..2026-06-30: 2026-06-24 RSS returned
   "Blocked"; 2026-06-25/26/27 partial (only r/programming returned, most subs
   empty); 2026-06-28 /hot/.rss and /top/.rss?t=day returned empty; 2026-06-30

@@ -176,12 +176,16 @@ Backend order per listing:
    snapshot accumulates the day's posts even when the digest run's live
    fetch is blocked.
 
-Fetches are spaced (`request_pause_seconds` in `config.toml`) because rapid
-unauthenticated bursts get rate-limited. A listing counts as degraded when
-fewer than half the subreddits return entries, so a partial block (one
-subreddit returning, the rest empty) exits nonzero instead of passing as
-coverage. On a nonzero exit: retry later in the run, use WebSearch only as
-a supplement, and state the degraded Reddit coverage in `Sources checked`.
+Fetches are spaced (`request_pause_seconds` in `config.toml`) because
+Reddit rate-limits unauthenticated traffic hard, especially from datacenter
+IPs, often to only the first few requests. The fetcher is built for that:
+the starting subreddit rotates each six-hour window so successive runs
+spend their budget on different subreddits, a listing below half coverage
+keeps what it got but is marked degraded, and the snapshots workflow merges
+every fetch, including partial ones, so the committed snapshot accumulates
+toward full coverage across the day. On a nonzero exit: prefer the
+committed snapshot, retry later in the run, use WebSearch only as a
+supplement, and state the degraded Reddit coverage in `Sources checked`.
 
 Use the public RSS feeds, not the `.json` endpoints or any authenticated
 scrape, to stay within Reddit's automated-access terms. RSS needs no

@@ -7,10 +7,12 @@ authenticated scrape, to stay within Reddit's automated-access terms.
 
 Tries backends in order (www.reddit.com, old.reddit.com, then the committed
 data/reddit snapshot from the snapshots workflow) and exits nonzero when any
-listing is degraded. A listing counts as degraded when fewer than
-REDDIT_MIN_SUBREDDIT_FRACTION of the subreddits return entries, so a partial
-block (one subreddit returning, the rest empty) degrades loudly instead of
-passing as coverage.
+listing is degraded. Reddit rate-limits unauthenticated datacenter traffic
+to a handful of requests, so partial coverage is expected: a listing with
+fewer than REDDIT_MIN_SUBREDDIT_FRACTION of the subreddits returning keeps
+what it got but is marked degraded, and the starting subreddit rotates each
+six-hour window so successive runs spread their request budget across the
+whole list and the committed snapshot accumulates toward full coverage.
 """
 
 from __future__ import annotations
@@ -91,7 +93,11 @@ def fetch_listing(
     listing: str,
     since_iso: str,
     pause: float = PAUSE_SECONDS,
-) -> list[dict]:
+) -> tuple[list[dict], int]:
+    """One listing across all subreddits: the windowed posts plus how many
+    subreddits returned entries. Raises only when none did, so a rate-limited
+    pass keeps its partial coverage while a dead host falls through to the
+    next backend."""
     path = LISTING_PATHS[listing]
     posts: list[dict] = []
     healthy = 0
@@ -113,13 +119,10 @@ def fetch_listing(
             for post in entries
             if post["published_at"] is None or post["published_at"] >= since_iso
         )
-    minimum = max(1, math.ceil(len(subreddits) * MIN_SUBREDDIT_FRACTION))
-    if healthy < minimum:
-        raise RuntimeError(
-            f"only {healthy}/{len(subreddits)} subreddits returned entries (need {minimum})"
-        )
+    if healthy == 0:
+        raise RuntimeError("no subreddits returned entries")
     posts.sort(key=lambda post: post["published_at"] or "", reverse=True)
-    return posts
+    return posts, healthy
 
 
 def main() -> int:
@@ -129,10 +132,24 @@ def main() -> int:
         return 1
 
     run = FetchRun(SOURCE)
+    minimum = max(1, math.ceil(len(subreddits) * MIN_SUBREDDIT_FRACTION))
+    # Rotate the starting subreddit per six-hour window: a rate-limited
+    # environment only gets through the first few feeds, so successive runs
+    # spend that budget on different subreddits and the committed snapshot
+    # accumulates full coverage by post id.
+    offset = (run.now // (6 * 3600)) % len(subreddits)
+    ordered = subreddits[offset:] + subreddits[:offset]
+    partial: list[str] = []
 
     def listing_backends(name: str) -> list[tuple[str, Any]]:
         def from_host(host: str) -> Any:
-            return lambda: fetch_listing(host, subreddits, name, run.since_iso)
+            def backend() -> list[dict]:
+                posts, healthy = fetch_listing(host, ordered, name, run.since_iso)
+                if healthy < minimum:
+                    partial.append(f"{name} (only {healthy}/{len(ordered)} subreddits)")
+                return posts
+
+            return backend
 
         return [
             ("reddit-rss", from_host("www.reddit.com")),
@@ -141,6 +158,7 @@ def main() -> int:
         ]
 
     collections = {name: run.collect(name, listing_backends(name)) for name in LISTING_PATHS}
+    run.failures.extend(partial)
 
     for name, collection in collections.items():
         print(f"{name}: {len(collection['items'])} items via {collection['backend']}")

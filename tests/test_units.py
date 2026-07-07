@@ -119,12 +119,13 @@ class TestRedditListing:
             reddit_entry("t3_old", TestRedditPosts.PERMALINK, "2026-07-01T00:00:00+00:00"),
         )
         monkeypatch.setattr(reddit, "fetch_bytes", lambda url, **kwargs: feed.encode())
-        posts = fetch_listing(
+        posts, healthy = fetch_listing(
             "www.reddit.com", ["programming"], "top_day", "2026-07-06T00:00:00+00:00", pause=0
         )
         assert [post["id"] for post in posts] == ["t3_new"]
+        assert healthy == 1
 
-    def test_partial_coverage_degrades(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_partial_coverage_kept_and_counted(self, monkeypatch: pytest.MonkeyPatch) -> None:
         feed = reddit_feed(
             reddit_entry("t3_a", TestRedditPosts.PERMALINK, "2026-07-07T00:00:00+00:00")
         )
@@ -136,8 +137,21 @@ class TestRedditListing:
 
         monkeypatch.setattr(reddit, "fetch_bytes", fetch)
         subs = ["programming", "rust", "golang", "linux"]
-        with pytest.raises(RuntimeError, match="1/4 subreddits"):
-            fetch_listing("www.reddit.com", subs, "hot", "2026-07-06T00:00:00+00:00", pause=0)
+        posts, healthy = fetch_listing(
+            "www.reddit.com", subs, "hot", "2026-07-06T00:00:00+00:00", pause=0
+        )
+        assert [post["id"] for post in posts] == ["t3_a"]
+        assert healthy == 1
+
+    def test_zero_coverage_raises(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        def fetch(url: str, **kwargs: object) -> bytes:
+            raise RuntimeError("blocked")
+
+        monkeypatch.setattr(reddit, "fetch_bytes", fetch)
+        with pytest.raises(RuntimeError, match="no subreddits returned entries"):
+            fetch_listing(
+                "www.reddit.com", ["programming"], "hot", "2026-07-06T00:00:00+00:00", pause=0
+            )
 
 
 class TestEvents:

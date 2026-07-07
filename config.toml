@@ -40,8 +40,8 @@ snapshot_max_age_hours = 12
 # 2026-07-07 at 1s spacing, see memory/access-notes.md).
 request_pause_seconds = 7.0
 # A listing counts as degraded when fewer than this fraction of subreddits
-# return entries, so a partial block (one subreddit returning, the rest
-# empty) exits nonzero instead of passing as coverage.
+# return entries. Partial results are kept (the snapshot accumulates them)
+# but the run exits nonzero so coverage is never silently incomplete.
 min_subreddit_fraction = 0.5
 
 [papers]
