@@ -192,14 +192,14 @@ No major items found.
 ## Sources checked
 
 - Hacker News (`make hn`, full structured coverage via Algolia; front page, top of day, Ask HN, Show HN, comments, and 59 of 72 watchlist queries with hits)
-- Reddit (`make reddit`; RSS heavily rate-limited from the run environment, HTTP 429 on most subreddits across runs; partial coverage accumulated via the snapshot workflow: r/programming, r/ClaudeAI, r/rust, r/MachineLearning, r/devops, r/linux, r/AZURE and others)
+- Reddit (`make reddit`; RSS heavily rate-limited from the run environment, degraded again this run at 3/28 and 4/28 subreddits live; partial live coverage r/programming, r/LocalLLaMA, r/cursor, r/cybersecurity, r/kubernetes, r/swift, r/Kotlin, plus snapshot accumulation r/ClaudeAI, r/rust, r/MachineLearning, r/devops, r/linux, r/AZURE, r/iOSProgramming; r/ClaudeAI dominated by Fable 5 end-of-access chatter and J-space discussion, already tracked)
 - AI sources (OpenAI, Anthropic, Z.ai GLM release and pricing checks)
 - ML research and arXiv papers (`make papers`; 141 items, ICML window)
 - Conferences and events (`make events`; ICML 2026 active)
 - Books and publisher feeds (`make books`; No Starch, Pragmatic, Springer, plus search targets; only conference proceedings, no qualifying release)
 - Security advisories (CISA KEV catalog 2026.07.01 count 1631, unchanged; NVD, oss-security, GitHub advisories)
 - Status pages (GitHub, Cloudflare, AWS, Azure, Google Cloud, OpenAI, Anthropic and others; no major incident)
-- GitHub watchlist (every `[github]` repo release plus tag-based repos and `github.com/trending`; only new object was Homebrew 6.0.8, a routine patch)
+- GitHub watchlist (every `[github]` repo release plus tag-based repos and `github.com/trending`; new release objects since the 2026-07-06 digest were Homebrew 6.0.8 and OpenTelemetry Collector v0.156.0, both routine patches)
 - Engineering blogs
 - YouTube channels (`make yt`; no video cleared the bar)
 - Markets and company sources
