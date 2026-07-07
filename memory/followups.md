@@ -188,14 +188,32 @@ Format:
 - Last checked: 2026-07-01
 - Notes: arXiv announced 2026-06-30 that on 2026-07-01, after 25 years within Cornell University, it becomes an independent nonprofit. Mission, free-to-read/free-to-submit model, and open-access focus stated unchanged; staff transitions underway for continuity. Follow-up posts promised on a new Engineering Director, a 3 million submission milestone, and an AI article policy change. HN 48741748 (138 pts). Covered 2026-07-01 Markets and companies.
 
+## 2026-07-07: KVM guest-to-host escape CVE-2026-53359 (Januscape)
+
+- Status: open
+- Category: Security
+- Sources: [oss-security](https://openwall.com/lists/oss-security/2026/07/06/7), [PoC/write-up](https://github.com/V4bel/Januscape), [fix commit](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=81ccda30b4e83d8f5cc4fd50503c44e3a33abfeb)
+- Watch for: The fix landing in stable trees and distribution kernels; a full guest-to-host exploit beyond the attached DoS proof of concept; any confirmed exploitation outside Google's kvmCTF; cloud-provider advisories.
+- Last checked: 2026-07-07
+- Notes: Hyunwoo Kim (@v4bel) disclosed CVE-2026-53359 on oss-security, embargo ended 2026-07-07. Use-after-free in KVM/x86 shadow MMU emulation: role mismatch in `kvm_mmu_get_child_sp()` allows shadow page table reuse corrupting state via `pte_list_remove()`. Affects both Intel and AMD hosts, present ~16 years, fixed in mainline commit 81ccda30b4e8. Reporter states it was exploited as a zero day in Google's kvmCTF; attached PoC is a DoS variant. LPE on distros shipping world-writable /dev/kvm. Covered 2026-07-07 Top stories.
+
+## 2026-07-07: Bad Epoll CVE-2026-46242 Linux epoll LPE
+
+- Status: open
+- Category: Security
+- Sources: [PoC/write-up](https://github.com/J-jaeyoung/bad-epoll), [fix commit](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a6dc643c6931)
+- Watch for: Distribution kernels confirming the backport; a weaponized exploit beyond the published PoC; any linkage to a browser-sandbox escape chain in the wild.
+- Last checked: 2026-07-07
+- Notes: Race-condition use-after-free in the Linux kernel epoll subsystem, LPE to root. Write-up dates the flaw to a v6.4 change (commit 58c9b016e128, April 2023) and the fix to commit a6dc643c6931 (v6.6+, April 2026); reported 2026-02-17. Author claims ~99% reliability via timing/retry loops and that it triggers from within Chrome's renderer sandbox. Covered 2026-07-07 Security.
+
 ## 2026-06-30: Claude Code request-marking and environment-check claims
 
 - Status: open
 - Category: Agentic coding
-- Sources: [analysis](https://thereallo.dev/blog/claude-code-prompt-steganography), [HN 48734373](https://news.ycombinator.com/item?id=48734373), [Reuters (Alibaba ban)](https://www.reuters.com/world/china/alibaba-ban-claude-code-workplace-over-alleged-backdoor-risks-source-says-2026-07-03/), [HN 48772443](https://news.ycombinator.com/item?id=48772443)
+- Sources: [analysis](https://thereallo.dev/blog/claude-code-prompt-steganography), [HN 48734373](https://news.ycombinator.com/item?id=48734373), [Reuters (Alibaba ban)](https://www.reuters.com/world/china/alibaba-ban-claude-code-workplace-over-alleged-backdoor-risks-source-says-2026-07-03/), [Ars Technica](https://arstechnica.com/tech-policy/2026/07/anthropic-outed-for-claude-tracker-that-secretly-monitored-chinese-users/)
 - Watch for: The Claude Code update that removes the proxy and time-zone check; any formal Anthropic statement or docs change; independent verification of the invisible-character encoding and the environment checks; whether marks are forwarded when ANTHROPIC_BASE_URL points at a third-party endpoint; other firms restricting the tool.
-- Last checked: 2026-07-04
-- Notes: Blog post 2026-06-30 (205 pts) claims Claude Code embeds invisible Unicode characters as a steganographic fingerprint to detect resale and distillation; primary blog unreachable from the run environment (HTTP 403), encoding not independently verified. 2026-07-03: Reuters reported (source says) Alibaba will bar Claude Code in workplace environments from 2026-07-10 after Chinese outlet Yicai reported an embedded backdoor risk. A 2026-06-30 reverse-engineering writeup claims Claude Code since v2.1.91 (2026-04-02) silently inspects users' proxy configuration and system time zone. An Anthropic Claude Code team member said on social media the mechanism detects account resale and model distillation, not user spying, and will be removed in the next update; no third-party firm has confirmed a backdoor. Covered 2026-07-03 Top stories (developing).
+- Last checked: 2026-07-07
+- Notes: Blog post 2026-06-30 (205 pts) claims Claude Code embeds invisible Unicode characters as a steganographic fingerprint to detect resale and distillation; primary blog unreachable from the run environment (HTTP 403), encoding not independently verified. 2026-07-03: Reuters reported (source says) Alibaba will bar Claude Code in workplace environments from 2026-07-10 after Chinese outlet Yicai reported an embedded backdoor risk. A 2026-06-30 reverse-engineering writeup claims Claude Code since v2.1.91 (2026-04-02) silently inspects users' proxy configuration and system time zone. An Anthropic Claude Code team member said on social media the mechanism detects account resale and model distillation, not user spying, and will be removed in the next update; no third-party firm has confirmed a backdoor. 2026-07-07: Ars Technica ran mainstream coverage framing the mechanism as a tracker that flagged Chinese users; technical claims unchanged and still unreproduced. Covered 2026-07-03 Top stories (developing); 2026-07-07 Watchlist follow-ups (developing).
 
 ## 2026-06-15: curl pauses vulnerability report handling for July 2026
 
