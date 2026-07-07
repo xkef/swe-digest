@@ -17,6 +17,7 @@ The digest is tuned for a senior software engineer with strong interest in relia
 - Programming languages and runtimes: Java, Kotlin, Rust, Go, Python, TypeScript, Zig, Swift, C++, WebAssembly.
 - Spring Boot, JVM ecosystem, Netty, R2DBC, database drivers, TLS, cloud integration, and migration issues.
 - Observability: Prometheus, Grafana, OpenTelemetry, SLOs, latency, tracing, dashboards, postmortems.
+- Distributed systems research and practice: consensus protocols, replication, CRDTs and local-first software, eventual consistency, and distributed transactions. Track Martin Kleppmann's work and the Automerge and Yjs ecosystems. Route into Infrastructure, Engineering posts, and ML research.
 - Engineering blog posts with implementation detail, architecture tradeoffs, incident analysis, performance work, or debugging lessons.
 - Reddit topics that show adoption pain, repeated failure modes, or fast-moving hype around tools and AI.
 - Acquisitions, IPOs, governance changes, and licensing changes that affect developer infrastructure or open source sustainability.
