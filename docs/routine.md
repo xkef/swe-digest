@@ -150,34 +150,38 @@ volume.
 
 Use Reddit to identify hype, adoption pain, and practitioner sentiment.
 
-Daily hot checks:
+Daily check:
 
-- `r/programming`
-- `r/softwareengineering`
-- `r/devops`
-- `r/kubernetes`
-- `r/aws`
-- `r/AZURE`
-- `r/googlecloud`
-- `r/netsec`
-- `r/cybersecurity`
-- `r/MachineLearning`
-- `r/LocalLLaMA`
-- `r/OpenAI`
-- `r/rust`
-- `r/golang`
-- `r/java`
-- `r/kotlin`
-- `r/Python`
-- `r/typescript`
-- `r/neovim`
-- `r/linux`
-- `r/selfhosted`
+```sh
+make reddit
+```
 
-Collection URLs (public RSS feeds only):
+`make reddit` (`swe_digest.fetch.reddit`) collects two listings per
+`[reddit]` subreddit in `data/watchlist.toml`, through the public RSS feeds:
 
-- `https://www.reddit.com/r/{sub}/hot/.rss`
 - `https://www.reddit.com/r/{sub}/top/.rss?t=day`
+- `https://www.reddit.com/r/{sub}/hot/.rss`
+
+It writes structured results (post id, title, submitted url, permalink,
+subreddit, author, published_at) to `.cache/reddit/YYYY-MM-DD.json` and
+prints a summary.
+
+Backend order per listing:
+
+1. `www.reddit.com` RSS.
+2. `old.reddit.com` RSS.
+3. Committed snapshot (`data/reddit/`): the `snapshots` GitHub Actions
+   workflow runs the fetcher every six hours and merges each fetch into the
+   day's JSON by post id (`swe_digest.snapshot.merge`), so the committed
+   snapshot accumulates the day's posts even when the digest run's live
+   fetch is blocked.
+
+Fetches are spaced (`request_pause_seconds` in `config.toml`) because rapid
+unauthenticated bursts get rate-limited. A listing counts as degraded when
+fewer than half the subreddits return entries, so a partial block (one
+subreddit returning, the rest empty) exits nonzero instead of passing as
+coverage. On a nonzero exit: retry later in the run, use WebSearch only as
+a supplement, and state the degraded Reddit coverage in `Sources checked`.
 
 Use the public RSS feeds, not the `.json` endpoints or any authenticated
 scrape, to stay within Reddit's automated-access terms. RSS needs no
@@ -188,6 +192,9 @@ Extraction rules:
 - Treat Reddit as pulse unless backed by primary sources.
 - Note repeated pain points when many users report the same failure mode.
 - Track hype separately from technical substance.
+- A link post carries the submitted external URL: publish that as the
+  primary source and the `www.reddit.com` permalink as the discussion link.
+  Never publish a raw `/.rss` feed URL as a source.
 
 Include a Reddit topic when one of these is true:
 

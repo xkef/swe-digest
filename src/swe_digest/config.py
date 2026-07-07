@@ -42,6 +42,12 @@ YT_SNAPSHOT_MAX_AGE_HOURS: int = _raw["youtube"]["snapshot_max_age_hours"]
 YT_DESCRIPTION_MAX_CHARS: int = _raw["youtube"]["description_max_chars"]
 YT_DISCUSSION_LOOKUPS: int = _raw["youtube"]["discussion_lookups"]
 
+# Reddit fetcher
+REDDIT_WINDOW_SECONDS: int = _raw["reddit"]["window_hours"] * 3600
+REDDIT_SNAPSHOT_MAX_AGE_HOURS: int = _raw["reddit"]["snapshot_max_age_hours"]
+REDDIT_REQUEST_PAUSE_SECONDS: float = _raw["reddit"]["request_pause_seconds"]
+REDDIT_MIN_SUBREDDIT_FRACTION: float = _raw["reddit"]["min_subreddit_fraction"]
+
 # arXiv papers fetcher
 PAPERS_HTTP_TIMEOUT: int = _raw["papers"]["http_timeout_seconds"]
 PAPERS_API_PAUSE: int = _raw["papers"]["api_pause_seconds"]

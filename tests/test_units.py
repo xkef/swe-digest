@@ -4,15 +4,19 @@ from __future__ import annotations
 
 from datetime import date
 
+import pytest
+
 from swe_digest.digest.document import (
     SECTION_VOCABULARY,
     SECTIONS,
     normalize_url,
     parse,
 )
+from swe_digest.fetch import reddit
 from swe_digest.fetch.books import to_iso
 from swe_digest.fetch.events import parse_event, partition
 from swe_digest.fetch.hn import comment_text, make_story, match_queries
+from swe_digest.fetch.reddit import fetch_listing, make_post, parse_feed
 
 from .conftest import digest_text
 
@@ -41,6 +45,99 @@ class TestMatchQueries:
         corpus = [make_story(1, "C++ 26 draft", "https://a", 10, 1, None)]
         results = match_queries(["C++"], corpus, since=0)
         assert [s["id"] for s in results["C++"]] == [1]
+
+
+def reddit_entry(
+    post_id: str,
+    permalink: str,
+    published: str,
+    content: str = "",
+) -> str:
+    return f"""<entry>
+      <author><name>/u/alice</name></author>
+      <category term="programming" label="r/programming"/>
+      <content type="html">{content}</content>
+      <id>{post_id}</id>
+      <link href="{permalink}" />
+      <published>{published}</published>
+      <title>A post</title>
+    </entry>"""
+
+
+def reddit_feed(*entries: str) -> str:
+    body = "".join(entries)
+    return f'<feed xmlns="http://www.w3.org/2005/Atom">{body}</feed>'
+
+
+class TestRedditPosts:
+    PERMALINK = "https://www.reddit.com/r/programming/comments/1/x/"
+
+    def test_link_post_carries_external_url(self) -> None:
+        content = (
+            "&lt;a href=&quot;https://example.com/post?a=1&amp;amp;b=2&quot;&gt;[link]&lt;/a&gt;"
+        )
+        feed = parse_feed(
+            reddit_feed(
+                reddit_entry("t3_a", self.PERMALINK, "2026-07-07T00:00:00+00:00", content)
+            ).encode()
+        )
+        post = make_post(feed[0])
+        assert post is not None
+        assert post["url"] == "https://example.com/post?a=1&b=2"
+        assert post["permalink"] == self.PERMALINK
+        assert post["subreddit"] == "programming"
+        assert post["author"] == "/u/alice"
+
+    def test_self_post_falls_back_to_permalink(self) -> None:
+        feed = parse_feed(
+            reddit_feed(reddit_entry("t3_b", self.PERMALINK, "2026-07-07T00:00:00+00:00")).encode()
+        )
+        post = make_post(feed[0])
+        assert post is not None
+        assert post["url"] == self.PERMALINK
+
+    def test_old_reddit_permalink_normalized(self) -> None:
+        old = "https://old.reddit.com/r/programming/comments/1/x/"
+        feed = parse_feed(
+            reddit_feed(reddit_entry("t3_c", old, "2026-07-07T00:00:00+00:00")).encode()
+        )
+        post = make_post(feed[0])
+        assert post is not None
+        assert post["permalink"] == self.PERMALINK
+        assert post["url"] == self.PERMALINK
+
+    def test_parse_feed_rejects_dtd(self) -> None:
+        raw = b'<?xml version="1.0"?><!DOCTYPE feed [<!ENTITY x "y">]><feed/>'
+        with pytest.raises(RuntimeError):
+            parse_feed(raw)
+
+
+class TestRedditListing:
+    def test_window_filter_keeps_recent_posts(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        feed = reddit_feed(
+            reddit_entry("t3_new", TestRedditPosts.PERMALINK, "2026-07-07T00:00:00+00:00"),
+            reddit_entry("t3_old", TestRedditPosts.PERMALINK, "2026-07-01T00:00:00+00:00"),
+        )
+        monkeypatch.setattr(reddit, "fetch_bytes", lambda url, **kwargs: feed.encode())
+        posts = fetch_listing(
+            "www.reddit.com", ["programming"], "top_day", "2026-07-06T00:00:00+00:00", pause=0
+        )
+        assert [post["id"] for post in posts] == ["t3_new"]
+
+    def test_partial_coverage_degrades(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        feed = reddit_feed(
+            reddit_entry("t3_a", TestRedditPosts.PERMALINK, "2026-07-07T00:00:00+00:00")
+        )
+
+        def fetch(url: str, **kwargs: object) -> bytes:
+            if "/r/programming/" in url:
+                return feed.encode()
+            raise RuntimeError("blocked")
+
+        monkeypatch.setattr(reddit, "fetch_bytes", fetch)
+        subs = ["programming", "rust", "golang", "linux"]
+        with pytest.raises(RuntimeError, match="1/4 subreddits"):
+            fetch_listing("www.reddit.com", subs, "hot", "2026-07-06T00:00:00+00:00", pause=0)
 
 
 class TestEvents:

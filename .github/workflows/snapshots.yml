@@ -16,6 +16,7 @@ on:
     - cron: "40 */6 * * *" # youtube
     - cron: "50 */6 * * *" # papers
     - cron: "30 */12 * * *" # books
+    - cron: "10 */6 * * *" # reddit
   workflow_dispatch:
 
 permissions: {}
@@ -57,6 +58,16 @@ jobs:
         continue-on-error: true
         timeout-minutes: 5
         run: PYTHONPATH=src python3 -m swe_digest fetch books
+      - name: Fetch reddit
+        id: fetch-reddit
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '10 */6 * * *'
+        continue-on-error: true
+        # Sequential and rate-limit-spaced (about 7s per request) across ~28
+        # subreddits and two listings, so it needs far more headroom than the
+        # parallel fetchers, twice over when the www backend fails and the
+        # old.reddit pass runs too.
+        timeout-minutes: 15
+        run: PYTHONPATH=src python3 -m swe_digest fetch reddit
       - name: Merge and commit snapshots
         env:
           GH_TOKEN: ${{ github.token }}
@@ -64,6 +75,7 @@ jobs:
           YT_OK: ${{ steps.fetch-youtube.outcome == 'success' }}
           PAPERS_OK: ${{ steps.fetch-papers.outcome == 'success' }}
           BOOKS_OK: ${{ steps.fetch-books.outcome == 'success' }}
+          REDDIT_OK: ${{ steps.fetch-reddit.outcome == 'success' }}
         run: |
           day=$(date -u +%F)
           now=$(date -u +%H:%MZ)
@@ -78,12 +90,13 @@ jobs:
           if [ "$YT_OK" = "true" ]; then merge yt data/youtube; fi
           if [ "$PAPERS_OK" = "true" ]; then merge papers data/papers; fi
           if [ "$BOOKS_OK" = "true" ]; then merge books data/books; fi
+          if [ "$REDDIT_OK" = "true" ]; then merge reddit data/reddit; fi
           if git diff --cached --quiet; then
             echo "no changes"
             exit 0
           fi
           staged=$(git diff --cached --name-only)
-          if printf '%s\n' "$staged" | grep -qvE '^data/(hn|youtube|papers|books)/[0-9]{4}-[0-9]{2}-[0-9]{2}\.json$'; then
+          if printf '%s\n' "$staged" | grep -qvE '^data/(hn|youtube|papers|books|reddit)/[0-9]{4}-[0-9]{2}-[0-9]{2}\.json$'; then
             echo "refusing: staged paths outside the snapshot directories"; exit 1
           fi
           PYTHONPATH=src python3 -m swe_digest commit-snapshot "chore: ${kinds} snapshots for $day $now"
@@ -94,7 +107,8 @@ jobs:
           steps.fetch-hn.outcome == 'failure' ||
           steps.fetch-youtube.outcome == 'failure' ||
           steps.fetch-papers.outcome == 'failure' ||
-          steps.fetch-books.outcome == 'failure'
+          steps.fetch-books.outcome == 'failure' ||
+          steps.fetch-reddit.outcome == 'failure'
         run: |
           echo "one or more fetches failed; see the fetch steps above"
           exit 1

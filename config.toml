@@ -32,6 +32,18 @@ description_max_chars = 2000
 # window while bounding calls to the public Algolia API.
 discussion_lookups = 80
 
+[reddit]
+window_hours = 24
+snapshot_max_age_hours = 12
+# Space sequential feed fetches: unauthenticated Reddit access is limited to
+# about 10 requests per minute, and faster spacing gets 429s (observed
+# 2026-07-07 at 1s spacing, see memory/access-notes.md).
+request_pause_seconds = 7.0
+# A listing counts as degraded when fewer than this fraction of subreddits
+# return entries, so a partial block (one subreddit returning, the rest
+# empty) exits nonzero instead of passing as coverage.
+min_subreddit_fraction = 0.5
+
 [papers]
 # arXiv responses are slower than the default HTTP budget allows.
 http_timeout_seconds = 20

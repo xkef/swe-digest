@@ -84,6 +84,7 @@ KINDS: dict[str, Kind] = {
     "yt": Kind(collections=["videos"], key=by_published_at),
     "papers": Kind(collections=["papers"], key=by_published_at),
     "books": Kind(collections=["books"], key=by_published_at),
+    "reddit": Kind(collections=["top_day", "hot"], key=by_published_at),
 }
 
 

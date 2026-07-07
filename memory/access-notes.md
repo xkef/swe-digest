@@ -68,7 +68,11 @@ execution environment (cloud datacenter IP ranges).
   2026-06-18 (both hosts, all probed subreddits failed, not a per-feed 403).
   Access returned (HTTP 200) on 2026-06-20 from the run environment; r/programming
   hot fetched cleanly, though rapid sequential fetches of many subreddits can be
-  rate-limited (space them out). When blocked, state degraded Reddit coverage in
+  rate-limited (space them out). 2026-07-07: 1s spacing 429s most subreddits even
+  from a residential network; unauthenticated access allows about 10 requests per
+  minute, so `make reddit` spaces requests 7s apart (config.toml
+  [reddit].request_pause_seconds) and fails closed when fewer than half the
+  subreddits return. When blocked, state degraded Reddit coverage in
   Sources checked; retry later in the run or collect from another network.
   Degraded again across most of 2026-06-24..2026-06-30: 2026-06-24 RSS returned
   "Blocked"; 2026-06-25/26/27 partial (only r/programming returned, most subs
