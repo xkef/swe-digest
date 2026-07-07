@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-07."
 
 [extra]
 status = "published"
-source_count = 34
+source_count = 43
 +++
 
 ## Top stories
@@ -19,6 +19,15 @@ source_count = 34
 - **Summary:** Hyunwoo Kim disclosed CVE-2026-53359, a use-after-free in KVM/x86 shadow MMU emulation, on oss-security with the embargo ending 2026-07-07. A role mismatch in `kvm_mmu_get_child_sp()` allows shadow page table reuse that corrupts state through `pte_list_remove()`, giving a guest a path to escape to the host. The bug affects both Intel and AMD hosts, was present in the code for roughly 16 years, and was fixed in mainline commit `81ccda30b4e8`. The reporter states it was exploited as a zero day in Google's kvmCTF competition; the attached proof of concept is a denial-of-service variant.
 - **Why it matters:** A guest-to-host escape that works on both Intel and AMD reaches multi-tenant cloud and nested-virtualization hosts directly, and on distributions that ship a world-writable `/dev/kvm` an unprivileged local user can use it for privilege escalation.
 - **Follow-up:** Watch for the fix landing in stable trees and distribution kernels, a full exploit beyond the DoS proof of concept, and any confirmed use outside the kvmCTF setting.
+
+### OpenSSH 10.4 ships post-quantum signatures and several transport fixes
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [release notes](https://www.openssh.com/txt/release-10.4), [HN discussion](https://news.ycombinator.com/item?id=48811373)
+- **Summary:** OpenSSH 10.4 and 10.4p1 were released 2026-07-06. The release corrects several transport and file-transfer issues: a malicious server could cause sftp downloads to land in unexpected locations, remote-to-remote scp could write to parent directories, internal-sftp silently truncated command arguments past the ninth position and could discard security-relevant options, GSSAPI authentication had a pre-authentication denial-of-service path, and a client-side use-after-free could occur if a server changed host keys during key re-exchange. New work adds experimental post-quantum signature support combining ML-DSA 44 with Ed25519 (disabled by default) and replaces the wildcard pattern matcher with an NFA-based implementation to avoid exponential worst-case matching. The notes assign no CVE identifiers.
+- **Why it matters:** OpenSSH is near-universal on servers and developer machines, so its transport and sftp fixes and its first experimental post-quantum signature option reach almost every operational environment.
+- **Follow-up:** Watch for distribution packages picking up 10.4, downstream portable builds, and whether the post-quantum signature path moves past experimental.
 
 ### Anthropic reports a global workspace in language models
 
@@ -106,6 +115,24 @@ source_count = 34
 - **Why it matters:** Any kernel from v6.4 without the backport is exposed on desktops, servers, and Android, and the browser-sandbox trigger makes it a plausible second stage after a renderer compromise.
 - **Follow-up:** Watch for distribution kernels confirming the backport and for a weaponized exploit beyond the published proof of concept.
 
+### Langflow flow-access IDOR CVE-2026-55255 added to CISA KEV
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [GitHub advisory GHSA-qrpv-q767-xqq2](https://github.com/langflow-ai/langflow/security/advisories/GHSA-qrpv-q767-xqq2), [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-55255)
+- **Summary:** CISA added CVE-2026-55255 to the Known Exploited Vulnerabilities catalog on 2026-07-07 on evidence of active exploitation, with a federal remediation deadline of 2026-07-10. The flaw is an insecure direct object reference in the `/api/v1/responses` endpoint of Langflow, the open-source visual agent and RAG builder: an authenticated low-privilege user can execute a flow belonging to another user by supplying the victim's flow ID. The project advisory (published 2026-06-19) lists the fix in 1.9.1 and versions below 1.9.1 as vulnerable, while NVD records the fixed version as 1.9.2. CVSS is 9.9 with a changed scope.
+- **Why it matters:** Langflow is a recurring high-severity target and is often exposed as a shared internal or hosted agent-building service, so a cross-tenant flow-execution bug under active exploitation is a direct route to running attacker-chosen flows against other users' data.
+- **Follow-up:** Watch for confirmation of the exact fixed version, exploitation details, and internet-exposure scans of unpatched instances.
+
+### Reverse engineering documents a Microsoft global device ID
+
+- **Category:** Security
+- **Status:** developing
+- **Sources:** [reverse-engineering write-up](https://github.com/SmtimesIWndr/gdid-reversal), [PCMag](https://www.pcmag.com/news/a-hackers-arrest-reveals-microsoft-can-track-users-via-a-windows-device-id), [HN discussion](https://news.ycombinator.com/item?id=48815196)
+- **Summary:** A reverse-engineering write-up and PCMag coverage reaching the Hacker News front page on 2026-07-07 (294 points) describe a global device identifier tied to a Windows installation once it is linked to a Microsoft Account. The write-up documents it as a server-assigned 64-bit device Passport Unique ID minted by the Microsoft Account service (`wlidsvc.dll`) during provisioning against `login.live.com`, stored in cleartext in the user registry under `IdentityCRL\ExtendedProperties`, and registered with a Microsoft device-directory service by the Connected Devices Platform. It persists across OS updates, and a fresh reinstall gets a new identifier that reappears on re-registration with the account. Reporting frames it as correlatable with activity and IP history and cites a criminal case where the data was provided to law enforcement. The exact linkage of browsing to the identifier is inferred, not fully documented.
+- **Why it matters:** A persistent, account-linked device identifier stored in the clear and registered with Microsoft services is a concrete fingerprinting and correlation surface for anyone building or auditing privacy-sensitive Windows deployments.
+- **Follow-up:** Watch for independent reproduction of the correlation mechanism, any Microsoft statement, and whether the identifier can be disabled without unlinking the account.
+
 ## Outages
 
 No major items found.
@@ -150,6 +177,15 @@ No major items found.
 
 ## Markets and companies
 
+### Better Auth joins Vercel
+
+- **Category:** Markets
+- **Status:** confirmed
+- **Sources:** [Better Auth blog](https://better-auth.com/blog/better-auth-joins-vercel), [HN discussion](https://news.ycombinator.com/item?id=48819512)
+- **Summary:** Better Auth founder Bereket Engida announced on 2026-07-07 that the framework-agnostic open-source authentication library and its small team are joining Vercel. The post says the move lets the team refocus on the framework without shaping strategy around monetization, keep the library framework and platform agnostic, and build agent-authentication primitives across Vercel's products. It states no license change and no specific transition date.
+- **Why it matters:** Better Auth is a widely adopted self-hosted auth library, so its move under a platform vendor raises the usual questions about long-term neutrality and governance for teams that chose it to own their auth stack.
+- **Follow-up:** Watch for a stated license commitment, governance details, and whether framework-agnostic support continues alongside Vercel-specific integration.
+
 ### Amazon closes Mechanical Turk to new customers
 
 - **Category:** Markets
@@ -191,15 +227,15 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News (`make hn`, full structured coverage via Algolia; front page, top of day, Ask HN, Show HN, comments, and 59 of 72 watchlist queries with hits)
-- Reddit (`make reddit`; RSS heavily rate-limited from the run environment, degraded again this run at 3/28 and 4/28 subreddits live; partial live coverage r/programming, r/LocalLLaMA, r/cursor, r/cybersecurity, r/kubernetes, r/swift, r/Kotlin, plus snapshot accumulation r/ClaudeAI, r/rust, r/MachineLearning, r/devops, r/linux, r/AZURE, r/iOSProgramming; r/ClaudeAI dominated by Fable 5 end-of-access chatter and J-space discussion, already tracked)
+- Hacker News (`make hn`, full structured coverage via Algolia; front page, top of day, Ask HN, Show HN, comments, and 65 of 79 watchlist queries with hits)
+- Reddit (`make reddit`; RSS heavily rate-limited from the run environment, degraded again this run at 5/28 top and 3/28 hot subreddits live; live and snapshot coverage across r/programming, r/rust, r/linux, r/AZURE, r/LocalLLaMA, r/cursor, r/cybersecurity, r/kubernetes, r/swift, r/Kotlin, r/ClaudeAI, r/MachineLearning, r/devops, r/iOSProgramming; latest pulse items were a KDE Plasma 6.6.6 bugfix release, DKIM2 support in the mail-auth/mail-send crates, and a TypeScript-to-Rust/Bevy port write-up, none clearing the bar; r/ClaudeAI still dominated by Fable 5 end-of-access chatter and J-space discussion, already tracked)
 - AI sources (OpenAI, Anthropic, Z.ai GLM release and pricing checks)
 - ML research and arXiv papers (`make papers`; 141 items, ICML window)
 - Conferences and events (`make events`; ICML 2026 active)
 - Books and publisher feeds (`make books`; No Starch, Pragmatic, Springer, plus search targets; only conference proceedings, no qualifying release)
-- Security advisories (CISA KEV catalog 2026.07.01 count 1631, unchanged; NVD, oss-security, GitHub advisories)
+- Security advisories (CISA KEV catalog updated to 2026.07.07 count 1634, adding Langflow CVE-2026-55255 and two Joomla page-builder CVEs, all federal due 2026-07-10; NVD, oss-security, GitHub advisories)
 - Status pages (GitHub, Cloudflare, AWS, Azure, Google Cloud, OpenAI, Anthropic and others; no major incident)
-- GitHub watchlist (every `[github]` repo release plus tag-based repos and `github.com/trending`; new release objects since the 2026-07-06 digest were Homebrew 6.0.8 and OpenTelemetry Collector v0.156.0, both routine patches)
+- GitHub watchlist (every `[github]` repo release plus tag-based repos and `github.com/trending`; new release objects since the 2026-07-06 digest were Homebrew 6.0.8 and OpenTelemetry Collector v0.156.0, both routine patches; OpenSSH 10.4 surfaced via HN outside the `[github]` table)
 - Engineering blogs
 - YouTube channels (`make yt`; no video cleared the bar)
 - Markets and company sources

@@ -66,9 +66,10 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 ## Security
 
 - Akrites (Linux Foundation): cross-industry effort coordinating confidential vulnerability remediation for critical open source in the AI-assisted-discovery era. Track SIRT funding, adopted projects, and embargo governance. Last seen 2026-06-25.
-- CISA KEV, NVD, OSV, GitHub Security Advisories: track active exploitation, ecosystem exposure, patched versions, and mitigations. KEV catalog version 2026.07.01 (count 1631; latest add CVE-2026-45659 Microsoft SharePoint Server deserialization RCE); its federal remediation deadline 2026-07-04 reached with no catalog change 2026-07-02..2026-07-07. Last seen 2026-07-07.
+- CISA KEV, NVD, OSV, GitHub Security Advisories: track active exploitation, ecosystem exposure, patched versions, and mitigations. KEV catalog version 2026.07.07 (count 1634; 2026-07-07 adds CVE-2026-55255 Langflow flow-access IDOR plus two Joomla page-builder CVEs, all federal due 2026-07-10). Last seen 2026-07-07.
 - SimpleHelp: remote monitoring and management (RMM) software. Track security advisories (simple-help.com/security); recurring high-value ransomware target. Last seen 2026-06-30.
 - curl: track security releases and the AI-found-report theme; vulnerability-report handling pause in effect 2026-07-01 through 2026-08-02 (resumes 2026-08-03). Current 8.21.0. Last seen 2026-07-01.
+- OpenSSH (openssh.com, not in the [github] table): SSH client/server. Track releases, transport/sftp/scp security fixes, and the post-quantum migration. Current 10.4/10.4p1 (2026-07-06): fixes sftp download-location, remote-to-remote scp parent-dir write, internal-sftp arg truncation past position 9, a GSSAPI pre-auth DoS, and a client UAF on host-key change during rekey; adds experimental post-quantum signatures (ML-DSA 44 + Ed25519, off by default) and an NFA-based wildcard matcher. No CVE ids in the notes. Last seen 2026-07-07.
 - Cisco: track security advisories for Unified CM, Catalyst SD-WAN Manager, and related products (recurring zero-day target). Last seen 2026-06-25.
 - PTC Windchill and FlexPLM: product-lifecycle-management software. Track CVEs and patches. Last seen 2026-06-25.
 - LiteLLM (BerriAI): track CVEs and security advisories. Last seen 2026-06-08.
@@ -77,7 +78,7 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 - Palo Alto Networks: track PAN-OS and Prisma security advisories. Last seen 2026-06-01.
 - Ubiquiti UniFi OS: network gateway/controller OS. Track security advisories (community.ui.com bulletins). Last seen 2026-06-23.
 - Ivanti Sentry: track CVEs and security advisories. Last seen 2026-06-12.
-- Langflow (langflow-ai/langflow): open-source visual AI agent/RAG platform with recurring high-severity issues. Track security advisories. Last seen 2026-06-08.
+- Langflow (langflow-ai/langflow): open-source visual AI agent/RAG platform with recurring high-severity issues. Track security advisories. CVE-2026-55255 (IDOR in `/api/v1/responses`, authenticated low-priv user can run another user's flow, CVSS 9.9, GHSA-qrpv-q767-xqq2 patched 1.9.1, NVD lists 1.9.2) added to CISA KEV 2026-07-07 on active exploitation, federal due 2026-07-10. See [[followups]]. Last seen 2026-07-07.
 - Veeam Backup and Replication: track CVEs and security advisories. Last seen 2026-06-09.
 - SAP: track Security Patch Days. Last seen 2026-06-10.
 - Oracle: track CVEs and out-of-band advisories for PeopleSoft, E-Business Suite, and database. Last seen 2026-06-12.
@@ -128,3 +129,4 @@ dated digests, not here. Prune entries with no recent `Last seen` activity.
 - SpaceX: public since 2026-06-12 (Nasdaq SPCX), positioned as AI compute infrastructure. Track the Anysphere/Cursor acquisition, bond sales, and index events. Last seen 2026-06-22.
 - Anysphere (Cursor): maker of the Cursor AI coding agent. SpaceX agreed to acquire it (close Q3 2026). Track roadmap, pricing, and model-routing changes under SpaceX ownership. Last seen 2026-06-16.
 - Broadcom / VMware: track licensing-change fallout and enterprise migrations off VMware. Last seen 2026-06-17.
+- Better Auth (better-auth.com, Bereket Engida): framework-agnostic open-source auth library. Announced 2026-07-07 it and its team are joining Vercel; post states no license change, no transition date, continued framework/platform-agnostic support, and plans for agent-authentication primitives across Vercel. Track a stated license/governance commitment and whether neutrality holds. See [[followups]]. Last seen 2026-07-07.

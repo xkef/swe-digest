@@ -188,6 +188,24 @@ Format:
 - Last checked: 2026-07-01
 - Notes: arXiv announced 2026-06-30 that on 2026-07-01, after 25 years within Cornell University, it becomes an independent nonprofit. Mission, free-to-read/free-to-submit model, and open-access focus stated unchanged; staff transitions underway for continuity. Follow-up posts promised on a new Engineering Director, a 3 million submission milestone, and an AI article policy change. HN 48741748 (138 pts). Covered 2026-07-01 Markets and companies.
 
+## 2026-07-07: Langflow flow-access IDOR CVE-2026-55255 (KEV)
+
+- Status: open
+- Category: Security
+- Sources: [GHSA-qrpv-q767-xqq2](https://github.com/langflow-ai/langflow/security/advisories/GHSA-qrpv-q767-xqq2), [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-55255)
+- Watch for: Confirmation of the exact fixed version (GHSA says 1.9.1, NVD says 1.9.2); exploitation details; internet-exposure scans of unpatched hosted/internal Langflow instances against the 2026-07-10 federal deadline.
+- Last checked: 2026-07-07
+- Notes: IDOR in the `/api/v1/responses` endpoint of Langflow (open-source visual agent/RAG builder): an authenticated low-priv user runs a flow belonging to another user by supplying the victim flow ID. CVSS 9.9 with changed scope (CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:L). GHSA published 2026-06-19, patched 1.9.1, vulnerable <1.9.1; NVD records fixed 1.9.2. Added to CISA KEV 2026-07-07 (catalog 2026.07.07, count 1634) on active exploitation, federal due 2026-07-10. Covered 2026-07-07 Security.
+
+## 2026-07-07: Microsoft global device ID (GDID) tracking write-up
+
+- Status: open
+- Category: Security
+- Sources: [reverse-engineering write-up](https://github.com/SmtimesIWndr/gdid-reversal), [PCMag](https://www.pcmag.com/news/a-hackers-arrest-reveals-microsoft-can-track-users-via-a-windows-device-id), [HN 48815196](https://news.ycombinator.com/item?id=48815196)
+- Watch for: Independent reproduction of the browsing-to-identifier correlation; any Microsoft statement; whether the identifier can be disabled without unlinking the Microsoft Account.
+- Last checked: 2026-07-07
+- Notes: Write-up plus PCMag coverage (HN front page 2026-07-07, 294 pts) describe a server-assigned 64-bit device Passport Unique ID (GDID) minted by the Microsoft Account service (`wlidsvc.dll`) when a Windows install is linked to a Microsoft Account, stored in cleartext in `HKCU\SOFTWARE\Microsoft\IdentityCRL\ExtendedProperties` (`LID`), and registered with a Microsoft device-directory service by the Connected Devices Platform (`cdp.dll`). Persists across OS updates; a reinstall gets a new id that reappears on re-registration. Reporting frames it as correlatable with activity/IP history and cites a criminal case where the data went to law enforcement; the exact browsing linkage is inferred, not fully documented. Covered 2026-07-07 Security (developing).
+
 ## 2026-07-07: KVM guest-to-host escape CVE-2026-53359 (Januscape)
 
 - Status: open
