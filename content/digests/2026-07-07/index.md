@@ -192,7 +192,7 @@ No major items found.
 ## Sources checked
 
 - Hacker News (`make hn`, full structured coverage via Algolia; front page, top of day, Ask HN, Show HN, comments, and 59 of 72 watchlist queries with hits)
-- Reddit (r/programming RSS returned 200; r/rust and r/MachineLearning RSS returned empty from the run environment)
+- Reddit (`make reddit`; RSS heavily rate-limited from the run environment, HTTP 429 on most subreddits across runs; partial coverage accumulated via the snapshot workflow: r/programming, r/ClaudeAI, r/rust, r/MachineLearning, r/devops, r/linux, r/AZURE and others)
 - AI sources (OpenAI, Anthropic, Z.ai GLM release and pricing checks)
 - ML research and arXiv papers (`make papers`; 141 items, ICML window)
 - Conferences and events (`make events`; ICML 2026 active)
