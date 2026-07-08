@@ -331,3 +331,39 @@ Format:
 - Watch for: Breaking-change reports from the slirp4netns-to-Pasta and iptables-to-nftables transition; Pesto rootless port forwarding stabilizing past experimental; Quadlet REST API adoption.
 - Last checked: 2026-07-03
 - Notes: Podman 6.0.0 released 2026-07-02. Default networking transitions from slirp4netns and iptables toward Netavark, Pasta, and nftables; adds experimental Pesto rootless port forwarding for custom networks. Quadlet gains a REST API, expanded .volume unit features, more distribution search paths; new `podman machine os update`; improved Docker API compatibility. HN 48762098 (438 pts). Covered 2026-07-03 Top stories.
+
+## 2026-07-08: TypeScript 7.0 stable native Go compiler
+
+- Status: open
+- Category: Languages
+- Sources: [TypeScript blog](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/), [HN 48833715](https://news.ycombinator.com/item?id=48833715)
+- Watch for: Migration reports for the removed ES5/AMD/UMD/SystemJS emit and the strict-by-default / `types: []` / `rootDir` default changes; editor-integration parity with the old compiler; whether large codebases hit correctness or speed regressions in the Go port.
+- Last checked: 2026-07-08
+- Notes: Microsoft released TypeScript 7.0 stable 2026-07-08, the native Go port (Beta 2026-04-21, RC 2026-06-18). Reports ~8-12x faster full builds, ~13x faster editor open (17.5s to 1.3s for VS Code), 6-26% less memory; production-tested at Slack/Figma/Vanta. Breaking defaults vs 6.0: `strict` true, `types` `[]`, `rootDir` project root; removed ES5/AMD/UMD/SystemJS emit; several deprecated flags now hard errors. `npm install -D typescript`. Covered 2026-07-08 Top stories (lead).
+
+## 2026-07-08: Mistral Robostral Navigate robotics navigation model
+
+- Status: open
+- Category: AI
+- Sources: [Mistral writeup](https://mistral.ai/news/robostral-navigate/), [HN 48832212](https://news.ycombinator.com/item?id=48832212)
+- Watch for: License and weight availability (unstated at launch); independent reproduction of the R2R-CE figures; adoption in robotics/VLA stacks.
+- Last checked: 2026-07-08
+- Notes: Mistral published Robostral Navigate 2026-07-08, an 8B single-camera vision-language robotics-navigation model initialized from a VLM grounding model, navigating by pointing (predicting target image coordinates). Trained on ~400k simulated trajectories across 6,000 scenes with prefix-caching (22x token reduction), tree-based attention masking, and CISPO online RL. Vendor R2R-CE 79.4% validation-seen / 76.6% validation-unseen, stated to beat best single-camera by 9.7 pts and best multi-sensor by 4.5 pts. No license or weights stated. Covered 2026-07-08 AI (developing).
+
+## 2026-07-08: Cloudflare Meerkat global consensus service (QuePaxa)
+
+- Status: open
+- Category: Infrastructure
+- Sources: [Cloudflare blog](https://blog.cloudflare.com/meerkat-introduction/), [HN 48831565](https://news.ycombinator.com/item?id=48831565)
+- Watch for: Whether Meerkat or a QuePaxa implementation is open-sourced or moves past experimental/internal-only; independent benchmarks of the ~10x-over-Raft claim; wider QuePaxa adoption.
+- Last checked: 2026-07-08
+- Notes: Cloudflare introduced Meerkat 2026-07-08, a global consensus service keeping control-plane state consistent across 330+ datacenters as a strongly consistent fault-tolerant KV store. Implements QuePaxa (2023 EPFL algorithm), stated first industrial deployment at global scale: leaderless, all replicas propose writes, no timeout stalls ("tyranny of timeouts"), ~10x Raft throughput under adverse networks, tested to 50 globally distributed replicas, 1-3+ round trips per decision. Experimental, internal-only, not open source. Covered 2026-07-08 Infrastructure.
+
+## 2026-07-08: OpenBSD sysv_sem use-after-free local root CVE-2026-57589
+
+- Status: open
+- Category: Security
+- Sources: [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-57589)
+- Watch for: A named patched OpenBSD release or errata beyond the referenced fix commit; any exploitation reports; whether 7.9 and earlier get backported fixes.
+- Last checked: 2026-07-08
+- Notes: CVE-2026-57589, use-after-free in `sys/kern/sysv_sem.c` in OpenBSD through 7.9, local privilege escalation to root; context-switch UAF after `tsleep` in `sys_semget()`. CVSS 7.4 (AV:L/AC:H/PR:N/UI:N/C:H/I:H/A:H), CWE-416. NVD published 2026-06-24, references fix commit 1957873d2063, no patched version named. Surfaced HN 48831658 on 2026-07-08. No active exploitation reported. Covered 2026-07-08 Security. Extends the week's LPE run (GhostLock/Januscape/Bad Epoll, all Linux) to OpenBSD.
