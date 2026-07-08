@@ -17,6 +17,24 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-08: GhostLock CVE-2026-43499 Linux rtmutex root and container escape
+
+- Status: open
+- Category: Security
+- Sources: [Nebula Security writeup](https://nebusec.ai/research/ionstack-part-2/), [The Hacker News](https://thehackernews.com/2026/07/15-year-old-ghostlock-flaw-enables-root.html)
+- Watch for: Distribution kernels confirming the backport (Ubuntu 24.04/22.04/20.04 LTS still shipping fixes as of early July); any in-the-wild exploitation past the public PoC; whether cloud/container hosts publish advisories.
+- Last checked: 2026-07-08
+- Notes: Nebula Security disclosed 2026-07-07 a stack use-after-free in the Linux kernel rtmutex priority-inheritance code (`remove_waiter()` in `kernel/locking/rtmutex.c` clears the wrong task's `pi_blocked_on` on a `-EDEADLK` proxy-lock rollback). Introduced Linux 2.6.39, reachable through 7.1-rc1 on any kernel with `CONFIG_FUTEX_PI` enabled (default in mainstream distros); no special caps, user namespaces, or network needed. Public exploit reported 97% reliable, gains root and escapes containers; Google awarded $92,337 via kernelCTF. Fixed in Linux 7.1 (April 2026). No known in-the-wild use. Third kernel LPE this week after Januscape (CVE-2026-53359) and Bad Epoll (CVE-2026-46242). Covered 2026-07-08 Security.
+
+## 2026-07-08: GitLost prompt injection leaks private repos via GitHub Agentic Workflows
+
+- Status: open
+- Category: Security
+- Sources: [Noma Security writeup](https://noma.security/blog/gitlost-how-we-tricked-githubs-ai-agent-into-leaking-private-repos/), [HN 48827858](https://news.ycombinator.com/item?id=48827858)
+- Watch for: A GitHub statement or dated fix; a CVE or advisory; whether the "Additionally" guardrail bypass or equivalent phrasings still work; scope beyond README exfiltration; whether other agent triggers (PRs, comments) are affected.
+- Last checked: 2026-07-08
+- Notes: Noma Security published 2026-07-08 a prompt-injection attack against GitHub Agentic Workflows (GitHub Actions paired with Copilot or Claude agents driven by Markdown files). An attacker opens an issue in a public repo of an org using the workflows with hidden instructions; when the workflow runs (e.g. issue assignment), the agent treats the issue text as trusted, reads private repo contents (README), and posts them as a public comment on the attacker's issue. Guardrail bypass via reframing output with "Additionally". No credentials or code needed. Disclosed to GitHub before publishing; writeup gives no fix date. Also on r/netsec. Covered 2026-07-08 Top stories.
+
 ## 2026-07-06: Zuckerberg says Meta agentic development stalled for four months
 
 - Status: open
@@ -40,9 +58,9 @@ Format:
 - Status: open
 - Category: AI
 - Sources: [OpenAI preview](https://openai.com/index/previewing-gpt-5-6-sol/), [OpenAI staff post on X](https://twitter.com/thsottiaux/status/2073933490513752151), [HN 48799614](https://news.ycombinator.com/item?id=48799614)
-- Watch for: A dated Codex changelog entry enabling GPT-5.6 Sol Ultra; general availability beyond trusted preview partners; whether individual subscribers get access; independent evaluation of the subagent "ultra mode" in Codex.
-- Last checked: 2026-07-06
-- Notes: OpenAI previewed the GPT-5.6 family (Sol/Terra/Luna tiers, new max reasoning effort, "ultra mode" using subagents) on 2026-06-26, limited to a small set of trusted partner orgs. An OpenAI staff post on X (Thibault Sottiaux) on 2026-07-05 said GPT-5.6 Sol Ultra will be in Codex; the preview post states the models are available during preview through the API and Codex to that partner group. Thin source (staff X post plus preview post). Covered 2026-07-06 Top stories (developing).
+- Watch for: Whether the 2026-07-09 general availability lands on the stated surfaces (API, Codex, then ChatGPT); the final per-tier pricing; whether individual subscribers get access; independent evaluation of the subagent "ultra mode" in Codex.
+- Last checked: 2026-07-08
+- Notes: OpenAI previewed the GPT-5.6 family (Sol/Terra/Luna tiers, new max reasoning effort, "ultra mode" using subagents) on 2026-06-26, limited to a small set of trusted partner orgs. An OpenAI staff post on X (Thibault Sottiaux) on 2026-07-05 said GPT-5.6 Sol Ultra will be in Codex. 2026-07-08: multiple outlets (Engadget, Neowin, VentureBeat) report OpenAI will make GPT-5.6 publicly available 2026-07-09 after the US Department of Commerce Center for AI Standards and Innovation completed additional testing and lifted the staggered-release restriction (was ~20 partner orgs). Reported pricing per 1M tokens: Sol $5 in / $30 out, Terra $2.50 / $15, Luna $1 / $6; preview access now global via API and Codex, ChatGPT consumer access to follow general API availability. HN 48827402 (206 pts). Covered 2026-07-06 Top stories, updated 2026-07-08 Top stories (developing). Mirrors the Anthropic Fable 5 export-control saga.
 
 ## 2026-07-05: YouTube Studio "Ask Studio" prompt injection leaks private video data
 

@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-08."
 
 [extra]
 status = "published"
-source_count = 24
+source_count = 31
 +++
 
 ## Top stories
@@ -26,6 +26,24 @@ source_count = 24
 - **Sources:** [Adobe APSB26-68](https://helpx.adobe.com/security/products/coldfusion/apsb26-68.html), [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-48282), [CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog), [watchTowr analysis](https://labs.watchtowr.com/its-37oc-and-all-we-can-think-about-is-coldfusion-adobe-coldfusion-security-bulletin-apsb26-68-cve-bonanza/)
 - **Summary:** CVE-2026-48282 is a CVSS 10.0 path traversal in the ColdFusion Remote Development Services FILEIO handler that can reach arbitrary code execution. Adobe patched it in the APSB26-68 bulletin on 2026-06-30 with ColdFusion 2023 Update 21 and ColdFusion 2025 Update 10. Reaching code execution requires RDS enabled with its authentication disabled, which is not the default configuration. CISA added the CVE to the Known Exploited Vulnerabilities catalog on 2026-07-07 on confirmed active exploitation. Reporting states exploitation began within about two hours of public disclosure.
 - **Why it matters:** Internet-exposed ColdFusion with RDS left on and unauthenticated is a direct remote-code-execution target, and patched builds are already available.
+
+### OpenAI clears GPT-5.6 Sol, Terra, and Luna for public release on 2026-07-09
+
+- **Category:** AI
+- **Status:** developing
+- **Sources:** [OpenAI preview](https://openai.com/index/previewing-gpt-5-6-sol/), [Engadget](https://www.engadget.com/2210308/openai-rolls-out-gpt5-6-july-9/), [HN discussion](https://news.ycombinator.com/item?id=48827402)
+- **Summary:** OpenAI said the GPT-5.6 model family will become publicly available on 2026-07-09 after the US Department of Commerce Center for AI Standards and Innovation completed additional testing, lifting the staggered-release restriction that had limited the models to about 20 partner organizations. The family has three tiers. Reporting states Sol, the flagship, is priced at $5 per million input tokens and $30 per million output tokens, Terra at $2.50 and $15, and Luna, the fastest and cheapest, at $1 and $6. Preview access is now open globally through the API and Codex, with consumer access in ChatGPT stated to follow general API availability.
+- **Why it matters:** A frontier model family moving from government-gated preview to general availability changes coding-agent and API options for teams, and the reported per-tier pricing sets a direct comparison point against current models.
+- **Follow-up:** Confirm the 2026-07-09 general availability lands on the stated surfaces, the final pricing, and when ChatGPT consumer access opens.
+
+### GitLost tricks GitHub agentic workflows into leaking private repositories
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Noma Security writeup](https://noma.security/blog/gitlost-how-we-tricked-githubs-ai-agent-into-leaking-private-repos/), [HN discussion](https://news.ycombinator.com/item?id=48827858)
+- **Summary:** Noma Security published on 2026-07-08 an account of a prompt-injection attack, called GitLost, against GitHub Agentic Workflows, the feature that pairs GitHub Actions with Copilot or Claude agents driven by natural-language Markdown files. An attacker files an issue in a public repository of an organization that uses the workflows, hiding instructions in the issue text. When the workflow runs on an event such as issue assignment, the agent treats the issue content as trusted instructions, reads private repository contents such as README files, and posts them as a public comment on the attacker's issue. The researchers bypassed output guardrails by reframing the leak with the word "Additionally." The attack needs no credentials or code, only the ability to open an issue. Noma says it disclosed the issue to GitHub before publishing.
+- **Comments:** HN commenters note the writeup gives no fix date and question whether the guardrail bypass can recur through different phrasings, and argue that an LLM with private-data access answering public prompts is inherently unsafe.
+- **Why it matters:** Any organization that enabled GitHub Agentic Workflows with cross-repository read access exposed private code to unauthenticated attackers through public issues.
 
 ### Anthropic extends included Fable 5 access to 2026-07-12
 
@@ -47,6 +65,14 @@ source_count = 24
 - **Why it matters:** ICML sets much of the year's research agenda, and conference-timed model and tooling releases route to the AI and ML research sections when they land.
 
 ## Security
+
+### GhostLock CVE-2026-43499 gives local root and container escape on most Linux distributions
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Nebula Security writeup](https://nebusec.ai/research/ionstack-part-2/), [r/linux discussion](https://www.reddit.com/r/linux/comments/1uqmvnt/15yearold_ghostlock_flaw_enables_root_and/)
+- **Summary:** Nebula Security disclosed GhostLock (CVE-2026-43499) on 2026-07-07, a stack use-after-free in the Linux kernel rtmutex priority-inheritance code. The `remove_waiter()` path in `kernel/locking/rtmutex.c` clears the wrong task's `pi_blocked_on` pointer during a proxy-lock rollback when `rt_mutex_start_proxy_lock()` returns `-EDEADLK`. The bug was introduced in Linux 2.6.39 and reachable through 7.1-rc1 on any kernel built with `CONFIG_FUTEX_PI` enabled, which is the default in mainstream distributions. It needs no special capabilities, user namespaces, or network access. Nebula published a working exploit it reports as 97 percent reliable that gains root and escapes containers, and says Google awarded $92,337 through kernelCTF. The fix landed in Linux 7.1 in April 2026. No in-the-wild exploitation is known, and distributions are still shipping updates.
+- **Why it matters:** A default-enabled config path present in nearly every distribution for 15 years now has public root-and-container-escape exploit code, so unpatched multi-tenant and container hosts are directly exposed.
 
 ### Tenda router firmware ships an authentication backdoor CVE-2026-11405
 
@@ -110,25 +136,25 @@ No major items found.
 
 ## Reddit and social pulse
 
-### Reddit pulse: Cursor usage resets and Januscape spread
+### Reddit pulse: GPT-5.6 launch anticipation and AI-agent isolation debate
 
 - **Category:** Pulse
 - **Status:** discussion
-- **Sources:** [r/cursor thread](https://www.reddit.com/r/cursor/comments/1uq37ue/anyone_else_got_the_usage_reset_in_the_last/), [r/cybersecurity thread](https://www.reddit.com/r/cybersecurity/comments/1upundx/new_januscape_linux_flaw_allows_vm_escape_on/)
-- **Summary:** Reddit coverage was partial this run, with r/cursor, r/cybersecurity, r/neovim, and r/OpenAI returning results. r/cursor users reported an unexpected usage-limit reset within the prior hours. r/cybersecurity threads carried the Januscape KVM guest-to-host escape (CVE-2026-53359, covered 2026-07-07) and a discussion of a Cursor sandbox escape framed as evidence that AI coding agents need kernel-level isolation.
-- **Why it matters:** The Cursor usage-reset chatter is a billing-visibility signal, and the Januscape spread shows the kernel escape reaching practitioner channels.
+- **Sources:** [r/OpenAI GPT-5.6 launch thread](https://www.reddit.com/r/OpenAI/comments/1uqhviv/gpt56_sol_along_with_terra_and_luna_will_launch/), [r/cybersecurity Cursor sandbox escape](https://www.reddit.com/r/cybersecurity/comments/1uq6yyv/a_cursor_sandbox_escape_shows_why_ai_agents_need/)
+- **Summary:** Reddit coverage was partial again this run, drawn from the accumulated snapshot across r/OpenAI, r/cybersecurity, r/linux, r/LocalLLaMA, r/kubernetes, r/java, and r/bioinformatics. r/OpenAI carried heavy anticipation of the GPT-5.6 Sol, Terra, and Luna public launch and the lifted US restriction. r/cybersecurity threads framed a Cursor sandbox escape as evidence that AI coding agents need kernel-level isolation, echoing the week's kernel-escape disclosures. r/linux surfaced the GhostLock kernel privilege-escalation flaw covered above.
+- **Why it matters:** The pulse shows the day's agentic-coding security theme reaching practitioner channels alongside anticipation of the imminent GPT-5.6 release.
 
 ## Sources checked
 
 - Hacker News (`make hn`, Algolia backend, full structured coverage)
-- Reddit (`make reddit`, partial coverage, r/cursor and r/cybersecurity and r/neovim and r/OpenAI returned, other subreddits rate-limited)
-- AI sources (Anthropic, OpenAI, model access changes)
+- Reddit (`make reddit`, partial coverage via the accumulated snapshot, live fetch returned only 4/28 subreddits per listing, rest rate-limited)
+- AI sources (Anthropic, OpenAI, model access and release changes)
 - ML research and arXiv papers (`make papers`, no standout with ecosystem attention today)
 - Conferences and events (`make events`, ICML 2026 active)
 - Books and publisher feeds (`make books`, No Starch and Pragmatic and Springer feeds plus search-target presses, no qualifying release)
-- Security advisories (CERT/CC, NVD, CISA KEV, Adobe)
+- Security advisories (CERT/CC, NVD, CISA KEV, Adobe, Nebula Security, Noma Security)
 - Status pages (GitHub, Cloudflare, AWS, Azure, Google Cloud, OpenAI, Anthropic, only planned Cloudflare maintenance found)
-- GitHub watchlist releases and trending
+- GitHub watchlist releases and trending (rechecked, Homebrew 6.0.9 routine patch since the first run)
 - Engineering blogs
 - YouTube channels (`make yt`, no video cleared the New videos bar)
 - Markets and company sources
