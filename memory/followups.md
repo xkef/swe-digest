@@ -393,7 +393,25 @@ Format:
 - Sources: [Bun blog](https://bun.com/blog/bun-in-rust), [Simon Willison](https://simonwillison.net/2026/Jul/8/rewriting-bun-in-rust/), [HN 48837877](https://news.ycombinator.com/item?id=48837877)
 - Watch for: Bun 1.4.0 stable past the current canary; regression reports from the Rust port; independent confirmation of the 2-5% throughput / ~20% binary-size / leak-fix claims; which model actually drove it (blog says Claude Code, HN attributes Fable 5).
 - Last checked: 2026-07-09
-- Notes: Bun published 2026-07-08 an account of rewriting ~535k LOC (transpiler, package manager, test runner, Node APIs) from Zig to Rust, motivated by memory-safety bugs from mixing GC'd JS values with manual memory. Work ran May 3-14 2026 with many parallel Claude Code instances (~6,500 commits, up to 64 at peak) using adversarial review loops. Claims 2-5% higher throughput, ~20% smaller binaries (Linux/Windows), fixed leaks. Merged to main, ships in Bun 1.4.0 canary; Bun states Claude Code v2.1.181+ already use the Rust port; 1.3.14 was the last Zig release. Covered 2026-07-09 Top stories. Part of the Fable 5 capability-demo wave. Vendor claims, unverified.
+- Notes: Bun published 2026-07-08 an account of rewriting ~535k LOC (transpiler, package manager, test runner, Node APIs) from Zig to Rust, motivated by memory-safety bugs from mixing GC'd JS values with manual memory. Work ran May 3-14 2026 with many parallel Claude Code instances (~6,500 commits, up to 64 at peak) using adversarial review loops. Claims 2-5% higher throughput, ~20% smaller binaries (Linux/Windows), fixed leaks. Merged to main, ships in Bun 1.4.0 canary; Bun states Claude Code v2.1.181+ already use the Rust port; 1.3.14 was the last Zig release. Covered 2026-07-09 Top stories. Part of the Fable 5 capability-demo wave. Vendor claims, unverified. 2026-07-09: Zig creator Andrew Kelley published a rebuttal (andrewkelley.me/post/my-thoughts-bun-rust-rewrite.html, HN 48843352) arguing the gains were not from the language switch (Zig supported LTO throughout but Bun kept it disabled over LLVM bugs that also affect Rust; Zig ships comptime/inline audit tooling Bun did not use), that eliminating memory-safety bugs is mainly engineering effort not language choice, and disputing the post's fuzzing claim as a fabrication; also flags low-quality AI contributions to Zig. One maintainer's assertions, unverified. Covered 2026-07-09 Reddit and social pulse.
+
+## 2026-07-09: RoguePlanet Microsoft Defender LPE CVE-2026-50656
+
+- Status: open
+- Category: Security
+- Sources: [MSRC](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-50656), [Help Net Security](https://www.helpnetsecurity.com/2026/06/17/rogueplanet-zero-day-cve-2026-50656/)
+- Watch for: Whether it lands in CISA KEV; confirmation the Malware Protection Engine 1.1.26060.3008 update reached managed fleets; further exploit variants; any in-the-wild use beyond the public PoC.
+- Last checked: 2026-07-09
+- Notes: CVE-2026-50656 (RoguePlanet), CVSS 7.8, race condition in the Microsoft Malware Protection Engine (Windows Defender) letting a local attacker spawn a SYSTEM shell on fully updated Windows 10/11; PoC works with real-time protection on or off. Disclosed by researcher "Chaotic Eclipse"/"Nightmare-Eclipse" around June 2026 Patch Tuesday amid a bug-bounty dispute with Microsoft. Fixed in Malware Protection Engine 1.1.26060.3008, delivered through the automatic engine-update channel. Not in CISA KEV as of 2026-07-09 (catalog 2026.07.07, count 1635). Surfaced r/cybersecurity 2026-07-09. Covered 2026-07-09 Security.
+
+## 2026-07-09: Rust 1.97.0 defaults to v0 symbol mangling
+
+- Status: open
+- Category: Languages
+- Sources: [Rust 1.97.0 release](https://github.com/rust-lang/rust/releases/tag/1.97.0)
+- Watch for: Tooling (debuggers, profilers) that fails to demangle v0 symbols; code broken by the tightened `pin!` deref-coercion fix; adoption in CI toolchain images.
+- Last checked: 2026-07-09
+- Notes: Rust 1.97.0 released 2026-07-09. Compiler defaults to the v0 symbol mangling scheme (older demanglers may fail, backtrace formatting changes); prevents an unsound deref coercion in `pin!` (so `pin!(x)` on `&mut T` yields `Pin<&mut &mut T>`, closing a coercion incorrectly allowed since 1.88.0); warns on linker output by default. Cargo stabilizes `build.warnings` (enforce warning-free CI, replaces `-Dwarnings`) and `resolver.lockfile-path`. New APIs include integer bit helpers (`isolate_highest_one`, `highest_one`, `bit_width`). Covered 2026-07-09 Languages.
 
 ## 2026-07-09: Cognition releases SWE-1.7 coding model
 
