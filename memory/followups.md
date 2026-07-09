@@ -59,8 +59,8 @@ Format:
 - Category: AI
 - Sources: [OpenAI preview](https://openai.com/index/previewing-gpt-5-6-sol/), [OpenAI staff post on X](https://twitter.com/thsottiaux/status/2073933490513752151), [HN 48799614](https://news.ycombinator.com/item?id=48799614)
 - Watch for: Whether the 2026-07-09 general availability lands on the stated surfaces (API, Codex, then ChatGPT); the final per-tier pricing; whether individual subscribers get access; independent evaluation of the subagent "ultra mode" in Codex.
-- Last checked: 2026-07-08
-- Notes: OpenAI previewed the GPT-5.6 family (Sol/Terra/Luna tiers, new max reasoning effort, "ultra mode" using subagents) on 2026-06-26, limited to a small set of trusted partner orgs. An OpenAI staff post on X (Thibault Sottiaux) on 2026-07-05 said GPT-5.6 Sol Ultra will be in Codex. 2026-07-08: multiple outlets (Engadget, Neowin, VentureBeat) report OpenAI will make GPT-5.6 publicly available 2026-07-09 after the US Department of Commerce Center for AI Standards and Innovation completed additional testing and lifted the staggered-release restriction (was ~20 partner orgs). Reported pricing per 1M tokens: Sol $5 in / $30 out, Terra $2.50 / $15, Luna $1 / $6; preview access now global via API and Codex, ChatGPT consumer access to follow general API availability. HN 48827402 (206 pts). Covered 2026-07-06 Top stories, updated 2026-07-08 Top stories (developing). Mirrors the Anthropic Fable 5 export-control saga.
+- Last checked: 2026-07-09
+- Notes: OpenAI previewed the GPT-5.6 family (Sol/Terra/Luna tiers, new max reasoning effort, "ultra mode" using subagents) on 2026-06-26, limited to a small set of trusted partner orgs. An OpenAI staff post on X (Thibault Sottiaux) on 2026-07-05 said GPT-5.6 Sol Ultra will be in Codex. 2026-07-08: multiple outlets (Engadget, Neowin, VentureBeat) report OpenAI will make GPT-5.6 publicly available 2026-07-09 after the US Department of Commerce Center for AI Standards and Innovation completed additional testing and lifted the staggered-release restriction (was ~20 partner orgs). Reported pricing per 1M tokens: Sol $5 in / $30 out, Terra $2.50 / $15, Luna $1 / $6; preview access now global via API and Codex, ChatGPT consumer access to follow general API availability. HN 48827402 (206 pts). Covered 2026-07-06 Top stories, updated 2026-07-08 Top stories (developing). 2026-07-09: GA slated today; no primary confirmation of GA on the stated surfaces landed early in the run; carried to 2026-07-09 Watchlist follow-ups (developing). Mirrors the Anthropic Fable 5 export-control saga.
 
 ## 2026-07-05: YouTube Studio "Ask Studio" prompt injection leaks private video data
 
@@ -366,4 +366,40 @@ Format:
 - Sources: [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-57589)
 - Watch for: A named patched OpenBSD release or errata beyond the referenced fix commit; any exploitation reports; whether 7.9 and earlier get backported fixes.
 - Last checked: 2026-07-08
-- Notes: CVE-2026-57589, use-after-free in `sys/kern/sysv_sem.c` in OpenBSD through 7.9, local privilege escalation to root; context-switch UAF after `tsleep` in `sys_semget()`. CVSS 7.4 (AV:L/AC:H/PR:N/UI:N/C:H/I:H/A:H), CWE-416. NVD published 2026-06-24, references fix commit 1957873d2063, no patched version named. Surfaced HN 48831658 on 2026-07-08. No active exploitation reported. Covered 2026-07-08 Security. Extends the week's LPE run (GhostLock/Januscape/Bad Epoll, all Linux) to OpenBSD.
+- Notes: CVE-2026-57589, use-after-free in `sys/kern/sysv_sem.c` in OpenBSD through 7.9, local privilege escalation to root; context-switch UAF after `tsleep` in `sys_semget()`. CVSS 7.4 (AV:L/AC:H/PR:N/UI:N/C:H/I:H/A:H), CWE-416. NVD published 2026-06-24, references fix commit 1957873d2063, no patched version named. Surfaced HN 48831658 on 2026-07-08. No active exploitation reported. Covered 2026-07-08 Security. Re-surfaced HN front page 2026-07-09 (257 pts); noted again 2026-07-09 Security with KEV unchanged. Extends the week's LPE run (GhostLock/Januscape/Bad Epoll, all Linux) to OpenBSD.
+
+## 2026-07-09: xAI releases Grok 4.5
+
+- Status: open
+- Category: AI
+- Sources: [xAI announcement](https://x.ai/news/grok-4-5), [Cursor blog](https://cursor.com/blog/grok-4-5), [HN 48835111](https://news.ycombinator.com/item?id=48835111)
+- Watch for: Independent reproduction of the SWE-Bench Pro / DeepSWE / Terminal-Bench figures and the 4.2x token-efficiency claim; whether the reported Cursor tool-calling gaps (Grok 4.5 not calling internal tools, AskQuestion unavailable) get fixed; standalone API availability and context window (unstated in the run).
+- Last checked: 2026-07-09
+- Notes: xAI released Grok 4.5 to the public 2026-07-08 (11 days after a SpaceX/Tesla private beta). V9 architecture, reported 1.5T params; xAI says it folded real Cursor developer session data (debug traces, multi-file diffs, corrections) into training. Pricing $2/M in, $6/M out. Beats Opus 4.8 on 2 of 4 published benchmarks (DeepSWE 1.0, Terminal-Bench 2.1), loses on DeepSWE 1.1 (by 6) and SWE-Bench Pro (by 4.5); states 4.2x fewer tokens than Opus 4.8 on SWE-Bench Pro, ~80 tok/s. Live in Grok Build, Cursor (all plans), and the SpaceXAI console. Cursor co-trained it and keeps Composer 2.5 as a separate weight class. Covered 2026-07-09 Top stories (lead). r/cursor reports tool-calling friction. Vendor benchmarks, unreproduced.
+
+## 2026-07-09: OpenAI ships GPT-Live full-duplex voice
+
+- Status: open
+- Category: AI
+- Sources: [OpenAI announcement](https://openai.com/index/introducing-gpt-live/), [Simon Willison](https://simonwillison.net/2026/Jul/8/introducing-gptlive/), [HN 48834405](https://news.ycombinator.com/item?id=48834405)
+- Watch for: The stated API release and its latency/pricing; whether the backend delegation model moves past GPT-5.5; independent evaluation of interruption handling.
+- Last checked: 2026-07-09
+- Notes: OpenAI launched GPT-Live 2026-07-08, a full-duplex voice model (listens and speaks simultaneously, decides speak/listen/pause/interrupt/tool many times per second, delegates hard tasks to a frontier model using GPT-5.5 at launch). Two variants rolled out to ChatGPT: GPT-Live-1 (default for Go/Plus/Pro), GPT-Live-1 mini (free). API "soon." Simon Willison had weeks of iPhone preview, calls it impressive. Covered 2026-07-09 Top stories.
+
+## 2026-07-09: Bun runtime rewritten from Zig to Rust
+
+- Status: open
+- Category: Languages
+- Sources: [Bun blog](https://bun.com/blog/bun-in-rust), [Simon Willison](https://simonwillison.net/2026/Jul/8/rewriting-bun-in-rust/), [HN 48837877](https://news.ycombinator.com/item?id=48837877)
+- Watch for: Bun 1.4.0 stable past the current canary; regression reports from the Rust port; independent confirmation of the 2-5% throughput / ~20% binary-size / leak-fix claims; which model actually drove it (blog says Claude Code, HN attributes Fable 5).
+- Last checked: 2026-07-09
+- Notes: Bun published 2026-07-08 an account of rewriting ~535k LOC (transpiler, package manager, test runner, Node APIs) from Zig to Rust, motivated by memory-safety bugs from mixing GC'd JS values with manual memory. Work ran May 3-14 2026 with many parallel Claude Code instances (~6,500 commits, up to 64 at peak) using adversarial review loops. Claims 2-5% higher throughput, ~20% smaller binaries (Linux/Windows), fixed leaks. Merged to main, ships in Bun 1.4.0 canary; Bun states Claude Code v2.1.181+ already use the Rust port; 1.3.14 was the last Zig release. Covered 2026-07-09 Top stories. Part of the Fable 5 capability-demo wave. Vendor claims, unverified.
+
+## 2026-07-09: Cognition releases SWE-1.7 coding model
+
+- Status: open
+- Category: Agentic coding
+- Sources: [Cognition blog](https://cognition.com/blog/swe-1-7), [HN 48833866](https://news.ycombinator.com/item?id=48833866)
+- Watch for: Independent reproduction of FrontierCode 1.1 (Cognition's own benchmark); availability outside Devin; whether the $1.97/task cost-performance point holds at scale.
+- Last checked: 2026-07-09
+- Notes: Cognition launched SWE-1.7 2026-07-08, RL-trained on the open-weight Kimi K2.7 base. Reports 42.3% on FrontierCode 1.1 (a "would a maintainer merge this PR" benchmark) vs GPT-5.5 43.0% and Opus 4.8 46.5%; $1.97/task on FrontierCode Main; 1,000 tok/s via Cerebras inside Devin (Web/Desktop/CLI). RL training spanned four datacenters across three continents (own GPUs plus inference-provider compute). Covered 2026-07-09 Top stories. Vendor benchmark, unreproduced.
