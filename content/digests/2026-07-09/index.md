@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-09."
 
 [extra]
 status = "published"
-source_count = 43
+source_count = 45
 +++
 
 ## Top stories
@@ -20,6 +20,16 @@ source_count = 43
 - **Comments:** HN commenters read the model as unusually economical, noting the $2/$6 price against $5/$30 for GPT-5.5 and $5/$25 for Opus 4.8, and flag the benchmark figures as vendor-reported.
 - **Why it matters:** A frontier-class coding model priced well below current OpenAI and Anthropic tiers and available inside Cursor immediately changes the cost calculus for agentic coding workloads.
 - **Follow-up:** Watch independent benchmark reproduction, the token-efficiency claim, and whether the reported Cursor tool-calling gaps get fixed.
+
+### OpenAI releases GPT-5.6 Sol, Terra, and Luna to the public
+
+- **Category:** AI
+- **Status:** confirmed
+- **Sources:** [OpenAI announcement](https://openai.com/index/gpt-5-6/), [OpenAI preview](https://openai.com/index/previewing-gpt-5-6-sol/), [HN discussion](https://news.ycombinator.com/item?id=48849066)
+- **Summary:** OpenAI made the GPT-5.6 family generally available on 2026-07-09 across ChatGPT, the API, and Codex, after the government-coordinated testing period that the US Department of Commerce Center for AI Standards and Innovation completed before the staggered-release restriction was lifted. The family has three tiers: Sol, the flagship for complex reasoning and agentic coding, Terra, described as competitive with GPT-5.5 at half the cost, and Luna, the cheapest. GPT-5.6 adds a new maximum reasoning effort and an ultra mode that spawns subagents to parallelize complex work. Reported pricing per million tokens is Sol $5 in and $30 out, Terra $2.50 and $15, and Luna $1 and $6. OpenAI states Sol runs on Cerebras at up to 750 tokens per second in July.
+- **Comments:** HN commenters were skeptical of the launch benchmarks, noting the "Agents' Last Exam" chart truncates its y-axis at 30 percent to overstate the gains and compares against Fable 5 in adaptive rather than max reasoning mode. Several read the release as an incremental version bump.
+- **Why it matters:** OpenAI's flagship family reaching general availability on its most-used surfaces, with Terra undercutting GPT-5.5 and Sol targeting agentic coding, lands directly against this week's Grok 4.5 and SWE-1.7 releases and resets the frontier-model comparison for developers.
+- **Follow-up:** Watch independent benchmark reproduction, the final per-tier pricing, and the subagent ultra-mode behavior in Codex.
 
 ### OpenAI ships GPT-Live full-duplex voice for ChatGPT
 
@@ -231,26 +241,15 @@ No major items found.
 - **Summary:** In the degraded Reddit sample, r/cursor threads on 2026-07-09 report Grok 4.5 arriving in Cursor on all plans alongside adoption friction, including reports that Grok 4.5 does not call Cursor's internal tools and that the AskQuestion tool is unavailable with it. Users also compare it against Cursor's own Composer 2.5. This is unverified practitioner report.
 - **Why it matters:** Tool-calling reliability inside the harness, not raw benchmark scores, is what determines whether a new model is usable for agentic coding day to day.
 
-## Watchlist follow-ups
-
-### GPT-5.6 public release slated for 2026-07-09
-
-- **Category:** AI
-- **Status:** developing
-- **Sources:** [OpenAI preview](https://openai.com/index/previewing-gpt-5-6-sol/)
-- **Summary:** OpenAI stated the GPT-5.6 family (Sol, Terra, Luna) would move from government-coordinated limited preview to public availability on 2026-07-09 after the US Department of Commerce Center for AI Standards and Innovation completed testing. As of this run early on 2026-07-09 no primary confirmation of general availability on the stated surfaces (API, Codex, then ChatGPT) has landed. Reported pricing per million tokens is Sol $5 in and $30 out, Terra $2.50 and $15, Luna $1 and $6.
-- **Why it matters:** GPT-5.6 lands into the same week as Grok 4.5 and SWE-1.7, and its per-tier pricing is the direct comparison point against the cheaper releases.
-- **Follow-up:** Confirm whether general availability lands today on API and Codex, the final pricing, and when ChatGPT consumer access opens.
-
 ## Sources checked
 
-- Hacker News (full structured coverage via Algolia: front page, top of day, Ask HN, Show HN, comments, 66/79 watchlist queries)
+- Hacker News (full structured coverage via Algolia: front page, top of day, Ask HN, Show HN, comments, 65/79 watchlist queries)
 - Reddit (degraded: only 4 of 28 subreddits returned via RSS; used the committed snapshot and live sample)
-- AI sources (xAI, OpenAI, Cognition, Mistral, Anthropic)
+- AI sources (xAI, OpenAI including the GPT-5.6 general-availability launch, Cognition, Mistral, Anthropic)
 - ML research and arXiv papers (ICML 2026 in session; no single paper cleared the engineering-relevance bar this run)
 - Conferences and events (ICML 2026 active)
 - Books and publisher feeds (No Starch, Pragmatic, Springer; no qualifying release)
-- Security advisories (CISA KEV unchanged since 2026-07-07 at count 1635; NVD; OSV; MSRC for the RoguePlanet Defender fix)
+- Security advisories (CISA KEV re-checked, unchanged since 2026-07-07 at count 1635; NVD; OSV; MSRC for the RoguePlanet Defender fix)
 - Status pages (GitHub, Cloudflare, AWS, Azure, Google Cloud, OpenAI, Anthropic; no major incident)
 - GitHub watchlist (deep sweep of releases and trending across the [github] table; new since 2026-07-08 were Rust 1.97.0, Prometheus v3.5.5, Node.js v26.5.0, and Deno v2.9.2)
 - Engineering blogs
