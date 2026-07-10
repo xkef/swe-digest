@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-10."
 
 [extra]
 status = "published"
-source_count = 20
+source_count = 23
 +++
 
 ## Top stories
@@ -101,6 +101,24 @@ No major items found.
 - **Why it matters:** It is the first upstream step toward mainline Linux support for the newest Apple Silicon generation and continues the Asahi Linux enablement effort.
 - **Follow-up:** Watch for peripheral drivers (display, GPU, audio), stable SMP boot, and upstream merge of the M4 device trees.
 
+## Infrastructure
+
+### IERS confirms no leap second at the end of 2026
+
+- **Category:** Infrastructure
+- **Status:** confirmed
+- **Sources:** [IERS Bulletin C 72](https://datacenter.iers.org/data/latestVersion/bulletinC.txt), [HN discussion](https://news.ycombinator.com/item?id=48846281)
+- **Summary:** The International Earth Rotation and Reference Systems Service issued Bulletin C 72 on 2026-07-06, announcing that no leap second will be introduced at the end of December 2026. No positive or negative leap second is scheduled. The difference between UTC and TAI stays at UTC minus TAI equal to -37 seconds, unchanged since 2017-01-01.
+- **Why it matters:** Systems that special-case leap seconds (NTP daemons, leap-smearing configurations, databases, and kernels) need no adjustment for the 2026 year-end boundary, and the offset between civil and atomic time has now held at 37 seconds since the last leap second in 2016.
+
+### Prometheus 3.13.1 fixes a TSDB range-query correctness bug
+
+- **Category:** Infrastructure
+- **Status:** confirmed
+- **Sources:** [Prometheus 3.13.1 release](https://github.com/prometheus/prometheus/releases/tag/v3.13.1)
+- **Summary:** Prometheus released 3.13.1 on 2026-07-10, a bugfix release for the 3.13 LTS line. It fixes a TSDB defect where the head-chunk cache could return samples from the wrong chunk, or spurious not-found errors, on range queries after a head-chunk truncation.
+- **Why it matters:** The bug produced incorrect or missing range-query results in a widely deployed monitoring system. Operators running the 3.13 LTS line should upgrade to keep query results correct.
+
 ## Hacker News
 
 ### Show HN: colibri streams model weights from SSD to run GLM 5.2 on low-RAM machines
@@ -131,7 +149,7 @@ No major items found.
 - Books and publisher feeds: No Starch, Pragmatic Bookshelf, Springer Computer Science searched. Only conference-proceedings volumes surfaced, none qualifying.
 - Security advisories: CISA KEV (unchanged, version 2026.07.07, count 1635), GitHub Security Advisories.
 - Status pages: GitHub, Cloudflare, AWS, Azure, Google Cloud, OpenAI, Anthropic, and others checked. No major incidents found.
-- GitHub watchlist: full releases sweep across the [github] table plus trending. Nothing new since the 2026-07-09 digest except patch releases (Node 26.5.0, Deno 2.9.2, Prometheus 3.5.5).
+- GitHub watchlist: full releases sweep across the [github] table plus trending, re-run on the midday update. Prometheus 3.13.1 (2026-07-10, TSDB range-query bugfix on the 3.13 LTS line) surfaced and is covered in Infrastructure. Otherwise only rolling prereleases (Neovim nightly, Zed v1.11.2-pre) and earlier patch releases (Node 26.5.0, Deno 2.9.2).
 - Engineering blogs: Cloudflare, GitHub, and independent authors.
 - YouTube channels: fetched. No video cleared the New videos bar.
 - Markets and company sources: no engineering-relevant event found.
