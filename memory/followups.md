@@ -17,6 +17,33 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-10: EU Parliament fails to reject Chat Control 1.0 derogation extension
+
+- Status: open
+- Category: Security
+- Sources: [Euronews](https://www.euronews.com/my-europe/2026/07/07/eu-to-extend-temporary-message-scanning-regime-to-detect-child-sexual-abuse-online), [HN 48843923](https://news.ycombinator.com/item?id=48843923)
+- Watch for: Council and Parliament progress on the mandatory CSA Regulation ("Chat Control 2.0") that would require client-side scanning; any provider change to scanning or encryption defaults under the extended derogation; the official EP vote record.
+- Last checked: 2026-07-10
+- Notes: On 2026-07-09 the European Parliament voted under the ordinary legislative procedure second reading on extending the interim derogation (Regulation 2021/1232, "Chat Control 1.0") that permits providers to voluntarily scan for CSAM. Rejecting required an absolute majority of at least 361 MEPs; reporting states 314 voted to reject (276 in favor, 17 abstentions), 47 short, so the derogation proceeds until 2028-04-03. Covers voluntary scanning on non-E2E services (reported: Gmail, Messenger, Instagram DMs, Skype, Snapchat, iCloud Mail, Xbox). Does not mandate breaking end-to-end encryption; that is the separate CSAR ("Chat Control 2.0"), still under negotiation. March 2026 vote had rejected an earlier extension by one vote. Covered 2026-07-10 Top stories (lead). Breyer's site is advocacy framing; Euronews used as neutral primary.
+
+## 2026-07-10: Meta Muse Spark 1.1 and Meta Model API public preview
+
+- Status: open
+- Category: AI
+- Sources: [Meta AI blog](https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/), [Meta Model API pricing](https://dev.meta.ai/docs/getting-started/pricing-rate-limits), [HN 48846184](https://news.ycombinator.com/item?id=48846184)
+- Watch for: Published benchmarks (none at launch); open-weight or license terms; availability on OpenRouter and third-party platforms; independent evaluation of the subagent and computer-use behavior.
+- Last checked: 2026-07-10
+- Notes: Meta Superintelligence Labs released Muse Spark 1.1 on 2026-07-09, a multimodal agentic model (multi-agent orchestration, 1M token context, parallel subagents, computer use, coding, image/video/audio input). Public preview of the Meta Model API (dev.meta.ai); also in "Thinking" mode in the Meta AI app and meta.ai. Listed pricing per 1M tokens: 1.25 USD input, 4.25 USD output, 0.15 USD cached input; free tier 60 rpm / 2M tpm, paid 3000 rpm / 4M tpm. No benchmark numbers, only comparative claims. HN notes pricing undercuts Grok 4.5. Lands one week after the 2026-07-06 report that Meta agentic development had stalled. Covered 2026-07-10 Top stories.
+
+## 2026-07-10: Initial patches boot the Apple M4 on Linux
+
+- Status: open
+- Category: Linux/Kernel
+- Sources: [Phoronix](https://www.phoronix.com/news/Apple-M4-DT-Linux), [Asahi M4 feature support](https://asahilinux.org/docs/platform/feature-support/m4/)
+- Watch for: Peripheral drivers (display, GPU, audio); stable SMP boot past the idle=nop dependency; upstream merge of the M4 device trees and bindings.
+- Last checked: 2026-07-10
+- Notes: Developer Yureka Lilian posted the first device trees and bindings to boot Apple Silicon M4 on Linux (Phoronix 2026-07-09). M4 bring-up closer to M3 than the M2-to-M3 step. Most changes in the m1n1 bootloader, which no longer sets CPU config bits since iBoot now sets and locks them. Reaches a bootable state only, no working peripherals or usable desktop; SMP boot depends on idle=nop patches and is unstable. Continues the Asahi Linux enablement effort. Covered 2026-07-10 Linux and kernel.
+
 ## 2026-07-08: GhostLock CVE-2026-43499 Linux rtmutex root and container escape
 
 - Status: open
