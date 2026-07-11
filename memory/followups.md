@@ -17,6 +17,51 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-10: Apple sues OpenAI and two ex-employees over trade-secret theft
+
+- Status: open
+- Category: Markets
+- Sources: [complaint (CourtListener)](https://www.courtlistener.com/docket/73602437/apple-inc-v-liu/), [CNBC](https://www.cnbc.com/2026/07/10/apple-openai-lawsuit-trade-secrets.html), [HN 48865019](https://news.ycombinator.com/item?id=48865019)
+- Watch for: OpenAI's formal answer and any denial specifics; an injunction or TRO motion; whether the case affects the io Products device roadmap or timeline; any settlement.
+- Last checked: 2026-07-11
+- Notes: Apple filed 2026-07-10 in N.D. Cal. (Apple Inc. v. Liu, 5:26-cv-07078), trade-secret misappropriation and breach of contract, against OpenAI Foundation, OpenAI Group PBC, io Products LLC, and two former Apple employees now at OpenAI: Chang Liu (former senior systems electrical engineer) and Tang Yew Tan (OpenAI hardware chief, former Apple VP product design for iPhone/Apple Watch). Alleges Liu skipped his exit interview, kept an Apple laptop, and exploited a bug to reach Apple internal cloud storage after leaving, downloading confidential files incl 1000+ pages of technical docs; Tan directed Apple job candidates to bring "actual parts" to OpenAI interviews. OpenAI denied ("no interest in other companies' trade secrets"). Break from the 2024 Apple Intelligence partnership; io Products is the ~$6.4B Jony Ive hardware startup OpenAI acquired. Covered 2026-07-11 Top stories (lead).
+
+## 2026-07-10: GPT-5.6 Sol Ultra claims a proof of the Cycle Double Cover Conjecture
+
+- Status: open
+- Category: AI
+- Sources: [OpenAI proof PDF](https://cdn.openai.com/pdf/04d1d1e4-bc75-476a-97cf-49055cd98d31/cdc_proof.pdf), [HN 48863490](https://news.ycombinator.com/item?id=48863490)
+- Watch for: Independent verification or refutation from graph theorists; whether the argument is accepted as correct; whether the released prompt's "assume a proof exists" instruction undermines the claim; a formal writeup beyond the CDN PDF.
+- Last checked: 2026-07-11
+- Notes: OpenAI published 2026-07-10 a PDF proof of the Cycle Double Cover Conjecture (Szekeres 1973, Seymour 1979) attributed to GPT-5.6 Sol Ultra, stating it used 64 subagents in under an hour, one day after Sol Ultra GA. Reportedly reduces the problem via the 8-flow theorem and linear algebra over GF(3). Not peer reviewed. HN flags the released prompt says "assume for purposes of this task that a complete affirmative proof exists" and questions acceptance. Vendor publication, unverified. Covered 2026-07-11 Top stories (developing).
+
+## 2026-07-10: JetBrains TeamCity arbitrary file access CVE-2026-59793
+
+- Status: open
+- Category: Security
+- Sources: [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-59793), [JetBrains fixed security issues](https://www.jetbrains.com/privacy-security/issues-fixed/)
+- Watch for: Exploitation reports or a CISA KEV addition; internet-exposure scans of unpatched on-prem TeamCity; whether the companion stored XSS (CVE-2026-59794) sees abuse.
+- Last checked: 2026-07-11
+- Notes: JetBrains disclosed 2026-07-10 CVE-2026-59793, arbitrary file access via the Perforce VCS integration in TeamCity before 2026.1.2. CVSS 8.8 (AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H), CWE-73, fixed 2026.1.2. Companion CVE-2026-59794 is a stored XSS on the cloud profile page. No active exploitation reported. TeamCity has a history of exploited auth/file-access flaws (CVE-2024-27198/27199). Covered 2026-07-11 Top stories.
+
+## 2026-07-10: LaunchDarkly web app and flag-delivery outage
+
+- Status: open
+- Category: Outage
+- Sources: [LaunchDarkly status](https://status.launchdarkly.com/)
+- Watch for: A published root-cause writeup; whether flag-delivery evaluation failures recur; any SDK-side mitigation guidance beyond the restart requirement.
+- Last checked: 2026-07-11
+- Notes: LaunchDarkly reported an incident 2026-07-10: web application unavailable, flag-delivery evaluations at elevated failure rate, event ingestion affected. Resolved same day. Recovery required customers on server-side SDKs to restart applications; affected SDKs logged "giving up permanently", "Invalid SDK key", or "unauthorized". Covered 2026-07-11 Outages.
+
+## 2026-07-10: Ill Bloom weak-randomness wallet seed flaw (Coinspect)
+
+- Status: open
+- Category: Security
+- Sources: [Ill Bloom disclosure](https://illbloom.org/), [Cointelegraph](https://cointelegraph.com/news/thousands-of-crypto-wallets-at-risk-from-ill-bloom-vulnerability-coinspect)
+- Watch for: The named affected wallet applications; independent confirmation of the RNG defect and scope; further drains beyond the reported networks.
+- Last checked: 2026-07-11
+- Notes: Coinspect disclosed "Ill Bloom": some software wallets generated recovery phrases with an insecure PRNG, letting attackers reconstruct seeds. Reported 2026-05-27 attack drained ~3.1M USD from 431 of ~2,114 identified vulnerable wallets; >=5M USD total since, across Bitcoin/Ethereum/Polygon/Rootstock/Tron/Solana addresses generated as early as 2018. Hardware-wallet seeds and most current software wallets reported unaffected. Remediation: new seed + migrate funds (reimporting the same phrase does not help). Covered 2026-07-11 Security.
+
 ## 2026-07-10: EU Parliament fails to reject Chat Control 1.0 derogation extension
 
 - Status: open
@@ -400,9 +445,9 @@ Format:
 - Status: open
 - Category: AI
 - Sources: [xAI announcement](https://x.ai/news/grok-4-5), [Cursor blog](https://cursor.com/blog/grok-4-5), [HN 48835111](https://news.ycombinator.com/item?id=48835111)
-- Watch for: Independent reproduction of the SWE-Bench Pro / DeepSWE / Terminal-Bench figures and the 4.2x token-efficiency claim; whether the reported Cursor tool-calling gaps (Grok 4.5 not calling internal tools, AskQuestion unavailable) get fixed; standalone API availability and context window (unstated in the run).
-- Last checked: 2026-07-09
-- Notes: xAI released Grok 4.5 to the public 2026-07-08 (11 days after a SpaceX/Tesla private beta). V9 architecture, reported 1.5T params; xAI says it folded real Cursor developer session data (debug traces, multi-file diffs, corrections) into training. Pricing $2/M in, $6/M out. Beats Opus 4.8 on 2 of 4 published benchmarks (DeepSWE 1.0, Terminal-Bench 2.1), loses on DeepSWE 1.1 (by 6) and SWE-Bench Pro (by 4.5); states 4.2x fewer tokens than Opus 4.8 on SWE-Bench Pro, ~80 tok/s. Live in Grok Build, Cursor (all plans), and the SpaceXAI console. Cursor co-trained it and keeps Composer 2.5 as a separate weight class. Covered 2026-07-09 Top stories (lead). r/cursor reports tool-calling friction. Vendor benchmarks, unreproduced.
+- Watch for: Independent reproduction of the SWE-Bench Pro / DeepSWE / Terminal-Bench figures and the 4.2x token-efficiency claim; whether the reported Cursor tool-calling gaps (Grok 4.5 not calling internal tools, AskQuestion unavailable) get fixed; confirmed EU availability; standalone API availability and context window (unstated in the run).
+- Last checked: 2026-07-11
+- Notes: xAI released Grok 4.5 to the public 2026-07-08 (11 days after a SpaceX/Tesla private beta). V9 architecture, reported 1.5T params; xAI says it folded real Cursor developer session data (debug traces, multi-file diffs, corrections) into training. Pricing $2/M in, $6/M out. Beats Opus 4.8 on 2 of 4 published benchmarks (DeepSWE 1.0, Terminal-Bench 2.1), loses on DeepSWE 1.1 (by 6) and SWE-Bench Pro (by 4.5); states 4.2x fewer tokens than Opus 4.8 on SWE-Bench Pro, ~80 tok/s. Live in Grok Build, Cursor (all plans), and the SpaceXAI console. Cursor co-trained it and keeps Composer 2.5 as a separate weight class. Covered 2026-07-09 Top stories (lead). r/cursor reports tool-calling friction. Vendor benchmarks, unreproduced. 2026-07-11: r/cursor and the Cursor forum report Grok 4.5 missing from the model picker; SpaceXAI states no initial EU availability (products and API), EU access expected mid-July, the likely cause. Covered 2026-07-11 Reddit and social pulse (discussion).
 
 ## 2026-07-09: OpenAI ships GPT-Live full-duplex voice
 

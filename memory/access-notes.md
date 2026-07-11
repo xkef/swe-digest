@@ -91,6 +91,10 @@ execution environment (cloud datacenter IP ranges).
   when one exists.
 - `status.openai.com/history` - OpenAI status history accessible from the run
   environment; reliable for OpenAI incident timelines (verified 2026-06-18).
+- `www.cnbc.com` - article bodies return HTTP 403 to WebFetch from the run
+  environment; use WebSearch summaries and corroborate with another outlet
+  (Bloomberg, TechCrunch, Reuters) or the primary filing. Used 2026-07-11 for
+  the Apple v. OpenAI trade-secret suit (complaint on courtlistener.com).
 - `arstechnica.com` - article bodies block automated WebFetch; use WebSearch
   snippets plus a corroborating outlet (The Register, Fortune, FT) and confirm
   the canonical URL before citing.
