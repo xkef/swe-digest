@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-11."
 
 [extra]
 status = "published"
-source_count = 18
+source_count = 25
 +++
 
 ## Top stories
@@ -58,6 +58,16 @@ source_count = 18
 - **Summary:** EuroPython 2026 starts in 2 days (2026-07-13) and runs through 2026-07-19 in Prague.
 - **Why it matters:** The main European Python conference sets the agenda for CPython, packaging, and typing discussions.
 
+## Agentic coding
+
+### Agent-skills repositories trend together on GitHub
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [superpowers](https://github.com/obra/superpowers), [mattpocock/skills](https://github.com/mattpocock/skills), [agent-skills](https://github.com/addyosmani/agent-skills)
+- **Summary:** Several repositories collecting reusable "skills" for AI coding agents trended together on GitHub on 2026-07-11. They are obra/superpowers, described as an agentic skills framework and software-development methodology (over 250,000 stars), mattpocock/skills, "skills for real engineers" drawn from the author's `.claude` directory (over 160,000 stars), and addyosmani/agent-skills, "production-grade engineering skills for AI coding agents" (over 75,000 stars). Each packages Markdown skill files that a coding agent loads on demand to follow a defined workflow, the same `.claude/skills` directory pattern used by Claude Code. All three were pushed on 2026-07-10.
+- **Why it matters:** Reusable skill files are consolidating into a shared distribution format for encoding engineering workflows into coding agents, rather than each team re-deriving prompts in isolation.
+
 ## Security
 
 ### Ill Bloom weak-randomness wallet flaw actively drained funds
@@ -89,6 +99,24 @@ source_count = 18
 - **Sources:** [Prometheus 3.13.1 release](https://github.com/prometheus/prometheus/releases/tag/v3.13.1)
 - **Summary:** Prometheus 3.13.1, a bugfix release on the 3.13 LTS line published 2026-07-10, fixes a TSDB defect where the head-chunk cache returned samples from the wrong chunk or spurious not-found errors on range queries after head-chunk truncation (#19134).
 - **Why it matters:** The bug could return incorrect range-query results, so LTS users querying recent data should take the patch.
+
+## Engineering posts
+
+### Scarf moves its production stack off Haskell after seven years
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [Avi Press writeup](https://avi.press/posts/2026-07-10-after-7-years-in-production-scarf-has-reluctantly-moved-away-from-haskell.html), [HN discussion](https://news.ycombinator.com/item?id=48859673)
+- **Summary:** Avi Press wrote on 2026-07-10 that Scarf, which provides package-download analytics for open source, is moving its production systems off Haskell to Python after seven years. He cites Haskell build and compile times as the main friction, worsened by parallel AI-assisted development where a model can produce an implementation faster than the build completes, plus toolchain complexity around Nix and CI caching. Rewritten components include authentication, database access, shared models, deployment images, and tests.
+- **Why it matters:** It is a concrete production migration argued around how LLM-assisted workflows change the cost of slow compile cycles, not a language-quality complaint alone.
+
+### LWN details AI scrapers overwhelming infrastructure through residential proxies
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [LWN (Jonathan Corbet)](https://lwn.net/SubscriberLink/1080822/990a8a5e2d379085/), [HN discussion](https://news.ycombinator.com/item?id=48864252)
+- **Summary:** Jonathan Corbet wrote on 2026-07-10 that AI training-data scrapers increasingly route requests through residential-proxy networks, software installed on ordinary users' devices that fetches pages on command, spreading load across millions of IPs and defeating IP-based blocking. He reports git forges and mailing-list archives among the hardest hit, and that LWN saw its heaviest scraper attack on 2026-07-02, correlated with the takedown of a residential-proxy network. Cited mitigations include proof-of-work challenges such as Anubis, rate limiting, and caching.
+- **Why it matters:** Residential-proxy scraping turns automated crawling into a distributed load problem that per-IP defenses cannot address, raising the operational cost of running public git and archive infrastructure.
 
 ## New videos
 
@@ -131,9 +159,9 @@ source_count = 18
 - ML research and arXiv papers (cs.LG, cs.CL, cs.AI, cs.CR listings, no standout with verified engineering relevance today)
 - Conferences and events (ICML 2026 active, EuroPython 2026 upcoming)
 - Books and publisher feeds (No Starch, Pragmatic Bookshelf, Springer CS, plus O'Reilly, Manning, Packt, MIT Press, Apress and other search targets, no release met the bar)
-- Security advisories (NVD, CISA KEV, GitHub Security Advisories, vendor advisories)
+- Security advisories (NVD, GitHub Security Advisories, vendor advisories, and CISA KEV catalog 2026.07.10, whose two new additions were niche Joomla extensions below the bar)
 - Status pages (GitHub, Cloudflare, AWS, Azure, Google Cloud, OpenAI, Anthropic, LaunchDarkly and others)
-- GitHub watchlist (releases and trending for the [github] repos)
-- Engineering blogs
+- GitHub watchlist (deep sweep of releases across every [github] repo and github.com/trending, only Prometheus 3.13.1 new since the prior run, trending surfaced the agent-skills cluster)
+- Engineering blogs (Scarf migration writeup, LWN scraper analysis)
 - YouTube channels (89 channels via RSS)
 - Markets and company sources
