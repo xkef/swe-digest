@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-11."
 
 [extra]
 status = "published"
-source_count = 25
+source_count = 30
 +++
 
 ## Top stories
@@ -90,6 +90,14 @@ source_count = 25
 - **Why it matters:** Feature-flag delivery sits in the request path for many services, and the SDK-restart requirement made recovery a manual step for affected teams.
 - **Follow-up:** Watch for a published root-cause writeup.
 
+### crates.io API servers hit by a coordinated DoS attack
+
+- **Category:** Outage
+- **Status:** confirmed
+- **Sources:** [crates.io status](https://status.crates.io/incidents/h2fxgl2jtc5q)
+- **Summary:** crates.io reported what it described as a coordinated denial-of-service attack against its API servers on 2026-07-11, opened at 14:22 UTC and resolved at 15:42 UTC. It stated crate downloads and dependency resolution through the sparse and git index should not be affected, placing the impact on the API and web surface rather than cargo build fetches. Countermeasures deployed around 15:06 UTC brought servers largely back to normal, and the team credited Fastly's CDN for the response.
+- **Why it matters:** crates.io is the Rust ecosystem's package registry, so an API-server DoS degrades publishing and metadata access even while index-based dependency resolution keeps working.
+
 ## Infrastructure
 
 ### Prometheus 3.13.1 LTS fixes head-chunk cache bug
@@ -117,6 +125,22 @@ source_count = 25
 - **Sources:** [LWN (Jonathan Corbet)](https://lwn.net/SubscriberLink/1080822/990a8a5e2d379085/), [HN discussion](https://news.ycombinator.com/item?id=48864252)
 - **Summary:** Jonathan Corbet wrote on 2026-07-10 that AI training-data scrapers increasingly route requests through residential-proxy networks, software installed on ordinary users' devices that fetches pages on command, spreading load across millions of IPs and defeating IP-based blocking. He reports git forges and mailing-list archives among the hardest hit, and that LWN saw its heaviest scraper attack on 2026-07-02, correlated with the takedown of a residential-proxy network. Cited mitigations include proof-of-work challenges such as Anubis, rate limiting, and caching.
 - **Why it matters:** Residential-proxy scraping turns automated crawling into a distributed load problem that per-IP defenses cannot address, raising the operational cost of running public git and archive infrastructure.
+
+### ClickHouse runs a PgBouncer fleet for 4x connection-pooling throughput
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [ClickHouse blog](https://clickhouse.com/blog/pgbouncer-clickhouse-managed-postgres), [HN discussion](https://news.ycombinator.com/item?id=48872874)
+- **Summary:** Kaushik Iska wrote on 2026-07-01 that ClickHouse Managed Postgres works around PgBouncer being single-threaded, which caps one process at a single CPU core. They run one PgBouncer process per core bound to the same port with SO_REUSEPORT so the kernel load-balances connections while clients see one endpoint, and forward query-cancel requests that arrive at the wrong process to the correct one (peering). On a 16-vCPU c7i.4xlarge instance a single process peaked near 87,000 transactions per second while a fleet of 16 sustained about 336,000, roughly 4x, and held that rate at 256 clients where the single process degraded to 77,000.
+- **Why it matters:** It is a concrete pattern for scaling a single-threaded connection pooler across cores behind one endpoint, with the cross-process cancel handling that approach requires.
+
+### A cosmetic C rewrite makes a quicksort 6x faster by triggering branchless codegen
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [Christof Kaser writeup](https://tiki.li/blog/lucky_code.html), [HN discussion](https://news.ycombinator.com/item?id=48870799)
+- **Summary:** Christof Kaser shows a branchless-quicksort partition loop where rewriting an `if`/`else` that stores to and advances two pointers into a more compact idiom leads Clang to emit a conditional-select (`csel`) instead of a branch, cutting the time to sort 50 million doubles from 4.39 seconds to 0.70 seconds (about 6.3x) and running faster than C++ `std::sort` at 1.33 seconds. GCC still generated branch-based code for the same source. The author frames the outcome as depending on whether the source happens to hit a compiler's optimization heuristics.
+- **Why it matters:** It shows how sensitive generated code can be to source phrasing a programmer treats as equivalent, so performance-critical loops can hinge on codegen heuristics that differ across compilers.
 
 ## New videos
 
@@ -160,8 +184,8 @@ source_count = 25
 - Conferences and events (ICML 2026 active, EuroPython 2026 upcoming)
 - Books and publisher feeds (No Starch, Pragmatic Bookshelf, Springer CS, plus O'Reilly, Manning, Packt, MIT Press, Apress and other search targets, no release met the bar)
 - Security advisories (NVD, GitHub Security Advisories, vendor advisories, and CISA KEV catalog 2026.07.10, whose two new additions were niche Joomla extensions below the bar)
-- Status pages (GitHub, Cloudflare, AWS, Azure, Google Cloud, OpenAI, Anthropic, LaunchDarkly and others)
+- Status pages (GitHub, Cloudflare, AWS, Azure, Google Cloud, OpenAI, Anthropic, LaunchDarkly, crates.io and others)
 - GitHub watchlist (deep sweep of releases across every [github] repo and github.com/trending, only Prometheus 3.13.1 new since the prior run, trending surfaced the agent-skills cluster)
-- Engineering blogs (Scarf migration writeup, LWN scraper analysis)
+- Engineering blogs (Scarf migration writeup, LWN scraper analysis, ClickHouse PgBouncer scaling, Kaser branchless-codegen post)
 - YouTube channels (89 channels via RSS)
 - Markets and company sources
