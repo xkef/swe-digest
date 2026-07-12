@@ -1,0 +1,78 @@
+date: '2026-07-12'
+window: 2026-07-06..2026-07-12
+run_logs_reviewed:
+- '2026-07-06'
+- '2026-07-07'
+- '2026-07-08'
+- '2026-07-09'
+- '2026-07-10'
+- '2026-07-11'
+- '2026-07-12'
+issues_opened: []
+proposals: []
+new_issues_requested:
+- 'Reddit RSS degraded from the run environment across 2026-07-06 to 2026-07-12 (plain blocked-source issue, no label)'
+feedback_reviewed: []
+notes: |
+  Weekly improvement review (unattended, read-only token): committed locally, no
+  push, no write API calls. Side effects requested through .run/manifest.yaml
+  (one plain no-label blocked-source issue, no issue closes, no improvement PRs).
+  Window 2026-07-06..2026-07-12, seven run-log days since the 2026-07-05 marker.
+
+  NO improvement proposal this week; the evidence is thin on every axis.
+  - Query yield over the seven days: no prune candidate. Only two queries had
+    zero matches across all days (AlphaFold, Kleppmann), both intentional
+    quiet-interest areas (AI-for-science and distributed-systems research) kept
+    by the last three markers. The high-match/zero-published queries (terminal
+    35, Nvidia 23, S-1 21, local-first 16, Kubernetes 13, chezmoi 13) are broad
+    discovery keywords matching noise, not prune signal (they match, they just
+    did not yield a publishable standout this quiet week).
+  - Backtest miss_review across the window: 125 scrape_gap, 79 out_of_scope,
+    49 relevance_skip, and zero watchlist_gap. The scrape_gap misses are timing
+    (items that surfaced after the ~02:2x publish-time fetch and were caught by
+    the accumulating data/hn snapshot); HN ran full via Algolia with 0 degraded
+    collections all seven days, so not a blocked source. No repeated theme a
+    keyword query would catch without adding noise, so no watchlist add.
+  - Format axis: the one standing format issue (raw Reddit /.rss feed URLs
+    leaking in as reader-facing sources, owner issue #33) was proposed as #34 in
+    the 2026-07-05 marker, approved by the owner (#34 closed 2026-07-06), and
+    the rule landed in docs/routine.md ("Never publish a raw /.rss feed URL as a
+    source"). Verified: only the pre-fix 2026-07-03 and 2026-07-04 digests still
+    link a /.rss source; 2026-07-05 onward are clean. Nothing to re-propose.
+  - GitHub account signal: not re-derived this run; the last three markers
+    (2026-06-21, 2026-06-28, 2026-07-05) each found the owner's repo languages,
+    starred-repo topics, and follows fully covered by data/watchlist.toml and
+    memory/profile.md, with no recurring org. A week is too short for interest
+    drift. No personalization proposal.
+
+  Blocked source: ONE plain no-label issue requested via manifest new_issues.
+  Reddit RSS (www.reddit.com /top/.rss?t=day and /hot/.rss) stayed degraded from
+  the datacenter IP across all seven window days (429 rate-limits after the
+  first few subreddits even at 7s spacing; live coverage 4-5/28 top and 3-4/28
+  hot per run; make reddit exits 1, digest falls back to the committed snapshot
+  with degradation stated in Sources checked). HN was 0 degraded all seven days,
+  so this is Reddit-specific. Prior issue #23 (2026-06-28) and owner #33 both
+  tracked this and are now closed, so it is not covered by any open issue, which
+  is why a fresh plain issue with the current window is warranted. The issue
+  notes the snapshots workflow is currently failing (#42, open since 2026-07-07,
+  bot-authored), which weakens the snapshot-accumulator fallback; #42 and #43
+  (push-on-main failing) are already-open bot ops issues, not duplicated. The
+  datacenter 403 source blocks remain environment-specific and covered by the
+  closed #5-#9 plus access-notes.md; no change there.
+
+  Feedback: no feedback issues in the window. The most recent feedback issue
+  (#20, 2026-06-23) was reviewed and closed in the 2026-06-28 marker. Nothing to
+  aggregate or close; feedback_reviewed is empty.
+
+  Memory compaction: pruned four realized/date-passed follow-ups from
+  memory/followups.md, all retained in the dated digests and git history:
+  SharePoint CVE-2026-45659 (KEV federal deadline 2026-07-04 passed),
+  SimpleHelp CVE-2026-48558 (deadline 2026-07-02 passed), Langflow
+  CVE-2026-55255 (deadline 2026-07-10 passed), and the 2026-07-01 Leanstral 1.5
+  model-card entry (superseded by the still-open 2026-07-04 Leanstral benchmark
+  follow-up, which resolved its "watch for a technical report" signal).
+  followups.md went 56 to 52 entries (513 to 477 lines, well under the 1500
+  cap; oldest heading 2026-06-15 is 27 days, under the 45-day gate limit).
+  entities.md has no entry past the 60-day stale window (oldest Last seen
+  ~2026-06-02, 40 days); it plus source-reliability.md and access-notes.md stay
+  bounded, no change. make check-content passes with 0 errors.

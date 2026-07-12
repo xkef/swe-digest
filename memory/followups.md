@@ -206,15 +206,6 @@ Format:
 - Last checked: 2026-07-02
 - Notes: GitHub made Moonshot AI open-weight Kimi K2.7 Code generally available in Copilot 2026-07-01, on Pro/Pro+/Max first with Business/Enterprise to follow (off by default until an admin enables the Kimi K2.7 Code policy). Selectable in the model picker across VS Code, Visual Studio, JetBrains, Xcode, Eclipse, the Copilot CLI, the cloud coding agent, github.com, and GitHub Mobile. Usage-based billing at provider list pricing. Covered 2026-07-02 Agentic coding.
 
-## 2026-07-02: SharePoint deserialization RCE CVE-2026-45659 (KEV)
-
-- Status: open
-- Category: Security
-- Sources: [MSRC](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-45659), [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-45659)
-- Watch for: Confirmed RCE chains; ransomware follow-on (KEV lists ransomware use unknown); internet-exposure scans; whether the 2026-07-04 federal deadline slips for on-premises SharePoint.
-- Last checked: 2026-07-02
-- Notes: CWE-502 deserialization of untrusted data in on-prem SharePoint Server Subscription Edition, 2019, and Enterprise 2016. CVSS 8.8, network, low complexity, no user interaction; requires Site Member permissions. Patched May 2026 Patch Tuesday (KB5002863/KB5002870/KB5002868). CISA KEV added 2026-07-01 (catalog 2026.07.01, count 1631) on confirmed active exploitation; federal due 2026-07-04. Covered 2026-07-02 Top stories.
-
 ## 2026-07-02: Anthropic redeploys Fable 5 with new jailbreak classifier
 
 - Status: open
@@ -277,15 +268,6 @@ Format:
 - Watch for: The promised AI article policy change; new Engineering Director and governance/funding details; any service disruption during the Cornell-to-independent staff transition.
 - Last checked: 2026-07-01
 - Notes: arXiv announced 2026-06-30 that on 2026-07-01, after 25 years within Cornell University, it becomes an independent nonprofit. Mission, free-to-read/free-to-submit model, and open-access focus stated unchanged; staff transitions underway for continuity. Follow-up posts promised on a new Engineering Director, a 3 million submission milestone, and an AI article policy change. HN 48741748 (138 pts). Covered 2026-07-01 Markets and companies.
-
-## 2026-07-07: Langflow flow-access IDOR CVE-2026-55255 (KEV)
-
-- Status: open
-- Category: Security
-- Sources: [GHSA-qrpv-q767-xqq2](https://github.com/langflow-ai/langflow/security/advisories/GHSA-qrpv-q767-xqq2), [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-55255)
-- Watch for: Confirmation of the exact fixed version (GHSA says 1.9.1, NVD says 1.9.2); exploitation details; internet-exposure scans of unpatched hosted/internal Langflow instances against the 2026-07-10 federal deadline.
-- Last checked: 2026-07-07
-- Notes: IDOR in the `/api/v1/responses` endpoint of Langflow (open-source visual agent/RAG builder): an authenticated low-priv user runs a flow belonging to another user by supplying the victim flow ID. CVSS 9.9 with changed scope (CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:L). GHSA published 2026-06-19, patched 1.9.1, vulnerable <1.9.1; NVD records fixed 1.9.2. Added to CISA KEV 2026-07-07 (catalog 2026.07.07, count 1634) on active exploitation, federal due 2026-07-10. Covered 2026-07-07 Security.
 
 ## 2026-07-07: Microsoft global device ID (GDID) tracking write-up
 
@@ -359,15 +341,6 @@ Format:
 - Last checked: 2026-06-22
 - Notes: Anthropic revised privacy policy (effective 2026-07-08) reserves the right to require identity verification from consumer Claude users (Free, Pro, Max) before granting or maintaining access. Methods may collect a government-ID image and its fields, a photo/video of the user, and facial-geometry templates (biometric data in some jurisdictions); runs via third-party vendor Persona, in limited use since 2026-04-14. Trigger, retention period, and refusal consequence unspecified. Business subscriptions excluded. Lands amid export-control pressure on Fable 5/Mythos 5. HN 48618455. The Register 2026-06-15. 2026-06-22: Anthropic published a Claude support article operationalizing the policy (support.claude.com/en/articles/14328960): a verification prompt may appear "when accessing certain capabilities" or as routine platform-integrity checks; asks for a government photo ID plus a live selfie collected and held by Persona (not on Anthropic systems); states data is used only to confirm identity and not for training; still no stated retention period or refusal consequence. Top HN thread of the day (586 pts); commenters note OpenAI's analogous check permanently locks accounts that fail with no retry, and cite China's 2023 real-name generative-AI requirement as a two-tier-access precedent.
 
-## 2026-06-30: SimpleHelp CVE-2026-48558 OIDC authentication bypass (KEV)
-
-- Status: open
-- Category: Security
-- Sources: [SimpleHelp advisory](https://simple-help.com/security/simplehelp-security-update-2026-05), [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-48558), [Horizon3.ai IOCs](https://horizon3.ai/attack-research/disclosures/cve-2026-48558-simplehelp-authentication-bypass-iocs/)
-- Watch for: Confirmed ransomware campaigns using the vector; patch adoption against the 2026-07-02 federal deadline; internet-exposure scans of the ~7.2% on vulnerable OIDC config.
-- Last checked: 2026-06-30
-- Notes: CWE-347 OIDC auth bypass in SimpleHelp RMM: identity tokens accepted without verifying cryptographic signature, so a remote unauthenticated attacker forges a token with arbitrary claims to obtain a fully authenticated technician session (can bypass MFA, remote into managed endpoints, run scripts). Affects <=5.5.15 and all 6.0 pre-release; fixed in 5.5.16 and 6.0 RC 2 (late May 2026). ~14,000 internet-exposed servers, ~7.2% on the vulnerable OIDC config. CISA KEV added 2026-06-29 (catalog 2026.06.29, count 1630), due 2026-07-02. RMM = high-value ransomware foothold. Covered 2026-06-30 Top stories.
-
 ## 2026-07-01: Box3D open-source 3D physics engine
 
 - Status: open
@@ -376,15 +349,6 @@ Format:
 - Watch for: First 1.0 stable release past v0.1.0; language bindings; adoption in game engines and simulation stacks; benchmarks vs Jolt, PhysX, and Bullet.
 - Last checked: 2026-07-01
 - Notes: Erin Catto (Box2D author) released Box3D v0.1.0 on 2026-06-30, MIT license. 3D physics engine for games in C17 with a C API, no dependencies beyond the C runtime. Reuses the Box2D solver architecture (sub-stepping solver, continuous collision detection, SIMD contact solving, graph-coloring for parallel islands, optional multithreading) and adds triangle-mesh and height-field collision, baked compound collision, double-precision coordinates for large worlds, and record/replay. Built to support the survival game "The Legend of California". HN 48745445 (173 pts). Covered 2026-07-01 Developer tools.
-
-## 2026-07-01: Mistral Leanstral 1.5 Lean 4 theorem-proving model
-
-- Status: open
-- Category: AI
-- Sources: [model card](https://docs.mistral.ai/models/model-cards/leanstral-1-5-26-06)
-- Watch for: A technical report with miniF2F or Lean benchmark numbers; weight availability and license; adoption in proof-assistant and verified-code tooling.
-- Last checked: 2026-07-01
-- Notes: Mistral published Leanstral 1.5 on 2026-06-30, optimized for automated theorem proving and autoformalization in Lean 4. Model card: 119B total parameters / 6.5B active (MoE), 256K context, free ($0) access. No benchmark numbers on the model card at release. Surfaced HN 48738938 (102 pts).
 
 ## 2026-07-03: LUKS suspend stopped wiping disk-encryption keys since Linux 6.9
 
