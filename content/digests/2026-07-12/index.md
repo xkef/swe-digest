@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-12."
 
 [extra]
 status = "published"
-source_count = 12
+source_count = 14
 +++
 
 ## Top stories
@@ -48,6 +48,16 @@ source_count = 12
 - **Summary:** EuroPython 2026 starts in 1 day (2026-07-13) and runs through 2026-07-19 in Prague. It is the main community Python conference in Europe, covering CPython, the packaging and typing ecosystems, and scientific and web Python.
 - **Why it matters:** Talk and release announcements from the sprint week are a source of concrete Python tooling and language updates.
 
+## Agentic coding
+
+### An AI agent in 100 lines of Common Lisp
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [thebeach.dev](https://thebeach.dev/posts/lisp-agent/), [HN discussion](https://news.ycombinator.com/item?id=48823981)
+- **Summary:** A write-up implements a working LLM agent in about 100 lines of Common Lisp (SBCL) using only two libraries, dexador for HTTP and shasht for JSON. The agent loop is a recursive function: send the message history to the model, run any tool calls, then recurse with the enriched history. The only tool exposed is `eval`, so the model writes and runs Lisp directly and uses that to define further capabilities such as web search at runtime instead of drawing from a fixed tool catalog. Conversation memory persists by serializing the message list to JSON. Resurfaced on the front page (162 points).
+- **Why it matters:** It reduces the agent loop to its core and shows how a homoiconic language lets one code-execution tool stand in for a design-time tool registry.
+
 ## Security
 
 ### Zimbra patches a Classic Web Client stored XSS in 10.1.19
@@ -87,14 +97,14 @@ No major items found.
 ## Sources checked
 
 - Hacker News (full structured coverage via Algolia. Front page, top, Ask, Show, comments, and 67 of 79 watchlist queries with hits)
-- Reddit (degraded: snapshot covered 4 of 28 top and 3 of 28 hot subreddits, rate-limited from the run environment. Low new signal beyond the already-covered crates.io recovery)
+- Reddit (degraded: live RSS rate-limited from the run environment. Committed snapshot covered 12 of 28 subreddits, 146 posts. No new digest-worthy story beyond already-covered Grok 4.5 and Anthropic interpretability discussion)
 - AI sources (OpenAI, Anthropic, Google, Meta, Mistral, and others)
 - ML research and arXiv papers (cs.LG, cs.CL, cs.AI, cs.CR, cs.SE, cs.DC, cs.PL. Day-of preprints, no standout with engineering relevance)
 - Conferences and events (EuroPython 2026 upcoming. ICML 2026 ended 2026-07-11)
 - Books and publisher feeds (No Starch, Pragmatic, Springer. No qualifying advanced or widely discussed release)
 - Security advisories (CISA KEV unchanged at catalog 2026.07.10, count 1637. Zimbra 10.1.19)
 - Status pages (GitHub, Cloudflare, AWS, Azure, Google Cloud, OpenAI, Anthropic, and others. No major incident)
-- GitHub watchlist releases and trending (no new stable release since the 2026-07-11 digest. Neovim nightly, zed pre, automerge and yjs prereleases, and Kotlin 2.4.10-RC2 skipped)
+- GitHub watchlist releases and trending (deep sweep of every [github] repo: no new stable release since the 2026-07-11 digest. Neovim nightly, zed v1.11.2-pre, automerge and yjs prereleases, and Kotlin 2.4.10-RC2 skipped; prometheus, rdkit, and otel-collector patches predate the window. Trending dominated by the ongoing agentic-coding-tooling cluster, no single new primary advance)
 - Engineering blogs
 - YouTube channels (RSS collected. No video cleared the New videos bar)
 - Markets and company sources
