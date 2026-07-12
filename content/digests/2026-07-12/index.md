@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-12."
 
 [extra]
 status = "published"
-source_count = 14
+source_count = 18
 +++
 
 ## Top stories
@@ -20,6 +20,15 @@ source_count = 14
 - **Comments:** HN commenters quote the writeup's claim that upload covers every tracked file plus git history regardless of reads. A commenter identifying as a GitHub Copilot engineer rejected a side-thread claim that Microsoft can read all GitHub repositories. Others note the file-exfiltration risk is not specific to AI (any program run as the user can read your files) and recommend running coding CLIs inside a sandbox with limited directory access, while one suggests a plausible server-side reason (inspecting the codebase during model "thinking" without round-trip tool calls).
 - **Why it matters:** If accurate, a widely used coding CLI ships full repository contents and plaintext secrets to a vendor bucket by default, which is a credential-rotation and data-governance event for any team that ran it.
 - **Follow-up:** Watch for an xAI response or a Grok Build CLI change, independent reproduction of the wire captures, and whether an opt-out or redaction lands.
+
+### Terence Tao ports two dozen math applets with coding agents
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [Terence Tao](https://terrytao.wordpress.com/2026/07/11/old-and-new-apps-via-modern-coding-agents/), [HN discussion](https://news.ycombinator.com/item?id=48880170)
+- **Summary:** Mathematician Terence Tao published a post on 2026-07-11 describing collaborative "vibe coding" sessions with LLM-based coding agents. He ported roughly 24 Java applets from around 1999 (including honeycomb and Besicovitch-set visualizers) to JavaScript, and built new interactive tools such as a special-relativity spacetime diagram and a Gilbreath-conjecture visualization tied to a recent paper. He reports finding only one minor bug across the two dozen ports, that the agent flagged two bugs in the original code, and that each new app took a couple of hours. He frames the downside risk as low because the applets are secondary visual aids, not core research, and labels the output alpha-quality LLM-generated code.
+- **Comments:** The front-page thread (249 points) treats it as a notable data point on agent capability from a preeminent mathematician, with the low bug count and the low-stakes framing (educational visual aids, human-reviewed) drawing the most attention.
+- **Why it matters:** It is a concrete, named practitioner account of using coding agents to modernize legacy software and build research-adjacent tooling at low review cost, a signal on where agent-assisted coding is landing for expert users.
 
 ### Mesh LLM runs distributed inference over iroh
 
@@ -73,6 +82,16 @@ source_count = 14
 
 No major items found.
 
+## Developer tools
+
+### Ghostel.el embeds libghostty as an Emacs terminal
+
+- **Category:** Dev tools
+- **Status:** discussion
+- **Sources:** [Ghostel](https://dakra.github.io/ghostel/), [HN discussion](https://news.ycombinator.com/item?id=48879504)
+- **Summary:** Ghostel is an Emacs terminal emulator built on libghostty-vt, the VT engine behind the Ghostty terminal. A native dynamic module written in Zig handles terminal state, rendering, and local PTY I/O, while Elisp manages keymaps, buffers, and commands. It requires Emacs 28.1 or later with dynamic-module support, ships on MELPA, and downloads prebuilt binaries for macOS, Linux, FreeBSD, and Windows on first use (Zig 0.15.2 needed only to build from source). It supports the Kitty graphics protocol, OSC 8 hyperlinks, synchronized output, the Kitty keyboard protocol, TRAMP remote terminals, and shell-integration injection for bash, zsh, and fish.
+- **Why it matters:** It reuses Ghostty's terminal engine outside the Ghostty app, giving Emacs a VT implementation with modern protocol support without reimplementing terminal emulation in Elisp.
+
 ## Hacker News
 
 ### Show HN: Ant, a new JavaScript runtime
@@ -96,8 +115,8 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News (full structured coverage via Algolia. Front page, top, Ask, Show, comments, and 67 of 79 watchlist queries with hits)
-- Reddit (degraded: live RSS rate-limited from the run environment. Committed snapshot covered 12 of 28 subreddits, 146 posts. No new digest-worthy story beyond already-covered Grok 4.5 and Anthropic interpretability discussion)
+- Hacker News (full structured coverage via Algolia. Front page, top, Ask, Show, comments, and 64 of 79 watchlist queries with hits)
+- Reddit (degraded: live RSS rate-limited from the run environment. Committed snapshot covered 19 of 28 subreddits, 241 posts. Dominant signal is paid-subscriber frustration on r/ClaudeAI over Fable 5 leaving subscription inclusion today, which is the already-covered follow-up. No new digest-worthy story)
 - AI sources (OpenAI, Anthropic, Google, Meta, Mistral, and others)
 - ML research and arXiv papers (cs.LG, cs.CL, cs.AI, cs.CR, cs.SE, cs.DC, cs.PL. Day-of preprints, no standout with engineering relevance)
 - Conferences and events (EuroPython 2026 upcoming. ICML 2026 ended 2026-07-11)
