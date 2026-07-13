@@ -17,6 +17,15 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-13: xAI Grok Build CLI uploads entire repository and .env secrets by default
+
+- Status: open
+- Category: Security
+- Sources: [wire-level analysis (gist)](https://gist.github.com/cereblab/dc9a40bc26120f4540e4e09b75ffb547), [GIGAZINE](https://gigazine.net/gsc_news/en/20260713-grok-build-sending-data/), [HN 48877371](https://news.ycombinator.com/item?id=48877371)
+- Watch for: An xAI statement or a CLI update that scopes uploads and honors the "Improve the model" opt-out; independent reproduction of the wire capture; whether the uploaded data is used for training; any CVE or advisory.
+- Last checked: 2026-07-13
+- Notes: Researcher (cereblab) mitmproxy wire capture of Grok Build CLI grok 0.2.93 reports the CLI uploads the full working repository (every tracked file plus complete git history) to GCS bucket `grok-code-session-traces` via `POST /v1/storage`, independent of what the agent reads. 12 GB test repo: storage channel moved 5.10 GiB across ~73 chunks vs 192 KB on the model-turn channel; planted never-read files recovered verbatim from the uploaded git bundle. `.env` contents (canary `API_KEY`/`DB_PASSWORD`) unredacted in both `POST /v1/responses` bodies and a session-state archive. Disabling "Improve the model" did not stop upload; `/v1/settings` still returned `trace_upload_enabled: true`. Author states it does not prove xAI trains on the data. Escalation of the 2026-07-12 single-researcher claim (entities xAI): now HN front page (487 pts) with secondary coverage (GIGAZINE, byteiota). No xAI response found. Covered 2026-07-13 Top stories (lead, developing).
+
 ## 2026-07-10: Apple sues OpenAI and two ex-employees over trade-secret theft
 
 - Status: open

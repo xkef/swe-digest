@@ -6,10 +6,20 @@ description = "Daily software engineering digest for 2026-07-13."
 
 [extra]
 status = "published"
-source_count = 13
+source_count = 19
 +++
 
 ## Top stories
+
+### xAI Grok Build CLI uploads the entire repository and unredacted .env secrets by default
+
+- **Category:** Security
+- **Status:** developing
+- **Sources:** [wire-level analysis (gist)](https://gist.github.com/cereblab/dc9a40bc26120f4540e4e09b75ffb547), [GIGAZINE](https://gigazine.net/gsc_news/en/20260713-grok-build-sending-data/), [HN discussion](https://news.ycombinator.com/item?id=48877371)
+- **Summary:** A researcher published a mitmproxy wire capture of xAI's Grok Build CLI (grok 0.2.93) reporting that it uploads the full working repository, every tracked file plus complete git history, to a Google Cloud Storage bucket named `grok-code-session-traces` through a `POST /v1/storage` channel, independent of what the agent reads. On a 12 GB test repository the storage channel moved 5.10 GiB across about 73 chunks while the model-turn channel carried 192 KB, and planted files the agent never opened were recovered verbatim from the uploaded git bundle. Contents of a `.env` file, including canary `API_KEY` and `DB_PASSWORD` values, appeared unredacted in both the `POST /v1/responses` bodies and a session-state archive. Disabling the "Improve the model" toggle did not stop the upload, and `/v1/settings` still returned `trace_upload_enabled: true`. The author states the capture does not prove xAI trains on the data.
+- **Comments:** HN commenters read the whole-repository upload as codebase harvesting and debate whether it is a serving optimization that lets the model inspect files during reasoning without client round-trips rather than deliberate collection.
+- **Why it matters:** A widely promoted coding CLI sending secrets and entire private repositories off the machine by default, with an ineffective opt-out, makes credential rotation and network isolation necessary for anyone who ran it.
+- **Follow-up:** Watch for an xAI statement or a CLI update that scopes uploads and honors the opt-out, and independent reproduction of the wire capture.
 
 ### Claude Code sends about 33k tokens of overhead before the prompt, OpenCode about 7k
 
@@ -64,6 +74,23 @@ No major items found.
 
 ## Hacker News
 
+### Ask HN: add a flag for AI-generated articles
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [HN thread](https://news.ycombinator.com/item?id=48886741)
+- **Summary:** The day's top thread (776 points) asks whether Hacker News should let users mark or flag AI-generated articles. Commenters question whether the existing voting and flagging already cover it, note that AI-detection tools are unreliable and any label would be contested, and link a parallel Lobsters discussion.
+- **Why it matters:** It captures a widening moderation problem as AI-written submissions grow, with no reliable automated signal to separate them.
+
+### Zig creator's rebuttal reframes the Bun Rust rewrite as Anthropic marketing
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [Ray Myers post](https://raymyers.org/post/zed-creator-calls-spade-a-spade/), [HN discussion](https://news.ycombinator.com/item?id=48889637)
+- **Summary:** A 2026-07-12 opinion post by Ray Myers (520 points) argues that Bun's Zig-to-Rust rewrite, done with Anthropic's Claude Code and cited by Anthropic as a Fable 5 showcase, was a marketing narrative more than a memory-safety necessity. Myers holds that Bun's memory bugs came from engineering practice rather than a Zig limitation, points to TigerBeetle as a reliable Zig project held together by a strict style, and reads the rewrite's own safety and readability choices as conceding that human judgment still matters. It backs Andrew Kelley's earlier technical rebuttal.
+- **Comments:** Commenters split on whether a genuine engineering result can also be a marketing exercise, with several agreeing the memory-safety framing was overstated and others defending Anthropic's writeup as technically detailed.
+- **Why it matters:** The thread is the practitioner counterweight to vendor claims that AI agents settle language-choice and memory-safety questions.
+
 ### George Hotz argues the LLM technology is real and the hype is the problem
 
 - **Category:** Pulse
@@ -85,15 +112,15 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News (`make hn`, full structured coverage via Algolia, 64 of 79 watchlist queries with hits)
-- Reddit (`make reddit`, degraded: partial coverage from the run environment, r/selfhosted, r/golang, r/Python, r/googlecloud returned, most subreddits rate-limited)
+- Hacker News (`make hn`, full structured coverage via Algolia across both runs, 62 of 79 watchlist queries with hits on the update fetch)
+- Reddit (`make reddit`, degraded on both runs: partial coverage from the run environment, r/selfhosted, r/golang, r/swift, r/googlecloud returned, most subreddits rate-limited)
 - AI sources (OpenAI, Anthropic, Mistral, Meta, model release feeds)
 - ML research and arXiv papers (`make papers`, arXiv API timed out, RSS fallback returned 397 items, no standout with ecosystem attention)
 - Conferences and events (`make events`, EuroPython 2026 active)
 - Books and publisher feeds (`make books`, No Starch, Pragmatic Bookshelf, Springer; Springer feed was conference proceedings, no qualifying trade release)
 - Security advisories (CISA KEV catalog unchanged at 2026.07.10, count 1637, no additions 2026-07-11 through 2026-07-13; NVD, vendor advisories)
 - Status pages (GitHub, Cloudflare, AWS, Azure, Google Cloud, OpenAI, Anthropic, and others, no major incident)
-- GitHub watchlist releases and trending (all `[github]` repos checked; only prereleases and an empty-notes automerge JS 3.3.0 point release since the prior digest)
+- GitHub watchlist releases and trending (all `[github]` repos re-checked on the deep sweep; only Homebrew 6.0.10 and automerge-js 3.3.1 routine point releases and rolling prereleases since the prior digest, no digest item)
 - Engineering blogs
 - YouTube channels (`make yt`, 25 videos across 89 channels, no standout clearing the New videos bar)
 - Markets and company sources
