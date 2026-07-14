@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-14."
 
 [extra]
 status = "published"
-source_count = 30
+source_count = 34
 +++
 
 ## Top stories
@@ -20,6 +20,15 @@ source_count = 30
 - **Comments:** HN commenters note the fix is server-controlled, so older clients stay dependent on xAI keeping the flag off, and repeat that any user-run tool can read local files, recommending sandboxed execution for coding CLIs.
 - **Why it matters:** A widely distributed coding CLI shipped whole-repository and secret upload on by default, and a silent server-side disable leaves the client behavior and the retention of already-uploaded data unaddressed.
 - **Follow-up:** Watch for an xAI statement, a client patch, deletion of uploaded traces, and independent reproduction of the retest.
+
+### Codex encrypts sub-agent prompts and removes the local audit trail
+
+- **Category:** Agentic coding
+- **Status:** developing
+- **Sources:** [Codex issue 28058](https://github.com/openai/codex/issues/28058), [Codex PR 26210](https://github.com/openai/codex/pull/26210), [HN 48905028](https://news.ycombinator.com/item?id=48905028)
+- **Summary:** OpenAI's Codex CLI now encrypts the model-facing message payloads exchanged between agents in its MultiAgentV2 mode. A merged change (PR #26210, 2026-06-05) marks the `spawn_agent`, `send_message`, and `followup_task` message text as encrypted, storing only `encrypted_content` and leaving the local `content` field empty. A regression report (issue #28058, opened 2026-06-13) states this removes the human-readable subagent task and message text from local rollout history and parent-side audit and debug surfaces, so a user can no longer see what task a subagent was given. The change reached stable users in Codex 0.144.4, published 2026-07-14.
+- **Comments:** HN commenters read the change as an effort to frustrate proxying user requests to train competitor models, with one reporting that resale accounts stopped working, and several object that an open-source CLI now hides its own subagent prompts from the person running it.
+- **Why it matters:** Codex users lose visibility into their own subagent orchestration, and the change extends the coding-agent anti-distillation and telemetry pattern seen with Claude Code request-marking and the Grok Build CLI.
 
 ### Apple SpeechAnalyzer beats small Whisper models on device in a LibriSpeech benchmark
 
@@ -85,13 +94,21 @@ source_count = 30
 - **Summary:** GitHub reported degraded availability on 2026-07-13 with Actions run startup failures and Pages affected, resolved by 13:53 UTC with a root-cause analysis promised. All systems returned to operational.
 - **Why it matters:** Actions startup failures block CI and deployments for the duration of the incident.
 
-### Cloudflare R2 and AI Search errors early on 2026-07-14
+### Cloudflare R2 regional errors recur on 2026-07-14
 
 - **Category:** Outage
 - **Status:** developing
 - **Sources:** [Cloudflare Status](https://www.cloudflarestatus.com/), [incident history](https://new.cloudflarestatus.com/history)
-- **Summary:** Cloudflare reported elevated R2 object storage errors in the EU region from 03:46 UTC on 2026-07-14, resolved at 04:36 UTC after about 50 minutes. A second incident, elevated errors on AI Search item PUT requests from 04:01 UTC, remained under investigation as of this run. An earlier zone-limit issue on 2026-07-13 was resolved. Both incidents are logged as minor impact.
+- **Summary:** Cloudflare logged repeated R2 object-storage error incidents on 2026-07-14. An EU-region incident ran 03:46 to 04:36 UTC, about 50 minutes, and resolved. A new incident, elevated R2 errors in the WEUR region, was identified from 15:23 UTC and remained ongoing as of this run. A separate incident, elevated errors on AI Search item PUT requests from 04:01 UTC, also remained under investigation. A Gateway CSV list-update issue ran 11:55 to 12:52 UTC and resolved. All are logged as minor impact.
 - **Why it matters:** R2 regional errors affect object storage reads and writes for EU-hosted workloads, and the AI Search write errors affect index updates.
+
+### GitHub Codespaces degradation on 2026-07-14
+
+- **Category:** Outage
+- **Status:** confirmed
+- **Sources:** [GitHub Status history](https://www.githubstatus.com/history)
+- **Summary:** GitHub reported degraded Codespaces performance on 2026-07-14 from 08:21 UTC, mitigated by 09:51 UTC and resolved at 09:56 UTC, with a root-cause analysis promised. Impact was limited to Codespaces.
+- **Why it matters:** Codespaces degradation interrupts cloud development environments for the duration of the incident.
 
 ### OpenAI ChatGPT feature errors on 2026-07-13
 
@@ -174,7 +191,7 @@ source_count = 30
 ## Sources checked
 
 - Hacker News (full structured coverage via Algolia)
-- Reddit (degraded: rate-limited to 4 of 28 subreddits, snapshot-merged)
+- Reddit (degraded: rate-limited to 4 of 28 top and 3 of 28 hot subreddits, snapshot-merged)
 - AI sources
 - ML research and arXiv papers (no standout item cleared the bar)
 - Conferences and events

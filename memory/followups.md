@@ -494,6 +494,15 @@ Format:
 - Last checked: 2026-07-13
 - Notes: Researcher published 2026-07-13 an unauthenticated RCE chain in the Motorola MR2600 (last firmware v1.0.22, mid-2024, end-of-life): improper SEAMA image validation in the upload endpoint, an auth check that runs only after the malicious image is written to `/tmp/firmware.img`, and inconsistent URI matching (substring allowlist, exact-match denylist) bypassed via a crafted path (e.g. query-suffixed login URL). LAN-reachable by default, remote when remote management enabled (~41 exposed at disclosure). Motorola Mobility and Motorola Solutions each disclaimed ownership, no fix, no CVE. Covered 2026-07-13 Security.
 
+## 2026-07-14: Codex CLI encrypts MultiAgentV2 sub-agent message payloads
+
+- Status: open
+- Category: Agentic coding
+- Sources: [Codex issue 28058](https://github.com/openai/codex/issues/28058), [Codex PR 26210](https://github.com/openai/codex/pull/26210), [HN 48905028](https://news.ycombinator.com/item?id=48905028)
+- Watch for: An OpenAI statement or docs note on the intent; whether a local-audit or decrypt path is restored for the user running the CLI; whether the change is scoped to hosted subscriptions vs the open-source CLI; further reports tying it to resale/distillation enforcement.
+- Last checked: 2026-07-14
+- Notes: PR #26210 "Encrypt multi-agent v2 message payloads" (merged 2026-06-05) marks the model-facing `message` param of `spawn_agent`/`send_message`/`followup_task` as encrypted, storing only `InterAgentCommunication.encrypted_content` and leaving local `content` empty. Regression report #28058 (opened 2026-06-13) says this strips readable subagent task/message text from local rollout history and parent-side audit/debug surfaces, so a user cannot see what task a subagent got. Reached stable users in Codex 0.144.4 (2026-07-14), prompting HN front page (48905028, ~379 pts). HN reads it as anti-proxy/anti-distillation (one reports resale accounts stopped working); several object an open-source CLI hides its own subagent prompts. No OpenAI statement. Extends the coding-agent telemetry/anti-distillation theme (Claude Code request-marking, Grok Build upload). Covered 2026-07-14 Top stories (developing).
+
 ## 2026-07-12: Zimbra Classic Web Client stored XSS fixed in 10.1.19
 
 - Status: open
