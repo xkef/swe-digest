@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-14."
 
 [extra]
 status = "published"
-source_count = 26
+source_count = 30
 +++
 
 ## Top stories
@@ -89,9 +89,9 @@ source_count = 26
 
 - **Category:** Outage
 - **Status:** developing
-- **Sources:** [Cloudflare Status](https://www.cloudflarestatus.com/)
-- **Summary:** Cloudflare reported elevated R2 object storage errors in the EU region from around 03:46 UTC on 2026-07-14 (fix implemented, monitoring) and elevated errors on AI Search item PUT requests from 04:01 UTC (investigating). An earlier zone-limit issue on 2026-07-13 was resolved.
-- **Why it matters:** R2 regional errors affect object storage reads and writes for EU-hosted workloads.
+- **Sources:** [Cloudflare Status](https://www.cloudflarestatus.com/), [incident history](https://new.cloudflarestatus.com/history)
+- **Summary:** Cloudflare reported elevated R2 object storage errors in the EU region from 03:46 UTC on 2026-07-14, resolved at 04:36 UTC after about 50 minutes. A second incident, elevated errors on AI Search item PUT requests from 04:01 UTC, remained under investigation as of this run. An earlier zone-limit issue on 2026-07-13 was resolved. Both incidents are logged as minor impact.
+- **Why it matters:** R2 regional errors affect object storage reads and writes for EU-hosted workloads, and the AI Search write errors affect index updates.
 
 ### OpenAI ChatGPT feature errors on 2026-07-13
 
@@ -110,6 +110,27 @@ source_count = 26
 - **Sources:** [write-up](https://lalitm.com/post/git-history/), [HN 48901010](https://news.ycombinator.com/item?id=48901010)
 - **Summary:** A 2026-07-13 write-up by Lalit Maganti describes the experimental `git history` command, which the post attributes to Git 2.54 and 2.55, with three subcommands: `fixup` edits an older commit and rebases all descendant branches, `reword` changes a past commit message and rebuilds dependents, and `split` breaks one commit into two through a hunk-by-hunk prompt. All three are atomic and refuse any operation that would risk a conflict, avoiding half-rebased repository states.
 - **Why it matters:** Native atomic history editing across stacked branches reduces reliance on manual interactive rebase for a common and error-prone workflow.
+
+## Languages and runtimes
+
+### Kotlin 2.4.10 ships compiler and Gradle-tooling bug fixes
+
+- **Category:** Languages
+- **Status:** confirmed
+- **Sources:** [GitHub release](https://github.com/JetBrains/kotlin/releases/tag/v2.4.10)
+- **Summary:** JetBrains published Kotlin 2.4.10 on 2026-07-14, a patch release on the 2.4 line. It fixes K2 and JVM compiler issues (a reified type-inference regression, an annotation-argument crash on nested Java const values), a Compose Compiler stability-inference regression, a Kotlin/Native klib binding error, and several Gradle, JS, and scripting build problems, and adds `kotlinr` to the distribution. No language changes and no security fixes are listed.
+- **Why it matters:** It is a routine stability fix for the current Kotlin line, relevant to teams pinning 2.4.x in CI.
+
+## Apple platforms
+
+### Shipping Mac and iOS apps from the command line without opening Xcode
+
+- **Category:** Apple
+- **Status:** discussion
+- **Sources:** [write-up](https://scottwillsey.com/building-and-shipping-mac-and-ios-apps-without-ever-opening-xcode/), [HN 48896665](https://news.ycombinator.com/item?id=48896665)
+- **Summary:** A 2026-07-11 post by Scott Willsey describes building, signing, notarizing, and installing Mac and iOS apps entirely through command-line tools that ship inside Xcode.app without launching the IDE. The workflow uses XcodeGen to generate the project from a `project.yml`, `xcodebuild` to archive and Developer ID sign, `xcrun notarytool` and `xcrun stapler` to notarize and staple, and `devicectl` to deploy to a device, all driven by one `release.sh` script with signing keys kept in the login keychain. The author frames the fully headless, scriptable pipeline as suited to AI coding agents.
+- **Comments:** A former Xcode-team engineer and other HN commenters report the same headless workflow, several noting that recent Claude Code versions now drive it autonomously. One warns that LLM-generated bespoke scripts duplicate what fastlane already solves for mobile release automation.
+- **Why it matters:** A headless Apple build-and-release pipeline lets coding agents ship signed apps without GUI steps, though it overlaps with existing tools like fastlane.
 
 ## Engineering posts
 
@@ -160,7 +181,7 @@ source_count = 26
 - Books and publisher feeds (no qualifying release)
 - Security advisories and CISA KEV
 - Status pages (GitHub, Cloudflare, OpenAI, AWS, Azure, Anthropic)
-- GitHub watchlist releases and trending
+- GitHub watchlist releases and trending (full `[github]` table swept: new since first run are Kotlin 2.4.10 and automerge 3.3.1)
 - Engineering blogs
-- YouTube channels (degraded: most channel feeds returned 404/500, snapshot fallback)
+- YouTube channels (full coverage this run; no upload cleared the New videos bar)
 - Markets and company sources
