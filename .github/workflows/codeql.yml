@@ -1,0 +1,46 @@
+name: CodeQL
+
+# Static analysis (advanced setup, replaces the repo's former default setup).
+# The workflow file itself is what the OpenSSF Scorecard SAST check detects,
+# since this repo merges no PRs for check-run detection. Data and content
+# commits skip analysis: they change no code.
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "content/**"
+      - "data/**"
+      - "memory/**"
+      - "docs/**"
+  schedule:
+    - cron: "40 6 * * 1"
+
+permissions: read-all
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      security-events: write # upload SARIF to code scanning
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [actions, javascript-typescript, python]
+    steps:
+      - uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: github/codeql-action/init@c35d1b164463ee62a100735382aaaa525c5d3496 # codeql-bundle-v2.25.6
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+      - uses: github/codeql-action/analyze@c35d1b164463ee62a100735382aaaa525c5d3496 # codeql-bundle-v2.25.6
+        with:
+          category: "/language:${{ matrix.language }}"
