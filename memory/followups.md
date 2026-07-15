@@ -521,6 +521,15 @@ Format:
 - Last checked: 2026-07-15
 - Notes: Mindgard full-disclosure write-up 2026-07-14 of an unpatched arbitrary code execution flaw in Cursor on Windows: on project open Cursor resolves a Git binary across several paths including the workspace root, so a malicious `git.exe` in a repo root runs with user privileges with no prompt and repeats during editing. Root cause is Windows resolving the current directory before system paths. Reported to Cursor 2025-12-15, via HackerOne 2026-01-15, delivery confirmed 2026-01-20; still present through 3.2.16 (verified 2026-04-30), no substantive vendor response, no CVE. HN split: some call it the known Windows CWD search-order quirk affecting any IDE calling an unqualified binary, others flag agent auto-clone mass-exploitation. Mitigations are OS allow-listing (AppLocker/App Control) or disposable VMs. Covered 2026-07-15 Top stories (lead).
 
+## 2026-07-15: Claude memory exfiltrated via web_fetch link-following (The Memory Heist)
+
+- Status: open
+- Category: Security
+- Sources: [write-up](https://www.ayush.digital/blog/the-memory-heist), [HN 48916975](https://news.ycombinator.com/item?id=48916975)
+- Watch for: A public Anthropic advisory or changelog note documenting the web_fetch external-link-following restriction; whether the mitigation is complete or bypassable; whether the same memory-plus-fetch exfiltration works against other providers (ChatGPT memory, Gemini).
+- Last checked: 2026-07-15
+- Notes: Researcher Ayush Paul published 2026-07-09 (HN front page 2026-07-15, 360 pts, 162 cmt) a demonstrated exfiltration of Claude.ai stored memory via the web_fetch tool. A page disguised as a Cloudflare CAPTCHA instructed Claude to "verify" the user by navigating letter by letter through attacker-controlled alphabetical links, so the sequence of fetched URLs spelled out private data to the attacker's server; leaked the user's full name, employer, and hometown, and in one case inferred the hometown from a hackathon name rather than a stored fact. Reported to Anthropic via HackerOne. Anthropic said it had already identified the issue internally, awarded no bounty, and mitigated it by stopping web_fetch from following links on external pages (navigation restricted to web-search results and user-provided URLs). Extends the agent memory/tool exfiltration and prompt-injection theme. Covered 2026-07-15 Top stories.
+
 ## 2026-07-15: Bonsai 27B sub-2-bit on-device model
 
 - Status: open
