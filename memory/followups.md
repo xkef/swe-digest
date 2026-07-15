@@ -511,3 +511,21 @@ Format:
 - Watch for: A CVE assignment; any active-exploitation report or CISA KEV addition; internet-exposure scans of unpatched Classic Web Client hosts; whether the modern web client is affected.
 - Last checked: 2026-07-12
 - Notes: Zimbra released ZCS 10.1.19 (Daffodil) on 2026-07-07 fixing a stored XSS in the Classic Web Client: a crafted email carries JavaScript that runs in the recipient's authenticated webmail session when the message is opened or previewed (session-cookie theft, actions on behalf of the victim, mailbox data access). No CVE id or CVSS from Zimbra; urges Classic Web Client users to upgrade ASAP. Customers on 10.1.x need no extra action; migrations from 10.0.x/9.0.x/8.8.15 must reapply the SNMP mitigation after upgrade. No active exploitation reported. Zimbra webmail is a recurring exploited target. Covered 2026-07-12 Security.
+
+## 2026-07-15: Cursor runs a repository git.exe on Windows without confirmation (unpatched)
+
+- Status: open
+- Category: Security
+- Sources: [Mindgard write-up](https://mindgard.ai/blog/cursor-0day-when-full-disclosure-becomes-the-only-protection-left), [HN 48910676](https://news.ycombinator.com/item?id=48910676)
+- Watch for: A Cursor patch restricting Git-binary resolution to trusted paths; a CVE assignment; exploitation reports; whether the agent auto-clone mass-exploitation path gets demonstrated.
+- Last checked: 2026-07-15
+- Notes: Mindgard full-disclosure write-up 2026-07-14 of an unpatched arbitrary code execution flaw in Cursor on Windows: on project open Cursor resolves a Git binary across several paths including the workspace root, so a malicious `git.exe` in a repo root runs with user privileges with no prompt and repeats during editing. Root cause is Windows resolving the current directory before system paths. Reported to Cursor 2025-12-15, via HackerOne 2026-01-15, delivery confirmed 2026-01-20; still present through 3.2.16 (verified 2026-04-30), no substantive vendor response, no CVE. HN split: some call it the known Windows CWD search-order quirk affecting any IDE calling an unqualified binary, others flag agent auto-clone mass-exploitation. Mitigations are OS allow-listing (AppLocker/App Control) or disposable VMs. Covered 2026-07-15 Top stories (lead).
+
+## 2026-07-15: Bonsai 27B sub-2-bit on-device model
+
+- Status: open
+- Category: AI
+- Sources: [PrismML write-up](https://prismml.com/news/bonsai-27b), [HN 48910545](https://news.ycombinator.com/item?id=48910545)
+- Watch for: Independent perplexity and task benchmarks; the exact ternary packing format; reproduction of the ~1 token/second on-device speed claim; whether the reasoning-loop behavior is fixed.
+- Last checked: 2026-07-15
+- Notes: PrismML published Bonsai 27B, an extreme-quantization build of Qwen 3.6 27B (most weights ternary with group-wise FP16 scales, ~1.71 effective bits/weight, ~54 GB FP16 down to ~3.8 GB) for on-device inference on high-memory phones (recent iPhone Pro), reported ~1 tok/s on consumer hardware and ~90% capability retention (stronger math/code than a smaller Gemma build, weaker knowledge/tool-calling/vision). Weights public. HN reports it stuck in reasoning loops and cites an independent perplexity measurement far above baseline, and questions the packing efficiency. Vendor figures, unreproduced. Covered 2026-07-15 Top stories (discussion).
