@@ -538,3 +538,30 @@ Format:
 - Watch for: Independent perplexity and task benchmarks; the exact ternary packing format; reproduction of the ~1 token/second on-device speed claim; whether the reasoning-loop behavior is fixed.
 - Last checked: 2026-07-15
 - Notes: PrismML published Bonsai 27B, an extreme-quantization build of Qwen 3.6 27B (most weights ternary with group-wise FP16 scales, ~1.71 effective bits/weight, ~54 GB FP16 down to ~3.8 GB) for on-device inference on high-memory phones (recent iPhone Pro), reported ~1 tok/s on consumer hardware and ~90% capability retention (stronger math/code than a smaller Gemma build, weaker knowledge/tool-calling/vision). Weights public. HN reports it stuck in reasoning loops and cites an independent perplexity measurement far above baseline, and questions the packing efficiency. Vendor figures, unreproduced. Covered 2026-07-15 Top stories (discussion).
+
+## 2026-07-13: Tailscale SSH argument injection TS-2026-009
+
+- Status: open
+- Category: Security
+- Sources: [Tailscale TS-2026-009](https://tailscale.com/security-bulletins), [HN 48915004](https://news.ycombinator.com/item?id=48915004)
+- Watch for: A CVE assignment; whether the fix (rejecting leading-dash usernames) is complete versus a proper `--` argument separator; any exploitation reports; whether other Tailscale features pass user-controlled strings to shell utilities.
+- Last checked: 2026-07-15
+- Notes: Bulletin TS-2026-009 (2026-07-13) reports an argument-injection flaw in Tailscale SSH: usernames with leading hyphens were passed to `getent(1)` and interpreted as flags, so a principal already in the tailnet ACL connecting as `-i` could dump the entire passwd file starting with root. Fixed in 1.98.9 (rejects leading-dash usernames). No CVE, no evidence of exploitation. Same-day TS-2026-008 is a CPU-exhaustion flaw in Serve/Funnel from malformed HTTP requests. HN: tptacek called it a venerable bug class (AIX 3), others note `--` is the proper fix. Covered 2026-07-15 Security.
+
+## 2026-07-15: Star Fleet reports Lean-verified Erdős-problem solutions from parallel Codex agents
+
+- Status: open
+- Category: AI
+- Sources: [Star Fleet Math](https://www.starfleetmath.com/), [HN 48914646](https://news.ycombinator.com/item?id=48914646)
+- Watch for: Independent mathematician review of the Lean 4 proofs and whether any are accepted or refuted; whether the problems were genuinely open; a formal writeup beyond the site; reproduction of the harness.
+- Last checked: 2026-07-15
+- Notes: Site by Colin Snyder (advised by Mike Kim) presents proposed solutions to a set of open Erdős problems produced by "Star Fleet", a harness running up to 20 parallel Codex (GPT-5.6) instances that emit Lean 4 proofs. Each entry ships Lean 4 source pinned to a Mathlib version, checkers rejecting `sorry`, and a transitive axiom audit, with downloadable verification packages; one entry states an independent referee reran the verification. Framed as proposed solutions, not peer reviewed. Extends the GPT-5.6 Sol Ultra CDC-proof thread (2026-07-10). Machine-checked Lean is a stronger claim than the earlier prose PDF. Covered 2026-07-15 AI (discussion).
+
+## 2026-07-09: S&P cuts Oracle to BBB- over AI datacenter debt
+
+- Status: open
+- Category: Markets
+- Sources: [heise](https://www.heise.de/en/news/S-P-downgrades-Oracle-to-BBB-only-one-notch-above-junk-level-11363472.html), [HN 48909768](https://news.ycombinator.com/item?id=48909768)
+- Watch for: Any further rating action toward junk; whether the OpenAI concentration risk in Oracle's RPO changes; wider AI-infrastructure-financing stress (SpaceX bond, hyperscaler debt) affecting cloud/GPU capacity and pricing.
+- Last checked: 2026-07-15
+- Notes: S&P Global lowered Oracle's long-term issuer credit rating one notch from BBB to BBB- on 2026-07-09, one step above junk, citing the debt and capex of its AI-infrastructure buildout; resurfaced HN front page 2026-07-15 (331 pts). S&P raised projected FY2027 capex to ~$90-95B and FOCF deficit to ~-$42B, flagged OpenAI as ~half of Oracle's ~$638B remaining performance obligations (concentration risk), ~$167B total debt. Landed in an AI-infra-financing cluster the same week (SpaceX bond below issue price HN 48920181; BIS "financing the AI boom" bulletin HN 48913443). Covered 2026-07-15 Markets and companies.
