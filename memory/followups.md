@@ -23,8 +23,8 @@ Format:
 - Category: Security
 - Sources: [wire-level analysis (gist)](https://gist.github.com/cereblab/dc9a40bc26120f4540e4e09b75ffb547), [GIGAZINE](https://gigazine.net/gsc_news/en/20260713-grok-build-sending-data/), [HN 48877371](https://news.ycombinator.com/item?id=48877371)
 - Watch for: An xAI statement or a CLI update that scopes uploads and honors the "Improve the model" opt-out; independent reproduction of the wire capture; whether the uploaded data is used for training; any CVE or advisory.
-- Last checked: 2026-07-14
-- Notes: Researcher (cereblab) mitmproxy wire capture of Grok Build CLI grok 0.2.93 reports the CLI uploads the full working repository (every tracked file plus complete git history) to GCS bucket `grok-code-session-traces` via `POST /v1/storage`, independent of what the agent reads. 12 GB test repo: storage channel moved 5.10 GiB across ~73 chunks vs 192 KB on the model-turn channel; planted never-read files recovered verbatim from the uploaded git bundle. `.env` contents (canary `API_KEY`/`DB_PASSWORD`) unredacted in both `POST /v1/responses` bodies and a session-state archive. Disabling "Improve the model" did not stop upload; `/v1/settings` still returned `trace_upload_enabled: true`. Author states it does not prove xAI trains on the data. Escalation of the 2026-07-12 single-researcher claim (entities xAI): now HN front page (487 pts) with secondary coverage (GIGAZINE, byteiota). 2026-07-13 later run: a separate social-media account (HN 48892468) claims the CLI uploaded the entire home directory, not only the working repository, widening the reported scope; single account, not independently verified, folded into the lead as developing. 2026-07-14: the wire-capture author retested within 24h and reported the storage channel now uploads nothing, with `/v1/settings` returning `trace_upload_enabled: false` and `disable_codebase_upload: true`, a server-side flip not a client patch; xAI still published no statement (secondary: developersdigest, glitchwire). The home-directory claim reached HN front page again (48892512 493 pts, 48892468 383 pts). Covered 2026-07-14 Top stories (lead, developing). Watch for an xAI statement, a client patch, deletion of already-uploaded traces, and independent reproduction of the retest.
+- Last checked: 2026-07-16
+- Notes: Researcher (cereblab) mitmproxy wire capture of Grok Build CLI grok 0.2.93 reports the CLI uploads the full working repository (every tracked file plus complete git history) to GCS bucket `grok-code-session-traces` via `POST /v1/storage`, independent of what the agent reads. On a 12 GB test repo the storage channel moved 5.10 GiB vs 192 KB on the model-turn channel, and planted never-read files were recovered from the uploaded git bundle; `.env` secrets were unredacted. Disabling "Improve the model" did not stop upload (`/v1/settings` still `trace_upload_enabled: true`). Author states it does not prove xAI trains on the data. HN front page (487 pts), secondary coverage (GIGAZINE, byteiota). 2026-07-13: a separate account (HN 48892468) claimed the entire home directory was uploaded, widening the scope (single account, unverified). 2026-07-14: the author retested and reported the storage channel now uploads nothing, `/v1/settings` flipped to `trace_upload_enabled: false` / `disable_codebase_upload: true` server-side (not a client patch); no xAI statement. Covered 2026-07-14 Top stories (lead, developing). 2026-07-15: xAI open-sourced Grok Build as xai-org/grok-build under Apache-2.0 (~845k-line Rust workspace, external contributions rejected, issues disabled), stated it can now run fully local-first against user inference, reset usage limits for all users, and claims retained user data was deleted and retention disabled by default; Simon Willison notes disabled upload code still present in the tree and tools adapted from Codex/Claude. Covered 2026-07-16 Top stories (confirmed, Agentic coding). Watch for full removal of the upload paths, independent confirmation of the data-deletion claim, and local-inference forks.
 
 ## 2026-07-10: Apple sues OpenAI and two ex-employees over trade-secret theft
 
@@ -283,8 +283,8 @@ Format:
 - Status: open
 - Category: Security
 - Sources: [reverse-engineering write-up](https://github.com/SmtimesIWndr/gdid-reversal), [PCMag](https://www.pcmag.com/news/a-hackers-arrest-reveals-microsoft-can-track-users-via-a-windows-device-id), [HN 48815196](https://news.ycombinator.com/item?id=48815196)
-- Watch for: Independent reproduction of the browsing-to-identifier correlation; any Microsoft statement; whether the identifier can be disabled without unlinking the Microsoft Account.
-- Last checked: 2026-07-07
+- Watch for: Independent reproduction of the browsing-to-identifier correlation; any primary Microsoft statement; whether the identifier can be disabled without unlinking the Microsoft Account.
+- Last checked: 2026-07-16
 - Notes: Write-up plus PCMag coverage (HN front page 2026-07-07, 294 pts) describe a server-assigned 64-bit device Passport Unique ID (GDID) minted by the Microsoft Account service (`wlidsvc.dll`) when a Windows install is linked to a Microsoft Account, stored in cleartext in `HKCU\SOFTWARE\Microsoft\IdentityCRL\ExtendedProperties` (`LID`), and registered with a Microsoft device-directory service by the Connected Devices Platform (`cdp.dll`). Persists across OS updates; a reinstall gets a new id that reappears on re-registration. Reporting frames it as correlatable with activity/IP history and cites a criminal case where the data went to law enforcement; the exact browsing linkage is inferred, not fully documented. Covered 2026-07-07 Security (developing).
 
 ## 2026-07-07: KVM guest-to-host escape CVE-2026-53359 (Januscape)
@@ -565,3 +565,30 @@ Format:
 - Watch for: Any further rating action toward junk; whether the OpenAI concentration risk in Oracle's RPO changes; wider AI-infrastructure-financing stress (SpaceX bond, hyperscaler debt) affecting cloud/GPU capacity and pricing.
 - Last checked: 2026-07-15
 - Notes: S&P Global lowered Oracle's long-term issuer credit rating one notch from BBB to BBB- on 2026-07-09, one step above junk, citing the debt and capex of its AI-infrastructure buildout; resurfaced HN front page 2026-07-15 (331 pts). S&P raised projected FY2027 capex to ~$90-95B and FOCF deficit to ~-$42B, flagged OpenAI as ~half of Oracle's ~$638B remaining performance obligations (concentration risk), ~$167B total debt. Landed in an AI-infra-financing cluster the same week (SpaceX bond below issue price HN 48920181; BIS "financing the AI boom" bulletin HN 48913443). Covered 2026-07-15 Markets and companies.
+
+## 2026-07-16: Thinking Machines releases Inkling open-weights model
+
+- Status: open
+- Category: AI
+- Sources: [Thinking Machines](https://thinkingmachines.ai/news/introducing-inkling/), [Hugging Face](https://huggingface.co/thinkingmachines/inkling), [HN 48924912](https://news.ycombinator.com/item?id=48924912)
+- Watch for: Independent benchmark reproduction of the vendor and blinded-eval figures (Terminal-Bench 2.1 63.8%, AIME 2026 97.1%, HLE-with-tools 46.0%); the full Inkling-Small release past preview; real-world coding and long-context evaluation; adoption vs GLM 5.2 and other open weights.
+- Last checked: 2026-07-16
+- Notes: Mira Murati's Thinking Machines Lab released Inkling 2026-07-15 after ~18 months, its first model. Apache-2.0 open weights, MoE transformer 975B total / 41B active (256 routed + 2 shared experts, 6 routed active per token), up to 1M context, native text/image/audio input, pretrained on 45T tokens. Weights on Hugging Face with an NVFP4 Blackwell checkpoint; hosted on Together/Fireworks/Modal/Databricks/Baseten; preview Inkling-Small 276B/12B active. Company states it is not the strongest overall, positioned on breadth/customization/controllable thinking effort. HN: called strongest Western open-weights model but ~30% larger than GLM 5.2 without clearly beating it, weaker at coding than instruction following; r/LocalLLaMA ranks it #1 US open weight. Vendor figures unreproduced. Covered 2026-07-16 Top stories (lead).
+
+## 2026-07-16: Stripe and Advent make a reported $53.4B joint offer for PayPal
+
+- Status: open
+- Category: Markets
+- Sources: [TechCrunch](https://techcrunch.com/2026/07/15/stripe-and-advent-reportedly-offered-to-buy-paypal-for-around-53-4b/), [CNBC](https://www.cnbc.com/2026/07/15/stripe-advent-offer-to-buy-paypal-for-more-than-53-billion-reuters.html), [HN 48915953](https://news.ycombinator.com/item?id=48915953)
+- Watch for: The PayPal board response (reported to meet ~2026-07-20); any formal confirmation or rejection; antitrust signals given Stripe + PayPal + Venmo + Braintree concentration; payments-infrastructure and pricing impact if it closes.
+- Last checked: 2026-07-16
+- Notes: Reuters and others reported 2026-07-15 that Stripe and PE firm Advent International made a joint offer for PayPal at ~$60.50/share (>$53B, ~28% premium, ~$50B committed bank financing), equal Stripe/Advent ownership with no stated breakup. PayPal (advised by Goldman Sachs and Evercore on alternatives) had not responded; companies had not confirmed. HN flags antitrust concentration and timing. Covered 2026-07-16 Top stories (developing).
+
+## 2026-07-16: Oracle E-Business Suite CVE-2026-46817 added to CISA KEV
+
+- Status: open
+- Category: Security
+- Sources: [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-46817), [CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
+- Watch for: Exploitation and ransomware reports; internet-exposure scans of unpatched EBS Payments deployments; whether other CSPUMay2026 CVEs see abuse; the 2026-07-18 federal remediation deadline.
+- Last checked: 2026-07-16
+- Notes: CISA added CVE-2026-46817 to KEV 2026-07-15 (catalog 2026.07.15, count 1644). Missing-authentication (CWE-306/287/269) in the Oracle Payments File Transmission component of Oracle E-Business Suite 12.2.3-12.2.15, CVSS 9.8, unauthenticated network-reachable; fixed in the CSPUMay2026 security alert. NVD moved exploitation none-to-active on the KEV addition. Federal due 2026-07-18. Covered 2026-07-16 Top stories.
