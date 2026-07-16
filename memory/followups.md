@@ -592,3 +592,12 @@ Format:
 - Watch for: Exploitation and ransomware reports; internet-exposure scans of unpatched EBS Payments deployments; whether other CSPUMay2026 CVEs see abuse; the 2026-07-18 federal remediation deadline.
 - Last checked: 2026-07-16
 - Notes: CISA added CVE-2026-46817 to KEV 2026-07-15 (catalog 2026.07.15, count 1644). Missing-authentication (CWE-306/287/269) in the Oracle Payments File Transmission component of Oracle E-Business Suite 12.2.3-12.2.15, CVSS 9.8, unauthenticated network-reachable; fixed in the CSPUMay2026 security alert. NVD moved exploitation none-to-active on the KEV addition. Federal due 2026-07-18. Covered 2026-07-16 Top stories.
+
+## 2026-07-16: Kimi K3 live in the Kimi product without a model card
+
+- Status: open
+- Category: AI
+- Sources: [Kimi](https://www.kimi.com/en), [HN 48935342](https://news.ycombinator.com/item?id=48935342)
+- Watch for: An official Moonshot model card; weights and license (K2 shipped modified-MIT open weights); published benchmarks; API model id and pricing; whether the reported ~2.5T-param MoE / 1M-context leak specs hold.
+- Last checked: 2026-07-16
+- Notes: 2026-07-16 Kimi K3 became selectable in the kimi.com product (landing page headlines K3 for agentic coding/knowledge work); HN "Kimi K3 is now live" front page (48935342, ~332 pts, posted 14:46Z). Moonshot published no model card, weights, license, benchmark report, API model id, or pricing at go-live. Community leaks describe a new MoE architecture ~2.5T total params, 1M context, aimed at long-horizon coding/agents; unconfirmed by Moonshot. Web-search snapshots (stale) still listed K2.6 as flagship, so the live status is recent. Covered 2026-07-16 AI (developing).

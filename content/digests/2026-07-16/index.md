@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-16."
 
 [extra]
 status = "published"
-source_count = 31
+source_count = 36
 +++
 
 ## Top stories
@@ -60,6 +60,17 @@ source_count = 31
 - **Summary:** EuroPython 2026 is active and runs through 2026-07-19, covering CPython, typing, packaging, and the scientific Python stack.
 - **Why it matters:** The largest European Python conference is a venue for language, packaging, and tooling direction that lands in later releases.
 
+## AI
+
+### Kimi K3 goes live in the Kimi product without a model card
+
+- **Category:** AI
+- **Status:** developing
+- **Sources:** [Kimi](https://www.kimi.com/en), [HN discussion](https://news.ycombinator.com/item?id=48935342)
+- **Summary:** Moonshot AI's Kimi K3 became selectable in the kimi.com product on 2026-07-16, and a Hacker News thread titled "Kimi K3 is now live" reached the front page the same day. The kimi.com landing page now headlines K3 for agentic coding and knowledge work. Moonshot has not published a model card, open weights, a license, a benchmark report, an API model id, or pricing. Pre-release community leaks describe a new Mixture-of-Experts architecture near 2.5 trillion total parameters with a 1 million token context window aimed at long-horizon coding and agent workloads. None of those figures are confirmed by Moonshot.
+- **Why it matters:** Moonshot's prior Kimi K2 family shipped open weights under a permissive license, so whether K3 follows determines whether teams get another frontier-scale self-hostable model or only a hosted product.
+- **Follow-up:** Watch for an official model card, the weights and license, published benchmarks, and API availability and pricing.
+
 ## Security
 
 No major items found. The KEV catalog added CVE-2026-46817 (Oracle E-Business Suite) on 2026-07-15, which is covered in Top stories. CISA also added a 2023 KNX protocol authorization flaw (CVE-2023-4346) the same day. That KNX flaw is not developer infrastructure.
@@ -88,6 +99,14 @@ No major items found. Cloudflare ran scheduled Atlanta and Toronto datacenter ma
 - **Summary:** A blog post argues SQLite should add an opt-in edition mechanism, modeled on Rust editions, so that behavior-changing fixes and stricter defaults could ship without breaking existing databases and queries that depend on current quirks. The author frames it as a way to evolve long-standing compatibility compromises while keeping SQLite's stability guarantee. This is a third-party proposal, not a SQLite project plan.
 - **Why it matters:** SQLite's strict backward compatibility blocks some correctness fixes, and an edition mechanism is one path to change defaults without breaking the deployed base.
 
+### Rust 1.97.1 patches an LLVM miscompilation
+
+- **Category:** Languages
+- **Status:** confirmed
+- **Sources:** [GitHub release](https://github.com/rust-lang/rust/releases/tag/1.97.1)
+- **Summary:** The Rust project published 1.97.1 on 2026-07-16, a point release one week after 1.97.0. It fixes a miscompilation in an LLVM optimization (rust-lang/rust issue 159035) by backporting an LLVM submodule bump that carries the LLVM-side fix and reverting the rustc change identified as one known trigger, which the notes describe as done out of caution. No other changes ship in the release.
+- **Why it matters:** A miscompilation can turn correct source into wrong code, so toolchain and CI images on the 1.97 line should move to 1.97.1.
+
 ### Kotlin 2.4.10 ships as a bugfix patch
 
 - **Category:** Languages
@@ -97,6 +116,14 @@ No major items found. Cloudflare ran scheduled Atlanta and Toronto datacenter ma
 - **Why it matters:** Teams on the 2.4 line get compiler and Compose regression fixes without a language-level migration.
 
 ## Engineering posts
+
+### Roc rewrites its 300k line compiler from Rust to Zig
+
+- **Category:** Engineering post
+- **Status:** confirmed
+- **Sources:** [rtfeldman.com](https://rtfeldman.com/rust-to-zig), [HN discussion](https://news.ycombinator.com/item?id=48933149)
+- **Summary:** Richard Feldman published an account on 2026-07-15 of scratch-rewriting the Roc language compiler, about 300,000 lines, from Rust to Zig, reaching feature parity after 487 days. The post cites Cargo build times that degraded as the codebase grew, fundamental bugs in lambda-set resolution that needed cross-phase rewrites regardless, and Zig's allocator model fitting the team's arena allocation and struct-of-arrays layouts. It reports incremental builds of 3.4 seconds on Rust 1.97.0 versus 35 milliseconds on a Zig 0.17.0 nightly, and counts 10 memory-corruption bugs (2 use-after-free, 8 miscompilations) among 431 Zig-compiler bugs against 21 memory-corruption bugs among 2,596 Rust-compiler bugs, arguing most of its memory-safety issues traced to miscompilation rather than unsafe compiler code.
+- **Why it matters:** It is a first-party rewrite report that runs opposite to Bun's Zig-to-Rust move the same month, and it separates the build-time and memory-safety outcomes that these language debates usually argue in the abstract.
 
 ### Running Gemma 4 26B on a 13-year-old Xeon uncovers a silent MoE dispatch bug
 
@@ -156,9 +183,9 @@ No major items found. Cloudflare ran scheduled Atlanta and Toronto datacenter ma
 ## Sources checked
 
 - Hacker News (`make hn`, Algolia backend, full structured coverage)
-- Reddit (`make reddit`, degraded: top 5 of 28 and hot 4 of 28 subreddits returned, partial coverage supplemented from the committed snapshot)
-- AI sources (Thinking Machines, xAI, Hugging Face)
-- ML research and arXiv papers (`make papers`, arXiv API timed out, RSS fallback used, no qualifying paper)
+- Reddit (`make reddit`, degraded: partial coverage of r/devops, r/cybersecurity, and r/cursor returned before rate limiting, supplemented from the committed snapshot)
+- AI sources (Thinking Machines, xAI, Hugging Face, Moonshot Kimi)
+- ML research and arXiv papers (`make papers`, arXiv API, no qualifying paper)
 - Conferences and events (`make events`)
 - Books and publisher feeds (`make books`, Springer, No Starch, Pragmatic, no qualifying release)
 - Security advisories (CISA KEV, NVD)
