@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-16."
 
 [extra]
 status = "published"
-source_count = 27
+source_count = 31
 +++
 
 ## Top stories
@@ -106,6 +106,22 @@ No major items found. Cloudflare ran scheduled Atlanta and Toronto datacenter ma
 - **Summary:** A write-up dated 2026-06-08, which reached the HN front page on 2026-07-15, runs Google's Gemma 4 26B-A4B Mixture-of-Experts model quantized to Q8_0 on a dual Xeon E5-2690 v2 (Ivy Bridge, 2013, AVX1 only, no AVX2 or FMA3, no GPU) at about 5.2 tokens per second decode. The build produced fluent-looking multilingual gibberish because two fused MoE graph ops (`MOE_FUSED_UP_GATE`, `FUSED_UP_GATE`) were still emitted by the graph builder but had no dispatch case on non-AVX2 builds, leaving roughly 240 tensors per forward pass uninitialized with mean logits pinned near +16. The fix splits the fused ops into `ggml_mul_mat_id` plus `ggml_fused_mul_unary` calls that have non-optimized implementations.
 - **Comments:** The author explained the diagnosis in the thread and posted the upstream fix as ik_llama.cpp PR 2138. Another commenter reported 8 to 12 tokens per second on comparable old hardware.
 - **Why it matters:** The bug is a concrete case of a code path silently skipped on an unusual build target, and it documents that large MoE models can run at reading speed on decade-old CPUs.
+
+### PlanetScale walks through sharding a database across 768 servers
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [PlanetScale blog](https://planetscale.com/blog/making-768-servers-look-like-1), [HN discussion](https://news.ycombinator.com/item?id=48930075)
+- **Summary:** A PlanetScale engineering post dated 2026-07-15 explains horizontal sharding as the way to scale a relational database past a single primary. The worked example spreads one petabyte across 256 shards of three servers each (one primary and two replicas, 768 servers total, about four terabytes per shard) serving millions of queries per second. A proxy router layer parses each SQL query, routes it to the correct shard by a hash of the sharding key, plans and aggregates cross-shard queries, and sits behind a network load balancer, so an application connects through a single connection string and never sees the 768 servers. The post points to Vitess for MySQL and PlanetScale's Neki for Postgres as the systems that implement this pattern.
+- **Why it matters:** It lays out the routing and cross-shard-query mechanics teams hit once a single-primary database runs out of write throughput and storage headroom.
+
+### Post argues job queues hide their scheduling semantics
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [typesanitizer.com](https://typesanitizer.com/blog/job-queues.html), [HN discussion](https://news.ycombinator.com/item?id=48903733)
+- **Summary:** An engineering post argues that job queues carry hidden semantic complexity that configuration files tend to obscure. When a scheduled job has not finished before its next trigger fires under a concurrency limit of one, an implementation must pick among four behaviors (parallel spawn, prefer new, wait, or prefer old), and each encodes a different assumption about the workload and fault model. The author works a repository-repacking example where scheduling a seven-hour weekend job every three hours fails badly under prefer-new semantics but behaves under prefer-old, and recommends modeling queue size, concurrency, and interval assumptions explicitly before deploying.
+- **Why it matters:** Queue overflow and duplicate or dropped jobs often trace to an unstated scheduling-semantics choice rather than a coding bug.
 
 ## Hacker News
 
