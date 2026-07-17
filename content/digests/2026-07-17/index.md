@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-17."
 
 [extra]
 status = "published"
-source_count = 32
+source_count = 36
 +++
 
 ## Top stories
@@ -111,6 +111,16 @@ No major items found. The KEV catalog additions on 2026-07-16 (Microsoft SharePo
 - **Summary:** GitHub reported REST API degradation from 22:21 UTC to 23:50 UTC on 2026-07-16. About 39% of REST API requests failed with HTTP 500-level responses, peaking at 44.3%. GitHub attributed the incident to an infrastructure change that wrongly marked most API backends in a single region as unhealthy, so requests failed before reaching the application layer.
 - **Why it matters:** REST API failures at that rate break CI, automation, and tooling that depend on the GitHub API, independent of the web UI.
 
+## Languages and runtimes
+
+### Solod compiles a strict Go subset to readable C
+
+- **Category:** Languages
+- **Status:** discussion
+- **Sources:** [Solod](https://solod.dev), [HN discussion](https://news.ycombinator.com/item?id=48895199)
+- **Summary:** Solod ("So") is a strict subset of Go that translates to readable C11 with zero runtime, no garbage collection, and no hidden allocations. It supports structs, methods, interfaces, slices, maps, multiple returns, and defer, with everything stack-allocated by default and heap access opt-in through the standard library. Concurrency and a ported standard library are provided as libraries rather than language builtins, generics support is limited, and it offers native C interop without CGO. Standard Go tooling such as the LSP, linting, and `go test` works on Solod source. It reached the Hacker News front page on 2026-07-17.
+- **Why it matters:** It targets systems programming with Go syntax and tooling while emitting dependency-free C, an alternative to learning C or a separate systems language.
+
 ## Engineering posts
 
 ### Building a PlanetScale-style database branching system from scratch
@@ -120,6 +130,14 @@ No major items found. The KEV catalog additions on 2026-07-16 (Microsoft SharePo
 - **Sources:** [onatm.dev](https://onatm.dev/2026/07/16/homescale-part-1/), [HN discussion](https://news.ycombinator.com/item?id=48933303)
 - **Summary:** A 2026-07-16 post introduces Homescale, a project that creates writable database instances and point-in-time branches from immutable snapshots without full database copies. The first part covers the infrastructure layer: Kubernetes, Ceph storage, and copy-on-write cloning to make database branching cheap.
 - **Why it matters:** It works through the storage mechanics behind database branching-as-a-feature, which PlanetScale and Neon expose but rarely document at the block level.
+
+### Detecting LLM-generated text with classical machine learning
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [blog.lyc8503.net](https://blog.lyc8503.net/en/post/llm-classifier/), [HN discussion](https://news.ycombinator.com/item?id=48936880)
+- **Summary:** A practitioner write-up (dated 2026-03-01, resurfaced on the Hacker News front page 2026-07-17) reports that mainstream LLM output carries strong statistical patterns that a traditional scikit-learn SVM can separate from human-written text, and suspects this is how many AI plagiarism checkers work internally. The author documents data generation, training, a JavaScript web-demo implementation, and an attack-and-defense section showing that round-trip translation and prompt-based rewriting degrade detection.
+- **Why it matters:** It gives a concrete, low-cost method for AI-text detection and shows how fragile such detectors are against simple evasions, relevant to anyone building or relying on plagiarism and provenance checks.
 
 ## Hacker News
 
@@ -146,14 +164,14 @@ No major items found. The KEV catalog additions on 2026-07-16 (Microsoft SharePo
 ## Sources checked
 
 - Hacker News: full structured coverage via the Algolia backend (front page, top of day, Ask HN, Show HN, top comments, 67 of 79 watchlist queries with hits).
-- Reddit: degraded. The live fetch and the committed snapshot each covered only 4 of 28 subreddits (selfhosted, aws, OpenAI, swift, googlecloud, ClaudeAI, java, MachineLearning) due to datacenter-IP rate limiting. Kimi K3 and GPT-5.6 dominated the returned AI subreddits.
+- Reddit: degraded. The deep-sweep fetch returned 8 of 28 subreddits (selfhosted, OpenAI, AZURE, swift, ClaudeAI, programming, googlecloud, golang) due to datacenter-IP rate limiting. Kimi K3 pricing pushback ("not cheap Chinese AI anymore", "4.5x the price of GPT-5.6 Sol Medium", "benchmaxxed") dominated the AI subreddits, reinforcing the Top stories Kimi K3 item.
 - AI sources: Moonshot, Google, LM Studio, Kimi platform docs, Artificial Analysis.
 - ML research and arXiv papers: cs.LG, cs.CL, cs.AI, cs.CR listings and watchlist queries.
 - Conferences and events: EuroPython 2026 active.
 - Books and publisher feeds: No Starch, Pragmatic Bookshelf, and Springer Computer Science feeds checked. Springer returned conference proceedings only, no qualifying trade release.
 - Security advisories: CISA KEV catalog (2026.07.16), NVD, Fortinet PSIRT.
 - Status pages: GitHub (REST API incident), Cloudflare, AWS, Azure, Google Cloud, npm, PyPI. No other major developer-facing outage found.
-- GitHub watchlist: releases for the `[github]` repos checked. No new stable release since the 2026-07-16 digest.
-- Engineering blogs: Turso, and independent write-ups surfaced through Hacker News.
+- GitHub watchlist: deep-sweep release check across every `[github]` repo. No new stable release since the 2026-07-16 digest (rust 1.97.1, kotlin 2.4.10, deno 2.9.3, and brew 6.0.11 were already covered; neovim nightly and yjs rc are rolling prereleases). github.com/trending showed no new cross-source theme.
+- Engineering blogs: Turso, Solod, and independent write-ups surfaced through Hacker News.
 - YouTube channels: watchlist feeds checked. No video cleared the New videos bar with discussion signal.
 - Markets and company sources: SpaceX stock coverage tied to the AI-infrastructure-financing follow-up.
