@@ -17,6 +17,15 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-17: AWS Cost Explorer inflated-billing-estimate incident
+
+- Status: open
+- Category: Outage
+- Sources: [AWS Support status update](https://x.com/AWSSupport/status/2078037531036172430), [HN 48945241](https://news.ycombinator.com/item?id=48945241)
+- Watch for: A published root-cause writeup; confirmation no invoices or payment records were affected; whether budget-alert/anomaly-detection false positives are cleaned up automatically or require customer action.
+- Last checked: 2026-07-17
+- Notes: 2026-07-17 AWS Billing Console incident: Cost Explorer showed inaccurate estimated billing data, some accounts (including near-idle ones) seeing estimates of hundreds of millions to trillions of dollars; budget alerts fired on the bad figures. Reports began ~19:38 PDT 2026-07-16; AWS opened investigation 01:33 PDT 2026-07-17. AWS stated root cause is a unit-pricing defect in the estimated billing computation subsystem, estimates do not reflect actual usage/charges, and recompute across all accounts takes several hours after mitigation. Display/estimation layer only; no evidence invoices or payment processing affected. HN 48945241 (533 pts). Covered 2026-07-17 Top stories (Outage).
+
 ## 2026-07-16: SharePoint and FortiSandbox flaws added to CISA KEV
 
 - Status: open
@@ -49,9 +58,9 @@ Format:
 - Status: open
 - Category: Markets
 - Sources: [complaint (CourtListener)](https://www.courtlistener.com/docket/73602437/apple-inc-v-liu/), [CNBC](https://www.cnbc.com/2026/07/10/apple-openai-lawsuit-trade-secrets.html), [HN 48865019](https://news.ycombinator.com/item?id=48865019)
-- Watch for: OpenAI's formal answer and any denial specifics; an injunction or TRO motion; whether the case affects the io Products device roadmap or timeline; any settlement.
-- Last checked: 2026-07-11
-- Notes: Apple filed 2026-07-10 in N.D. Cal. (Apple Inc. v. Liu, 5:26-cv-07078), trade-secret misappropriation and breach of contract, against OpenAI Foundation, OpenAI Group PBC, io Products LLC, and two former Apple employees now at OpenAI: Chang Liu (former senior systems electrical engineer) and Tang Yew Tan (OpenAI hardware chief, former Apple VP product design for iPhone/Apple Watch). Alleges Liu skipped his exit interview, kept an Apple laptop, and exploited a bug to reach Apple internal cloud storage after leaving, downloading confidential files incl 1000+ pages of technical docs; Tan directed Apple job candidates to bring "actual parts" to OpenAI interviews. OpenAI denied ("no interest in other companies' trade secrets"). Break from the 2024 Apple Intelligence partnership; io Products is the ~$6.4B Jony Ive hardware startup OpenAI acquired. Covered 2026-07-11 Top stories (lead).
+- Watch for: OpenAI's formal answer and any denial specifics; an injunction or TRO motion; additional named defendants beyond Liu and Tan; whether the case affects the io Products device roadmap or timeline; any settlement.
+- Last checked: 2026-07-17
+- Notes: Apple filed 2026-07-10 in N.D. Cal. (Apple Inc. v. Liu, 5:26-cv-07078), trade-secret misappropriation and breach of contract, against OpenAI Foundation, OpenAI Group PBC, io Products LLC, and two former Apple employees now at OpenAI: Chang Liu (former senior systems electrical engineer) and Tang Yew Tan (OpenAI hardware chief, former Apple VP product design for iPhone/Apple Watch). Alleges Liu skipped his exit interview, kept an Apple laptop, and exploited a bug to reach Apple internal cloud storage after leaving, downloading confidential files incl 1000+ pages of technical docs; Tan directed Apple job candidates to bring "actual parts" to OpenAI interviews. OpenAI denied ("no interest in other companies' trade secrets"). Break from the 2024 Apple Intelligence partnership; io Products is the ~$6.4B Jony Ive hardware startup OpenAI acquired. Covered 2026-07-11 Top stories (lead). 2026-07-17: FT reported (HN 48946303, 9to5Mac, MacRumors) Apple sent formal legal-preservation (litigation-hold) letters to about 40 former Apple employees now at OpenAI, instructing them to preserve documents/evidence; framing suggests Apple believes the alleged misappropriation may reach employees beyond the two named defendants. Covered 2026-07-17 Markets and companies (confirmed).
 
 ## 2026-07-10: GPT-5.6 Sol Ultra claims a proof of the Cycle Double Cover Conjecture
 

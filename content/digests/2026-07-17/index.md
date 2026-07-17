@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-17."
 
 [extra]
 status = "published"
-source_count = 36
+source_count = 41
 +++
 
 ## Top stories
@@ -19,6 +19,16 @@ source_count = 36
 - **Summary:** CISA added three vulnerabilities to the Known Exploited Vulnerabilities catalog on 2026-07-16 (catalog version 2026.07.16, count 1647). CVE-2026-58644 is a deserialization-of-untrusted-data flaw in Microsoft SharePoint (CWE-502, CVSS 9.8) that lets an unauthenticated attacker execute code over the network. Fixed builds are SharePoint 2016 16.0.5556.1005, SharePoint 2019 16.0.10417.20153, and Subscription Edition 16.0.19725.20384. CVE-2026-25089 and CVE-2026-39808 are OS command injection flaws in Fortinet FortiSandbox, FortiSandbox Cloud, and FortiSandbox PaaS that allow unauthenticated command execution via crafted HTTP requests, fixed in FortiSandbox 4.4.9 and 5.0.6 (Cloud and PaaS on 5.0.6). All three carry a federal remediation deadline of 2026-07-19.
 - **Why it matters:** All three are unauthenticated remote-code paths on internet-facing enterprise infrastructure, and the three-day federal deadline signals confirmed active exploitation.
 - **Follow-up:** Watch for ransomware follow-on, exposure scans of unpatched SharePoint and FortiSandbox appliances, and whether the SharePoint deserialization flaw joins the earlier July SharePoint KEV entries in a single exploitation cluster.
+
+### AWS Cost Explorer shows inflated billing estimates in a global incident
+
+- **Category:** Outage
+- **Status:** confirmed
+- **Sources:** [AWS Support status update](https://x.com/AWSSupport/status/2078037531036172430), [HN discussion](https://news.ycombinator.com/item?id=48945241)
+- **Summary:** AWS opened an incident on the AWS Billing Console on 2026-07-17 after Cost Explorer began showing inaccurate estimated billing data. AWS reported the investigation started at 01:33 PDT on 2026-07-17, after reports that began the prior evening. Customers, including accounts with little or no active usage, saw estimated charges reaching hundreds of millions to trillions of dollars. AWS stated the root cause is a unit-pricing defect in the estimated billing computation subsystem, that the displayed estimates do not reflect actual usage or charges, and that recomputing correct estimates across all accounts would take several hours after mitigation.
+- **Comments:** HN commenters reported budget alerts for figures such as $286M and $420M on accounts that normally cost a few dollars a month, and linked an r/aws thread with the same pattern.
+- **Why it matters:** Budget alerts, anomaly detection, and FinOps guardrails keyed on the bad estimates fired on those figures, so a display-layer defect propagated into every downstream alerting path even though invoices and payment records were not affected.
+- **Follow-up:** Watch for a published root-cause writeup and confirmation that no invoices or payment records were affected.
 
 ### Kimi K3 publishes specs, pricing, and benchmarks with weights due 2026-07-27
 
@@ -111,6 +121,8 @@ No major items found. The KEV catalog additions on 2026-07-16 (Microsoft SharePo
 - **Summary:** GitHub reported REST API degradation from 22:21 UTC to 23:50 UTC on 2026-07-16. About 39% of REST API requests failed with HTTP 500-level responses, peaking at 44.3%. GitHub attributed the incident to an infrastructure change that wrongly marked most API backends in a single region as unhealthy, so requests failed before reaching the application layer.
 - **Why it matters:** REST API failures at that rate break CI, automation, and tooling that depend on the GitHub API, independent of the web UI.
 
+The 2026-07-17 AWS Cost Explorer billing-estimate incident is covered in Top stories.
+
 ## Languages and runtimes
 
 ### Solod compiles a strict Go subset to readable C
@@ -139,6 +151,17 @@ No major items found. The KEV catalog additions on 2026-07-16 (Microsoft SharePo
 - **Summary:** A practitioner write-up (dated 2026-03-01, resurfaced on the Hacker News front page 2026-07-17) reports that mainstream LLM output carries strong statistical patterns that a traditional scikit-learn SVM can separate from human-written text, and suspects this is how many AI plagiarism checkers work internally. The author documents data generation, training, a JavaScript web-demo implementation, and an attack-and-defense section showing that round-trip translation and prompt-based rewriting degrade detection.
 - **Why it matters:** It gives a concrete, low-cost method for AI-text detection and shows how fragile such detectors are against simple evasions, relevant to anyone building or relying on plagiarism and provenance checks.
 
+## Markets and companies
+
+### Apple sends litigation-hold letters to about 40 former employees now at OpenAI
+
+- **Category:** Markets
+- **Status:** confirmed
+- **Sources:** [FT report](https://www.ft.com/content/1b8c9d52-88a9-426b-ba47-f1811f859166), [9to5Mac](https://9to5mac.com/2026/07/17/apple-sends-legal-letters-to-former-employees-now-at-openai/), [HN discussion](https://news.ycombinator.com/item?id=48946303)
+- **Summary:** The Financial Times reported on 2026-07-17 that Apple sent formal legal-preservation letters to about 40 former Apple employees now at OpenAI, instructing them to preserve documents and evidence relevant to Apple's trade-secret dispute. The letters extend the lawsuit Apple filed on 2026-07-10 in the Northern District of California against OpenAI, io Products, and former Apple staff Tang Tan (now OpenAI's hardware chief) and Chang Liu, and indicate Apple believes the alleged misappropriation may involve employees beyond those named in the complaint.
+- **Why it matters:** Litigation-hold letters to dozens of hardware and engineering staff signal Apple is widening the trade-secret case against OpenAI's device effort rather than confining it to the two named defendants.
+- **Follow-up:** Watch for OpenAI's response, any additional named defendants, and whether the escalation affects the io Products hardware roadmap.
+
 ## Hacker News
 
 ### The LLM critics are right, and the author keeps using LLMs
@@ -163,15 +186,15 @@ No major items found. The KEV catalog additions on 2026-07-16 (Microsoft SharePo
 
 ## Sources checked
 
-- Hacker News: full structured coverage via the Algolia backend (front page, top of day, Ask HN, Show HN, top comments, 67 of 79 watchlist queries with hits).
-- Reddit: degraded. The deep-sweep fetch returned 8 of 28 subreddits (selfhosted, OpenAI, AZURE, swift, ClaudeAI, programming, googlecloud, golang) due to datacenter-IP rate limiting. Kimi K3 pricing pushback ("not cheap Chinese AI anymore", "4.5x the price of GPT-5.6 Sol Medium", "benchmaxxed") dominated the AI subreddits, reinforcing the Top stories Kimi K3 item.
-- AI sources: Moonshot, Google, LM Studio, Kimi platform docs, Artificial Analysis.
+- Hacker News: full structured coverage via the Algolia backend (front page, top of day, Ask HN, Show HN, top comments, 65 of 79 watchlist queries with hits on the third-run fetch).
+- Reddit: degraded. The third-run live fetch timed out from the datacenter IP; used the committed 2026-07-17 snapshot (fetched 13:58 UTC, 246 unique posts across top-of-day and hot). AI pulse dominated by Kimi K3 pricing pushback ("benchmaxxed Chinese open source model") and GPT-5.6, both already covered; no separate pulse block added.
+- AI sources: Moonshot, Google, LM Studio, Kimi platform docs, Artificial Analysis, Financial Times (Apple v. OpenAI).
 - ML research and arXiv papers: cs.LG, cs.CL, cs.AI, cs.CR listings and watchlist queries.
 - Conferences and events: EuroPython 2026 active.
 - Books and publisher feeds: No Starch, Pragmatic Bookshelf, and Springer Computer Science feeds checked. Springer returned conference proceedings only, no qualifying trade release.
 - Security advisories: CISA KEV catalog (2026.07.16), NVD, Fortinet PSIRT.
-- Status pages: GitHub (REST API incident), Cloudflare, AWS, Azure, Google Cloud, npm, PyPI. No other major developer-facing outage found.
+- Status pages: AWS (Billing Console incident), GitHub (REST API incident), Cloudflare, Azure, Google Cloud, npm, PyPI. No other major developer-facing outage found.
 - GitHub watchlist: deep-sweep release check across every `[github]` repo. No new stable release since the 2026-07-16 digest (rust 1.97.1, kotlin 2.4.10, deno 2.9.3, and brew 6.0.11 were already covered; neovim nightly and yjs rc are rolling prereleases). github.com/trending showed no new cross-source theme.
 - Engineering blogs: Turso, Solod, and independent write-ups surfaced through Hacker News.
 - YouTube channels: watchlist feeds checked. No video cleared the New videos bar with discussion signal.
-- Markets and company sources: SpaceX stock coverage tied to the AI-infrastructure-financing follow-up.
+- Markets and company sources: Apple litigation-hold letters to OpenAI employees (FT, 9to5Mac); SpaceX stock coverage tied to the AI-infrastructure-financing follow-up.
