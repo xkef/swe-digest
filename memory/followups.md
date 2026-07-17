@@ -17,6 +17,24 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-16: SharePoint and FortiSandbox flaws added to CISA KEV
+
+- Status: open
+- Category: Security
+- Sources: [CVE-2026-58644 (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2026-58644), [CISA KEV catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog), [FortiSandbox FG-IR-26-141](https://fortiguard.fortinet.com/psirt/FG-IR-26-141)
+- Watch for: Ransomware follow-on; internet-exposure scans of unpatched SharePoint and FortiSandbox appliances; whether the 2026-07-19 federal deadline drives patch uptake; whether the SharePoint deserialization flaw links to the earlier July SharePoint KEV entries in one exploitation cluster.
+- Last checked: 2026-07-17
+- Notes: CISA KEV catalog 2026.07.16 (count 1647) added three unauthenticated remote-code flaws on 2026-07-16, all federal due 2026-07-19. CVE-2026-58644: Microsoft SharePoint deserialization of untrusted data (CWE-502, CVSS 9.8, code exec over network); fixed SharePoint 2016 16.0.5556.1005, 2019 16.0.10417.20153, Subscription Edition 16.0.19725.20384. CVE-2026-25089 and CVE-2026-39808: Fortinet FortiSandbox / Cloud / PaaS OS command injection via crafted HTTP requests; fixed 4.4.9 and 5.0.6 (Cloud/PaaS 5.0.6); patched mid-2026 with exploitation observed since ~2026-06-14 (FG-IR-26-141, FG-IR-26-100). Third July SharePoint KEV entry after CVE-2026-45659 and CVE-2026-56164. Covered 2026-07-17 Top stories (lead).
+
+## 2026-07-16: Kimi K3 announcement adds specs, pricing, and a weight-release date
+
+- Status: open
+- Category: AI
+- Sources: [Moonshot blog](https://www.kimi.com/blog/kimi-k3), [Kimi K3 API pricing](https://platform.kimi.ai/docs/pricing/chat-k3), [HN 48935342](https://news.ycombinator.com/item?id=48935342)
+- Watch for: The 2026-07-27 weight release and license (K2 was modified-MIT); the technical report; independent benchmark reproduction; whether the $3.00/$15.00 per 1M pricing holds as third parties serve the open weights.
+- Last checked: 2026-07-17
+- Notes: Moonshot published the Kimi K3 announcement 2026-07-16, adding detail missing at go-live: 2.8T-param MoE (Stable LatentMoE, 16 of 896 experts active/token), Kimi Delta Attention, 1M context, native multimodal. API model id `kimi-k3`, $0.30 cache-hit / $3.00 cache-miss per 1M input, $15.00 per 1M output. Full weights promised by 2026-07-27, technical report to follow. Vendor figures rank overall intelligence behind Fable 5 and GPT-5.6 Sol; HN notes the pricing is high for a Chinese open-weight model. Simon Willison calls it the first "open 3T-class model". Covered 2026-07-17 Top stories. Supersedes the 2026-07-16 "Kimi K3 live without a model card" note.
+
 ## 2026-07-13: xAI Grok Build CLI uploads entire repository and .env secrets by default
 
 - Status: open
@@ -592,12 +610,3 @@ Format:
 - Watch for: Exploitation and ransomware reports; internet-exposure scans of unpatched EBS Payments deployments; whether other CSPUMay2026 CVEs see abuse; the 2026-07-18 federal remediation deadline.
 - Last checked: 2026-07-16
 - Notes: CISA added CVE-2026-46817 to KEV 2026-07-15 (catalog 2026.07.15, count 1644). Missing-authentication (CWE-306/287/269) in the Oracle Payments File Transmission component of Oracle E-Business Suite 12.2.3-12.2.15, CVSS 9.8, unauthenticated network-reachable; fixed in the CSPUMay2026 security alert. NVD moved exploitation none-to-active on the KEV addition. Federal due 2026-07-18. Covered 2026-07-16 Top stories.
-
-## 2026-07-16: Kimi K3 live in the Kimi product without a model card
-
-- Status: open
-- Category: AI
-- Sources: [Kimi](https://www.kimi.com/en), [HN 48935342](https://news.ycombinator.com/item?id=48935342)
-- Watch for: An official Moonshot model card; weights and license (K2 shipped modified-MIT open weights); published benchmarks; API model id and pricing; whether the reported ~2.5T-param MoE / 1M-context leak specs hold.
-- Last checked: 2026-07-16
-- Notes: 2026-07-16 Kimi K3 became selectable in the kimi.com product (landing page headlines K3 for agentic coding/knowledge work); HN "Kimi K3 is now live" front page (48935342, ~332 pts, posted 14:46Z). Moonshot published no model card, weights, license, benchmark report, API model id, or pricing at go-live. Community leaks describe a new MoE architecture ~2.5T total params, 1M context, aimed at long-horizon coding/agents; unconfirmed by Moonshot. Web-search snapshots (stale) still listed K2.6 as flagship, so the live status is recent. Covered 2026-07-16 AI (developing).
