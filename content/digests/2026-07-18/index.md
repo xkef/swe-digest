@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-18."
 
 [extra]
 status = "published"
-source_count = 20
+source_count = 22
 +++
 
 ## Top stories
@@ -97,6 +97,14 @@ The 2026-07-16 AWS Cost Explorer billing-estimate incident and its correction ar
 - **Summary:** Julia Evans published field notes on 2026-07-17 from running SQLite for a small production service, covering backup strategy, credential handling for offsite copies, and reading query plans to understand index use. The post is a practitioner walkthrough rather than a benchmark.
 - **Comments:** Commenters pointed to SQLite's `.expert` mode for index recommendations and to the `sqlite_stat1` statistics the planner uses for selectivity estimates.
 - **Why it matters:** SQLite is increasingly used as an application database, so concrete operational notes on backups and query planning address a common gap.
+
+### Abusing progressive JPEG scans to embed animations in one file
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [maurycyz.com](https://maurycyz.com/projects/bad_jpeg/), [HN discussion](https://news.ycombinator.com/item?id=48954851)
+- **Summary:** Maurycy published a write-up on 2026-07-17 that exploits the multi-scan structure of progressive JPEG to play a short animation from a single standards-compliant image file. Progressive JPEG renders successive scans at increasing detail, and by concatenating minimal DC-only frames (each a valid JPEG at 1/16 resolution) the author packs roughly 90 distinct frames that browsers render in sequence before they stop decoding at around nine scans. There is no timing metadata, so playback speed depends entirely on network delay.
+- **Why it matters:** The technique documents a decoder-behavior edge case in a ubiquitous image format, relevant to anyone parsing or sandboxing untrusted image input where scan count and frame concatenation are not bounded.
 
 ## Hacker News
 
