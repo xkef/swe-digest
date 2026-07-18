@@ -637,3 +637,12 @@ Format:
 - Watch for: Exploitation and ransomware reports; internet-exposure scans of unpatched EBS Payments deployments; whether other CSPUMay2026 CVEs see abuse; the 2026-07-18 federal remediation deadline.
 - Last checked: 2026-07-16
 - Notes: CISA added CVE-2026-46817 to KEV 2026-07-15 (catalog 2026.07.15, count 1644). Missing-authentication (CWE-306/287/269) in the Oracle Payments File Transmission component of Oracle E-Business Suite 12.2.3-12.2.15, CVSS 9.8, unauthenticated network-reachable; fixed in the CSPUMay2026 security alert. NVD moved exploitation none-to-active on the KEV addition. Federal due 2026-07-18. Covered 2026-07-16 Top stories.
+
+## 2026-07-18: GPT-5.6 credited with a Lean-verified convex optimization lower bound
+
+- Status: open
+- Category: AI
+- Sources: [Lean repo](https://github.com/PhillipKerger/zero-order-bounds-lean-verification), [HN 48957779](https://news.ycombinator.com/item?id=48957779)
+- Watch for: Peer review of the manuscript; independent confirmation of the AI's role versus human authorship; whether the Lean formalization matches the claimed AI-produced proof; whether it holds up like or unlike the earlier CDC-proof and Star Fleet claims.
+- Last checked: 2026-07-18
+- Notes: r/math thread (HN front page 48957779, 253 pts) claims GPT-5.6, given a ~10-page prompt, closed a long-open derivative-free convex optimization gap: a near-quadratic Omega(d^2) deterministic lower bound for convex Lipschitz functions from exact function values, matching a 30-year-old algorithm. Phillip Kerger (UC Berkeley) published a Lean 4/mathlib formalization plus a manuscript "Closing the Oracle-Complexity Gap in Derivative-Free Convex Optimization"; the manuscript does not attribute the proof to an AI. Machine-checked but not peer reviewed; commenters stress heavy human priming and treat the AI authorship as a community claim. Extends the AI-math-proof theme (CDC proof 2026-07-10, Star Fleet Erdős 2026-07-15). Covered 2026-07-18 AI (discussion).
