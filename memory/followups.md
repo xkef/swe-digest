@@ -21,10 +21,10 @@ Format:
 
 - Status: open
 - Category: Outage
-- Sources: [AWS Support status update](https://x.com/AWSSupport/status/2078037531036172430), [HN 48945241](https://news.ycombinator.com/item?id=48945241)
-- Watch for: A published root-cause writeup; confirmation no invoices or payment records were affected; whether budget-alert/anomaly-detection false positives are cleaned up automatically or require customer action.
-- Last checked: 2026-07-17
-- Notes: 2026-07-17 AWS Billing Console incident: Cost Explorer showed inaccurate estimated billing data, some accounts (including near-idle ones) seeing estimates of hundreds of millions to trillions of dollars; budget alerts fired on the bad figures. Reports began ~19:38 PDT 2026-07-16; AWS opened investigation 01:33 PDT 2026-07-17. AWS stated root cause is a unit-pricing defect in the estimated billing computation subsystem, estimates do not reflect actual usage/charges, and recompute across all accounts takes several hours after mitigation. Display/estimation layer only; no evidence invoices or payment processing affected. HN 48945241 (533 pts). Covered 2026-07-17 Top stories (Outage).
+- Sources: [AWS Support status update](https://x.com/AWSSupport/status/2078037531036172430), [The Register](https://www.theregister.com/off-prem/2026/07/17/billing-software-error-sends-billion-dollar-aws-estimates/), [HN 48945241](https://news.ycombinator.com/item?id=48945241)
+- Watch for: A published root-cause writeup; confirmation budget-alert/anomaly-detection false positives cleared without customer action; confirmation no invoices or payment records were affected.
+- Last checked: 2026-07-18
+- Notes: 2026-07-17 AWS Billing Console incident: Cost Explorer showed inaccurate estimated billing data, some accounts (including near-idle ones) seeing estimates of hundreds of millions to trillions of dollars; budget alerts fired on the bad figures. Reports began ~19:38 PDT 2026-07-16; AWS opened investigation 01:33 PDT 2026-07-17. AWS stated root cause is a unit-pricing defect in the estimated billing computation subsystem, estimates do not reflect actual usage/charges. Display/estimation layer only; no evidence invoices or payment processing affected. HN 48945241 (1092 pts). 2026-07-18: AWS began backfilling corrected figures in the Cost Management Console and said all accounts should show accurate amounts by ~noon Pacific 2026-07-18. Covered 2026-07-17 Top stories (Outage), re-covered 2026-07-18 Top stories with the correction.
 
 ## 2026-07-16: SharePoint and FortiSandbox flaws added to CISA KEV
 
@@ -610,6 +610,24 @@ Format:
 - Watch for: The PayPal board response (reported to meet ~2026-07-20); any formal confirmation or rejection; antitrust signals given Stripe + PayPal + Venmo + Braintree concentration; payments-infrastructure and pricing impact if it closes.
 - Last checked: 2026-07-16
 - Notes: Reuters and others reported 2026-07-15 that Stripe and PE firm Advent International made a joint offer for PayPal at ~$60.50/share (>$53B, ~28% premium, ~$50B committed bank financing), equal Stripe/Advent ownership with no stated breakup. PayPal (advised by Goldman Sachs and Evercore on alternatives) had not responded; companies had not confirmed. HN flags antitrust concentration and timing. Covered 2026-07-16 Top stories (developing).
+
+## 2026-07-17: wp2shell WordPress Core pre-auth RCE (CVE-2026-63030 + CVE-2026-60137)
+
+- Status: open
+- Category: Security
+- Sources: [Searchlight Cyber research](https://slcyber.io/research-center/wp2shell-pre-authentication-rce-in-wordpress-core/), [CVE-2026-63030 (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2026-63030), [Rapid7 analysis](https://www.rapid7.com/blog/post/etr-cve-2026-63030-wp2shell-a-critical-remote-code-execution-vulnerability-in-wordpress-core/)
+- Watch for: Active exploitation and mass scanning against the batch endpoint; a CISA KEV addition; confirmation forced auto-updates reach installs without auto-update enabled; whether the withheld exploit chain is fully published.
+- Last checked: 2026-07-18
+- Notes: Searchlight Cyber disclosed wp2shell 2026-07-17, an unauthenticated RCE in stock WordPress core (no plugins, no account, no user interaction). CVE-2026-63030 is a route-confusion flaw in the REST API batch endpoint `/wp-json/batch/v1` chained with CVE-2026-60137 (SQL injection) to reach code execution. Affected core 6.9.0-6.9.4 and 7.0.0-7.0.1; fixed 6.9.5 and 7.0.2 released 2026-07-17 with forced auto-updates on installs that have auto-update enabled. Public PoC for CVE-2026-63030 exists; Cloudflare added WAF protection. No active exploitation reported as of 2026-07-18. Covered 2026-07-18 Top stories (lead).
+
+## 2026-07-18: TP-Link Kasa EC70/EC71 v4 hardcoded key and GPS disclosure
+
+- Status: open
+- Category: Security
+- Sources: [CVE-2026-9770 (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2026-9770), [CVE-2026-13230 (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2026-13230)
+- Watch for: Whether other Kasa/Tapo models share the firmware key; internet or LAN exposure scans; any escalation beyond local-network reach; TP-Link advisory tracking IDs.
+- Last checked: 2026-07-18
+- Notes: TP-Link Kasa EC70/EC71 v4 cameras. CVE-2026-9770 (CVSS 8.6): hardcoded cryptographic key in firmware lets a local-network attacker decrypt traffic between the camera and its web management interface. CVE-2026-13230 (CVSS 5.3): GPS coordinates exposed via the unauthenticated local discovery UDP response (`get_sysinfo`); a crafted discovery request returns location metadata without auth. Fixed firmware 2.4.0 Build 20260520 and later, coordinates removed in 2.4.1. Local-network attack only. Surfaced HN 48952565. Covered 2026-07-18 Security.
 
 ## 2026-07-16: Oracle E-Business Suite CVE-2026-46817 added to CISA KEV
 
