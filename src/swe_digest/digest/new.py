@@ -23,7 +23,7 @@ SOURCES_CHECKED = [
     "Reddit",
     "AI sources",
     "ML research and arXiv papers",
-    "Conferences and events",
+    "Events watchlist",
     "Books and publisher feeds",
     "Security advisories",
     "Status pages",

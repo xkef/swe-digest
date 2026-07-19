@@ -584,12 +584,14 @@ people = [
 
 [[events]]
 # Curated tech conferences, keynotes, livestreams, and scheduled release
-# events. scripts/fetch_events.py filters this list by date to surface
-# upcoming events (lead time) and ones active today; it does no network call,
-# so the dates here are the source of truth. Keep them current and verified
-# against each event's official page. Schema per entry: name, start, end
-# (ISO dates; end may equal start for a one-day event), url, topic (one of the
-# digest section labels). Remove an event once it is well past.
+# events. `make events` (swe_digest.fetch.events) filters this list by date
+# into upcoming (lead window) and active events; it does no network call, so
+# the dates here are the source of truth. Keep them current and verified
+# against each event's official page. The output is context only: it points
+# the run at conferences worth watching for notable talks, and never produces
+# a digest entry by itself. Schema per entry: name, start, end (ISO dates;
+# end may equal start for a one-day event), url, topic (one of the digest
+# section labels). Remove an event once it is well past.
 name = "ICML 2026"
 start = "2026-07-06"
 end = "2026-07-11"

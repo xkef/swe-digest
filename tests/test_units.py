@@ -197,11 +197,13 @@ class TestRunLogParsing:
 
 class TestSectionVocabulary:
     def test_vocabulary_extends_current_sections(self) -> None:
-        assert len(SECTIONS) == 20
+        assert len(SECTIONS) == 19
         assert len(SECTION_VOCABULARY) == 21
-        # The vocabulary is SECTIONS with the one legacy name slotted in, so
-        # every current digest order is a subsequence of it.
-        assert [s for s in SECTION_VOCABULARY if s != "HN and Reddit pulse"] == SECTIONS
+        # The vocabulary is SECTIONS with the two legacy names slotted in, so
+        # every published digest order, old or new, is a subsequence of it.
+        legacy = {"HN and Reddit pulse", "Conferences and events"}
+        assert [s for s in SECTION_VOCABULARY if s not in legacy] == SECTIONS
+        assert SECTION_VOCABULARY.index("Conferences and events") == 1
         assert SECTION_VOCABULARY.index("HN and Reddit pulse") == 18
         assert SECTION_VOCABULARY[0] == "Top stories"
         assert SECTION_VOCABULARY[-1] == "Sources checked"
