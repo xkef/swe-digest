@@ -60,6 +60,12 @@ BOOKS_WINDOW_SECONDS: int = _raw["books"]["window_days"] * 24 * 3600
 BOOKS_SNAPSHOT_MAX_AGE_HOURS: int = _raw["books"]["snapshot_max_age_hours"]
 BOOKS_DESCRIPTION_MAX_CHARS: int = _raw["books"]["description_max_chars"]
 
+# GitHub stars fetcher
+STARS_WINDOW_SECONDS: int = _raw["stars"]["window_hours"] * 3600
+STARS_REQUEST_PAUSE_SECONDS: float = _raw["stars"]["request_pause_seconds"]
+STARS_MAX_REPO_LOOKUPS: int = _raw["stars"]["max_repo_lookups"]
+STARS_DESCRIPTION_MAX_CHARS: int = _raw["stars"]["description_max_chars"]
+
 # Events
 EVENTS_LEAD_DAYS: int = _raw["events"]["lead_days"]
 EVENTS_SOON_DAYS: int = _raw["events"]["soon_days"]

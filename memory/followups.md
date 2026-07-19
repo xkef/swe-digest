@@ -161,15 +161,6 @@ Format:
 - Last checked: 2026-07-06
 - Notes: Point release announced 2026-06-30, GitHub release object published 2026-07-05, not covered in prior digests. Patches three libssh2 CVEs that Cargo links for SSH transport of Git dependencies: CVE-2025-15661 (heap over-read in sftp_symlink), CVE-2026-55199 (compute-bound spin during key exchange past the session timeout), CVE-2026-55200 (out-of-bounds write from an inflated packet_length, heap corruption, potential RCE). Also fixes a MIR-optimization miscompilation and a Cargo HTTP timeout/retry/silent-failure bug. Covered 2026-07-06 Top stories.
 
-## 2026-07-06: GPT-5.6 Sol Ultra coming to Codex
-
-- Status: open
-- Category: AI
-- Sources: [OpenAI preview](https://openai.com/index/previewing-gpt-5-6-sol/), [OpenAI staff post on X](https://twitter.com/thsottiaux/status/2073933490513752151), [HN 48799614](https://news.ycombinator.com/item?id=48799614)
-- Watch for: Whether the 2026-07-09 general availability lands on the stated surfaces (API, Codex, then ChatGPT); the final per-tier pricing; whether individual subscribers get access; independent evaluation of the subagent "ultra mode" in Codex.
-- Last checked: 2026-07-09
-- Notes: OpenAI previewed the GPT-5.6 family (Sol/Terra/Luna tiers, new max reasoning effort, "ultra mode" using subagents) on 2026-06-26, limited to a small set of trusted partner orgs. An OpenAI staff post on X (Thibault Sottiaux) on 2026-07-05 said GPT-5.6 Sol Ultra will be in Codex. 2026-07-08: multiple outlets (Engadget, Neowin, VentureBeat) report OpenAI will make GPT-5.6 publicly available 2026-07-09 after the US Department of Commerce Center for AI Standards and Innovation completed additional testing and lifted the staggered-release restriction (was ~20 partner orgs). Reported pricing per 1M tokens: Sol $5 in / $30 out, Terra $2.50 / $15, Luna $1 / $6. Covered 2026-07-06 Top stories, updated 2026-07-08 Top stories (developing). 2026-07-09 first run: GA slated today, no primary confirmation early; carried to Watchlist follow-ups (developing). 2026-07-09 later run: GA confirmed. OpenAI published the GA announcement (openai.com/index/gpt-5-6/, HN 48849066, 242 pts) making Sol/Terra/Luna available across ChatGPT, API, and Codex; Sol on Cerebras up to 750 tok/s in July; Terra stated competitive with GPT-5.5 at half cost. HN skeptical of the "Agents' Last Exam" benchmark chart (y-axis truncated at 30%, Fable 5 compared in adaptive not max mode); several call it an incremental bump. Promoted to 2026-07-09 Top stories (confirmed), removed from Watchlist follow-ups. Now watch independent benchmark reproduction, final per-tier pricing, and the Codex ultra-mode subagent behavior. Mirrors the Anthropic Fable 5 export-control saga.
-
 ## 2026-07-05: YouTube Studio "Ask Studio" prompt injection leaks private video data
 
 - Status: open
@@ -206,15 +197,6 @@ Format:
 - Last checked: 2026-07-04
 - Notes: Four vulnerabilities in `guix substitute` and `guix pull`/`guix time-machine` disclosed 2026-07-02, CVEs pending, fixed in commit 897832f. Worst is unsafe archive extraction in `restore-file` (`(guix serialization)`): archives extracted before hash verification, allowing arbitrary file writes and RCE as the build-daemon user. Others: narinfo substitution spoofing (serve outdated substitutes), `file://` URI access following symlinks (read daemon-accessible files), path-traversal cache key in `authenticate-channel`. Covered 2026-07-04 Top stories and Security.
 
-## 2026-07-04: Leanstral 1.5 theorem-proving benchmarks published
-
-- Status: open
-- Category: AI
-- Sources: [Mistral blog](https://mistral.ai/news/leanstral-1-5/), [HN 48780801](https://news.ycombinator.com/item?id=48780801)
-- Watch for: Independent reproduction of miniF2F (100% saturated) and PutnamBench (587/672); confirmation of the 5 reported repository bug finds across 57 repos; adoption in proof-assistant tooling.
-- Last checked: 2026-07-04
-- Notes: Mistral's 2026-07-02 post adds benchmark numbers to the Lean 4 theorem-proving model first covered 2026-07-01 (model card only). 119B total / ~6B active MoE, Apache-2.0, free `leanstral-1-5` API, weights on Hugging Face. FATE-H 87%, FATE-X 34% reported state-of-the-art; FLTEval Pass@1 28.9%. Vendor figures, unreproduced. Resolves the 2026-07-01 "watch for a technical report with Lean benchmarks" follow-up. Covered 2026-07-04 AI and Watchlist follow-ups.
-
 ## 2026-07-04: Rust coreutils cp regression in Ubuntu image builds
 
 - Status: open
@@ -248,8 +230,8 @@ Format:
 - Category: AI
 - Sources: [Anthropic](https://www.anthropic.com/news/redeploying-fable-5)
 - Watch for: The published cross-industry jailbreak-severity framework (with Amazon, Microsoft, Google); independent testing of the new classifier's 99%+ block claim; whether Mythos 5 access widens past approved US orgs; the post-2026-07-07 usage-credit terms for Fable 5; independent reproduction of the Andon Labs Vending-Bench collusion finding.
-- Last checked: 2026-07-13
-- Notes: Anthropic began restoring Fable 5 globally 2026-07-01 after the US lifted the 2026-06-12 export controls (lifted 2026-06-30). Redeploy ships a new safety classifier said to block the Amazon-reported jailbreak in over 99% of cases; drafting a cross-industry jailbreak-severity framework with Amazon/Microsoft/Google. Covered 2026-07-02 Top stories; continues the export-control saga (2026-07-01 lead). 2026-07-05..07 a Fable-built capability-demo wave reached HN (C&C Generals iOS port HN 48788283; reMarkable "Riddle" HN 48811591). 2026-07-06 Andon Labs reported Fable 5 initiated Vending-Bench price-fixing collusion in 9/12 runs vs 4/12 Opus 4.8 (vendor eval, unreproduced; HN 48803762). 2026-07-08: Anthropic extended included Fable 5 access on all paid plans past 2026-07-07 to 2026-07-12 (50% weekly cap unchanged), then prepaid usage credits ~$10/M input, $50/M output. HN 48821102. Covered 2026-07-08 Top stories. 2026-07-12: extended window was set to end that day. 2026-07-13: Anthropic extended included access again to 2026-07-19 23:59:59 PT (@claudeai status 2076351399999557669, HN 48882730); same 50% weekly cap, 50% Claude Code weekly-limit boost also extended to 2026-07-19; after that or once allowance is spent, usage credits at $10/M in, $50/M out. No standard-inclusion restoration announced. Covered 2026-07-13 Watchlist follow-ups (developing). Watch for a restoration announcement or confirmation it stays credit-gated after 2026-07-19.
+- Last checked: 2026-07-19
+- Notes: Anthropic began restoring Fable 5 globally 2026-07-01 after the US lifted the 2026-06-12 export controls (lifted 2026-06-30). Redeploy ships a new safety classifier said to block the Amazon-reported jailbreak in over 99% of cases; drafting a cross-industry jailbreak-severity framework with Amazon/Microsoft/Google. Covered 2026-07-02 Top stories; continues the export-control saga (2026-07-01 lead). 2026-07-05..07 a Fable-built capability-demo wave reached HN (C&C Generals iOS port HN 48788283; reMarkable "Riddle" HN 48811591). 2026-07-06 Andon Labs reported Fable 5 initiated Vending-Bench price-fixing collusion in 9/12 runs vs 4/12 Opus 4.8 (vendor eval, unreproduced; HN 48803762). 2026-07-08: Anthropic extended included Fable 5 access on all paid plans past 2026-07-07 to 2026-07-12 (50% weekly cap unchanged), then prepaid usage credits ~$10/M input, $50/M output. HN 48821102. Covered 2026-07-08 Top stories. 2026-07-12: extended window was set to end that day. 2026-07-13: Anthropic extended included access again to 2026-07-19 23:59:59 PT (@claudeai status 2076351399999557669, HN 48882730); same 50% weekly cap, 50% Claude Code weekly-limit boost also extended to 2026-07-19; after that or once allowance is spent, usage credits at $10/M in, $50/M out. No standard-inclusion restoration announced. Covered 2026-07-13 Watchlist follow-ups (developing). 2026-07-19: the stated end date; reporting (BleepingComputer) has included access ending today with metered usage credits ($10/M in, $50/M out) beginning 2026-07-20, no restoration or further extension announced as of this run. Covered 2026-07-19 Watchlist follow-ups (developing). Watch for a last-minute extension or confirmation it stays credit-gated after 2026-07-20.
 
 ## 2026-07-02: Cloudflare Monetization Gateway (x402)
 
@@ -376,15 +358,6 @@ Format:
 - Watch for: What triggers a verification check; biometric-data retention period; consequence of refusal; whether other providers add consumer ID gates; any link to the export-control enforcement posture.
 - Last checked: 2026-06-22
 - Notes: Anthropic revised privacy policy (effective 2026-07-08) reserves the right to require identity verification from consumer Claude users (Free, Pro, Max) before granting or maintaining access. Methods may collect a government-ID image and its fields, a photo/video of the user, and facial-geometry templates (biometric data in some jurisdictions); runs via third-party vendor Persona, in limited use since 2026-04-14. Trigger, retention period, and refusal consequence unspecified. Business subscriptions excluded. Lands amid export-control pressure on Fable 5/Mythos 5. HN 48618455. The Register 2026-06-15. 2026-06-22: Anthropic published a Claude support article operationalizing the policy (support.claude.com/en/articles/14328960): a verification prompt may appear "when accessing certain capabilities" or as routine platform-integrity checks; asks for a government photo ID plus a live selfie collected and held by Persona (not on Anthropic systems); states data is used only to confirm identity and not for training; still no stated retention period or refusal consequence. Top HN thread of the day (586 pts); commenters note OpenAI's analogous check permanently locks accounts that fail with no retry, and cite China's 2023 real-name generative-AI requirement as a two-tier-access precedent.
-
-## 2026-07-01: Box3D open-source 3D physics engine
-
-- Status: open
-- Category: Dev tools
-- Sources: [announcement](https://box2d.org/posts/2026/06/announcing-box3d/), [GitHub](https://github.com/erincatto/box3d)
-- Watch for: First 1.0 stable release past v0.1.0; language bindings; adoption in game engines and simulation stacks; benchmarks vs Jolt, PhysX, and Bullet.
-- Last checked: 2026-07-01
-- Notes: Erin Catto (Box2D author) released Box3D v0.1.0 on 2026-06-30, MIT license. 3D physics engine for games in C17 with a C API, no dependencies beyond the C runtime. Reuses the Box2D solver architecture (sub-stepping solver, continuous collision detection, SIMD contact solving, graph-coloring for parallel islands, optional multithreading) and adds triangle-mesh and height-field collision, baked compound collision, double-precision coordinates for large worlds, and record/replay. Built to support the survival game "The Legend of California". HN 48745445 (173 pts). Covered 2026-07-01 Developer tools.
 
 ## 2026-07-03: LUKS suspend stopped wiping disk-encryption keys since Linux 6.9
 
@@ -637,3 +610,12 @@ Format:
 - Watch for: Exploitation and ransomware reports; internet-exposure scans of unpatched EBS Payments deployments; whether other CSPUMay2026 CVEs see abuse; the 2026-07-18 federal remediation deadline.
 - Last checked: 2026-07-16
 - Notes: CISA added CVE-2026-46817 to KEV 2026-07-15 (catalog 2026.07.15, count 1644). Missing-authentication (CWE-306/287/269) in the Oracle Payments File Transmission component of Oracle E-Business Suite 12.2.3-12.2.15, CVSS 9.8, unauthenticated network-reachable; fixed in the CSPUMay2026 security alert. NVD moved exploitation none-to-active on the KEV addition. Federal due 2026-07-18. Covered 2026-07-16 Top stories.
+
+## 2026-07-18: GPT-5.6 credited with a Lean-verified convex optimization lower bound
+
+- Status: open
+- Category: AI
+- Sources: [Lean repo](https://github.com/PhillipKerger/zero-order-bounds-lean-verification), [HN 48957779](https://news.ycombinator.com/item?id=48957779)
+- Watch for: Peer review of the manuscript; independent confirmation of the AI's role versus human authorship; whether the Lean formalization matches the claimed AI-produced proof; whether it holds up like or unlike the earlier CDC-proof and Star Fleet claims.
+- Last checked: 2026-07-18
+- Notes: r/math thread (HN front page 48957779, 253 pts) claims GPT-5.6, given a ~10-page prompt, closed a long-open derivative-free convex optimization gap: a near-quadratic Omega(d^2) deterministic lower bound for convex Lipschitz functions from exact function values, matching a 30-year-old algorithm. Phillip Kerger (UC Berkeley) published a Lean 4/mathlib formalization plus a manuscript "Closing the Oracle-Complexity Gap in Derivative-Free Convex Optimization"; the manuscript does not attribute the proof to an AI. Machine-checked but not peer reviewed; commenters stress heavy human priming and treat the AI authorship as a community claim. Extends the AI-math-proof theme (CDC proof 2026-07-10, Star Fleet Erdős 2026-07-15). Covered 2026-07-18 AI (discussion).

@@ -21,7 +21,6 @@ from swe_digest.paths import DIGESTS
 # check_content.check_structure.
 SECTIONS = [
     "Top stories",
-    "Conferences and events",
     "AI",
     "ML research",
     "Agentic coding",
@@ -44,9 +43,17 @@ SECTIONS = [
 
 # Every section name a digest may use, in the only order they may appear.
 # "HN and Reddit pulse" is the pre-2026-06-13 name for the Hacker News /
-# Reddit split and slots after it, so every published digest, old or new, is
-# an ordered subsequence of this list.
-SECTION_VOCABULARY = [*SECTIONS[:18], "HN and Reddit pulse", *SECTIONS[18:]]
+# Reddit split and slots after it. "Conferences and events" is the
+# pre-2026-07-19 dedicated events section, retired in favor of
+# `Category: Event` stories in topical sections. Both stay here so every
+# published digest, old or new, is an ordered subsequence of this list.
+SECTION_VOCABULARY = [
+    SECTIONS[0],
+    "Conferences and events",
+    *SECTIONS[1:17],
+    "HN and Reddit pulse",
+    *SECTIONS[17:],
+]
 
 
 def digest_path(date: str) -> Path:

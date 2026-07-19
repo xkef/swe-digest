@@ -582,14 +582,59 @@ people = [
   "John Jumper",
 ]
 
+[stars]
+# Public GitHub starring activity of tracked people, collected by
+# swe_digest.fetch.stars via `gh api users/{login}/events/public`
+# (WatchEvent). Unlike [social], this is the person's own verified account
+# activity, not a name-based search. Logins are verified against
+# `gh api users/{login}` before being added; never guess a login. Findings
+# are labeled discussion and go into the Reddit and social pulse section as
+# one "Notable stars from tracked people" block.
+# Removal: anyone listed may ask to be dropped (see the site About page or a
+# repository issue). Honor the request, remove the login here, and omit them
+# from future runs. No reason is required.
+users = [
+  "torvalds", # Linus Torvalds
+  "gregkh", # Greg Kroah-Hartman
+  "gvanrossum", # Guido van Rossum
+  "BrendanEich", # Brendan Eich
+  "ahejlsberg", # Anders Hejlsberg
+  "josevalim", # Jose Valim
+  "matz", # Yukihiro Matsumoto
+  "andrewrk", # Andrew Kelley
+  "graydon", # Graydon Hoare
+  "dhh", # David Heinemeier Hansson
+  "kelseyhightower", # Kelsey Hightower
+  "mitchellh", # Mitchell Hashimoto
+  "brendangregg", # Brendan Gregg
+  "bcantrill", # Bryan Cantrill
+  "simonw", # Simon Willison
+  "jvns", # Julia Evans
+  "gaearon", # Dan Abramov
+  "yyx990803", # Evan You
+  "Rich-Harris", # Rich Harris
+  "ry", # Ryan Dahl
+  "KentBeck", # Kent Beck
+  "ept", # Martin Kleppmann
+  "mitsuhiko", # Armin Ronacher
+  "antirez", # Salvatore Sanfilippo
+  "mrnugget", # Thorsten Ball
+  "karpathy", # Andrej Karpathy
+  "rasbt", # Sebastian Raschka
+  "soumith", # Soumith Chintala
+  "lattner", # Chris Lattner
+]
+
 [[events]]
 # Curated tech conferences, keynotes, livestreams, and scheduled release
-# events. scripts/fetch_events.py filters this list by date to surface
-# upcoming events (lead time) and ones active today; it does no network call,
-# so the dates here are the source of truth. Keep them current and verified
-# against each event's official page. Schema per entry: name, start, end
-# (ISO dates; end may equal start for a one-day event), url, topic (one of the
-# digest section labels). Remove an event once it is well past.
+# events. `make events` (swe_digest.fetch.events) filters this list by date
+# into upcoming (lead window) and active events; it does no network call, so
+# the dates here are the source of truth. Keep them current and verified
+# against each event's official page. The output is context only: it points
+# the run at conferences worth watching for notable talks, and never produces
+# a digest entry by itself. Schema per entry: name, start, end (ISO dates;
+# end may equal start for a one-day event), url, topic (one of the digest
+# section labels). Remove an event once it is well past.
 name = "ICML 2026"
 start = "2026-07-06"
 end = "2026-07-11"

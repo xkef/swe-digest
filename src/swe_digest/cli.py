@@ -24,7 +24,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     fetch = sub.add_parser("fetch", help="fetch one source into .cache/")
     fetch_sub = fetch.add_subparsers(dest="source", required=True)
-    for source in ("hn", "youtube", "papers", "books", "reddit"):
+    for source in ("hn", "youtube", "papers", "books", "reddit", "stars"):
         fetch_sub.add_parser(source)
     fetch_events = fetch_sub.add_parser("events")
     fetch_events.add_argument("day", nargs="?", help="YYYY-MM-DD, default today UTC")
@@ -88,6 +88,10 @@ def run(args: argparse.Namespace) -> int:
             from swe_digest.fetch.reddit import main as reddit_main
 
             return reddit_main()
+        if args.source == "stars":
+            from swe_digest.fetch.stars import main as stars_main
+
+            return stars_main()
         from swe_digest.fetch.events import main as events_main
 
         return events_main(args.day)

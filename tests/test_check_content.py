@@ -66,8 +66,8 @@ def test_missing_anchor_section_fails(repo_tree: Path) -> None:
 
 def test_top_stories_must_lead(repo_tree: Path) -> None:
     text = digest_path(repo_tree).read_text()
-    text = text.replace("## Top stories\n", "## Conferences and events\n", 1)
-    text = text.replace("## Conferences and events\n\nNo major items found.\n\n", "", 1)
+    text = text.replace("## Top stories\n", "## AI\n", 1)
+    text = text.replace("## AI\n\nNo major items found.\n\n", "", 1)
     digest_path(repo_tree).write_text(text)
     assert main(root=repo_tree) == 1
 
@@ -135,7 +135,7 @@ def test_top_stories_over_cap_fails(repo_tree: Path) -> None:
         for n in range(8)
     )
     text = digest_path(repo_tree).read_text()
-    text = text.replace("## Conferences and events", extra + "\n## Conferences and events", 1)
+    text = text.replace("## AI", extra + "\n## AI", 1)
     digest_path(repo_tree).write_text(text)
     assert main(root=repo_tree) == 1
 
@@ -148,6 +148,19 @@ def test_legacy_pulse_section_passes(repo_tree: Path) -> None:
     text = text.replace(
         "## Reddit and social pulse\n\nNo major items found.\n",
         "## HN and Reddit pulse\n\nNo major items found.\n",
+    )
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 0
+
+
+def test_legacy_conferences_section_passes(repo_tree: Path) -> None:
+    # Pre-2026-07-19 digests carry a dedicated "Conferences and events"
+    # section after Top stories; they must keep validating.
+    text = digest_path(repo_tree).read_text()
+    text = text.replace(
+        "## AI\n",
+        "## Conferences and events\n\nNo major items found.\n\n## AI\n",
+        1,
     )
     digest_path(repo_tree).write_text(text)
     assert main(root=repo_tree) == 0
