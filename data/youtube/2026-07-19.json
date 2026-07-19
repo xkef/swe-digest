@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-07-18T19:47:39+00:00",
+  "fetched_at": "2026-07-19T19:48:48+00:00",
   "window_hours": 48,
   "degraded": [],
   "collections": {
@@ -7,16 +7,166 @@
       "backend": "youtube-rss",
       "items": [
         {
+          "id": "lMCxVorb9wM",
+          "title": "You Didn't Ship a Bug. You Just Wrote It for a Human. - Ravi Madabhushi, Scalekit",
+          "url": "https://www.youtube.com/watch?v=lMCxVorb9wM",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-07-19T16:00:06+00:00",
+          "views": 218,
+          "rating": {
+            "average": 5.0,
+            "count": 8
+          },
+          "discussion": null,
+          "description": "We built a demo agent to show customers how to connect agents to their tools. A simple chat assistant \u2014 Gmail, Calendar, a handful of connectors. It ran on a 15-minute schedule. And every 15 minutes, our production database strained. Latency crept up and alerts fired. Then settled.\n\nThen, it fired again.\n\nIt took us a while to find it. One line - a \"last seen\" timestamp updating on every tool call. Written for a human who logs in once. Our agent was calling it sixty times a second. We had built infrastructure to show customers how to connect agents to their tools. We hadn't noticed we'd built it for humans.\n\nThat line wasn't a bug. It was a design assumption. And it's not just us - 60% of all production LLM errors trace back to rate limits. They are not model failures or bad prompts. Infrastructure that never anticipated this kind of traffic. As one developer put it: \"Rate limits can't tell the difference between agent legitimately needs 100 calls and agent is just looping.\" Because they were never designed to. They were designed for humans.\n\nEvery layer of the stack your agents depend on carries the same assumption \u2014 that the user on the other end is a person, doing one thing at a time, at human speed. Your agent isn't. And until your infrastructure knows that, production will keep finding the places where it doesn't.\n\nThis talk is about what we learned from finding it, what it actually means to treat agents as a first-class principal, not a fast human, and what changes when you design for that from the start.\n\nSpeakers:\n- Ravi Madabhushi (Scalekit): Ravi has been building infra for how software talks to other software for more than a decade. He co-founded Pipemonk \u2014 a SaaS integration platform acq. by Freshworks (NASDAQ listed) then spent years leading product on Freshworks' auth platform as it scaled to 50K+ businesses and 2M DAUs.\n\nAt Scalekit, he's applying that to a harder version of the same problem: not humans logging into software, but agents taking actions"
+        },
+        {
+          "id": "xhplGdHRf_M",
+          "title": "JUnit was built on a plane",
+          "url": "https://www.youtube.com/watch?v=xhplGdHRf_M",
+          "channel": "The Pragmatic Engineer",
+          "channel_id": "UCPbwhExawYrn9xxI21TFfyw",
+          "published_at": "2026-07-19T16:00:04+00:00",
+          "views": 548,
+          "rating": {
+            "average": 5.0,
+            "count": 17
+          },
+          "discussion": null,
+          "description": "With @KentLBeck creator of Extreme Programming & TDD, co-author of the Agile Manifesto. \n\nSee the full episode on The Pragmatic Engineer Podcast"
+        },
+        {
+          "id": "JJGbw4ggaFs",
+          "title": "From Blind Spots to Merged PRs: Continuous Agentic Performance Optimization - May Walter, Hud",
+          "url": "https://www.youtube.com/watch?v=JJGbw4ggaFs",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-07-19T13:45:06+00:00",
+          "views": 790,
+          "rating": {
+            "average": 5.0,
+            "count": 54
+          },
+          "discussion": null,
+          "description": "Performance issues silently pile up in mature codebases. Teams know things could be faster, but can never justify pausing feature work to investigate. You have to put engineers on it just to find out if there's something worth fixing, and the effort is completely unpredictable: it could take an hour or three weeks.\n\nIn this talk, we'll walk through a real case study of adding runtime intelligence to coding agents to enable continuous performance optimization in production. We'll cover the pain that led us here, the technical approach (agents analyzing real production context to surface high-ROI fixes scored by complexity and impact), and what we had to improve along the way to get reliable results.\n\nThis approach surfaced and fixed N+1 queries and missing database indexes within the first week, with measurable P90 latency improvements after deployment. Tech leads now receive actionable reports before sprint planning and can make decisions starting from the fix, not the problem.\n\nIf you're looking for a concrete, real-world example of integrating AI agents into the SDLC, this is it: not a demo, not a prototype, but merged PRs and better production performance.\n\nSpeakers:\n- May Walter (Hud): May Walter is Co-Founder and CTO of Hud, where she builds the Runtime Code Sensor that gives coding agents real-time production intelligence, drawing on her background as a serial CTO, runtime internals expert, and adversarial cybersecurity researcher.\n  LinkedIn: https://www.linkedin.com/in/may-walterr/"
+        },
+        {
+          "id": "3z2uT5aDx_Y",
+          "title": "Build Evals That Actually Matter - Nick Ung, Lyft",
+          "url": "https://www.youtube.com/watch?v=3z2uT5aDx_Y",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-07-19T12:15:06+00:00",
+          "views": 1847,
+          "rating": {
+            "average": 5.0,
+            "count": 93
+          },
+          "discussion": null,
+          "description": "Your agent passes offline evals at 90%. You ship. Production immediately finds failure modes your eval never saw. Sound familiar?\n\nThe culprit is almost always the same: the \"customer\" in your offline eval is an off-the-shelf LLM that sounds nothing like your real users, and your synthetic test set doesn't capture how messy, angry, or off-topic real conversations get. Your eval was too easy.\n\nAt Lyft, our customer-care agents resolve roughly a third of all customer issues \u2014 millions of conversations a month. To trust them at that scale, we built an adversarial user simulator: a fine-tuned LLM trained on real Lyft rider and driver transcripts that can role-play frustrated, confused, and adversarial users with the same distribution as production. It found regressions our synthetic dataset missed for months.\n\nThis talk walks through the full eval lifecycle that surrounds it: the harness primitives that let any engineer write a benchmark in 20 lines, how we calibrate LLM-judge rubrics against human labels until they match inter-rater agreement, how we route failed production traces back into the offline test set, and the continual-learning loop that feeds improvements into prompts, harness, and the model.\n\nSpeakers:\n- Nick Ung (Lyft): Nick Ung leads Data Science for Safety & Customer Care at Lyft, where his team built and operates the multi-agent platform that powers AI agents resolving roughly a third of all Lyft customer issues.\n  LinkedIn: https://www.linkedin.com/in/unglikteng"
+        },
+        {
+          "id": "bAINppA0BSU",
+          "title": "Open Source Maintenance, 2026-07-18",
+          "url": "https://www.youtube.com/watch?v=bAINppA0BSU",
+          "channel": "Jon Gjengset",
+          "channel_id": "UC_iD0xppBwwsrM9DegC5cQQ",
+          "published_at": "2026-07-19T08:36:51+00:00",
+          "views": 3848,
+          "rating": {
+            "average": 5.0,
+            "count": 144
+          },
+          "discussion": null,
+          "description": "We haven't done an open source maintenance stream in a while, and by now I had a few open open-source issues and pull requests I was behind on, so we took a few hours to rectify that! These spanned projects like concurrency primitives (left-right), data structures (hdrhistogram), and performance debugging tools (inferno), so I'm hoping it'll provide good exposure both to some interesting Rust code, and to the broader topics of what it's like to maintain open-source maintenance.\n\nThanks to the sponsor of this video: Hudson River Trading!\nhttp://www.hudsonrivertrading.com/gjengset\n\n0:00:00 Introduction\n0:03:59 left-right\n1:24:00 HdrHistogram\n3:20:20 rust-imap\n3:32:50 HdrHistogram dependency updates (with LLM assist!)\n4:39:45 Inferno            \n\nLive version with chat: https://youtube.com/live/7h7ciBkhSQ8"
+        },
+        {
+          "id": "dQPQOyljXLY",
+          "title": "Why Industrialized Nations Rule the Modern World - Sarah Paine",
+          "url": "https://www.youtube.com/watch?v=dQPQOyljXLY",
+          "channel": "Dwarkesh Patel",
+          "channel_id": "UCXl4i9dYBrFOabk0xGmbkRA",
+          "published_at": "2026-07-18T23:33:29+00:00",
+          "views": 174522,
+          "rating": {
+            "average": 5.0,
+            "count": 6770
+          },
+          "discussion": null,
+          "description": ""
+        },
+        {
+          "id": "XLEYtv3cMlw",
+          "title": "Autonomous Agents for Scientific Tasks - Sina Shahandeh, Radicait",
+          "url": "https://www.youtube.com/watch?v=XLEYtv3cMlw",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-07-18T23:30:06+00:00",
+          "views": 1209,
+          "rating": {
+            "average": 5.0,
+            "count": 43
+          },
+          "discussion": null,
+          "description": "There has been much work on Autoresearch where the objectives are coding puzzles, toy optimization problems, or static supervised-learning ML tasks. However, for an autonomous agent to assist with a scientific discovery task, the problems must come from real measurement data of the world and they are highly open-ended, requiring a scientific method in the solution loop.\n\nIn this talk, we show scenarios where the agent has to search over methods, priors, data preprocessing, model classes, and hyperparameters while learning from intermediate failures. Often, a step change in agent performance comes from forming an appropriate scientific hypothesis about how the physical system behaves, implementing that hypothesis correctly in a mathematical model, and executing it on the existing real data.\nWe show how an ontology-based memory system is used in the harness to assist with the hypothesis generation that is key to the agent's success. All demonstrations come from real scientific problems solved in industrial and applied research settings.\n\nSpeakers:\n- Sina Shahandeh (Radicait): Sina is a cofounder/CTO at Radicait. His background is in scientific computing (PhD) and has lead data/AI function in 3 scale ups (with $770M exit) as well as founding 3 companies.\n  X/Twitter: https://x.com/SinaShahandeh\n  LinkedIn: https://www.linkedin.com/in/sinashahandeh/"
+        },
+        {
+          "id": "3ySF0I5iE_0",
+          "title": "A Practitioner's Guide to Graphs - Tim Ainge, Good Collective",
+          "url": "https://www.youtube.com/watch?v=3ySF0I5iE_0",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-07-18T21:30:06+00:00",
+          "views": 3736,
+          "rating": {
+            "average": 5.0,
+            "count": 156
+          },
+          "discussion": null,
+          "description": "A speed-run through the basics... what is a graph, extracting graphs from unstructured text, schema first and ontological improvements and then a slightly more detailed discussion of personalised page rank, shortest path and subgraph matching algorithms. \n\nEvery idea is explored with an explanation of the principles, and accessible example with code and linked to real-world implementations or references to articulate the value and relevance.\n\nSpeakers:\n- Tim Ainge (Good Collective): Software Engineering practitioner in startups, private and public sector organisations.\n  X/Twitter: https://x.com/timainge\n  LinkedIn: https://www.linkedin.com/in/timainge/\n  GitHub: https://github.com/timainge/"
+        },
+        {
+          "id": "L3RuP_q8Bwc",
+          "title": "The UX of AI: Making AI-Powered Apps Your Users Don't Hate - Kathryn Grayson Nanz, Progress Software",
+          "url": "https://www.youtube.com/watch?v=L3RuP_q8Bwc",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-07-18T20:30:06+00:00",
+          "views": 2123,
+          "rating": {
+            "average": 5.0,
+            "count": 71
+          },
+          "discussion": null,
+          "description": "As a developer, AI is fun, exciting, and full of potential \u2013 but users don't always feel the same way about it.\n\nFrom a UX perspective, AI comes with a whole new set of considerations around user trust, privacy, and security. From a UI perspective, AI brings new interaction patterns, new icons, new visual cues, and so much more!\n\nIf we want people to get the most from what we build, we have to teach our users how to use AI. Let's look at ways to introduce new capabilities in our apps and guide our users through new patterns and processes \u2013 ideally without making them throw their phone out a window\n\nSpeakers:\n- Kathryn Grayson Nanz (Progress Software): Kathryn Grayson Nanz is the Senior Design and Developer Advocate at Progress Software; her work focuses on React, UI design and design systems, accessibility, and creating software that centers the human experience.\n  X/Twitter: https://bsky.app/profile/kgrayson.com\n  LinkedIn: https://www.linkedin.com/in/kathryngrayson/\n  GitHub: https://github.com/kathryngraysonnanz"
+        },
+        {
+          "id": "eAXxdtNlK04",
+          "title": "Stop Burning Tokens: Why self-improvement needs domain expertise first - Annabell Sch\u00e4fer, Langfuse",
+          "url": "https://www.youtube.com/watch?v=eAXxdtNlK04",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-07-18T20:15:06+00:00",
+          "views": 4807,
+          "rating": {
+            "average": 5.0,
+            "count": 161
+          },
+          "discussion": null,
+          "description": "We ran auto-improvement loops on a paper classification task against a ground-truth dataset. A real problem, narrow enough to measure precisely, and in fact one of the few clear cut target functions out there.\n\nWe\u2019ll share how to properly set up an agent for auto-improvement, what task specificity and target function quality is actually required for it to work, and why the most efficient path to a continuously improving agentic system is one where domain experts and automation know when to hand off to each other.\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\u200b\n\nSpeakers:\n- Annabell Sch\u00e4fer (Langfuse): Annabell is a Growth Engineer at Langfuse, the largest Open Source AI observability and evaluation platform. She is passionate about building cutting edge AI systems and has been around in the space since 2022.\n  X/Twitter: https://x.com/annabellschfr\n  LinkedIn: https://linkedin.com/in/annabell-schaefer/\n  GitHub: https://github.com/annabellscha"
+        },
+        {
           "id": "7h7ciBkhSQ8",
           "title": "Open Source Maintenance, 2026-07-18 (live version)",
           "url": "https://www.youtube.com/watch?v=7h7ciBkhSQ8",
           "channel": "Jon Gjengset",
           "channel_id": "UC_iD0xppBwwsrM9DegC5cQQ",
           "published_at": "2026-07-18T18:27:43+00:00",
-          "views": 4532,
+          "views": 6253,
           "rating": {
             "average": 5.0,
-            "count": 178
+            "count": 212
           },
           "discussion": null,
           "description": "We haven't done an open source maintenance stream in a while, and by now I have a few open open-source issues and pull requests I'm behind on, so let's rectify that! These span projects like concurrency primitives, data structures, and performance debugging tools, so I think it'll expose you both to some interesting Rust code, and to broader open-source maintenance topics.\n\nLive version of (coming soon)\n\n0:00:00 Loading\n0:00:32 Audio on\n0:01:25 Video on\n0:09:30 Stream on"
@@ -28,10 +178,10 @@
           "channel": "AI Engineer",
           "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
           "published_at": "2026-07-18T18:15:06+00:00",
-          "views": 162,
+          "views": 1187,
           "rating": {
             "average": 5.0,
-            "count": 15
+            "count": 28
           },
           "discussion": null,
           "description": "I pointed my lab at one problem, inference, after 200 users burned $1,000 in credits and the math just wouldn't close. So I built the thing, felt the cost, and went looking for why renting intelligence never pencils out.\nTurns out everyone in this market sells a gospel shaped like their own invoice. Jensen: build a token factory. Nadella: don't even think about the meter. Fireworks: own your model (on our infra). Three smart people, three different layers, three pitches that all end at \"keep paying us.\"\nMy rule: rent to learn, own to run. Rent the model while you're hunting PMF, own the inference for the part you'd have to answer for. I moved my own agents off the Anthropic API onto owned infra, open-sourced the piece that stops the bleed, and got few things badly wrong on the way\n\nSpeakers:\n- Thiyagarajan Maruthavanan (Kalmantic Labs): Thiyagarajan M (Rajan) runs an agentic lab focused on AI inference and agent harness, has built open source tools and other products to shape work on it, and authored a book on peak inference performance.\n  X/Twitter: https://x.com/mtraja\n  LinkedIn: https://linkedin.com/in/thiyagarajan\n  GitHub: https://github.com/mtr7x"
@@ -43,10 +193,10 @@
           "channel": "AI Engineer",
           "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
           "published_at": "2026-07-18T16:15:06+00:00",
-          "views": 422,
+          "views": 1366,
           "rating": {
             "average": 5.0,
-            "count": 17
+            "count": 31
           },
           "discussion": null,
           "description": "Code has become the fastest medium for producing technical content, but the most important piece isn't a secret agent skill or a magical framework: its the same thing that makes a great developer experience.\n\nSpeakers:\n- Matt Palmer (Conductor): Matt Palmer is a DevRel & product leader focused on AI devtools, developer education, and making complex concepts accessible. Away from the keyboard, you can find him lifting, hiking, riding motorcycles, or caring for plants.\n  X/Twitter: https://x.com/mattppal\n  LinkedIn: https://www.linkedin.com/in/matt-palmer/"
@@ -58,10 +208,10 @@
           "channel": "IppSec",
           "channel_id": "UCa6eh7gCkpPo5XXUDfygQQA",
           "published_at": "2026-07-18T15:00:18+00:00",
-          "views": 920,
+          "views": 3298,
           "rating": {
             "average": 5.0,
-            "count": 73
+            "count": 148
           },
           "discussion": null,
           "description": "00:00 - Introduction\n01:05 - Start of nmap\n03:50 - Grabbing files off the open share, looking at logs and seeing an error message that contains an old credential\n07:50 - Using BloodyAD to pull information from the account to see password last set, also running BloodHound\n09:45 - Running Certipy, then using JQ to show me certificates with non-default groups/accounts in enrollment\n12:25 - Going over Bloodhound, showing our SVC_RECOVERY can take over MSA_HEALTH$\n16:30 - Showing BloodyAD to allow ourselves read access to the MSA_HEALTH$ password, could also do Shadow Credentials\n20:30 - Getting on the box with WinRM, discovering Monitor.ps1 file. Use COM to look at scheduled task\n24:30 - Using MSFVenom to create a malicious DLL, zip it up and upload wait for the scheduled task to execute it\n32:40 - Got access to Jaylee Clifton, using Rubeus tgtdeleg to get us a Kerberos ticket so we can run commands as them on our box\n38:45 - Using Certipy to confirm the server is vulnerable to ESC17\n41:45 - Looking at WSUS Config, discover things are pointed to wsus.logging.htb which does not exist\n46:10 - Using Certipy to create a certificate that can impersonate wsus.logging.htb\n49:00 - Setting up WSUKS to push a malicious windows update"
@@ -73,10 +223,10 @@
           "channel": "Let's Get Rusty",
           "channel_id": "UCSp-OaMpsO8K0KkOqyBl7_w",
           "published_at": "2026-07-18T14:46:08+00:00",
-          "views": 5123,
+          "views": 14986,
           "rating": {
             "average": 5.0,
-            "count": 461
+            "count": 726
           },
           "discussion": null,
           "description": "\ud83d\udc49 Join the Rust Live Accelerator waitlist: https://letsgetrusty.com/join/wv-sVJZaFEM9NE\n\nRust has one core principle that explains why its compiler catches certain problems so early and why the borrow checker can sometimes reject code that appears perfectly safe. This video reveals that principle, shows where it helps, where it becomes restrictive, and how to design better function signatures when Rust pushes back.\n\nRust\u2019s golden rule blog post:\nhttps://steveklabnik.com/writing/rusts-golden-rule/"
@@ -88,10 +238,10 @@
           "channel": "AI Engineer",
           "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
           "published_at": "2026-07-18T13:45:07+00:00",
-          "views": 529,
+          "views": 1030,
           "rating": {
             "average": 5.0,
-            "count": 26
+            "count": 32
           },
           "discussion": null,
           "description": "In this talk, I\u2019ll show an agent publish a service, another agent discover and invoke it, and a signed receipt that proves what happened. The point is simple: if agents are going to buy, sell, and compose work across hosts, logs and API dashboards are not enough.\n\nFroglet is an open-source protocol and node for agent-to-agent compute. It reduces named services, data-backed services, and open-ended compute to one signed flow: Descriptor  to  Offer  to  Quote  to  Deal  to  Receipt. The same surface is exposed through MCP and OpenClaw/NemoClaw as one froglet tool, so agents can publish, discover, invoke, and verify work without custom glue for every provider.\n\nThe hot take: agentic commerce should start with verifiable work, not checkout pages. Payment rails can change. Receipts, identities, workload hashes, and deal state need to survive across models, hosts, and marketplaces.\n\nsee froglet.dev\n\nSpeakers:\n- Armanas Povilionis (Alithea Bio): Technologist and systems strategist working at the intersection of AI, infrastructure, biology, governance, and incentive coordination.\n  LinkedIn: https://www.linkedin.com/in/armanas-povilionis/\n  GitHub: https://github.com/armanas"
@@ -103,10 +253,10 @@
           "channel": "AI Engineer",
           "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
           "published_at": "2026-07-18T07:00:06+00:00",
-          "views": 826,
+          "views": 1199,
           "rating": {
             "average": 5.0,
-            "count": 26
+            "count": 31
           },
           "discussion": null,
           "description": "Most of an agent's life is spent waiting - on a tool, a human, the next step - and the whole time you're holding a live process awake and billing for it. Multiply that across every agent your org wants to run overnight and the math stops working.\n\nA save button fixes the obvious stuff: freeze an agent to durable state, drop its compute to zero, bring it back in milliseconds when there's work, and if it crashes, resume from the last save instead of re-burning every token from the top.\n\nThe interesting part is what a save button does after the run is over. Reload an agent to any point in its trajectory, change one thing, a prompt, a model, a tool, and watch whether it does better. A finished run stops being a log you read and becomes something you re-run and improve.\n\nI'll argue that this one primitive, a checkpoint, is the most underrated thing in agent infrastructure, and follow it down to the sandboxes and Kubernetes-shaped infra the industry is quietly racing to build so a million saved agents can sleep for free. You'll leave with a model for running and improving agents at scale without paying to keep them awake.\n\nSpeakers:\n- Hamza Tahir (ZenML): Hamza Tahir is co-founder and CTO of ZenML and co-founder of Kitaru, the durable runtime for AI agents. He's spent a decade building production ML and AI infrastructure used by JetBrains, the German Bundeswehr, and Adeo, and writes and speaks on what actually breaks when agents hit production.\n  X/Twitter: https://x.com/htahir111\n  LinkedIn: https://www.linkedin.com/in/hamzatahirofficial\n  GitHub: http://github.com/htahir1"
@@ -118,10 +268,10 @@
           "channel": "AI Engineer",
           "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
           "published_at": "2026-07-18T07:00:06+00:00",
-          "views": 639,
+          "views": 863,
           "rating": {
             "average": 5.0,
-            "count": 20
+            "count": 24
           },
           "discussion": null,
           "description": "Most AI teams ship behavior changes to 100% of users on every deploy \u2014 no canary, no segment, no kill switch. Web teams stopped doing this in 2012. AI teams are about to learn why.\nFeature flags are table stakes in software engineering. In agent systems they're almost nonexistent \u2014 prompts, tool access, model selection, memory policy, and autonomy level all change globally the moment you ship. That's why your \"small\" prompt tweak just broke 12% of your users and you found out from a Discord screenshot.\nThis talk walks the feature-flag patterns agents specifically need \u2014 beyond the standard boolean-toggle. We'll cover segment-targeted prompt variants, per-tool access flags, model-routing flags, autonomy-level flags (suggest vs. auto-approve vs. auto-execute), memory-policy flags, and the kill switch every agent system should have on day one but almost none do.\n\nSpeakers:\n- Sachin Gupta: Sachin Gupta is a Staff Software Engineer with 15+ years building backend platforms at internet scale, currently focused on the runtime trust boundaries that LLM coding agents blur and the creator of HeapLens, a Java heap analyzer extension used in 50+ countries.\n  LinkedIn: https://www.linkedin.com/in/guptasachin1/\n  GitHub: https://github.com/sachinkg12"
@@ -133,10 +283,10 @@
           "channel": "Theo - t3\u2024gg",
           "channel_id": "UCbRP3c757lWg9M-U7TyEkXA",
           "published_at": "2026-07-18T06:03:44+00:00",
-          "views": 52399,
+          "views": 80091,
           "rating": {
             "average": 5.0,
-            "count": 1731
+            "count": 2178
           },
           "discussion": null,
           "description": "It\u2019s time to breakdown the biggest difference between Fable and GPT 5.6-Sol, because while they are the biggest and best models right now, they\u2019re still very different \n\nThank you Traycer for sponsoring! Check them out at: https://soydev.link/traycer\n\nWant to sponsor a video? Learn more here: https://soydev.link/sponsor-me\n\nCheck out my Twitch, Twitter, Discord more at https://t3.gg\n\nS/O @Ph4seon3 for the awesome edit \ud83d\ude4f\n\n#programming #coding #ai"
@@ -148,10 +298,10 @@
           "channel": "Dwarkesh Patel",
           "channel_id": "UCXl4i9dYBrFOabk0xGmbkRA",
           "published_at": "2026-07-18T00:24:13+00:00",
-          "views": 125899,
+          "views": 167173,
           "rating": {
             "average": 5.0,
-            "count": 5571
+            "count": 6919
           },
           "discussion": null,
           "description": ""
@@ -163,10 +313,10 @@
           "channel": "AI Engineer",
           "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
           "published_at": "2026-07-17T21:00:06+00:00",
-          "views": 3640,
+          "views": 4680,
           "rating": {
             "average": 5.0,
-            "count": 92
+            "count": 108
           },
           "discussion": null,
           "description": "Oxford Style Debate: There is, or is not, a delta between the hype behind loops and what actually works in practice.\n\nTeam No Delta (pro the way we do loops today)\n\nThe hype around loops is valid and loops work well today in practice. Loops today can be a silver bullet and result in outsize productivity gains, and marks an important step up the autonomy curve towards real software factories.\n\nIan Livingstone\nGeoff Huntley\n\nTeam Delta (anti the way we do loops today)\n\nThere is a delta between the hype behind loops and what actually works in practice. The way we are doing loops today is wrong. Loops are not a silver bullet and there is no magic.\n\nThe hype is outrunning the discipline\n\"Stop writing loops, start writing control loops.\" A bare repeat-the-agent loop isn't magic. The leverage comes from the Kubernetes-style reconciliation around it: read current state \u2192 read desired state \u2192 one incremental change  \u2192 repeat. Dex's tell when shown a fake loop: \"where's the recur condition?\" (Jun 21)\nA software factory can run the mechanical, spec-gated, test-covered slices unattended; it cannot autonomously decide whether it built the right thing.\n\nDex Horthy\nGreg Pstrucha\n\nMain Debate \nLoop History - Why now as the inflection point and not some of the earlier ones? \nLoop Anatomy - What makes a good loop? \nLoop Future - Given what we\u2019re seeing with loop usage now, are we well positioned for software factories? If we can\u2019t use loops well today how do we expect to operate software factories?\n\nAppendix\nResearch\nhttps://x.com/AnatoliKopadze/status/2068328135611822149?s=20\nhttps://x.com/ericzakariasson/status/2070493377267646797?s=20\nhttps://x.com/MilksandMatcha/status/2069838072515281386?s=20\nhttps://x.com/AnatoliKopadze/status/2070156017262793008?s=20\nhttps://ghuntley.com/loop/\nhttps://ghuntley.com/ralph/\nhttps://www.anthropic.com/institute/recursive-self-improvement\nAnthropic's Absorption of the Ralph Loop\nVerifying Agents in GitHub\n\n\n0:00 Introduction and format explanation\n0"
@@ -178,10 +328,10 @@
           "channel": "CNCF [Cloud Native Computing Foundation]",
           "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
           "published_at": "2026-07-17T20:14:31+00:00",
-          "views": 242,
+          "views": 330,
           "rating": {
             "average": 5.0,
-            "count": 1
+            "count": 2
           },
           "discussion": null,
           "description": "CNCF Ambassador Sharma Shivlal shares what connecting with ambassadors from different regions of India and across the world has meant for him, from virtual conversations to meeting the community in person at KubeCon + CloudNativeCon.\n\n#CNCF #CloudNative #CNCFAmbassador"
@@ -193,10 +343,10 @@
           "channel": "Apple Developer",
           "channel_id": "UCwrVwiJllwhJUKXKmjLcckQ",
           "published_at": "2026-07-17T19:19:17+00:00",
-          "views": 3664,
+          "views": 6461,
           "rating": {
             "average": 5.0,
-            "count": 257
+            "count": 488
           },
           "discussion": null,
           "description": "Leverage the new Music Understanding framework for on-device musical intelligence across Apple platforms. It handles signal processing and ML inference automatically. With just 3 lines of code, you can get key, rhythm, structure, pace, instrument activity, and loudness to start developing your music app.\n\nWatch \"Meet the Music Understanding framework\" from WWDC26 to learn more.\n\n#wwdc26  #machinelearning  #appledeveloper"
@@ -208,10 +358,10 @@
           "channel": "Fireship",
           "channel_id": "UCsBjURrPoezykLs9EqgamOA",
           "published_at": "2026-07-17T17:56:42+00:00",
-          "views": 342344,
+          "views": 387078,
           "rating": {
             "average": 5.0,
-            "count": 11301
+            "count": 12260
           },
           "discussion": null,
           "description": "Get $500 in Hyperagent credits to build agents that can ship real work - https://hyperagent.com/invite/FIRESHIP500\n\nOpenAI is facing yet another lawsuit, this time at the hands of Apple. In today's video, we'll take a look at exactly what they're being accused of and why Apple are only stepping in now.\n\n#coding #programming #ai #apple #openai\n\nWant more Fireship?\n\n\ud83d\uddde\ufe0f Newsletter: https://bytes.dev\n\ud83e\udde0 Courses: https://fireship.dev"
@@ -223,10 +373,10 @@
           "channel": "ThePrimeagen",
           "channel_id": "UC8ENHE5xdFSwx71u3fDH5Xw",
           "published_at": "2026-07-17T17:09:03+00:00",
-          "views": 54251,
+          "views": 65291,
           "rating": {
             "average": 5.0,
-            "count": 2673
+            "count": 3016
           },
           "discussion": null,
           "description": "Twitch : https://twitch.tv/ThePrimeagen\nDiscord: https://discord.gg/ThePrimeagen\nSupport me (by becoming a backend dev): https://boot.dev/prime\n\nGet production ready SQLite with Turso: https://turso.tech/deeznuts"
@@ -238,10 +388,10 @@
           "channel": "AI Engineer",
           "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
           "published_at": "2026-07-17T17:00:06+00:00",
-          "views": 2600,
+          "views": 3064,
           "rating": {
             "average": 5.0,
-            "count": 117
+            "count": 128
           },
           "discussion": null,
           "description": "An advanced seminar (good prerequisites: Daniel's 2024 and 2025 hit AIE workshops, but all are welcome!)\n\nPLS WATCH: https://www.youtube.com/@aiDotEngineer/search?query=daniel%20han\n\nTimestamps:\n\n0:00 Introduction to Unsloth and model distribution\n2:32 The State of AI: Meter plots and performance trends\n20:26 Open Source vs. Closed Source models\n38:51 Throughput maxing and accuracy minimizing\n1:03:00 Benchmarking and cheating in AI\n1:37:49 Kernels and algorithmic improvements\n2:04:16 Reinforcement learning primer\n2:05:19 Reward hacking and AI agents\n\nViral Quotes & Pull Quotes:\n\n\"If you make the model 86% smaller, it does not get 86% dumber... it only gets 14% less dumb.\" (29:52)\n\"Reinforcement learning is terrible, but everything else is even worse.\" (20:43)\n\"The model becomes not important anymore; it's the harness or the tool that is actually the most important thing.\" (38:23)\n\"If a model can finish a task that takes a human 16 hours, can a model finish that task?\" (2:49)"
@@ -253,10 +403,10 @@
           "channel": "AI Engineer",
           "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
           "published_at": "2026-07-17T16:30:06+00:00",
-          "views": 1391,
+          "views": 1568,
           "rating": {
             "average": 5.0,
-            "count": 65
+            "count": 66
           },
           "discussion": null,
           "description": "Pablo Castro explores AI and knowledge systems for building better applications and agents.\n\nSpeaker:\nPablo Castro \u2014Distinguished Engineer and CVP, Microsoft, leads the AI Knowledge team in Microsoft's CoreAI division, where he focuses on state-of-the-art information understanding and retrieval systems for AI applications and agents, including Foundry IQ, Azure AI Search, and Azure Content Understanding.\n\nLinkedIn: https://www.linkedin.com/in/pabloc\n\nTimestamps:\n\n0:00 Introduction and speaker background\n1:14 Defining the nature of knowledge: Intrinsic, Extrinsic, and Learned\n1:27 Intrinsic knowledge and the history of AI coding tools\n4:38 Extrinsic knowledge and corporate data grounding\n7:06 Evolution of retrieval systems and Foundry IQ\n9:56 Foundry IQ demo: Building a knowledge base\n13:08 Learned knowledge: The agent learning loop\n14:25 Foundry agent optimization demo\n16:49 Closing remarks and resources\n\n\nKey quotes \n\nIntrinsic Knowledge\nPerspective: This knowledge represents the foundational parametric memory of models.\n\"Intrinsic knowledge is just the knowledge that comes with the models... it's what started many of the scenarios that then grew on all the things we're doing with agents today.\" (1:27 - 1:48)\n\"I would argue that GitHub Copilot and ChatGPT, those sort of experiences, were heavily grounded on this intrinsic memory\u2014what the models already knew.\" (2:59 - 3:04)\nExtrinsic Knowledge\nPerspective: To be truly useful in an organization, agents must access private, ambient data through sophisticated retrieval.\n\"Intrinsic model got us here, but it only gets you so far if you're building a system that or an agent that needs to participate in what's happening in an organization.\" (4:41 - 4:49)\n\"The trick is how do you build a platform that allows you to combine all these building blocks without putting the complexity right in front of you.\" (8:02 - 8:10)\n\"For more sophisticated cases you do want a system that can reflect on what's in the data set and decide whet"
@@ -268,10 +418,10 @@
           "channel": "The Pragmatic Engineer",
           "channel_id": "UCPbwhExawYrn9xxI21TFfyw",
           "published_at": "2026-07-17T16:00:11+00:00",
-          "views": 2267,
+          "views": 2841,
           "rating": {
             "average": 5.0,
-            "count": 25
+            "count": 34
           },
           "discussion": null,
           "description": "with Dex Horthy, Founder of HumanLayer\n\nSee the full episode on The Pragmatic Engineer Podcast"
@@ -283,10 +433,10 @@
           "channel": "AI Engineer",
           "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
           "published_at": "2026-07-17T15:24:44+00:00",
-          "views": 2035,
+          "views": 2590,
           "rating": {
             "average": 5.0,
-            "count": 50
+            "count": 62
           },
           "discussion": null,
           "description": "A keynote exploring generative AI for code, deep-thinking algorithms, and the future of pre-training and transformer models for Gemini.\n\nSpeaker:\n\nBenoit Schillings leads the Thinking, Reasoning, and Coding teams at Google DeepMind, directing foundational research toward AGI. His work focuses on advancing next-generation model reasoning and integrating software development best practices into AI code generation. Previously, as CTO at X, Benoit guided early-stage teams prototyping Alphabet's moonshot technologies across computing, biochemistry, and clean energy.\n\nLinkedIn: https://www.linkedin.com/in/benoit-schillings-2942a5\n\nTimestamps:\n\n0:00 Introduction and speaker background\n2:35 The origin story of the Pitchfork project\n4:43 Historical eras of software development\n7:08 The current state of AI code generation\n9:36 The role of self-play in training models\n11:13 Changing economics of software engineering\n12:41 Implementing guardrails and security\n13:48 Inductive architecture and model planning\n14:36 Evolution of evaluation benchmarks\n15:45 Moving beyond simple chain-of-thought tokens\n17:51 Future applications in chemistry and biology\n\n\n\nKey Takeaways from the talk:\n\nBenoit Schillings, VP of Technology at Google DeepMind, discusses the transformative impact of generative AI on software engineering and the future of model reasoning (0:49 - 2:35).\nThe Era of Syntax Generation is Over: (4:43) Coding has shifted from a machine-constrained task to an AI frontier where syntax is effectively solved, moving the bottleneck to architecture and validation.\nThe Power of Self-Play: (9:36) As human-generated training data reaches saturation, DeepMind is utilizing self-play, where models generate and verify their own challenges to reach superhuman performance.\nShift in Engineering Economics: (11:13) With writing code becoming nearly free, the focus must transition to active guardrails, security, and managing the explosion of generated code.\nInductive Architecture: (13:48) The next"
@@ -298,10 +448,10 @@
           "channel": "SpringDeveloper",
           "channel_id": "UC7yfnfvEUlXUIfm8rGLwZdA",
           "published_at": "2026-07-17T15:03:13+00:00",
-          "views": 611,
+          "views": 973,
           "rating": {
             "average": 5.0,
-            "count": 8
+            "count": 9
           },
           "discussion": null,
           "description": "Not always exploitable. #springofficehours #PhilWebb \n\nwatch more at https://www.youtube.com/live/4MYFKQkvwNw?si=KaLqOuie5EWjedKV&t=1117"
@@ -313,10 +463,10 @@
           "channel": "IntelliJ IDEA, a JetBrains IDE",
           "channel_id": "UC4ogdcPcIAOOMJktgBMhQnQ",
           "published_at": "2026-07-17T15:00:28+00:00",
-          "views": 193,
+          "views": 260,
           "rating": {
             "average": 5.0,
-            "count": 1
+            "count": 2
           },
           "discussion": null,
           "description": "Skills bring specific knowledge into your AI. But what are they, exactly? James Ward explains what skills are, why they matter, and how SkillsJars lets you manage them like dependencies. Watch the full episode on the IntelliJ IDEA YouTube channel.\n\nJoin us:\nWebsite: https://jb.gg/website\nBlog: https://jb.gg/blog\nX: https://twitter.com/intellijidea\nBluesky: https://bsky.app/profile/intellijidea.com\nLinkedIn: https://www.linkedin.com/showcase/intellijidea\nFacebook: https://www.facebook.com/IntelliJIDEA/\n\nDownload IntelliJ IDEA: https://jb.gg/download-intellij-idea"
@@ -328,7 +478,7 @@
           "channel": "Grafana",
           "channel_id": "UCYCwgQAMm9sTJv0rgwQLCxw",
           "published_at": "2026-07-17T14:00:26+00:00",
-          "views": 144,
+          "views": 166,
           "rating": {
             "average": 5.0,
             "count": 7
@@ -343,13 +493,13 @@
           "channel": "DevOps Toolbox",
           "channel_id": "UCYeiozh-4QwuC1sjgCmB92w",
           "published_at": "2026-07-17T13:30:16+00:00",
-          "views": 29428,
+          "views": 36214,
           "rating": {
             "average": 5.0,
-            "count": 1488
+            "count": 1786
           },
           "discussion": null,
-          "description": "Cut code review time & bugs in half, instantly, with CodeRabbit: https://coderabbit.link/devopstoolbox\n---\n\nI've been building docker containers and seen others do the same for years, but we've all been mostly doing what we *think* is right. Here are 5 corrections, that sped up my builds, my apps, and everything around their infra instantly.\n\n\u2328\ufe0f The keyboard on this video is the Dygma Defy: http://dygma.com/DEVOPSTOOLBOX\n\ud83c\udfb9 Keycaps on my Defy are made by 3DKeyCaps: https://3dkeycap.com/?ref=vxdqqmmo\n\n\u2705 Build a Second Brain With Neovim in Under 90 Minutes: https://learn.dotb.sh/courses/second-brain-neovim\n\u2705 Zero To KNOWING Kubernetes in Under 90 Minutes:\nhttps://learn.dotb.sh/courses/k8s-from-scratch\n\u2757Use `devopstoolbox20` at checkout for 20% off!"
+          "description": "Cut code review time & bugs in half, instantly, with CodeRabbit: https://coderabbit.link/devopstoolbox\n---\n\nI've been building docker containers and seen others do the same for years, but we've all been mostly doing what we *think* is right. Here are 5 corrections, that sped up my builds, my apps, and everything around their infra instantly.\n\n- https://github.com/immanuwell/dockerfile-roast\n\n\u2328\ufe0f The keyboard on this video is the Dygma Defy: http://dygma.com/DEVOPSTOOLBOX\n\ud83c\udfb9 Keycaps on my Defy are made by 3DKeyCaps: https://3dkeycap.com/?ref=vxdqqmmo\n\n\u2705 Build a Second Brain With Neovim in Under 90 Minutes: https://learn.dotb.sh/courses/second-brain-neovim\n\u2705 Zero To KNOWING Kubernetes in Under 90 Minutes:\nhttps://learn.dotb.sh/courses/k8s-from-scratch\n\u2757Use `devopstoolbox20` at checkout for 20% off!"
         },
         {
           "id": "vxOeeNyOtZY",
@@ -358,10 +508,10 @@
           "channel": "Dan Vega",
           "channel_id": "UCc98QQw1D-y38wg6mO3w4MQ",
           "published_at": "2026-07-17T13:29:07+00:00",
-          "views": 984,
+          "views": 1097,
           "rating": {
             "average": 5.0,
-            "count": 39
+            "count": 42
           },
           "discussion": null,
           "description": "Everyone's fix for unreliable LLM JSON is the same: write a stricter prompt and beg the model. That's not engineering, that's hoping. Spring AI 2.0 changes that.\n\nIn this video, I will walk you through the new self-correcting structured output feature in Spring AI 2.0. You'll learn how to validate model responses against your schema and automatically hand errors back to the model for a retry, all with a single line of code that's off by default so nothing breaks.\n\n- Understand how structured output turns messy LLM text into typed Java objects\n- See a real failure mode using a small open-source model with Ollama\n- Add automatic schema validation and self-correcting retries with one line of code\n- Learn the difference between prompt-level and native (API-level) structured output\n- Know why validation is off by default and how to safely enable it\n\n0:00 - Intro: Stop hoping for valid JSON\n0:45 - What we're building today\n1:15 - The blog post & how structured output works\n3:00 - Reference docs & creating the project\n4:30 - Setting up the API key and chat model\n6:00 - Building the TalkSubmission record & controller\n8:30 - Demo 1: Typed response with Anthropic\n11:00 - Switching to Ollama to trigger a failure\n13:00 - Demo 2: Adding schema validation & self-correction\n15:30 - Inspecting the generated JSON schema\n17:00 - Native structured output at the API level\n19:00 - Recap & what's next in Spring AI 2.0\n\n#SpringAI #Java #SpringBoot #LLM #AI #StructuredOutput #Anthropic #Ollama\n\n\ud83d\udd17Resources & Links mentioned in this video:\nGitHub Repo: https://github.com/danvega/self-correcting-structured-output\nBlog Post: Self-Correcting Structured Output in Spring AI 2.0: https://spring.io/blog/2026/06/23/spring-ai-self-correcting-structured-output\nSpring Initializr: https://start.spring.io\nOllama: https://ollama.com\n\n\ud83d\udc4b\ud83c\udffbConnect with me:\nWebsite: https://www.danvega.dev\nTwitter: https://twitter.com/therealdanvega\nGithub: https://github.com/danvega\nLinkedIn: https://www.linkedin.com/in/danve"
@@ -373,10 +523,10 @@
           "channel": "Dan Vega",
           "channel_id": "UCc98QQw1D-y38wg6mO3w4MQ",
           "published_at": "2026-07-17T13:16:54+00:00",
-          "views": 2562,
+          "views": 2863,
           "rating": {
             "average": 5.0,
-            "count": 38
+            "count": 45
           },
           "discussion": null,
           "description": "Spring AI 2.0 gives us a way to validate the schema and then automatically send it back to the LLM if the response is invalid."
@@ -388,10 +538,10 @@
           "channel": "Dan Vega",
           "channel_id": "UCc98QQw1D-y38wg6mO3w4MQ",
           "published_at": "2026-07-17T13:15:20+00:00",
-          "views": 1612,
+          "views": 1765,
           "rating": {
             "average": 5.0,
-            "count": 21
+            "count": 25
           },
           "discussion": null,
           "description": "Everyone's fix for unreliable large language model JSON is the same. Write a stricter prompt, beg the model, please only respond with valid JSON. That's not engineering, that's hoping. Spring AI 2.0 treats this like a real failure mode. We validate the output against your schema, and when it fails, hand the error back to the model and recall it automatically. It's one line in the entity call, it's off by default, so nothing breaks that you currently have, and by the end of this video, your structured output will fix itself."
@@ -403,10 +553,10 @@
           "channel": "Matt Pocock",
           "channel_id": "UCswG6FSbgZjbWtdf_hMLaow",
           "published_at": "2026-07-17T11:20:45+00:00",
-          "views": 21416,
+          "views": 23537,
           "rating": {
             "average": 5.0,
-            "count": 814
+            "count": 860
           },
           "discussion": null,
           "description": "Exploring /grill-me new batch-based question system. Learn how Matt is improving the skill by asking questions in rounds instead of one-by-one, reducing wait times and context switching while handling question dependencies.\n\nKeep up to date with my skills here:\n\nhttps://aihero.dev/s/Pt7OWW\n\nFollow Matt on Twitter\n\nhttps://twitter.com/mattpocockuk\n\nJoin the Discord:\n\nhttps://aihero.dev/s/zXq81f"
@@ -418,10 +568,10 @@
           "channel": "Matt Pocock",
           "channel_id": "UCswG6FSbgZjbWtdf_hMLaow",
           "published_at": "2026-07-17T10:34:19+00:00",
-          "views": 8734,
+          "views": 11000,
           "rating": {
             "average": 5.0,
-            "count": 332
+            "count": 424
           },
           "discussion": null,
           "description": "Skill hell happens when you throw multiple frameworks and skills into your AI agent without proper strategy, overloading the context window. Learn why user control and intentional skill orchestration matter more than automating everything into the agent.\n\nKeep up to date with my skills here:\n\nhttps://aihero.dev/s/Rzasji\n\nFollow Matt on Twitter\n\nhttps://twitter.com/mattpocockuk\n\nJoin the Discord:\n\nhttps://aihero.dev/s/5FwAnt"
@@ -433,10 +583,10 @@
           "channel": "Matt Pocock",
           "channel_id": "UCswG6FSbgZjbWtdf_hMLaow",
           "published_at": "2026-07-17T10:10:42+00:00",
-          "views": 30504,
+          "views": 36089,
           "rating": {
             "average": 5.0,
-            "count": 1159
+            "count": 1323
           },
           "discussion": null,
           "description": "Learn why agent memory is more harmful than helpful. Matt Pocock explains why you should disable auto-memory in Claude Code and keep your AI agent completely stateless for predictability.\n\nKeep up to date with my skills here:\n\nhttps://aihero.dev/s/e268oA\n\nFollow Matt on Twitter\n\nhttps://twitter.com/mattpocockuk\n\nJoin the Discord:\n\nhttps://aihero.dev/s/AKacSa"
@@ -448,10 +598,10 @@
           "channel": "Rust Programming Language",
           "channel_id": "UCaYhcUwRBNscFNUKTjgPFiA",
           "published_at": "2026-07-17T08:37:01+00:00",
-          "views": 1924,
+          "views": 2104,
           "rating": {
             "average": 5.0,
-            "count": 109
+            "count": 118
           },
           "discussion": null,
           "description": "Hi, hello. Welcome to another video in the Rust Release Changelog Series\n\nWe are\n\n    Chris Biscardi (https://bsky.app/profile/chrisbiscardi.bsky.social)\n    Cameron Dershem (https://bsky.app/profile/pinkhatbeard.com)\n    Pete LeVasseur (https://bsky.app/profile/petelevasseur.com)\n\nfrom the relatively new Rust Content Team. You may not have heard of us by now and that's a little on us. Our team was founded to help explore and publish more of what's happening within and from the prospective of the Rust Project itself.\n\nRecently we've observed many questions regarding things that we've taken for granted that everyone knew about Rust. This lead us to realize that most everyone on our team has been around since the early days when it was easy to keep up with everything in the Project, but as we grow, it's completely unreasonable to expect anyone to be able to 'catch up' with more than a decade of knowledge.\n\nOur hope is to use this series to both surface voices within the Project and to give the community more insight into how things work. We plan to release one video every 6 weeks coinciding with Rust's release cadence.\n\nWe have a handful of topics we\u2019re already planning to cover in future episodes, but please let us know anything you\u2019d like to hear about. If you\u2019re interested in presenting a topic or have a team or person you\u2019d like to hear directly from, let us know!\n\nLeave a comment below or reach out anywhere we\u2019re connected.\n\nVideo Outline:\n00:00 v0 symbol mangling enabled by default\n01:51 What's crater in the Rust Project?\n02:40 Cargo support for denying warnings\n04:03 Linker output no longer hidden by default\n05:56 T in Result containing Uninhabited type considered same as T for must_use lint\n07:09 What's the never type? What can we use till it's stable?\n08:16 Learn more about the never type from Waffle's RustWeek talk\n08:39 How does cross-team collab work? Compiler + Clippy Teams example\n11:05 Dead code in pub binary linting: why's this make sense?\n11:58 LoongA"
@@ -463,433 +613,13 @@
           "channel": "Theo - t3\u2024gg",
           "channel_id": "UCbRP3c757lWg9M-U7TyEkXA",
           "published_at": "2026-07-17T08:07:47+00:00",
-          "views": 139458,
+          "views": 146195,
           "rating": {
             "average": 5.0,
-            "count": 4439
+            "count": 4571
           },
           "discussion": null,
           "description": "Kimi K3 is here\n\nThank you Depot for sponsoring! Check them out at: https://soydev.link/depot\n\nWant to sponsor a video? Learn more here: https://soydev.link/sponsor-me\n\nCheck out my Twitch, Twitter, Discord more at https://t3.gg\n\nS/O @Ph4seon3 for the awesome edit \ud83d\ude4f"
-        },
-        {
-          "id": "9QebvrrY3KY",
-          "title": "Claude for Long-Horizon Tasks \u2014 Lance Martin, Anthropic",
-          "url": "https://www.youtube.com/watch?v=9QebvrrY3KY",
-          "channel": "AI Engineer",
-          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
-          "published_at": "2026-07-17T02:18:54+00:00",
-          "views": 2,
-          "rating": {
-            "average": 5.0,
-            "count": 6
-          },
-          "discussion": null,
-          "description": "Claude is capable of long horizon tasks. In this talk, we'll share lessons learned about building agent harnesses for reliable and secure long-horizon work. This include decoupling the brain and hands, self-verification, self-learning, and design for evolving agent harnesses.\n\n### Lance Martin\nMember of Technical Staff \u00b7 Anthropic\n[X/Twitter](https://x.com/RLanceMartin) \u00b7 [LinkedIn](https://www.linkedin.com/in/lance-martin-64a33b5) \u00b7 [Website](https://rlancemartin.github.io)\n\nMember of technical staff at Anthropic. Working on the Claude Platform, including Claude Managed Agents and the claude-api skill in Claude Code. Prior to Anthropic, was one of the early team at LangChain. Prior to LangChain, spent several years focused on vision for self-driving cars (Uber ATG, Ike, Nuro) and got a PhD from Stanford."
-        },
-        {
-          "id": "eBUyTS7SzV4",
-          "title": "The New Physics of Business \u2014\u00a0Garry Tan, Y Combinator",
-          "url": "https://www.youtube.com/watch?v=eBUyTS7SzV4",
-          "channel": "AI Engineer",
-          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
-          "published_at": "2026-07-17T01:00:06+00:00",
-          "views": 8598,
-          "rating": {
-            "average": 5.0,
-            "count": 307
-          },
-          "discussion": null,
-          "description": "Garry Tan, President of Y Combinator, discusses how the rise of AI-native companies is revolutionizing organizational productivity, allowing lean teams to operate at a scale previously requiring hundreds or thousands of employees (0:52-1:07).\n\nKey Takeaways:\n\nThe 400x Leverage: Tan reports a massive increase in output (approximately 400x) by shifting from writing individual lines of code to managing AI agents (2:32-2:35).\nWiring the Work: He emphasizes that founders should treat AI not as a simple autocomplete tool, but as a workforce (3:58). He explains that core organizational components\u2014like roles, processes, and performance reviews\u2014can now be encoded as markdown-based skill files (4:31-5:32).\nThe AI-Native Organization: Successful startups at Y Combinator are building \"company brains\" (like his own project, GBrain), which act as a library and librarian, ensuring that agents have access to the right context at the right time (12:54-13:30).\nDiscipline of Execution: He advises never to perform \"one-off\" work. Instead, every task should be refined into a reusable skill file to prevent the company from \"waking up with amnesia\" each day (15:30-16:40).\nThe New Physics of Business: Tan argues that modern companies can achieve unprecedented revenue-per-head ratios by building on this new infrastructure, effectively \"boiling the ocean\" by automating formerly impossible tasks (6:40-7:15; 19:55-20:00).\n\nTimestamps:\n\n0:00 Introduction: The AI revolution and YC's transformation\n1:25 The 400x productivity jump: Coding in 2013 vs. today\n3:38 Wiring the work: Treating AI as a workforce\n4:11 The anatomy of an AI-native organization\n6:12 Real-world impact: Companies scaling with lean teams\n8:38 Latent space vs. deterministic space\n10:53 Overcoming human memory limits: AI as a library\n12:53 Context engineering: The importance of the 'librarian'\n13:28 Building GBrain: Managing institutional knowledge\n15:13 The discipline of 'skillifying' your work\n16:40 The call to build AI-native c"
-        },
-        {
-          "id": "Z2Erdirpudo",
-          "title": "Imagination Engineering \u2014 Eve Bouffard, Head of Design, Y Combinator",
-          "url": "https://www.youtube.com/watch?v=Z2Erdirpudo",
-          "channel": "AI Engineer",
-          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
-          "published_at": "2026-07-16T23:45:06+00:00",
-          "views": 2670,
-          "rating": {
-            "average": 5.0,
-            "count": 87
-          },
-          "discussion": null,
-          "description": "Eve Bouffard from Y Combinator explores the concept of \"Imagination Engineering\"\u2014the idea that with increasingly powerful AI models, the primary challenge for humans is no longer technical execution, but the ability to dream up bold, innovative ideas (0:13-0:59).\n\nKey themes and experiments shared:\n\nThinking in Public: Inspired by Paul Graham, Eve describes an experiment where she shared her stream of consciousness in a dedicated Slack channel (Eve thoughts). She then used AI to aggregate these raw thoughts into a personal, interactive website (1:35-4:26).\n\nSoftware on Demand: Eve demonstrates how she uses AI to build custom tools on the fly, such as an interactive \"Shape of Minds\" visualizer to study commonalities among historical geniuses (8:49-10:44) and a personalized emoji-picker for company communication (12:57-13:46).\n\nExpanding the Mind: She argues that current AI tools function like a \"rocket ship for the mind,\" allowing individuals to learn at unprecedented speeds by requesting summarized reports on complex topics like design principles or historical patronage (13:53-14:48).\n\nEve emphasizes that we are in a historical period similar to the Library of Alexandria, where the focus should be on consolidating and creating knowledge for humanity (1:01-1:23).\n\nDetailed Timestamps\n0:00 - Introduction to the concept of Imagination Engineering\n1:01 - The analogy of the modern Library of Alexandria\n1:35 - The \"Thinking in Public\" experiment (Eve Thoughts)\n2:58 - The influence of Paul Graham and Y Combinator culture\n4:23 - Demo: The efar.com personal AI-generated website\n6:05 - Integrating design tools and shaders into workflows\n8:49 - The \"Shape of Minds\" project: Mapping historical geniuses\n12:57 - Using custom AI tools for daily productivity (Emoji picker)\n13:46 - AI as a tool for rapid learning and research\n15:08 - The evolution of development logs and software backlogs\n\n\n\"The new bottleneck will be to come up with crazy ideas because it's going to be really easy "
-        },
-        {
-          "id": "Zca61pE5hnk",
-          "title": "Posters now available in 36 countries! welchlabs.com/store",
-          "url": "https://www.youtube.com/watch?v=Zca61pE5hnk",
-          "channel": "Welch Labs",
-          "channel_id": "UConVfxXodg78Tzh5nNu85Ew",
-          "published_at": "2026-07-16T23:22:45+00:00",
-          "views": 4690,
-          "rating": {
-            "average": 5.0,
-            "count": 143
-          },
-          "discussion": null,
-          "description": ""
-        },
-        {
-          "id": "MXhd5D9eXXk",
-          "title": "The Miraculous Cochlear Ear Implant",
-          "url": "https://www.youtube.com/watch?v=MXhd5D9eXXk",
-          "channel": "Asianometry",
-          "channel_id": "UC1LpsuAUaKoMzzJSEt5WImw",
-          "published_at": "2026-07-16T23:00:33+00:00",
-          "views": 40090,
-          "rating": {
-            "average": 5.0,
-            "count": 2134
-          },
-          "discussion": null,
-          "description": "Links:\n- Patreon (Support the channel directly!): https://www.patreon.com/Asianometry\n- X: https://twitter.com/asianometry\n- Newsletter & Podcast (available through Stratechery Plus): https://asianometry.passport.online/\n- LinkedIn (feel free to connect): www.linkedin.com/in/jon-y-asianometry"
-        },
-        {
-          "id": "YjPbi4lxQDc",
-          "title": "Speedrun your game port to Mac",
-          "url": "https://www.youtube.com/watch?v=YjPbi4lxQDc",
-          "channel": "Apple Developer",
-          "channel_id": "UCwrVwiJllwhJUKXKmjLcckQ",
-          "published_at": "2026-07-16T21:27:48+00:00",
-          "views": 3746,
-          "rating": {
-            "average": 5.0,
-            "count": 271
-          },
-          "discussion": null,
-          "description": "Use agentic coding skills to port a game engine to Mac in record time. You can even use them to debug rendering issues with command-line tools!\n\nWatch \"Speedrun your game port with agentic coding\" from WWDC26 to learn more.\n\n#GameDev #GamePortingToolkit #WWDC26"
-        },
-        {
-          "id": "dWEQIleX87o",
-          "title": "Why Planes Don't Fly in a Straight Line - Adam Brown",
-          "url": "https://www.youtube.com/watch?v=dWEQIleX87o",
-          "channel": "Dwarkesh Patel",
-          "channel_id": "UCXl4i9dYBrFOabk0xGmbkRA",
-          "published_at": "2026-07-16T20:39:50+00:00",
-          "views": 23102,
-          "rating": {
-            "average": 5.0,
-            "count": 901
-          },
-          "discussion": null,
-          "description": ""
-        },
-        {
-          "id": "Mr8E79ANG4Q",
-          "title": "Go Big Chips or Go Home // The Tech Poutine, 16th July 2026",
-          "url": "https://www.youtube.com/watch?v=Mr8E79ANG4Q",
-          "channel": "TechTechPotato",
-          "channel_id": "UC1r0DG-KEPyqOeW6o79PByw",
-          "published_at": "2026-07-16T20:20:06+00:00",
-          "views": 2944,
-          "rating": {
-            "average": 5.0,
-            "count": 102
-          },
-          "discussion": null,
-          "description": "Lots of little news stories going around. What's on your mind? Come join us at 10am PT / 6pm UK."
-        },
-        {
-          "id": "r-cvllSYZCY",
-          "title": "What is context engineering?",
-          "url": "https://www.youtube.com/watch?v=r-cvllSYZCY",
-          "channel": "The Pragmatic Engineer",
-          "channel_id": "UCPbwhExawYrn9xxI21TFfyw",
-          "published_at": "2026-07-16T18:13:25+00:00",
-          "views": 3830,
-          "rating": {
-            "average": 5.0,
-            "count": 54
-          },
-          "discussion": null,
-          "description": "with Dex Horthy, Founder of HumanLayer and coiner of 'context engineering'. \n\nSee the full episode on The Pragmatic Engineer Podcast"
-        },
-        {
-          "id": "iCj_ATyThvc",
-          "title": "An AI Agent Became the #1 Contributor in OpenAI's Hiring Challenge \u2014 Zhengyao Jiang, Weco",
-          "url": "https://www.youtube.com/watch?v=iCj_ATyThvc",
-          "channel": "AI Engineer",
-          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
-          "published_at": "2026-07-16T18:08:16+00:00",
-          "views": 2184,
-          "rating": {
-            "average": 5.0,
-            "count": 55
-          },
-          "discussion": null,
-          "description": "Earlier this year, OpenAI ran Parameter Golf, a model-training competition that doubled as a hiring filter. Over 1,000 researchers competed to train the best small language model under a 16MB cap. The top contributor was the one candidate OpenAI couldn't hire. Our autonomous research agent Aiden finished with 7 merged records, more than twice as many as any other contributor, and ended up the most-cited participant in the community.\nThis talk is about what those 22 days showed. I'll cover on high level how does it works and which of its ideas produced the records. But the part worth more than the leaderboard is the collaboration itself, the community and AI agent building on each other's work, the largest natural experiment in human-AI collaboration I've seen run in public. I'll close with what it tells us about where humans and autonomous research each still matter for the foreseeable future.\n1:57 PM\n\n# An AI Agent Became the #1 Contributor in OpenAI's Hiring Challenge\n\n**Location:** Main Stage\n**When:** Day 3 - July 1, 2026 \u00b7 1:55pm-2:15pm\n\n## Speakers\n\n### Zhengyao Jiang\nCEO & Cofounder \u00b7 Weco AI\n[X/Twitter](https://x.com/zhengyaojiang) \u00b7 [LinkedIn](https://www.linkedin.com/in/zhengyao-jiang-387b44145/) \u00b7 [Website](https://zhengyaojiang.github.io/)\n\nCofounder & CEO @WecoAI - automated hill climbing with LLMs. Previously: PhD in ML at UCL\n\nTimestamps\n\n0:00 Introduction to Parameter Golf and the Aiden agent\n1:06 Defining the challenge: Auto-research vs. human community\n1:47 About Weco AI and the development of Aiden\n3:07 Evaluating Aiden's impact and H-index in the community\n4:01 Why autonomous AI is powerful: Throughput and efficiency\n5:21 Human-AI collaboration: How ideas move the frontier\n6:32 Case study: Combining research, architecture, and tokenization\n7:41 Summary of auto-research strengths: Execution and search\n9:06 The role of human design in competition\n10:04 The Andrej Karpathy metaphor: Gradient descent and coding\n11:19 Auto-research as training a model"
-        },
-        {
-          "id": "1wzW-gM9OZE",
-          "title": "What's New in IntelliJ IDEA 2026.2",
-          "url": "https://www.youtube.com/watch?v=1wzW-gM9OZE",
-          "channel": "IntelliJ IDEA, a JetBrains IDE",
-          "channel_id": "UC4ogdcPcIAOOMJktgBMhQnQ",
-          "published_at": "2026-07-16T16:26:38+00:00",
-          "views": 5393,
-          "rating": {
-            "average": 5.0,
-            "count": 186
-          },
-          "discussion": null,
-          "description": "IntelliJ IDEA 2026.2 is here!\n\nThis version brings updates designed to streamline your workflows and help you confidently adopt the latest innovations across the Java ecosystem. \n\nOur developer advocates have recorded a walkthrough video covering all the release highlights.\n\n00:00 Intro\n00:38 AI updates\n07:09 Java support\n10:52 Kotlin\n20:36 Logpoints\n23:24 Debugger skill\n26:58 Spring Security inlay hints\n31:07 Flyway support improvements\n34:35 Spring properties navigation\n36:22 Gradle and Maven\n45:46 Inlay hints for Docker Compose\n\nExplore the What\u2019s New page for a complete overview of the key new features, including detailed explanations and demos.\n\nhttps://www.jetbrains.com/idea/whatsnew/\n\nJoin us:\nWebsite: https://jb.gg/website\nBlog: https://jb.gg/blog\nX: https://twitter.com/intellijidea\nBluesky: https://bsky.app/profile/intellijidea.com\nLinkedIn: https://www.linkedin.com/showcase/intellijidea\nFacebook: https://www.facebook.com/IntelliJIDEA/\n\nDownload IntelliJ IDEA: https://jb.gg/download-intellij-idea"
-        },
-        {
-          "id": "xoBhmMhyWfk",
-          "title": "Evil Token Marketplace",
-          "url": "https://www.youtube.com/watch?v=xoBhmMhyWfk",
-          "channel": "John Hammond",
-          "channel_id": "UCVeW9qkBjo3zosnqUbG7CFw",
-          "published_at": "2026-07-16T15:01:56+00:00",
-          "views": 701,
-          "rating": {
-            "average": 5.0,
-            "count": 35
-          },
-          "discussion": null,
-          "description": "Attackers are openly advertising phishing infrastructure with dashboards, token capture, and Office 365-focused services.\n\nI walk through one of these marketplaces, examine the claims they're making, and discuss what defenders can learn from how these services are presented and marketed.\n\nWatch the full video here: https://youtu.be/9b3kirR8s2U?si=QrZfZQ6l_h9UVQB6"
-        },
-        {
-          "id": "rJJnsFdIDTk",
-          "title": "we are not worried. #springofficehours #PhilWebb",
-          "url": "https://www.youtube.com/watch?v=rJJnsFdIDTk",
-          "channel": "SpringDeveloper",
-          "channel_id": "UC7yfnfvEUlXUIfm8rGLwZdA",
-          "published_at": "2026-07-16T15:01:33+00:00",
-          "views": 1174,
-          "rating": {
-            "average": 5.0,
-            "count": 19
-          },
-          "discussion": null,
-          "description": "we are not worried. #springofficehours #PhilWebb \n\nwatch more at https://www.youtube.com/live/4MYFKQkvwNw?si=uQq_N3HVjZRIULen&t=609"
-        },
-        {
-          "id": "GijU8jLzFjQ",
-          "title": "How to land a systems programming job in 2026 (Interview)",
-          "url": "https://www.youtube.com/watch?v=GijU8jLzFjQ",
-          "channel": "Let's Get Rusty",
-          "channel_id": "UCSp-OaMpsO8K0KkOqyBl7_w",
-          "published_at": "2026-07-16T15:00:16+00:00",
-          "views": 4653,
-          "rating": {
-            "average": 5.0,
-            "count": 258
-          },
-          "discussion": null,
-          "description": "\ud83d\udc49Join the Rust Live Accelerator waitlist: https://letsgetrusty.com/join/wv-GijU8jLzFjQ\n\nIn this video I chat with one of our students, Matty, who was able to land a senior Rust role in just four months of working with us! Matty explains exactly how and why he got his systems programming role without prior systems programming experience and how you can do the same."
-        },
-        {
-          "id": "2Q6OvYjOJi0",
-          "title": "GPS Hidden Messages - Computerphile",
-          "url": "https://www.youtube.com/watch?v=2Q6OvYjOJi0",
-          "channel": "Computerphile",
-          "channel_id": "UC9-y-6csu5WGm29I7JiwpnA",
-          "published_at": "2026-07-16T14:32:23+00:00",
-          "views": 56544,
-          "rating": {
-            "average": 5.0,
-            "count": 1981
-          },
-          "discussion": null,
-          "description": "Something odd was going on with the signals broadcast by the GPS satellites. Steven Murdoch of University College London explains how he used statistical analysis to work out what might be going on. \n\nTo read more about Steven's findings:   https://sjmurdoch.github.io/gps-special-messages/ \n\nComputerphile is supported by Jane Street. Learn more about them (and exciting career opportunities) at: https://jane-st.co/computerphile\n\nThis video was filmed and edited by Sean Riley.\n\nComputerphile is a sister project to Brady Haran's Numberphile. More at https://www.bradyharanblog.com"
-        },
-        {
-          "id": "eNtADpJ2EC4",
-          "title": "The Most Ambiguous Concept in Computer Science",
-          "url": "https://www.youtube.com/watch?v=eNtADpJ2EC4",
-          "channel": "Core Dumped",
-          "channel_id": "UCGKEMK3s-ZPbjVOIuAV8clQ",
-          "published_at": "2026-07-16T13:00:22+00:00",
-          "views": 47367,
-          "rating": {
-            "average": 5.0,
-            "count": 4115
-          },
-          "discussion": null,
-          "description": "\ud83d\udc49Get Rust training from Let\u2019s Get Rusty: https://letsgetrusty.com/start-with-jorge\n\nIn this video we talk about Instruction Set Architectures and Micro Architectures.\n\nJoin CodeCrafters and learn by creating your own Claude Code, Redis, Git, Http server, Interpreter, Grep... in your favorite programming language:\nhttps://app.codecrafters.io/join?via=jdvillal\n\nSponsor my work on Github: https://github.com/jdvillal\n\nQuestions and business inquires:\ncontact.coredumped@gmail.com\n\nFollow me on twitter:\nhttps://twittter.com/coredumpped\n\nJoin our discord server:\nhttps://discord.gg/szyQsXfzuv"
-        },
-        {
-          "id": "eEjBhVI9Qok",
-          "title": "Do software fundamentals still matter?",
-          "url": "https://www.youtube.com/watch?v=eEjBhVI9Qok",
-          "channel": "Matt Pocock",
-          "channel_id": "UCswG6FSbgZjbWtdf_hMLaow",
-          "published_at": "2026-07-16T12:14:54+00:00",
-          "views": 15185,
-          "rating": {
-            "average": 5.0,
-            "count": 764
-          },
-          "discussion": null,
-          "description": "Do Software Fundamentals Still Matter in the Age of AI? Discover why code quality, software entropy, and good design patterns are more important than ever for AI agents. Learn how to build codebases that AI loves to work in.\n\nhttps://aihero.dev/s/iLcXeB\n\nKeep up to date with my skills here:\n\nhttps://aihero.dev/s/p1R3lk\n\nFollow Matt on Twitter\n\nhttps://twitter.com/mattpocockuk\n\nJoin the Discord:\n\nhttps://aihero.dev/s/gXlJ7R"
-        },
-        {
-          "id": "h4o0qcq1Kys",
-          "title": "Level Up: Choosing The Technical Leadership Path \u2022 Patrick Kua \u2022 GOTO 2025",
-          "url": "https://www.youtube.com/watch?v=h4o0qcq1Kys",
-          "channel": "GOTO Conferences",
-          "channel_id": "UCs_tLP3AiwYKwdUHpltJPuA",
-          "published_at": "2026-07-16T12:00:02+00:00",
-          "views": 656,
-          "rating": {
-            "average": 5.0,
-            "count": 16
-          },
-          "discussion": null,
-          "description": "This presentation was recorded at GOTO Copenhagen 2025. #GOTOcon #GOTOcph\nhttps://gotocph.com\n\nPatrick Kua - Founder of the Tech Lead Academy @thekua \n\nRESOURCES\nhttps://bsky.app/profile/patkua.bsky.social\nhttps://hachyderm.io/@patkua\nhttps://twitter.com/patkua\nhttps://www.linkedin.com/in/patkua\nhttps://github.com/thekua\nhttps://patkua.com\n\nABSTRACT\nDo you want to have more impact in your work?\nDo you want to grow in your career?\nDo you want to know what \"good\" technical leadership looks like?\n\nThen come along to this talk where Pat Kua, who has been growing technical leaders for more than a decade, will share some practical advice on what it means to be a good technical leader, where to get started and how you can level up. [...]\n\nTIMECODES\n00:00 Intro\n01:23 Agenda\n01:44 Exploring technical leadership\n25:15 Reasons for you\n32:12 How to get started\n40:11 Outro\n\nDownload slides and read the full abstract here:\nhttps://gotocph.com/2025/sessions/3638\n\nRECOMMENDED BOOKS\nPatrick Kua \u2022 Talking with Tech Leads \u2022 https://amzn.to/3ECO3xB\nPatrick Kua \u2022 The Retrospective Handbook \u2022 https://amzn.to/4jpxxQN\nNeal Ford, Rebecca Parsons & Patrick Kua \u2022 Building Evolutionary Architectures \u2022 https://amzn.to/42qXJV2\nRoger Fisher, William L. Ury & Bruce Patton \u2022 Getting to Yes \u2022 https://amzn.to/4iWdh8e\nJon Gordon \u2022 The Power of Positive Leadership \u2022 https://amzn.to/3RTQLC0\nJean Greaves, Travis Bradberry & Patrick M. Lencioni \u2022 Emotional Intelligence 2.0 \u2022 https://amzn.to/3RWeSQy\nMichael Bungay Stanier \u2022 The Coaching Habit \u2022 https://amzn.to/3RQNzah\nDouglas Stone & Sheila Heen \u2022 Thanks for the Feedback \u2022 https://amzn.to/3GJwCfD\nGrenny, Patterson, McMillan, Switzler & Gregory \u2022 Crucial Conversations \u2022 https://amzn.to/44ZKjAZ\n\nhttps://bsky.app/profile/gotocon.com\nhttps://twitter.com/GOTOcon\nhttps://www.linkedin.com/company/goto-\nhttps://www.instagram.com/goto_con\nhttps://www.facebook.com/GOTOConferences\n#TechLeads #Teams #Culture #CompanyCulture #TeamCulture #Leadership #TechLeadership #Te"
-        },
-        {
-          "id": "GlYgs6v2YfU",
-          "title": "But what is cross-entropy? | Compression is Intelligence Part 2",
-          "url": "https://www.youtube.com/watch?v=GlYgs6v2YfU",
-          "channel": "3Blue1Brown",
-          "channel_id": "UCYO_jab_esuFRV4b17AJtAw",
-          "published_at": "2026-07-16T11:56:04+00:00",
-          "views": 281730,
-          "rating": {
-            "average": 5.0,
-            "count": 11569
-          },
-          "discussion": null,
-          "description": "Where the loss function for training LLMs comes from.\nJob opportunities aligned to this audience: https://3b1b.co/talent\nEarly views and other perks for supporters: https://3b1b.co/support\nHome page: https://www.3blue1brown.com\n\nPart 1: https://youtu.be/l6DKRf-fAAM\n\nManim animations by Aaron Gostein and Grant Sanderson\nNanoGPT animation by Clayton Rabideau\n3d black-box model by Paul Dancstep\nChess game and Lagrange Multiplier scenes by Nishad Deulkar\nMusic by Vince Rubinetti\n\nTimestamps\n\n0:00 - Language trees and zipping\n3:02 - Recap optimal codes\n5:20 - Defining cross-entropy\n8:26 - Intuition and examples\n12:59 - Application to language trees\n14:55 - Pre-training LLMs\n20:38 - What makes this loss function best?\n26:13 - Distillation\n30:12 - 3b1b Talent\n31:35 - KL Divergence\n\n------------------\n\nThese animations are largely made using a custom Python library, manim.  See the FAQ comments here:\nhttps://3b1b.co/faq#manim\n\nMusic by Vincent Rubinetti.\nhttps://vincerubinetti.bandcamp.com/album/the-music-of-3blue1brown\nhttps://open.spotify.com/album/1dVyjwS8FBqXhRunaG5W5u\n\n------------------\n\n3blue1brown is a channel about animating math, in all senses of the word animate. If you're reading the bottom of a video description, I'm guessing you're more interested than the average viewer in lessons here. It would mean a lot to me if you chose to stay up to date on new ones, either by subscribing here on YouTube or otherwise following on whichever platform below you check most regularly.\n\nMailing list: https://3blue1brown.substack.com\nTwitter: https://twitter.com/3blue1brown\nBluesky: https://bsky.app/profile/3blue1brown.com\nInstagram: https://www.instagram.com/3blue1brown\nReddit: https://www.reddit.com/r/3blue1brown\nFacebook: https://www.facebook.com/3blue1brown\nPatreon: https://patreon.com/3blue1brown\nWebsite: https://www.3blue1brown.com"
-        },
-        {
-          "id": "glaIO6OYh74",
-          "title": "My /teach skill is still insane",
-          "url": "https://www.youtube.com/watch?v=glaIO6OYh74",
-          "channel": "Matt Pocock",
-          "channel_id": "UCswG6FSbgZjbWtdf_hMLaow",
-          "published_at": "2026-07-16T11:11:11+00:00",
-          "views": 15382,
-          "rating": {
-            "average": 5.0,
-            "count": 504
-          },
-          "discussion": null,
-          "description": "Learn how to use the /teach skill to master new concepts with personalized, tailored learning. Discover how AI can help you understand complex topics like land surveying, Rubik's Cubes, and development techniques through interactive explanations and quiz questions.\n\nLearn Anything With My /teach Skill:\nhttps://aihero.dev/s/o8gEAH\n\nKeep up to date with my skills here:\n\nhttps://aihero.dev/s/8VqUP6\n\nFollow Matt on Twitter\n\nhttps://twitter.com/mattpocockuk\n\nJoin the Discord:\n\nhttps://aihero.dev/s/jb9j3R"
-        },
-        {
-          "id": "Noo0NWD0gHU",
-          "title": "I need you to hear me out (it\u2019s REALLY good)",
-          "url": "https://www.youtube.com/watch?v=Noo0NWD0gHU",
-          "channel": "Theo - t3\u2024gg",
-          "channel_id": "UCbRP3c757lWg9M-U7TyEkXA",
-          "published_at": "2026-07-16T11:03:10+00:00",
-          "views": 91856,
-          "rating": {
-            "average": 5.0,
-            "count": 2776
-          },
-          "discussion": null,
-          "description": "GPT-5.6 Sol is genuinely better in Claude Code than Codex. I feel like I'm going insane.\n\nThank you Coderabbit for sponsoring! Check them out at: https://soydev.link/coderabbit\n\nWant to sponsor a video? Learn more here: https://soydev.link/sponsor-me\n\nCheck out my Twitch, Twitter, Discord more at https://t3.gg\n\nS/O @Ph4seon3 for the awesome edit \ud83d\ude4f\n\n#programming #coding #developer"
-        },
-        {
-          "id": "oLx4yCbeklQ",
-          "title": "Claude Code's system tools are SO BLOATED",
-          "url": "https://www.youtube.com/watch?v=oLx4yCbeklQ",
-          "channel": "Matt Pocock",
-          "channel_id": "UCswG6FSbgZjbWtdf_hMLaow",
-          "published_at": "2026-07-16T10:20:06+00:00",
-          "views": 41223,
-          "rating": {
-            "average": 5.0,
-            "count": 1883
-          },
-          "discussion": null,
-          "description": "Learn how to dramatically reduce unnecessary bloat in Claude Code's system prompt by disabling unused features and tools. In this video, I show you how to drop your system prompt size from 25,000 tokens down to just 8,000 by customizing your global settings.json file.\n\nThe guide: https://aihero.dev/s/D9UXCK\n\nKeep up to date with my skills here:\n\nhttps://aihero.dev/s/fCJUhY\n\nFollow Matt on Twitter\n\nhttps://twitter.com/mattpocockuk\n\nJoin the Discord:\n\nhttps://aihero.dev/s/MVQJ5M"
-        },
-        {
-          "id": "M6mYodf0dJM",
-          "title": "mattpocock/skills: A complete AI Coding workflow, end-to-end",
-          "url": "https://www.youtube.com/watch?v=M6mYodf0dJM",
-          "channel": "Matt Pocock",
-          "channel_id": "UCswG6FSbgZjbWtdf_hMLaow",
-          "published_at": "2026-07-16T09:32:49+00:00",
-          "views": 77001,
-          "rating": {
-            "average": 5.0,
-            "count": 3208
-          },
-          "discussion": null,
-          "description": "Complete tutorial for my skills repo with 170,000 stars. Learn how to install, set up, and use the main workflow: from initial setup through grill-with-docs interviews, specs, tickets, and implementation with code review.\n\n0:00 Introduction and overview\n0:54 Installing the skills repo\n4:34 Running setup and configuration\n6:52 Getting started with Ask Matt\n8:23 Main workflow explained\n8:31 Grill with docs interview session\n10:08 Creating specs and tickets\n13:51 Implementation and code review\n16:22 Workflow recap and newsletter\n\nMy Skills: https://aihero.dev/s/4arzG4\n\nKeep up to date with my skills here:\n\nhttps://aihero.dev/s/4arzG4\n\nFollow Matt on Twitter\n\nhttps://twitter.com/mattpocockuk\n\nJoin the Discord:\n\nhttps://aihero.dev/s/EfDm33"
-        },
-        {
-          "id": "mGNe4zohcBg",
-          "title": "70,000 Lines of Code, 7 Languages: How to Scale via Rust Core",
-          "url": "https://www.youtube.com/watch?v=mGNe4zohcBg",
-          "channel": "InfoQ",
-          "channel_id": "UCkQX1tChV7Z7l1LFF4L9j_g",
-          "published_at": "2026-07-16T09:00:03+00:00",
-          "views": 390,
-          "rating": {
-            "average": 5.0,
-            "count": 8
-          },
-          "discussion": null,
-          "description": "The multi-language SDK trap: Writing the same complex state machine seven times in seven different languages is a recipe for architectural drift, bugs, and developer burnout.\n\nIn this InfoQ video, Spencer Judge (SDK Team Lead at Temporal) shares the exact blueprint Temporal used to unify their heavy client-side logic into a shared, lightning-fast Rust core wrapped in language-specific bridges.\n\nLearn the hard-won architectural lessons of cross-language development, from handling memory management across the C FFI boundary and syncing async runtimes (Promises vs. Futures vs. Fibers), to why WebAssembly and zero-serialization IDLs like FlatBuffers might be the future of your shared codebase.\n\n\u23f1\ufe0f Video Timestamps (For Navigation)\n0:00 - The Problem: 70,000 Lines of Code across 7 Languages\n01:45 - Why Client-Side Logic Needs to be \"Fat\"\n02:50 - Architecture Breakdown: The Rust Core and Bridge Layer\n04:15 - Deep Dive into Bridge Helpers (PyO3, Neon, Magnus)\n05:40 - The Type Conversion Nightmare & Macro Solutions\n07:10 - Pop Quiz: Is Direct Memory Move Faster than JSON Serialization?\n08:50 - Bridging Async: Rust Futures vs. Python/JS Promises vs. Ruby Fibers\n10:30 - Unsafe Rust & Cross-Boundary Memory Management Rules\n12:10 - Structural Limitations & Shipping Native Code (npm, Python, Go)\n13:45 - What We'd Do Differently: WebAssembly (Wasm) and Pure VMs (Wazero)\n15:30 - Zero-Serialization IDLs: Cap'n Proto & FlatBuffers\n16:40 - Final Verdict: Was the Rust Core Architecture Worth It?\n\n\ud83d\udd17 Transcript available on InfoQ:  https://bit.ly/4w4oQ4N  \n                            \n#SoftwareArchitecture #RustLang #Temporal #WebAssembly #DistributedSystems"
-        },
-        {
-          "id": "U832hShMVnc",
-          "title": "I'm thinking about changing my most popular skill",
-          "url": "https://www.youtube.com/watch?v=U832hShMVnc",
-          "channel": "Matt Pocock",
-          "channel_id": "UCswG6FSbgZjbWtdf_hMLaow",
-          "published_at": "2026-07-16T08:16:30+00:00",
-          "views": 14730,
-          "rating": {
-            "average": 5.0,
-            "count": 508
-          },
-          "discussion": null,
-          "description": "Matt Pocock is considering modifying his famous /grill-me skill to ask all questions at once instead of one at a time. Should he change the default behavior or create a new skill?\n\n9 Things People Get Wrong With /grill-me and /grill-with-docs:\nhttps://aihero.dev/s/ZvqFr7\n\n5 Agent Skills I Use Every Day:\nhttps://aihero.dev/s/yd8qzj\n\nKeep up to date with my skills here:\n\nhttps://aihero.dev/s/Qa7d3R\n\nFollow Matt on Twitter\n\nhttps://twitter.com/mattpocockuk\n\nJoin the Discord:\n\nhttps://aihero.dev/s/Ypn7gI"
-        },
-        {
-          "id": "sLmxcGUNxfs",
-          "title": "Payload Podcast 009 - Steven Flores",
-          "url": "https://www.youtube.com/watch?v=sLmxcGUNxfs",
-          "channel": "John Hammond",
-          "channel_id": "UCVeW9qkBjo3zosnqUbG7CFw",
-          "published_at": "2026-07-16T08:11:10+00:00",
-          "views": 2468,
-          "rating": {
-            "average": 5.0,
-            "count": 74
-          },
-          "discussion": null,
-          "description": "Learn Cybersecurity and more with Just Hacking Training: https://jh.live/training\nSee what else I'm up to with: https://jh.live/newsletter\n\n\u2139\ufe0f Resources:\nSee what cybersecurity events are happening: https://jh.live/infosecmap\nLearn how to code with CodeCrafters: https://jh.live/codecrafters\nHost your own VPN with OpenVPN: https://jh.live/openvpn\nGet Blue Team Training and SOC Analyst Certifications with CyberDefenders: https://jh.live/cyberdefense"
-        },
-        {
-          "id": "t34UuBxB2YQ",
-          "title": "My #1 book recommendation for strategic programming",
-          "url": "https://www.youtube.com/watch?v=t34UuBxB2YQ",
-          "channel": "Matt Pocock",
-          "channel_id": "UCswG6FSbgZjbWtdf_hMLaow",
-          "published_at": "2026-07-16T08:06:02+00:00",
-          "views": 12871,
-          "rating": {
-            "average": 5.0,
-            "count": 531
-          },
-          "discussion": null,
-          "description": "Learn Strategic Programming From The Pragmatic Programmer: Discover how classic software engineering fundamentals remain essential in the AI era. Explore concepts like tracer bullets and programming by coincidence that shape how developers think long-term about codebases.\n\nThe Pragmatic Programmer by Andrew Hunt and David Thomas: https://www.amazon.co.uk/Pragmatic-Programmer-Andrew-Hunt/dp/020161622X\n\nKeep up to date with my skills here:\n\nhttps://aihero.dev/s/65HWTi\n\nFollow Matt on Twitter\n\nhttps://twitter.com/mattpocockuk\n\nJoin the Discord:\n\nhttps://aihero.dev/s/XGBEVf"
-        },
-        {
-          "id": "Fj8DKMbdIzU",
-          "title": "Delete (most of) your docs",
-          "url": "https://www.youtube.com/watch?v=Fj8DKMbdIzU",
-          "channel": "Matt Pocock",
-          "channel_id": "UCswG6FSbgZjbWtdf_hMLaow",
-          "published_at": "2026-07-16T08:04:10+00:00",
-          "views": 40846,
-          "rating": {
-            "average": 5.0,
-            "count": 1736
-          },
-          "discussion": null,
-          "description": "Stop Using Documentation as Your Codebase's Source of Truth. Learn why creating excessive documentation for AI to rely on is an anti-pattern that costs tokens and creates confusion.\n\nhttps://aihero.dev/s/36jQdK\n\nKeep up to date with my skills here:\n\nhttps://aihero.dev/s/GwyLek\n\nFollow Matt on Twitter\n\nhttps://twitter.com/mattpocockuk\n\nJoin the Discord:\n\nhttps://aihero.dev/s/6CJeAF"
         }
       ]
     }

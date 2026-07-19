@@ -1,14 +1,16 @@
-"""Surface upcoming and active tech events for the daily digest.
+"""Surface upcoming and active tech events as context for the daily digest.
 
 Reads the [[events]] table from the watchlist and partitions it by date into
 events starting within the lead window (with a days_until countdown) and events
 active today. There is no network call: the committed dates are the source of
-truth, so this runs live during every digest and is the basis for the
-"notify before" lead time in the Conferences and events section.
+truth, so this runs live during every digest.
 
-The lead window is deliberately short (3 days) so an event surfaces only as a
-brief heads-up just before it starts and then while it runs, instead of
-repeating in every digest for weeks.
+The output is context, not content: it tells the run which conferences are
+active or imminent so the HN, YouTube, and web passes can watch for notable
+talks and announcements. An event never gets a digest entry of its own; only a
+notable talk, keynote, or announcement does, as a `Category: Event` story in
+its topical section. The short lead window (3 days) keeps the context focused
+on events that could plausibly produce news now.
 
 Takes an optional YYYY-MM-DD argument (default today UTC) so the lead-time math
 is testable without mocking the clock.

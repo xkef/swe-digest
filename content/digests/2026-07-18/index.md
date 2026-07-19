@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-18."
 
 [extra]
 status = "published"
-source_count = 20
+source_count = 28
 +++
 
 ## Top stories
@@ -58,6 +58,15 @@ source_count = 20
 - **Summary:** Following the 2026-07-16 Kimi K3 launch, Arena.ai reported the model reached first place in its Frontend Code Arena at 1679 points, ahead of Claude Fable 5 and a 17-place jump from Kimi K2.6, and first in six of seven frontend domains. Moonshot states K3 still trails Fable 5 and GPT-5.6 Sol on overall performance. Simon Willison ran the model against his pelican-on-a-bicycle SVG test and noted its tokenizer counts far more input tokens than other providers for the same short prompt, which inflates the reported input cost.
 - **Why it matters:** An open-weight model leading a public frontend-coding leaderboard raises the baseline for teams choosing a self-hostable coding model, with full weights due 2026-07-27.
 
+### GPT-5.6 reportedly closes a derivative-free convex optimization gap
+
+- **Category:** AI
+- **Status:** discussion
+- **Sources:** [Lean verification repository](https://github.com/PhillipKerger/zero-order-bounds-lean-verification), [HN discussion](https://news.ycombinator.com/item?id=48957779), [r/math thread](https://www.reddit.com/r/math/comments/1uxj3cy/)
+- **Summary:** An r/math thread that reached the Hacker News front page at 253 points reports that GPT-5.6, given a roughly 10-page specialized prompt, produced a proof closing a long-open gap in derivative-free convex optimization: a near-quadratic Omega(d squared) deterministic lower bound for optimizing convex Lipschitz functions from exact function values, matching the complexity of a 30-year-old algorithm. Phillip Kerger (UC Berkeley) published a Lean 4 and mathlib formalization of the deterministic lower bound alongside a manuscript titled "Closing the Oracle-Complexity Gap in Derivative-Free Convex Optimization". The formalization is machine-checked. The result is not peer reviewed, and the manuscript does not itself attribute the proof to an AI model.
+- **Comments:** HN and r/math commenters noted the proof is Lean-verified but stressed it required substantial domain expertise and a heavily engineered prompt built on prior research, and treated the model's authorship as a community claim rather than an established fact.
+- **Why it matters:** It extends the run of machine-checked AI-assisted math claims after the GPT-5.6 Sol Ultra Cycle Double Cover proof and the Star Fleet Erdős solutions, where Lean verification raises confidence in the math while the extent of the AI contribution stays contested.
+
 ## Agentic coding
 
 ### Claude Code auto-continues prompts after a 60-second timeout
@@ -79,6 +88,15 @@ source_count = 20
 - **Summary:** Two flaws in TP-Link Kasa EC70 and EC71 version 4 cameras were disclosed this week. CVE-2026-9770 (CVSS 8.6) is a hardcoded cryptographic key in firmware that lets a local-network attacker decrypt traffic between the camera and its web management interface. CVE-2026-13230 (CVSS 5.3) exposes GPS coordinates through the unauthenticated local discovery UDP response, so a crafted discovery request returns location metadata without authentication. TP-Link released fixed firmware (2.4.0 Build 20260520 and later, with coordinates removed in 2.4.1) and urges upgrades. Exploitation requires access to the same local network.
 - **Why it matters:** A hardcoded key combined with unauthenticated location disclosure gives an attacker already on the LAN a direct path to camera compromise and physical-location data.
 
+### LG monitors auto-install system software through Windows Update
+
+- **Category:** Security
+- **Status:** discussion
+- **Sources:** [Privacy Guides](https://www.privacyguides.org/news/2026/07/17/lg-monitors-caught-installing-adware-and-app-with-access-to-all-system-resources-without-asking/), [PC Gamer](https://www.pcgamer.com/hardware/gaming-monitors/it-looks-like-monitor-manufacturers-can-download-bloatware-without-consent-that-will-serve-you-pop-up-ads/), [HN discussion](https://news.ycombinator.com/item?id=48956688)
+- **Summary:** Reports on 2026-07-17 describe LG monitors triggering Windows Update to install an LG monitor application when the display is connected, with no consent prompt. The application runs at boot with broad system access and network connectivity and has been observed promoting a paid McAfee subscription. Gamers Nexus reported the McAfee promotion appeared on 31 of 32 consecutive boots in testing. Complaints trace back to at least 2024. Similar hardware-triggered delivery exists for other vendors, including Dell shipping the Alienware Command Center through Windows Update. No LG or Microsoft statement accompanied the reports. The behavior can be blocked with the Group Policy setting "Prevent automatic download of applications associated with device metadata".
+- **Comments:** HN commenters placed primary responsibility on Microsoft for allowing hardware-triggered installs through Windows Update and noted the same mechanism delivers vendor software for Razer, Logitech, and printer makers.
+- **Why it matters:** Consent-free installation of network-capable software triggered by plugging in a monitor extends the trust boundary of a Windows developer workstation to the peripheral vendor's update pipeline.
+
 The wp2shell WordPress Core pre-authentication RCE is covered in Top stories. No new CISA KEV entries were published on 2026-07-17.
 
 ## Outages
@@ -97,6 +115,14 @@ The 2026-07-16 AWS Cost Explorer billing-estimate incident and its correction ar
 - **Summary:** Julia Evans published field notes on 2026-07-17 from running SQLite for a small production service, covering backup strategy, credential handling for offsite copies, and reading query plans to understand index use. The post is a practitioner walkthrough rather than a benchmark.
 - **Comments:** Commenters pointed to SQLite's `.expert` mode for index recommendations and to the `sqlite_stat1` statistics the planner uses for selectivity estimates.
 - **Why it matters:** SQLite is increasingly used as an application database, so concrete operational notes on backups and query planning address a common gap.
+
+### Abusing progressive JPEG scans to embed animations in one file
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [maurycyz.com](https://maurycyz.com/projects/bad_jpeg/), [HN discussion](https://news.ycombinator.com/item?id=48954851)
+- **Summary:** Maurycy published a write-up on 2026-07-17 that exploits the multi-scan structure of progressive JPEG to play a short animation from a single standards-compliant image file. Progressive JPEG renders successive scans at increasing detail, and by concatenating minimal DC-only frames (each a valid JPEG at 1/16 resolution) the author packs roughly 90 distinct frames that browsers render in sequence before they stop decoding at around nine scans. There is no timing metadata, so playback speed depends entirely on network delay.
+- **Why it matters:** The technique documents a decoder-behavior edge case in a ubiquitous image format, relevant to anyone parsing or sandboxing untrusted image input where scan count and frame concatenation are not bounded.
 
 ## Hacker News
 
@@ -121,8 +147,8 @@ The 2026-07-16 AWS Cost Explorer billing-estimate incident and its correction ar
 ## Sources checked
 
 - Hacker News (`make hn`, full structured coverage via Algolia)
-- Reddit (`make reddit`, degraded: 5 of 28 subreddits on top, 3 of 28 on hot, rate-limited with HTTP 429)
-- AI sources (OpenAI, Anthropic, Mozilla report, Moonshot)
+- Reddit (`make reddit`, degraded: 4 of 28 subreddits live on top and hot, HTTP 429 rate-limited; committed snapshot covered 10 subreddits)
+- AI sources (OpenAI, Anthropic, Mozilla report, Moonshot, r/math and Lean formalization for the convex optimization claim)
 - ML research and arXiv papers (`make papers`, no standout engineering-relevant release)
 - Conferences and events (`make events`, EuroPython 2026 active)
 - Books and publisher feeds (`make books`, No Starch, Pragmatic, Springer; no qualifying release)
