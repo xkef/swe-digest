@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-19."
 
 [extra]
 status = "published"
-source_count = 29
+source_count = 34
 +++
 
 ## Top stories
@@ -72,6 +72,14 @@ source_count = 29
 - **Comments:** HN commenters debate whether a roughly 10 percent startup gain justifies a full-runtime rewrite and question Bun's future direction.
 - **Why it matters:** The Bun Rust runtime is now running in production inside a widely deployed coding agent, an early real-world datapoint for the Zig-to-Rust rewrite tracked earlier this month.
 
+### OpenAI cuts the bundled Codex model context window from 372k to 272k
+
+- **Category:** Agentic coding
+- **Status:** confirmed
+- **Sources:** [Codex PR #33972](https://github.com/openai/codex/pull/33972/files), [HN discussion](https://news.ycombinator.com/item?id=48965850)
+- **Summary:** OpenAI merged Codex pull request #33972, "Backport refreshed bundled model metadata to 0.144", on 2026-07-18, which lowers the bundled model metadata's `context_window` and `max_context_window` from 372000 to 272000 tokens. The change ships in the Codex CLI's bundled metadata for its GPT-5 based model, so the usable context drops by 100000 tokens, about 27 percent, with no model swap.
+- **Why it matters:** A cut to the usable context window changes how much code and session history Codex can hold at once, which affects large-repository work and long autonomous agent runs.
+
 ### Single-run comparison tests the /goal instruction on an NP-hard problem
 
 - **Category:** Agentic coding
@@ -106,6 +114,14 @@ No major items found.
 - **Summary:** Transcribe.cpp is an offline speech-to-text inference library presented as a near drop-in replacement for whisper.cpp that keeps compatibility with existing `.bin` model files while extending support to 16 ASR model families and more than 60 models. It adds acceleration backends for Vulkan, Metal, CUDA, and TinyBLAS, and the author states each model is numerically validated and word-error-rate tested against a reference implementation before release. The author reports faster-than-real-time transcription with state-of-the-art models on low-power hardware, citing an RK3566 SoC.
 - **Comments:** HN commenters pair it with the same-day Moonshine Micro release as a local-inference theme, and one asks why Metal runs roughly ten times faster than Vulkan in the author's numbers.
 - **Why it matters:** Broadening whisper.cpp-compatible tooling to many ASR families and GPU backends lowers the cost of embedding local transcription across platforms.
+
+### Minecraft Java Edition switches from GLFW to SDL3
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [Minecraft 26.3 Snapshot 4 notes](https://www.minecraft.net/en-us/article/minecraft-26-3-snapshot-4), [GamingOnLinux](https://www.gamingonlinux.com/2026/07/minecraft-26-3-snapshot-4-brings-sdl3-and-prefers-wayland-on-linux/), [HN discussion](https://news.ycombinator.com/item?id=48967256)
+- **Summary:** Minecraft Java Edition's 26.3 Snapshot 4 replaces GLFW with SDL3 for window management, input, and platform integration. Keyboard input now uses SDL scancodes for physical key positions and SDL keycodes for layout-dependent editing shortcuts, the minimum window size becomes 320x240, Borderless Fullscreen becomes the default and swaps with Exclusive Fullscreen without a restart, and the Raw Input mouse option is removed in favor of relative mouse mode. On Linux the client now prefers Wayland natively when available. The snapshot reached Hacker News on 2026-07-19.
+- **Why it matters:** A GLFW-to-SDL3 migration in one of the most widely installed Java desktop clients is a datapoint for the broader SDL3 shift and brings native Wayland support to a mainstream game client.
 
 ## Hacker News
 
@@ -159,14 +175,14 @@ No major items found.
 ## Sources checked
 
 - Hacker News (`make hn`, Algolia front page, top, Ask, Show, and comment threads, and watchlist queries, all via Algolia this run)
-- Reddit (`make reddit`, degraded: rate-limited, 49 top-listing and 6 hot-listing items live this run, supplemented by the committed snapshot)
+- Reddit (`make reddit`, degraded: rate-limited to 5 of 28 top-listing and 8 of 28 hot-listing subreddits this run, 22 top-listing and 84 hot-listing items live, supplemented by the committed snapshot)
 - AI sources (OpenAI, Anthropic, Google, Alibaba Qwen, Moonshine, model release checks)
 - ML research and arXiv papers (`make papers`, no high-attention engineering item this run)
 - Conferences and events (`make events`, EuroPython 2026 active)
 - Books and publisher feeds (`make books`, No Starch, Pragmatic, Springer, no qualifying release)
 - Security advisories (CISA KEV catalog version 2026.07.16 unchanged at 1647 entries, NVD)
 - Status pages (GitHub, Cloudflare, AWS, Azure, npm, PyPI, no major fresh outage)
-- GitHub watchlist releases and trending (deep sweep: every `[github]` repo plus `github.com/trending`, no release published after the 2026-07-18 digest; trending clustered on AI agent and coding tools with no new advance to promote)
+- GitHub watchlist releases and trending (deep sweep: every `[github]` repo plus `github.com/trending`, no release published after the 2026-07-18 digest; rechecked on the later run with still no new stable release, only rolling nightly and prerelease tags; trending clustered on AI agent and coding tools with no new advance to promote)
 - Engineering blogs
 - YouTube channels (`make yt`, no video carried Hacker News discussion signal this run)
 - Markets and company sources
