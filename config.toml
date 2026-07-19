@@ -57,6 +57,17 @@ window_days = 7
 snapshot_max_age_hours = 36
 description_max_chars = 2000
 
+[stars]
+# GitHub starring activity of the people in watchlist [stars].users, via the
+# public events API through gh (authenticated locally by gh login and in
+# Actions by GH_TOKEN).
+window_hours = 24
+# gh is authenticated (5000 req/h), so spacing is politeness, not survival.
+request_pause_seconds = 0.5
+# Cap on per-run repos/{full_name} enrichment lookups.
+max_repo_lookups = 30
+description_max_chars = 300
+
 [events]
 # Lead window is deliberately short so the fetcher's context covers only
 # events that could plausibly produce talk news now.

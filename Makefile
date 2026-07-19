@@ -13,7 +13,7 @@ TODAY      = $(shell date -u +%Y-%m-%d)
 RELEASE    = $(if $(GITHUB_SHA),$(shell git rev-parse --short HEAD 2>/dev/null || echo dev),$(shell git describe --tags --always 2>/dev/null || echo dev))
 BUILD_DATE = $(shell date -u +%Y-%m-%dT%H:%MZ)
 
-.PHONY: build serve check check-content fmt fmt-check fmt-run stories clean new-digest hn yt events papers books reddit run-log backtest test lint typecheck
+.PHONY: build serve check check-content fmt fmt-check fmt-run stories clean new-digest hn yt events papers books reddit stars run-log backtest test lint typecheck
 
 stories:
 	@$(PY) build-stories
@@ -35,6 +35,9 @@ books:
 
 reddit:
 	@$(PY) fetch reddit
+
+stars:
+	@$(PY) fetch stars
 
 run-log:
 	@$(PY) run-log
