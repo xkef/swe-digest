@@ -17,6 +17,15 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-20: Hacker wipes Romania ANCPI land registry database
+
+- Status: open
+- Category: Security
+- Sources: [Risky Business](https://news.risky.biz/risky-bulletin-hacker-wipes-romanias-entire-land-registry-database/), [Help Net Security](https://www.helpnetsecurity.com/2026/07/16/romania-ancpi-cyber-attack/), [HN 48978605](https://news.ycombinator.com/item?id=48978605)
+- Watch for: A published post-mortem and full network rebuild timeline; confirmation the offline backup restores the registry without data loss; scope of the citizen-data and source-code sale; whether the notified-but-unpatched vulnerability is identified; any indictment of the ByteToBreach actor.
+- Last checked: 2026-07-20
+- Notes: Romania's National Agency for Cadastre and Real Estate Advertising (ANCPI) confirmed a cyberattack on its e-Terra land-registry platform. Attacker used valid credentials, mapped internal systems, then wiped systems and backups after a failed extortion attempt; email servers also hit. Incident became public 2026-07-14 as data deletion began; stolen data (citizen records, source code) put up for sale 2026-07-15. Real-estate market halted for about a week (apps/sites offline, notaries unable to record transactions, citizens unable to get proof of ownership). Recovery reportedly aided by an offline backup; agency rebuilding the network from scratch. Actor account ByteToBreach, attributed by KELA to Zakaria Mahdjoub (Oran, Algeria), also linked to a Sweden e-government breach this year. Reporting states authorities had recently notified ANCPI about the exploited vulnerabilities. Surfaced HN front page 2026-07-20 (48978605, 336 pts) via the Risky Business bulletin. Covered 2026-07-20 Top stories (Security).
+
 ## 2026-07-17: AWS Cost Explorer inflated-billing-estimate incident
 
 - Status: open

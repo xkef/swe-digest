@@ -63,6 +63,7 @@ Environment-specific 403 blocks and fallbacks have moved to
 
 ### Secondary/aggregation sources
 
+- `news.risky.biz` - Risky Business (Catalin Cimpanu) security bulletins; reliable secondary reporting on breaches and intrusions with named sources and attribution. Fetched 200 from the run environment (used 2026-07-20 for the Romania ANCPI land-registry wipe). Confirm CVEs and official confirmations against vendor or agency statements.
 - `llm-stats.com` - Aggregates AI model releases; useful for discovery but not a primary source. Verify against vendor docs.
 - `aifundingtracker.com` - Tracks AI acquisitions; useful for discovery. Verify from company newsrooms or SEC filings before publishing as confirmed.
 - `cybersecuritynews.com` - Secondary security reporting; useful for discovery. Confirm from vendor advisories.

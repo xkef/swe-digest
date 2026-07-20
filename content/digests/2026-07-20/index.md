@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-20."
 
 [extra]
 status = "published"
-source_count = 27
+source_count = 32
 +++
 
 ## Top stories
@@ -20,6 +20,16 @@ source_count = 27
 - **Comments:** HN commenters report verifying the map symbolically in Sage and SymPy, confirming the Jacobian determinant is the constant -2 and that the three listed points collide, so the counterexample holds up on inspection. Several note that a machine-checkable counterexample is a stronger claim than the unverified AI proof announcements tracked earlier this month.
 - **Why it matters:** A verifiable counterexample to an 85-year-old conjecture, produced with a language model and checkable in seconds, is a concrete datapoint for AI-assisted mathematics that stands apart from the prose proof claims that could not be independently confirmed.
 - **Follow-up:** Watch for a formal writeup or paper, independent expert confirmation that the map is a genuine counterexample, and clarification of the model's role versus the mathematician's.
+
+### Hacker wipes Romania's national land registry after failed extortion
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Risky Business](https://news.risky.biz/risky-bulletin-hacker-wipes-romanias-entire-land-registry-database/), [Help Net Security](https://www.helpnetsecurity.com/2026/07/16/romania-ancpi-cyber-attack/), [HN discussion](https://news.ycombinator.com/item?id=48978605)
+- **Summary:** Romania's National Agency for Cadastre and Real Estate Advertising (ANCPI) confirmed a cyberattack on its e-Terra land-registry platform. Reporting states the attacker logged in with valid credentials, mapped internal systems, then wiped systems and backups after the agency refused an extortion demand, and that email servers were also affected. The intrusion became public on 2026-07-14 as data deletion began, and stolen citizen records and source code were offered for sale on 2026-07-15. The country's real-estate market stalled for about a week: official apps and websites went offline, notaries could not record transactions, and citizens could not obtain proof of ownership. ANCPI has begun rebuilding its network from scratch, reportedly aided by an offline backup. Security firm KELA attributes the ByteToBreach account used in the attack to an actor based in Oran, Algeria, also linked to a Sweden e-government breach this year.
+- **Comments:** HN commenters note the agency appears to have retained an offline copy despite the attacker's claim to have deleted backups, and compare the incident to an earlier attack on Slovakia's land registry.
+- **Why it matters:** A credential-based intrusion that destroyed a national land registry and its online backups and halted a country's property market for a week is a concrete lesson on offline backup isolation and credential hardening for critical civic infrastructure.
+- **Follow-up:** Watch for a published post-mortem, confirmation the offline backup restores the registry without data loss, and the scope of the data-for-sale fallout.
 
 ### Moonshot AI suspends new subscriptions on Kimi K3 demand
 
@@ -51,6 +61,17 @@ source_count = 27
 - **Comments:** HN commenters read the announcement as a direct response to Moonshot's 2.8T-parameter Kimi K3, whose open weights are due 2026-07-27, and note the shift from smaller value-tier models toward very large, slow, high-parameter open releases. Several flag that the "second only to Fable 5" claim arrives with no benchmarks to check.
 - **Why it matters:** Two Chinese labs racing to publish multi-trillion-parameter open weights within the same window sets the near-term ceiling for self-hostable model scale, even before any of the claims are independently measured.
 - **Follow-up:** Watch for the Qwen 3.8 weights, license, a technical report, and independent benchmarks.
+
+## Agentic coding
+
+### Write-up flags permission-bypass gaps in the OpenCode coding agent
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [wren.wtf write-up](https://wren.wtf/shower-thoughts/stop-using-opencode/), [HN discussion](https://news.ycombinator.com/item?id=48978112)
+- **Summary:** A widely discussed write-up published 2026-07-19 argues that the OpenCode coding agent's safety controls are weak. The author reports that its bash-permission filter, which parses commands with a tree-sitter syntax tree, is bypassable through pipes, environment variables, aliases, absolute paths, base64 encoding, heredocs, and subprocess calls, and that a persisted "always" approval applies to an entire command prefix. The post also reports file-path validation that shell redirections and some build tools evade, remote models wired to a local shell by default, and cites CVE-2026-22812 for a previously exposed local HTTP server. It separately lists prompt-cache and terminal-UI issues as lower-severity annoyances.
+- **Comments:** HN commenters split on the thesis: some argue textual command filtering is inherently security theater and endorse isolating agents at the OS or container level, while others say the critique overreaches and defend OpenCode's free-model tier as their reason for using it.
+- **Why it matters:** Coding-agent permission prompts are widely treated as a sandbox, so a concrete account of how easily one popular agent's command filters are bypassed argues for OS-level isolation over in-agent allowlists.
 
 ## Security
 
@@ -160,15 +181,15 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News (`make hn`, Algolia front page, top, Ask, Show, comment threads, and watchlist queries, all via Algolia both this run and the midday update)
-- Reddit (`make reddit`, degraded both runs: rate-limited well short of 28 subreddits with 429s, supplemented by the committed snapshot)
+- Hacker News (`make hn`, Algolia front page, top, Ask, Show, comment threads, and watchlist queries, full non-degraded coverage via Algolia across all three runs today)
+- Reddit (`make reddit`, degraded all three runs: rate-limited well short of 28 subreddits with 429s, only 4 of 28 subreddits this run, supplemented by the committed snapshot fetched 14:29 UTC)
 - AI sources (Anthropic, Moonshot AI, Ollama, Alibaba Qwen, model release checks)
-- ML research and arXiv papers (`make papers`, 113 items, no high-attention engineering item this run)
+- ML research and arXiv papers (`make papers`, no high-attention engineering item this run)
 - Conferences and events (`make events`, none active as of 2026-07-20, EuroPython 2026 closed 2026-07-19)
 - Books and publisher feeds (`make books`, No Starch, Pragmatic, Springer, only conference proceedings, no qualifying trade release)
-- Security advisories (CISA KEV catalog version 2026.07.16 unchanged at 1647 entries, NVD)
+- Security advisories (CISA KEV catalog version 2026.07.16 unchanged at 1647 entries, NVD, plus the Romania ANCPI destructive attack corroborated via Risky Business and Help Net Security)
 - Status pages (GitHub, Cloudflare, AWS, Azure, Google Cloud, npm, PyPI, no major fresh outage)
-- GitHub watchlist releases and trending (every `[github]` repo checked, no stable release published after the 2026-07-19 digest, only rolling nightly and prerelease tags)
+- GitHub watchlist releases and trending (every `[github]` repo checked in the midday deep sweep and high-velocity repos re-checked this run, no stable release published after the 2026-07-19 digest, only rolling nightly and prerelease tags)
 - Engineering blogs
-- YouTube channels (`make yt`, 20 videos across 89 channels, none carried Hacker News discussion signal this run)
+- YouTube channels (`make yt`, 20 videos across 89 channels including AI Engineer conference talks, none carried Hacker News discussion signal this run)
 - Markets and company sources
