@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-20."
 
 [extra]
 status = "published"
-source_count = 18
+source_count = 27
 +++
 
 ## Top stories
@@ -40,9 +40,28 @@ source_count = 18
 - **Why it matters:** Ollama is a widely used local-inference runtime, so outside funding aimed at hybrid inference shapes how the open-model ecosystem is packaged, served, and monetized for developers.
 - **Follow-up:** Watch for the hybrid inference product, any pricing model for the cloud tier, and whether the local-first posture holds.
 
+## AI
+
+### Alibaba previews Qwen 3.8, a 2.4T-parameter model going open weight
+
+- **Category:** AI
+- **Status:** discussion
+- **Sources:** [Qwen (@Alibaba_Qwen)](https://twitter.com/Alibaba_Qwen/status/2078759124914098291), [HN discussion](https://news.ycombinator.com/item?id=48966120)
+- **Summary:** The Qwen team announced Qwen 3.8, a 2.4T-parameter model it describes as "launching and going open-weight soon", with a Qwen3.8-Max-Preview available for early testing on its Token Plan, Qoder, and QoderWork surfaces. The post positions the model as "second only to Fable 5" among frontier models. It gives no benchmark numbers or method, no license, no weight files, and no release date at announcement.
+- **Comments:** HN commenters read the announcement as a direct response to Moonshot's 2.8T-parameter Kimi K3, whose open weights are due 2026-07-27, and note the shift from smaller value-tier models toward very large, slow, high-parameter open releases. Several flag that the "second only to Fable 5" claim arrives with no benchmarks to check.
+- **Why it matters:** Two Chinese labs racing to publish multi-trillion-parameter open weights within the same window sets the near-term ceiling for self-hostable model scale, even before any of the claims are independently measured.
+- **Follow-up:** Watch for the Qwen 3.8 weights, license, a technical report, and independent benchmarks.
+
 ## Security
 
-No major items found.
+### WordPress core pre-auth RCE found with GPT-5.6 for about 25 USD
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Searchlight Cyber write-up](https://slcyber.io/research-center/exploit-brokers-pay-500000-for-a-wordpress-rce-i-found-one-with-gpt5-6/), [CVE-2026-63030 (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2026-63030), [HN discussion](https://news.ycombinator.com/item?id=48975665)
+- **Summary:** Searchlight Cyber published a write-up on 2026-07-20 describing how it found the wp2shell unauthenticated remote-code-execution chain in stock WordPress core using GPT-5.6 Sol Ultra, at a stated pro-rata cost of about 25 USD (50 percent of one week of a 200 USD subscription). The prompt directed the model to analyze source without changelogs or git history, running up to four concurrent agents for at least six hours. The chain pairs a validation-versus-execution desync in the Batch REST API (`/wp-json/batch/v1`, CVE-2026-63030) with a SQL injection (CVE-2026-60137), which the researcher escalated to admin credential recovery and RCE on a test instance. The flaws affect WordPress 6.9.0 through 6.9.4 and 7.0.0 through 7.0.1, were disclosed 2026-07-17, and are fixed in 6.9.5 and 7.0.2 with forced auto-updates. No active exploitation is reported.
+- **Why it matters:** A frontier model locating a critical pre-authentication RCE in the CMS behind a large share of the web, at a cost far below the six-figure exploit-broker prices the write-up cites, is a concrete datapoint on AI-assisted vulnerability discovery against widely deployed software.
+- **Follow-up:** Watch for reproduction of the discovery method, any exploitation of unpatched 6.9.x or 7.0.x installs, and whether other AI-found core vulnerabilities follow.
 
 ## Outages
 
@@ -58,6 +77,26 @@ No major items found.
 - **Summary:** Phoronix reported on 2026-07-19 that the last active MPEG-4 Visual patent, a Brazilian patent (BRPI0109962B1), expired that day. MPEG-4 Part 2 is the standard behind the Xvid and DivX codecs and is distinct from H.264. US and EU patents on the standard had already expired in prior years, so this removes the final patent claim on the codec family.
 - **Comments:** HN commenters clarify that MPEG-4 Part 2 is the H.263-lineage codec used by Xvid and DivX rather than H.264, and several hope the expiry increases open-source implementation support.
 - **Why it matters:** Full patent expiry removes a licensing constraint on encoding and decoding a widely deployed legacy codec, simplifying its inclusion in open-source multimedia tooling.
+
+### Minecraft Java Edition switches from GLFW to SDL3
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [Minecraft 26.3 Snapshot 4 notes](https://www.minecraft.net/en-us/article/minecraft-26-3-snapshot-4), [HN discussion](https://news.ycombinator.com/item?id=48967256)
+- **Summary:** Minecraft 26.3 Snapshot 4 replaces GLFW with SDL3 for window management, input, and platform integration in the Java Edition. Keyboard input now uses SDL scancodes for physical key positions and keycodes for layout-dependent text shortcuts, the Raw Input mouse option is removed in favor of relative mouse mode during play, Borderless Fullscreen becomes the default, and Linux can use Wayland natively. The notes list known crashes in exclusive fullscreen on Wayland and on multi-monitor Windows.
+- **Comments:** HN commenters note the game had stayed on GLFW, which has not shipped a release since early 2024, and that osu recently made the same move with latency gains. Some question the benefit since Minecraft uses only SDL3's window, input, and platform features and keeps its own renderer.
+- **Why it matters:** Moving a very widely run Java application to SDL3 brings native Wayland support and physical-key bindings, and adds a large real-world test of SDL3 as the GLFW replacement.
+
+## Languages and runtimes
+
+### Claude Code ships a preview of Bun rewritten in Rust
+
+- **Category:** Languages
+- **Status:** confirmed
+- **Sources:** [Simon Willison verification](https://simonwillison.net/2026/Jul/19/claude-code-in-bun-in-rust/), [HN discussion](https://news.ycombinator.com/item?id=48966569)
+- **Summary:** Simon Willison verified on 2026-07-19 that Claude Code v2.1.181 and later embed Bun v1.4.0, the Rust rewrite of the runtime, ahead of any public tagged release. He extracted the reported version string from the macOS arm64 binary and found 563 Rust source-file paths inside it, such as `src/runtime/bake/dev_server/mod.rs`. Bun v1.4.0 was committed to the repository on 2026-05-17 but the latest public release remains v1.3.14 from 2026-05-12, so Claude Code ships a not-yet-released preview. Jarred Sumner reports startup about 10 percent faster on Linux with otherwise little user-visible change.
+- **Comments:** HN commenters debate whether Bun's Zig-to-Rust rewrite, done largely with parallel Claude Code instances, signals that AI-driven full rewrites shipped to millions are now practical, while others read Bun's absorption into Anthropic's toolchain as effectively ending it as an independent open-source project.
+- **Why it matters:** A runtime rewrite reaching production inside the most widely used coding agent before its own public release is a concrete case of a foundation-model vendor bundling and shipping infrastructure it now depends on.
 
 ## Engineering posts
 
@@ -121,8 +160,8 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News (`make hn`, Algolia front page, top, Ask, Show, comment threads, and watchlist queries, all via Algolia this run)
-- Reddit (`make reddit`, degraded: rate-limited to 5 of 28 top-listing and 3 of 28 hot-listing subreddits this run, supplemented by the committed snapshot covering 7 subreddits)
+- Hacker News (`make hn`, Algolia front page, top, Ask, Show, comment threads, and watchlist queries, all via Algolia both this run and the midday update)
+- Reddit (`make reddit`, degraded both runs: rate-limited well short of 28 subreddits with 429s, supplemented by the committed snapshot)
 - AI sources (Anthropic, Moonshot AI, Ollama, Alibaba Qwen, model release checks)
 - ML research and arXiv papers (`make papers`, 113 items, no high-attention engineering item this run)
 - Conferences and events (`make events`, none active as of 2026-07-20, EuroPython 2026 closed 2026-07-19)
