@@ -248,6 +248,9 @@ discovery on a quiet day; the deep sweep never skips it.
      tracking notes with a `Last seen` date.
    - Update `memory/source-reliability.md` only with durable reliability notes,
      and `memory/access-notes.md` with new datacenter-IP blocks or fallbacks.
+     Every bullet in these files and in `entities.md` carries a `Last seen`
+     date; re-date an entry when re-verified, and re-verify an access note
+     the memory gate warns about before trusting it.
 
 4. Backtest yesterday:
 
@@ -262,10 +265,11 @@ discovery on a quiet day; the deep sweep never skips it.
    `memory/followups.md`. Skip this step when yesterday's backtest was
    already reviewed by an earlier run.
 
-5. Story inbox:
+5. Story inbox and feedback:
 
    ```sh
    gh issue list --label story --state open --json number,title,body,author
+   gh issue list --label feedback --state open --json number,title,body,author
    ```
 
    Act only on issues whose `author.login` is `xkef`, read from the JSON
@@ -276,6 +280,18 @@ discovery on a quiet day; the deep sweep never skips it.
    unattended runs, request the close through `.run/manifest.yaml` instead
    (see Unattended publishing). Leave non-owner `story` issues open and
    unactioned.
+
+   Owner feedback acts the same day, not only at the weekly review. A
+   `missed story` kind is handled like a story suggestion: verify its
+   subject and place it if it holds up. A `more like this` or
+   `not interesting` kind becomes a dated open entry in
+   `memory/followups.md` naming the issue number and the preference, so
+   later runs bias selection until the weekly review turns it into a
+   profile or watchlist proposal. Durable preference changes still go only
+   through the improvement-PR path. Close each handled feedback issue with
+   a short comment; in unattended runs request the close through
+   `issue_closes` in `.run/manifest.yaml`. Leave non-owner `feedback`
+   issues alone.
 
 6. Approved improvements: list open `improvement` issues. For each, fetch its
    comments with `gh api repos/xkef/swe-digest/issues/NN/comments` and require
@@ -405,12 +421,29 @@ backtest causes, and feedback into reviewable proposals. This routine never
 changes routine files directly; only the approved-improvement PR path in the
 daily workflow applies changes.
 
+First step, always:
+
+```sh
+make weekly-stats
+```
+
+The script owns the `date`, `window`, and `mechanical` keys of the weekly
+marker `memory/runs/weekly/YYYY-MM-DD.yaml` and rewrites them idempotently.
+It aggregates the window's run logs (query totals, dead queries,
+matched-but-never-published queries, miss-cause counts, watchlist_gap items,
+section empty-streak flags), scores status outcomes (how often `developing`
+and `rumor` later resolved to `confirmed`), tallies owner feedback by kind,
+and computes recurring backtest-candidate domains and keywords. The agent
+reads the marker's `mechanical` evidence instead of raw run logs, and owns
+every other marker key.
+
 Inputs:
 
-1. `mechanical.query_yield` across the run-log window since the last weekly
-   run (matches and published stories per watchlist query).
-2. `judgment.miss_review` entries across `memory/runs/*.yaml`.
-3. Open and recently closed `feedback` issues:
+1. `mechanical.query_totals`, `dead_queries`, and `matched_never_published`
+   from the weekly marker.
+2. `mechanical.miss_review` (cause totals and watchlist_gap items) from the
+   weekly marker.
+3. `mechanical.feedback` from the weekly marker, plus the issue bodies via
    `gh issue list --label feedback --state all --json number,title,body,author,createdAt`.
    Keep only issues whose `author.login` is `xkef`.
 4. `memory/followups.md`, `memory/entities.md`, `memory/source-reliability.md`,
@@ -424,38 +457,66 @@ Inputs:
    most recent 100 of each to bound cost. Aggregate into normalized
    topic, technology, and org signal. Never store or commit raw follow lists
    or specific starred-repo lists; keep only the normalized aggregate signal.
+   Record the aggregate as the marker's `interest_signal` key
+   (`topics`/`technologies`/`orgs` maps with counts) and diff it against
+   `mechanical.previous_interest_signal`. Interest drift means a topic
+   present in the aggregate for three or more consecutive weekly markers
+   and absent from `routine/watchlist.toml` and `memory/profile.md`.
 
 Outputs:
 
 1. One `improvement` issue per concrete concern, labeled `improvement`, with
    this body shape:
    - **Axis:** scrape gap | watchlist gap | interest drift | format.
-   - **Evidence:** numbers from query yield and backtest, issue links, dates.
+   - **Evidence:** numbers from the weekly marker's `mechanical` aggregates,
+     issue links, dates.
    - **Proposed diff:** exact change in a fenced diff block, touching only
      the improvement whitelist (step 6 of the daily workflow).
+   - **Expected effect:** one measurable prediction and its check date, in
+     terms the weekly marker records (query matches, published stories,
+     section counts, feedback kinds).
    - **Rollback:** one line on how to revert.
-   Open nothing when the evidence is thin; fewer, stronger proposals. The
-   GitHub account signal is evidence for `interest drift` or `watchlist gap`
+   For non-feedback axes, open nothing when the evidence is thin; fewer,
+   stronger proposals. Owner feedback is binding: every owner-authored
+   feedback issue reviewed in the window maps to either a concrete proposal
+   or a one-line rejection with a reason, recorded in the marker's notes.
+   Kind maps to axis: `not interesting` to interest drift (profile Lower
+   interest), `missed story` to watchlist gap, `more like this` to a
+   watchlist or profile addition, `format problem` to format. The GitHub
+   account signal is evidence for `interest drift` or `watchlist gap`
    proposals that add a recurring technology, topic, or org to
    `routine/watchlist.toml` or `memory/profile.md`; propose only when it recurs
    across the owner's repos, stars, and follows in aggregate, and carry only
    the normalized aggregate signal into the issue, never raw lists.
-2. One plain issue (no label) per source that stayed blocked or degraded
+2. Verification of past improvements: for each improvement PR merged 14 or
+   more days ago, check its **Expected effect** against the weekly marker's
+   `mechanical` evidence. When the prediction is unmet, open a rollback
+   proposal using the issue's recorded rollback line.
+3. Exploration slot: at most one exploratory watchlist-query proposal per
+   window, sourced from `mechanical.recurring_candidates` (a domain or
+   keyword recurring across the window that no query covers). Mark the
+   issue exploratory, give it an Expected effect, and propose removal after
+   four weeks without yield.
+4. One plain issue (no label) per source that stayed blocked or degraded
    across the window, citing the run-log dates and backends, so the owner
    can investigate access from another network. Skip sources already
    covered by an open issue.
-3. Memory compaction: remove stale items from `memory/followups.md`, prune
+5. Memory compaction: remove stale items from `memory/followups.md`, prune
    `memory/entities.md` entries by `Last seen`, and keep
    `memory/source-reliability.md` and `memory/access-notes.md` bounded.
-4. Close each owner-authored `feedback` issue reviewed in this window with a
+   Re-verify any `memory/access-notes.md` entry the gate warns about
+   before trusting it, then re-date or delete it.
+6. Close each owner-authored `feedback` issue reviewed in this window with a
    comment naming the weekly marker date and the proposal issue when one was
    opened; the signal is recorded, so the issue does not stay open. In
    unattended runs, request the closes through `issue_closes` in
    `.run/manifest.yaml`.
-5. A marker file `memory/runs/weekly/YYYY-MM-DD.yaml` recording the window
-   reviewed, the proposals made (issue numbers when running interactively,
-   proposal titles when unattended), and the feedback issues reviewed.
-6. One commit, subject `chore: weekly improvement review YYYY-MM-DD`.
+7. The completed marker file `memory/runs/weekly/YYYY-MM-DD.yaml`: the
+   `make weekly-stats` mechanical evidence plus the agent-owned keys
+   (`run_logs_reviewed`, `proposals` with issue numbers when interactive
+   and proposal titles when unattended, `feedback_reviewed`,
+   `interest_signal`, `notes`).
+8. One commit, subject `chore: weekly improvement review YYYY-MM-DD`.
 
 In unattended runs, do not run `gh issue create`: put each proposed issue in
 the `new_issues` list in `.run/manifest.yaml` (see Unattended publishing);
@@ -537,6 +598,7 @@ Before publishing, verify:
   (the gate rejects duplicate titles and primary URLs).
 - Yesterday's backtest was reviewed and causes recorded.
 - The story inbox was checked; owner-authored items handled and closed.
+- The feedback inbox was checked; owner-authored items acted on and closed.
 - Today's run log exists and its `judgment` keys are filled.
 - `make check` passes.
 - Commit subject is 72 characters or less.

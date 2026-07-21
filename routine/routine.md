@@ -749,21 +749,46 @@ seven days and `.cache/` is local.
 
 `make backtest` compares yesterday's accumulated `snapshots/hn/` snapshot against
 yesterday's digest, pre-classifies each candidate miss, and seeds a default
-final cause into `judgment.miss_review`. The taxonomy:
+final cause into `judgment.miss_review`. A candidate clears one of two
+floors, recorded in its `via` field: `points` (at or above
+`[backtest].min_points`) or `query_match` (matched by a watchlist query and
+at or above the lower `[backtest].matched_min_points`). The lower matched
+floor exists because the digest ranks by impact, not popularity: an
+interest-matched story is a candidate miss well below the generic points
+bar. The taxonomy:
 
 - `scrape_gap`: not visible in the publish-time fetch (fetch degradation or
   timing). Pre-class `not_in_publish_fetch`; seeded by default.
-- `watchlist_gap`: a genuine engineering miss no query caught. Never seeded;
-  the agent promotes a candidate here by hand. Candidate for a new query or
-  weight.
+- `watchlist_gap`: a genuine engineering miss no query caught. Seeded only
+  when a `no_query_match` candidate's title names a tracked entity from
+  `memory/entities.md` (the candidate then carries an `entity` field);
+  otherwise the agent promotes a candidate here by hand. Candidate for a
+  new query or weight.
 - `relevance_skip`: seen and matched, skipped on purpose. Pre-class
   `seen_and_matched`; seeded by default. Override when the skip was wrong.
-- `out_of_scope`: not an engineering story. Pre-class `no_query_match`;
-  seeded by default. Override when the story was in scope.
+- `out_of_scope`: not an engineering story. Pre-class `no_query_match`
+  without an entity match; seeded by default. Override when the story was
+  in scope.
 
-The agent skims the printed candidates and fixes only wrong defaults; a
-promoted `watchlist_gap` also gets carried into today's digest or
-`memory/followups.md`.
+The agent skims the printed candidates and fixes only wrong defaults: it
+promotes a genuine miss to `watchlist_gap` and demotes a false entity match
+back to `out_of_scope`. A `watchlist_gap` also gets carried into today's
+digest or `memory/followups.md`.
+
+### Weekly stats
+
+`make weekly-stats` aggregates the run-log window since the previous weekly
+marker into `memory/runs/weekly/YYYY-MM-DD.yaml`. The script owns the
+marker's `date`, `window`, and `mechanical` keys and rewrites them
+idempotently; the agent owns every other key. `mechanical` carries per-query
+totals with dead and matched-but-never-published lists, miss-cause counts
+and `watchlist_gap` items, per-section empty-streak flags, status outcomes,
+the owner feedback tally by kind, recurring backtest-candidate domains and
+keywords (the exploration-slot evidence pool), and the previous marker's
+`interest_signal` for drift diffing. Status outcomes count a `developing` or
+`rumor` story as confirmed only when a later dated digest resolves the same
+primary URL or a close title to `confirmed`; a same-date in-place upgrade is
+invisible to the metric, so treat the rates as a floor.
 
 ### Weekly improvement routine
 
@@ -801,12 +826,16 @@ During a run, update only `memory/followups.md`, `memory/entities.md`,
   deleting its entry; git history and the dated digests are the archive. Do not
   accumulate closed entries.
 - `entities.md`: add or refresh a recurring entity as a compact tracking note
-  with a `Last seen` date. Keep volatile per-story state in `followups.md`, not
-  here. Prune entries with no recent activity.
+  with a `Last seen` date. Update in place: a new fact supersedes the old text
+  in the same bullet, never a duplicate bullet. Keep volatile per-story state
+  in `followups.md`, not here. Prune entries with no recent activity.
 - `source-reliability.md`: add a durable judgment when a source repeatedly
-  proves reliable, late, vague, promotional, or technically strong.
+  proves reliable, late, vague, promotional, or technically strong. Every
+  bullet carries a `Last seen` date recording when the judgment last held.
 - `access-notes.md`: record a datacenter-IP block or per-host fallback when the
-  run environment cannot reach a source.
+  run environment cannot reach a source. Every bullet carries a `Last seen`
+  date. An entry the gate warns about (older than 30 days) must be re-verified
+  before it is trusted, then re-dated or deleted.
 
 `memory/profile.md` and `routine/watchlist.toml` change only through an approved
 improvement PR (see the weekly improvement routine in `CLAUDE.md`), never during
