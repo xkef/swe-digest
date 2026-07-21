@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-21."
 
 [extra]
 status = "published"
-source_count = 34
+source_count = 36
 +++
 
 ## Top stories
@@ -73,6 +73,14 @@ No major items found.
 - **Sources:** [Firefox 153 release notes](https://www.firefox.com/en-US/firefox/153.0/releasenotes/), [Phoronix](https://www.phoronix.com/news/Firefox-153-Downloads), [HN discussion](https://news.ycombinator.com/item?id=48978835)
 - **Summary:** Firefox 153 shipped on 2026-07-20. Per Phoronix coverage it adds initial Vulkan video decoding as a cross-vendor alternative to VA-API, experimental JPEG-XL through Firefox Labs, HDR video playback on Windows, and PDF improvements.
 - **Why it matters:** Vulkan video decoding gives Linux systems without working VA-API a hardware-accelerated decode path independent of vendor VA-API support.
+
+### Jellyfin announces an amicable leadership handoff
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [Jellyfin forum announcement](https://forum.jellyfin.org/t-project-leadership-changes), [HN discussion](https://news.ycombinator.com/item?id=48986091)
+- **Summary:** The Jellyfin project announced on 2026-07-20 that several long-time leaders, including a co-founder, are stepping back from the free self-hosted media server after about 7.5 years. The outgoing project leader cited burnout and an inability to meet the role's demands, and another core member cited life changes. The post describes the handoff as amicable with open communication and states there is little to no risk of a hostile fork, with the remaining team assuming leadership and no stated change to governance or project direction.
+- **Why it matters:** Founder burnout and a leadership handoff at a widely deployed open-source project is a concrete open-source-sustainability data point, continuing the maintainer-capacity theme seen at Godot, curl, and FFmpeg.
 
 ## Languages and runtimes
 
@@ -163,7 +171,7 @@ No major items found.
 ## Sources checked
 
 - Hacker News (`make hn`, full structured coverage via Algolia. Front page, top day, Ask HN, Show HN, comments, and 62 of 79 watchlist queries with hits)
-- Reddit (`make reddit`, partial coverage via reddit RSS, flagged degraded. 62 top-of-day and 42 hot items collected across subreddits)
+- Reddit (`make reddit`, degraded. Live RSS re-fetch on the update run returned HTTP 429 across subreddits, so coverage came from the committed data/reddit snapshot; local-model and coding subreddits echoed the day's Chinese-open-weights theme, no new verified story)
 - GitHub stars (`make stars`, one WatchEvent from tracked accounts)
 - ML research and arXiv papers (`make papers`, 127 items, none cleared the engineering-relevance and attention bar)
 - Events watchlist (`make events`, no upcoming or active events)
@@ -172,6 +180,7 @@ No major items found.
 - AI sources (OpenAI, Anthropic, Google DeepMind, Moonshot, Alibaba Qwen, Mistral)
 - Security advisories (CISA KEV catalog 2026.07.16 unchanged at 1647, no new additions. NVD, GitHub Security Advisories)
 - Status pages (GitHub, AWS, Azure, Google Cloud, Cloudflare, OpenAI, Anthropic. No new major incidents, providers reporting normal operations)
-- GitHub watchlist (releases and trending. No new stable releases since the 2026-07-20 digest for the dev-tool and language repos)
+- GitHub watchlist deep sweep (every `[github]` repo release plus github.com/trending. Only minor patch releases since the first 2026-07-21 run: Grafana 13.1.1, Homebrew 6.0.12, chezmoi 2.71.1, none clearing the story bar. Trending clustered on AI agents and local-first inference, consistent with the day's covered theme)
 - Engineering blogs (Cursor, Stratechery, Sebastian Raschka)
 - Markets and company sources (Nikkei, The Register)
+- Open-source project governance (Jellyfin forum)

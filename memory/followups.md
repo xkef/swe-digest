@@ -17,6 +17,15 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-21: Jellyfin announces an amicable leadership handoff
+
+- Status: open
+- Category: Dev tools
+- Sources: [Jellyfin forum announcement](https://forum.jellyfin.org/t-project-leadership-changes), [HN 48986091](https://news.ycombinator.com/item?id=48986091)
+- Watch for: Whether the handoff holds without a hostile fork; release-cadence continuity under the remaining team; any later governance or funding change.
+- Last checked: 2026-07-21
+- Notes: Announced 2026-07-20. Several long-time Jellyfin leaders, including a co-founder, are stepping back from the free self-hosted media server after ~7.5 years. Outgoing project leader cited burnout and inability to meet the role's demands; another core member cited life changes. Post frames the handoff as amicable with open communication and little to no risk of a hostile fork; remaining team assumes leadership, no stated change to governance or direction. Continues the open-source maintainer-capacity theme (Godot contribution policy, curl report-handling pause, FFmpeg AI bug reports). Covered 2026-07-21 Developer tools (confirmed).
+
 ## 2026-07-21: Zig accepts a Fil-C-inspired memory-safe `fil` ABI
 
 - Status: open
