@@ -87,7 +87,22 @@ commit_retries = 4
 
 [backtest]
 min_points = 100
+# Lower candidate floor for stories a watchlist query matched. The digest
+# ranks by impact, not popularity, so an interest-matched story is a
+# candidate miss well below the generic points bar.
+matched_min_points = 25
 title_ratio = 0.75
+
+[weekly]
+# Aggregation thresholds for `make weekly-stats`, which writes the
+# mechanical evidence into the weekly marker.
+# Flag a section empty for this many consecutive logged days.
+section_empty_streak_days = 4
+# List a developing/rumor story as unresolved after this many days.
+status_unresolved_days = 14
+# A backtest candidate domain or title keyword recurring on this many
+# distinct days becomes exploration-slot evidence.
+recurring_min_days = 3
 
 [memory]
 # Structure and growth bounds for memory/*.md, enforced by the content gate.
@@ -99,3 +114,6 @@ max_file_lines = 1500
 max_line_chars = 2000
 entity_stale_days = 60
 followup_max_age_days = 45
+# access-notes.md entries describe volatile network state; past this age an
+# entry warns so the routine re-verifies the block before trusting it.
+access_note_stale_days = 30

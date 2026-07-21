@@ -79,10 +79,17 @@ COMMIT_RETRIES: int = _raw["publish"]["commit_retries"]
 
 # Backtest
 BACKTEST_MIN_POINTS: int = _raw["backtest"]["min_points"]
+BACKTEST_MATCHED_MIN_POINTS: int = _raw["backtest"]["matched_min_points"]
 BACKTEST_TITLE_RATIO: float = _raw["backtest"]["title_ratio"]
+
+# Weekly stats
+WEEKLY_SECTION_EMPTY_STREAK_DAYS: int = _raw["weekly"]["section_empty_streak_days"]
+WEEKLY_STATUS_UNRESOLVED_DAYS: int = _raw["weekly"]["status_unresolved_days"]
+WEEKLY_RECURRING_MIN_DAYS: int = _raw["weekly"]["recurring_min_days"]
 
 # Memory gate
 MEMORY_MAX_FILE_LINES: int = _raw["memory"]["max_file_lines"]
 MEMORY_MAX_LINE_CHARS: int = _raw["memory"]["max_line_chars"]
 MEMORY_ENTITY_STALE_DAYS: int = _raw["memory"]["entity_stale_days"]
 MEMORY_FOLLOWUP_MAX_AGE_DAYS: int = _raw["memory"]["followup_max_age_days"]
+MEMORY_ACCESS_NOTE_STALE_DAYS: int = _raw["memory"]["access_note_stale_days"]

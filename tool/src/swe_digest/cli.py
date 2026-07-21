@@ -62,6 +62,7 @@ def build_parser() -> argparse.ArgumentParser:
     backtest = sub.add_parser("backtest", help="find high-signal HN stories a digest missed")
     backtest.add_argument("date", nargs="?", help="YYYY-MM-DD, default yesterday UTC")
     backtest.add_argument("--min-points", type=int, default=None)
+    backtest.add_argument("--matched-min-points", type=int, default=None)
 
     return parser
 
@@ -153,10 +154,9 @@ def run(args: argparse.Namespace) -> int:
         return run_log_main(args.date)
 
     if args.command == "backtest":
-        from swe_digest import config
         from swe_digest.digest.backtest import main as backtest_main
 
-        return backtest_main(args.date, args.min_points or config.BACKTEST_MIN_POINTS)
+        return backtest_main(args.date, args.min_points, args.matched_min_points)
 
     raise AssertionError(f"unhandled command: {args.command}")
 
