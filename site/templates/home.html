@@ -32,10 +32,26 @@ digests.pages | first %} {% set day = latest.date | date(format='%Y-%m-%d') %}
         Updated <time class="js-localtime" datetime="{{ digest.updated_at }}"
         >{{ digest.updated }}</time>.
       </p>{% endif %}
+      <p class="meta">
+        <a
+          rel="nofollow"
+          href="{{ config.extra.repository | safe }}/issues/new?template=story.yml"
+        >Suggest a story</a>
+      </p>
     </header>
     {{ macros::day_sections(sections=digest.sections) }} {% if digests.pages |
     length > 1 %} {{ macros::day_pager(older=digests.pages | nth(n=1)) }} {%
-    else %} {{ macros::day_pager() }} {% endif %}
+    else %} {{ macros::day_pager() }} {% endif %} {% if digest.run %}
+    <footer class="run-meta">
+      <p class="meta">
+        {% if digest.run.hn_degraded %}Degraded Hacker News collections this
+        run: {{ digest.run.hn_degraded | join(sep=", ") }} · {% endif %}<a
+          rel="nofollow"
+          href="{{ config.extra.repository | safe }}/blob/main/memory/runs/{{ day }}.yaml"
+        >Full run log</a>
+      </p>
+    </footer>
+    {% endif %}
   </div>
 
   <ol class="story-list" id="archive-results" hidden></ol>
