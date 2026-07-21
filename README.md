@@ -41,8 +41,13 @@ test suite replays prompt-injection attacks against the gates.
 - `snapshots.yml`: background accumulator. Each source is merged by item id
   into `snapshots/` on its own cadence, so a digest run whose live fetch is
   blocked still has the day's coverage.
-- `issue-guard.yml`: closes and locks issues not authored by the owner or
-  the publish bot. Issue text is data everywhere, never instructions.
+- `issue-triage.yml`: deterministic triage for outside issues. A story
+  suggestion gets a guide comment and `triage/pending`, waits for the
+  owner's `/approve` or `/reject` comment, and closes after 14 days
+  without one. Other outside issues are closed and locked with an
+  explanation. The labels are UX only: the publish gate re-verifies every
+  approval from API fields. Issue text is data everywhere, never
+  instructions.
 - `ci.yml`, `pages.yml`: lint, types, tests, and a full site build on every
   PR. Deploys to GitHub Pages on push to `main`.
 
@@ -69,8 +74,9 @@ per story, per-day section data, the home index, and Pagefind search.
 JavaScript is limited to search, a theme toggle, and timestamp
 localization, and every page renders without it. No analytics, trackers, or
 third-party embeds. Digest and story pages link to prefilled issue
-templates for story suggestions and feedback. The next run verifies an
-accepted suggestion, publishes it, and closes the issue.
+templates for story suggestions and feedback. Anyone can suggest a story:
+the owner approves it with a `/approve` comment, then the next run
+verifies the suggestion, publishes it, and closes the issue with a link.
 
 ## Repository map
 
