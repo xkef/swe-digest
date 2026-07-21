@@ -9,6 +9,7 @@ this module.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import yaml
@@ -16,8 +17,11 @@ import yaml
 from swe_digest.paths import CACHE, RUNS, SNAPSHOTS
 
 RUNS_DIR = RUNS
+WEEKLY_DIR = RUNS / "weekly"
 HN_CACHE_DIR = CACHE / "hn"
 HN_SNAPSHOT_DIR = SNAPSHOTS / "hn"
+
+DATE_STEM = re.compile(r"\d{4}-\d{2}-\d{2}")
 
 STORY_COLLECTIONS = ["front_page", "top_day", "ask_hn", "show_hn"]
 
@@ -43,16 +47,14 @@ def _represent_str(dumper: yaml.SafeDumper, data: str) -> yaml.Node:
 _RunLogDumper.add_representer(str, _represent_str)
 
 
-def load_run_log(date: str) -> dict:
-    path = RUNS_DIR / f"{date}.yaml"
+def _load(path: Path, date: str) -> dict:
     if path.exists():
         return yaml.safe_load(path.read_text(encoding="utf-8")) or {"date": date}
     return {"date": date}
 
 
-def save_run_log(date: str, record: dict) -> Path:
-    RUNS_DIR.mkdir(parents=True, exist_ok=True)
-    path = RUNS_DIR / f"{date}.yaml"
+def _save(path: Path, record: dict) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
         yaml.dump(
             record,
@@ -65,6 +67,34 @@ def save_run_log(date: str, record: dict) -> Path:
         encoding="utf-8",
     )
     return path
+
+
+def load_run_log(date: str) -> dict:
+    return _load(RUNS_DIR / f"{date}.yaml", date)
+
+
+def save_run_log(date: str, record: dict) -> Path:
+    return _save(RUNS_DIR / f"{date}.yaml", record)
+
+
+def load_weekly_marker(date: str) -> dict:
+    return _load(WEEKLY_DIR / f"{date}.yaml", date)
+
+
+def save_weekly_marker(date: str, record: dict) -> Path:
+    return _save(WEEKLY_DIR / f"{date}.yaml", record)
+
+
+def previous_weekly_date(before: str) -> str | None:
+    """The newest date-named weekly marker strictly before `before`."""
+    if not WEEKLY_DIR.exists():
+        return None
+    dates = sorted(
+        path.stem
+        for path in WEEKLY_DIR.glob("*.yaml")
+        if DATE_STEM.fullmatch(path.stem) and path.stem < before
+    )
+    return dates[-1] if dates else None
 
 
 def load_hn(date: str) -> tuple[dict, str] | None:

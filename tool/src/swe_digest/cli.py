@@ -59,6 +59,14 @@ def build_parser() -> argparse.ArgumentParser:
     run_log = sub.add_parser("run-log", help="write the day's machine-readable run log")
     run_log.add_argument("date", nargs="?", help="YYYY-MM-DD, default today UTC")
 
+    weekly_stats = sub.add_parser(
+        "weekly-stats", help="aggregate the run-log window into the weekly marker"
+    )
+    weekly_stats.add_argument("date", nargs="?", help="YYYY-MM-DD, default today UTC")
+    weekly_stats.add_argument(
+        "--since", help="window start YYYY-MM-DD, default day after the previous marker"
+    )
+
     backtest = sub.add_parser("backtest", help="find high-signal HN stories a digest missed")
     backtest.add_argument("date", nargs="?", help="YYYY-MM-DD, default yesterday UTC")
     backtest.add_argument("--min-points", type=int, default=None)
@@ -152,6 +160,11 @@ def run(args: argparse.Namespace) -> int:
         from swe_digest.digest.run_log import main as run_log_main
 
         return run_log_main(args.date)
+
+    if args.command == "weekly-stats":
+        from swe_digest.digest.weekly_stats import main as weekly_stats_main
+
+        return weekly_stats_main(args.date, args.since)
 
     if args.command == "backtest":
         from swe_digest.digest.backtest import main as backtest_main

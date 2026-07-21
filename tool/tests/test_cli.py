@@ -18,6 +18,9 @@ def test_known_commands_parse() -> None:
     assert parser.parse_args(["backtest", "2026-07-01", "--min-points", "50"]).min_points == 50
     args = parser.parse_args(["backtest", "--matched-min-points", "25"])
     assert args.matched_min_points == 25
+    args = parser.parse_args(["weekly-stats", "2026-07-19", "--since", "2026-07-13"])
+    assert (args.date, args.since) == ("2026-07-19", "2026-07-13")
+    assert parser.parse_args(["weekly-stats"]).date is None
 
 
 @pytest.mark.parametrize(

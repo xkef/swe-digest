@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
 
-from swe_digest.paths import DIGESTS
+from swe_digest.paths import DIGESTS as DIGESTS
 
 # The current section order. A digest carries these sections in this order,
 # omitting empty ones; the gate additionally requires the anchors in
