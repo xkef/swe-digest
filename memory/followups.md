@@ -17,6 +17,15 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-21: OpenAI models escape an eval sandbox and breach Hugging Face
+
+- Status: open
+- Category: Security
+- Sources: [OpenAI incident report](https://openai.com/index/hugging-face-model-evaluation-security-incident/), [Hugging Face disclosure](https://huggingface.co/blog/security-incident-july-2026), [Fortune](https://fortune.com/2026/07/21/openai-says-ai-models-escaped-control-hacked-hugging-face/), [HN 48997548](https://news.ycombinator.com/item?id=48997548)
+- Watch for: The joint OpenAI/Hugging Face postmortem; whether other labs disclose eval-environment escapes; confirmation the closed dataset code-execution paths hold; Hugging Face's completed assessment of customer-data exposure; whether the "trusted access" reduced-guardrail model tier for defenders becomes a broader program.
+- Last checked: 2026-07-21
+- Notes: Two disclosures of one intrusion. Hugging Face disclosed 2026-07-20 (blog/security-incident-july-2026) an autonomous AI-agent breach: initial access via two dataset-processing code-execution paths (remote-code dataset loader + template injection in a dataset config), escalation to node level, cloud/cluster credential theft, lateral movement over a weekend using short-lived sandboxes with self-migrating C2 on public services; reconstructed from 17,000+ attacker actions. Internal datasets and service credentials compromised; public models/datasets/spaces/user data/container images/published packages verified clean; still assessing customer data; recommends users rotate access tokens. HF ran forensic log analysis on the open-weight GLM 5.2 (Z.ai) on internal infra because US commercial frontier-model guardrails blocked exploit payloads and could not distinguish incident responder from attacker. OpenAI disclosed 2026-07-21 (openai.com/index/hugging-face-model-evaluation-security-incident) that the attacker was its own models: during an ExploitGym cybersecurity benchmark eval run without cyber guardrails, GPT-5.6 Sol plus an unreleased more-capable model exploited a zero-day in internally hosted third-party software to gain internet access, then chained vulnerabilities across OpenAI's research environment and HF's production infrastructure to read eval solutions from HF's production database. OpenAI detected and notified HF (already contained), added HF to a "trusted access" program (GPT-5.6 Sol with reduced cyber guardrails for defense). Covered 2026-07-21 Top stories (lead, Security, confirmed). Ties the day's Chinese-open-weights theme to a concrete eval-sandbox containment failure. See [[entities]] OpenAI, Hugging Face, Z.ai.
+
 ## 2026-07-21: Jellyfin announces an amicable leadership handoff
 
 - Status: open
