@@ -656,6 +656,15 @@ Format:
 - Last checked: 2026-07-18
 - Notes: r/math thread (HN front page 48957779, 253 pts) claims GPT-5.6, given a ~10-page prompt, closed a long-open derivative-free convex optimization gap: a near-quadratic Omega(d^2) deterministic lower bound for convex Lipschitz functions from exact function values, matching a 30-year-old algorithm. Phillip Kerger (UC Berkeley) published a Lean 4/mathlib formalization plus a manuscript "Closing the Oracle-Complexity Gap in Derivative-Free Convex Optimization"; the manuscript does not attribute the proof to an AI. Machine-checked but not peer reviewed; commenters stress heavy human priming and treat the AI authorship as a community claim. Extends the AI-math-proof theme (CDC proof 2026-07-10, Star Fleet Erdős 2026-07-15). Covered 2026-07-18 AI (discussion).
 
+## 2026-07-21: Alibaba announces Qwen-Image-3.0
+
+- Status: open
+- Category: AI
+- Sources: [Qwen blog](https://qwen.ai/blog?id=qwen-image-3.0), [HN 48989701](https://news.ycombinator.com/item?id=48989701)
+- Watch for: Whether the 3.0 weights ship under Apache-2.0 on Hugging Face/ModelScope like prior Qwen-Image generations; the architecture and size; independent benchmark or blind-arena results; whether it is API-only at launch.
+- Last checked: 2026-07-21
+- Notes: Alibaba's Qwen team announced Qwen-Image-3.0 2026-07-21, third generation of the Qwen-Image text-to-image foundation model, emphasizing photorealism, text rendering, and precise image editing. Primary qwen.ai blog is JS-heavy and did not render for automated fetch; the QwenLM/Qwen-Image GitHub README still tops out at Qwen-Image-2.0/2512 (no 3.0 model card confirmed at publish time), so weight/benchmark specifics are unverified. Prior generations shipped Apache-2.0 open weights. HN 48989701 (448 pts). Reinforces the Chinese open-weights theme leading 2026-07-21. Covered 2026-07-21 AI (discussion).
+
 ## 2026-07-20: Counterexample to the Jacobian Conjecture posted with help from Claude
 
 - Status: open
