@@ -65,15 +65,15 @@
       Menlo,
       Consolas,
       monospace;
-    --bg: light-dark(#f8f7f3, #0f1217);
-    --fg: light-dark(#1a1d23, #eef2f7);
-    --muted: light-dark(#5b6573, #a2acba);
-    --quiet: light-dark(#636c79, #737d8b);
-    --surface: light-dark(#ffffff, #161b22);
-    --surface-2: light-dark(#efece4, #1f2632);
-    --border: light-dark(#ddd8cc, #2c3442);
-    --accent: light-dark(#245bd6, #8db2ff);
-    --accent-2: light-dark(#0f766e, #70d6c8);
+    --bg: light-dark(#f8f7f3, #161b24);
+    --fg: light-dark(#1a1d23, #e9eef6);
+    --muted: light-dark(#5b6573, #a8b3c4);
+    --quiet: light-dark(#636c79, #7e899b);
+    --surface: light-dark(#ffffff, #1d2431);
+    --surface-2: light-dark(#efece4, #283243);
+    --border: light-dark(#ddd8cc, #333e52);
+    --accent: light-dark(#245bd6, #8fb4ff);
+    --accent-2: light-dark(#0f766e, #6fd8c9);
 
     --wide: 50rem;
     --gutter: clamp(1rem, 4vw, 2.5rem);
@@ -272,7 +272,7 @@
   }
 
   .eyebrow {
-    color: var(--quiet);
+    color: light-dark(var(--quiet), var(--accent-2));
     font-size: 0.74rem;
     font-weight: 600;
     letter-spacing: 0.06em;
@@ -497,8 +497,14 @@
   }
 
   .badge-cat {
-    background: var(--surface-2);
-    color: var(--muted);
+    background: light-dark(
+      var(--surface-2),
+      color-mix(in oklab, var(--accent) 14%, var(--surface))
+    );
+    color: light-dark(
+      var(--muted),
+      color-mix(in oklab, var(--accent) 45%, var(--muted))
+    );
   }
   .badge-status {
     background: transparent;
@@ -618,7 +624,11 @@
   .day-section h2 {
     margin-bottom: var(--space-sm);
     padding-bottom: var(--space-2xs);
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid
+      light-dark(
+        var(--border),
+        color-mix(in oklab, var(--accent) 25%, var(--border))
+      );
     font-size: 1.1rem;
     letter-spacing: -0.02em;
   }
