@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-21."
 
 [extra]
 status = "published"
-source_count = 40
+source_count = 43
 +++
 
 ## Top stories
@@ -74,7 +74,14 @@ source_count = 40
 
 ## Security
 
-No major items found.
+### CISA adds the WordPress Core wp2shell RCE chain to the KEV catalog
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [CISA KEV catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog), [CVE-2026-63030 (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2026-63030), [Searchlight Cyber research](https://slcyber.io/research-center/wp2shell-pre-authentication-rce-in-wordpress-core/)
+- **Summary:** CISA updated its Known Exploited Vulnerabilities catalog to version 2026.07.21 (count 1651) on 2026-07-21, adding the two WordPress Core flaws that form the wp2shell chain: CVE-2026-63030, an interpretation conflict in the REST API batch endpoint, and CVE-2026-60137, a SQL injection. Chained, they let an unauthenticated attacker reach remote code execution on default WordPress installations. Affected core is 6.9.0 through 6.9.4 and 7.0.0 through 7.0.1, fixed in 6.9.5 and 7.0.2 on 2026-07-17. CISA set a federal remediation deadline of 2026-07-24 for CVE-2026-63030. The disclosure on 2026-07-17 reported no known exploitation, so the KEV addition marks that status changing to active. The same catalog update added CVE-2026-0770, an unauthenticated remote code execution flaw in Langflow (exec_globals handling in the validate endpoint, CVSS 9.8), and CVE-2021-27137, a DD-WRT stack buffer overflow.
+- **Why it matters:** WordPress runs a large share of public sites, and a pre-auth core RCE moving to confirmed active exploitation with a three-day federal deadline puts unpatched 6.9.x and 7.0.x installs at immediate risk.
+- **Follow-up:** Watch for mass scanning and ransomware follow-on against the `/wp-json/batch/v1` endpoint, whether forced auto-updates reach installs without auto-update enabled, and whether the withheld exploit chain is fully published.
 
 ## Outages
 
@@ -186,15 +193,15 @@ No major items found.
 
 ## Sources checked
 
-- Hacker News (`make hn`, full structured coverage via Algolia. Front page, top day, Ask HN, Show HN, comments, and 64 of 79 watchlist queries with hits)
-- Reddit (`make reddit`, degraded. Live RSS on the 15:50 run reached only 3 of 28 subreddits for top-of-day and 4 of 28 for hot before rate-limiting, so coverage leaned on the committed data/reddit snapshot; local-model and coding subreddits echoed the day's Chinese-open-weights theme, no new verified story)
+- Hacker News (`make hn`, full structured coverage via Algolia. Front page, top day, Ask HN, Show HN, comments, and 67 of 79 watchlist queries with hits on the 19:20 run)
+- Reddit (`make reddit`, degraded. Live RSS on the 19:20 run reached only 5 of 28 subreddits for top-of-day and 3 of 28 for hot before rate-limiting, so coverage leaned on the committed data/reddit snapshot; coding and Claude subreddits carried usage-billing complaints and Gemini 3.6 Flash benchmark chatter, no new verified story)
 - GitHub stars (`make stars`, one WatchEvent from tracked accounts)
 - ML research and arXiv papers (`make papers`, 127 items, none cleared the engineering-relevance and attention bar)
 - Events watchlist (`make events`, no upcoming or active events)
 - Books and publisher feeds (`make books`, Springer, No Starch, Pragmatic. Only conference-proceedings volumes, none qualifying)
 - YouTube channels (`make yt`, 89 channels, 2 recent videos, no Hacker News discussion)
 - AI sources (OpenAI, Anthropic, Google DeepMind, Moonshot, Alibaba Qwen, Mistral. New on the 15:50 run: Gemini 3.6 Flash and Qwen-Image-3.0 releases)
-- Security advisories (CISA KEV catalog 2026.07.16 unchanged at 1647, no new additions. NVD, GitHub Security Advisories)
+- Security advisories (CISA KEV catalog updated to 2026.07.21, count 1651, on the 19:20 run: added the WordPress Core wp2shell chain CVE-2026-63030 and CVE-2026-60137, Langflow CVE-2026-0770, and DD-WRT CVE-2021-27137. NVD, GitHub Security Advisories)
 - Status pages (GitHub, AWS, Azure, Google Cloud, Cloudflare, OpenAI, Anthropic. No new major incidents, providers reporting normal operations)
 - GitHub watchlist deep sweep (every `[github]` repo release plus github.com/trending on the 09:50 run. Only minor patch releases since the first 2026-07-21 run: Grafana 13.1.1, Homebrew 6.0.12, chezmoi 2.71.1, none clearing the story bar. A release re-scan on the 15:50 run across the language and dev-tool repos found no new releases since 11:43 UTC. Trending clustered on AI agents and local-first inference, consistent with the day's covered theme)
 - Engineering blogs (Cursor, Stratechery, Sebastian Raschka)

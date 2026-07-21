@@ -625,9 +625,9 @@ Format:
 - Status: open
 - Category: Security
 - Sources: [Searchlight Cyber research](https://slcyber.io/research-center/wp2shell-pre-authentication-rce-in-wordpress-core/), [CVE-2026-63030 (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2026-63030), [Rapid7 analysis](https://www.rapid7.com/blog/post/etr-cve-2026-63030-wp2shell-a-critical-remote-code-execution-vulnerability-in-wordpress-core/)
-- Watch for: Active exploitation and mass scanning against the batch endpoint; a CISA KEV addition; confirmation forced auto-updates reach installs without auto-update enabled; whether the withheld exploit chain is fully published.
-- Last checked: 2026-07-18
-- Notes: Searchlight Cyber disclosed wp2shell 2026-07-17, an unauthenticated RCE in stock WordPress core (no plugins, no account, no user interaction). CVE-2026-63030 is a route-confusion flaw in the REST API batch endpoint `/wp-json/batch/v1` chained with CVE-2026-60137 (SQL injection) to reach code execution. Affected core 6.9.0-6.9.4 and 7.0.0-7.0.1; fixed 6.9.5 and 7.0.2 released 2026-07-17 with forced auto-updates on installs that have auto-update enabled. Public PoC for CVE-2026-63030 exists; Cloudflare added WAF protection. No active exploitation reported as of 2026-07-18. Covered 2026-07-18 Top stories (lead).
+- Watch for: Mass scanning and ransomware follow-on against the batch endpoint; confirmation forced auto-updates reach installs without auto-update enabled; whether the withheld exploit chain is fully published.
+- Last checked: 2026-07-21
+- Notes: Searchlight Cyber disclosed wp2shell 2026-07-17, an unauthenticated RCE in stock WordPress core (no plugins, no account, no user interaction). CVE-2026-63030 is a route-confusion flaw in the REST API batch endpoint `/wp-json/batch/v1` chained with CVE-2026-60137 (SQL injection) to reach code execution. Affected core 6.9.0-6.9.4 and 7.0.0-7.0.1; fixed 6.9.5 and 7.0.2 released 2026-07-17 with forced auto-updates on installs that have auto-update enabled. Public PoC for CVE-2026-63030 exists; Cloudflare added WAF protection. No active exploitation reported as of 2026-07-18. 2026-07-21: CISA added both CVE-2026-63030 and CVE-2026-60137 to the KEV catalog (version 2026.07.21, count 1651), confirming active exploitation; federal remediation due 2026-07-24 for CVE-2026-63030. Covered 2026-07-18 Top stories (lead), re-covered 2026-07-21 Security (KEV addition, confirmed).
 
 ## 2026-07-18: TP-Link Kasa EC70/EC71 v4 hardcoded key and GPS disclosure
 
