@@ -5,6 +5,8 @@ from __future__ import annotations
 from datetime import date
 from pathlib import Path
 
+import pytest
+
 from swe_digest import config
 from swe_digest.gate.check_memory import check_memory
 
@@ -83,6 +85,63 @@ def test_entity_without_last_seen_fails(tmp_path: Path) -> None:
 def test_stale_entity_warns_but_passes(tmp_path: Path, capsys: object) -> None:
     root = memory(tmp_path, entities="# E\n\n- Old thing: dusty. Last seen 2026-01-01.\n")
     assert check_memory(root, TODAY) == []
+
+
+@pytest.mark.parametrize("name", ["source-reliability", "access-notes"])
+def test_undated_bullet_fails_in_dated_files(tmp_path: Path, name: str) -> None:
+    root = memory(tmp_path, **{name: "# Notes\n\n- `host.example` - blocked, no date.\n"})
+    errors = check_memory(root, TODAY)
+    assert errors and "Last seen" in errors[0]
+
+
+def test_date_on_continuation_line_passes(tmp_path: Path) -> None:
+    text = (
+        "# Notes\n\n"
+        "- `host.example` - a wrapped entry whose date sits on the\n"
+        "  continuation line. Last seen 2026-07-01.\n"
+    )
+    root = memory(tmp_path, **{"access-notes": text})
+    assert check_memory(root, TODAY) == []
+
+
+def test_prose_and_fences_are_not_bullets(tmp_path: Path) -> None:
+    text = (
+        "# Notes\n\n"
+        "A prose paragraph without any date is fine.\n\n"
+        "```md\n- format example without a date\n```\n"
+    )
+    root = memory(tmp_path, **{"source-reliability": text})
+    assert check_memory(root, TODAY) == []
+
+
+def _dated(days_ago: int) -> str:
+    return date.fromordinal(TODAY.toordinal() - days_ago).isoformat()
+
+
+def test_access_note_staleness_uses_shorter_horizon(
+    tmp_path: Path, capsys: pytest.CaptureFixture
+) -> None:
+    limit = config.MEMORY_ACCESS_NOTE_STALE_DAYS
+    at_limit = f"# Notes\n\n- `a.example` - blocked. Last seen {_dated(limit)}.\n"
+    root = memory(tmp_path, **{"access-notes": at_limit})
+    assert check_memory(root, TODAY) == []
+    assert "re-verify" not in capsys.readouterr().err
+
+    over = f"# Notes\n\n- `a.example` - blocked. Last seen {_dated(limit + 1)}.\n"
+    root = memory(tmp_path, **{"access-notes": over})
+    assert check_memory(root, TODAY) == []
+    assert "re-verify" in capsys.readouterr().err
+
+
+def test_source_reliability_staleness_uses_entity_horizon(
+    tmp_path: Path, capsys: pytest.CaptureFixture
+) -> None:
+    age = config.MEMORY_ACCESS_NOTE_STALE_DAYS + 1
+    assert age <= config.MEMORY_ENTITY_STALE_DAYS
+    text = f"# Notes\n\n- `a.example` - fine at this age here. Last seen {_dated(age)}.\n"
+    root = memory(tmp_path, **{"source-reliability": text})
+    assert check_memory(root, TODAY) == []
+    assert "re-verify" not in capsys.readouterr().err
 
 
 def test_oversized_line_fails(tmp_path: Path) -> None:

@@ -47,7 +47,7 @@ from datetime import UTC, datetime, timedelta
 from swe_digest import config
 from swe_digest.digest import document
 from swe_digest.digest.runs import HN_SNAPSHOT_DIR, hn_stories, load_run_log, save_run_log
-from swe_digest.gate.check_memory import ENTITY_BULLET, strip_fences
+from swe_digest.gate.check_memory import bullets, strip_fences
 from swe_digest.paths import ROOT
 
 TITLE_RATIO = config.BACKTEST_TITLE_RATIO
@@ -102,8 +102,8 @@ def entity_names(text: str) -> list[str]:
     """Matchable names from entities.md bullets of the shape
     ``- Name[, Name2][ / Name3][ (alt, repo)]: description ...``."""
     names: list[str] = []
-    for match in ENTITY_BULLET.finditer(strip_fences(text)):
-        prefix, sep, _ = match.group("text").partition(": ")
+    for bullet in bullets(strip_fences(text)):
+        prefix, sep, _ = bullet.partition(": ")
         if not sep or len(prefix) > 120:
             continue
         for paren in PARENTHETICAL.finditer(prefix):
