@@ -18,3 +18,5 @@ Files:
 - `source-reliability.md`: durable judgments about source quality.
 - `access-notes.md`: volatile environment state (datacenter-IP 403 blocks and
   per-host fallbacks).
+- `runs/`: one machine-written log per run day (plus `runs/weekly/` markers),
+  the evidence base for backtests and the weekly review.

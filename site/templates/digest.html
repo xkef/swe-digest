@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block content %}
+{% set day = page.date | date(format='%Y-%m-%d') %}
+{% set digest = load_data(path="data/digests/" ~ day ~ ".json") %}
+{% set build_date = get_env(name="BUILD_DATE", default="") %}
+<article class="layout digest-page">
+  <header class="page-header">
+    <p class="eyebrow">Digest{% if digest.count %} · {{ digest.count }} stories{% endif %}{% if page.extra.source_count %} · {{ page.extra.source_count }} sources{% endif %}</p>
+    <h1>{{ day }}</h1>
+    <p>Updated <time class="js-localtime" datetime="{% if digest.updated_at %}{{ digest.updated_at }}{% elif build_date %}{{ build_date }}{% else %}{{ now() | date(format='%Y-%m-%dT%H:%M:%SZ') }}{% endif %}">{% if digest.updated %}{{ digest.updated }}{% elif build_date %}{{ build_date | replace(from="T", to=" ") | replace(from="Z", to=" UTC") }}{% else %}{{ now() | date(format='%Y-%m-%d %H:%M UTC') }}{% endif %}</time></p>
+    <p class="meta"><a rel="nofollow" href="{{ config.extra.repository | safe }}/issues/new?template=story.yml">Suggest a story</a></p>
+  </header>
+
+  {{ macros::day_sections(sections=digest.sections) }}
+
+  {# With sort_by = "date" (newest first), page.lower is the next-newer day
+     and page.higher the next-older day. #}
+  {{ macros::day_pager(newer=page.lower, older=page.higher) }}
+
+  {% if digest.run %}
+  <footer class="run-meta">
+    <p class="meta">{% if digest.run.hn_degraded %}Degraded Hacker News collections this run: {{ digest.run.hn_degraded | join(sep=", ") }} · {% endif %}<a rel="nofollow" href="{{ config.extra.repository | safe }}/blob/main/memory/runs/{{ day }}.yaml">Full run log</a></p>
+  </footer>
+  {% endif %}
+</article>
+{% endblock content %}

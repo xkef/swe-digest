@@ -4,12 +4,8 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - "data/hn/**"
-      - "data/youtube/**"
-      - "data/papers/**"
-      - "data/books/**"
-      - "data/reddit/**"
-      - "data/runs/**"
+      - "snapshots/**"
+      - "memory/runs/**"
   workflow_dispatch:
 
 permissions:
@@ -35,7 +31,7 @@ jobs:
           install: true
           cache: false
       - name: Install python dependencies
-        run: python3 -m pip install --require-hashes -r requirements.txt
+        run: python3 -m pip install --require-hashes -r tool/requirements.txt
       - name: Validate content
         run: make check-content
       - name: Build

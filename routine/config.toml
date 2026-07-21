@@ -1,0 +1,101 @@
+# Central project configuration. Every behavioral tunable lives here and is
+# loaded by tool/src/swe_digest/config.py; content configuration (queries, channels,
+# feeds, events) stays in routine/watchlist.toml. This file is outside the
+# unattended publish allowlist: it changes only through the owner-approved
+# improvement-PR path, like routine/watchlist.toml.
+
+[repo]
+name = "xkef/swe-digest"
+owner = "xkef"
+site = "https://xkef.github.io/swe-digest/"
+branch = "main"
+
+[http]
+user_agent = "swe-digest-fetcher/1.0 (daily digest collection script)"
+timeout_seconds = 15
+retries = 2
+max_response_bytes = 8388608 # 8 MiB
+
+[hn]
+window_hours = 24
+snapshot_max_age_hours = 12
+query_corpus_new_ids = 300
+comment_stories = 12
+comments_per_story = 5
+comment_max_chars = 1200
+
+[youtube]
+window_hours = 48
+snapshot_max_age_hours = 24
+description_max_chars = 2000
+# Cap on per-run Hacker News discussion lookups, ample for the ~50 video
+# window while bounding calls to the public Algolia API.
+discussion_lookups = 80
+
+[reddit]
+window_hours = 24
+snapshot_max_age_hours = 12
+# Space sequential feed fetches: unauthenticated Reddit access is limited to
+# about 10 requests per minute, and faster spacing gets 429s (observed
+# 2026-07-07 at 1s spacing, see memory/access-notes.md).
+request_pause_seconds = 7.0
+# A listing counts as degraded when fewer than this fraction of subreddits
+# return entries. Partial results are kept (the snapshot accumulates them)
+# but the run exits nonzero so coverage is never silently incomplete.
+min_subreddit_fraction = 0.5
+
+[papers]
+# arXiv responses are slower than the default HTTP budget allows.
+http_timeout_seconds = 20
+api_pause_seconds = 3
+window_hours = 72
+snapshot_max_age_hours = 24
+summary_max_chars = 2000
+
+[books]
+window_days = 7
+snapshot_max_age_hours = 36
+description_max_chars = 2000
+
+[stars]
+# GitHub starring activity of the people in watchlist [stars].users, via the
+# public events API through gh (authenticated locally by gh login and in
+# Actions by GH_TOKEN).
+window_hours = 24
+# gh is authenticated (5000 req/h), so spacing is politeness, not survival.
+request_pause_seconds = 0.5
+# Cap on per-run repos/{full_name} enrichment lookups.
+max_repo_lookups = 30
+description_max_chars = 300
+
+[events]
+# Lead window is deliberately short so the fetcher's context covers only
+# events that could plausibly produce talk news now.
+lead_days = 3
+# Nearer subset of the lead window; must stay below lead_days or every
+# upcoming event is flagged "soon".
+soon_days = 1
+
+[publish]
+# One digest commit, optionally followed by the weekly fallback commit.
+max_commits = 2
+comment_max_chars = 500
+issue_title_max_chars = 120
+issue_body_max_chars = 8000
+# Verified snapshot/publish commits (GraphQL createCommitOnBranch).
+commit_retries = 4
+
+[backtest]
+min_points = 100
+title_ratio = 0.75
+
+[memory]
+# Structure and growth bounds for memory/*.md, enforced by the content gate.
+# Staleness past entity_stale_days is a warning (a nudge to compact), never a
+# gate failure. A followups.md entry older than followup_max_age_days fails
+# the gate: re-date it after re-verifying, or delete it, so the file prunes
+# itself instead of drifting into the hard line cap.
+max_file_lines = 1500
+max_line_chars = 2000
+entity_stale_days = 60
+followup_max_age_days = 45

@@ -19,11 +19,11 @@ automated digest pipeline in GitHub Actions. Reports of interest:
   YouTube metadata) to escape the content gates and inject markup,
   scripts, or secrets into the published site.
 - Ways for a prompt-injected agent run to bypass the publish gate in
-  `src/swe_digest/gate/` (path allowlist, commit-subject checks, issue
+  `tool/src/swe_digest/gate/` (path allowlist, commit-subject checks, issue
   authorship re-verification).
 - Workflow or token-permission weaknesses in `.github/workflows/`.
 
-The threat model is documented in `docs/threat-model.md`.
+The threat model is documented in `routine/threat-model.md`.
 
 ## Supported versions
 

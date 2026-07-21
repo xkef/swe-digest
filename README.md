@@ -28,7 +28,7 @@ The agent cannot publish. Scheduled runs are a two-job pipeline
   (issue closes, proposal issues) declaratively through a manifest file.
 - The publish job holds the write token and applies a run only after the
   deterministic checks in `swe_digest.gate.publish_run`: commit subjects
-  from a fixed set, changed paths inside `content/digests/`, `data/runs/`,
+  from a fixed set, changed paths inside `site/content/digests/`, `memory/runs/`,
   and the writable `memory/` files, a full build with fail-closed content
   checks (raw HTML, event handlers, `javascript:` URIs, secret patterns),
   and re-verification of every requested issue action against GitHub API
@@ -37,9 +37,9 @@ The agent cannot publish. Scheduled runs are a two-job pipeline
   server-side, so they land signed and Verified as `github-actions[bot]`.
 
 The publish job runs the gate from a fresh checkout of `main`, and the gate
-code (`src/swe_digest/gate/`) sits outside the path allowlist, so a run can
+code (`tool/src/swe_digest/gate/`) sits outside the path allowlist, so a run can
 neither bypass nor rewrite the checks that constrain it. `tests/` replays
-prompt-injection attacks against the gates, and `docs/threat-model.md` maps
+prompt-injection attacks against the gates, and `routine/threat-model.md` maps
 each attack path to its control.
 
 ## Workflows
@@ -49,7 +49,7 @@ each attack path to its control.
   schedule and prompt. The pipeline above lives in `content-run.yml`.
 - `weekly-improvement.yml`: Sunday 06:30 UTC, the improvement review below.
 - `snapshots.yml`: background accumulator. Each source is fetched on its own
-  cadence and merged by item id into `data/`, so a digest run whose live
+  cadence and merged by item id into `snapshots/`, so a digest run whose live
   fetch is blocked still has the day's coverage. One source failing never
   stops the others.
 - `issue-guard.yml`: closes and locks issues not authored by the owner or
@@ -70,18 +70,18 @@ unless re-verified instead of growing into a second, unauditable prompt.
 
 The routine measures itself but cannot change itself.
 
-- Every run writes a log to `data/runs/` with judgment notes, and a backtest
+- Every run writes a log to `memory/runs/` with judgment notes, and a backtest
   of the previous day records missed stories and their causes.
 - A Sunday run turns the week's logs, backtests, and owner feedback into
   `improvement` issues, each with evidence and an exact proposed diff.
 - An approving owner comment turns a proposal into a pull request that may
-  touch only five files: `config.toml`, `data/watchlist.toml`,
-  `memory/profile.md`, `docs/routine.md`, `CLAUDE.md`. The agent never
+  touch only five files: `routine/config.toml`, `routine/watchlist.toml`,
+  `memory/profile.md`, `routine/routine.md`, `CLAUDE.md`. The agent never
   merges its own PRs.
 
 ## The site
 
-Each day is one file, `content/digests/YYYY-MM-DD/index.md`, made of
+Each day is one file, `site/content/digests/YYYY-MM-DD/index.md`, made of
 `### Story` blocks with fixed fields (category, status, sources, summary,
 why it matters). The build derives everything else: a page per story,
 per-day section data, the home index, and a sharded Pagefind search index.
@@ -100,18 +100,21 @@ from other accounts are closed and locked by `issue-guard`.
 
 ## Repository map
 
+One directory per concern:
+
 - `CLAUDE.md`: the canonical routine. `AGENTS.md` points other agents to it.
-- `docs/routine.md`: per-source collection and writing procedure.
-- `docs/threat-model.md`: attacker model and the control for each path.
-- `content/digests/`: the digests, one directory per day.
-- `data/`: the watchlist (`watchlist.toml`), per-run logs (`runs/`), and
-  committed source snapshots (`hn/`, `youtube/`, `papers/`, `books/`).
-- `memory/`: the gated public memory.
-- `config.toml`: behavioral tunables (collection windows, HTTP budgets,
-  gate limits, memory bounds).
-- `src/swe_digest/`: one package behind the `swe-digest` CLI: `fetch/`,
-  `snapshot/`, `gate/`, `digest/`. `tests/` includes the adversarial gate
-  suite.
+- `routine/`: the owner-gated instruction set. Behavioral tunables
+  (`config.toml`), the watchlist (`watchlist.toml`), the per-source
+  collection procedure (`routine.md`), and the attacker model
+  (`threat-model.md`). Changes land only through approved improvement PRs.
+- `site/`: the published site. `content/digests/` (one directory per day),
+  the Zola config, templates, and static assets.
+- `memory/`: the gated public memory, including per-run logs (`runs/`).
+- `snapshots/`: committed source snapshots written by the snapshots
+  workflow (`hn/`, `youtube/`, `papers/`, `books/`, `reddit/`).
+- `tool/`: one package behind the `swe-digest` CLI (`src/swe_digest/`:
+  `fetch/`, `snapshot/`, `gate/`, `digest/`), its adversarial gate test
+  suite (`tests/`), and the Python packaging and formatter configs.
 - `PRIVATE_CONTEXT.md`: local-only personalization, ignored by git and
   never published.
 
@@ -121,5 +124,5 @@ from other accounts are closed and locked by `issue-guard`.
   Linked third-party sources retain their own rights.
 - If you are named in a digest and want a correction or removal, open an
   issue. Such requests are honored, and a tracked person can ask to be
-  dropped from `data/watchlist.toml`. See the site About page for the full
+  dropped from `routine/watchlist.toml`. See the site About page for the full
   policy.

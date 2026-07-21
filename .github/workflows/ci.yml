@@ -9,11 +9,7 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - "data/hn/**"
-      - "data/youtube/**"
-      - "data/papers/**"
-      - "data/books/**"
-      - "data/reddit/**"
+      - "snapshots/**"
 
 permissions:
   contents: read
@@ -39,14 +35,18 @@ jobs:
           cache: true
       - name: Sync environment
         run: uv sync --frozen
+        working-directory: tool
       - name: Lint
         run: |
           uv run ruff check .
           uv run ruff format --check .
+        working-directory: tool
       - name: Type check
         run: uv run mypy
+        working-directory: tool
       - name: Tests
         run: uv run pytest
+        working-directory: tool
 
   site:
     runs-on: ubuntu-latest
@@ -63,12 +63,12 @@ jobs:
           install: true
           cache: true
       - name: Install Python deps
-        run: python3 -m pip install --require-hashes -r requirements.txt
+        run: python3 -m pip install --require-hashes -r tool/requirements.txt
       - name: Build and check site
         run: make check
 
-  # Formatting drift check for owner-edited files (docs, config, memory).
-  # dprint and rumdl exclude content/ and data/, and the tool versions are
+  # Formatting drift check for owner-edited files (routine, memory, README).
+  # dprint and rumdl exclude site/content/ and snapshots/, and the tool versions are
   # pinned in the Makefile, so this job and `make fmt-check` locally always
   # agree. It reports drift; the publish gate (`make check`) stays
   # formatting-free so unattended runs are never blocked on it.

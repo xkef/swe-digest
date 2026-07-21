@@ -73,7 +73,7 @@ execution environment (cloud datacenter IP ranges).
   first ~4 subreddits even at 7s spacing, so datacenter budgets are a handful of
   requests per run. `make reddit` spaces requests 7s apart, rotates the starting
   subreddit each six-hour window, keeps partial results (marked degraded), and
-  the snapshots workflow accumulates them in data/reddit by post id. When
+  the snapshots workflow accumulates them in snapshots/reddit by post id. When
   degraded, prefer the committed snapshot and state the coverage in
   Sources checked; full live coverage usually needs a residential network.
   Degraded again across most of 2026-06-24..2026-06-30: 2026-06-24 RSS returned
