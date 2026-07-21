@@ -31,8 +31,11 @@ class FakeGitGh(GitGh):
     """In-memory adapter: canned gh api responses by path, recorded sh calls,
     recorded commit_on_branch replays. Never touches subprocess."""
 
-    def __init__(self, responses: dict[str, Any] | None = None) -> None:
+    def __init__(
+        self, responses: dict[str, Any] | None = None, last_edited: str | None = None
+    ) -> None:
         self.responses = responses or {}
+        self.last_edited = last_edited
         self.calls: list[tuple[str, ...]] = []
         self.commits: list[tuple[str, str, dict, int, int]] = []
 
@@ -42,6 +45,9 @@ class FakeGitGh(GitGh):
 
     def gh_json(self, path: str) -> Any:
         return self.responses[path]
+
+    def issue_last_edited_at(self, repo: str, number: int) -> str | None:
+        return self.last_edited
 
     def branch_oid(self, repo: str, branch: str) -> str:
         return "deadbeef"
@@ -272,22 +278,151 @@ class TestApproval:
     def test_rejects(self, body: str) -> None:
         assert not publish_run.APPROVAL.search(body)
 
+    @pytest.mark.parametrize("body", ["/approve", "/Approved", "  /approve\nnice find"])
+    def test_command_matches(self, body: str) -> None:
+        assert publish_run.COMMAND_APPROVAL.search(body)
+
+    @pytest.mark.parametrize(
+        "body",
+        ["approved", "Approve of the idea, but hold off", "> /approve", "see /approve above"],
+    )
+    def test_command_rejects(self, body: str) -> None:
+        assert not publish_run.COMMAND_APPROVAL.search(body)
+
 
 def issue_response(number: int, payload: dict) -> dict[str, Any]:
     return {f"repos/{publish_run.REPO}/issues/{number}": payload}
 
 
+def comments_response(number: int, comments: list[dict]) -> dict[str, Any]:
+    return {f"repos/{publish_run.REPO}/issues/{number}/comments": comments}
+
+
 class TestIssueSideEffects:
-    def test_close_issue_rejects_non_owner(self) -> None:
+    def test_close_issue_rejects_non_owner_without_approval(self) -> None:
         gh = FakeGitGh(
-            issue_response(
-                5,
-                {"user": {"login": "attacker"}, "state": "open", "labels": [{"name": "story"}]},
-            )
+            {
+                **issue_response(
+                    5,
+                    {"user": {"login": "attacker"}, "state": "open", "labels": [{"name": "story"}]},
+                ),
+                **comments_response(5, []),
+            }
+        )
+        with pytest.raises(SystemExit, match="no valid owner approval"):
+            publish_run.close_issue(gh, IssueClose(number=5, comment="done"))
+        assert gh.calls == []
+
+    @pytest.mark.parametrize(
+        "comment",
+        [
+            {"author_association": "NONE", "body": "/approve"},
+            {"author_association": "OWNER", "body": "not approved yet"},
+            {"author_association": "OWNER", "body": "Approve of the idea, but hold off"},
+            {"author_association": "OWNER", "body": "approved"},
+            {"author_association": "OWNER", "body": "> /approve"},
+        ],
+    )
+    def test_close_issue_rejects_forged_or_prose_approval(self, comment: dict) -> None:
+        gh = FakeGitGh(
+            {
+                **issue_response(
+                    5,
+                    {"user": {"login": "attacker"}, "state": "open", "labels": [{"name": "story"}]},
+                ),
+                **comments_response(5, [{"created_at": "2026-07-20T10:00:00Z", **comment}]),
+            }
+        )
+        with pytest.raises(SystemExit, match="no valid owner approval"):
+            publish_run.close_issue(gh, IssueClose(number=5, comment="done"))
+        assert gh.calls == []
+
+    def test_close_issue_rejects_body_edited_after_approval(self) -> None:
+        gh = FakeGitGh(
+            {
+                **issue_response(
+                    5,
+                    {"user": {"login": "someone"}, "state": "open", "labels": [{"name": "story"}]},
+                ),
+                **comments_response(
+                    5,
+                    [
+                        {
+                            "author_association": "OWNER",
+                            "body": "/approve",
+                            "created_at": "2026-07-20T10:00:00Z",
+                        }
+                    ],
+                ),
+            },
+            last_edited="2026-07-21T09:00:00Z",
+        )
+        with pytest.raises(SystemExit, match="no valid owner approval"):
+            publish_run.close_issue(gh, IssueClose(number=5, comment="done"))
+        assert gh.calls == []
+
+    def test_close_issue_rejects_non_owner_feedback_even_if_approved(self) -> None:
+        gh = FakeGitGh(
+            {
+                **issue_response(
+                    5,
+                    {
+                        "user": {"login": "attacker"},
+                        "state": "open",
+                        "labels": [{"name": "feedback"}],
+                    },
+                ),
+                **comments_response(5, [{"author_association": "OWNER", "body": "/approve"}]),
+            }
         )
         with pytest.raises(SystemExit, match="fails inbox checks"):
             publish_run.close_issue(gh, IssueClose(number=5, comment="done"))
         assert gh.calls == []
+
+    def test_close_issue_approved_outsider_story(self) -> None:
+        gh = FakeGitGh(
+            {
+                **issue_response(
+                    5,
+                    {"user": {"login": "someone"}, "state": "open", "labels": [{"name": "story"}]},
+                ),
+                **comments_response(
+                    5,
+                    [
+                        {
+                            "author_association": "OWNER",
+                            "body": "/approve",
+                            "created_at": "2026-07-20T10:00:00Z",
+                        }
+                    ],
+                ),
+            }
+        )
+        publish_run.close_issue(gh, IssueClose(number=5, comment=f"Published: {publish_run.SITE}"))
+        assert gh.calls and gh.calls[0][:3] == ("gh", "issue", "close")
+
+    def test_close_issue_approved_outsider_story_edited_before_approval(self) -> None:
+        gh = FakeGitGh(
+            {
+                **issue_response(
+                    5,
+                    {"user": {"login": "someone"}, "state": "open", "labels": [{"name": "story"}]},
+                ),
+                **comments_response(
+                    5,
+                    [
+                        {
+                            "author_association": "OWNER",
+                            "body": "/approve",
+                            "created_at": "2026-07-20T10:00:00Z",
+                        }
+                    ],
+                ),
+            },
+            last_edited="2026-07-19T08:00:00Z",
+        )
+        publish_run.close_issue(gh, IssueClose(number=5, comment=f"Published: {publish_run.SITE}"))
+        assert gh.calls and gh.calls[0][:3] == ("gh", "issue", "close")
 
     def test_close_issue_rejects_wrong_label(self) -> None:
         gh = FakeGitGh(

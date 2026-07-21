@@ -704,9 +704,13 @@ Include only when engineering relevance is clear:
 ## Story inbox
 
 The owner suggests stories by opening GitHub issues with the `story` label
-(the site's "Suggest a story" link prefills the form). The workflow and
-authorship rules live in step 5 of the daily workflow in `CLAUDE.md`; the
-close comment shape is:
+(the site's "Suggest a story" link prefills the form). Outside contributors
+may suggest stories the same way: the `issue-triage` workflow labels their
+issue `triage/pending`, and it becomes inbox material only after the owner
+comments `/approve` (re-verified from the comments API and the body-edit
+timestamp, never from the label). The workflow and authorship rules live
+in step 5 of the daily
+workflow in `CLAUDE.md`; the close comment shape is:
 
 ```sh
 gh issue close NN --comment "Published: https://xkef.github.io/swe-digest/digests/YYYY-MM-DD/<slug>/"

@@ -25,6 +25,12 @@ mutation($input: CreateCommitOnBranchInput!) {
 }
 """
 
+LAST_EDITED_QUERY = """
+query($owner: String!, $name: String!, $number: Int!) {
+  repository(owner: $owner, name: $name) { issue(number: $number) { lastEditedAt } }
+}
+"""
+
 
 class GitGh:
     def run(self, *args: str, stdin: str | None = None) -> subprocess.CompletedProcess[str]:
@@ -48,6 +54,20 @@ class GitGh:
         return self.sh(
             "gh", "api", f"repos/{repo}/git/refs/heads/{branch}", "--jq", ".object.sha"
         ).strip()
+
+    def issue_last_edited_at(self, repo: str, number: int) -> str | None:
+        """When the issue body was last edited (ISO 8601), or None if never.
+        GraphQL only; the REST issue payload has no body-edit timestamp."""
+        owner, name = repo.split("/")
+        payload = {
+            "query": LAST_EDITED_QUERY,
+            "variables": {"owner": owner, "name": name, "number": number},
+        }
+        out = self.sh("gh", "api", "graphql", "--input", "-", stdin=json.dumps(payload))
+        issue = ((json.loads(out).get("data") or {}).get("repository") or {}).get("issue")
+        if issue is None:
+            raise SystemExit(f"lastEditedAt query failed for issue #{number}")
+        return issue["lastEditedAt"]
 
     def commit_on_branch(
         self, repo: str, branch: str, message: dict, additions: list[dict], deletions: list[dict]

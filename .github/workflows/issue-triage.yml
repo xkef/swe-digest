@@ -1,0 +1,123 @@
+name: issue-triage
+
+# Deterministic triage bot for outsider issues. A story suggestion from
+# outside gets a guide comment and a `triage/pending` label, waits for the
+# owner's `/approve` or `/reject` comment, and closes automatically after
+# 14 days without approval. Non-story outsider issues are closed and locked
+# with an explanation. Every decision reads only API event fields
+# (user.login, author_association, labels.*.name). Comment and issue text
+# crosses the shell only as env var data, never interpreted as code, and
+# the labels this bot sets are UX only: the routine and the publish gate
+# re-verify approval from the OWNER comment itself.
+
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+  schedule:
+    - cron: "40 6 * * *"
+
+permissions:
+  issues: write
+
+jobs:
+  welcome:
+    if: >-
+      github.event_name == 'issues' &&
+      github.event.issue.user.login != 'xkef' &&
+      github.event.issue.user.login != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Guide story suggestions, close everything else
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.issue.number }}
+          IS_STORY: ${{ contains(github.event.issue.labels.*.name, 'story') }}
+        run: |
+          if [ "$IS_STORY" = "true" ]; then
+            gh issue edit "$NUMBER" --repo "$GITHUB_REPOSITORY" --add-label triage/pending
+            gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body-file - <<'EOF'
+          Thanks for the suggestion. This repository is maintained by an automated daily digest routine, so outside issues follow a fixed process:
+
+          - **Approval required.** The repository owner reviews this suggestion and comments `/approve` to accept it or `/reject` to decline. Nothing is acted on before an approval.
+          - **After approval,** the next scheduled run verifies the suggestion against a primary source. If it holds up, the story is published in the matching section of the daily digest and this issue is closed with a link to the published page.
+          - **Other issue types:** `improvement` issues propose configuration diffs and become pull requests only after owner approval. `feedback` issues are counted as reading-preference signal only when they come from the repository owner.
+          - **Timeout.** Without an approval within 14 days, this issue closes automatically.
+          EOF
+          else
+            gh issue close "$NUMBER" --repo "$GITHUB_REPOSITORY" --reason "not planned" \
+              --comment "This repository accepts only story suggestions from outside contributors. To suggest a story for the digest, open a new issue with the story template. Feedback and configuration changes are handled by the repository owner."
+            gh api -X PUT "repos/$GITHUB_REPOSITORY/issues/$NUMBER/lock" -f lock_reason=resolved
+          fi
+
+  command:
+    if: >-
+      github.event_name == 'issue_comment' &&
+      github.event.comment.author_association == 'OWNER' &&
+      github.event.issue.state == 'open' &&
+      contains(github.event.issue.labels.*.name, 'triage/pending')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Handle owner /approve and /reject
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.issue.number }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          BODY: ${{ github.event.comment.body }}
+        run: |
+          case "$BODY" in
+            /approve*)
+              gh issue edit "$NUMBER" --repo "$GITHUB_REPOSITORY" \
+                --remove-label triage/pending --add-label triage/approved
+              gh api -X POST "repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT_ID/reactions" \
+                -f content=+1
+              gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" \
+                --body "Approved by the repository owner. The next digest run verifies the source and, if it holds up, publishes the story and closes this issue with a link to the published page."
+              ;;
+            /reject*)
+              gh issue close "$NUMBER" --repo "$GITHUB_REPOSITORY" --reason "not planned" \
+                --comment "The repository owner declined this suggestion. Thanks for taking the time to submit it."
+              gh api -X PUT "repos/$GITHUB_REPOSITORY/issues/$NUMBER/lock" -f lock_reason=resolved
+              ;;
+          esac
+
+  deny:
+    if: >-
+      github.event_name == 'issue_comment' &&
+      github.event.comment.author_association != 'OWNER' &&
+      github.event.comment.user.login != 'github-actions[bot]' &&
+      contains(github.event.issue.labels.*.name, 'triage/pending') &&
+      (startsWith(github.event.comment.body, '/approve') ||
+       startsWith(github.event.comment.body, '/reject'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: React to a non-owner command
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+        run: |
+          gh api -X POST "repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT_ID/reactions" \
+            -f content=-1
+
+  stale:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Close pending suggestions older than 14 days
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cutoff="$(date -u -d '14 days ago' +%Y-%m-%dT%H:%M:%SZ)"
+          gh issue list --repo "$GITHUB_REPOSITORY" --label triage/pending --state open \
+            --json number,createdAt \
+            --jq ".[] | select(.createdAt < \"$cutoff\") | .number" |
+          while read -r number; do
+            gh issue close "$number" --repo "$GITHUB_REPOSITORY" --reason "not planned" \
+              --comment "No owner approval arrived within 14 days, so this suggestion closes automatically. Thanks for submitting it."
+            gh api -X PUT "repos/$GITHUB_REPOSITORY/issues/$number/lock" -f lock_reason=resolved
+          done

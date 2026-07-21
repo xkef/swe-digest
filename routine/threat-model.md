@@ -87,11 +87,23 @@ the owner-approved improvement-PR path.
 
 ### 5. Issues are untrusted input
 
-The `issue-guard` workflow closes and locks issues from third parties.
-Independent of it, every issue-derived action re-verifies authorship from
-API fields: story issues act only when `author.login` is the owner;
-improvement diffs require an `OWNER`-association approval comment matched by
-a leading-`approved` regex (so "not approved" does not match).
+The `issue-triage` workflow handles third-party issues deterministically,
+reading only API event fields: outsider `story` issues get a guide comment
+and `triage/pending`, an owner `/approve` comment promotes them to
+`triage/approved`, an owner `/reject` or a 14-day timeout closes and locks
+them, and all other outsider issues are closed and locked on arrival.
+Untrusted comment text crosses the workflow shell only as env var data.
+
+The triage labels carry no authority. Every issue-derived action re-verifies
+authorship and approval from API fields: story issues act only when
+`author.login` is the owner or when the comments API shows an
+`OWNER`-association comment starting with `/approve` (prose like "Approve of
+the idea, but hold off" never fires) whose creation postdates the issue
+body's last edit (GraphQL `lastEditedAt`), so an approved issue cannot be
+repurposed by editing it afterwards. Improvement diffs require an
+`OWNER`-association comment matching the leading-`approved` regex (so "not
+approved" does not match). A compromised or bypassed triage workflow can
+therefore mislabel issues but cannot make the gate act on one.
 
 ### 6. Snapshot workflows are minimal and signed
 

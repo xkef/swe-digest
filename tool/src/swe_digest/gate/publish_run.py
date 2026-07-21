@@ -56,6 +56,10 @@ COMMENT_MAX_CHARS = config.PUBLISH_COMMENT_MAX_CHARS
 # Approval must lead a line ("approved" / "approve" / "/approve"), so a
 # negation like "this is not approved yet" does not satisfy the gate.
 APPROVAL = re.compile(r"^\s*/?approved?\b", re.I | re.M)
+# Outsider approvals require the explicit command form the triage bot reacts
+# to: the comment must start with /approve. Prose like "Approve of the idea,
+# but hold off" never fires.
+COMMAND_APPROVAL = re.compile(r"\A\s*/approved?\b", re.I)
 # Regular file and executable; a symlink (120000) or gitlink (160000) staged at
 # an allowed path could publish the target's bytes (e.g. a persisted token).
 ALLOWED_MODES = {"100644", "100755"}
@@ -152,16 +156,43 @@ def check_comment(number: int, comment: str) -> None:
             raise SystemExit(f"comment for #{number} links outside the site/repo: {url}")
 
 
+def owner_approved(gh: GitGh, number: int) -> bool:
+    comments = gh.gh_json(f"repos/{REPO}/issues/{number}/comments")
+    return any(
+        c["author_association"] == "OWNER" and APPROVAL.search(c["body"] or "") for c in comments
+    )
+
+
+def outsider_approved(gh: GitGh, number: int) -> bool:
+    """An outsider story is approved by an OWNER comment starting with
+    /approve that postdates the last body edit, so an approval cannot be
+    repurposed by editing the issue afterwards. Both timestamps are ISO 8601
+    UTC from the API, so string comparison orders them."""
+    comments = gh.gh_json(f"repos/{REPO}/issues/{number}/comments")
+    approvals = [
+        c["created_at"]
+        for c in comments
+        if c["author_association"] == "OWNER" and COMMAND_APPROVAL.search(c["body"] or "")
+    ]
+    if not approvals:
+        return False
+    last_edit = gh.issue_last_edited_at(REPO, number)
+    return last_edit is None or any(created > last_edit for created in approvals)
+
+
 def close_issue(gh: GitGh, entry: IssueClose) -> None:
     number, comment = entry.number, entry.comment
     issue = gh.gh_json(f"repos/{REPO}/issues/{number}")
     labels = {label["name"] for label in issue["labels"]}
-    if (
-        issue["user"]["login"] != OWNER
-        or issue["state"] != "open"
-        or not labels & {"story", "feedback"}
-    ):
+    if issue["state"] != "open" or not labels & {"story", "feedback"}:
         raise SystemExit(f"issue #{number} fails inbox checks; refusing to close")
+    if issue["user"]["login"] != OWNER:
+        # Outsider issues: only a story suggestion carrying a valid OWNER
+        # approval is inbox material. Feedback counts only from the owner.
+        if "story" not in labels:
+            raise SystemExit(f"issue #{number} fails inbox checks; refusing to close")
+        if not outsider_approved(gh, number):
+            raise SystemExit(f"issue #{number} has no valid owner approval; refusing to close")
     check_comment(number, comment)
     gh.sh("gh", "issue", "close", str(number), "--repo", REPO, "--comment", comment)
     print(f"closed #{number}")
@@ -188,10 +219,7 @@ def improvement_pr(gh: GitGh, number: int) -> None:
     labels = {label["name"] for label in issue["labels"]}
     if "improvement" not in labels or issue["state"] != "open":
         raise SystemExit(f"issue #{number} is not an open improvement issue")
-    comments = gh.gh_json(f"repos/{REPO}/issues/{number}/comments")
-    if not any(
-        c["author_association"] == "OWNER" and APPROVAL.search(c["body"] or "") for c in comments
-    ):
+    if not owner_approved(gh, number):
         raise SystemExit(f"issue #{number} has no owner approval comment")
     block = DIFF_BLOCK.search(issue["body"] or "")
     if not block:
