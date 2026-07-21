@@ -17,6 +17,24 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-21: Zig accepts a Fil-C-inspired memory-safe `fil` ABI
+
+- Status: open
+- Category: Languages
+- Sources: [Zig issue 36237 (Codeberg)](https://codeberg.org/ziglang/zig/issues/36237), [HN 48976361](https://news.ycombinator.com/item?id=48976361)
+- Watch for: The `fil` ABI landing in a tagged Zig release; benchmark data on the estimated 1-6x overhead; expansion past x86_64-Linux; how it composes with `Optimize.safe`/`Optimize.debug` and the compiler/build-system split.
+- Last checked: 2026-07-21
+- Notes: Andrew Kelley opened and accepted issue 36237 on 2026-07-20 for a new `fil` ABI (alongside musl and gnu) that compiles Zig with the Fil-C runtime memory-safety model: pointer-provenance checks (invisicaps), syscall wrapping, no unsafe escape hatch, violations panic at runtime rather than being caught statically. Initial scope x86_64-Linux only, all linked objects must use the `fil` ABI, estimated ~1-6x overhead by pointer usage. Distinct from Rust's compile-time model; extends Fil-C beyond C/C++. Covered 2026-07-21 Languages (developing). See [[entities]] Zig and Fil-C.
+
+## 2026-07-21: Airbus migrates critical apps off AWS to Scaleway for sovereignty
+
+- Status: open
+- Category: Infrastructure
+- Sources: [The Register](https://www.theregister.com/paas-and-iaas/2026/07/16/airbus-migrating-70-critical-apps-from-aws-to-frances-scaleway-amid-digital-sovereignty-push/), [The Register column](https://www.theregister.com/columnists/2026/07/20/airbus-takes-flight-from-aws-what-happens-next-is-critical/), [HN 48976682](https://news.ycombinator.com/item?id=48976682)
+- Watch for: Migration progress past the first 70 of ~900 apps; whether Scaleway handles the ERP/manufacturing/PLM workloads at scale; other large EU firms following the sovereignty-repatriation pattern; any reversal or performance issues.
+- Last checked: 2026-07-21
+- Notes: Airbus is moving its most critical applications (those for a "minimum viable company", ~900 apps, 70 starting) from AWS to French provider Scaleway under a digital-sovereignty program, citing the US CLOUD Act and keeping sensitive data under European control. Workloads: ERP, manufacturing, CRM, product-lifecycle software. Keeps a multi-cloud posture (Skywise and a customer case-management platform stay on AWS). Register news 2026-07-16, columnist follow-up 2026-07-20 (HN 48976682). Covered 2026-07-21 Top stories (Infrastructure, confirmed).
+
 ## 2026-07-20: Hacker wipes Romania ANCPI land registry database
 
 - Status: open
