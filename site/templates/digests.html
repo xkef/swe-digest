@@ -1,41 +1,45 @@
-{% extends "base.html" %}
-{% import "macros.html" as macros %}
-
-{% block content %}
+{% extends "base.html" %} {% import "macros.html" as macros %} {% block content
+%}
 <section class="layout listing">
   <header class="page-header">
     <p class="eyebrow">Archive</p>
     <h1>All digests</h1>
-    <p>{{ macros::total_stories() }} stories across {{ paginator.total_pages }} days, newest first.</p>
+    <p>
+      {{ macros::total_stories() }} stories across {{ paginator.total_pages }}
+      days, newest first.
+    </p>
   </header>
   {% set_global month = "" %}
   <ol class="digest-list">
-    {% for day_page in paginator.pages %}
-    {% set day = day_page.date | date(format='%Y-%m-%d') %}
-    {% set day_data = load_data(path="data/digests/" ~ day ~ ".json") %}
-    {% set day_month = day_page.date | date(format='%B %Y') %}
-    {% if day_month != month %}
-    {% set_global month = day_month %}
+    {% for day_page in paginator.pages %} {% set day = day_page.date |
+    date(format='%Y-%m-%d') %} {% set day_data = load_data(path="data/digests/"
+    ~ day ~ ".json") %} {% set day_month = day_page.date | date(format='%B %Y')
+    %} {% if day_month != month %} {% set_global month = day_month %}
     <li class="digest-month"><h2>{{ day_month }}</h2></li>
     {% endif %}
     <li class="digest-row">
       <div class="digest-meta">
-        <time datetime="{{ day }}"><a href="{{ day_page.permalink | safe }}">{{ day_page.date | date(format='%a %Y-%m-%d') }}</a></time>
+        <time datetime="{{ day }}"><a href="{{ day_page.permalink | safe }}"
+          >{{ day_page.date | date(format='%a %Y-%m-%d') }}</a></time>
         <span class="digest-count">{{ day_data.count }} stories</span>
       </div>
-      {% set lead = day_data.sections | first %}
-      {% if lead and lead.stories %}
+      {% set lead = day_data.sections | first %} {% if lead and lead.stories %}
       {% set top = lead.stories | first %}
-      <a class="digest-lead" href="{{ day_page.permalink | safe }}">{{ top.title }}</a>
+      <a class="digest-lead" href="{{ day_page.permalink | safe }}"
+      >{{ top.title }}</a>
       {% endif %}
     </li>
     {% endfor %}
   </ol>
   {% if paginator.previous or paginator.next %}
   <nav class="pagination" aria-label="Archive pages">
-    {% if paginator.previous %}<a rel="prev" href="{{ paginator.previous | safe }}">&larr; Newer</a>{% else %}<span></span>{% endif %}
+    {% if paginator.previous %}<a
+      rel="prev"
+      href="{{ paginator.previous | safe }}"
+    >&larr; Newer</a>{% else %}<span></span>{% endif %}
     <span>{{ paginator.current_index }} / {{ paginator.number_pagers }}</span>
-    {% if paginator.next %}<a rel="next" href="{{ paginator.next | safe }}">Older &rarr;</a>{% else %}<span></span>{% endif %}
+    {% if paginator.next %}<a rel="next" href="{{ paginator.next | safe }}"
+    >Older &rarr;</a>{% else %}<span></span>{% endif %}
   </nav>
   {% endif %}
 </section>

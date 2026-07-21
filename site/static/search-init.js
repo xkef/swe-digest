@@ -4,7 +4,7 @@
 // it restores the server-rendered page. Pagefind shards its index, so only
 // the chunks a query touches are fetched, and the module loads lazily on
 // first use.
-(function () {
+(function() {
   const index = document.querySelector(".story-index");
   if (!index) return;
 
@@ -71,7 +71,11 @@
     row.className = "story-meta";
     if (meta.date) row.appendChild(badge("badge", meta.date));
     if (meta.category) row.appendChild(badge("badge badge-cat", meta.category));
-    if (meta.status) row.appendChild(badge("badge badge-status status-" + meta.status, meta.status));
+    if (meta.status) {
+      row.appendChild(
+        badge("badge badge-status status-" + meta.status, meta.status),
+      );
+    }
     link.appendChild(row);
     const title = document.createElement("span");
     title.className = "story-title";
@@ -153,7 +157,7 @@
     more.hidden = shown >= current.results.length;
   }
 
-  search.addEventListener("input", function () {
+  search.addEventListener("input", function() {
     const query = search.value.trim();
     clearTimeout(timer);
     if (!query) {

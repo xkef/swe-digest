@@ -85,12 +85,16 @@ check-content:
 # on it. dprint owns TOML/JSON; rumdl owns Markdown. Both skip site/content/
 # and snapshots/ (see tool/dprint.json and tool/.rumdl.toml). The tools
 # install on demand here, so they stay out of the mise [tools] config.
+# dprint treats a directory holding its own dprint.json as a workspace
+# boundary, so the root scan skips tool/; the second invocation covers it.
 fmt:
 	@$(DPRINT) dprint fmt --config tool/dprint.json
+	@cd tool && $(DPRINT) dprint fmt
 	@$(RUMDL) rumdl fmt --config tool/.rumdl.toml
 
 fmt-check:
 	@$(DPRINT) dprint check --config tool/dprint.json
+	@cd tool && $(DPRINT) dprint check
 	@$(RUMDL) rumdl check --config tool/.rumdl.toml .
 
 # fmt-run is the agent-safe subset: it formats only files inside the publish

@@ -1,40 +1,41 @@
-{% macro day_sections(sections) %}
-{% for section in sections %}
+{% macro day_sections(sections) %} {% for section in sections %}
 <section class="day-section">
   <h2>{{ section.name }}</h2>
   <ol class="story-list">
     {% for story in section.stories %}
     <li class="story-row">
-      <a class="story-link" href="{{ config.base_url | safe }}{{ story.url | safe }}">
+      <a
+        class="story-link"
+        href="{{ config.base_url | safe }}{{ story.url | safe }}"
+      >
         <span class="story-meta">
-          {% if story.category %}<span class="badge badge-cat">{{ story.category }}</span>{% endif %}
-          {% if story.status %}<span class="badge badge-status status-{{ story.status }}">{{ story.status }}</span>{% endif %}
+          {% if story.category %}<span class="badge badge-cat"
+          >{{ story.category }}</span>{% endif %} {% if story.status %}<span
+            class="badge badge-status status-{{ story.status }}"
+          >{{ story.status }}</span>{% endif %}
         </span>
         <span class="story-title">{{ story.title }}</span>
-        {% if story.summary %}<span class="story-summary">{{ story.summary }}</span>{% endif %}
+        {% if story.summary %}<span class="story-summary"
+        >{{ story.summary }}</span>{% endif %}
       </a>
     </li>
     {% endfor %}
   </ol>
 </section>
-{% endfor %}
-{% endmacro %}
-
-{% macro total_stories() %}
-{%- set digest_index = get_section(path="digests/_index.md") -%}
-{%- set_global total = 0 -%}
-{%- for day_page in digest_index.pages -%}
-{%- set day = day_page.date | date(format='%Y-%m-%d') -%}
-{%- set day_data = load_data(path="data/digests/" ~ day ~ ".json") -%}
-{%- set_global total = total + day_data.count -%}
-{%- endfor -%}
-{{- total -}}
-{% endmacro %}
-
-{% macro day_pager(newer="", older="") %}
+{% endfor %} {% endmacro %} {% macro total_stories() %} {%- set digest_index =
+get_section(path="digests/_index.md") -%} {%- set_global total = 0 -%} {%- for
+day_page in digest_index.pages -%} {%- set day = day_page.date |
+date(format='%Y-%m-%d') -%} {%- set day_data = load_data(path="data/digests/" ~
+day ~ ".json") -%} {%- set_global total = total + day_data.count -%} {%- endfor
+-%} {{- total -}} {% endmacro %} {% macro day_pager(newer="", older="") %}
 <nav class="pagination" aria-label="Digests">
-  {% if newer %}<a rel="prev" href="{{ newer.permalink | safe }}">&larr; {{ newer.date | date(format='%Y-%m-%d') }}</a>{% else %}<span></span>{% endif %}
-  <a href="{{ get_url(path='/digests/', trailing_slash=true) | safe }}">Archive</a>
-  {% if older %}<a rel="next" href="{{ older.permalink | safe }}">{{ older.date | date(format='%Y-%m-%d') }} &rarr;</a>{% else %}<span></span>{% endif %}
+  {% if newer %}<a rel="prev" href="{{ newer.permalink | safe }}"
+  >&larr; {{ newer.date | date(format='%Y-%m-%d') }}</a>{% else
+  %}<span></span>{% endif %}
+  <a href="{{ get_url(path='/digests/', trailing_slash=true) | safe }}"
+  >Archive</a>
+  {% if older %}<a rel="next" href="{{ older.permalink | safe }}"
+  >{{ older.date | date(format='%Y-%m-%d') }} &rarr;</a>{% else
+  %}<span></span>{% endif %}
 </nav>
 {% endmacro %}
