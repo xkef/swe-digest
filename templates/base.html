@@ -55,8 +55,10 @@
     <footer class="site-footer">
       <p>
         <span>{{ config.title }}</span>
-        <time class="js-localtime" datetime="{% if build_date %}{{ build_date }}{% else %}{{ now() | date(format='%Y-%m-%dT%H:%M:%SZ') }}{% endif %}">{% if build_date %}{{ build_date | replace(from="T", to=" ") | replace(from="Z", to=" UTC") }}{% else %}{{ now() | date(format='%Y-%m-%d %H:%M UTC') }}{% endif %}</time>
-        <span>{% if release != "dev" %}<a href="{{ config.extra.repository | safe }}/commit/{{ release }}">{{ release }}</a>{% else %}{{ release }}{% endif %}</span>
+        <span class="footer-build">
+          <time class="js-localtime" datetime="{% if build_date %}{{ build_date }}{% else %}{{ now() | date(format='%Y-%m-%dT%H:%M:%SZ') }}{% endif %}">{% if build_date %}{{ build_date | replace(from="T", to=" ") | replace(from="Z", to=" UTC") }}{% else %}{{ now() | date(format='%Y-%m-%d %H:%M UTC') }}{% endif %}</time>
+          {% if release != "dev" %}<a href="{{ config.extra.repository | safe }}/commit/{{ release }}">{{ release }}</a>{% else %}<span>{{ release }}</span>{% endif %}
+        </span>
       </p>
     </footer>
     <script src="{{ get_url(path='/localtime.js', cachebust=true) | safe }}" defer></script>

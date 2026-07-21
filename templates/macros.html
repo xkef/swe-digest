@@ -20,6 +20,17 @@
 {% endfor %}
 {% endmacro %}
 
+{% macro total_stories() %}
+{%- set digest_index = get_section(path="digests/_index.md") -%}
+{%- set_global total = 0 -%}
+{%- for day_page in digest_index.pages -%}
+{%- set day = day_page.date | date(format='%Y-%m-%d') -%}
+{%- set day_data = load_data(path="data/digests/" ~ day ~ ".json") -%}
+{%- set_global total = total + day_data.count -%}
+{%- endfor -%}
+{{- total -}}
+{% endmacro %}
+
 {% macro day_pager(newer="", older="") %}
 <nav class="pagination" aria-label="Digests">
   {% if newer %}<a rel="prev" href="{{ newer.permalink | safe }}">&larr; {{ newer.date | date(format='%Y-%m-%d') }}</a>{% else %}<span></span>{% endif %}

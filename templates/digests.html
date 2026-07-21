@@ -1,11 +1,12 @@
 {% extends "base.html" %}
+{% import "macros.html" as macros %}
 
 {% block content %}
 <section class="layout listing">
   <header class="page-header">
     <p class="eyebrow">Archive</p>
     <h1>All digests</h1>
-    <p>{{ paginator.total_pages }} days of digests, newest first.</p>
+    <p>{{ macros::total_stories() }} stories across {{ paginator.total_pages }} days, newest first.</p>
   </header>
   {% set_global month = "" %}
   <ol class="digest-list">
