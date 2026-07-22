@@ -96,8 +96,9 @@ execution environment (cloud datacenter IP ranges).
   partial block from the datacenter IP, not a one-off rate limit; raised as a
   plain blocked-source issue in the 2026-06-28 weekly review so the owner can
   check Reddit access from another network. 2026-07-22: live fetch returned only
-  ~4 of 28 subreddits before HTTP 429; the committed six-hour snapshot
-  (snapshots/reddit) carried 116 posts and was used instead. Last seen 2026-07-22.
+  ~4 of 28 subreddits before HTTP 429 across successive runs; the committed
+  snapshot (snapshots/reddit) accumulated 276 posts over the day and was used
+  instead. Last seen 2026-07-22.
 - `www.theregister.com` - reputable secondary tech outlet; article bodies return
   403/404 from the datacenter IP, but WebSearch summaries carry named officials
   and figures. Used 2026-06-20 to upgrade the GitHub-availability/AWS story from

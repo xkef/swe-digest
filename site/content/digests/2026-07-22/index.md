@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-22."
 
 [extra]
 status = "published"
-source_count = 34
+source_count = 40
 +++
 
 ## Top stories
@@ -48,6 +48,16 @@ source_count = 34
 - **Summary:** Terence Tao posted an explanation of the recent counterexample to the Jacobian conjecture in three dimensions, reformulating the degree-seven polynomial map through symmetric powers of homogeneous polynomials and a resultant normalization to show why its cancellations work. He presents the counterexample as established mathematics rather than expressing doubt, and discloses that he used an AI chatbot to discuss the problem and confirm several calculations, without attributing the underlying geometric insight to the AI. The counterexample itself was posted 2026-07-19 by Levent Alpoge and credited to Anthropic's Claude.
 - **Why it matters:** A leading mathematician independently reconstructing and confirming the map is the strongest validation yet of an AI-credited proof result, and separates a verifiable outcome from the unverified prose-proof claims earlier this month.
 - **Follow-up:** Watch for a formal paper, wider expert acceptance, and clarification of the model's role versus the human mathematicians.
+
+## AI
+
+### Gemini's newest models drop temperature, top_p, and top_k sampling controls
+
+- **Category:** AI
+- **Status:** confirmed
+- **Sources:** [Gemini API docs](https://ai.google.dev/gemini-api/docs/latest-model), [HN discussion](https://news.ycombinator.com/item?id=48998606)
+- **Summary:** Google's Gemini API documentation states that starting with Gemini 3.6 Flash and Gemini 3.5 Flash-Lite, the `temperature`, `top_p`, and `top_k` sampling parameters are deprecated, applying to those models and all future Gemini releases. The current models ignore the parameters when a request supplies them. The documentation says future model generations will return an HTTP 400 error for requests that include them and advises removing the parameters from all requests.
+- **Why it matters:** Code and client libraries that tune sampling against Gemini lose that control on the newest models and will fail outright on later ones, a concrete migration item for any team calling the Gemini API.
 
 ## ML research
 
@@ -136,6 +146,14 @@ No major items found.
 
 ## Developer tools
 
+### Codeberg bans projects that are mostly AI-generated code
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [Codeberg Terms of Use pull request](https://codeberg.org/Codeberg/org/pulls/1253), [HN discussion](https://news.ycombinator.com/item?id=49003386)
+- **Summary:** Codeberg, the nonprofit Gitea-based code-hosting forge, amended its Terms of Use in July 2026 after a membership vote to prohibit projects that "mostly consist of code written by 'generative AI'-tools", naming services such as Claude and OpenAI Codex. The stated reason is copyright ambiguity: LLM-generated code sits in unclear legal territory on ownership, and the nonprofit lacks the resources to defend against future claims. The rule targets whole repositories rather than individual AI-assisted contributions, and leadership said it would publish a blog post on enforcement details.
+- **Why it matters:** A general-purpose forge rejecting predominantly AI-authored repositories on copyright-liability grounds is a different rationale from Godot's reviewer-capacity ban, and sets a hosting-level precedent in the AI-authorship debate.
+
 ### Firefox 153 ships a preview of built-in Containers
 
 - **Category:** Dev tools
@@ -170,6 +188,16 @@ No major items found.
 - **Summary:** A Hacker News thread on 2026-07-21 highlighted more than 400 Linux kernel CVEs published to the linux-cve-announce list within 24 hours, restarting the recurring debate about the kernel CNA assigning CVE identifiers to large batches of bug fixes. The volume reflects the kernel project's assignment policy rather than a single new mass-exploitation event.
 - **Why it matters:** The batch-CVE policy floods vulnerability scanners and downstream triage, and teams that gate on raw CVE counts get little signal from it without severity context.
 
+## Engineering posts
+
+### A Postgres survival guide catalogs the failure modes that break scaling apps
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [Hatchet blog](https://hatchet.run/blog/postgres-survival-guide), [HN discussion](https://news.ycombinator.com/item?id=49005787)
+- **Summary:** A practitioner guide from Hatchet distills running Postgres in production into concrete advice: index order aligned with `ORDER BY`, short transactions with minimal row locking, and batching writes for throughput. It then names the failure modes that bite at scale: autovacuum falling behind under high write volume, transaction ID wraparound risk, long migrations blocking autovacuum, `CREATE INDEX` locking writes without `CONCURRENTLY`, and remedies such as `FOR UPDATE SKIP LOCKED` for queues, range partitioning for near-instant deletes, and `pg_repack` over `VACUUM FULL`. It reached the Hacker News front page on 2026-07-22.
+- **Why it matters:** The operational failure modes it names, autovacuum bloat, wraparound, and locking DDL, are the ones that turn a working Postgres deployment into an incident, and they recur across teams.
+
 ## Reddit and social pulse
 
 ### Local-model communities stress-test Poolside's Laguna S 2.1 on day one
@@ -183,9 +211,9 @@ No major items found.
 ## Sources checked
 
 - Hacker News (full structured coverage via Algolia across front page, top of day, Ask HN, Show HN, comments, and watchlist queries)
-- Reddit (datacenter rate-limiting returned only about 4 of 28 subreddits live, so the committed six-hour snapshot with 116 posts was used)
+- Reddit (datacenter rate-limiting again returned only about 4 of 28 subreddits live across successive runs, so the committed snapshot, which accumulated 276 posts over the day, backs the pulse)
 - GitHub stars for tracked people (quiet day, no events)
-- AI sources (OpenAI, Anthropic, Fireworks, Fireworks-served Kimi K3)
+- AI sources (OpenAI, Anthropic, Google Gemini API docs, Fireworks, Fireworks-served Kimi K3)
 - ML research and arXiv papers (cs.LG, cs.CL, cs.AI, cs.CR, cs.SE, cs.DC, cs.PL)
 - Events watchlist (no upcoming or active tracked events)
 - Books and publisher feeds (No Starch, Pragmatic Bookshelf, Springer, no qualifying release)

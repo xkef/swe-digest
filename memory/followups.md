@@ -17,6 +17,15 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-22: Codeberg bans mostly-AI-generated projects
+
+- Status: open
+- Category: Dev tools
+- Sources: [Codeberg ToU pull request](https://codeberg.org/Codeberg/org/pulls/1253), [HN 49003386](https://news.ycombinator.com/item?id=49003386)
+- Watch for: The promised enforcement blog post and how "mostly" is defined in practice; whether the policy affects legitimate AI-assisted contributions; whether other forges (GitHub, GitLab, Tangled, self-hosting) adopt similar bans; any measurable effect on project migrations.
+- Last checked: 2026-07-22
+- Notes: Codeberg (nonprofit Gitea-based forge) amended its Terms of Use in July 2026 after a membership vote to prohibit projects that "mostly consist of code written by 'generative AI'-tools", naming Claude and OpenAI Codex. Stated rationale is copyright ambiguity and the nonprofit's inability to defend against future IP claims; targets whole repositories, not individual AI-assisted commits. Enforcement blog post promised. Different rationale from Godot's reviewer-capacity ban but same AI-authorship governance theme (Godot, curl report-handling pause, FFmpeg AI bug reports). Covered 2026-07-22 Developer tools (confirmed). See [[entities]] Codeberg.
+
 ## 2026-07-21: snap-confine CVE-2026-8933 local root on Ubuntu desktops
 
 - Status: open
