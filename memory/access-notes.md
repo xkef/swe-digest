@@ -95,7 +95,9 @@ execution environment (cloud datacenter IP ranges).
   /top/.rss?t=day returned 0 entries and /hot/.rss returned HTTP 429. A sustained
   partial block from the datacenter IP, not a one-off rate limit; raised as a
   plain blocked-source issue in the 2026-06-28 weekly review so the owner can
-  check Reddit access from another network. Last seen 2026-07-07.
+  check Reddit access from another network. 2026-07-22: live fetch returned only
+  ~4 of 28 subreddits before HTTP 429; the committed six-hour snapshot
+  (snapshots/reddit) carried 116 posts and was used instead. Last seen 2026-07-22.
 - `www.theregister.com` - reputable secondary tech outlet; article bodies return
   403/404 from the datacenter IP, but WebSearch summaries carry named officials
   and figures. Used 2026-06-20 to upgrade the GitHub-availability/AWS story from
@@ -113,3 +115,7 @@ execution environment (cloud datacenter IP ranges).
 - `arstechnica.com` - article bodies block automated WebFetch; use WebSearch
   snippets plus a corroborating outlet (The Register, Fortune, FT) and confirm
   the canonical URL before citing. Last seen 2026-06-29.
+- `apnews.com` - WebFetch returned "unable to fetch" from the run environment on
+  2026-07-22; use WebSearch summaries and corroborate with another reputable
+  outlet (Washington Post, TechCrunch, Reuters) before citing. Last seen
+  2026-07-22.

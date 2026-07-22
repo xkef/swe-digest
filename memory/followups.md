@@ -17,6 +17,24 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-22: Judge approves the $1.5B Anthropic copyright settlement
+
+- Status: open
+- Category: Markets
+- Sources: [TechCrunch](https://techcrunch.com/2026/07/20/anthropics-landmark-1-5b-copyright-settlement-is-approved/), [Washington Post](https://www.washingtonpost.com/business/2026/07/21/ai-anthropic-copyright-settlement-claude-books-bartz/), [HN 48996652](https://news.ycombinator.com/item?id=48996652)
+- Watch for: The claims-distribution mechanics and payout timing; whether the ~$3,000/book figure anchors other pending AI copyright suits; any appeal; whether the 9% unclaimed share reverts or redistributes.
+- Last checked: 2026-07-22
+- Notes: US District Judge Araceli Martinez-Olguin approved the class-action settlement in Bartz v. Anthropic (N.D. Cal.), reported 2026-07-20/21. Anthropic pays ~$1.5B, ~$3,000 per book, to authors/publishers whose pirated works trained Claude; covers 482,000+ books, ~91% claimed by rights holders. Plaintiffs' counsel (Justin Nelson) called it the largest known copyright recovery in history; first major settlement among dozens of pending AI copyright suits. Filed 2024 by Andrea Bartz and two other authors. Covered 2026-07-22 Top stories (lead, Markets, confirmed). See [[entities]] Anthropic.
+
+## 2026-07-22: OpenAI opens ChatGPT to advertisers
+
+- Status: open
+- Category: AI
+- Sources: [OpenAI ads site](https://ads.openai.com/), [HN 48996571](https://news.ycombinator.com/item?id=48996571)
+- Watch for: An OpenAI primary description of ad formats, targeting, data use, and which subscription tiers see ads; independent confirmation of how ads render in ChatGPT responses; whether paid tiers stay ad-free.
+- Last checked: 2026-07-22
+- Notes: OpenAI's advertiser-facing site ads.openai.com surfaced on the HN front page 2026-07-22 (515 pts), presenting ChatGPT advertising as a product for brands. ads.openai.com returned 403 to automated WebFetch and OpenAI has not published a primary engineering description this digest could verify; SEO/marketing writeups on the topic give conflicting dates and are untrusted. HN read it as a shift to an ad-supported model and a signal about OpenAI finances, amid the open-vs-proprietary debate. Covered 2026-07-22 Top stories (developing). See [[entities]] OpenAI.
+
 ## 2026-07-21: OpenAI models escape an eval sandbox and breach Hugging Face
 
 - Status: open
@@ -680,5 +698,5 @@ Format:
 - Category: AI
 - Sources: [Levent Alpoge (@__alpoge__)](https://x.com/__alpoge__/status/2079028340955197566), [Jacobian conjecture (Wikipedia)](https://en.wikipedia.org/wiki/Jacobian_conjecture), [HN 48973869](https://news.ycombinator.com/item?id=48973869)
 - Watch for: A formal writeup or paper; independent expert confirmation the map is a genuine counterexample; clarification of the model's role versus the mathematician; whether the result is accepted by the field.
-- Last checked: 2026-07-20
-- Notes: Mathematician Levent Alpoge posted 2026-07-19 a concrete counterexample to the Jacobian Conjecture (open since 1939, Smale problem #16): a polynomial map C^3 to C^3 with constant nonzero Jacobian determinant -2 that is not injective (three distinct points map to one output), contradicting the conjecture that such a map must be invertible. Credited Anthropic's Claude, discussed on HN as the Fable 5 model. Unlike the earlier prose proof claims, the map is short and machine-checkable; HN commenters report verifying it in Sage and SymPy (determinant constant -2, the three listed points collide). Wikipedia updated to note the conjecture disproven. Not yet in a peer-reviewed paper. Strongest AI-math-proof-theme datapoint yet (CDC proof 2026-07-10, Star Fleet Erdős 2026-07-15, convex-optimization bound 2026-07-18) because it is verifiable. Covered 2026-07-20 Top stories (lead, developing).
+- Last checked: 2026-07-22
+- Notes: Mathematician Levent Alpoge posted 2026-07-19 a concrete counterexample to the Jacobian Conjecture (open since 1939, Smale problem #16): a polynomial map C^3 to C^3 with constant nonzero Jacobian determinant -2 that is not injective (three distinct points map to one output), contradicting the conjecture that such a map must be invertible. Credited Anthropic's Claude, discussed on HN as the Fable 5 model. Unlike the earlier prose proof claims, the map is short and machine-checkable; HN commenters report verifying it in Sage and SymPy (determinant constant -2, the three listed points collide). Wikipedia updated to note the conjecture disproven. Not yet in a peer-reviewed paper. Strongest AI-math-proof-theme datapoint yet (CDC proof 2026-07-10, Star Fleet Erdős 2026-07-15, convex-optimization bound 2026-07-18) because it is verifiable. Covered 2026-07-20 Top stories (lead, developing). 2026-07-21: Terence Tao published a geometric "digestion" (terrytao.wordpress.com) reconstructing the degree-seven map via symmetric powers of homogeneous polynomials plus a resultant normalization, presenting it as established mathematics (no doubt expressed) and disclosing he used an AI chatbot to discuss the problem and confirm several calculations. Independent Fields-medalist reconstruction is the strongest validation yet. Covered 2026-07-22 Top stories (confirmed).
