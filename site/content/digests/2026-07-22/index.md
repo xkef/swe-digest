@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-22."
 
 [extra]
 status = "published"
-source_count = 26
+source_count = 34
 +++
 
 ## Top stories
@@ -104,6 +104,32 @@ source_count = 26
 - **Summary:** 404 Media reported that Apple patched a flaw in its iCloud+ Hide My Email masking service on 2026-07-03 after the outlet's coverage. Sending a Hide My Email user a message that the mail server rejected as spam could reveal the user's real address in server logs. Researcher Tyler Murphy of EasyOptOuts first reported the issue to Apple in June 2025 and found it remained exploitable across roughly a year before the fix. A class-action lawsuit over the vulnerability has been filed.
 - **Why it matters:** Hide My Email is a privacy primitive many people rely on, and a year-long unfixed leak of the address it exists to protect undercuts that guarantee.
 
+### Qualys reports a snap-confine root escalation on default Ubuntu desktops
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Qualys writeup](https://blog.qualys.com/vulnerabilities-threat-research/2026/07/21/cve-2026-8933-snap-confine-local-privilege-escalation), [r/linux discussion](https://www.reddit.com/r/linux/comments/1v34he9/ubuntu_snapconfine_flaw_could_grant_unprivileged/)
+- **Summary:** Qualys disclosed CVE-2026-8933 on 2026-07-21, a local privilege escalation to root in the snap-confine sandbox helper on Ubuntu Desktop 24.04, 25.10, and 26.04. The flaw chains two race conditions during sandbox setup: a window where a temporary directory is owned by the calling user before ownership transfers to root, and symlink manipulation that redirects a privileged write to an arbitrary target. Qualys attributes the exposure to a hardening change from set-uid-root to set-capabilities, which leaves snap-confine running with the caller's effective UID while retaining near-root capabilities. Canonical released fixed snapd packages through the Ubuntu Security Team, and Qualys states a proof of concept accompanies the advisory with no active exploitation reported.
+- **Why it matters:** snap-confine runs on default Ubuntu desktop installs, so a local-root chain there is broadly reachable on developer and CI machines, continuing a run of high-value Linux privilege-escalation disclosures.
+- **Follow-up:** Watch for a weaponized exploit beyond the PoC, backports across supported Ubuntu releases, and any CISA KEV addition.
+
+### Court dismisses Apple's liability for not scanning iCloud for CSAM
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [Eric Goldman analysis](https://blog.ericgoldman.org/archives/2026/07/apple-defeats-liability-for-not-scanning-icloud-for-csam-but-the-judge-was-not-pleased-amy-v-apple.htm), [HN discussion](https://news.ycombinator.com/item?id=48992870)
+- **Summary:** In Amy v. Apple, a judge in the Northern District of California dismissed the third amended complaint on 2026-07-13, granting Apple Section 230 immunity from claims that it should have detected child sexual abuse material in iCloud. Plaintiffs argued Apple could have run PhotoDNA or its own NeuralHash technology on uploads. The court held that avoiding liability would require Apple to act as a publisher of third-party content, which Section 230 bars. The judge expressed dissatisfaction with the outcome and said any duty to scan must come from lawmakers, while acknowledging that scanning would require weakening the end-to-end encryption Apple deployed instead.
+- **Why it matters:** The ruling sets a US baseline that platforms cannot be forced through liability to build client-side CSAM scanning, the same encryption-versus-scanning tradeoff at the center of the EU Chat Control debate.
+- **Follow-up:** Watch for an appeal, any legislative response mandating scanning, and whether other platform CSAM suits cite the Section 230 reasoning.
+
+### EU top court rules geo-blocking sufficient and VPNs lawful technical tools
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [TorrentFreak](https://torrentfreak.com/eus-top-court-geo-blocking-protects-publishers-in-copyright-disputes-vpns-not-liable/), [HN discussion](https://news.ycombinator.com/item?id=48997221)
+- **Summary:** The Court of Justice of the European Union ruled on 2026-07-09 in case C-788/24 (ECLI:EU:C:2026:559) that a publisher using state-of-the-art geo-blocking does not infringe copyright when a determined user bypasses the block with a VPN, holding that the mere possibility of circumvention cannot by itself make a technical protection measure inadequate. The court characterized VPN providers as neutral intermediaries and lawful technical tools that users may legitimately use, and said providers cannot be held liable because they do not give end users access to the protected work or play an indispensable role in its communication. The case arose from the Dutch Anne Frank Stichting publishing manuscripts that remain under copyright in the Netherlands until 2037 but are public domain elsewhere in the EU. The account resurfaced on Hacker News on 2026-07-22.
+- **Why it matters:** It fixes geo-blocking as a legally sufficient technical protection measure across the EU and removes VPN operators from the liability chain, which sets the compliance bar for any service that regionally gates content.
+
 ## Outages
 
 No major items found.
@@ -117,6 +143,14 @@ No major items found.
 - **Sources:** [Mozilla blog](https://blog.mozilla.org/en/firefox/firefox-containers-preview/)
 - **Summary:** Firefox 153, released 2026-07-21, adds a preview of native Containers that keeps separate logins (work, personal, banking) isolated by cookie jar in one window, built in and visible by default rather than requiring the Multi-Account Containers add-on. The preview lets users open tabs in a chosen container and customize container names, colors, and icons, though not all add-on features are present yet and both can run side by side.
 - **Why it matters:** Making per-context isolation a first-party feature reduces reliance on an extension for a common privacy and account-separation workflow.
+
+### FreeInk proposes an open software, firmware, and hardware stack for e-readers
+
+- **Category:** Dev tools
+- **Status:** discussion
+- **Sources:** [freeink.org](https://freeink.org/), [HN discussion](https://news.ycombinator.com/item?id=48996318)
+- **Summary:** FreeInk presents itself as an open ecosystem for e-paper readers in which the software, firmware, and hardware layers are all published openly for third parties to extend, positioned against the proprietary, closed e-reader market. It reached the Hacker News front page on 2026-07-22. The project is early and framed as an ecosystem effort rather than a single shipped device, so its concrete hardware and firmware maturity is not yet established from the site alone.
+- **Why it matters:** An open stack across all layers would lower the barrier for smaller manufacturers and independent developers building e-ink devices, though the practical substance depends on shipped firmware and hardware that this digest could not yet verify.
 
 ## Linux and kernel
 

@@ -17,6 +17,24 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-21: snap-confine CVE-2026-8933 local root on Ubuntu desktops
+
+- Status: open
+- Category: Security
+- Sources: [Qualys writeup](https://blog.qualys.com/vulnerabilities-threat-research/2026/07/21/cve-2026-8933-snap-confine-local-privilege-escalation), [r/linux](https://www.reddit.com/r/linux/comments/1v34he9/ubuntu_snapconfine_flaw_could_grant_unprivileged/)
+- Watch for: A weaponized exploit beyond the PoC in the advisory; backports across supported Ubuntu releases and the exact fixed snapd versions; any CISA KEV addition; whether it chains with other snapd flaws.
+- Last checked: 2026-07-22
+- Notes: Qualys disclosed CVE-2026-8933 on 2026-07-21, a local privilege escalation to root in snap-confine on Ubuntu Desktop 24.04/25.10/26.04. Chains two race conditions during sandbox setup: a temporary directory owned by the calling user before ownership transfers to root, plus symlink manipulation redirecting a privileged write to an arbitrary target. Attributed to a hardening shift from set-uid-root to set-capabilities that leaves snap-confine running with the caller's effective UID while keeping near-root capabilities. Canonical released fixed snapd packages via the Ubuntu Security Team; PoC accompanies the advisory, no active exploitation reported. Distinct from CVE-2026-3888 (March 2026, systemd-tmpfiles timing). Surfaced via r/linux 2026-07-22 (no HN thread found). Covered 2026-07-22 Security (confirmed). Continues the Linux LPE run (GhostLock, Bad Epoll, Januscape).
+
+## 2026-07-13: Court dismisses Apple's liability for not scanning iCloud for CSAM
+
+- Status: open
+- Category: Security
+- Sources: [Eric Goldman analysis](https://blog.ericgoldman.org/archives/2026/07/apple-defeats-liability-for-not-scanning-icloud-for-csam-but-the-judge-was-not-pleased-amy-v-apple.htm), [HN 48992870](https://news.ycombinator.com/item?id=48992870)
+- Watch for: An appeal; any US legislative response mandating scanning; whether other platform CSAM suits cite the Section 230 reasoning; interaction with the EU Chat Control track.
+- Last checked: 2026-07-22
+- Notes: In Amy v. Apple (N.D. Cal.), a judge dismissed the third amended complaint on 2026-07-13, granting Apple Section 230 immunity from claims it should have run PhotoDNA or its own NeuralHash to detect CSAM in iCloud. Court held avoiding liability would require Apple to act as a publisher, which Section 230 bars; the judge said any duty to scan must come from lawmakers and acknowledged scanning would require weakening the end-to-end encryption Apple deployed instead. Surfaced HN front page 2026-07-22 (48992870, 425 pts). Covered 2026-07-22 Security (confirmed). Same encryption-versus-scanning tradeoff as the EU Chat Control derogation follow-up.
+
 ## 2026-07-22: Judge approves the $1.5B Anthropic copyright settlement
 
 - Status: open
