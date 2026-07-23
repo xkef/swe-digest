@@ -98,7 +98,10 @@ execution environment (cloud datacenter IP ranges).
   check Reddit access from another network. 2026-07-22: live fetch returned only
   ~4 of 28 subreddits before HTTP 429 across successive runs; the committed
   snapshot (snapshots/reddit) accumulated 276 posts over the day and was used
-  instead. Last seen 2026-07-22.
+  instead. 2026-07-23: same pattern, live fetch got 4 of 28 subreddits (cursor,
+  cybersecurity, Kotlin, plus one) before HTTP 429; the early-day snapshot added
+  7 more (aws, bioinformatics, iOSProgramming, java, netsec, programming, rust)
+  for ~10 subreddits total. Last seen 2026-07-23.
 - `www.theregister.com` - reputable secondary tech outlet; article bodies return
   403/404 from the datacenter IP, but WebSearch summaries carry named officials
   and figures. Used 2026-06-20 to upgrade the GitHub-availability/AWS story from
