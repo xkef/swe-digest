@@ -101,7 +101,14 @@ execution environment (cloud datacenter IP ranges).
   instead. 2026-07-23: same pattern, live fetch got 4 of 28 subreddits (cursor,
   cybersecurity, Kotlin, plus one) before HTTP 429; the early-day snapshot added
   7 more (aws, bioinformatics, iOSProgramming, java, netsec, programming, rust)
-  for ~10 subreddits total. Last seen 2026-07-23.
+  for ~10 subreddits total. 2026-07-23 later run (11:42 UTC): live fetch got 8
+  subreddits before HTTP 429 and the committed snapshot brought the combined
+  coverage to ~19 of 28. Separately, a 2026-07-21 report (cole-k.com, HN
+  49005747) states Reddit now requires login for the logged-out old.reddit.com
+  browsing experience; the RSS feeds `make reddit` uses still returned data on
+  2026-07-23, so this has not yet broken the fetcher, but watch whether
+  logged-out `old.reddit.com/{sub}/*.rss` access degrades further.
+  Last seen 2026-07-23.
 - `www.theregister.com` - reputable secondary tech outlet; article bodies return
   403/404 from the datacenter IP, but WebSearch summaries carry named officials
   and figures. Used 2026-06-20 to upgrade the GitHub-availability/AWS story from

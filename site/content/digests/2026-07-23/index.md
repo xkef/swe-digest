@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-23."
 
 [extra]
 status = "published"
-source_count = 50
+source_count = 56
 +++
 
 ## Top stories
@@ -171,6 +171,14 @@ No major items found.
 - **Comments:** HN commenters debate portable SIMD ergonomics in Zig and Rust versus relying on the compiler's auto-vectorization at `-O3`.
 - **Why it matters:** SIMD is where much single-core performance headroom now lives, and the post targets the gap between using auto-vectorization and writing explicit vector code.
 
+### Git's --end-of-options and argument injection in package managers
+
+- **Category:** Engineering post
+- **Status:** discussion
+- **Sources:** [nesbitt.io writeup](https://nesbitt.io/2026/07/21/end-of-options.html), [HN 48991882](https://news.ycombinator.com/item?id=48991882)
+- **Summary:** A 2026-07-21 writeup explains git's `--end-of-options` flag (added in git 2.24.0 in 2019) and the argument-injection class it defends against (CWE-88). Because git overloaded `--` to separate revisions from pathspecs, a revision or ref argument that begins with a dash can be parsed as an option even when a wrapper calls `exec` directly with no shell involved, so an input like `--upload-pack=<cmd>` becomes a code-execution primitive. The author surveys 19 package managers that fork the git binary for dependency fetches and reports only Go's toolchain consistently passes `--end-of-options`, with most others adding `--` or input validation reactively after CVEs rather than proactively.
+- **Why it matters:** Package managers that fork git on untrusted refs are a broad supply-chain surface, and the post names a concrete proactive mitigation that most tools still do not apply.
+
 ## Hacker News
 
 ### Show HN: an entire slide deck in one HTML file
@@ -188,6 +196,15 @@ No major items found.
 - **Sources:** [Ciphertalk post](https://ciphertalk.substack.com/p/nobody-knows-what-a-used-gpu-cluster), [HN 48917135](https://news.ycombinator.com/item?id=48917135)
 - **Summary:** An essay argues that valuing second-hand GPU clusters is unusually hard, given fast depreciation, uncertain remaining useful life, power and interconnect constraints, and thin resale markets. It is analysis and opinion, not transaction data.
 - **Why it matters:** The residual value of AI hardware feeds the debt and capex assumptions behind the current datacenter buildout that shapes compute pricing.
+
+### Discussion: Reddit requires login to view logged-out old.reddit.com
+
+- **Category:** Pulse
+- **Status:** developing
+- **Sources:** [cole-k writeup](https://www.cole-k.com/2026/07/21/reddit/), [HN 49005747](https://news.ycombinator.com/item?id=49005747)
+- **Summary:** A widely discussed 2026-07-21 writeup reports that Reddit now requires a logged-in account to browse old.reddit.com, ending the anonymous logged-out experience on the legacy interface. Reddit's stated reason is that the logged-out old interface is a significant source of abusive scraping and automated traffic. There is no separate Reddit engineering announcement this digest could verify, and users in the thread corroborate the change.
+- **Comments:** HN commenters connect the move to Reddit's paid AI-licensing deals with OpenAI and Google and to the earlier shutdown of third-party API clients, and note privacy-focused and no-account readers lose access. One commenter argues the framing overstates it and that retiring a second interface is largely a maintenance decision.
+- **Why it matters:** Logged-out old.reddit is a common path for anonymous reading and third-party tooling, so gating it behind login narrows unauthenticated access to Reddit content.
 
 ## Reddit and social pulse
 
@@ -217,17 +234,25 @@ No major items found.
 - **Summary:** Following his 2026-07-21 geometric reconstruction of Levent Alpoge's Claude-assisted counterexample to the Jacobian Conjecture, Terence Tao shared the actual ChatGPT conversation he used to discuss the problem and check calculations. It reached the HN front page on 2026-07-22 with 705 points.
 - **Why it matters:** It gives a concrete, inspectable record of how a working mathematician used a chatbot as a calculation and reasoning aid on a real result, distinct from the model authorship claims. See the Jacobian Conjecture follow-up in memory.
 
+### Codeberg publishes its enforcement approach for the AI-project ban
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [Codeberg blog](https://blog.codeberg.org/protecting-our-floss-commons-from-llms.html), [HN 49015635](https://news.ycombinator.com/item?id=49015635)
+- **Summary:** Codeberg published the promised follow-up to its Terms of Use change banning projects that mostly consist of generative-AI-written code. The post describes reactive, case-by-case enforcement rather than automated scanning or mass deletion: the moderation team will act on community reports, weigh factors such as active community involvement, significant pre-LLM history, and resource use out of proportion to the people involved, and states it will not spend resources scanning content automatically. Autonomous LLM-generated projects and LLM-focused tools with heavy AI creation and maintenance are the stated targets.
+- **Why it matters:** It answers how the AI-authorship ban will actually be applied, confirming enforcement depends on reporting and human judgment rather than detection tooling. See the Codeberg follow-up in memory.
+
 ## Sources checked
 
 - Hacker News (`make hn`, full coverage via Algolia)
-- Reddit (`make reddit`, degraded: live fetch returned 4 of 28 subreddits before HTTP 429, supplemented by the committed snapshot covering about 10 subreddits)
+- Reddit (`make reddit`, degraded: live fetch returned 8 of 28 subreddits before HTTP 429, combined with the committed snapshot for about 19 of 28)
 - AI sources (OpenAI, Anthropic, Moonshot policy reporting)
-- ML research and arXiv papers (`make papers`, 139 items, no qualifying paper beyond the GigaToken tool)
+- ML research and arXiv papers (`make papers`, 137 items, no qualifying paper beyond the GigaToken tool)
 - Events watchlist (`make events`, none active)
 - Books and publisher feeds (`make books`, 3 feeds, plus No Starch, Pragmatic, Springer, O'Reilly, Manning, Packt, MIT Press searched, no qualifying release)
 - Security advisories (CISA KEV 2026.07.22, Qualys, Check Point, NVD, oss-security)
 - Status pages (GitHub, Cloudflare, AWS, Azure, Google Cloud, OpenAI, Anthropic and others, no major incident)
 - GitHub watchlist releases and trending (`make stars` quiet, dev-tool and language repos checked, no new major release)
-- Engineering blogs (Hatchet, Mitchell Hashimoto, Pillar Security, PyPI, Kata Containers)
-- YouTube channels (`make yt`, 38 videos, 0 with HN discussion, no qualifying item)
+- Engineering blogs (Hatchet, Mitchell Hashimoto, Pillar Security, PyPI, Kata Containers, Codeberg, nesbitt.io)
+- YouTube channels (`make yt`, 42 videos, 0 with HN discussion, no qualifying item)
 - Markets and company sources (OpenAI, Moonshot policy track)
