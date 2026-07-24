@@ -161,3 +161,54 @@ def test_real_repo_memory_passes() -> None:
     from swe_digest.paths import ROOT
 
     assert check_memory(ROOT) == []
+
+
+def followups_with(count: int) -> str:
+    entries = "".join(
+        f"\n## 2026-07-01: Story {n}\n\n- Status: open\n- Watch for: A signal.\n"
+        for n in range(count)
+    )
+    return "# Follow-ups\n" + entries
+
+
+def test_oversized_bytes_fails_inside_the_line_bound(tmp_path: Path) -> None:
+    # The regression that motivated the byte bound: followups.md reached
+    # 110 KB in 792 lines, well inside the 1500-line cap, because entries are
+    # long single lines.
+    padding = "x" * (config.MEMORY_MAX_LINE_CHARS - 100)
+    body = "".join(
+        f"\n## 2026-07-01: Story {n}\n\n- Status: open\n- Watch for: {padding}\n"
+        for n in range(config.MEMORY_MAX_OPEN_FOLLOWUPS)
+    )
+    text = "# Follow-ups\n" + body
+    assert len(text.encode("utf-8")) > config.MEMORY_MAX_FILE_BYTES
+    assert len(text.splitlines()) < config.MEMORY_MAX_FILE_LINES
+    root = memory(tmp_path, followups=text)
+    errors = check_memory(root, TODAY)
+    assert any("byte bound" in error for error in errors)
+    assert not any("line bound" in error or "entry bound" in error for error in errors)
+
+
+def test_too_many_open_followups_fails(tmp_path: Path) -> None:
+    root = memory(tmp_path, followups=followups_with(config.MEMORY_MAX_OPEN_FOLLOWUPS + 1))
+    assert any("entry bound" in error for error in check_memory(root, TODAY))
+
+
+def test_followup_count_at_the_limit_passes(tmp_path: Path) -> None:
+    root = memory(tmp_path, followups=followups_with(config.MEMORY_MAX_OPEN_FOLLOWUPS))
+    assert check_memory(root, TODAY) == []
+
+
+def test_too_many_dated_bullets_fails(tmp_path: Path) -> None:
+    entries = "".join(
+        f"- Thing {n}: a tracked entity. Last seen 2026-06-20.\n"
+        for n in range(config.MEMORY_MAX_DATED_BULLETS + 1)
+    )
+    root = memory(tmp_path, entities="# Entities\n\n" + entries)
+    assert any("entry bound" in error for error in check_memory(root, TODAY))
+
+
+def test_usage_is_reported_every_run(tmp_path: Path, capsys: pytest.CaptureFixture) -> None:
+    root = memory(tmp_path, followups=FOLLOWUPS_OK, entities=ENTITIES_OK)
+    assert check_memory(root, TODAY) == []
+    assert "memory usage:" in capsys.readouterr().err

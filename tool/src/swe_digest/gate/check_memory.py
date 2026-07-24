@@ -45,6 +45,15 @@ def strip_fences(text: str) -> str:
 def check_bounds(path: Path, text: str) -> list[str]:
     errors = []
     lines = text.splitlines()
+    # Bytes, not lines, are what every run pays to re-read. followups.md
+    # reached 110 KB inside 792 lines, half the line bound, because entries
+    # are long single lines: the line bound never constrained the real cost.
+    size = len(text.encode("utf-8"))
+    if size > config.MEMORY_MAX_FILE_BYTES:
+        errors.append(
+            f"{path}: {size} bytes exceeds the {config.MEMORY_MAX_FILE_BYTES}-byte"
+            f" bound; every run re-reads this file, so compact per the memory rules"
+        )
     if len(lines) > config.MEMORY_MAX_FILE_LINES:
         errors.append(
             f"{path}: {len(lines)} lines exceeds the {config.MEMORY_MAX_FILE_LINES}-line"
@@ -124,15 +133,39 @@ def check_dated_bullets(path: Path, text: str, today: date, stale_days: int) -> 
     return errors
 
 
+def check_entry_count(path: Path, count: int, limit: int) -> list[str]:
+    """Entries are the unit the routine acts on, and the age gate alone cannot
+    hold a target: at about 3.5 new follow-ups a day, a 45-day horizon settles
+    near 156 open entries. The count is what sets the ceiling; the age gate is
+    the pruner underneath it."""
+    if count <= limit:
+        return []
+    return [
+        f"{path}: {count} entries exceeds the {limit}-entry bound;"
+        f" close or merge the {count - limit} least active"
+    ]
+
+
 def check_memory(root: Path, today: date | None = None) -> list[str]:
     today = today or datetime.now(UTC).date()
     memory = root / "memory"
     errors: list[str] = []
+    usage: list[str] = []
     for path in sorted(memory.glob("*.md")):
         text = path.read_text(encoding="utf-8")
         errors.extend(check_bounds(path, text))
         if path.name == "followups.md":
             errors.extend(check_followups(path, text, today))
+            count = len(FOLLOWUP_HEADING.findall(strip_fences(text)))
+            errors.extend(check_entry_count(path, count, config.MEMORY_MAX_OPEN_FOLLOWUPS))
         elif path.name in DATED_BULLET_FILES:
             errors.extend(check_dated_bullets(path, text, today, DATED_BULLET_FILES[path.name]))
+            count = len(bullets(strip_fences(text)))
+            errors.extend(check_entry_count(path, count, config.MEMORY_MAX_DATED_BULLETS))
+        else:
+            count = 0
+        usage.append(f"{path.name} {len(text.encode('utf-8'))}B/{count}e")
+    # Reported every run so the growth trend is visible well before a bound
+    # turns into a failed publish.
+    print(f"memory usage: {', '.join(usage)}", file=sys.stderr)
     return errors

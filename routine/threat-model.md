@@ -78,7 +78,8 @@ renderer back each other up.
 
 Memory files persist across runs, so they are the natural home for a
 persistent injection. `swe_digest.gate.check_memory` enforces the memory
-contract mechanically: bounded file and line sizes (no pasted raw source
+contract mechanically: bounded file bytes, lines, and entry counts (no
+pasted raw source
 text), dated `## YYYY-MM-DD:` follow-up entries that must be deleted rather
 than marked closed, and a `Last seen` date on every tracked entity with
 staleness warnings. Content screening (HTML, secrets, shorteners) applies to

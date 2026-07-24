@@ -209,8 +209,7 @@ def main() -> int:
     print(f"day coverage: {len(day_covered)}/{len(subreddits)} subreddits in the day's pool")
     if len(day_covered) < day_minimum:
         run.failures.append(
-            f"day coverage ({len(day_covered)}/{len(subreddits)} subreddits,"
-            f" floor {day_minimum})"
+            f"day coverage ({len(day_covered)}/{len(subreddits)} subreddits, floor {day_minimum})"
         )
 
     for name, collection in collections.items():
