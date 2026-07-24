@@ -10,7 +10,7 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-from swe_digest.gate.check_content import main
+from swe_digest.gate.check_content import SCANNED_SNAPSHOTS, main
 
 from .conftest import DIGEST_DATE, digest_text
 
@@ -307,3 +307,14 @@ def test_untracked_private_context_passes(git_repo: Path) -> None:
 def test_no_digests_fails(tmp_path: Path) -> None:
     (tmp_path / "site" / "content" / "digests").mkdir(parents=True)
     assert main(root=tmp_path) == 1
+
+
+def test_scanned_snapshots_cover_every_accumulator() -> None:
+    # threat-model.md claims screening across every snapshot, but hn and
+    # reddit were omitted for months with nothing catching the drift. Compare
+    # against the committed directories rather than merge.KINDS, whose keys
+    # are fetch kinds (yt) not directories (youtube).
+    from swe_digest.paths import SNAPSHOTS
+
+    committed = {path.name for path in SNAPSHOTS.iterdir() if path.is_dir()}
+    assert committed <= set(SCANNED_SNAPSHOTS)

@@ -51,6 +51,13 @@ FOLLOWUP_SECTIONS = {"Watchlist follow-ups"}
 # Top stories cap hold for every digest.
 STORY_URL_DUP_SINCE = "2026-07-06"
 
+# Every snapshot accumulator, including hn and reddit, the two highest-volume
+# untrusted sources. Secrets only: these files hold verbatim titles and comment
+# bodies, so an unsafe-content scan here would let any submitter fail the gate
+# closed and block publishing. What reaches a page is screened by check_digest
+# and escaped again by stories.neutralize_html.
+SCANNED_SNAPSHOTS = ("hn", "reddit", "youtube", "papers", "books")
+
 # Raw HTML / active-content patterns that must never reach a published page.
 # Scanned against prose with code spans removed, so a security story may still
 # mention `<script>` inside backticks (which Zola escapes).
@@ -239,7 +246,7 @@ def main(root: Path = ROOT) -> int:
     errors.extend(check_memory(root))
     for path in sorted((root / "memory" / "runs").rglob("*.yaml")):
         errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))
-    for snapshot_dir in ("youtube", "papers", "books"):
+    for snapshot_dir in SCANNED_SNAPSHOTS:
         for path in sorted((root / "snapshots" / snapshot_dir).glob("*.json")):
             errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))
     errors.extend(check_private_context(root))
