@@ -66,6 +66,7 @@ build: stories
 	@rm -rf $(DIST)
 	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) --root site build --output-dir "$(CURDIR)/$(DIST)"
 	@$(MISE) exec -- pagefind --site $(DIST) --glob "digests/[0-9]*/*/index.html"
+	@rm -f $(DIST)/pagefind/pagefind-ui.* $(DIST)/pagefind/pagefind-component-ui.* $(DIST)/pagefind/pagefind-modular-ui.* $(DIST)/pagefind/pagefind-highlight.js
 
 serve: stories
 	@command -v $(MISE) >/dev/null || { echo "mise not found"; exit 1; }
