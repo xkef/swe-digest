@@ -49,10 +49,15 @@ pool_max_items = 600
 # about 10 requests per minute, and faster spacing gets 429s (observed
 # 2026-07-07 at 1s spacing, see memory/access-notes.md).
 request_pause_seconds = 7.0
-# A listing counts as degraded when fewer than this fraction of subreddits
-# return entries. Partial results are kept (the snapshot accumulates them)
-# but the run exits nonzero so coverage is never silently incomplete.
-min_subreddit_fraction = 0.5
+# Per-run floor: one unauthenticated run reaches only a handful of feeds
+# before the rate limiter closes, so this detects a dead or fully blocking
+# host, not partial coverage. At 0.5 it was tripped by every run and 41 of 44
+# published digests disclosed the same degradation figure.
+min_subreddit_fraction = 0.1
+# What the digest actually depends on: how much of the list the day's pooled
+# coverage reaches, measured after swe_digest.fetch.run.pool. Below this the
+# run degrades and Sources checked says so.
+min_day_coverage_fraction = 0.5
 
 [papers]
 # arXiv responses are slower than the default HTTP budget allows.

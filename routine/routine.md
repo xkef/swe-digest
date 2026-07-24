@@ -199,9 +199,20 @@ accumulated coverage into `.cache/reddit/DATE.json`.
 Fetches are spaced (`request_pause_seconds` in `routine/config.toml`) because
 Reddit rate-limits unauthenticated traffic hard, especially from datacenter
 IPs, often to only the first few requests. The fetcher is built for that:
-the starting subreddit rotates each six-hour window so successive runs
-spend their budget on different subreddits, a listing below half coverage
-keeps what it got but is marked degraded, and the snapshots workflow merges
+each run reads the day's accumulator and orders the subreddits it does not
+yet cover first, so a handful of successful requests go to what the day is
+still missing. Ordering comes from observed coverage, not the clock, because
+the seven daily fetches are as little as 80 minutes apart and GitHub delays
+scheduled runs by 90 to 110 minutes. The old six-hour rotation survives only
+as the cold-start tiebreak for the first run of a UTC day.
+
+Two floors report coverage. The per-run floor
+(`min_subreddit_fraction`) detects a dead or fully blocking host. The day
+floor (`min_day_coverage_fraction`) measures how much of the list the day's
+pooled coverage reaches, which is what the digest depends on; the committed
+snapshots reached 17 to 24 of 28 subreddits on each of 2026-07-18 to
+2026-07-24, against a floor of 14. State the day figure in `Sources checked`
+when the run reports degradation. The snapshots workflow merges
 every fetch, including partial ones, so the committed snapshot accumulates
 toward full coverage across the day. On a nonzero exit: prefer the
 committed snapshot, retry later in the run, use WebSearch only as a

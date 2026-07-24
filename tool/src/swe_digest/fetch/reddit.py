@@ -7,12 +7,13 @@ authenticated scrape, to stay within Reddit's automated-access terms.
 
 Tries backends in order (www.reddit.com, old.reddit.com, then the committed
 snapshots/reddit files from the snapshots workflow) and exits nonzero when any
-listing is degraded. Reddit rate-limits unauthenticated datacenter traffic
-to a handful of requests, so partial coverage is expected: a listing with
-fewer than REDDIT_MIN_SUBREDDIT_FRACTION of the subreddits returning keeps
-what it got but is marked degraded, and the starting subreddit rotates each
-six-hour window so successive runs spread their request budget across the
-whole list and the committed snapshot accumulates toward full coverage.
+listing is degraded. Reddit rate-limits unauthenticated datacenter traffic to
+a handful of requests, so partial coverage is expected and the design works
+with it rather than against it: each run orders the uncovered subreddits
+first (from the day's accumulator), pools that accumulator into its result,
+and reports two floors. The per-run floor detects a dead or blocking host;
+the day floor measures how much of the list the day's pooled coverage
+reaches, which is what the digest actually depends on.
 """
 
 from __future__ import annotations
@@ -29,7 +30,7 @@ from swe_digest import config
 from swe_digest.fetch.run import FetchRun, Source
 from swe_digest.http import fetch_bytes
 from swe_digest.paths import CACHE, SNAPSHOTS
-from swe_digest.sources import load_watchlist
+from swe_digest.sources import FETCH_ERRORS, load_watchlist
 
 SOURCE = Source(
     name="Reddit",
@@ -44,6 +45,7 @@ SOURCE = Source(
 LISTING_PATHS = {"top_day": "top/.rss?t=day", "hot": "hot/.rss"}
 PAUSE_SECONDS = config.REDDIT_REQUEST_PAUSE_SECONDS
 MIN_SUBREDDIT_FRACTION = config.REDDIT_MIN_SUBREDDIT_FRACTION
+MIN_DAY_COVERAGE_FRACTION = config.REDDIT_MIN_DAY_COVERAGE_FRACTION
 
 NS = {"atom": "http://www.w3.org/2005/Atom"}
 
@@ -127,6 +129,36 @@ def fetch_listing(
     return posts, healthy
 
 
+def covered_subreddits(snapshot: dict[str, Any]) -> set[str]:
+    """Subreddits the day's accumulator already holds posts for, lowercased:
+    the watchlist carries display casing (AZURE, MachineLearning) while feed
+    entries carry their own."""
+    covered = set()
+    for collection in snapshot.get("collections", {}).values():
+        for post in collection.get("items", []):
+            name = post.get("subreddit")
+            if name:
+                covered.add(str(name).lower())
+    return covered
+
+
+def order_subreddits(subreddits: list[str], covered: set[str], offset: int) -> list[str]:
+    """Uncovered subreddits first, so a rate-limited run spends its handful of
+    successful requests on what the day is still missing.
+
+    Ordering by observed coverage rather than by the clock is what makes this
+    self-correcting. The seven daily fetches are as little as 80 minutes
+    apart and GitHub delays scheduled runs by 90 to 110 minutes, so no time
+    quantum survives the jitter, and a clock offset is blind to how many
+    feeds actually got through last time. The rotation below is only the
+    cold-start tiebreak for the first run of a UTC day, when nothing is
+    covered yet; do not restore it as the primary rule.
+    """
+    rotated = subreddits[offset:] + subreddits[:offset]
+    fresh = [name for name in rotated if name.lower() not in covered]
+    return fresh + [name for name in rotated if name.lower() in covered]
+
+
 def main() -> int:
     subreddits = load_watchlist()["reddit"]["subreddits"]
     if not subreddits:
@@ -135,12 +167,14 @@ def main() -> int:
 
     run = FetchRun(SOURCE)
     minimum = max(1, math.ceil(len(subreddits) * MIN_SUBREDDIT_FRACTION))
-    # Rotate the starting subreddit per six-hour window: a rate-limited
-    # environment only gets through the first few feeds, so successive runs
-    # spend that budget on different subreddits and the committed snapshot
-    # accumulates full coverage by post id.
+    try:
+        covered = covered_subreddits(run.load_day_snapshot())
+    except FETCH_ERRORS as error:
+        print(f"warn: rotation: no accumulator for {run.day}: {error}", file=sys.stderr)
+        covered = set()
     offset = (run.now // (6 * 3600)) % len(subreddits)
-    ordered = subreddits[offset:] + subreddits[:offset]
+    ordered = order_subreddits(subreddits, covered, offset)
+    print(f"rotation: {len(subreddits) - len(covered)}/{len(subreddits)} uncovered first")
     partial: list[str] = []
 
     def listing_backends(name: str) -> list[tuple[str, Any]]:
@@ -148,7 +182,7 @@ def main() -> int:
             def backend() -> list[dict]:
                 posts, healthy = fetch_listing(host, ordered, name, run.since_iso)
                 if healthy < minimum:
-                    partial.append(f"{name} (only {healthy}/{len(ordered)} subreddits)")
+                    partial.append(f"{name} (only {healthy}/{len(ordered)} subreddits reached)")
                 return posts
 
             return backend
@@ -164,6 +198,20 @@ def main() -> int:
 
     collections = run.pool(collections)
     pooled = (run.pooled or {}).get("added", {})
+
+    # Coverage is a day-level property, so it is measured on the pooled result.
+    # The per-run floor above only detects a dead or fully blocking host: one
+    # unauthenticated run gets through a handful of feeds before the rate
+    # limiter closes, so a per-run coverage floor is always tripped and says
+    # nothing. This one moves, and reaches zero if Reddit breaks for the day.
+    day_covered = covered_subreddits({"collections": collections})
+    day_minimum = math.ceil(len(subreddits) * MIN_DAY_COVERAGE_FRACTION)
+    print(f"day coverage: {len(day_covered)}/{len(subreddits)} subreddits in the day's pool")
+    if len(day_covered) < day_minimum:
+        run.failures.append(
+            f"day coverage ({len(day_covered)}/{len(subreddits)} subreddits,"
+            f" floor {day_minimum})"
+        )
 
     for name, collection in collections.items():
         extra = f" (+{pooled[name]} pooled)" if pooled.get(name) else ""

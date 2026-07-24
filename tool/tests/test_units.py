@@ -227,3 +227,48 @@ class TestSectionVocabulary:
         assert SECTION_VOCABULARY.index("HN and Reddit pulse") == 18
         assert SECTION_VOCABULARY[0] == "Top stories"
         assert SECTION_VOCABULARY[-1] == "Sources checked"
+
+
+SUBS = ["programming", "rust", "golang", "AZURE", "kubernetes"]
+
+
+class TestRedditRotation:
+    def test_uncovered_subreddits_come_first(self) -> None:
+        ordered = reddit.order_subreddits(SUBS, {"programming", "golang"}, offset=0)
+        assert ordered[:3] == ["rust", "AZURE", "kubernetes"]
+        assert set(ordered[3:]) == {"programming", "golang"}
+
+    def test_coverage_matching_ignores_case(self) -> None:
+        # The watchlist carries display casing; feed entries carry their own.
+        ordered = reddit.order_subreddits(SUBS, {"azure"}, offset=0)
+        assert ordered[-1] == "AZURE"
+
+    def test_rotation_orders_within_each_group(self) -> None:
+        covered = {"programming", "golang"}
+        first = reddit.order_subreddits(SUBS, covered, offset=0)
+        second = reddit.order_subreddits(SUBS, covered, offset=1)
+        assert first != second
+        assert set(first) == set(second)
+
+    def test_full_coverage_falls_back_to_plain_rotation(self) -> None:
+        covered = {name.lower() for name in SUBS}
+        ordered = reddit.order_subreddits(SUBS, covered, offset=2)
+        assert ordered == SUBS[2:] + SUBS[:2]
+
+    @pytest.mark.parametrize("offset", [0, 1, 3, 4])
+    def test_order_is_always_a_permutation(self, offset: int) -> None:
+        # The cheapest guard against silently dropping a feed from the list.
+        ordered = reddit.order_subreddits(SUBS, {"rust"}, offset=offset)
+        assert sorted(ordered) == sorted(SUBS)
+
+    def test_covered_subreddits_reads_every_listing(self) -> None:
+        snapshot = {
+            "collections": {
+                "top_day": {"items": [{"subreddit": "programming"}, {"subreddit": None}]},
+                "hot": {"items": [{"subreddit": "AZURE"}]},
+            }
+        }
+        assert reddit.covered_subreddits(snapshot) == {"programming", "azure"}
+
+    def test_covered_subreddits_tolerates_an_empty_snapshot(self) -> None:
+        assert reddit.covered_subreddits({}) == set()

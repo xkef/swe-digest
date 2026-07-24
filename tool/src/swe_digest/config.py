@@ -49,6 +49,7 @@ REDDIT_SNAPSHOT_MAX_AGE_HOURS: int = _raw["reddit"]["snapshot_max_age_hours"]
 REDDIT_POOL_MAX_ITEMS: int = _raw["reddit"]["pool_max_items"]
 REDDIT_REQUEST_PAUSE_SECONDS: float = _raw["reddit"]["request_pause_seconds"]
 REDDIT_MIN_SUBREDDIT_FRACTION: float = _raw["reddit"]["min_subreddit_fraction"]
+REDDIT_MIN_DAY_COVERAGE_FRACTION: float = _raw["reddit"]["min_day_coverage_fraction"]
 
 # arXiv papers fetcher
 PAPERS_HTTP_TIMEOUT: int = _raw["papers"]["http_timeout_seconds"]
