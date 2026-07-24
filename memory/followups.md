@@ -17,6 +17,24 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-24: Anthropic releases Claude Opus 5
+
+- Status: open
+- Category: AI
+- Sources: [Anthropic announcement](https://www.anthropic.com/news/claude-opus-5), [Opus 5 system card](https://www.anthropic.com/claude-opus-5-system-card), [HN 49038433](https://news.ycombinator.com/item?id=49038433)
+- Watch for: Independent benchmark reproduction of the coding/agentic and ARC-AGI 3 claims; whether Claude Code moves its default model to Opus 5; head-to-head against Fable 5, GPT-5.6 Sol, and Kimi K3 on real coding tasks; any change to the weekly-cap/metering terms; deprecation timeline for Opus 4.8.
+- Last checked: 2026-07-24
+- Notes: Anthropic released Claude Opus 5 on 2026-07-24, new flagship, API id `claude-opus-5`, priced $5/M input and $25/M output (same as Opus 4.8), available in the Claude API, on Claude.ai, and in Claude Code, with a fast mode at 2.5x speed for 2x base price. Vendor benchmarks (unreproduced): SOTA on Frontier-Bench and GDPval-AA coding, more than 2x Opus 4.8 on Frontier-Bench v0.1, ~3x next-best on ARC-AGI 3, OSWorld 2.0 above Fable 5 at lower cost. System card: most aligned Anthropic model to date by automated behavioral audit, still behind Mythos 5 on cyber exploitation and biology, safeguards similar to Opus 4.8. Covered 2026-07-24 Top stories (lead, confirmed). See [[entities]] Anthropic.
+
+## 2026-07-24: India orders GitHub to take down the Bitchat repositories
+
+- Status: open
+- Category: Security
+- Sources: [CoinDesk](https://www.coindesk.com/tech/2026/07/24/india-orders-takedown-of-jack-dorsey-s-bitcoin-linked-messaging-app-bitchat), [The Hindu](https://www.thehindu.com/news/national/government-orders-github-to-remove-bluetooth-based-chat-app-bitchat-over-security-concerns-jack-dorsey/article71262049.ece), [HN 49036433](https://news.ycombinator.com/item?id=49036433)
+- Watch for: Whether GitHub complied within the three-hour deadline; any legal challenge; whether forks or mirrors keep the code available; whether other governments issue similar orders over P2P/mesh messengers.
+- Last checked: 2026-07-24
+- Notes: India's Indian Cyber Crime Coordination Centre (I4C, under the Ministry of Home Affairs) directed GitHub to disable three repositories hosting Jack Dorsey's Bitchat (Android app plus source) within three hours, citing that its Bluetooth-mesh peer-to-peer architecture frustrates lawful interception during protests in New Delhi. Cites IT Act 2000 Section 79(3)(b) and 2021 Intermediary Guidelines Rule 3(1)(d). Compliance with the deadline unconfirmed; app still available in major app stores at report time. Covered 2026-07-24 Security (developing). See [[entities]] GitHub.
+
 ## 2026-07-24: Black Forest Labs releases FLUX 3 in early access
 
 - Status: open
