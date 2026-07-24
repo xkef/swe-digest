@@ -69,10 +69,42 @@ def split_front_matter(text: str) -> tuple[str, str] | None:
     return text[3:end], text[end + 4 :]
 
 
+# Campaign and referrer parameters identify the click, not the document, so
+# they are dropped before comparison; two links differing only in utm_source
+# are the same source.
+TRACKING_PARAMS = frozenset(
+    {
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "utm_term",
+        "utm_content",
+        "fbclid",
+        "gclid",
+        "ref",
+        "ref_src",
+    }
+)
+
+
 def normalize_url(url: str) -> str:
+    """The dedup key for a source link: host without ``www.``, path without a
+    trailing slash, and the identifying query.
+
+    The query has to stay. On the sites the digest links most, the whole
+    identity of the document lives there: ``watch?v=ID`` and ``item?id=ID``
+    share a host and path across every video and every thread, so dropping it
+    collapses them onto one key.
+    """
     parts = urllib.parse.urlsplit(url)
     host = parts.netloc.lower().removeprefix("www.")
-    return f"{host}{parts.path.rstrip('/')}"
+    kept = sorted(
+        (key, value)
+        for key, value in urllib.parse.parse_qsl(parts.query, keep_blank_values=True)
+        if key.lower() not in TRACKING_PARAMS
+    )
+    query = f"?{urllib.parse.urlencode(kept)}" if kept else ""
+    return f"{host}{parts.path.rstrip('/')}{query}"
 
 
 def slugify(text: str) -> str:

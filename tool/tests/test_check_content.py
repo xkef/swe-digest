@@ -118,6 +118,41 @@ def test_duplicate_primary_url_grandfathered_before_cutoff(repo_tree: Path) -> N
     assert main(root=repo_tree) == 0
 
 
+VIDEO_STORIES = """### First video
+
+- **Category:** Video
+- **Status:** discussion
+- **Sources:** [watch](https://www.youtube.com/watch?v=AAA)
+- **Summary:** One.
+
+### Second video
+
+- **Category:** Video
+- **Status:** discussion
+- **Sources:** [watch](https://www.youtube.com/watch?v=BBB)
+- **Summary:** Two.
+"""
+
+
+def test_distinct_video_urls_are_not_duplicates(repo_tree: Path) -> None:
+    # Every watch?v= link shares a host and path, so a dedup key that ignored
+    # the query would reject any digest carrying two New videos stories.
+    text = digest_text(date="2026-07-06").replace(
+        "## Security\n\nNo major items found.\n", f"## Security\n\n{VIDEO_STORIES}"
+    )
+    later_digest(repo_tree, text)
+    assert main(root=repo_tree) == 0
+
+
+def test_identical_video_url_still_fails(repo_tree: Path) -> None:
+    text = digest_text(date="2026-07-06").replace(
+        "## Security\n\nNo major items found.\n",
+        f"## Security\n\n{VIDEO_STORIES.replace('v=BBB', 'v=AAA')}",
+    )
+    later_digest(repo_tree, text)
+    assert main(root=repo_tree) == 1
+
+
 def test_followup_section_may_repeat_primary_url(repo_tree: Path) -> None:
     followup = SECOND_STORY.replace("### Another take entirely", "### Tracking the example story")
     text = digest_text(date="2026-07-06").replace(
