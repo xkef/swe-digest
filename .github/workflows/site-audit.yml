@@ -1,16 +1,15 @@
 name: Site audit
 
 # Post-deploy Lighthouse audit of the live site, asserting a perfect score
-# in every category, plus a weekly lychee sweep for dead links across the
-# digest archive. Failures surface through the failure-alert scheduled
-# scan, which covers every non-PR workflow.
+# in every category. Failures surface through the failure-alert scheduled
+# scan, which covers every non-PR workflow. Link validity is enforced
+# during the digest run instead (`make check-links`), where a dead link
+# can still be fixed before publication.
 
 on:
   workflow_run:
     workflows: [Deploy Pages]
     types: [completed]
-  schedule:
-    - cron: "15 11 * * 1"
   workflow_dispatch:
 
 permissions: {}
@@ -39,40 +38,3 @@ jobs:
             https://xkef.github.io/swe-digest/digests/
           configPath: .github/lighthouserc.json
           uploadArtifacts: true
-
-  links:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Compute rolling window
-        run: |
-          echo "THIS_MONTH=$(date -u +%Y-%m)" >> "$GITHUB_ENV"
-          echo "PREV_MONTH=$(date -u -d "$(date -u +%Y-%m-01) -1 month" +%Y-%m)" >> "$GITHUB_ENV"
-      # Only a dead link fails the job: 404 or 410, or a connection-level
-      # failure on a host that is not excluded. All other statuses are
-      # accepted because paywalls, bot gates, and rate limiters return
-      # arbitrary codes to datacenter IPs (401/403/415/429/5xx observed)
-      # while serving readers fine. Excluded hosts block CI below the HTTP
-      # layer or 404 only for datacenter IPs. Scope is the current and
-      # previous month of digests: older archive rot is expected and not
-      # actionable, and .lycheeignore entries age out of the window instead
-      # of accumulating.
-      - uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
-        with:
-          args: >-
-            --no-progress
-            --timeout 45
-            --max-retries 3
-            --accept "100..=403,405..=409,411..=599"
-            --exclude "washingtonpost\.com"
-            --exclude "helpx\.adobe\.com"
-            --exclude "investors\.broadcom\.com"
-            --exclude "writings\.stephenwolfram\.com"
-            --exclude "windowsnews\.ai"
-            --exclude "www\.tencent\.com"
-            "site/content/digests/${{ env.THIS_MONTH }}-*/index.md"
-            "site/content/digests/${{ env.PREV_MONTH }}-*/index.md"

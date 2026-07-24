@@ -4,6 +4,7 @@ MISE       = mise
 ZOLA       = $(MISE) exec -- zola
 DPRINT     = $(MISE) exec dprint@0.54.0 --
 RUMDL      = $(MISE) exec rumdl@0.2.9 --
+LYCHEE     = $(MISE) exec lychee@0.20.1 --
 UV         = $(MISE) exec -- uv
 # Install-free invocation: works with only python3 + PyYAML, so the scheduled
 # workflows and the publish job never need a package install.
@@ -83,6 +84,16 @@ check: build
 
 check-content:
 	@$(PY) check-content
+
+# Link check for one digest, run while writing it, not a publish gate. Only a
+# dead link fails: every status except 404 and 410 is accepted, because
+# paywalls, bot gates, and rate limiters return arbitrary codes to
+# non-residential IPs while serving readers fine. Fix or drop what it flags
+# before committing. Installs on demand, so it stays out of `check`.
+check-links:
+	@$(LYCHEE) lychee --no-progress --timeout 45 --max-retries 3 \
+		--accept "100..=403,405..=409,411..=599" \
+		site/content/digests/$(TODAY)/index.md
 
 # Formatting is enforced by CI's `format` job (`make fmt-check`) but is
 # intentionally not part of `check`, so unattended digest runs are never gated
