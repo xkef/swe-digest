@@ -72,6 +72,10 @@ def main(date: str | None = None) -> int:
                 for name in [*runs.STORY_COLLECTIONS, "comments"]
             },
             "queries_backend": collections.get("queries", {}).get("backend"),
+            # What the live fetch gained from the day's committed accumulator,
+            # so seen_ids stays interpretable: source names the file, pooled
+            # names how much of it came from earlier runs that day.
+            "pooled": hn.get("pooled"),
         }
         yields = query_yield(hn, digest)
         seen_ids = sorted(runs.hn_stories(hn))

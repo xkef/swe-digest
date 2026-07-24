@@ -224,3 +224,26 @@ def test_main_never_overwrites_existing_review(
     assert backtest.main(DIGEST_DATE) == 0
     record = yaml.safe_load((runs_dir / f"{DIGEST_DATE}.yaml").read_text(encoding="utf-8"))
     assert record["judgment"]["miss_review"][70] == "watchlist_gap"
+
+
+class TestClassify:
+    def test_query_match_outranks_absence_from_seen_ids(self) -> None:
+        # seen_ids covers the story collections only, so a story the fetch saw
+        # only through a watchlist query is absent from it. Blaming collection
+        # for that seeded scrape_gap on a relevance decision.
+        assert backtest.classify(7, seen_ids=set(), query_ids={7}, have_run_log=True) == (
+            "seen_and_matched"
+        )
+
+    def test_unseen_and_unmatched_is_a_fetch_gap(self) -> None:
+        assert backtest.classify(7, seen_ids=set(), query_ids=set(), have_run_log=True) == (
+            "not_in_publish_fetch"
+        )
+
+    def test_seen_but_unmatched_is_a_watchlist_question(self) -> None:
+        assert backtest.classify(7, seen_ids={7}, query_ids=set(), have_run_log=True) == (
+            "no_query_match"
+        )
+
+    def test_no_run_log_short_circuits(self) -> None:
+        assert backtest.classify(7, seen_ids={7}, query_ids={7}, have_run_log=False) == "no_run_log"

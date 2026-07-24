@@ -61,6 +61,22 @@ def load_snapshot(snapshot_dir: Path, max_age_hours: float) -> dict[str, Any]:
     return data
 
 
+def load_day_snapshot(snapshot_dir: Path, day: str) -> dict[str, Any]:
+    """The accumulator for one specific UTC day.
+
+    ``load_snapshot`` answers "is there anything fresh enough to fall back
+    on"; this answers "what has today already collected", which is a
+    different question and takes no age bound: the day's file is the day's
+    coverage however early it was last written. Raises RuntimeError rather
+    than FileNotFoundError so callers can catch it with FETCH_ERRORS.
+    """
+    path = snapshot_dir / f"{day}.json"
+    if not path.exists():
+        raise RuntimeError(f"no committed snapshot for {day} in {snapshot_dir.name}")
+    data: dict[str, Any] = json.loads(path.read_text())
+    return data
+
+
 def snapshot_collection(snapshot_dir: Path, max_age_hours: float, name: str) -> Any:
     collection = load_snapshot(snapshot_dir, max_age_hours)["collections"].get(name)
     if not collection or not collection["items"]:

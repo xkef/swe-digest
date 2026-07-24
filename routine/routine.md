@@ -106,6 +106,18 @@ Backend order per collection:
    its `fetched_at` is under 12 hours old. A fresh snapshot counts as full
    structured coverage; a stale or missing one keeps the nonzero exit.
 
+Backends 1 to 5 only ever see their own rolling window, so after the chain
+resolves, the run also pools today's committed accumulator into every
+collection (`swe_digest.fetch.run.pool`). Pooling is additive: the live item
+wins per id, `backend` keeps its live label, and degradation is unaffected, so
+`.cache/hn/DATE.json` holds the union of this fetch and everything earlier
+runs saw today. Before this, a healthy run was written from roughly half the
+day's stories (2026-07-19: 115 story ids live against 236 accumulated). The
+accumulator is taken whole rather than re-filtered through the run's window,
+because it is already day-scoped and re-filtering would discard exactly the
+early-day coverage pooling recovers. `pooled.added` in the cache envelope and
+the run log records what each collection gained.
+
 All six network endpoints return HTTP 403 from the unattended harness's
 datacenter IP range but 200 from local networks and from GitHub Actions
 runners (hn-probe run, 2026-06-12). The script walks the fallback chain
@@ -178,6 +190,11 @@ Backend order per listing:
    day's JSON by post id (`swe_digest.snapshot.merge`), so the committed
    snapshot accumulates the day's posts even when the digest run's live
    fetch is blocked.
+
+As with Hacker News, the run pools today's committed accumulator into both
+listings after the chain resolves (`swe_digest.fetch.run.pool`), so a
+rate-limited fetch that reached only a few subreddits still writes the day's
+accumulated coverage into `.cache/reddit/DATE.json`.
 
 Fetches are spaced (`request_pause_seconds` in `routine/config.toml`) because
 Reddit rate-limits unauthenticated traffic hard, especially from datacenter

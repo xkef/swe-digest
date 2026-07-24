@@ -81,13 +81,23 @@ def title_matches(title: str, digest_titles: list[str]) -> bool:
 
 
 def classify(story_id: int, seen_ids: set[int], query_ids: set[int], have_run_log: bool) -> str:
+    """Why the digest does not carry this story, from the run log alone.
+
+    Query membership is tested first because it is the stronger evidence of
+    visibility. ``seen_ids`` covers only the story collections
+    (``runs.hn_stories`` iterates STORY_COLLECTIONS), while ``query_ids``
+    comes from the same fetch's watchlist matches, so a story the fetch saw
+    only through the queries collection is absent from ``seen_ids``. Testing
+    ``seen_ids`` first labelled those not_in_publish_fetch and seeded
+    scrape_gap, blaming collection for what was a relevance decision.
+    """
     if not have_run_log:
         return "no_run_log"
+    if story_id in query_ids:
+        return "seen_and_matched"
     if story_id not in seen_ids:
         return "not_in_publish_fetch"
-    if story_id not in query_ids:
-        return "no_query_match"
-    return "seen_and_matched"
+    return "no_query_match"
 
 
 def _keep_name(name: str, from_parenthetical: bool) -> bool:

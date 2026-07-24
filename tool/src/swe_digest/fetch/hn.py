@@ -31,6 +31,8 @@ SOURCE = Source(
     snapshot_dir=SNAPSHOTS / "hn",
     snapshot_max_age_hours=config.HN_SNAPSHOT_MAX_AGE_HOURS,
     window_seconds=config.HN_WINDOW_SECONDS,
+    snapshot_kind="hn",
+    pool_max_items=config.HN_POOL_MAX_ITEMS,
 )
 
 ALGOLIA = "https://hn.algolia.com/api/v1"
@@ -462,19 +464,28 @@ def main() -> int:
         "queries": {"backend": query_backend, "items": query_results},
     }
 
+    collections = run.pool(collections)
+    pooled = (run.pooled or {}).get("added", {})
+
     for name in ("front_page", "top_day", "ask_hn", "show_hn"):
         section = collections[name]
-        print(f"{name}: {len(section['items'])} items via {section['backend']}")
+        extra = f" (+{pooled[name]} pooled)" if pooled.get(name) else ""
+        print(f"{name}: {len(section['items'])} items via {section['backend']}{extra}")
+    comments = collections["comments"]
     comment_entries = comments["items"].values() if comments["items"] else []
     comment_count = sum(len(entry["comments"]) for entry in comment_entries)
     print(
         f"comments: {comment_count} across {len(comments['items'])} stories"
         f" via {comments['backend']}"
     )
+    query_results = collections["queries"]["items"]
     query_hits = sum(1 for items in query_results.values() if items)
-    print(f"queries: {query_hits}/{len(queries)} terms with hits via {query_backend}")
+    extra = f" (+{pooled['queries']} pooled)" if pooled.get("queries") else ""
+    print(f"queries: {query_hits}/{len(queries)} terms with hits via {query_backend}{extra}")
 
-    ranked = sorted(front_page["items"], key=lambda story: story["points"] or 0, reverse=True)
+    ranked = sorted(
+        collections["front_page"]["items"], key=lambda story: story["points"] or 0, reverse=True
+    )
     for story in ranked[:15]:
         points = story["points"] if story["points"] is not None else "?"
         cmt = story["comments"] if story["comments"] is not None else "?"

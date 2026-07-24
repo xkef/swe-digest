@@ -37,6 +37,8 @@ SOURCE = Source(
     snapshot_dir=SNAPSHOTS / "reddit",
     snapshot_max_age_hours=config.REDDIT_SNAPSHOT_MAX_AGE_HOURS,
     window_seconds=config.REDDIT_WINDOW_SECONDS,
+    snapshot_kind="reddit",
+    pool_max_items=config.REDDIT_POOL_MAX_ITEMS,
 )
 
 LISTING_PATHS = {"top_day": "top/.rss?t=day", "hot": "hot/.rss"}
@@ -160,8 +162,12 @@ def main() -> int:
     collections = {name: run.collect(name, listing_backends(name)) for name in LISTING_PATHS}
     run.failures.extend(partial)
 
+    collections = run.pool(collections)
+    pooled = (run.pooled or {}).get("added", {})
+
     for name, collection in collections.items():
-        print(f"{name}: {len(collection['items'])} items via {collection['backend']}")
+        extra = f" (+{pooled[name]} pooled)" if pooled.get(name) else ""
+        print(f"{name}: {len(collection['items'])} items via {collection['backend']}{extra}")
     for post in collections["top_day"]["items"][:15]:
         print(f"  r/{post['subreddit']}: {post['title']}  [{post['permalink']}]")
 

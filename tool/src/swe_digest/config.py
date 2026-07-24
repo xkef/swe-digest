@@ -31,6 +31,7 @@ HTTP_MAX_BYTES: int = _raw["http"]["max_response_bytes"]
 # Hacker News fetcher
 HN_WINDOW_SECONDS: int = _raw["hn"]["window_hours"] * 3600
 HN_SNAPSHOT_MAX_AGE_HOURS: int = _raw["hn"]["snapshot_max_age_hours"]
+HN_POOL_MAX_ITEMS: int = _raw["hn"]["pool_max_items"]
 HN_QUERY_CORPUS_NEW_IDS: int = _raw["hn"]["query_corpus_new_ids"]
 HN_COMMENT_STORIES: int = _raw["hn"]["comment_stories"]
 HN_COMMENTS_PER_STORY: int = _raw["hn"]["comments_per_story"]
@@ -45,6 +46,7 @@ YT_DISCUSSION_LOOKUPS: int = _raw["youtube"]["discussion_lookups"]
 # Reddit fetcher
 REDDIT_WINDOW_SECONDS: int = _raw["reddit"]["window_hours"] * 3600
 REDDIT_SNAPSHOT_MAX_AGE_HOURS: int = _raw["reddit"]["snapshot_max_age_hours"]
+REDDIT_POOL_MAX_ITEMS: int = _raw["reddit"]["pool_max_items"]
 REDDIT_REQUEST_PAUSE_SECONDS: float = _raw["reddit"]["request_pause_seconds"]
 REDDIT_MIN_SUBREDDIT_FRACTION: float = _raw["reddit"]["min_subreddit_fraction"]
 

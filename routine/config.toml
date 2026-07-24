@@ -19,6 +19,13 @@ max_response_bytes = 8388608 # 8 MiB
 [hn]
 window_hours = 24
 snapshot_max_age_hours = 12
+# The digest is written from .cache/, so each fetch unions the day's committed
+# accumulator into its own window (swe_digest.fetch.run.pool). Without it a run
+# saw roughly half the day's stories. This caps each pooled list collection:
+# the pooled cache is the agent's read cost as well as its coverage. Measured
+# 2026-07-19 per collection: front_page 86, top_day 91, show_hn 72, ask_hn 45,
+# so this is a runaway guard, not a live constraint.
+pool_max_items = 400
 query_corpus_new_ids = 300
 comment_stories = 12
 comments_per_story = 5
@@ -35,6 +42,9 @@ discussion_lookups = 80
 [reddit]
 window_hours = 24
 snapshot_max_age_hours = 12
+# See [hn].pool_max_items. Two listings across 28 subreddits, so the ceiling is
+# higher than the observed per-listing counts by a wide margin.
+pool_max_items = 600
 # Space sequential feed fetches: unauthenticated Reddit access is limited to
 # about 10 requests per minute, and faster spacing gets 429s (observed
 # 2026-07-07 at 1s spacing, see memory/access-notes.md).
