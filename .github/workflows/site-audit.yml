@@ -1,0 +1,54 @@
+name: Site audit
+
+# Post-deploy Lighthouse audit of the live site, asserting a perfect score
+# in every category, plus a weekly lychee sweep for dead links across the
+# digest archive. Failures surface through the failure-alert scheduled
+# scan, which covers every non-PR workflow.
+
+on:
+  workflow_run:
+    workflows: [Deploy Pages]
+    types: [completed]
+  schedule:
+    - cron: "15 11 * * 1"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  lighthouse:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: treosh/lighthouse-ci-action@3e7e23fb74242897f95c0ba9cabad3d0227b9b18 # v12.6.2
+        with:
+          urls: |
+            https://xkef.github.io/swe-digest/
+            https://xkef.github.io/swe-digest/digests/
+          configPath: .github/lighthouserc.json
+          uploadArtifacts: true
+
+  links:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # 403 and 429 are accepted: several linked sites (Reddit among them)
+      # reject or rate-limit datacenter IPs while serving the link fine to
+      # readers.
+      - uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: >-
+            --no-progress
+            --accept 200..=206,403,429
+            "site/content/digests/**/*.md"
