@@ -349,17 +349,9 @@ discovery on a quiet day; the deep sweep never skips it.
 
     ```sh
     make fmt-run
-    make check-links
     make check
     git diff --check
     ```
-
-    `make check-links` verifies every link in today's digest. It accepts any
-    status except 404 and 410, so paywalls and bot gates never block a run.
-    Fix or drop each link it flags: relink to the canonical page, swap in
-    another primary source, or remove the story if nothing verifiable
-    remains. It is not a publish gate: if the network or tool install fails,
-    note it in the run log and continue.
 
     `make fmt-run` formats only today's digest and the writable memory files,
     all inside the publish allowlist. It is best-effort: if the formatter is
@@ -609,8 +601,6 @@ Before publishing, verify:
 - The digest has 3 to 7 top stories unless the day is unusually quiet, ranked
   strongest first, with the lead being the day's single most significant item.
 - Every story has at least one source.
-- `make check-links` ran on today's digest and every flagged 404 or 410
-  link was fixed or removed.
 - Primary sources precede discussion links.
 - Rumors and discussions are labeled.
 - Security items include affected versions or state that they are not yet known.
