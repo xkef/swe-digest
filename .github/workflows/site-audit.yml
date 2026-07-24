@@ -48,12 +48,19 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      # 403 and 429 are accepted: several linked sites (Reddit among them)
-      # reject or rate-limit datacenter IPs while serving the link fine to
-      # readers.
+      # 401/403/429/503 are accepted: paywalled or bot-gated sites (Reuters,
+      # WSJ, Reddit) and rate limiters (Hacker News) return these to
+      # datacenter IPs while serving readers fine. The excluded hosts block
+      # CI at the TLS or connection level, so no status code is available to
+      # accept. Known-dead links are recorded in .lycheeignore.
       - uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
           args: >-
             --no-progress
-            --accept 200..=206,403,429
+            --accept 200..=206,401,403,429,503
+            --exclude "washingtonpost\.com"
+            --exclude "helpx\.adobe\.com"
+            --exclude "investors\.broadcom\.com"
+            --exclude "writings\.stephenwolfram\.com"
+            --exclude "windowsnews\.ai"
             "site/content/digests/**/*.md"

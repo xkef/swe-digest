@@ -478,7 +478,7 @@ source_count = 103
 
 - **Category:** Pulse
 - **Status:** confirmed
-- **Sources:** [source-reliability notes](../../../memory/source-reliability.md)
+- **Sources:** [source-reliability notes](https://github.com/xkef/swe-digest/blob/main/memory/source-reliability.md)
 - **Summary:** The unattended runs that produced the first two versions of this digest got HTTP 403 from all six HN backends (Algolia, Firebase, front page HTML, both community mirrors, hnrss.org) and relied on WebSearch snippets. A local `make hn` run at 2026-06-12 08:30 UTC collected full structured data via the Algolia API, and this update backfills the missed front page stories. A GitHub Actions probe at 08:30 UTC confirmed all five probed HN endpoints return 200 from Actions runners, so the 403 block is specific to the unattended harness's IP range.
 - **Why it matters:** Actions runners reaching HN enables a scheduled snapshot fetch that future unattended runs can consume instead of WebSearch fallback.
 
