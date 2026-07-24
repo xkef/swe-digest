@@ -129,13 +129,20 @@ max_file_lines = 1500
 max_line_chars = 2000
 # Bytes are what every run pays to re-read, and the line bound never
 # constrained them: followups.md reached 110 KB inside 792 lines, half the
-# line cap, because entries are long single lines. Set above the current tree
-# so nothing fails on the next run, then ratcheted down after compaction.
-max_file_bytes = 131072
+# line cap, because entries are long single lines.
+max_file_bytes = 180224
 # Entry counts, the unit the routine acts on. The age gate alone cannot hold a
-# target: at about 3.5 new follow-ups a day, a 45-day horizon settles near 156
-# open entries.
-max_open_followups = 95
+# target: at about 3.5 new follow-ups a day, a 45-day horizon settles near 158
+# open entries and 198 KB, so both bounds sit deliberately below equilibrium
+# and compaction is what keeps the file legal.
+#
+# They must not bite before a compaction can realistically land, though. The
+# first values (131072 bytes, 95 entries) were set just above the tree as it
+# stood and left only two days of headroom at the observed growth rate, which
+# would have blocked publishing rather than prompting a compaction. These give
+# roughly two weeks. Ratchet down once followups.md is compacted, and re-check
+# the headroom against the current size when doing so.
+max_open_followups = 130
 max_dated_bullets = 130
 entity_stale_days = 60
 followup_max_age_days = 45
