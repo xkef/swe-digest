@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-24."
 
 [extra]
 status = "published"
-source_count = 17
+source_count = 20
 +++
 
 ## Top stories
@@ -39,6 +39,18 @@ source_count = 17
 - **Why it matters:** A regional network-layer fault affects every service whose traffic transits the region regardless of the individual workload, and a rolled-back change points to a deployment cause rather than hardware.
 - **Follow-up:** Watch for a published root-cause summary and confirmation of which services and dependent regions were affected.
 
+## AI
+
+### Black Forest Labs releases FLUX 3 in early access
+
+- **Category:** AI
+- **Status:** developing
+- **Sources:** [Black Forest Labs blog](https://bfl.ai/blog/flux-3), [HN 49031796](https://news.ycombinator.com/item?id=49031796)
+- **Summary:** Black Forest Labs announced FLUX 3 on 2026-07-23 as an early-access release, extending its FLUX visual-generation line from images to a unified image, video, and audio model built on multimodal flow matching. It generates video up to 20 seconds with native audio and supports text-to-video, image-to-video, video-to-video, and image editing, plus an action-prediction variant for robotics. Weights are not released yet. The post plans API access and private open-weight access, labeled FLUX 3 Dev, over the coming weeks and months. Reported benchmark figures are vendor preference tests, stated as preliminary.
+- **Comments:** HN commenters read the announcement as marketing-heavy, note the demo shows jumpcuts rather than continuous 20-second video, and point out the open-weight plans sit at the bottom of the post with no date.
+- **Why it matters:** A new model in the widely used FLUX line moves open-weight generative media forward, but only if the promised weight release materializes rather than staying API-only.
+- **Follow-up:** Watch for the FLUX 3 Dev weight release and license, API pricing, and independent quality comparisons.
+
 ## Security
 
 No major items found.
@@ -65,6 +77,17 @@ The 2026-07-23 Azure West US network outage is covered in Top stories.
 - **Sources:** [Deno v2.9.4 release](https://github.com/denoland/deno/releases/tag/v2.9.4)
 - **Summary:** Deno released 2.9.4 on 2026-07-23, a patch on the 2.9 line. It upgrades V8 to 150.2.0, adds a raw ChaCha20 cipher and a byteLength parameter to Buffer index methods in the Node compatibility layer, and fixes several core module-loading and desktop-bundling issues, including requiring FFI permission for native window handles.
 - **Why it matters:** Routine maintenance for the runtime, with a permission tightening on native window handles and continued Node-compat and desktop-bundling work.
+
+## Hacker News
+
+### Namecheap account handed to an unverified third party (Tell HN)
+
+- **Category:** Security
+- **Status:** discussion
+- **Sources:** [HN 49028037](https://news.ycombinator.com/item?id=49028037)
+- **Summary:** A Tell HN post (440 points) reports that domain registrar Namecheap gave control of a long-held account to an unverified third party, and separately locked the poster's account pending profile-information updates. This is one unverified customer account, not a confirmed Namecheap policy statement.
+- **Comments:** Several long-time customers corroborate declining Namecheap account handling and recommend moving registrars. One describes an identical takeover at a small registrar after a client's contractor requested access.
+- **Why it matters:** Registrar account takeover and weak identity verification put domains, DNS, and every dependent service at risk for developers and businesses.
 
 ## Reddit and social pulse
 
@@ -100,7 +123,7 @@ Reddit live coverage was degraded again (5 of 28 subreddits on the top listing, 
 
 - Hacker News (full structured coverage via Algolia, front page plus watchlist queries)
 - Reddit (degraded: 5 of 28 subreddits on top, 3 of 28 on hot before HTTP 429, committed snapshot supplemented)
-- AI sources (OpenAI, Anthropic, policy and lobbying reporting)
+- AI sources (OpenAI, Anthropic, policy and lobbying reporting, Black Forest Labs FLUX 3)
 - ML research and arXiv papers (137 fresh preprints reviewed, none cleared the relevance bar)
 - Events watchlist (no active or imminent conferences)
 - Books and publisher feeds (No Starch, Pragmatic, Springer, no qualifying trade release)

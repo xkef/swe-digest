@@ -17,6 +17,15 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-24: Black Forest Labs releases FLUX 3 in early access
+
+- Status: open
+- Category: AI
+- Sources: [Black Forest Labs blog](https://bfl.ai/blog/flux-3), [HN 49031796](https://news.ycombinator.com/item?id=49031796)
+- Watch for: The FLUX 3 Dev weight release and its license; API pricing; independent quality comparisons against other image/video models; whether the promised open-weight access ships or stays API-only.
+- Last checked: 2026-07-24
+- Notes: Black Forest Labs announced FLUX 3 on 2026-07-23 as an early-access release, extending the FLUX visual-generation line from images to a unified image/video/audio model on multimodal flow matching ("Self-Flow"). Generates video up to 20 seconds with native audio; text-to-video, image-to-video, video-to-video, image editing, plus an action-prediction variant for robotics (FLUX-mimic). Weights not released; post plans API and private open-weight access (FLUX 3 Dev) over "the next few weeks and months", no date. Vendor preference benchmarks only (video preferred 52-93% vs competitors), stated preliminary. HN 49031796 (337 pts) read the announcement as marketing-heavy, noted the demo shows jumpcuts not continuous 20s video, and flagged the open-weight plans at the bottom with no date. Covered 2026-07-24 AI (developing). See [[entities]] Black Forest Labs.
+
 ## 2026-07-24: JEP 540 proposes a standard incubator JSON API for the JDK
 
 - Status: open
