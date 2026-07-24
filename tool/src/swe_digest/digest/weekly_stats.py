@@ -218,15 +218,23 @@ def _confirmed_index(digests: list[tuple[str, document.Digest]]) -> list[tuple[s
 
 def status_outcomes(
     digests: list[tuple[str, document.Digest]],
+    start: str,
     end: str,
     unresolved_days: int,
     title_ratio: float,
 ) -> dict:
+    """How often this window's developing and rumor labels later resolved.
+
+    The tally is scored over the window only, because it is stored under a
+    ``window`` key and read as a per-window number. The resolution index
+    spans the whole archive on purpose: a story labelled developing inside
+    the window is confirmed on some later day, usually outside it.
+    """
     labels = {label: {"total": 0, "confirmed": 0} for label in TRACKED_STATUSES}
     unresolved: list[dict] = []
     confirmed = _confirmed_index(digests)
     end_date = date_type.fromisoformat(end)
-    for day, digest in digests:
+    for day, digest in ((day, d) for day, d in digests if start <= day <= end):
         for _, stories in digest.sections:
             for story in stories:
                 label = story.fields.get("status", "").strip()
@@ -367,7 +375,11 @@ def main(date: str | None = None, since: str | None = None, gh: GitGh | None = N
     misses = miss_totals(days)
     coverage = section_coverage(days, config.WEEKLY_SECTION_EMPTY_STREAK_DAYS)
     outcomes = status_outcomes(
-        load_digests(), end, config.WEEKLY_STATUS_UNRESOLVED_DAYS, config.BACKTEST_TITLE_RATIO
+        load_digests(),
+        start,
+        end,
+        config.WEEKLY_STATUS_UNRESOLVED_DAYS,
+        config.BACKTEST_TITLE_RATIO,
     )
     feedback, degraded = feedback_tally(gh or GitGh())
     recurring = recurring_candidates(days, config.WEEKLY_RECURRING_MIN_DAYS)

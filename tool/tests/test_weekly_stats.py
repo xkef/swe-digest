@@ -135,7 +135,7 @@ def test_status_outcomes_url_and_title_resolution() -> None:
             ],
         ),
     ]
-    outcomes = weekly_stats.status_outcomes(digests, end, UNRESOLVED, 0.75)
+    outcomes = weekly_stats.status_outcomes(digests, "2026-07-01", end, UNRESOLVED, 0.75)
     assert outcomes["labels"]["developing"] == {"total": 1, "confirmed": 1, "rate": 1.0}
     assert outcomes["labels"]["rumor"] == {"total": 1, "confirmed": 1, "rate": 1.0}
     assert outcomes["unresolved"] == []
@@ -149,7 +149,9 @@ def test_status_outcomes_unresolved_age_boundary() -> None:
         digest_with(at_boundary, [story_block("Still open A", "rumor", "https://a.example/x")]),
         digest_with(past_boundary, [story_block("Still open B", "rumor", "https://b.example/y")]),
     ]
-    outcomes = weekly_stats.status_outcomes(digests, end_date.isoformat(), UNRESOLVED, 0.75)
+    outcomes = weekly_stats.status_outcomes(
+        digests, past_boundary, end_date.isoformat(), UNRESOLVED, 0.75
+    )
     assert [item["title"] for item in outcomes["unresolved"]] == ["Still open B"]
     assert outcomes["unresolved"][0]["age_days"] == UNRESOLVED + 1
 
@@ -164,8 +166,23 @@ def test_status_outcomes_same_date_never_self_resolves() -> None:
             ],
         ),
     ]
-    outcomes = weekly_stats.status_outcomes(digests, "2026-07-01", UNRESOLVED, 0.75)
+    outcomes = weekly_stats.status_outcomes(digests, "2026-07-01", "2026-07-01", UNRESOLVED, 0.75)
     assert outcomes["labels"]["developing"]["confirmed"] == 0
+
+
+def test_status_outcomes_scores_the_window_but_resolves_beyond_it() -> None:
+    # The tally is stored under a window key and read as a per-window number,
+    # while resolution legitimately happens on a later day outside it.
+    digests = [
+        digest_with("2026-06-01", [story_block("Old rumor", "rumor", "https://a.example/old")]),
+        digest_with("2026-07-02", [story_block("In window", "developing", "https://b.example/x")]),
+        digest_with(
+            "2026-07-20", [story_block("Later confirmation", "confirmed", "https://b.example/x")]
+        ),
+    ]
+    outcomes = weekly_stats.status_outcomes(digests, "2026-07-01", "2026-07-07", UNRESOLVED, 0.75)
+    assert outcomes["labels"]["rumor"]["total"] == 0
+    assert outcomes["labels"]["developing"] == {"total": 1, "confirmed": 1, "rate": 1.0}
 
 
 class FakeGh:
