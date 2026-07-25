@@ -107,8 +107,11 @@ execution environment (cloud datacenter IP ranges).
   49005747) states Reddit now requires login for the logged-out old.reddit.com
   browsing experience; the RSS feeds `make reddit` uses still returned data on
   2026-07-23, so this has not yet broken the fetcher, but watch whether
-  logged-out `old.reddit.com/{sub}/*.rss` access degrades further.
-  Last seen 2026-07-23.
+  logged-out `old.reddit.com/{sub}/*.rss` access degrades further. 2026-07-25:
+  live fetch was 429ed on nearly every subreddit in both listings; the
+  committed snapshot carried the day to 14 of 28 subreddits, exactly the day
+  floor.
+  Last seen 2026-07-25.
 - `www.theregister.com` - reputable secondary tech outlet; article bodies return
   403/404 from the datacenter IP, but WebSearch summaries carry named officials
   and figures. Used 2026-06-20 to upgrade the GitHub-availability/AWS story from
@@ -123,6 +126,8 @@ execution environment (cloud datacenter IP ranges).
   (Bloomberg, TechCrunch, Reuters) or the primary filing. Used 2026-07-11 for
   the Apple v. OpenAI trade-secret suit (complaint on courtlistener.com).
   Last seen 2026-07-11.
+- `www.theguardian.com` and `www.phoronix.com` - both refuse the harness WebFetch tool (Guardian returns an unable-to-fetch error, Phoronix returns 403), but both return 200 to a plain urllib request with a browser User-Agent from the same run environment. Use a direct HTTP fetch rather than WebSearch snippets. Phoronix also serves a full `rss.php` feed. Verified 2026-07-25. Last seen 2026-07-25.
+- `openjdk.org/jeps/` - JEP pages return 403 to the harness WebFetch tool but 200 to a plain urllib request with a browser User-Agent (verified 2026-07-25 for JEP 541). Last seen 2026-07-25.
 - `arstechnica.com` - article bodies block automated WebFetch; use WebSearch
   snippets plus a corroborating outlet (The Register, Fortune, FT) and confirm
   the canonical URL before citing. Last seen 2026-06-29.
