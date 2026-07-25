@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-25."
 
 [extra]
 status = "published"
-source_count = 68
+source_count = 85
 +++
 
 ## Top stories
@@ -137,6 +137,15 @@ source_count = 68
 - **Why it matters:** The attack needs no phishing mail and no code on the target device, so endpoint controls and mail filtering do not see it and the only reliable break is forcing DNS and traffic through the corporate tunnel.
 - **Follow-up:** Watch for named indicators, confirmation of the gateway compromise vector, and any vendor advisory from captive-portal appliance makers.
 
+### Sequential user IDs expose 719,000 prayer app accounts for six months
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [researcher writeup](https://bobdahacker.com/blog/click-to-pray), [Dark Reading](https://www.darkreading.com/vulnerabilities-threats/vatican-official-prayer-app-leaks-700k-pii), [The Register](https://www.theregister.com/security/2026/07/24/popes-official-prayer-app-commits-cardinal-sin-leaks-700k-users-info/5278603)
+- **Summary:** A researcher publishing as BobDaHacker disclosed on 2026-07-24 an insecure direct object reference in the API behind Click to Pray, the official app of the Pope's Worldwide Prayer Network. A single unauthenticated endpoint returned a user record for any numeric id, so incrementing the id enumerated roughly 719,517 accounts and returned email address, first and last name, country, date of birth, account role, and deletion state in plaintext. The researcher reports contacting nine addresses at the operator and its developer on 2026-01-03 with no reply over six months, and states the endpoint was narrowed to return only the requesting user's own email after Dark Reading published the finding. Dark Reading and The Register independently confirmed the exposure.
+- **Why it matters:** Nothing here needed a tool beyond a browser, and the failure is the one every REST resource with a sequential primary key invites when authorization is checked at the route and not at the record.
+- **Follow-up:** Watch for a statement from the Pope's Worldwide Prayer Network or the app developer, and for confirmation of how long the endpoint was open.
+
 ## Outages
 
 ### GitHub records three incidents in a single day
@@ -152,10 +161,10 @@ source_count = 68
 
 - **Category:** Outage
 - **Status:** confirmed
-- **Sources:** [GitHub model-provider incident](https://www.githubstatus.com/incidents/vh0xxw69dr6v), [GitHub Actions incident](https://www.githubstatus.com/incidents/vkt1mn9sny66), [OpenAI status](https://status.openai.com/)
-- **Summary:** GitHub logged a major incident from 09:42 to 10:11 UTC on 2026-07-25 in which GPT-5.2, GPT-5.3-Codex, GPT-5.4, GPT-5.4 Mini, GPT-5.6 Sol, GPT-5.6 Terra, and GPT-5.6 Luna were all degraded across Copilot products and IDE surfaces. GitHub attributed the degradation to an issue with an upstream model provider and said a root cause analysis will follow. OpenAI opened an elevated-error-rates incident at 09:17 UTC the same morning and applied a mitigation at 10:02 UTC, still in monitoring when checked at 10:45 UTC; that status entry lists no affected components, so the overlap is not confirmed to be the same fault. Separately, GitHub logged a minor incident from 08:59 to 09:25 UTC in which GitHub Actions workflow runs were delayed at start.
+- **Sources:** [GitHub model-provider incident](https://www.githubstatus.com/incidents/vh0xxw69dr6v), [GitHub Actions delay incident](https://www.githubstatus.com/incidents/vkt1mn9sny66), [GitHub Actions failure incident](https://www.githubstatus.com/incidents/448g37mrq066), [OpenAI status](https://status.openai.com/)
+- **Summary:** GitHub logged a major incident from 09:42 to 10:11 UTC on 2026-07-25 in which GPT-5.2, GPT-5.3-Codex, GPT-5.4, GPT-5.4 Mini, GPT-5.6 Sol, GPT-5.6 Terra, and GPT-5.6 Luna were all degraded across Copilot products and IDE surfaces. GitHub attributed the degradation to an issue with an upstream model provider and said a root cause analysis will follow. OpenAI opened an elevated-error-rates incident at 09:17 UTC the same morning, applied a mitigation at 10:02 UTC, and marked it resolved at 11:08 UTC, then opened a second elevated-error-rates incident from 11:35 to 11:57 UTC. Neither OpenAI entry lists affected components, so the overlap with the Copilot degradation is not confirmed to be the same fault. GitHub logged two Actions incidents the same day. A minor one from 08:59 to 09:25 UTC delayed workflow run starts. A critical one from 12:31 to 13:13 UTC caused workflow run failures and delays, was mitigated at 12:58 UTC, and left jobs queued before 12:40 UTC needing a retry.
 - **Why it matters:** One upstream fault took out every GPT option in the Copilot picker at once, so switching models inside a single vendor's list is not provider redundancy.
-- **Follow-up:** Watch for GitHub's root cause analysis and for whether OpenAI publishes the scope of the 2026-07-25 incident.
+- **Follow-up:** Watch for GitHub's root cause analyses on both the model-provider and the Actions incidents, and for whether OpenAI publishes the scope of the 2026-07-25 incidents.
 
 ## Developer tools
 
@@ -184,6 +193,15 @@ source_count = 68
 - **Summary:** A feature request on Google's issue tracker asks for control over which network interface the ADB daemon listens on. The request follows CVE-2026-0073, a logic error in `adbd_tls_verify_cert` in `auth.cpp` that bypasses wireless ADB mutual authentication and allows proximal remote code execution as the shell user with no user interaction. In the thread an ADB maintainer suggests binding only to the Wi-Fi interface, which would drop loopback connections and so break on-device ADB clients that connect to 127.0.0.1, including Shizuku, libadb-android, and ADB use from terminal emulators such as Termux. A write-up published 2026-07-20 and last edited 2026-07-24 walks through the thread and states that this is not a Google announcement and that no implementation exists. Debugging from a connected host over USB is outside the proposal.
 - **Why it matters:** A large class of Android tooling that grants elevated capability without root depends on an on-device ADB connection over loopback, and closing that interface to fix a wireless authentication bug would remove it.
 - **Follow-up:** Watch for a Google decision on the request, whether any AOSP change lands, and whether an interface allowlist preserves loopback.
+
+### FreeBSD rewrites ports history after a 150MB binary broke the GitHub mirror
+
+- **Category:** Dev tools
+- **Status:** confirmed
+- **Sources:** [FreeBSD history-rewrite announcement](https://lists.freebsd.org/archives/freebsd-announce/2026-July/000295.html), [FreeBSD freeze page](https://www.freebsd.org/news/2026-ports-freeze/), [Phoronix](https://www.phoronix.com/news/FreeBSD-Ports-Frozen-2026), [HN 49048797](https://news.ycombinator.com/item?id=49048797)
+- **Summary:** A commit to the `misc/github-copilot-cli` port on 2026-07-20 added the complete 150MB Linux binary of the GitHub Copilot CLI to the FreeBSD ports tree. The file exceeds GitHub's hard 100MB limit, so mirroring to GitHub and possibly other forges failed. FreeBSD's core team suspended pushes on 2026-07-21 and announced the freeze on 2026-07-22, stating the tree was not compromised and users were not at risk. Kyle Evans for core and Rene Ladan for portmgr announced on 2026-07-24 that the history had been rewritten to remove the blob, also citing the binary's own license as unsuitable for the repository history. Every commit in `main` after `a70c5c3fd44b` now has a different hash. Users are directed to a published reset script, and committers to rebase local branches onto the new upstream commit. Patch files are unaffected and the script strips signatures so the result is reproducible.
+- **Why it matters:** A single oversized commit took a package tree read-only for days and forced a history rewrite on everyone downstream, which is the cost of carrying a mirror on a forge whose file-size limit is stricter than your own.
+- **Follow-up:** Watch for the stated infrastructure repairs to complete and for whether FreeBSD adds a pre-receive size check to prevent a repeat.
 
 ## Languages and runtimes
 
@@ -276,6 +294,14 @@ source_count = 68
 - **Summary:** Local-inference practitioners posted divided reports on Poolside's open-weight Laguna S 2.1, released 2026-07-21. Separate threads on 2026-07-24 praised the model, questioned how it reached its published benchmark numbers, and argued that reports of poor reasoning trace to running low-bit quantizations rather than the released weights. One post noted the released weights were updated again on 2026-07-24. These are single-user reports without controlled setups.
 - **Why it matters:** Quantization confounding is the recurring failure mode in early open-weight reception, and it separates model quality from serving configuration before either is measured.
 
+### Salvatore Sanfilippo argues the agent-era skill is Torvalds's, not the kernel author's
+
+- **Category:** Pulse
+- **Status:** discussion
+- **Sources:** [antirez post](https://antirez.com/news/171), [HN 49046683](https://news.ycombinator.com/item?id=49046683)
+- **Summary:** Salvatore Sanfilippo published a post on 2026-07-25, adapted from his own video, arguing that Linus Torvalds's rare contribution was not writing a Unix kernel for the 386, which he says perhaps one programmer in a thousand could have done, but stopping writing code early to hold the design direction and coordinate maintainers through review and dialogue. He proposes that skilled developers working with coding agents should take the same role, supplying architecture, design, and judgment while delegating implementation, and distinguishes this from prompting for code and accepting the output. He contrasts Torvalds with maintainers who keep implementing directly, naming his own Redis work and a recent `linenoise` pull request from SQLite's Richard Hipp as the small-codebase case where that still fits.
+- **Why it matters:** It reframes the agent-adoption question as a delegation problem with a known precedent rather than a prompting problem, which is the axis teams evaluating agent workflows keep missing.
+
 ## Watchlist follow-ups
 
 ### Guardian opinion piece questions the framing of OpenAI's rogue-agent disclosure
@@ -297,19 +323,47 @@ source_count = 68
 - **Why it matters:** The leaderboard placement is the first third-party measurement against the vendor benchmarks published at launch, and the spread across effort settings shows the ranking depends on how the model is configured.
 - **Follow-up:** Watch for a reproducible prompt-injection benchmark rather than a system-card summary, and for whether Claude Code moves its default model to Opus 5.
 
+### Azure blames the West US outage on a maintenance system that pulled routes from too many devices
+
+- **Category:** Outage
+- **Status:** confirmed
+- **Sources:** [Azure preliminary PIR ZJV6-SGG](https://azure.status.microsoft/en-us/status/history/), [BleepingComputer](https://www.bleepingcomputer.com/news/microsoft/microsoft-blames-massive-microsoft-365-outage-on-maintenance-bug/)
+- **Summary:** Microsoft published a preliminary post incident review for the 2026-07-23 Azure West US outage covered in the 2026-07-24 digest. Routine device maintenance required isolating specific network paths. Microsoft's process converts a maintenance request into system-readable form and verifies that at least one of two redundant paths stays healthy, but a bug in that conversion step marked additional devices as part of the event and removed a set of IP routes from more devices than intended, between a West US datacenter and the wide-area network. Impact ran 14:44 to 19:41 UTC and was limited to traffic entering or leaving the region, with intra-region traffic unaffected. The failure first presented as large-scale route churn in the WAN, engineers correlated it to the maintenance change at 17:45 UTC and began rollback, the network was healthy at 18:26 UTC, and all services recovered at 19:41 UTC. Microsoft named more than 25 affected services including AKS, Cosmos DB, ExpressRoute, Microsoft Graph, and Sentinel. The Microsoft 365 side was tracked as MO1437424, where SharePoint drew 78% of the Downdetector reports.
+- **Why it matters:** The safety check verified redundancy for the devices in the request and never questioned which devices the request named, so a correct redundancy invariant was evaluated against the wrong set.
+- **Follow-up:** Watch for the final PIR within 14 days and for what changes to the safety checks and the automated maintenance request process Microsoft commits to.
+
+### OpenAI appears on the open-weights letter it was reported to have skipped
+
+- **Category:** AI
+- **Status:** confirmed
+- **Sources:** [signatory list on microsoft.com](https://www.microsoft.com/en-us/corporate-responsibility/topics/open-weight/), [letter PDF](https://images.nvidia.com/pdf/Open-Weights-and-American-AI-Leadership.pdf), [The New Stack](https://thenewstack.io/microsoft-nvidia-meta-and-open-weights/)
+- **Summary:** The 2026-07-24 digest reported a joint industry letter against premature restrictions on open-weight models with OpenAI and Anthropic absent from the signatories, as reported at publication. The signatory list hosted on Microsoft's corporate responsibility site now names OpenAI, and has grown from the 25 companies reported on 2026-07-24 to 35. Additions beyond OpenAI include Cisco, Cohere, CrowdStrike, GitHub, Palo Alto Networks, ServiceNow, Box, Black Forest Labs, Nous Research, Prime Intellect, Fireworks AI, and Arcee AI. Anthropic, Google, and Amazon remain absent. The letter argues distillation is a widely used technique for model improvement, evaluation, and validation and should be addressed through targeted legal frameworks rather than broad restrictions on downloadable models. OpenAI has published no statement on signing.
+- **Why it matters:** OpenAI was the clearest name on the pro-restriction side of the pending US open-weights decision, and its appearance on the opposing letter without comment removes the clean split the coverage described.
+- **Follow-up:** Watch for an OpenAI statement, for whether Anthropic follows, and for any administration decision on access to Chinese open-weight models.
+
+### GitHub has not pulled the Bitchat repositories and lawyers dispute the order's basis
+
+- **Category:** Security
+- **Status:** developing
+- **Sources:** [TechCrunch](https://techcrunch.com/2026/07/24/indias-move-against-jack-dorseys-bitchat-sparks-legal-debate/), [GitHub government takedown repository](https://github.com/github/gov-takedowns)
+- **Summary:** India's Indian Cyber Crime Coordination Centre issued the notice to GitHub at 23:16 on 2026-07-23 with a three-hour deadline, as covered in the 2026-07-24 digest. TechCrunch reported on 2026-07-24 that the repositories were still reachable from India, that GitHub would not confirm receiving the notice, and that GitHub pointed to its public repository of government takedown requests it has acted on, which carries no recent Bitchat entry. Mishi Choudhary of SFLC.in describes the notice as a new approach that does not clearly authorize removing a software project for how it is designed rather than for specific unlawful content. Raman Chima of the Association for Progressive Communications says the order reaches past a designated service provider into open source development itself. The Internet Freedom Foundation notes deleting a repository removes neither installed copies nor the serverless mesh. TechCrunch reports Bitchat installs in India reached about 91,000 over 2026-07-17 to 2026-07-23, roughly 85% of global downloads in that window.
+- **Why it matters:** The test here is whether an intermediary order can reach a repository for its protocol design, and GitHub's published takedown log is the public record of whether it did.
+- **Follow-up:** Watch for a Bitchat entry in GitHub's government takedown repository, for any legal challenge, and for whether other governments issue similar orders over mesh messengers.
+
 ## Sources checked
 
-- Hacker News: full structured coverage via the Algolia backend across two fetches (front page, top of day, Ask HN, Show HN, comments, and 70 of 79 watchlist queries), not degraded.
-- Reddit: not degraded on the second fetch. The live fetch was again rate-limited on most subreddits, but pooling the committed snapshot brought the day to 17 of 28 watchlist subreddits, above the day floor of 14.
-- AI sources: Anthropic platform docs and system card, Black Forest Labs, Artificial Analysis, Hugging Face model cards and API, Simon Willison's weblog, UK AISI and CAISI via NIST.
-- ML research: arXiv API, 127 items across the watchlist categories.
+- Hacker News: full structured coverage via the Algolia backend across three fetches (front page, top of day, Ask HN, Show HN, comments, and 71 of 79 watchlist queries), not degraded.
+- Reddit: not degraded. The live fetch was again rate-limited on most subreddits, but pooling the committed snapshot brought the day to 20 of 28 watchlist subreddits, above the day floor of 14 and up from 17 at the second fetch.
+- AI sources: Anthropic platform docs and system card, Black Forest Labs, Artificial Analysis, Hugging Face model cards and API, Simon Willison's weblog, UK AISI and CAISI via NIST, the open-weights letter signatory list on microsoft.com.
+- ML research: arXiv API across the watchlist categories, 127 items on the second fetch and 122 on the third, with no further engineering-relevant item to add.
 - Events watchlist: no upcoming or active events. Talk coverage surfaced from Software Should Work 2026 (2026-07-16 and 17).
 - Books: publisher feeds returned 20 items, all conference proceedings or introductory titles, so the section is omitted.
-- Security advisories: CISA KEV catalog (version 2026.07.24, count 1653, no additions since 2026-07-22), NVD, Redis release notes, ReliaQuest.
-- Status pages: AWS Health Dashboard event JSON, GitHub, npm, OpenAI, Anthropic, Cloudflare, Vercel, Netlify, Datadog, Sentry, Twilio, Slack, Discord, PyPI. Okta, Stripe, Fastly, and Docker Hub status APIs returned 401, 404, or unparseable data.
-- GitHub watchlist: full deep-sweep pass over every repo in the `[github]` table, releases and tags. Nothing new published since the 2026-07-23 cutoff beyond Zed 1.12.0 and Deno 2.9.4, already covered; the only newer tags were prereleases (Zed 1.13.0-pre, Kotlin 2.4.20-Beta2, Neovim nightly). `github.com/trending` daily view plus the rust, python, go, and typescript views checked; the one verifiable cluster was agent-collaboration and agent-skill repositories, led by block/buzz.
-- Engineering blogs: LWN, Phoronix, Mozilla, DBOS, Accomplish AI, Bytecode Alliance, Debian project vote page. The DoorDash engineering blog returned HTTP 403 to automated fetch, so a proxy-cache post surfaced on r/programming was not verified or published.
-- YouTube: 43 new videos across 89 channels, 12 channel feeds returned HTTP 404 or 500. Only one video carried Hacker News discussion, at 2 points, so the two published items were selected on conference-talk substance rather than discussion signal.
-- GitHub stars of tracked people: one starring event on the first fetch and none on the second, across 29 tracked accounts. A quiet day rather than degraded coverage, and no cluster to report.
+- Security advisories: CISA KEV catalog (version 2026.07.24, count 1653, no additions since 2026-07-22), NVD, Redis release notes, ReliaQuest, Dark Reading.
+- Status pages: AWS Health Dashboard event JSON, Azure status history, GitHub, npm, OpenAI, Anthropic, Cloudflare, Vercel, Netlify, Datadog, Sentry, Twilio, Slack, Discord, PyPI. Okta, Stripe, Fastly, and Docker Hub status APIs returned 401, 404, or unparseable data. Twilio has an open SMS delivery incident from 07:17 UTC affecting a subset of its numbers, still unresolved and too narrow to publish.
+- GitHub watchlist: full deep-sweep pass over every repo in the `[github]` table, releases and tags, rechecked for anything published after the deep sweep. Nothing new beyond Zed 1.12.0 and Deno 2.9.4, already covered. The only newer tags were prereleases (Zed 1.13.0-pre, Kotlin 2.4.20-Beta2, Neovim nightly). `github.com/trending` daily view plus the rust, python, go, and typescript views checked. The one verifiable cluster was agent-collaboration and agent-skill repositories, led by block/buzz.
+- Engineering blogs: LWN, Phoronix, Mozilla, DBOS, Accomplish AI, Bytecode Alliance, Debian project vote page, freebsd-announce, antirez. The DoorDash engineering blog returned HTTP 403 to automated fetch, so a proxy-cache post surfaced on r/programming was not verified or published.
+- YouTube: 43 new videos across 89 channels, 12 channel feeds returned HTTP 404 or 500. Only one video carried Hacker News discussion, at 2 points, so the two published items were selected on conference-talk substance rather than discussion signal. The third fetch returned 41 videos and added no qualifying item.
+- GitHub stars of tracked people: one starring event across 29 tracked accounts over three fetches. A quiet day rather than degraded coverage, and no cluster to report.
 - Apple sources: Apple Developer release listing checked, nothing posted since 2026-07-21, so the section is omitted.
-- Markets and company sources: no item with clear engineering impact beyond stories already tracked. The Oracle 21,000-role reduction resurfacing on Hacker News dates to the June 2026 annual filing and is not new.
+- Markets and company sources: no item with clear engineering impact beyond stories already tracked. The Oracle 21,000-role reduction resurfacing on Hacker News dates to the June 2026 annual filing and is not new. A Bloomberg report that SK's chair says Anthropic asked for supplies to build its own chips could not be verified past the paywall.
+- Not published for lack of verification: a Hacker News submission claiming Bitchat is now mirrored on Radicle resolves only to the Radicle Explorer single-page app, and the seed node's API returned 404 for that repository id, so the claim could not be confirmed.
