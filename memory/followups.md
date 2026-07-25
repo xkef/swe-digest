@@ -17,6 +17,33 @@ Format:
 - Notes: Compact factual notes.
 ```
 
+## 2026-07-25: Proposal would stop Android's ADB daemon accepting loopback connections
+
+- Status: open
+- Category: Dev tools
+- Sources: [Google issue 526109803](https://issuetracker.google.com/issues/526109803), [CVE-2026-0073 (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2026-0073), [HN 49045159](https://news.ycombinator.com/item?id=49045159)
+- Watch for: A Google decision on the feature request; any AOSP change binding adbd to a single interface; whether an interface allowlist preserves loopback; whether Shizuku and libadb-android publish a mitigation path.
+- Last checked: 2026-07-25
+- Notes: A feature request asks for control over which network interface the Android ADB daemon listens on, following CVE-2026-0073 (logic error in `adbd_tls_verify_cert` in `auth.cpp` bypassing wireless ADB mutual authentication, proximal remote code execution as the shell user, no user interaction). An ADB maintainer in the thread suggests binding only to the Wi-Fi interface, which would drop 127.0.0.1 connections and break on-device ADB clients (Shizuku, libadb-android, Termux). Not a Google announcement and no implementation exists; USB host debugging is outside the proposal. Write-up by kitsumed published 2026-07-20, last edited 2026-07-24, surfaced HN 2026-07-25 (262 pts). Covered 2026-07-25 Developer tools (developing).
+
+## 2026-07-25: Hetzner serves free LLM inference from an unannounced experiments page
+
+- Status: open
+- Category: Infrastructure
+- Sources: [write-up](https://sliplane.io/blog/hetzner-inference), [HN 49033087](https://news.ycombinator.com/item?id=49033087)
+- Watch for: A Hetzner announcement or public product page; pricing when it leaves the experiment; whether the endpoint persists; which models are served.
+- Last checked: 2026-07-25
+- Notes: Write-up published 2026-07-24 reports Hetzner running an experimental inference service on its experiments platform: OpenAI-compatible API serving Qwen 3.6 35B free, no SLA, no production guarantee. Evidence is dashboard screenshots, a working code sample, and a measured 153 ms median time to first token (tested 2026-07-23). Author states they have no insider information. No Hetzner announcement, and this run could not resolve a public Hetzner page for the service (hetzner.com/experiments/ returned 404). Covered 2026-07-25 Infrastructure (developing).
+
+## 2026-07-25: AMD publishes Instella-MoE-16B-A3B under a research-only license
+
+- Status: open
+- Category: AI
+- Sources: [Instella-MoE-16B-A3B-Think on Hugging Face](https://huggingface.co/amd/Instella-MoE-16B-A3B-Think), [r/LocalLLaMA](https://www.reddit.com/r/LocalLLaMA/comments/1v5sb5b/amd_instellamoe16ba3b/)
+- Watch for: A permissive license replacing ResearchRAIL; a technical report tied to the checkpoint release rather than the November 2025 paper; independent reproduction of the recipe on MI300X; whether AMD ships a commercially usable successor.
+- Last checked: 2026-07-25
+- Notes: AMD's Instella-MoE-16B-A3B repositories were created on Hugging Face 2026-07-23 (Base, Pretrain, Midtrain, SFT, DPO, Think). Card describes 16B total / 2.8B active MoE, 64 routed + 2 shared experts with 6 active per token, 27 decoder layers, gated multi-head latent attention, 128,896-token vocabulary, trained end to end on AMD Instinct MI300X and MI325X with AMD's Primus framework; training frameworks, data mixtures, intermediate checkpoints, and inference code stated as released. License is ResearchRAIL (academic and research use only), so not open-weight in the commercial sense. Card cites arXiv 2511.10628 (November 2025), so the checkpoints post-date the paper. Relevance is as public evidence of a non-CUDA training stack end to end. Covered 2026-07-25 AI (developing).
+
 ## 2026-07-25: Redis ships seven security releases for RESTORE memory corruption
 
 - Status: open
@@ -113,7 +140,7 @@ Format:
 - Category: Markets
 - Sources: [France24](https://www.france24.com/en/live-news/20260722-white-house-accuses-china-s-moonshot-of-stealing-anthropic-ai), [The Hill](https://thehill.com/policy/technology/5984510-white-house-moonshot-ai-anthropic-nvidia/), [HN 49007610](https://news.ycombinator.com/item?id=49007610)
 - Watch for: Any Treasury sanction or export action; a Moonshot response; whether the full Kimi K3 weight release (due 2026-07-27) proceeds; independent evidence beyond the accusation; whether other Chinese labs get similar accusations; any executive order or Commerce rule restricting US access to Chinese open-weight models.
-- Last checked: 2026-07-24
+- Last checked: 2026-07-25
 - Notes: White House OSTP director Michael Kratsios publicly accused Moonshot AI on 2026-07-22 of covertly distilling Anthropic's Fable to build Kimi K3, stating his office has information that Moonshot ran the copying through a purpose-built internal system and rotated access routes to stay hidden, and separately alleged access to export-restricted Nvidia chips. Distillation is common when done openly at small scale; the accusation is of covert industrial-scale copying. Anthropic said in February it traced 3.4M Claude exchanges to the startup. No penalties announced, Moonshot silent. Escalates the US-China frontier-model dispute into a policy/sanctions track. Covered 2026-07-23 Top stories (AI, developing). 2026-07-23: the newly formed Little Tech Association (~200 startups incl. Y Combinator and Proton) sent letters to Trump and Commerce Secretary Lutnick urging no restriction on Chinese open-weight models (Kimi, Qwen), arguing startups depend on them as a low-cost alternative to OpenAI/Anthropic; Particle founder Suhail Doshi quoted (Politico, HN 49023016, 257 pts). The industry counter-lobby to the same dispute. Covered 2026-07-23 AI (developing). 2026-07-24: a coalition of 20+ tech companies incl. Nvidia, Meta, Microsoft, and Palantir published a joint letter urging no premature restrictions on open-weight models, saying distillation concerns should be handled by targeted legal frameworks; OpenAI and Anthropic absent from signatories (CNBC, HN 49035303, 380 pts). OpenAI/Anthropic (pro-restriction, record Q2 lobbying) now sit opposite big tech plus startups. Covered 2026-07-24 Top stories (developing). Watch for any administration decision on open-weights access. See [[entities]] Moonshot AI, Anthropic, Alibaba Qwen. Last checked: 2026-07-24.
 
 ## 2026-07-23: Coding-agent CLI sandboxes escaped via the Docker socket
@@ -238,9 +265,9 @@ Format:
 - Status: open
 - Category: AI
 - Sources: [Moonshot blog](https://www.kimi.com/blog/kimi-k3), [Kimi K3 API pricing](https://platform.kimi.ai/docs/pricing/chat-k3), [HN 48935342](https://news.ycombinator.com/item?id=48935342)
-- Watch for: The 2026-07-27 weight release and license (K2 was modified-MIT); the technical report; independent benchmark reproduction; whether the $3.00/$15.00 per 1M pricing holds as third parties serve the open weights; whether third-party inference providers absorb the demand behind the subscription pause.
-- Last checked: 2026-07-20
-- Notes: Moonshot published the Kimi K3 announcement 2026-07-16, adding detail missing at go-live: 2.8T-param MoE (Stable LatentMoE, 16 of 896 experts active/token), Kimi Delta Attention, 1M context, native multimodal. API model id `kimi-k3`, $0.30 cache-hit / $3.00 cache-miss per 1M input, $15.00 per 1M output. Full weights promised by 2026-07-27, technical report to follow. Vendor figures rank overall intelligence behind Fable 5 and GPT-5.6 Sol; HN notes the pricing is high for a Chinese open-weight model. Simon Willison calls it the first "open 3T-class model". Covered 2026-07-17 Top stories. Supersedes the 2026-07-16 "Kimi K3 live without a model card" note. 2026-07-18: K3 reached #1 in the Frontend Code Arena. 2026-07-19: Moonshot (@kimi_moonshot) announced it is suspending new subscriptions on K3 demand, existing subscribers keep access; HN reports K3 strong for code/PR review but slow under load. Covered 2026-07-20 Top stories (confirmed).
+- Watch for: The 2026-07-27 weight release and license (K2 was modified-MIT); the technical report; independent benchmark reproduction; whether the $3.00/$15.00 per 1M pricing holds as third parties serve the open weights; whether third-party inference providers absorb the demand behind the subscription pause; the full UK AISI/CAISI report and methodology; whether the safeguards finding draws a Moonshot response.
+- Last checked: 2026-07-25
+- Notes: Moonshot published the Kimi K3 announcement 2026-07-16, adding detail missing at go-live: 2.8T-param MoE (Stable LatentMoE, 16 of 896 experts active/token), Kimi Delta Attention, 1M context, native multimodal. API model id `kimi-k3`, $0.30 cache-hit / $3.00 cache-miss per 1M input, $15.00 per 1M output. Full weights promised by 2026-07-27, technical report to follow. Vendor figures rank overall intelligence behind Fable 5 and GPT-5.6 Sol; HN notes the pricing is high for a Chinese open-weight model. Simon Willison calls it the first "open 3T-class model". Covered 2026-07-17 Top stories. Supersedes the 2026-07-16 "Kimi K3 live without a model card" note. 2026-07-18: K3 reached #1 in the Frontend Code Arena. 2026-07-19: Moonshot (@kimi_moonshot) announced it is suspending new subscriptions on K3 demand, existing subscribers keep access; HN reports K3 strong for code/PR review but slow under load. Covered 2026-07-20 Top stories (confirmed). 2026-07-23: UK AI Security Institute and US CAISI published a joint preliminary cyber-capability assessment via NIST (nist.gov, HN 49044492): ExploitBench 32% over 41 post-2023 V8 CVEs (GLM 5.2 24%, below recent frontier models), arbitrary code execution on 0 of 41 tasks against a leading-model average of 20 of 41; The Last Ones 32-step simulated network intrusion reached step 17 on average against 28.5 for US frontier models tested with safeguards disabled, full completion 1 of 10 attempts; K3 safeguards did not prevent exploit-development attempts. Stated preliminary over a small benchmark set; the network scenario has no active defenders and an intentional attack path. A government measurement bounding the capability behind the Redis zero-day claims. Covered 2026-07-25 Top stories (Security, confirmed).
 
 ## 2026-07-13: xAI Grok Build CLI uploads entire repository and .env secrets by default
 

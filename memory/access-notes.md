@@ -110,7 +110,10 @@ execution environment (cloud datacenter IP ranges).
   logged-out `old.reddit.com/{sub}/*.rss` access degrades further. 2026-07-25:
   live fetch was 429ed on nearly every subreddit in both listings; the
   committed snapshot carried the day to 14 of 28 subreddits, exactly the day
-  floor.
+  floor. The 10:58 UTC fetch the same day was again 429ed on most subreddits
+  but pooling brought the day to 17 of 28 and the run reported not degraded,
+  so a second fetch several hours later is worth running even when the first
+  was blocked.
   Last seen 2026-07-25.
 - `www.theregister.com` - reputable secondary tech outlet; article bodies return
   403/404 from the datacenter IP, but WebSearch summaries carry named officials
@@ -131,6 +134,20 @@ execution environment (cloud datacenter IP ranges).
 - `arstechnica.com` - article bodies block automated WebFetch; use WebSearch
   snippets plus a corroborating outlet (The Register, Fortune, FT) and confirm
   the canonical URL before citing. Last seen 2026-06-29.
+- `www.youtube.com/watch` - WebFetch returns only the page footer and legal
+  navigation, never the title, channel, date, view count, or description, so it
+  cannot verify a video. Use the `make yt` snapshot for watchlist channels, and
+  for anything else use the HN or Reddit submission plus the event or project
+  page. Verified 2026-07-25. Last seen 2026-07-25.
+- `careersatdoordash.com/blog/` and `ndctoronto.com/agenda/` - both return HTTP
+  403 to WebFetch from the run environment. A DoorDash engineering post and an
+  NDC Toronto session page could not be verified on 2026-07-25 and were not
+  published. Last seen 2026-07-25.
+- `issuetracker.google.com/issues/{id}` - Google issue tracker pages return 200
+  to a plain urllib request with a browser User-Agent, but the body is
+  JS-rendered so the thread text is not extractable; treat it as a link that
+  resolves and take the thread content from a secondary write-up. Verified
+  2026-07-25. Last seen 2026-07-25.
 - `apnews.com` - WebFetch returned "unable to fetch" from the run environment on
   2026-07-22; use WebSearch summaries and corroborate with another reputable
   outlet (Washington Post, TechCrunch, Reuters) before citing. Last seen
