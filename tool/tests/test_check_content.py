@@ -12,7 +12,7 @@ from pathlib import Path
 
 from swe_digest.gate.check_content import SCANNED_SNAPSHOTS, main
 
-from .conftest import DIGEST_DATE, digest_text
+from .conftest import DIGEST_DATE, digest_text, with_source_count
 
 
 def digest_path(root: Path) -> Path:
@@ -137,8 +137,10 @@ VIDEO_STORIES = """### First video
 def test_distinct_video_urls_are_not_duplicates(repo_tree: Path) -> None:
     # Every watch?v= link shares a host and path, so a dedup key that ignored
     # the query would reject any digest carrying two New videos stories.
-    text = digest_text(date="2026-07-06").replace(
-        "## Security\n\nNo major items found.\n", f"## Security\n\n{VIDEO_STORIES}"
+    text = with_source_count(
+        digest_text(date="2026-07-06").replace(
+            "## Security\n\nNo major items found.\n", f"## Security\n\n{VIDEO_STORIES}"
+        )
     )
     later_digest(repo_tree, text)
     assert main(root=repo_tree) == 0
@@ -307,6 +309,112 @@ def test_untracked_private_context_passes(git_repo: Path) -> None:
 def test_no_digests_fails(tmp_path: Path) -> None:
     (tmp_path / "site" / "content" / "digests").mkdir(parents=True)
     assert main(root=tmp_path) == 1
+
+
+def test_story_without_source_fails(repo_tree: Path) -> None:
+    # The dup check skipped sourceless stories with `continue`, so an
+    # unsourced claim reached the page unflagged.
+    text = digest_path(repo_tree).read_text()
+    text = text.replace(
+        "- **Sources:** [primary](https://example.com/post),"
+        " [discussion](https://news.ycombinator.com/item?id=1)\n",
+        "",
+    )
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 1
+
+
+def test_story_with_unknown_status_fails(repo_tree: Path) -> None:
+    text = digest_path(repo_tree).read_text().replace("**Status:** confirmed", "**Status:** open")
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 1
+
+
+def test_story_missing_status_fails(repo_tree: Path) -> None:
+    text = digest_path(repo_tree).read_text().replace("- **Status:** confirmed\n", "")
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 1
+
+
+def test_followup_block_keeps_its_own_shape(repo_tree: Path) -> None:
+    # Follow-ups track earlier stories: they carry open/closed rather than a
+    # story status, and lean on the canonical block for sources.
+    text = (
+        digest_path(repo_tree)
+        .read_text()
+        .replace(
+            "## Watchlist follow-ups\n\nNo major items found.\n",
+            "## Watchlist follow-ups\n\n### Earlier story\n\n"
+            "- **Status:** open\n- **Notes:** Still waiting on the vendor.\n",
+        )
+    )
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 0
+
+
+def test_source_count_mismatch_fails(repo_tree: Path) -> None:
+    text = digest_path(repo_tree).read_text().replace("source_count = 2", "source_count = 9")
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 1
+
+
+def test_source_count_mismatch_before_cutoff_passes(repo_tree: Path) -> None:
+    # Two published digests undercount by one; the rule scopes forward rather
+    # than rewriting the archive.
+    old = "2026-06-11"
+    older = repo_tree / "site" / "content" / "digests" / old
+    older.mkdir(parents=True)
+    (older / "index.md").write_text(
+        digest_text(date=old).replace("source_count = 2", "source_count = 9"), encoding="utf-8"
+    )
+    assert main(root=repo_tree) == 0
+
+
+def test_run_log_without_judgment_fails(repo_tree: Path) -> None:
+    (repo_tree / "memory" / "runs" / f"{DIGEST_DATE}.yaml").write_text(
+        "date: '2026-07-02'\nmechanical: {}\n", encoding="utf-8"
+    )
+    assert main(root=repo_tree) == 1
+
+
+def test_run_log_with_null_judgment_key_fails(repo_tree: Path) -> None:
+    (repo_tree / "memory" / "runs" / f"{DIGEST_DATE}.yaml").write_text(
+        "judgment:\n  inbox: []\n  miss_review: {}\n  notes:\n", encoding="utf-8"
+    )
+    assert main(root=repo_tree) == 1
+
+
+def test_filled_run_log_passes(repo_tree: Path) -> None:
+    (repo_tree / "memory" / "runs" / f"{DIGEST_DATE}.yaml").write_text(
+        "judgment:\n  inbox: []\n  miss_review: {}\n  notes: |\n    Nothing unusual.\n",
+        encoding="utf-8",
+    )
+    assert main(root=repo_tree) == 0
+
+
+def test_unparseable_run_log_fails(repo_tree: Path) -> None:
+    # A corrupt log must fail closed rather than raise out of the gate.
+    (repo_tree / "memory" / "runs" / f"{DIGEST_DATE}.yaml").write_text(
+        "judgment: [unclosed\n", encoding="utf-8"
+    )
+    assert main(root=repo_tree) == 1
+
+
+def test_non_mapping_run_log_fails(repo_tree: Path) -> None:
+    (repo_tree / "memory" / "runs" / f"{DIGEST_DATE}.yaml").write_text(
+        "- just\n- a list\n", encoding="utf-8"
+    )
+    assert main(root=repo_tree) == 1
+
+
+def test_weekly_marker_is_not_checked_as_a_run_log(repo_tree: Path) -> None:
+    # Weekly markers live under runs/weekly/ and carry their own schema.
+    weekly = repo_tree / "memory" / "runs" / "weekly"
+    weekly.mkdir(parents=True)
+    (weekly / "2026-07-05.yaml").write_text(
+        "date: '2026-07-05'\nwindow: 2026-06-29..2026-07-05\nproposals: []\n", encoding="utf-8"
+    )
+    assert main(root=repo_tree) == 0
 
 
 def test_scanned_snapshots_cover_every_accumulator() -> None:

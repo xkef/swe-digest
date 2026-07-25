@@ -16,10 +16,13 @@ import sys
 import tomllib
 from pathlib import Path
 
+import yaml
+
 from swe_digest.digest.document import (
     LINK,
     SECTION_VOCABULARY,
     SECTIONS,
+    Story,
     normalize_url,
     parse,
     slugify,
@@ -43,13 +46,31 @@ MAX_TOP_STORIES = 7
 
 # Sections whose blocks track stories covered on other days (or the same
 # day), so a repeated primary URL there is an update, not a duplicate story.
+# They also carry their own field shape (open/closed rather than a story
+# status, and no source of their own), so the story-shape rules skip them.
 FOLLOWUP_SECTIONS = {"Watchlist follow-ups"}
+
+# The four status words a published story may carry. Separating fact from
+# rumor is a content-safety rule, not a style preference, and it is what makes
+# the weekly status-outcome scoring meaningful.
+STORY_STATUSES = ("confirmed", "developing", "rumor", "discussion")
+
+# source_count is published on the page as the day's coverage claim, so it
+# must match the body. The rule postdates the archive: the first two digests
+# undercount by one, and rewriting published pages to satisfy a new check
+# would be worse than scoping it forward.
+SOURCE_COUNT_SINCE = "2026-06-13"
 
 # The primary-URL uniqueness rule postdates the archive: 8 already-published
 # digests contain restatement blocks sharing a primary source (they motivated
 # the rule). It applies from this date forward; the title-slug rule and the
 # Top stories cap hold for every digest.
 STORY_URL_DUP_SINCE = "2026-07-06"
+
+# The run-log keys the agent owns. `make run-log` writes the mechanical half
+# and preserves these, so an unfilled key means the run skipped its own
+# review rather than that the tooling failed.
+JUDGMENT_KEYS = ("inbox", "miss_review", "notes")
 
 # Every snapshot accumulator, including hn and reddit, the two highest-volume
 # untrusted sources. Secrets only: these files hold verbatim titles and comment
@@ -136,14 +157,44 @@ def check_structure(path: Path, front: str, body: str) -> list[str]:
     return errors
 
 
+def check_story_shape(path: Path, section: str, story: Story, links: list[str]) -> list[str]:
+    """A published story carries a source and an honest status label.
+
+    Both were quality-gate prose until now. Unsourced claims and unlabelled
+    rumors are the two ways untrusted input reaches a reader as fact, so they
+    belong in the gate rather than in a checklist.
+    """
+    errors = []
+    if not links:
+        errors.append(
+            f"{path}: story '{story.title}' in '{section}' has no source link;"
+            f" every story carries at least one source"
+        )
+    status = story.fields.get("status", "").strip()
+    if status not in STORY_STATUSES:
+        errors.append(
+            f"{path}: story '{story.title}' in '{section}' has status"
+            f" {status or '(missing)'!r}; use one of {', '.join(STORY_STATUSES)}"
+        )
+    return errors
+
+
 def check_stories(path: Path, text: str) -> list[str]:
     """Each story appears once: no two ``###`` blocks in a digest may share a
-    title slug or a normalized primary source URL. Also caps Top stories."""
+    title slug or a normalized primary source URL. Also caps Top stories,
+    checks each story's shape, and holds source_count to the real link count."""
     digest = parse(text)
     errors = []
     top_count = digest.section_counts.get("Top stories", 0)
     if top_count > MAX_TOP_STORIES:
         errors.append(f"{path}: Top stories has {top_count} items; the cap is {MAX_TOP_STORIES}")
+    declared = digest.source_count
+    actual = len(digest.urls)
+    if declared is not None and declared != actual and path.parent.name >= SOURCE_COUNT_SINCE:
+        errors.append(
+            f"{path}: source_count is {declared} but the body links {actual} distinct"
+            f" sources; source_count states the day's coverage on the page"
+        )
     check_url_dups = path.parent.name >= STORY_URL_DUP_SINCE
     slugs: dict[str, str] = {}
     primaries: dict[str, str] = {}
@@ -158,7 +209,10 @@ def check_stories(path: Path, text: str) -> list[str]:
             else:
                 slugs[slug] = section
             links = LINK.findall(story.fields.get("sources", ""))
-            if not links or section in FOLLOWUP_SECTIONS:
+            if section in FOLLOWUP_SECTIONS:
+                continue
+            errors.extend(check_story_shape(path, section, story, links))
+            if not links:
                 continue
             primary = normalize_url(links[0])
             if check_url_dups and primary in primaries:
@@ -206,6 +260,37 @@ def check_digest(path: Path) -> list[str]:
     return check_structure(path, front, body) + check_stories(path, text) + scan_unsafe(path, text)
 
 
+def check_run_logs(root: Path) -> list[str]:
+    """Every daily run log carries a filled ``judgment`` block.
+
+    Only daily logs, not ``runs/weekly/`` markers, which have their own shape.
+    The backtest and the weekly review both read ``judgment``, so an empty or
+    absent block silently starves the feedback loop rather than failing.
+    """
+    errors: list[str] = []
+    for path in sorted((root / "memory" / "runs").glob("*.yaml")):
+        try:
+            record = yaml.safe_load(path.read_text(encoding="utf-8"))
+        except yaml.YAMLError:
+            errors.append(f"{path}: is not valid YAML")
+            continue
+        if not isinstance(record, dict):
+            errors.append(f"{path}: run log must be a mapping")
+            continue
+        judgment = record.get("judgment")
+        if not isinstance(judgment, dict):
+            errors.append(f"{path}: missing the 'judgment' block the run fills in")
+            continue
+        errors.extend(
+            f"{path}: judgment is missing '{key}'"
+            if key not in judgment
+            else f"{path}: judgment['{key}'] is null; write the value the run decided"
+            for key in JUDGMENT_KEYS
+            if key not in judgment or judgment[key] is None
+        )
+    return errors
+
+
 def check_private_context(root: Path) -> list[str]:
     try:
         tracked = subprocess.run(
@@ -246,6 +331,7 @@ def main(root: Path = ROOT) -> int:
     errors.extend(check_memory(root))
     for path in sorted((root / "memory" / "runs").rglob("*.yaml")):
         errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))
+    errors.extend(check_run_logs(root))
     for snapshot_dir in SCANNED_SNAPSHOTS:
         for path in sorted((root / "snapshots" / snapshot_dir).glob("*.json")):
             errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))

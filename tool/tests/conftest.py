@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+import re
 import subprocess
 from pathlib import Path
 
 import pytest
 
-from swe_digest.digest.document import SECTIONS
+from swe_digest.digest.document import LINK, SECTIONS, normalize_url
 
 DIGEST_DATE = "2026-07-02"
 
@@ -22,19 +23,31 @@ STORY = """### Example story
 
 
 def digest_text(body_extra: str = "", *, date: str = DIGEST_DATE) -> str:
+    sections = []
+    for section in SECTIONS:
+        sections.append(f"## {section}\n")
+        sections.append(STORY if section == "Top stories" else "No major items found.\n")
+    body = "\n" + "\n".join(sections) + body_extra
+    # The gate holds source_count to the body's distinct links, so a fixture
+    # that injects stories stays honest without every test restating the count.
+    count = len({normalize_url(url) for url in LINK.findall(body)})
     front = (
         "+++\n"
         f'title = "{date} digest"\n'
         f"date = {date}\n"
         'status = "published"\n'
-        "source_count = 2\n"
+        f"source_count = {count}\n"
         "+++\n"
     )
-    sections = []
-    for section in SECTIONS:
-        sections.append(f"## {section}\n")
-        sections.append(STORY if section == "Top stories" else "No major items found.\n")
-    return front + "\n" + "\n".join(sections) + body_extra
+    return front + body
+
+
+def with_source_count(text: str) -> str:
+    """Resync front-matter source_count after a test injects body stories."""
+    front, _, body = text.partition("+++\n")[2].partition("+++\n")
+    count = len({normalize_url(url) for url in LINK.findall(body)})
+    front = re.sub(r"^source_count = \d+$", f"source_count = {count}", front, flags=re.MULTILINE)
+    return f"+++\n{front}+++\n{body}"
 
 
 @pytest.fixture
