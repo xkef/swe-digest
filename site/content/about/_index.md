@@ -64,7 +64,10 @@ Act on Data Protection (FADP).
 ## Corrections and removal
 
 If you are mentioned and want a correction, added context, removal, or exclusion
-from future coverage, open an issue on the
-[repository](https://github.com/xkef/swe-digest) and identify the specific page
-or item. Issues are public and are monitored. Reasonable requests are honored
-promptly, and asking to be excluded does not require a reason.
+from future coverage, open a
+[correction or removal request](https://github.com/xkef/swe-digest/issues/new?template=removal.yml)
+and identify the specific page or item. Use that template rather than a blank
+issue: it keeps the request open for a human, while other outside issues pass
+through automated triage. Issues are public and are monitored. Reasonable
+requests are honored promptly, and asking to be excluded does not require a
+reason.

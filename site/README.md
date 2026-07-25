@@ -26,8 +26,8 @@ Everything else is derived at build time by `swe-digest build-stories`:
   `about/`.
 - `templates/`: `base`, `home`, `digest`, `digests` (archive), `story`,
   `about`, `404`, `feed.xml`, and shared macros.
-- `static/`: one stylesheet plus `search-init.js`, `theme.js`, and
-  `localtime.js`.
+- `static/`: one stylesheet, `favicon.svg`, and `search-init.js`,
+  `theme.js`, `localtime.js`.
 - `data/`: generated per-day JSON.
 
 ## Constraints

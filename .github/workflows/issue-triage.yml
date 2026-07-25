@@ -3,8 +3,10 @@ name: issue-triage
 # Deterministic triage bot for outsider issues. A story suggestion from
 # outside gets a guide comment and a `triage/pending` label, waits for the
 # owner's `/approve` or `/reject` comment, and closes automatically after
-# 14 days without approval. Non-story outsider issues are closed and locked
-# with an explanation. Every decision reads only API event fields
+# 14 days without approval. A `removal` request is left open and unlocked
+# for the owner: it is a data-subject request, so no automation may close
+# it. Every other outsider issue is closed and locked with an explanation,
+# which keeps the rule deny-default. Every decision reads only API fields
 # (user.login, author_association, labels.*.name). Comment and issue text
 # crosses the shell only as env var data, never interpreted as code, and
 # the labels this bot sets are UX only: the routine and the publish gate
@@ -30,13 +32,18 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Guide story suggestions, close everything else
+      - name: Guide story suggestions, hold removals, close everything else
         env:
           GH_TOKEN: ${{ github.token }}
           NUMBER: ${{ github.event.issue.number }}
           IS_STORY: ${{ contains(github.event.issue.labels.*.name, 'story') }}
+          IS_REMOVAL: ${{ contains(github.event.issue.labels.*.name, 'removal') }}
         run: |
-          if [ "$IS_STORY" = "true" ]; then
+          if [ "$IS_REMOVAL" = "true" ]; then
+            gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body-file - <<'EOF'
+          Thanks for filing this. Correction and removal requests are handled by the repository owner, not by the automated routine, so this issue stays open and unlocked until it is resolved. No reason is required for a removal or exclusion request.
+          EOF
+          elif [ "$IS_STORY" = "true" ]; then
             gh issue edit "$NUMBER" --repo "$GITHUB_REPOSITORY" --add-label triage/pending
             gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body-file - <<'EOF'
           Thanks for the suggestion. This repository is maintained by an automated daily digest routine, so outside issues follow a fixed process:
@@ -48,7 +55,7 @@ jobs:
           EOF
           else
             gh issue close "$NUMBER" --repo "$GITHUB_REPOSITORY" --reason "not planned" \
-              --comment "This repository accepts only story suggestions from outside contributors. To suggest a story for the digest, open a new issue with the story template. Feedback and configuration changes are handled by the repository owner."
+              --comment "This repository accepts story suggestions and correction or removal requests from outside contributors. Open a new issue with the story template or the correction or removal template. Feedback and configuration changes are handled by the repository owner."
             gh api -X PUT "repos/$GITHUB_REPOSITORY/issues/$NUMBER/lock" -f lock_reason=resolved
           fi
 

@@ -1,0 +1,35 @@
+name: Correction or removal
+description: Request a correction, removal, or exclusion from future coverage
+title: "[removal] "
+labels: ["removal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        These issues stay open for the repository owner. No automation acts
+        on them and no reason is required.
+  - type: input
+    id: page
+    attributes:
+      label: Page or item
+      description: Link to the digest page, story page, or specific item.
+    validations:
+      required: true
+  - type: dropdown
+    id: request
+    attributes:
+      label: Request
+      options:
+        - Correct a factual error
+        - Add context
+        - Remove the item
+        - Exclude me from future coverage
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: Detail
+      description: Optional. What is wrong, or what should change.
+    validations:
+      required: false

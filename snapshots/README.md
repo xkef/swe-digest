@@ -1,12 +1,18 @@
 # Snapshots
 
 Bot-committed source snapshots. The accumulator that keeps a digest run from
-depending on one lucky fetch.
+depending on a single sample.
 
-A digest run sees each source once, from a GitHub Actions IP, and some hosts
-refuse those. A background workflow (`snapshots.yml`) fetches each source on
-its own cadence and merges the result into the day's file, so a run whose
-live fetch is blocked or thin still reads the day's coverage.
+A digest run fetches each source once, at its own hour, so a story that peaks
+between runs is invisible to it and a rate-limited or transiently failing
+call blanks a whole collection. A background workflow (`snapshots.yml`)
+fetches each source on its own cadence and merges the result into the day's
+file, so every run reads the union of the day's attempts.
+
+This covers thin, mistimed, and intermittently refused fetches. It does not
+cover a host that refuses this environment outright, since the accumulator
+runs on the same GitHub Actions runners: those need a per-host fallback,
+recorded in `memory/access-notes.md`.
 
 ## Shape
 

@@ -18,8 +18,8 @@ The Makefile at the repository root wraps the common ones (`make hn`,
 ## Layout
 
 - `src/swe_digest/fetch/`: one module per source (`hn`, `youtube`, `papers`,
-  `books`, `reddit`, `events`, `stars`). Each declares its collections and
-  normalizers; `run.py` owns the shared envelope of window math, backend
+  `books`, `reddit`, `events`, `stars`), each declaring its collections and
+  normalizers. `run.py` owns the shared envelope of window math, backend
   degradation, and the `.cache/` result file.
 - `src/swe_digest/digest/`: the digest as data. Skeleton creation, the
   document model and section vocabulary, story-page generation, run logs,
@@ -77,5 +77,7 @@ make typecheck  # mypy
 make fmt        # dprint (TOML, JSON, YAML, CSS, HTML, JS) and rumdl (Markdown)
 ```
 
-`pyproject.toml`, `dprint.json`, and `.rumdl.toml` live here and cover the
-whole repository.
+`pyproject.toml`, `dprint.json`, and `.rumdl.toml` live here and configure
+the whole repository. dprint runs twice, once from the repository root and
+once from `tool/`, because a `pyproject.toml` marks a formatting boundary
+the root scan will not cross.

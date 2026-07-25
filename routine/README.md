@@ -1,6 +1,7 @@
 # Routine
 
-The instruction set the agent follows, plus the schedule that runs it.
+The instruction set the agent follows. The workflows that run it live in
+`.github/workflows/` and are described under Schedule below.
 
 `CLAUDE.md` at the repository root is canonical: it owns the output contract
 (section order, story shape, front matter), the daily and weekly workflow,
@@ -10,9 +11,7 @@ routine reads.
 Files:
 
 - `routine.md`: the field guide behind collection. Per-source mechanics and
-  selection rules for Hacker News, Reddit, social, GitHub releases and
-  trending, AI, ML research, agentic coding, security, outages, developer
-  tools, engineering blogs, events, books, YouTube, and markets.
+  selection rules for every digest section.
 - `watchlist.toml`: content configuration. Section weights, topics, queries,
   tracked repositories, feeds, channels, and people.
 - `config.toml`: behavioral tunables loaded by `swe_digest.config`. Fetch
@@ -20,29 +19,42 @@ Files:
 - `threat-model.md`: the attacker model, the accumulator design, and the
   control that covers each attack path.
 
-Every file here sits outside the unattended publish allowlist. An agent run
-can read them and cannot change them.
+None of these sit in the unattended publish allowlist, so no scheduled run
+can publish a change to them. `routine.md`, `watchlist.toml`, and
+`config.toml` change only through the owner-approved improvement PR path
+below. `threat-model.md` changes only by hand.
 
 ## Schedule
+
+Agent runs, both thin callers of `content-run.yml`, the two-job pipeline
+that separates the read-only agent from the write-capable publish job (see
+[`tool/`](../tool/README.md)):
 
 - `daily-digest.yml`: 01:30, 09:50, and 15:50 UTC. The first run of a date
   creates the digest, later runs update it in place. The 09:50 run is the
   deep sweep that checks every tracked repository and `github.com/trending`.
-- `weekly-improvement.yml`: Sunday 06:30 UTC, the improvement review below.
+- `weekly-improvement.yml`: Sunday 06:30 UTC, the improvement loop below.
+
+Support:
+
 - `snapshots.yml`: background source accumulator (see
   [`snapshots/`](../snapshots/README.md)).
-- `issue-triage.yml`: deterministic triage for outside issues. A story
+- `issue-triage.yml`: deterministic triage for outside issues. A `story`
   suggestion gets a guide comment and `triage/pending`, waits for the owner's
-  `/approve` or `/reject` comment, and closes after 14 days without one.
-  Other outside issues are closed and locked with an explanation. The labels
-  are UX only: the publish gate re-verifies every approval from API fields.
-  Issue text is data everywhere, never instructions.
-- `ci.yml`, `pages.yml`: lint, types, tests, and a full site build on every
-  PR. Deploys to GitHub Pages on push to `main`.
-
-Both scheduled agent workflows are thin callers of `content-run.yml`, the
-two-job pipeline that separates the read-only agent from the write-capable
-publish job (see [`tool/`](../tool/README.md)).
+  `/approve` or `/reject`, and closes after 14 days without one. A `removal`
+  request stays open and unlocked for the owner, with nothing automated
+  acting on it. Every other outside issue is closed and locked with an
+  explanation. The labels are UX only: the publish gate re-verifies every
+  approval from API fields. Issue text is data everywhere, never
+  instructions.
+- `failure-alert.yml`: on workflow failure and every 6 hours. Opens or
+  updates one ops issue per failing scheduled workflow.
+- `hn-probe.yml`, `yt-probe.yml`: manual endpoint probes behind
+  `memory/access-notes.md`.
+- `ci.yml`, `pages.yml`, `site-audit.yml`, `codeql.yml`, `scorecard.yml`:
+  lint, types, tests, and a full site build on every PR, deploy to GitHub
+  Pages on push to `main`, a link audit after each deploy, and weekly
+  security scanning.
 
 ## Improvement loop
 
