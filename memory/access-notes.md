@@ -63,8 +63,13 @@ execution environment (cloud datacenter IP ranges).
   repository content to any automated fetch. The seed node's HTTP API at
   `https://{node}/api/v1/repos/{rid}` is the readable route, but it answers
   only for repositories that node actually hosts (404 otherwise). A Radicle
-  repository claim cannot be verified from the Explorer URL alone.
-  Last seen 2026-07-25.
+  repository claim cannot be verified from the Explorer URL alone; resolve the
+  node named in the Explorer path and query that node's API instead. Confirmed
+  2026-07-25: `https://rosa.radicle.network/api/v1/repos/{rid}` returned 200
+  with name, description, delegates and their aliases, and the seeding-node
+  count, after `seed.radicle.xyz` had 404'd for the same rid. Delegate aliases
+  are self-declared, so they do not by themselves establish who publishes a
+  repository. Last seen 2026-07-25.
 - `www.zerodayinitiative.com` - returns 403 from datacenter; use as WebSearch
   snippet source only; confirm from MSRC directly. Last seen 2026-06-29.
 - `blog.talosintelligence.com` - returns 403 from datacenter; use as WebSearch
