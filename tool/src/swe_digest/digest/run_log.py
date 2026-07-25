@@ -45,6 +45,21 @@ def query_yield(hn: dict, digest: document.Digest) -> dict:
     return out
 
 
+def seed_judgment(record: dict[str, Any]) -> None:
+    """Give a fresh log the agent-owned skeleton the content gate requires.
+
+    ``check_content.check_run_logs`` rejects a log whose ``judgment`` block is
+    absent or holds a null, so without a skeleton the first ``make check`` of
+    the day would block publishing on a file the tooling had just created.
+    ``setdefault`` never overwrites, so a log the run already filled is left
+    exactly as it is.
+    """
+    judgment = record.setdefault("judgment", {})
+    judgment.setdefault("inbox", [])
+    judgment.setdefault("miss_review", {})
+    judgment.setdefault("notes", "")
+
+
 def main(date: str | None = None) -> int:
     date = date or today()
 
@@ -85,6 +100,7 @@ def main(date: str | None = None) -> int:
         yields.setdefault(query, None)
 
     record = runs.load_run_log(date)
+    seed_judgment(record)
     mechanical = record.setdefault("mechanical", {})
     mechanical["generated_at"] = datetime.now(UTC).isoformat(timespec="seconds")
     mechanical["hn"] = hn_record

@@ -407,6 +407,30 @@ def test_non_mapping_run_log_fails(repo_tree: Path) -> None:
     assert main(root=repo_tree) == 1
 
 
+def test_fresh_run_log_skeleton_passes_the_gate(repo_tree: Path) -> None:
+    # run-log and the gate must agree on the judgment shape. They did not:
+    # run-log wrote no judgment block at all, so the first `make check` after
+    # it ran would have blocked publishing on a file the tooling just made.
+    import yaml
+
+    from swe_digest.digest.run_log import seed_judgment
+
+    record: dict[str, object] = {"date": DIGEST_DATE, "mechanical": {"hn": {}}}
+    seed_judgment(record)
+    (repo_tree / "memory" / "runs" / f"{DIGEST_DATE}.yaml").write_text(
+        yaml.safe_dump(record, sort_keys=False), encoding="utf-8"
+    )
+    assert main(root=repo_tree) == 0
+
+
+def test_seed_judgment_preserves_a_filled_block() -> None:
+    from swe_digest.digest.run_log import seed_judgment
+
+    record: dict[str, object] = {"judgment": {"inbox": [12], "notes": "reviewed"}}
+    seed_judgment(record)
+    assert record["judgment"] == {"inbox": [12], "notes": "reviewed", "miss_review": {}}
+
+
 def test_weekly_marker_is_not_checked_as_a_run_log(repo_tree: Path) -> None:
     # Weekly markers live under runs/weekly/ and carry their own schema.
     weekly = repo_tree / "memory" / "runs" / "weekly"
