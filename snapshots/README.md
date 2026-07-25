@@ -31,10 +31,11 @@ record beyond that window.
 
 ## Cadence
 
-Hacker News every 3 hours, YouTube, papers, and Reddit every 6, books every
-12. One sequential job merges and commits whichever sources ran, through the
-GraphQL commit path, so the commits are signed and Verified as
-`github-actions[bot]`.
+One round every 3 hours, on a single cron. A round fetches the sources its
+3-hour slot owes: Hacker News every round, YouTube, papers, and Reddit every
+second one, books every fourth. One sequential job merges and commits
+whichever sources ran, so a round is one commit, through the GraphQL commit
+path, so the commits are signed and Verified as `github-actions[bot]`.
 
 ## Rules
 

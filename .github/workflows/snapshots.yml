@@ -8,15 +8,14 @@ name: snapshots
 #
 # Fetch steps are continue-on-error: one source failing (or being blocked)
 # never stops the others, and the final step fails the run afterwards so
-# failure-alert still fires. Cadence per source is kept by matching the
-# firing cron in each step's condition; workflow_dispatch runs every source.
+# failure-alert still fires.
+#
+# One cron drives every source so a round is one run and one commit. Per-source
+# cadence comes from the round's 3-hour slot instead of from its own cron entry;
+# workflow_dispatch runs every source.
 on:
   schedule:
-    - cron: "20 */3 * * *" # hn
-    - cron: "40 */6 * * *" # youtube
-    - cron: "50 */6 * * *" # papers
-    - cron: "30 */12 * * *" # books
-    - cron: "10 */6 * * *" # reddit
+    - cron: "20 */3 * * *"
   workflow_dispatch:
 
 permissions: {}
@@ -29,38 +28,64 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # Every step timeout below plus the merge, since a 6-hour slot runs the
+    # slow reddit fetch alongside the others in the same job.
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Plan the round
+        id: round
+        env:
+          EVERY_SOURCE: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          # The slot is the last 3-hour boundary at or before now, not the
+          # current hour, so a schedule delayed past the hour still fetches
+          # what its round owes.
+          hour=$(date -u +%-H)
+          slot=$((hour - hour % 3))
+          due() {
+            if [ "$EVERY_SOURCE" = true ] || [ $((slot % $1)) -eq 0 ]; then
+              echo true
+            else
+              echo false
+            fi
+          }
+          {
+            echo "hn=$(due 3)"
+            echo "youtube=$(due 6)"
+            echo "papers=$(due 6)"
+            echo "reddit=$(due 6)"
+            echo "books=$(due 12)"
+          } >> "$GITHUB_OUTPUT"
       - name: Fetch hn
         id: fetch-hn
-        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '20 */3 * * *'
+        if: steps.round.outputs.hn == 'true'
         continue-on-error: true
         timeout-minutes: 5
         run: PYTHONPATH=tool/src python3 -m swe_digest fetch hn
       - name: Fetch youtube
         id: fetch-youtube
-        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '40 */6 * * *'
+        if: steps.round.outputs.youtube == 'true'
         continue-on-error: true
         timeout-minutes: 5
         run: PYTHONPATH=tool/src python3 -m swe_digest fetch youtube
       - name: Fetch papers
         id: fetch-papers
-        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '50 */6 * * *'
+        if: steps.round.outputs.papers == 'true'
         continue-on-error: true
         timeout-minutes: 5
         run: PYTHONPATH=tool/src python3 -m swe_digest fetch papers
       - name: Fetch books
         id: fetch-books
-        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '30 */12 * * *'
+        if: steps.round.outputs.books == 'true'
         continue-on-error: true
         timeout-minutes: 5
         run: PYTHONPATH=tool/src python3 -m swe_digest fetch books
       - name: Fetch reddit
         id: fetch-reddit
-        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '10 */6 * * *'
+        if: steps.round.outputs.reddit == 'true'
         continue-on-error: true
         # Sequential and rate-limit-spaced (about 7s per request) across ~28
         # subreddits and two listings, so it needs far more headroom than the
