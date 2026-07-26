@@ -28,6 +28,8 @@ SOURCE = Source(
     snapshot_dir=SNAPSHOTS / "papers",
     snapshot_max_age_hours=config.PAPERS_SNAPSHOT_MAX_AGE_HOURS,
     window_seconds=config.PAPERS_WINDOW_SECONDS,
+    snapshot_kind="papers",
+    pool_max_items=config.PAPERS_POOL_MAX_ITEMS,
 )
 
 API = "https://export.arxiv.org/api/query"
@@ -179,8 +181,15 @@ def main() -> int:
         ],
     )
 
-    print(f"papers: {len(papers['items'])} items via {papers['backend']}")
+    collections = run.pool({"papers": papers})
+    papers = collections["papers"]
+    pooled = (run.pooled or {}).get("added", {}).get("papers")
+
+    print(
+        f"papers: {len(papers['items'])} items"
+        f" via {papers['backend']}{f' (+{pooled} pooled)' if pooled else ''}"
+    )
     for paper in papers["items"][:15]:
         print(f"  {paper['category'] or '?':>8}  {paper['title']}  [{paper['url']}]")
 
-    return run.finish({"papers": papers})
+    return run.finish(collections)

@@ -31,6 +31,8 @@ SOURCE = Source(
     snapshot_dir=SNAPSHOTS / "youtube",
     snapshot_max_age_hours=config.YT_SNAPSHOT_MAX_AGE_HOURS,
     window_seconds=config.YT_WINDOW_SECONDS,
+    snapshot_kind="yt",
+    pool_max_items=config.YT_POOL_MAX_ITEMS,
 )
 
 FEED = "https://www.youtube.com/feeds/videos.xml?channel_id="
@@ -190,9 +192,19 @@ def main() -> int:
     if videos["backend"] == "youtube-rss" and videos["items"]:
         attach_discussion(videos["items"])
 
+    # Pooled after enrichment: an accumulated video already carries the
+    # discussion object from the run that fetched it, and the day's channel
+    # feeds are the point. A 48-hour RSS window still misses what an earlier
+    # run saw, and per-channel failures are silent here (fetch_all_channels
+    # only raises when every channel fails), so a partial live fetch was
+    # writing a partial day.
+    collections = run.pool({"videos": videos})
+    videos = collections["videos"]
+    pooled = (run.pooled or {}).get("added", {}).get("videos")
+
     print(
         f"videos: {len(videos['items'])} items from {len(channels)} channels"
-        f" via {videos['backend']}"
+        f" via {videos['backend']}{f' (+{pooled} pooled)' if pooled else ''}"
     )
     discussed = sum(1 for video in videos["items"] if video.get("discussion"))
     print(f"  {discussed} videos with Hacker News discussion")
@@ -206,4 +218,4 @@ def main() -> int:
             f"  {views:>8} views{stars}{hn}  {video['channel']}: {video['title']}  [{video['url']}]"
         )
 
-    return run.finish({"videos": videos})
+    return run.finish(collections)

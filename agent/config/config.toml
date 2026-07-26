@@ -42,6 +42,11 @@ description_max_chars = 2000
 # Cap on per-run Hacker News discussion lookups, ample for the ~50 video
 # window while bounding calls to the public Algolia API.
 discussion_lookups = 80
+# See [hn].pool_max_items. A 48-hour RSS window across 89 channels still misses
+# what an earlier run saw, and per-channel failures are silent, so the run
+# pools the day accumulator. Observed 41-61 videos a day, so this is a runaway
+# guard rather than a live constraint.
+pool_max_items = 200
 # Cap on the committed day accumulator (see snapshot_max_items under [hn]).
 # Observed 41-61 a day across the retained week.
 snapshot_max_items = 200
@@ -75,6 +80,13 @@ api_pause_seconds = 3
 window_hours = 72
 snapshot_max_age_hours = 24
 summary_max_chars = 2000
+# See [hn].pool_max_items, and unlike the other pools this one binds. The
+# accumulator reaches 500 to 900 entries on a heavy arXiv day against a
+# typical 130, and every pooled entry is read cost the run pays with no score
+# to rank it by. 300 keeps the newest slice (merging sorts by published_at
+# before truncating) without turning the papers cache into the largest thing
+# the run reads.
+pool_max_items = 300
 # Cap on the committed day accumulator (see snapshot_max_items under [hn]).
 # Papers swings hardest: a typical day holds 113-137 entries, but 2026-07-20,
 # 07-22 and 07-23 reached 541, 739 and 879. Those spikes are real arXiv
@@ -85,9 +97,18 @@ summary_max_chars = 2000
 snapshot_max_items = 1200
 
 [books]
-window_days = 7
+# 30 days, not 7 (issue #60). Books published nothing for 32 consecutive
+# digests because every item inside a 7-day window came from the Springer
+# feed, which is overwhelmingly LNCS proceedings the high bar excludes: the
+# two trade feeds publish far slower than weekly (Pragmatic's newest entry was
+# 16 days old on 2026-07-26, No Starch's about 5 months). The run never saw a
+# title it could publish. The wider window multiplies the proceedings volume
+# the bar already discards, which is the accepted cost.
+window_days = 30
 snapshot_max_age_hours = 36
 description_max_chars = 2000
+# See [hn].pool_max_items. Sparse feeds, so this is a runaway guard.
+pool_max_items = 150
 # Cap on the committed day accumulator (see snapshot_max_items under [hn]).
 # Observed 20-31 a day across the retained week; a wide runaway guard.
 snapshot_max_items = 150

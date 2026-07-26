@@ -29,6 +29,8 @@ SOURCE = Source(
     snapshot_dir=SNAPSHOTS / "books",
     snapshot_max_age_hours=config.BOOKS_SNAPSHOT_MAX_AGE_HOURS,
     window_seconds=config.BOOKS_WINDOW_SECONDS,
+    snapshot_kind="books",
+    pool_max_items=config.BOOKS_POOL_MAX_ITEMS,
 )
 
 DESCRIPTION_MAX_CHARS = config.BOOKS_DESCRIPTION_MAX_CHARS
@@ -160,8 +162,15 @@ def main() -> int:
         ],
     )
 
-    print(f"books: {len(books['items'])} items from {len(feeds)} feeds via {books['backend']}")
+    collections = run.pool({"books": books})
+    books = collections["books"]
+    pooled = (run.pooled or {}).get("added", {}).get("books")
+
+    print(
+        f"books: {len(books['items'])} items from {len(feeds)} feeds"
+        f" via {books['backend']}{f' (+{pooled} pooled)' if pooled else ''}"
+    )
     for book in books["items"][:15]:
         print(f"  {book['source']}: {book['title']}  [{book['url']}]")
 
-    return run.finish({"books": books})
+    return run.finish(collections)

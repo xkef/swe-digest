@@ -8,8 +8,9 @@ from pathlib import Path
 
 import pytest
 
-from swe_digest.fetch import books
+from swe_digest.fetch import books, hn, papers, reddit, stars, youtube
 from swe_digest.fetch.run import FetchRun, Source
+from swe_digest.snapshot import merge
 
 
 def _boom() -> list:
@@ -227,6 +228,25 @@ class TestPool:
         assert set(out["comments"]["items"]) == {"1", "2"}
 
 
+class TestPoolingIsWired:
+    """A fetcher with a committed accumulator must actually pool it.
+
+    ``snapshot_kind=None`` makes ``pool`` a no-op, and three fetchers held
+    that default while the snapshots workflow accumulated for them anyway:
+    on 2026-07-25 the youtube accumulator held 43 videos across 21 channels
+    and the digest run an hour later saw 9 and omitted the section. The
+    failure is silent by construction, so it is checked structurally.
+    """
+
+    def test_every_accumulating_fetcher_pools(self) -> None:
+        for module in (books, hn, papers, reddit, youtube):
+            assert module.SOURCE.snapshot_kind in merge.KINDS, module.SOURCE.name
+            assert module.SOURCE.pool_max_items > 0, module.SOURCE.name
+
+    def test_stars_has_no_accumulator_to_pool(self) -> None:
+        assert stars.SOURCE.snapshot_kind is None
+
+
 class TestBooksMainEndToEnd:
     def test_fresh_feed_to_cache_file(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
@@ -240,7 +260,11 @@ class TestBooksMainEndToEnd:
               <description>About depth.</description>
             </item>
         </channel></rss>"""
-        monkeypatch.setattr(books, "SOURCE", replace(books.SOURCE, cache_dir=tmp_path))
+        monkeypatch.setattr(
+            books,
+            "SOURCE",
+            replace(books.SOURCE, cache_dir=tmp_path, snapshot_dir=tmp_path / "snapshots"),
+        )
         monkeypatch.setattr(books, "fetch_bytes", lambda url: rss.encode())
         monkeypatch.setattr(books, "parse_feeds", lambda: [("Example", "https://example.com/rss")])
 
