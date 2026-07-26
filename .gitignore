@@ -2,19 +2,31 @@
 /dist/
 /public/
 /.zola-cache/
-# Derived by make stories (build-stories)
+
+# Derived by `make stories`, rebuilt on every build
 /site/data/
 /site/content/stories/
 /site/content/home/
+
 # Private and local-only
 PRIVATE_CONTEXT.md
 /.claude-notes/
+/.idea/
 .DS_Store
 *.tmp
-# Caches and run scratch
+
+# Collection scratch, and the unattended run's exported artifact
 /.cache/
 /.run/
+
+# Tool caches. Unanchored on purpose: the package lives under agent/, so these
+# appear there as well as at the root. Anchored to the root they were invisible
+# only because each tool writes a self-ignoring .gitignore inside its own cache.
 __pycache__/
-/.venv/
-/tool/.venv/
+.venv/
 .coverage
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.hypothesis/
+.rumdl_cache/
