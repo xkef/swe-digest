@@ -25,6 +25,7 @@ from claude_agent_sdk import McpSdkServerConfig, SdkMcpTool, create_sdk_mcp_serv
 
 from swe_digest import config
 from swe_digest.agent import catalog
+from swe_digest.fetch.run import count_items
 from swe_digest.paths import ROOT
 
 # Captured stdout/stderr per tool call. Enough for a full gate report, short
@@ -99,13 +100,6 @@ def _relative(path: Path) -> str:
     return str(path.relative_to(ROOT) if path.is_relative_to(ROOT) else path)
 
 
-def _count(items: Any) -> int:
-    """Items in a collection, list-shaped or map-shaped (comments, queries)."""
-    if isinstance(items, dict):
-        return sum(_count(value) for value in items.values())
-    return len(items) if isinstance(items, list) else 1
-
-
 def _summarize(cache_dir: Path) -> dict[str, Any]:
     """Counts and degradation from the envelope a fetcher just wrote.
 
@@ -128,7 +122,7 @@ def _summarize(cache_dir: Path) -> dict[str, Any]:
         "cache_path": _relative(latest),
         "fetched_at": envelope.get("fetched_at"),
         "degraded": envelope.get("degraded", []),
-        "counts": {name: _count(body.get("items", [])) for name, body in collections.items()},
+        "counts": {name: count_items(body.get("items", [])) for name, body in collections.items()},
         "backends": {
             name: body.get("backend") for name, body in collections.items() if body.get("backend")
         },
