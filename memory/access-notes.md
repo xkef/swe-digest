@@ -38,8 +38,13 @@ execution environment (cloud datacenter IP ranges).
   does not cover Actions egress. Fallback order for unattended runs: committed
   HN snapshot from the scheduled Actions fetch, then WebSearch supplementation
   with the degradation stated in Sources checked. Last seen 2026-06-29.
-- `blog.cloudflare.com` - 200 locally; remote fallback WebSearch summaries.
-  Last seen 2026-06-29.
+- `blog.cloudflare.com` - returned 200 to a plain urllib request with a browser
+  User-Agent and to WebFetch from the run environment on 2026-07-26, so the
+  earlier datacenter-403 note no longer holds. Caveat: every post embeds the
+  site's full tag cloud inside the `<article>` element, so naive text
+  extraction returns thousands of tag names before any prose; search the
+  stripped text for a section heading instead of slicing from the start.
+  Last seen 2026-07-26.
 - `www.cloudflare.com` - path pages like /agents-week/updates/.
   Last seen 2026-06-29.
 - `techcrunch.com` - cross-reference with primary sources when remote.
@@ -70,6 +75,29 @@ execution environment (cloud datacenter IP ranges).
   count, after `seed.radicle.xyz` had 404'd for the same rid. Delegate aliases
   are self-declared, so they do not by themselves establish who publishes a
   repository. Last seen 2026-07-25.
+- `lore.kernel.org` - kernel mailing-list archives sit behind an Anubis
+  proof-of-work gate; any automated fetch gets the challenge page and no
+  message text. A kernel-list thread therefore cannot be cited directly from
+  this environment; take the quoted content from a secondary write-up
+  (Phoronix, LWN) and say so. Verified 2026-07-26. Last seen 2026-07-26.
+- `www.reuters.com` - article bodies return HTTP 401 to a plain fetch and
+  WebFetch is refused outright from the run environment. Reuters exclusives
+  reach the digest through outlets that cite them (Engadget, Fortune, AP);
+  link the canonical Reuters URL alongside the corroborating outlet and state
+  which one was actually read. Verified 2026-07-26. Last seen 2026-07-26.
+- `www.bloomberg.com` - article bodies return HTTP 403 from the run
+  environment. Fortune reliably carries Bloomberg wire stories in full and
+  fetched 200 on 2026-07-26 (used for the DeepSeek funding pause); use it as
+  the readable route. Last seen 2026-07-26.
+- `www.phoronix.com` - the `rss.php` feed and article pages both return 200 to
+  a plain urllib request, but a Linux/X11 browser User-Agent worked on
+  2026-07-26 where a macOS one had returned an empty body, and the article
+  text is not inside any single container element: strip tags across the whole
+  page and search for the headline string. Last seen 2026-07-26.
+- Reddit post permalinks (`www.reddit.com/r/{sub}/comments/...`) return HTTP 403
+  to automated fetch even when the RSS feed that produced them succeeded. The
+  permalink is still the correct discussion link to publish; do not try to
+  re-fetch it for verification. Last seen 2026-07-26.
 - `www.zerodayinitiative.com` - returns 403 from datacenter; use as WebSearch
   snippet source only; confirm from MSRC directly. Last seen 2026-06-29.
 - `blog.talosintelligence.com` - returns 403 from datacenter; use as WebSearch
