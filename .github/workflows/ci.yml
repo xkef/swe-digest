@@ -48,6 +48,13 @@ jobs:
         run: uv run pytest
         working-directory: agent
 
+      # requirements-agent.txt is a flat pinned file, so a dependabot bump of
+      # one transitive pin can contradict another package's exact peer pin and
+      # still look green. Nothing else in CI installs it; the first failure
+      # would otherwise be the unattended digest run.
+      - name: Agent requirements resolve
+        run: python3 -m pip install --dry-run --require-hashes -r agent/requirements-agent.txt
+
   site:
     runs-on: ubuntu-latest
     timeout-minutes: 15
