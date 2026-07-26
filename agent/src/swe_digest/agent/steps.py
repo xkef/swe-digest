@@ -22,18 +22,19 @@ comes before or after it, which is what keeps the order readable in one place.
 import json
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from importlib import import_module
 from typing import Any
 
 from swe_digest import config
 from swe_digest.agent import catalog, net
-from swe_digest.digest import runs
+from swe_digest.digest import document, runs
 from swe_digest.digest.backtest import main as score_day
 from swe_digest.digest.canonical import fmt_run
 from swe_digest.digest.new import main as new_digest
 from swe_digest.digest.prune import main as compact_run_logs
 from swe_digest.digest.run_log import main as write_run_log
+from swe_digest.digest.run_log import seed_judgment
 from swe_digest.digest.weekly_stats import main as aggregate_window
 from swe_digest.feedback import process as owner_feedback
 from swe_digest.gate.check_content import main as check_content
@@ -162,6 +163,61 @@ def _feedback(run: Run) -> str:
 
 
 # ---------------------------------------------------------------- finalize
+
+
+def _record_edits(run: Run) -> str:
+    """What this run changed about the day's page, and why.
+
+    A day is written by three or four runs against one page, so the published
+    digest shows only the final state. Without this, the record cannot answer
+    the question the budget makes worth asking: did a later run displace a
+    weaker story for a stronger one, or did it simply stop adding once the page
+    was full? The counts come from the page, the reasons from the selection,
+    and the two are recorded separately so a claimed displacement that never
+    happened is visible rather than assumed.
+
+    Runs before ``run_log``, which rewrites ``mechanical.digest`` from the page
+    as it now stands; the titles it left there last time are this run's
+    before-state.
+    """
+    path = document.digest_path(run.day)
+    if not path.exists():
+        raise Skipped("no digest to compare")
+    record = runs.load_run_log(run.day)
+    mechanical = record.setdefault("mechanical", {})
+    before = list((mechanical.get("digest") or {}).get("titles") or [])
+    after = document.parse(path.read_text(encoding="utf-8")).titles
+
+    asked = {
+        entry["title"]: entry.get("reason", "")
+        for entry in (run.selection or {}).get("displace") or []
+        if isinstance(entry, dict) and entry.get("title")
+    }
+    gone = [title for title in before if title not in after]
+    entry: dict[str, Any] = {
+        "at": datetime.now(UTC).isoformat(timespec="seconds"),
+        "before": len(before),
+        "after": len(after),
+        "added": [title for title in after if title not in before],
+        "displaced": [{"title": title, "reason": asked[title]} for title in gone if title in asked],
+    }
+    # A block that left the page without being named, and a block named for
+    # removal that is still there: both are the write step and the selection
+    # disagreeing, and neither is visible from the digest itself.
+    unexplained = [title for title in gone if title not in asked]
+    kept = [title for title in asked if title in after]
+    if unexplained:
+        entry["removed_unexplained"] = unexplained
+    if kept:
+        entry["displace_not_applied"] = kept
+
+    mechanical.setdefault("edits", []).append(entry)
+    seed_judgment(record)
+    runs.save_run_log(run.day, record)
+    return (
+        f"{len(entry['added'])} added, {len(entry['displaced'])} displaced,"
+        f" {len(after)} on the page"
+    )
 
 
 def _run_log(run: Run) -> str:

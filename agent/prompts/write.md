@@ -41,17 +41,19 @@ Bold each field label as shown. The site styles the bold label as the row
 header. `Category` and `Status` take one of the listed values and nothing else:
 the gate rejects a one-off, and the site groups on the category.
 
-The day is bounded: at most {{max_stories}} stories in the digest and at most
-{{max_section_stories}} in any section other than {{uncapped_sections}}, which
-are exempt. The gate enforces both, and they count what earlier runs of the
-same date already published.
+The day is bounded: at most {{max_stories}} stories outside
+{{unbudgeted_sections}}, and at most {{max_section_stories}} in any section
+other than {{uncapped_sections}}. The gate enforces both, counting what earlier
+runs of the same date already published.
 
-The selection's `displace` list names blocks to remove for the stories it adds.
-Delete each named block whole, add the new stories, and refresh
-`source_count`. Displace nothing that is not on that list, and never touch a
+The selection's `displace` list carries a title and a reason for each block it
+replaces. Delete every named block whole, add the new stories, and refresh
+`source_count`. Remove nothing that is not on that list, and never touch a
 digest for an earlier date. When `displace` is empty and the digest is at a
 bound, the selection is already inside it: add nothing rather than trimming on
-your own judgment.
+your own judgment. The run log records what the page gained and lost against
+that list, so a block dropped without being named, or named and left in place,
+shows up as a disagreement afterwards.
 
 Each story appears once. The gate rejects two `### story` blocks sharing a title
 or a primary source URL, and caps `Top stories` at {{max_top_stories}};

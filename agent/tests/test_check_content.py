@@ -215,19 +215,42 @@ def budget_digest(repo_tree: Path, sections: dict[str, int]) -> None:
     later_digest(repo_tree, with_source_count(text), date=BUDGET_DATE)
 
 
+BUDGETED_SECTIONS = (
+    "AI",
+    "ML research",
+    "Agentic coding",
+    "Developer tools",
+    "Languages and runtimes",
+    "Apple platforms",
+    "Infrastructure",
+    "Engineering posts",
+)
+
+
 def test_day_budget_over_cap_fails(repo_tree: Path) -> None:
-    # Spread across sections so only the day total is over: the volume the
-    # digest ratcheted to across four runs on 2026-07-25.
-    over = config.DIGEST_MAX_STORIES + 4
-    sections = {"AI": 4, "Agentic coding": 4, "Developer tools": 4, "Security": over - 12}
-    budget_digest(repo_tree, sections)
+    # Spread at the per-section cap so only the day total is over: the volume
+    # the digest ratcheted to across four runs on 2026-07-25.
+    per = config.DIGEST_MAX_SECTION_STORIES
+    needed = config.DIGEST_MAX_STORIES // per + 1
+    budget_digest(repo_tree, dict.fromkeys(BUDGETED_SECTIONS[:needed], per))
     assert main(root=repo_tree) == 1
 
 
 def test_day_budget_at_cap_passes(repo_tree: Path) -> None:
-    # The Top stories fixture story counts too, so this lands exactly on it.
-    sections = {"Security": config.DIGEST_MAX_STORIES - 1}
-    budget_digest(repo_tree, sections)
+    # Outages is exempt from the per-section cap and still inside the budget,
+    # so it can fill the day on its own. The Top stories fixture story counts
+    # too, so this lands exactly on the bound.
+    budget_digest(repo_tree, {"Outages": config.DIGEST_MAX_STORIES - 1})
+    assert main(root=repo_tree) == 0
+
+
+def test_security_is_outside_the_day_budget(repo_tree: Path) -> None:
+    # Advisories are not editorial volume: a heavy advisory day must not cost
+    # the reader the rest of the digest.
+    budget_digest(
+        repo_tree,
+        {"Outages": config.DIGEST_MAX_STORIES - 1, "Security": config.DIGEST_MAX_STORIES},
+    )
     assert main(root=repo_tree) == 0
 
 

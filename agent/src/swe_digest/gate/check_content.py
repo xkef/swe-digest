@@ -26,6 +26,7 @@ from swe_digest.digest.document import (
     SECTION_VOCABULARY,
     SECTIONS,
     STORY_STATUSES,
+    UNBUDGETED_SECTIONS,
     UNCAPPED_SECTIONS,
     Digest,
     Story,
@@ -210,15 +211,20 @@ def check_budget(path: Path, digest: Digest) -> list[str]:
     adds a story by displacing the weakest one in its section, which is a
     ranking decision the gate cannot make and the prompts state. What the gate
     can do is make the budget real, which prose alone did not.
+
+    Security is outside the budget: advisories are not editorial volume, and
+    counting them made a heavy advisory day cost the reader everything else.
     """
     if path.parent.name < MAX_STORIES_SINCE:
         return []
     errors = []
-    total = sum(digest.section_counts.values())
+    total = sum(
+        count for name, count in digest.section_counts.items() if name not in UNBUDGETED_SECTIONS
+    )
     if total > MAX_STORIES:
         errors.append(
-            f"{path}: {total} stories; the day budget is {MAX_STORIES}."
-            f" Drop the weakest, do not pad"
+            f"{path}: {total} stories outside {', '.join(UNBUDGETED_SECTIONS)};"
+            f" the day budget is {MAX_STORIES}. Drop the weakest, do not pad"
         )
     errors.extend(
         f"{path}: section '{name}' has {count} stories; the cap is {MAX_SECTION_STORIES}"

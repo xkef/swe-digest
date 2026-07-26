@@ -46,6 +46,7 @@ def values() -> dict[str, str]:
         "max_stories": str(document.MAX_STORIES),
         "max_section_stories": str(document.MAX_SECTION_STORIES),
         "uncapped_sections": " and ".join(document.UNCAPPED_SECTIONS),
+        "unbudgeted_sections": " and ".join(document.UNBUDGETED_SECTIONS),
         "anchor_sections": ", ".join(document.ANCHOR_SECTIONS),
     }
 

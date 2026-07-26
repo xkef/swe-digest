@@ -542,3 +542,99 @@ def test_the_daily_run_gates_before_it_commits() -> None:
     assert names.index("format") < names.index("gate")
     for stage in specs.STAGE_ORDER:
         assert names.index(stage) < names.index("gate")
+
+
+# ------------------------------------------------- what a run changed, and why
+
+EDIT_DAY = "2026-07-27"
+
+
+def edits_tree(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, titles: list[str], before: list[str] | None
+) -> Path:
+    """A digest carrying `titles` and a run log recording `before` as the page
+    state the previous run left."""
+    from swe_digest.digest import document, runs
+
+    digests = tmp_path / "digests"
+    (digests / EDIT_DAY).mkdir(parents=True)
+    body = "\n".join(
+        f"## Top stories\n\n### {title}\n" if n == 0 else f"### {title}\n"
+        for n, title in enumerate(titles)
+    )
+    (digests / EDIT_DAY / "index.md").write_text(f"+++\ndate = {EDIT_DAY}\n+++\n\n{body}")
+    runs_dir = tmp_path / "runs"
+    runs_dir.mkdir()
+    monkeypatch.setattr(document, "DIGESTS", digests)
+    monkeypatch.setattr(runs, "RUNS_DIR", runs_dir)
+    if before is not None:
+        runs.save_run_log(
+            EDIT_DAY,
+            {"date": EDIT_DAY, "mechanical": {"digest": {"titles": before}}},
+        )
+    return runs_dir
+
+
+def edit_entry(runs_dir: Path) -> dict[str, Any]:
+    from swe_digest.digest import runs
+
+    entry: dict[str, Any] = runs.load_run_log(EDIT_DAY)["mechanical"]["edits"][-1]
+    return entry
+
+
+def test_the_first_run_of_a_day_records_every_story_as_added(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    runs_dir = edits_tree(tmp_path, monkeypatch, ["One", "Two"], before=None)
+
+    steps._record_edits(steps.Run(day=EDIT_DAY))
+
+    entry = edit_entry(runs_dir)
+    assert entry["added"] == ["One", "Two"]
+    assert entry["displaced"] == []
+    assert (entry["before"], entry["after"]) == (0, 2)
+
+
+def test_a_displacement_is_recorded_with_the_reason_the_selection_gave(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    runs_dir = edits_tree(tmp_path, monkeypatch, ["Strong"], before=["Weak"])
+    state = steps.Run(day=EDIT_DAY)
+    state.selection = {"displace": [{"title": "Weak", "reason": "outranked by Strong"}]}
+
+    steps._record_edits(state)
+
+    entry = edit_entry(runs_dir)
+    assert entry["added"] == ["Strong"]
+    assert entry["displaced"] == [{"title": "Weak", "reason": "outranked by Strong"}]
+    assert "removed_unexplained" not in entry
+
+
+def test_a_story_that_vanished_without_being_named_is_flagged(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The selection and the write step disagreeing is invisible in the digest
+    itself, and it is exactly what the record exists to surface."""
+    runs_dir = edits_tree(tmp_path, monkeypatch, ["Kept"], before=["Kept", "Vanished"])
+
+    steps._record_edits(steps.Run(day=EDIT_DAY))
+
+    assert edit_entry(runs_dir)["removed_unexplained"] == ["Vanished"]
+
+
+def test_a_displacement_the_write_step_ignored_is_flagged(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    runs_dir = edits_tree(tmp_path, monkeypatch, ["Weak"], before=["Weak"])
+    state = steps.Run(day=EDIT_DAY)
+    state.selection = {"displace": [{"title": "Weak", "reason": "outranked"}]}
+
+    steps._record_edits(state)
+
+    assert edit_entry(runs_dir)["displace_not_applied"] == ["Weak"]
+
+
+def test_edits_are_recorded_before_the_run_log_overwrites_the_page_state() -> None:
+    names = [step.name for step in pipeline.DAILY]
+
+    assert names.index("edits") < names.index("run_log")

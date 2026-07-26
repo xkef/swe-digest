@@ -77,9 +77,18 @@ MAX_SECTION_STORIES: int = config.DIGEST_MAX_SECTION_STORIES
 # Sections the per-section cap does not apply to. Both are risk sections the
 # digest is expected to state in full: a day with twelve advisories or four
 # concurrent incidents is what the reader came for, and truncating it would
-# hide operational fact rather than trim padding. They are still inside the
-# day budget. Top stories has its own, lower cap.
+# hide operational fact rather than trim padding. Top stories has its own,
+# lower cap.
 UNCAPPED_SECTIONS = ("Security", "Outages")
+
+# Sections outside the day budget entirely. Exempting Security from the
+# per-section cap was not enough: a twelve-advisory day still consumed twelve
+# of the day's slots, so the budget silently traded advisories against
+# everything else. Security is not editorial volume that competes with the
+# rest of the digest, so it does not count. Outages is capped-exempt but still
+# budgeted, on the grounds that an incident count is bounded by the day while
+# an advisory count is bounded by whoever published that morning.
+UNBUDGETED_SECTIONS = ("Security",)
 
 # The story block, in field order. Rendered into the skeleton and into the
 # write prompt, so both describe the same shape by construction.

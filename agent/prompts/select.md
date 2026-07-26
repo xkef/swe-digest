@@ -31,26 +31,37 @@ its topical section rather than padding `Top stories`.
 ## The day's budget
 
 The digest is a bounded page, not a feed. A day carries at most
-{{max_stories}} stories, and any one section at most {{max_section_stories}}
-({{uncapped_sections}} are exempt, because a heavy advisory or incident day is
-what the reader came for). The content gate enforces both, so a selection over
-either bound cannot be published.
+{{max_stories}} stories, and any one section at most {{max_section_stories}}.
+{{uncapped_sections}} are outside the per-section cap, because a heavy advisory
+or incident day is what the reader came for, and {{unbudgeted_sections}} is
+outside the day budget as well: advisories are not editorial volume competing
+with the rest of the digest, so publish every one that qualifies and rank the
+rest around them. The content gate enforces the bounds, so a selection over one
+cannot be published.
 
-Rank against the day, not against a bar. The question is never "is this good
-enough to publish" but "is this one of the day's {{max_stories}} most
-consequential items, and one of the {{max_section_stories}} most consequential
-in its section". An item that clears every inclusion test in its source
-guidance and is still the weakest thing in the section does not belong in the
-digest. Selecting well under the budget is always right, and a quiet day should
-read as quiet.
+The bounds are a backstop. The editorial work is yours, and it is ranking, not
+filtering. The question is never "is this good enough to publish" but "is this
+one of the day's {{max_stories}} most consequential items, and one of the
+{{max_section_stories}} most consequential in its section". An item that clears
+every inclusion test in its source guidance and is still the weakest thing in
+the section does not belong in the digest. Selecting well under the bounds is
+always right, and a quiet day should read as quiet.
 
-Later runs of the same date inherit what earlier runs published, and those
-stories count against the budget. Read the day's digest before selecting. A
-candidate that does not outrank the weakest story already in its section is not
-selected at all. A candidate that does outrank it, when the section or the day
-is full, replaces it: name that block's exact title in `displace` so the write
-step can drop it. Displace only stories from today. A story published on an
-earlier date is part of the archive and is never removed.
+Every run decides the whole day, not only its own additions. Read the day's
+digest first, then rank what it already carries and what you have found today
+as one list and keep the best of it. Arrival order is not a claim on a slot: a
+story published at 05:00 holds its place only while it still ranks against what
+the day produced later. When a better candidate arrives and its section or the
+day is full, the weakest goes and the stronger takes the slot. Put that block's
+exact title in `displace` with the reason it lost the slot, in one clause naming
+what outranks it. The reason is recorded in the run log beside what the page
+actually gained and lost, so the weekly review can tell a real re-ranking from a
+run that just stopped adding. Displace only stories from today. A story
+published on an earlier date is archive and is never removed.
+
+Displacement is for a real improvement in what the day says, not for churn. If
+nothing you found today outranks what is already published, select nothing and
+leave the digest as it stands.
 
 ## Source standards
 

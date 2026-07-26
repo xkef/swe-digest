@@ -111,6 +111,9 @@ def main(date: str | None = None) -> int:
     mechanical["hn"] = hn_record
     mechanical["digest"] = {
         "sections": digest.section_counts,
+        # The page as it stands, so the next run of the day can say what it
+        # changed rather than only what it left behind (mechanical.edits).
+        "titles": digest.titles,
         "source_count": digest.source_count,
         "hn_ids": digest.hn_ids,
         "domains": sorted({u.split("/")[0] for u in digest.urls}),

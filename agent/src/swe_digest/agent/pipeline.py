@@ -47,6 +47,8 @@ DAILY: tuple[Step, ...] = (
     specs.STAGES["select"],
     specs.STAGES["write"],
     specs.STAGES["review"],
+    # Before run_log, which overwrites the page state this compares against.
+    Code("edits", steps._record_edits),
     Code("run_log", steps._run_log),
     Code("reading", steps._record_reading),
     Code("prune", steps._prune),

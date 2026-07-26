@@ -57,11 +57,27 @@ SELECTION: dict[str, Any] = {
         # runs of the same date have already used part of the budget, which
         # only the prompt can account for.
         "stories": {"type": "array", "maxItems": MAX_STORIES, "items": STORY},
+        # Each displacement carries its reason, so the record says why the day
+        # changed rather than only that it did. The weekly review reads these.
         "displace": {
             "type": "array",
-            "items": {"type": "string"},
+            "items": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "exact title of a block in today's digest to remove",
+                    },
+                    "reason": {
+                        "type": "string",
+                        "description": "what outranks it, in one clause",
+                    },
+                },
+                "required": ["title", "reason"],
+                "additionalProperties": False,
+            },
             "description": (
-                "titles of stories already in today's digest this selection replaces,"
+                "stories already in today's digest this selection replaces,"
                 " when its section or the day budget is full"
             ),
         },

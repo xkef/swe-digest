@@ -17,10 +17,12 @@ Before publishing, verify:
 - The digest has 3 to {{max_top_stories}} top stories unless the day is
   unusually quiet, ranked strongest first, with the lead being the day's single
   most significant item.
-- The day is inside its budget ({{max_stories}} stories, {{max_section_stories}}
-  per section outside {{uncapped_sections}}), and the weakest story in each
-  section still earns its place. A digest at the budget full of marginal items
-  is a worse failure than a short one: report the blocks to drop.
+- The day is inside its bounds ({{max_stories}} stories outside
+  {{unbudgeted_sections}}, {{max_section_stories}} per section outside
+  {{uncapped_sections}}), and the weakest story in each section still earns its
+  place against everything the day produced, whichever run published it. The
+  digest is the day's best, not its earliest. A page at the budget full of
+  marginal items is a worse failure than a short one: name the blocks to drop.
 - Every story has at least one source.
 - Primary sources precede discussion links.
 - Rumors and discussions are labeled.
