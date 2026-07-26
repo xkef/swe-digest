@@ -71,7 +71,7 @@ def test_no_stage_is_granted_a_shell_or_the_open_web() -> None:
     fetch proxy is bypassed, and the grants stop meaning anything.
     """
     for spec in specs.STAGES.values():
-        for denied in ("Bash", "BashOutput", "WebFetch", "WebSearch", "Task", "NotebookEdit"):
+        for denied in specs.UNGRANTABLE:
             assert denied not in spec.allowed_tools, f"{spec.name} grants {denied}"
 
 
@@ -146,13 +146,22 @@ IMPORT_GUARD = textwrap.dedent(
 
     sys.meta_path.insert(0, Blocked())
 
+    import asyncio
+
     import swe_digest.cli
     import swe_digest.gate.check_content
     import swe_digest.gate.publish_run
-    from swe_digest.agent import pipeline, specs
+    from swe_digest.agent import pipeline, specs, steps
 
     swe_digest.cli.build_parser()
     pipeline.dry_run("2026-07-25", specs.STAGE_ORDER)
+
+    # A pipeline of code steps alone must drive to completion, which is what
+    # keeps the server's import lazy rather than lazy-looking.
+    state = steps.Run(day="2026-07-25")
+    asyncio.run(pipeline._drive(state, (steps.Code("noop", lambda run: "ok"),)))
+    assert [(r.name, r.ok) for r in state.results] == [("noop", True)], state.results
+
     print("BOUNDARY OK")
     """
 )

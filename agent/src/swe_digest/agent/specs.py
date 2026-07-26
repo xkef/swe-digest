@@ -451,6 +451,19 @@ GRANTS: dict[str, tuple[str, ...]] = {
 # The one step that may put bytes in the digest.
 WRITES_DIGEST = {"write"}
 
+# What no step may ever hold. Today's action-driven run grants unrestricted
+# Bash, WebFetch, and WebSearch; if a stage regains any of them the shell is
+# back, or the audited fetch proxy is bypassed, and the grants stop meaning
+# anything. Named here once so the dry run and the test read the same list.
+UNGRANTABLE: tuple[str, ...] = (
+    "Bash",
+    "BashOutput",
+    "WebFetch",
+    "WebSearch",
+    "Task",
+    "NotebookEdit",
+)
+
 
 def _stage(name: str, settings: dict[str, Any]) -> StageSpec:
     """One stage from its config entry, with the grant taken from ``GRANTS``."""
