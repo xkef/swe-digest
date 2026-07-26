@@ -23,7 +23,7 @@ import asyncio
 import json
 import sys
 from collections import deque
-from collections.abc import Collection, Sequence
+from collections.abc import Callable, Collection, Sequence
 from typing import Any
 
 from swe_digest.agent import auth, catalog, net, prompts, specs, steps
@@ -165,7 +165,7 @@ def _repair(spec: specs.StageSpec, run: Run, stages: Collection[str]) -> tuple[s
     return ("write", "review")
 
 
-async def _model_step(spec: specs.StageSpec, run: Run, server: object) -> StepResult:
+async def _model_step(spec: specs.StageSpec, run: Run, server: Callable[[], object]) -> StepResult:
     """One stage: one query, fresh context, bounded turns.
 
     A stage that raises fails the stage and nothing else. The SDK raises on a
@@ -173,15 +173,21 @@ async def _model_step(spec: specs.StageSpec, run: Run, server: object) -> StepRe
     losing the run log, the gate, and the manifest for work that was already on
     disk. Whatever the stage managed to do stands; the pipeline goes on to
     validate it.
+
+    The SDK is imported inside the guard, and ``server`` is a factory called
+    there rather than a value built before the loop, because an SDK that will not
+    load is a stage failure for exactly the same reason a turn limit is. Both
+    used to sit outside it, and both were a way to lose the run log after all the
+    collection had already been paid for.
     """
-    from claude_agent_sdk import ResultMessage, query
-
-    from swe_digest.agent.options import build
-
     detail = ""
     used_in = used_out = 0
     try:
-        options = build(spec, server, run.day)  # type: ignore[arg-type]
+        from claude_agent_sdk import ResultMessage, query
+
+        from swe_digest.agent.options import build
+
+        options = build(spec, server(), run.day)  # type: ignore[arg-type]
         async for message in query(prompt=_task(spec, run), options=options):
             if isinstance(message, ResultMessage):
                 detail = str(getattr(message, "result", "") or "")
@@ -217,12 +223,23 @@ def _report(result: StepResult) -> None:
     print(f"   {result.name:<18} {result.detail}", file=sys.stderr)
 
 
-def _server() -> object:
-    """The in-process MCP server, built on the first stage that needs one.
-    Imported here so a pipeline of code steps alone needs no SDK."""
-    from swe_digest.agent.tools import build_server
+def _lazy_server() -> Callable[[], object]:
+    """One tool server per run, built on the first stage that actually needs it.
 
-    return build_server()
+    A factory so the import stays lazy — a pipeline of code steps alone needs no
+    SDK — and so failing to build one is reported by the stage that asked.
+    """
+    built: object = None
+
+    def server() -> object:
+        nonlocal built
+        if built is None:
+            from swe_digest.agent.tools import build_server
+
+            built = build_server()
+        return built
+
+    return server
 
 
 async def _drive(run: Run, steps: Sequence[Step]) -> None:
@@ -234,7 +251,7 @@ async def _drive(run: Run, steps: Sequence[Step]) -> None:
     """
     stages = {step.name for step in steps if isinstance(step, specs.StageSpec)}
     queue: deque[Step] = deque(steps)
-    server: object | None = None
+    server = _lazy_server()
 
     while queue:
         step = queue.popleft()
@@ -247,8 +264,6 @@ async def _drive(run: Run, steps: Sequence[Step]) -> None:
                 )
             case specs.StageSpec():
                 print(f"-- {step.name}", file=sys.stderr)
-                if server is None:
-                    server = _server()
                 result = await _model_step(step, run, server)
                 if result.ok:
                     _absorb(step, result, run)

@@ -6,8 +6,8 @@ what it asks the publish job to do, which steps a failure is allowed to stop,
 and the fact that the selection reaches the write step as data rather than as a
 hope.
 
-The driver is exercised by standing in for ``_model_step`` and ``_server``, so
-every test here runs without an SDK, a session, or a network.
+The driver is exercised by standing in for ``_model_step``, so every test here
+runs without an SDK, a session, or a network.
 """
 
 import asyncio
@@ -365,7 +365,6 @@ def _stub_stages(
         return steps.StepResult(spec.name, True, json.dumps(payload or {}), data=payload)
 
     monkeypatch.setattr(pipeline, "_model_step", model_step)
-    monkeypatch.setattr(pipeline, "_server", lambda: object())
 
 
 def test_a_stage_is_skipped_after_an_earlier_stage_failed(
@@ -405,11 +404,35 @@ def test_a_stage_that_raises_fails_the_stage_not_the_run() -> None:
     with pytest.MonkeyPatch.context() as patch:
         patch.setattr(options_module, "build", explode)
         result = asyncio.run(
-            pipeline._model_step(specs.STAGES["review"], steps.Run(day="2026-07-25"), object())
+            pipeline._model_step(
+                specs.STAGES["review"], steps.Run(day="2026-07-25"), lambda: object()
+            )
         )
 
     assert not result.ok
     assert "maximum number of turns" in result.detail
+
+
+def test_a_tool_server_that_will_not_build_fails_the_stage_not_the_run(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Reachable, not theoretical: on an interpreter the SDK's own dependencies
+    do not support, `import claude_agent_sdk` raises. Resolved before the loop,
+    that took down a run which had already paid for all of its collection.
+    """
+
+    def refuse() -> object:
+        raise ImportError("claude_agent_sdk is not installed")
+
+    monkeypatch.setattr(pipeline, "_lazy_server", lambda: refuse)
+
+    state = drive(steps.Run(day="2026-07-25"), specs.STAGES["select"], ok("manifest"))
+
+    assert [(result.name, result.ok) for result in state.results] == [
+        ("select", False),
+        ("manifest", True),
+    ]
+    assert state.results[0].detail, "the stage must say what went wrong"
 
 
 def test_a_code_step_still_runs_after_a_stage_failed(monkeypatch: pytest.MonkeyPatch) -> None:
