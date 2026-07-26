@@ -1,8 +1,9 @@
 # Developing this repository
 
 How to work on the code. **This file is not the digest routine.** There is no
-routine document: the order of work is Python (`agent/.../agent/pipeline.py`)
-and each step's prompt in `agent/prompts/` covers only what that step decides.
+routine document: the order of work is Python — one ordered list per mode in
+`agent/.../agent/pipeline.py` — and each step's prompt in `agent/prompts/`
+covers only what that step decides.
 
 ## Layout
 
@@ -41,13 +42,30 @@ PYTHONPATH=agent/src python3 -m swe_digest ...   # CI, no install
 swe-digest ...                                   # installed environments
 ```
 
-`agent/src/swe_digest/cli.py` owns all argument parsing; the modules expose
-plain functions, and command handlers import lazily so a minimal environment
-can run the fetchers and the gate with nothing installed.
+`agent/src/swe_digest/cli.py` owns all argument parsing. Each command declares
+its arguments and its handler in the same place, and the handlers resolve their
+module on first call, so a minimal environment can run the fetchers and the gate
+with nothing installed.
 
 `swe-digest agent run --dry-run` prints the resolved configuration of a run —
-every step, its prompt, turn bound, tool grant, and write allowlist — without
-opening a session. It is the fastest way to see what a change did.
+every step in order, and for each model stage its prompt, turn bound, tool
+grant, and write allowlist — without opening a session. It is the fastest
+way to see what a change did.
+
+### The agent package
+
+Four files carry the shape of a run, and it is worth knowing which is which:
+
+| File | What it owns |
+|---|---|
+| `agent/steps.py` | the work, as steps, with no opinion about their order |
+| `agent/pipeline.py` | the order, the driver, and the report |
+| `agent/catalog.py` | the tool surface and the prose the model reads |
+| `agent/specs.py` | what a step may do: the grant per step, the turn ceiling |
+
+A step returns the one line the report shows and raises to fail: `StepError`
+for a failure, `Skipped` for correctly doing nothing. No step builds its own
+result, so the driver owns every error path.
 
 ## Conventions
 

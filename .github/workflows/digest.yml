@@ -74,9 +74,10 @@ jobs:
           git config user.name "swe-digest-agent"
           git config user.email "actions@users.noreply.github.com"
 
-      # Collection, the backtest, feedback, the run log, formatting, the gate,
-      # and the commit run as Python; each model step gets its own prompt, tool
-      # grant, turn bound, and write allowlist, and no step has a shell.
+      # One ordered list of steps per mode. Collection, the backtest, feedback,
+      # the run log, formatting, the gate, and the commit are Python; each model
+      # stage gets its own prompt, tool grant, turn bound, and write allowlist,
+      # and no step has a shell. `agent run --dry-run` prints the whole list.
       # CLAUDE_CODE_OAUTH_TOKEN bills the subscription, not the API.
       - name: Run the routine
         env:
