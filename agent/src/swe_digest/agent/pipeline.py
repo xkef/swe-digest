@@ -199,7 +199,15 @@ async def _model_step(spec: specs.StageSpec, run: Run, server: Callable[[], obje
 
     data = _parse(spec, detail)
     if spec.schema and data is None:
-        return StepResult(spec.name, False, f"{spec.name} returned no valid {spec.schema}")
+        # With the tokens: this stage spent them, and dropping them printed a
+        # blank usage column next to a stage that had in fact done the work.
+        return StepResult(
+            spec.name,
+            False,
+            f"{spec.name} returned no valid {spec.schema}: {detail[:500]}",
+            used_in,
+            used_out,
+        )
     return StepResult(spec.name, True, detail[:2000], used_in, used_out, data)
 
 
