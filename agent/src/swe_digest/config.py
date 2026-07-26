@@ -81,6 +81,9 @@ EVENTS_SOON_DAYS: int = _raw["events"]["soon_days"]
 
 # Digest document vocabulary (section order stays in digest.document)
 DIGEST_MAX_TOP_STORIES: int = _raw["digest"]["max_top_stories"]
+DIGEST_MAX_STORIES: int = _raw["digest"]["max_stories"]
+DIGEST_MAX_SECTION_STORIES: int = _raw["digest"]["max_section_stories"]
+DIGEST_MAX_STORIES_SINCE: str = _raw["digest"]["max_stories_since"]
 DIGEST_CATEGORIES: list[str] = _raw["digest"]["categories"]
 DIGEST_SOURCES_CHECKED: list[str] = _raw["digest"]["sources_checked"]
 

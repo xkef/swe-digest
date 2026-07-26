@@ -43,6 +43,9 @@ def values() -> dict[str, str]:
         "statuses": " | ".join(document.STORY_STATUSES),
         "story_shape": document.story_shape(),
         "max_top_stories": str(document.MAX_TOP_STORIES),
+        "max_stories": str(document.MAX_STORIES),
+        "max_section_stories": str(document.MAX_SECTION_STORIES),
+        "uncapped_sections": " and ".join(document.UNCAPPED_SECTIONS),
         "anchor_sections": ", ".join(document.ANCHOR_SECTIONS),
     }
 

@@ -71,6 +71,15 @@ STORY_STATUSES = ("confirmed", "developing", "rumor", "discussion")
 CATEGORIES: tuple[str, ...] = tuple(config.DIGEST_CATEGORIES)
 SOURCES_CHECKED: tuple[str, ...] = tuple(config.DIGEST_SOURCES_CHECKED)
 MAX_TOP_STORIES: int = config.DIGEST_MAX_TOP_STORIES
+MAX_STORIES: int = config.DIGEST_MAX_STORIES
+MAX_SECTION_STORIES: int = config.DIGEST_MAX_SECTION_STORIES
+
+# Sections the per-section cap does not apply to. Both are risk sections the
+# digest is expected to state in full: a day with twelve advisories or four
+# concurrent incidents is what the reader came for, and truncating it would
+# hide operational fact rather than trim padding. They are still inside the
+# day budget. Top stories has its own, lower cap.
+UNCAPPED_SECTIONS = ("Security", "Outages")
 
 # The story block, in field order. Rendered into the skeleton and into the
 # write prompt, so both describe the same shape by construction.

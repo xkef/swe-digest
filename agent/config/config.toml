@@ -254,7 +254,29 @@ max_turns = 20
 # The prompts do not restate any of this: swe_digest.agent.prompts substitutes
 # it in at load time, so a change here reaches the instructions and the gate
 # together instead of leaving one behind.
-max_top_stories = 7
+max_top_stories = 5
+# What one day may publish in total, and what any one section may hold. Both
+# are enforced by the content gate from max_stories_since onward, because a
+# cap stated only in prose has not held: Top stories is the one bounded
+# section and is also the only one never exceeded across 46 digests.
+#
+# The digest had no day bound at all, and the write step appends to the same
+# page on every run of the day without ever removing, so volume ratcheted:
+# 2026-07-25 went 18 -> 29 -> 35 -> 39 stories across four runs against a
+# 46-digest median of 20. Pooling the day accumulator (2026-07-24) roughly
+# doubled the candidate pool, which is what made an absolute per-story bar
+# with no budget visible. 25 is a backstop: it clips the runaway days and a
+# typical day never reaches it.
+max_stories = 25
+# Per section, so one loud topic cannot eat the whole budget. A section
+# reaches 4 on about 40% of days, so this binds regularly without being the
+# normal case. Security and Outages are exempt (see UNCAPPED_SECTIONS in
+# swe_digest.digest.document): a twelve-advisory day is signal, not padding.
+max_section_stories = 4
+# The caps postdate the archive, like the category and source_count rules:
+# published digests reach 76 stories, and rewriting them to satisfy a new
+# rule would be worse than scoping it forward.
+max_stories_since = "2026-07-27"
 categories = [
   "AI",
   "ML research",
