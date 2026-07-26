@@ -15,9 +15,11 @@ deliberately rather than inherited:
 | Per-source mechanics, loaded on demand | `agent/prompts/sources/` |
 | Watchlist, tunables, reading profile | `agent/config/` |
 | The order the steps run in | `agent/src/swe_digest/agent/pipeline.py` |
+| What each step does | `agent/src/swe_digest/agent/steps.py` |
 
-There is no end-to-end routine document. The control flow is Python, and each
-step's prompt covers only what that step decides.
+There is no end-to-end routine document. The control flow is Python — one
+ordered list of steps per mode, drained by one loop — and each step's prompt
+covers only what that step decides.
 
 **Developing this repository is a different job**, and `AGENTS.md` covers it:
 layout, `make` targets, the test and lint commands, and the two constraints

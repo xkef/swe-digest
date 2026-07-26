@@ -17,7 +17,7 @@ import textwrap
 import pytest
 
 from swe_digest import config
-from swe_digest.agent import auth, specs
+from swe_digest.agent import auth, catalog, specs
 
 # ---------------------------------------------------------------- auth guard
 
@@ -71,7 +71,7 @@ def test_no_stage_is_granted_a_shell_or_the_open_web() -> None:
     fetch proxy is bypassed, and the grants stop meaning anything.
     """
     for spec in specs.STAGES.values():
-        for denied in ("Bash", "BashOutput", "WebFetch", "WebSearch", "Task", "NotebookEdit"):
+        for denied in specs.UNGRANTABLE:
             assert denied not in spec.allowed_tools, f"{spec.name} grants {denied}"
 
 
@@ -100,17 +100,32 @@ def test_a_step_without_a_grant_is_an_error() -> None:
         specs._stage("improve:everything", {"prompt": "x", "max_turns": 5})
 
 
+def test_a_step_asking_for_a_schema_nobody_wrote_is_an_error() -> None:
+    """A misspelled schema in config would otherwise run the step with no output
+    format at all, and the pipeline would report it returned nothing valid."""
+    with pytest.raises(KeyError, match="not one of"):
+        specs._stage("review", {"prompt": "review", "max_turns": 5, "schema": "reviews"})
+
+
+def test_every_declarable_schema_has_a_definition() -> None:
+    """``SchemaName`` is what config is validated against and what the SDK's
+    output_format is looked up by, so the two have to name the same set."""
+    from swe_digest.agent import schemas
+
+    assert set(specs.SCHEMA_NAMES) == set(schemas.BY_NAME)
+
+
 def test_every_granted_tool_exists() -> None:
     """A typo in a grant would silently withhold a tool rather than error."""
-    prefix = f"mcp__{specs.MCP_SERVER}__"
+    prefix = f"mcp__{catalog.MCP_SERVER}__"
     for spec in specs.STAGES.values():
         for granted in spec.allowed_tools:
             if granted.startswith(prefix):
-                assert granted.removeprefix(prefix) in specs.TOOLS_BY_NAME, granted
+                assert granted.removeprefix(prefix) in catalog.TOOLS_BY_NAME, granted
 
 
 def test_select_is_the_only_stage_that_collects() -> None:
-    fetches = {specs.qualified(tool.name) for tool in specs.FETCH_TOOLS}
+    fetches = {catalog.qualified(tool.name) for tool in catalog.FETCH_TOOLS}
     for name, spec in specs.STAGES.items():
         granted = fetches & set(spec.allowed_tools)
         assert granted == (fetches if name == "select" else set()), name
@@ -125,7 +140,7 @@ def test_every_stage_belongs_to_exactly_one_run() -> None:
 
 
 def test_tool_kinds_carry_the_module_they_need() -> None:
-    for tool in specs.TOOLS:
+    for tool in catalog.TOOLS:
         if tool.kind in {"fetch", "task"}:
             assert tool.module, tool.name
         else:
@@ -146,13 +161,22 @@ IMPORT_GUARD = textwrap.dedent(
 
     sys.meta_path.insert(0, Blocked())
 
+    import asyncio
+
     import swe_digest.cli
     import swe_digest.gate.check_content
     import swe_digest.gate.publish_run
-    from swe_digest.agent import pipeline, specs
+    from swe_digest.agent import pipeline, specs, steps
 
     swe_digest.cli.build_parser()
     pipeline.dry_run("2026-07-25", specs.STAGE_ORDER)
+
+    # A pipeline of code steps alone must drive to completion, which is what
+    # keeps the server's import lazy rather than lazy-looking.
+    state = steps.Run(day="2026-07-25")
+    asyncio.run(pipeline._drive(state, (steps.Code("noop", lambda run: "ok"),)))
+    assert [(r.name, r.ok) for r in state.results] == [("noop", True)], state.results
+
     print("BOUNDARY OK")
     """
 )
@@ -211,7 +235,8 @@ def test_the_improvement_steps_cannot_write() -> None:
     for name in ("improve:watchlist", "improve:profile"):
         granted = set(specs.STAGES[name].allowed_tools)
         assert not granted & {"Write", "Edit", "NotebookEdit"}, name
+        writes = ("add", "close", "touch")
         assert not any(
-            tool.startswith(specs.qualified("memory_")) and tool.endswith(("add", "close", "touch"))
+            tool.startswith(catalog.qualified("memory_")) and tool.endswith(writes)
             for tool in granted
         ), name
