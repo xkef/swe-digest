@@ -1,0 +1,93 @@
+name: Site
+
+# Build, deploy, and audit the published site. Merges the former pages.yml and
+# site-audit.yml.
+#
+# The audit used to find its target with `workflow_run: [Deploy Pages]`, which
+# meant renaming the deploy workflow silently stopped it running. As a
+# `needs: deploy` job the coupling is structural and cannot drift.
+#
+# `workflow_dispatch` is load-bearing: the publish job in digest.yml runs
+# `gh workflow run site.yml` after a successful push.
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "snapshots/**"
+      - "agent/memory/runs/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: site
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # cache disabled: this pages:write / id-token:write job must not restore
+      # a tool cache the untrusted agent job could have poisoned.
+      - uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
+        with:
+          install: true
+          cache: false
+      - name: Install Python deps
+        run: python3 -m pip install --require-hashes -r agent/requirements.txt
+      - name: Validate content
+        run: make check-content
+      - name: Build
+        run: make build
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url || steps.retry.outputs.page_url }}
+    steps:
+      # Pages intermittently rejects a deployment server-side with a generic
+      # "try again later" while a rerun of the same artifact succeeds, so one
+      # delayed retry absorbs the flake.
+      - id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+        continue-on-error: true
+      - if: steps.deployment.outcome == 'failure'
+        run: sleep 60
+      - id: retry
+        if: steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+
+  # Lighthouse against the live site, asserting a perfect score in every
+  # category. Failures surface through the ops scheduled scan.
+  audit:
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions: {}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # 3 runs per URL: the first page audited in a session pays one-time
+      # browser cold-start costs (observed as a 0.85 performance score from
+      # ICU init and runner contention under CPU throttling), so a single
+      # run cannot hold a minScore of 1.
+      - uses: treosh/lighthouse-ci-action@3e7e23fb74242897f95c0ba9cabad3d0227b9b18 # v12.6.2
+        with:
+          runs: 3
+          urls: |
+            https://xkef.github.io/swe-digest/
+            https://xkef.github.io/swe-digest/digests/
+          configPath: .github/lighthouserc.json
+          uploadArtifacts: true

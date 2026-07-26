@@ -9,16 +9,16 @@ updates:
         patterns: ["*"]
 
   - package-ecosystem: "uv"
-    directory: "/tool"
+    directory: "/agent"
     schedule:
       interval: "weekly"
     groups:
       python:
         patterns: ["*"]
 
-  # tool/requirements.txt stays the install source for the minimal scheduled
-  # jobs.
+  # agent/requirements-agent.txt: the hash-pinned SDK install the unattended
+  # agent job uses. The lockfile above does not cover it.
   - package-ecosystem: "pip"
-    directory: "/tool"
+    directory: "/agent"
     schedule:
       interval: "weekly"

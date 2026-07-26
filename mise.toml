@@ -1,0 +1,14 @@
+# Every version is explicit. Pagefind was pinned to the "1" major line, which
+# floats across releases that change the index format and CLI flags; a search
+# index rebuilt by a different minor is not guaranteed to match what the
+# templates in site/ expect.
+[tools]
+zola = "0.22.1"
+python = "3.14"
+uv = "0.11.26"
+"github:Pagefind/pagefind" = "1.5.2"
+
+# dprint and rumdl are owner-side formatters, not runtime deps. They are kept
+# out of [tools] on purpose so CI's `mise install` (jdx/mise-action) does not
+# fetch them on every scheduled agent run. `make fmt` installs them on demand
+# at the versions pinned in the Makefile.

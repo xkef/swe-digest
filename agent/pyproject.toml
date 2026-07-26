@@ -1,0 +1,92 @@
+[project]
+name = "swe-digest"
+version = "1.0.0"
+description = "Collection, validation, and publishing code for the daily software engineering digest"
+license = "MIT"
+requires-python = ">=3.14"
+# One dependency, installed by the privileged publish job too. Run logs and
+# memory are YAML because they are public records a human reads in a pull
+# request, and that is the whole of what PyYAML is here for.
+dependencies = [
+  "pyyaml>=6.0.3",
+]
+
+[project.optional-dependencies]
+# The Agent SDK harness. Optional on purpose: `make check` and the publish gate
+# run on python3 plus PyYAML, and this extra resolves to 30-odd packages
+# including cryptography, starlette, and uvicorn, none of which belong in the
+# job that holds the write token. Only the unattended agent job installs it,
+# via `requirements-agent.txt`; nothing outside `swe_digest.agent` imports it.
+agent = [
+  "claude-agent-sdk>=0.2.128,<0.3",
+]
+
+[project.scripts]
+swe-digest = "swe_digest.cli:main"
+
+[project.urls]
+Repository = "https://github.com/xkef/swe-digest"
+Site = "https://xkef.github.io/swe-digest/"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3",
+  "pytest-cov>=6.0",
+  "mypy>=2.3.0",
+  "ruff>=0.16.0",
+  "hypothesis>=6.161.2",
+  "types-pyyaml>=6.0.12.20260724",
+  # Present so the agent tool wrappers are exercised rather than skipped. This
+  # is the test environment only; the publish job never installs it.
+  "claude-agent-sdk>=0.2.128,<0.3",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.32,<0.12"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+src = ["src", "tests"]
+
+[tool.ruff.lint.per-file-ignores]
+# The digest story template must stay a single literal line.
+"src/swe_digest/digest/new.py" = ["E501"]
+
+[tool.ruff.lint]
+select = [
+  "E", # pycodestyle errors
+  "W", # pycodestyle warnings
+  "F", # pyflakes
+  "I", # isort
+  "UP", # pyupgrade
+  "B", # bugbear
+  "SIM", # simplify
+  "RUF", # ruff-specific
+]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+files = ["src", "tests"]
+# The fetchers traffic in untrusted JSON/XML blobs; Any is inherent there.
+# warn_return_any stays on so typed modules cannot leak Any silently.
+disallow_any_generics = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=swe_digest --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["swe_digest"]
+
+[tool.coverage.report]
+# The gates are the security boundary; hold them to a high bar. Fetchers are
+# network code exercised by every scheduled run and excluded from the floor.
+include = [
+  "*/swe_digest/gate/*",
+  "*/swe_digest/git_gh.py",
+  "*/swe_digest/snapshot/merge.py",
+]
+fail_under = 85

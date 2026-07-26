@@ -1,0 +1,83 @@
+name: Security
+
+# Static analysis and supply-chain scoring, both writing to the Security tab.
+# Merges the former codeql.yml and scorecard.yml, which shared a permission
+# model and differed only in trigger.
+#
+# CodeQL earns its place next to ruff and mypy because it does something they
+# do not: taint analysis. This codebase parses untrusted JSON, XML, and HTML
+# from six network sources and shells out through git_gh.py, so injection,
+# path traversal, and unsafe deserialization are live categories. The `actions`
+# language matters more still — ops.yml moves untrusted issue text into
+# workflow context, and workflow-injection analysis has no equivalent anywhere
+# else in the stack. The workflow file is also what the Scorecard SAST check
+# detects, since this repo merges no PRs for check-run detection.
+on:
+  pull_request:
+  push:
+    branches: [main]
+    # Content and data commits change no code.
+    paths-ignore:
+      - "site/content/**"
+      - "snapshots/**"
+      - "agent/memory/**"
+      - "agent/config/**"
+      - "agent/prompts/**"
+  schedule:
+    - cron: "40 6 * * 1"
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  codeql:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      security-events: write # upload SARIF to code scanning
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [actions, javascript-typescript, python]
+    steps:
+      - uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: github/codeql-action/init@c35d1b164463ee62a100735382aaaa525c5d3496 # codeql-bundle-v2.25.6
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+      - uses: github/codeql-action/analyze@c35d1b164463ee62a100735382aaaa525c5d3496 # codeql-bundle-v2.25.6
+        with:
+          category: "/language:${{ matrix.language }}"
+
+  # OpenSSF Scorecard. Publishes results so the README badge and the OpenSSF
+  # REST API reflect the current score. Weekly and on workflow changes only:
+  # the score is a property of the repo's configuration, not its content.
+  scorecard:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      security-events: write # upload SARIF to code scanning
+      id-token: write # publish results
+    steps:
+      - uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ossf/scorecard-action@2d1146689b8cda280b9bc96326124645441f03bc # v2.4.4
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+      - uses: github/codeql-action/upload-sarif@c35d1b164463ee62a100735382aaaa525c5d3496 # codeql-bundle-v2.25.6
+        with:
+          sarif_file: results.sarif

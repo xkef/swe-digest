@@ -35,18 +35,18 @@ jobs:
           cache: true
       - name: Sync environment
         run: uv sync --frozen
-        working-directory: tool
+        working-directory: agent
       - name: Lint
         run: |
           uv run ruff check .
           uv run ruff format --check .
-        working-directory: tool
+        working-directory: agent
       - name: Type check
         run: uv run mypy
-        working-directory: tool
+        working-directory: agent
       - name: Tests
         run: uv run pytest
-        working-directory: tool
+        working-directory: agent
 
   site:
     runs-on: ubuntu-latest
@@ -63,15 +63,16 @@ jobs:
           install: true
           cache: true
       - name: Install Python deps
-        run: python3 -m pip install --require-hashes -r tool/requirements.txt
+        run: python3 -m pip install --require-hashes -r agent/requirements.txt
       - name: Build and check site
         run: make check
 
-  # Formatting drift check for owner-edited files (routine, memory, README).
-  # dprint and rumdl exclude site/content/ and snapshots/, and the tool versions are
-  # pinned in the Makefile, so this job and `make fmt-check` locally always
-  # agree. It reports drift; the publish gate (`make check`) stays
-  # formatting-free so unattended runs are never blocked on it.
+  # Formatting drift check for owner-edited files (config, prompts, memory,
+  # README). dprint and rumdl both exclude site/content/ and snapshots/, and
+  # both tool versions are pinned in the Makefile, so this job and
+  # `make fmt-check` locally always agree. It reports drift; the publish gate
+  # (`make check`) stays formatting-free so unattended runs are never blocked
+  # on it.
   format:
     runs-on: ubuntu-latest
     timeout-minutes: 10

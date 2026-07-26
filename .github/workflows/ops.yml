@@ -1,0 +1,245 @@
+name: Ops
+
+# The two deterministic issues:write bots: outsider issue triage, and failure
+# alerting for unattended runs. Merges the former issue-triage.yml and
+# failure-alert.yml. Each job is gated on github.event_name, so a trigger only
+# ever reaches the job that handles it.
+#
+# Nothing here calls a model. Every triage decision reads only API fields
+# (user.login, author_association, labels.*.name); comment and issue text
+# crosses the shell as env var data and is never interpreted as code. The
+# labels this bot sets are UX only — the routine and the publish gate
+# re-verify approval from the OWNER comment itself.
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+  workflow_run:
+    # Timeliness only: a listed workflow alerts immediately on failure. The
+    # scan itself covers every non-PR workflow, so an unlisted one still
+    # alerts on the next scheduled sweep. These names must match the
+    # workflows' `name:` fields.
+    workflows:
+      - Digest
+      - Snapshots
+      - Site
+      - CI
+    types: [completed]
+  schedule:
+    # Triage sweep for stale suggestions.
+    - cron: "40 6 * * *"
+    # Failure sweep. GitHub sometimes drops workflow_run completion events
+    # (observed 2026-07-03 for Pages failures), so the schedule re-runs it.
+    - cron: "25 */6 * * *"
+
+permissions: {}
+
+jobs:
+  # A story suggestion from outside gets a guide comment and a
+  # `triage/pending` label, waits for the owner's `/approve` or `/reject`, and
+  # closes after 14 days without approval. A `removal` request is left open and
+  # unlocked: it is a data-subject request, so no automation may close it.
+  # Every other outsider issue is closed and locked, which keeps the rule
+  # deny-default.
+  welcome:
+    if: >-
+      github.event_name == 'issues' &&
+      github.event.issue.user.login != 'xkef' &&
+      github.event.issue.user.login != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - name: Guide story suggestions, hold removals, close everything else
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.issue.number }}
+          IS_STORY: ${{ contains(github.event.issue.labels.*.name, 'story') }}
+          IS_REMOVAL: ${{ contains(github.event.issue.labels.*.name, 'removal') }}
+        run: |
+          if [ "$IS_REMOVAL" = "true" ]; then
+            gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body-file - <<'EOF'
+          Thanks for filing this. Correction and removal requests are handled by the repository owner, not by the automated routine, so this issue stays open and unlocked until it is resolved. No reason is required for a removal or exclusion request.
+          EOF
+          elif [ "$IS_STORY" = "true" ]; then
+            gh issue edit "$NUMBER" --repo "$GITHUB_REPOSITORY" --add-label triage/pending
+            gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body-file - <<'EOF'
+          Thanks for the suggestion. This repository is maintained by an automated daily digest routine, so outside issues follow a fixed process:
+
+          - **Approval required.** The repository owner reviews this suggestion and comments `/approve` to accept it or `/reject` to decline. Nothing is acted on before an approval.
+          - **After approval,** the next scheduled run verifies the suggestion against a primary source. If it holds up, the story is published in the matching section of the daily digest and this issue is closed with a link to the published page.
+          - **Other issue types:** `improvement` issues propose configuration diffs and become pull requests only after owner approval. `feedback` issues are counted as reading-preference signal only when they come from the repository owner.
+          - **Timeout.** Without an approval within 14 days, this issue closes automatically.
+          EOF
+          else
+            gh issue close "$NUMBER" --repo "$GITHUB_REPOSITORY" --reason "not planned" \
+              --comment "This repository accepts story suggestions and correction or removal requests from outside contributors. Open a new issue with the story template or the correction or removal template. Feedback and configuration changes are handled by the repository owner."
+            gh api -X PUT "repos/$GITHUB_REPOSITORY/issues/$NUMBER/lock" -f lock_reason=resolved
+          fi
+
+  command:
+    if: >-
+      github.event_name == 'issue_comment' &&
+      github.event.comment.author_association == 'OWNER' &&
+      github.event.issue.state == 'open' &&
+      contains(github.event.issue.labels.*.name, 'triage/pending')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - name: Handle owner /approve and /reject
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.issue.number }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          BODY: ${{ github.event.comment.body }}
+        run: |
+          case "$BODY" in
+            /approve*)
+              gh issue edit "$NUMBER" --repo "$GITHUB_REPOSITORY" \
+                --remove-label triage/pending --add-label triage/approved
+              gh api -X POST "repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT_ID/reactions" \
+                -f content=+1
+              gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" \
+                --body "Approved by the repository owner. The next digest run verifies the source and, if it holds up, publishes the story and closes this issue with a link to the published page."
+              ;;
+            /reject*)
+              gh issue close "$NUMBER" --repo "$GITHUB_REPOSITORY" --reason "not planned" \
+                --comment "The repository owner declined this suggestion. Thanks for taking the time to submit it."
+              gh api -X PUT "repos/$GITHUB_REPOSITORY/issues/$NUMBER/lock" -f lock_reason=resolved
+              ;;
+          esac
+
+  deny:
+    if: >-
+      github.event_name == 'issue_comment' &&
+      github.event.comment.author_association != 'OWNER' &&
+      github.event.comment.user.login != 'github-actions[bot]' &&
+      contains(github.event.issue.labels.*.name, 'triage/pending') &&
+      (startsWith(github.event.comment.body, '/approve') ||
+       startsWith(github.event.comment.body, '/reject'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - name: React to a non-owner command
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+        run: |
+          gh api -X POST "repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT_ID/reactions" \
+            -f content=-1
+
+  stale:
+    if: github.event_name == 'schedule' && github.event.schedule == '40 6 * * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - name: Close pending suggestions older than 14 days
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cutoff="$(date -u -d '14 days ago' +%Y-%m-%dT%H:%M:%SZ)"
+          gh issue list --repo "$GITHUB_REPOSITORY" --label triage/pending --state open \
+            --json number,createdAt \
+            --jq ".[] | select(.createdAt < \"$cutoff\") | .number" |
+          while read -r number; do
+            gh issue close "$number" --repo "$GITHUB_REPOSITORY" --reason "not planned" \
+              --comment "No owner approval arrived within 14 days, so this suggestion closes automatically. Thanks for submitting it."
+            gh api -X PUT "repos/$GITHUB_REPOSITORY/issues/$number/lock" -f lock_reason=resolved
+          done
+
+  # Opens (or updates) one ops issue per failing scheduled workflow, so an
+  # unattended failure surfaces in the issue list instead of rotting silently
+  # in the Actions tab. The URL check makes the scan idempotent, so overlapping
+  # triggers never double-report a run.
+  alert:
+    if: >-
+      (github.event_name == 'schedule' && github.event.schedule == '25 */6 * * *') ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'failure' &&
+       github.event.workflow_run.event != 'pull_request')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: ops-alert
+    permissions:
+      issues: write
+      # write instead of read so the retry step can rerun failed Site runs;
+      # alerting itself only reads.
+      actions: write
+    steps:
+      - name: Alert on unreported failed runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          # Lookback must exceed the 6-hour cron interval so no failed run
+          # falls between sweeps.
+          cutoff=$(date -u -d '7 hours ago' '+%Y-%m-%dT%H:%M:%SZ')
+          gh run list --repo "$REPO" --status failure --created ">$cutoff" \
+            --json name,url,headBranch,event \
+            --jq '.[] | select(.event != "pull_request")
+                  | [.name, .headBranch, .url] | @tsv' |
+          while IFS=$'\t' read -r name branch url; do
+            title="ops: $name workflow failing"
+            body="Run failed on \`$branch\`: $url"
+            issues=$(gh issue list --repo "$REPO" --state all --limit 20 \
+              --search "in:title \"$title\"" --json number,title,state \
+              --jq "[.[] | select(.title == \"$title\")]")
+            already_reported=false
+            for number in $(jq -r '.[].number' <<<"$issues"); do
+              if gh issue view "$number" --repo "$REPO" --json body,comments \
+                --jq '.body, .comments[].body' | grep -qF "$url"; then
+                already_reported=true
+                break
+              fi
+            done
+            if [ "$already_reported" = true ]; then
+              continue
+            fi
+            open_number=$(jq -r 'map(select(.state == "OPEN"))
+              | .[0].number // empty' <<<"$issues")
+            if [ -n "$open_number" ]; then
+              gh issue comment "$open_number" --repo "$REPO" --body "$body"
+            else
+              gh issue create --repo "$REPO" --title "$title" --body "$body"
+            fi
+          done
+      - name: Retry a failed Site deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          # Retry only the newest Site run: rerunning an older one would
+          # redeploy a stale artifact over a newer successful deploy. Pages
+          # intermittently rejects a deployment server-side while a rerun of
+          # the same artifact succeeds. An event-triggered scan retries once,
+          # right after the failure, to absorb a short flake; scheduled sweeps
+          # keep retrying, spaced hours apart, to ride out longer Pages
+          # incidents (2026-07-04: one lasted over 80 minutes). The attempt cap
+          # stops a permanently broken deploy from rerunning forever. Alerting
+          # above runs first, so a failure is reported even when a retry later
+          # fixes it.
+          if [ "$EVENT" = "schedule" ]; then
+            max_attempt=5
+          else
+            max_attempt=2
+          fi
+          run=$(gh run list --repo "$REPO" --workflow "Site" \
+            --branch main --limit 1 --json databaseId,conclusion,attempt)
+          id=$(jq -r '.[0].databaseId // empty' <<<"$run")
+          conclusion=$(jq -r '.[0].conclusion' <<<"$run")
+          attempt=$(jq -r '.[0].attempt' <<<"$run")
+          if [ -n "$id" ] && [ "$conclusion" = "failure" ] &&
+             [ "$attempt" -lt "$max_attempt" ]; then
+            gh run rerun "$id" --failed --repo "$REPO" ||
+              echo "rerun of $id failed; the next sweep retries"
+          fi

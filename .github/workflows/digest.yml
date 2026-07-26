@@ -1,0 +1,148 @@
+name: Digest
+
+# The whole routine: the schedules, the read-only agent job, and the
+# deterministic publish gate. Replaces daily-digest.yml, weekly-improvement.yml,
+# and the content-run.yml reusable workflow they both called, which existed only
+# to hold the two-job split those two thin callers shared.
+#
+# Daily runs at 01:30/09:50/15:50 UTC. The morning cron is early on purpose:
+# GitHub delays scheduled runs by ~90-110 min and the run plus publish takes
+# ~15 min, so 01:30 UTC lands the published digest around 03:15-03:35 UTC, i.e.
+# ~05:15-05:35 Zurich (CEST) / ~04:15-04:35 (CET). That keeps the morning digest
+# inside the 5-6 AM Zurich window year round.
+#
+# The improvement run is Sunday 06:30 UTC, after the morning daily. One
+# concurrency group covers every mode, so two runs never overlap.
+#
+# The security invariant lives here and nowhere else: the agent job holds a
+# read-only token, commits locally, and exports its work; the publish job holds
+# the write token and applies the run only after swe_digest.gate.publish_run
+# validates it.
+on:
+  schedule:
+    - cron: "30 1 * * *"
+    - cron: "50 9 * * *"
+    - cron: "50 15 * * *"
+    - cron: "30 6 * * 0"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Which routine to run
+        type: choice
+        options:
+          - daily
+          - improve
+        default: daily
+
+permissions: {}
+
+concurrency:
+  group: digest
+  cancel-in-progress: false
+
+jobs:
+  agent:
+    runs-on: ubuntu-latest
+    # The improvement run is bounded tighter: it reads evidence and writes
+    # proposals rather than collecting from the open web.
+    timeout-minutes: ${{ (github.event.schedule == '30 6 * * 0' || inputs.mode == 'improve') && 60 || 90 }}
+    permissions:
+      contents: read
+      issues: read
+    outputs:
+      has_patch: ${{ steps.export.outputs.has_patch }}
+    env:
+      # The Sunday cron is the improvement run; every other trigger is daily.
+      MODE: ${{ (github.event.schedule == '30 6 * * 0' || inputs.mode == 'improve') && 'improve' || 'daily' }}
+    steps:
+      # Egress monitor in audit mode: records outbound connections per run.
+      - uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
+        with:
+          install: true
+          cache: true
+      - name: Install Python deps
+        run: python3 -m pip install --require-hashes -r agent/requirements.txt
+      - name: Configure git identity
+        run: |
+          git config user.name "swe-digest-agent"
+          git config user.email "actions@users.noreply.github.com"
+
+      # Collection, the backtest, feedback, the run log, formatting, the gate,
+      # and the commit run as Python; each model step gets its own prompt, tool
+      # grant, turn bound, and write allowlist, and no step has a shell.
+      # CLAUDE_CODE_OAUTH_TOKEN bills the subscription, not the API.
+      - name: Run the routine
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          python3 -m pip install --require-hashes -r agent/requirements-agent.txt
+          PYTHONPATH=agent/src python3 -m swe_digest agent run \
+            --mode "$MODE" --day "$(date -u +%F)"
+
+      - name: Export run artifact
+        id: export
+        run: |
+          mkdir -p .run
+          [ -f .run/manifest.json ] || echo '{}' > .run/manifest.json
+          if [ "$(git rev-list --count origin/main..HEAD)" -gt 0 ]; then
+            git format-patch origin/main --stdout > .run/run.patch
+            echo "has_patch=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_patch=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: run
+          path: .run/
+          include-hidden-files: true
+          if-no-files-found: error
+
+  publish:
+    needs: agent
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      actions: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # cache disabled: this privileged job must not restore a tool cache the
+      # untrusted agent job could have poisoned on the shared main scope.
+      - uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
+        with:
+          install: true
+          cache: false
+      - name: Install Python deps
+        run: python3 -m pip install --require-hashes -r agent/requirements.txt
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: run
+          path: .run
+      - name: Apply and push
+        if: needs.agent.outputs.has_patch == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PYTHONPATH=agent/src python3 -m swe_digest publish apply .run/run.patch
+          make check
+          PYTHONPATH=agent/src python3 -m swe_digest publish push
+          gh workflow run site.yml
+      - name: Side effects
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: PYTHONPATH=agent/src python3 -m swe_digest publish side-effects .run/manifest.json
