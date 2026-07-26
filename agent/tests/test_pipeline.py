@@ -185,6 +185,10 @@ def test_the_commit_is_skipped_when_the_gate_rejects_the_run(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Publishing something the gate rejected is worse than publishing nothing."""
+    # The auth guard belongs to a real run, not to this: under GITHUB_ACTIONS
+    # it demands a token, so leaving it in place made the test pass locally and
+    # fail in CI for a reason unrelated to what it checks.
+    monkeypatch.setattr(pipeline.auth, "check", lambda *_a, **_k: None)
     monkeypatch.setattr(pipeline, "RUN_DIR", tmp_path)
     committed: list[str] = []
 
