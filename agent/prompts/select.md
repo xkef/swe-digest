@@ -28,6 +28,30 @@ the day's single most significant item, because the public archive index shows
 that lead as the day's headline. Demote anything that does not clear the bar to
 its topical section rather than padding `Top stories`.
 
+## The day's budget
+
+The digest is a bounded page, not a feed. A day carries at most
+{{max_stories}} stories, and any one section at most {{max_section_stories}}
+({{uncapped_sections}} are exempt, because a heavy advisory or incident day is
+what the reader came for). The content gate enforces both, so a selection over
+either bound cannot be published.
+
+Rank against the day, not against a bar. The question is never "is this good
+enough to publish" but "is this one of the day's {{max_stories}} most
+consequential items, and one of the {{max_section_stories}} most consequential
+in its section". An item that clears every inclusion test in its source
+guidance and is still the weakest thing in the section does not belong in the
+digest. Selecting well under the budget is always right, and a quiet day should
+read as quiet.
+
+Later runs of the same date inherit what earlier runs published, and those
+stories count against the budget. Read the day's digest before selecting. A
+candidate that does not outrank the weakest story already in its section is not
+selected at all. A candidate that does outrank it, when the section or the day
+is full, replaces it: name that block's exact title in `displace` so the write
+step can drop it. Displace only stories from today. A story published on an
+earlier date is part of the archive and is never removed.
+
 ## Source standards
 
 Primary source means official release note, changelog, advisory, incident

@@ -9,6 +9,7 @@ import subprocess
 from pathlib import Path
 
 from swe_digest import config, serial
+from swe_digest.digest.canonical import canonicalize
 from swe_digest.gate.check_content import SCANNED_SNAPSHOTS, main
 from swe_digest.paths import MEMORY_REL
 
@@ -179,6 +180,100 @@ def test_top_stories_over_cap_fails(repo_tree: Path) -> None:
     text = text.replace("## AI", extra + "\n## AI", 1)
     digest_path(repo_tree).write_text(text)
     assert main(root=repo_tree) == 1
+
+
+BUDGET_DATE = "2026-07-27"
+
+
+def stories(count: int, start: int = 0) -> str:
+    return "".join(
+        f"\n### Filler story {n}\n\n- **Category:** AI\n- **Status:** confirmed\n"
+        f"- **Sources:** [primary](https://example.com/filler-{n})\n"
+        f"- **Summary:** One factual sentence.\n"
+        f"- **Why it matters:** One sentence about engineering impact.\n"
+        for n in range(start, start + count)
+    )
+
+
+def filler(section: str, count: int, start: int = 0) -> str:
+    """A section header followed by `count` well-formed stories."""
+    return f"## {section}\n{stories(count, start)}"
+
+
+def budget_digest(repo_tree: Path, sections: dict[str, int]) -> None:
+    """A digest dated after the budget cutoff, with `count` filler stories in
+    each named section."""
+    text = digest_text(date=BUDGET_DATE)
+    start = 0
+    for section, count in sections.items():
+        text = text.replace(
+            f"## {section}\n\nNo major items found.\n",
+            filler(section, count, start),
+            1,
+        )
+        start += count
+    later_digest(repo_tree, with_source_count(text), date=BUDGET_DATE)
+
+
+def test_day_budget_over_cap_fails(repo_tree: Path) -> None:
+    # Spread across sections so only the day total is over: the volume the
+    # digest ratcheted to across four runs on 2026-07-25.
+    over = config.DIGEST_MAX_STORIES + 4
+    sections = {"AI": 4, "Agentic coding": 4, "Developer tools": 4, "Security": over - 12}
+    budget_digest(repo_tree, sections)
+    assert main(root=repo_tree) == 1
+
+
+def test_day_budget_at_cap_passes(repo_tree: Path) -> None:
+    # The Top stories fixture story counts too, so this lands exactly on it.
+    sections = {"Security": config.DIGEST_MAX_STORIES - 1}
+    budget_digest(repo_tree, sections)
+    assert main(root=repo_tree) == 0
+
+
+def test_section_over_cap_fails(repo_tree: Path) -> None:
+    budget_digest(repo_tree, {"AI": config.DIGEST_MAX_SECTION_STORIES + 1})
+    assert main(root=repo_tree) == 1
+
+
+def test_security_and_outages_are_exempt_from_the_section_cap(repo_tree: Path) -> None:
+    # A twelve-advisory day is what the reader came for, not padding.
+    budget_digest(
+        repo_tree,
+        {
+            "Security": config.DIGEST_MAX_SECTION_STORIES + 3,
+            "Outages": config.DIGEST_MAX_SECTION_STORIES + 1,
+        },
+    )
+    assert main(root=repo_tree) == 0
+
+
+def test_lowered_top_stories_cap_applies_from_the_cutoff(repo_tree: Path) -> None:
+    # One over the cap, counting the fixture's own Top stories block.
+    text = digest_text(date=BUDGET_DATE).replace(
+        "## AI\n", stories(config.DIGEST_MAX_TOP_STORIES) + "\n## AI\n", 1
+    )
+    later_digest(repo_tree, with_source_count(text), date=BUDGET_DATE)
+    assert main(root=repo_tree) == 1
+
+
+def test_archive_keeps_the_top_stories_cap_it_was_written_under(repo_tree: Path) -> None:
+    # Six published digests carry 6 or 7 top stories. Lowering the cap is a
+    # decision about future days, not a claim those digests were malformed.
+    text = digest_path(repo_tree).read_text().replace("## AI\n", stories(6) + "\n## AI\n", 1)
+    digest_path(repo_tree).write_text(canonicalize(with_source_count(text)))
+    assert main(root=repo_tree) == 0
+
+
+def test_budget_grandfathers_the_published_archive(repo_tree: Path) -> None:
+    # Published digests reach 76 stories; the rule is scoped forward, like the
+    # category and source_count rules before it.
+    text = digest_path(repo_tree).read_text()
+    text = text.replace(
+        "## AI\n\nNo major items found.\n", filler("AI", config.DIGEST_MAX_STORIES + 6), 1
+    )
+    digest_path(repo_tree).write_text(with_source_count(text))
+    assert main(root=repo_tree) == 0
 
 
 def test_legacy_pulse_section_passes(repo_tree: Path) -> None:

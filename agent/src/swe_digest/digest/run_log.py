@@ -25,7 +25,12 @@ def query_yield(hn: dict, digest: document.Digest) -> dict:
     published_ids = set(digest.hn_ids)
     published_urls = set(digest.urls)
     out: dict[str, dict] = {}
-    queries = hn["collections"].get("queries", {}).get("items", {})
+    collection = hn["collections"].get("queries", {})
+    queries = collection.get("items", {})
+    # Raw Algolia hits before the strict term filter, when the fetch recorded
+    # them. `matched` is what the weekly review prunes on; `raw` only says how
+    # much loose relevance the search returned behind it.
+    raw = collection.get("raw") or {}
     for query, items in queries.items():
         matched_ids = sorted({item["id"] for item in items})
         published = sorted(
@@ -40,6 +45,8 @@ def query_yield(hn: dict, digest: document.Digest) -> dict:
             "published": len(published),
             "published_ids": published,
         }
+        if query in raw:
+            out[query]["raw"] = raw[query]
     return out
 
 

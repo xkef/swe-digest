@@ -18,7 +18,7 @@ from typing import Any
 from xml.etree import ElementTree
 
 from swe_digest import config
-from swe_digest.fetch.run import FetchRun, Source
+from swe_digest.fetch.run import FetchRun, Source, count_items
 from swe_digest.http import fetch_bytes, fetch_json
 from swe_digest.paths import CACHE, SNAPSHOTS
 from swe_digest.sources import FETCH_ERRORS, load_watchlist
@@ -276,19 +276,48 @@ def firebase_comments(stories: list[dict]) -> dict:
     return results
 
 
+def query_pattern(query: str) -> re.Pattern[str]:
+    # Lookarounds instead of \b: a query ending in a non-word char
+    # ("C++", "C#") has no word boundary at its edge, so \b never matches.
+    # The same lookarounds work on a URL, where the separators are non-word
+    # characters: "Go" matches https://go.dev/x and not https://google.com.
+    return re.compile(rf"(?<!\w){re.escape(query)}(?!\w)", re.IGNORECASE)
+
+
+def query_matches(pattern: re.Pattern[str], story: dict[str, Any]) -> bool:
+    """Does the story actually mention the term, in its title or its URL?
+
+    Both query backends are held to this. Algolia relevance falls back to
+    loosely related popular stories when a term has few exact hits, so its
+    raw hits were about half off-topic (2026-07-20..26: 39% to 53%), which
+    inverted the prune signal the weekly review reads: a term padded by
+    fallback can never look dead, and a strictly matched term on a quiet week
+    always can. Filtering both backends the same way makes the numbers
+    comparable, so query_yield before and after this change are not.
+    """
+    return bool(pattern.search(story["title"]) or pattern.search(story.get("url") or ""))
+
+
+def filter_queries(results: dict[str, list[dict[str, Any]]]) -> dict[str, list[dict[str, Any]]]:
+    """Drop the off-topic hits from each term's list. Applied after pooling
+    too, because the day's accumulator can hold entries fetched before this."""
+    return {
+        query: [story for story in items if query_matches(query_pattern(query), story)]
+        for query, items in results.items()
+    }
+
+
 def match_queries(
     queries: list[str], corpus: list[dict[str, Any]], since: int
 ) -> dict[str, list[dict[str, Any]]]:
     cutoff = datetime.fromtimestamp(since, tz=UTC).isoformat()
     results = {}
     for query in queries:
-        # Lookarounds instead of \b: a query ending in a non-word char
-        # ("C++", "C#") has no word boundary at its edge, so \b never matches.
-        pattern = re.compile(rf"(?<!\w){re.escape(query)}(?!\w)", re.IGNORECASE)
+        pattern = query_pattern(query)
         results[query] = [
             story
             for story in corpus
-            if pattern.search(story["title"])
+            if query_matches(pattern, story)
             and (story["created_at"] is None or story["created_at"] >= cutoff)
         ]
     return results
@@ -400,9 +429,12 @@ def main() -> int:
     )
 
     query_results: dict
+    # Raw Algolia hit counts, kept beside the filtered lists so the discovery
+    # value of a loose match stays visible without entering the yield metric.
+    query_raw: dict[str, int] = {}
     query_backend = "algolia"
     try:
-        query_results = {
+        hits = {
             query: algolia_stories(
                 {
                     "query": query,
@@ -413,6 +445,8 @@ def main() -> int:
             )
             for query in queries
         }
+        query_raw = {query: len(items) for query, items in hits.items()}
+        query_results = filter_queries(hits)
     except FETCH_ERRORS as error:
         print(f"warn: queries: algolia: {error}", file=sys.stderr)
         try:
@@ -459,10 +493,18 @@ def main() -> int:
         "ask_hn": ask,
         "show_hn": show,
         "comments": comments,
-        "queries": {"backend": query_backend, "items": query_results},
+        "queries": {"backend": query_backend, "items": query_results, "raw": query_raw},
     }
 
     collections = run.pool(collections)
+    # Today's accumulator can hold hits collected before the strict filter
+    # existed, and the snapshot fallback path takes its lists verbatim, so the
+    # merged result is filtered again and what pooling added is restated
+    # against the kept matches rather than the raw ones.
+    live_matches = count_items(query_results)
+    collections["queries"] |= {"items": filter_queries(collections["queries"]["items"])}
+    if run.pooled:
+        run.pooled["added"]["queries"] = count_items(collections["queries"]["items"]) - live_matches
     pooled = (run.pooled or {}).get("added", {})
 
     for name in ("front_page", "top_day", "ask_hn", "show_hn"):
@@ -479,7 +521,11 @@ def main() -> int:
     query_results = collections["queries"]["items"]
     query_hits = sum(1 for items in query_results.values() if items)
     extra = f" (+{pooled['queries']} pooled)" if pooled.get("queries") else ""
-    print(f"queries: {query_hits}/{len(queries)} terms with hits via {query_backend}{extra}")
+    raw_total = sum(query_raw.values())
+    dropped = f", {raw_total - live_matches} off-topic hits dropped" if raw_total else ""
+    print(
+        f"queries: {query_hits}/{len(queries)} terms with hits via {query_backend}{extra}{dropped}"
+    )
 
     ranked = sorted(
         collections["front_page"]["items"], key=lambda story: story["points"] or 0, reverse=True

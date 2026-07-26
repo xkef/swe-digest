@@ -20,10 +20,14 @@ from swe_digest.digest.document import (
     ANCHOR_SECTIONS,
     CATEGORIES,
     LINK,
+    MAX_SECTION_STORIES,
+    MAX_STORIES,
     MAX_TOP_STORIES,
     SECTION_VOCABULARY,
     SECTIONS,
     STORY_STATUSES,
+    UNCAPPED_SECTIONS,
+    Digest,
     Story,
     normalize_url,
     parse,
@@ -57,6 +61,16 @@ CATEGORY_SINCE = "2026-07-27"
 # undercount by one, and rewriting published pages to satisfy a new check
 # would be worse than scoping it forward.
 SOURCE_COUNT_SINCE = "2026-06-13"
+
+# The day budget and the per-section cap postdate the archive too, and their
+# date is a tunable because the day they start binding is an editorial call.
+MAX_STORIES_SINCE = config.DIGEST_MAX_STORIES_SINCE
+
+# The Top stories cap held for every digest while it was 7, and no digest ever
+# exceeded it. Lowering it is an editorial decision about future days, not a
+# discovery about published ones, so the archive stays held to the value it
+# was written under and the new cap applies from the same date as the budget.
+ARCHIVE_MAX_TOP_STORIES = 7
 
 # The primary-URL uniqueness rule postdates the archive: 8 already-published
 # digests contain restatement blocks sharing a primary source (they motivated
@@ -186,6 +200,34 @@ def check_story_shape(
     return errors
 
 
+def check_budget(path: Path, digest: Digest) -> list[str]:
+    """One day publishes a bounded number of stories, and no one section fills
+    the day on its own.
+
+    The write step appends to the same page on every run of the day and never
+    removes, so without a bound the count ratchets: 2026-07-25 reached 39
+    stories across four runs against a median of 20. A later run at the budget
+    adds a story by displacing the weakest one in its section, which is a
+    ranking decision the gate cannot make and the prompts state. What the gate
+    can do is make the budget real, which prose alone did not.
+    """
+    if path.parent.name < MAX_STORIES_SINCE:
+        return []
+    errors = []
+    total = sum(digest.section_counts.values())
+    if total > MAX_STORIES:
+        errors.append(
+            f"{path}: {total} stories; the day budget is {MAX_STORIES}."
+            f" Drop the weakest, do not pad"
+        )
+    errors.extend(
+        f"{path}: section '{name}' has {count} stories; the cap is {MAX_SECTION_STORIES}"
+        for name, count in digest.section_counts.items()
+        if count > MAX_SECTION_STORIES and name != "Top stories" and name not in UNCAPPED_SECTIONS
+    )
+    return errors
+
+
 def check_stories(path: Path, text: str) -> list[str]:
     """Each story appears once: no two ``###`` blocks in a digest may share a
     title slug or a normalized primary source URL. Also caps Top stories,
@@ -193,8 +235,14 @@ def check_stories(path: Path, text: str) -> list[str]:
     digest = parse(text)
     errors = []
     top_count = digest.section_counts.get("Top stories", 0)
-    if top_count > MAX_TOP_STORIES:
-        errors.append(f"{path}: Top stories has {top_count} items; the cap is {MAX_TOP_STORIES}")
+    top_cap = (
+        MAX_TOP_STORIES
+        if path.parent.name >= MAX_STORIES_SINCE
+        else max(MAX_TOP_STORIES, ARCHIVE_MAX_TOP_STORIES)
+    )
+    if top_count > top_cap:
+        errors.append(f"{path}: Top stories has {top_count} items; the cap is {top_cap}")
+    errors.extend(check_budget(path, digest))
     declared = digest.source_count
     actual = len(digest.urls)
     if declared is not None and declared != actual and path.parent.name >= SOURCE_COUNT_SINCE:

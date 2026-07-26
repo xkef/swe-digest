@@ -6,10 +6,19 @@ description = "Daily software engineering digest for 2026-07-26."
 
 [extra]
 status = "published"
-source_count = 69
+source_count = 83
 +++
 
 ## Top stories
+
+### GNU C Library 2.44 adds system-wide tunables and fixes three CVEs
+
+- **Category:** Languages
+- **Status:** confirmed
+- **Sources:** [glibc 2.44 announcement](https://sourceware.org/pipermail/libc-announce/2026/000058.html), [Phoronix](https://www.phoronix.com/news/GNU-C-Library-glibc-2.44)
+- **Summary:** Andreas K. Huettel announced glibc 2.44 on 2026-07-25. System-wide tunables can now be applied from `/etc/tunables.conf` plus an `ldconfig` run, though the file format and path are stated as not part of the stable interface. A new `glibc.elf.thp` tunable maps read-only segments with transparent huge pages, and the THP page size in malloc is capped at `MAX_THP_PAGESIZE`. Correctly rounded `cosh`, `sinh`, and `tanh` were imported from the CORE-MATH project, AArch64 gains vectorized SVE and AdvSIMD special cases plus locking of Guarded Control Stack operations after GCS is enabled, RISC-V gains vector-extension string and memory routines, and LoongArch32 is now supported. The release fixes CVE-2026-4437 and CVE-2026-4438, both in `gethostbyaddr` and `gethostbyaddr_r` DNS response handling, and CVE-2026-4046, an `iconv` assertion failure on untrusted input. The announcement read this run names the three CVEs and the fixed version only, so the affected version ranges are not yet known here. Compatibility changes drop the 31-bit `s390-linux-gnu` configuration and remove the `--enable-memory-tagging` and `--enable-static-nss` configure options.
+- **Why it matters:** glibc is the C library under nearly every Linux deployment, so the `iconv` crash on untrusted input and the `gethostbyaddr` fixes reach any process that converts encodings or resolves addresses.
+- **Follow-up:** Watch for the affected version ranges of the three CVEs, for the distribution rollouts named in coverage including Fedora 45 and Ubuntu 26.10, and for whether the memory-tagging removal affects AArch64 hardening work downstream.
 
 ### etcd patches a Watch API authorization bypass that reads past a single-key grant
 
@@ -29,21 +38,12 @@ source_count = 69
 - **Why it matters:** Cloning an untrusted repository and changing into a directory is enough to reach code execution, which is a lower bar than opening a file in an editor or running a build.
 - **Follow-up:** Watch for a CVE assignment against GHSA-6xj8-qv9j-xcjq.
 
-### GNU C Library 2.44 adds system-wide tunables and fixes three CVEs
-
-- **Category:** Languages
-- **Status:** confirmed
-- **Sources:** [glibc 2.44 announcement](https://sourceware.org/pipermail/libc-announce/2026/000058.html), [Phoronix](https://www.phoronix.com/news/GNU-C-Library-glibc-2.44)
-- **Summary:** Andreas K. Huettel announced glibc 2.44 on 2026-07-25. System-wide tunables can now be applied from `/etc/tunables.conf` plus an `ldconfig` run, though the file format and path are stated as not part of the stable interface. A new `glibc.elf.thp` tunable maps read-only segments with transparent huge pages, and the THP page size in malloc is capped at `MAX_THP_PAGESIZE`. Correctly rounded `cosh`, `sinh`, and `tanh` were imported from the CORE-MATH project, AArch64 gains vectorized SVE and AdvSIMD special cases plus locking of Guarded Control Stack operations after GCS is enabled, RISC-V gains vector-extension string and memory routines, and LoongArch32 is now supported. The release fixes CVE-2026-4437 and CVE-2026-4438, both in `gethostbyaddr` and `gethostbyaddr_r` DNS response handling, and CVE-2026-4046, an `iconv` assertion failure on untrusted input. Compatibility changes drop the 31-bit `s390-linux-gnu` configuration and remove the `--enable-memory-tagging` and `--enable-static-nss` configure options.
-- **Why it matters:** glibc is the C library under nearly every Linux deployment, so the `iconv` crash on untrusted input and the `gethostbyaddr` fixes reach any process that converts encodings or resolves addresses.
-- **Follow-up:** Watch for the distribution rollouts named in coverage, including Fedora 45 and Ubuntu 26.10, and for whether the memory-tagging removal affects AArch64 hardening work downstream.
-
 ### Security camera firmware shipped a GitHub organization admin token
 
 - **Category:** Security
 - **Status:** confirmed
 - **Sources:** [researcher write-up](https://hhh.hn/hanwha-github-token/), [HN 49034292](https://news.ycombinator.com/item?id=49034292)
-- **Summary:** A researcher write-up surfaced on Hacker News on 2026-07-24 describes extracting Hanwha Vision camera firmware, then finding a GitHub token duplicated across roughly 30 files in the extracted root filesystem. The author states the token held admin privileges on hundreds of repositories in the vendor's GitHub organization. The stated cause is the camera's Vite build for the web UI writing the entire CI job environment into compiled files, including a `GITHUB_NPM_TOKEN` variable alongside npm, Kubernetes, and Docker environment entries. To get at the image, the author reports the inner firmware archive is AES-encrypted with a key XOR-obfuscated against a static table inside a `fwupgrader` binary, reconstructed at runtime and passed to the `openssl` CLI, and that the key is shared across the model line. The author reports downloading roughly 500 firmware images, extracting about 62% of them, and finding the same token in three. Hanwha responded within 12 hours and revoked the token. Environment variables in the dump also carried IP addresses in US Department of Defense space, which the author explicitly labels as speculation.
+- **Summary:** A researcher write-up surfaced on Hacker News on 2026-07-24 describes extracting Hanwha Vision camera firmware, then finding a GitHub token duplicated across roughly 30 files in the extracted root filesystem. The author states the token held admin privileges on hundreds of repositories in the vendor's GitHub organization. The stated cause is the camera's Vite build for the web UI writing the entire CI job environment into compiled files, including a `GITHUB_NPM_TOKEN` variable alongside npm, Kubernetes, and Docker environment entries. To get at the image, the author reports the inner firmware archive is AES-encrypted with a key XOR-obfuscated against a static table inside a `fwupgrader` binary, reconstructed at runtime and passed to the `openssl` CLI, and that the key is shared across the model line. No specific camera model numbers or firmware build identifiers were resolved this run, so the affected models and versions are not yet known here. The author reports downloading roughly 500 firmware images, extracting about 62% of them, and finding the same token in three. Hanwha responded within 12 hours and revoked the token. Environment variables in the dump also carried IP addresses in US Department of Defense space, which the author explicitly labels as speculation.
 - **Why it matters:** Writing `process.env` into a front-end bundle is a routine build-configuration mistake, and here it moved an organization-wide GitHub admin credential into shipped firmware and possibly onto the wire to anyone loading the camera admin UI.
 - **Follow-up:** Watch for a Hanwha statement on the exposure window and on whether the token was ever served to browsers, and for whether the shared firmware decryption key is rotated.
 
@@ -111,6 +111,22 @@ source_count = 69
 - **Summary:** A preprint applies a StreamingLLM sliding window with an attention sink to the attention of the speculative decoding draft head alone, leaving the verification pass at full attention. The authors report per-decode-step cost falling 28 percent to 44 percent at one million tokens of context, measured on three model families in SGLang. The method is training-free. The authors argue it is lossless because the full-attention verification path is untouched, so the distribution of accepted tokens does not change. The figures are the authors' own and are not independently reproduced.
 - **Why it matters:** The draft model's KV cache is a cost most long-context serving stacks pay without measuring it separately, and the claim here is that it can be windowed without moving output quality.
 
+### Measuring in bits what a LoRA adapter records about its training data
+
+- **Category:** Paper
+- **Status:** developing
+- **Sources:** [arXiv 2607.21351](https://arxiv.org/abs/2607.21351)
+- **Summary:** A preprint submitted 2026-07-23 by Kaizhen Tan, Heqing Du and Yang Feng extends compression-based memorization analysis to the frozen-base setting to measure how many bits a low-rank adapter writes into a model it never changes. The authors report that adapters store a couple of bits per trainable parameter, well below a full model's budget, and that the figure depends less on how many parameters an adapter carries than on where they sit: moving the same parameter budget from attention into the MLP holds nearly twice as much, and stripping the frozen base of its structure makes the capacity all but disappear. Applied to fine-tunes of Qwen2.5, they report privacy leakage rising with the bits an adapter writes rather than with its nominal parameter count, and a split between training regimes in which secrets that supervised fine-tuning copies down verbatim are never recorded by an adapter trained on verifiable rewards. The figures are the authors' own and are not independently reproduced.
+- **Why it matters:** Adapter rank and size are the wrong proxy for how much training data a shipped adapter can leak, which changes what a review of a fine-tune should measure.
+
+### Reasoning runs that exhaust the token budget score 6.6 percent against 90.3 percent for those that finish
+
+- **Category:** Paper
+- **Status:** developing
+- **Sources:** [arXiv 2607.21433](https://arxiv.org/abs/2607.21433)
+- **Summary:** A preprint submitted 2026-07-23 by Renuka Oladri, Niveda Jawahar and Abdirisak Mohamed characterizes a bimodal convergence pattern in chain-of-thought models: a generation either terminates inside its token budget or exhausts it without reaching a conclusion. On DeepSeek-R1-Distill-Qwen-7B over AIME 1983 to 2024, they report converged generations at 90.3 percent accuracy against 6.6 percent for non-converged ones, with an overall convergence rate of 62.0 percent, which makes budget exhaustion a near-total predictor of a wrong answer rather than a partial one. The attempt to detect that outcome early is the weaker half. Linear probes on hidden-state activations reach AUC 0.608 plus or minus 0.080 under 5-fold cross-validation at layer 20 and token 150, above chance and above behavioral baselines from token entropy and repetition statistics, but a sweep-level permutation test over 100,000 permutations yields p equal to 0.063, which the authors state their sample size cannot confirm at conventional thresholds. The early-exit result is explicitly not established.
+- **Why it matters:** Serving stacks that bill and retry long reasoning generations can treat budget exhaustion as a discard signal on the reported numbers, while the cheaper option of cutting the run early on hidden states is not yet supported.
+
 ## Security
 
 ### Default SM2 key generation in a widely used npm crypto package is predictable
@@ -122,25 +138,61 @@ source_count = 69
 - **Why it matters:** Every SM2 key and signature nonce produced on the default path is derivable by an attacker who can observe a few `Math.random()` outputs and estimate the generation time, so affected keys need replacing rather than just upgrading.
 - **Follow-up:** Watch for a CVE assignment and for whether other jsbn-derived libraries carry the same `window.crypto` branch on Node.
 
+### kin-openapi request validation crashes on one unauthenticated request
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [advisory GHSA-jpcw-4wr7-c3vq](https://github.com/advisories/GHSA-jpcw-4wr7-c3vq), [kin-openapi v0.145.0 release](https://github.com/getkin/kin-openapi/releases/tag/v0.145.0)
+- **Summary:** An advisory describes a NULL-pointer dereference in `openapi3filter.ValidateRequest`, the standard request-validation middleware for Go services built on kin-openapi. When no custom `ParamDecoder` is configured, `defaultContentParameterDecoder` guards `param.Content` being nil, `len(content)` not equal to 1, and the media type object being nil, but never guards `mt.Schema` being nil, so it dereferences a missing schema at `openapi3filter/req_resp_decoder.go` around line 197. A parameter declared with `content` rather than `schema`, whose media type object carries no schema, is legal under both OpenAPI 3.0.x and 3.1.x and is accepted by kin-openapi's own `doc.Validate()`, so the sink is reachable from a conforming document. Security is validated before parameters, but the panic needs no credentials whenever the operation declares no security requirement or no `AuthenticationFunc` is wired, and that function is opt-in. Affected versions are 0.143.0 and below, with the code introduced in v0.2.0, and the advisory names 0.144.0 as the fix. The second source is the v0.145.0 release tag, the current release read at this run. The advisory carries no CVE identifier.
+- **Why it matters:** Impact runs from a per-request abort with unbounded panic-log growth to a full remote process crash depending on how the library is wired into the server, and one unauthenticated HTTP request reaches it.
+- **Follow-up:** Watch for a CVE assignment and for whether Go frameworks that vendor kin-openapi pick up 0.144.0 or later.
+
+### GrapheneOS publishes its locked-device data extraction defenses in detail
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [GrapheneOS forum post](https://discuss.grapheneos.org/d/40700-grapheneos-protections-against-data-extraction-from-locked-devices), [Android rate limiting documentation](https://source.android.com/docs/security/features/authentication/rate-limiting), [HN 49055169](https://news.ycombinator.com/item?id=49055169)
+- **Summary:** The project account posted a consolidated account of what stops forensic extraction from a locked device, stated in numbers rather than claims. It states that Android 16 QPR2 requires a secure element implementing ramping rate limits, 4 hours of delay after 10 failed attempts and 41 days after 15, with only 20 attempts allowed and the most recent 5 unique failures rejected early so repeated typos do not consume the budget, and that GrapheneOS supports only devices implementing that generation. The secure element also carries insider attack resistance: the Owner user must authenticate before secure element firmware can be updated, so a valid signing key and a higher version number alone cannot be used to coerce away the rate limit. GrapheneOS raises the password character limit from 16 to 128 to allow diceware passphrases that do not depend on that rate limiting, adds an optional second-factor fingerprint PIN, and cuts allowed fingerprint attempts from 20 to 5. It blocks new USB connections in software and hardware while locked and disables USB data once no connection is active. Its locked-device auto-reboot timer shipped in June 2021, is settable between 10 minutes and 72 hours, now defaults to 18 hours, and returns the device to Before First Unlock through memory zeroing. The post also states a Motorola Mobility partnership will end the Pixel-only hardware requirement in 2027.
+- **Why it matters:** The post names the specific secure element generation and attempt budgets that decide whether a locked phone resists extraction, which is what a threat model needs instead of a vendor assurance.
+- **Follow-up:** Watch for the Motorola Mobility devices named and for whether the Android 16 QPR2 secure element requirement appears outside Pixel hardware.
+
+### MCP OpenAPI adapter re-fetched specs through an unguarded fetch
+
+- **Category:** Security
+- **Status:** confirmed
+- **Sources:** [advisory GHSA-8q49-2h5h-434x](https://github.com/advisories/GHSA-8q49-2h5h-434x), [FrontMCP v1.5.6 release](https://github.com/agentfront/frontmcp/releases/tag/v1.5.6)
+- **Summary:** An advisory published 2026-07-24 reports that FrontMCP's OpenAPI adapter guarded the initial spec load through `safeFetch` but let its spec-change poller re-fetch the same URL on a timer using the raw global `fetch`. None of the guard's protections applied to the polled request: no allow-list or block-list enforcement, no blocking of private, loopback, link-local, CGNAT or cloud-metadata addresses, no DNS resolution of the hostname so a name resolving to an internal address was reached, no pinning to the validated IP against DNS rebinding, and no per-hop revalidation of redirects. Exploitation requires both that polling is enabled, which is off by default and needs the URL-based option, and that the spec URL is untrusted or attacker-influenceable. The poller issues GET requests only, so the advisory puts the primary impact on confidentiality, including reading cloud-instance metadata endpoints and probing internal services. It is rated medium at CVSS 3.1 5.9 under CWE-918. Affected versions are 1.5.5 and below of `@frontmcp/adapters`, and 1.5.6 routes the poller through the same guard with the same policy. No CVE identifier is listed.
+- **Why it matters:** A guarded fetch that a background refresh path bypasses is a recurring shape in server-side request forgery, and here the bypassed path runs on a timer against an operator-supplied URL.
+- **Follow-up:** Watch for a CVE assignment and for whether other MCP adapters expose the same poller path.
+
 ## Outages
 
-### Anthropic and OpenAI both log model-serving errors across 2026-07-25
+### Anthropic logs three model-serving incidents inside one day on 2026-07-25
 
 - **Category:** Outage
 - **Status:** confirmed
-- **Sources:** [Anthropic incident 18:40 UTC](https://status.claude.com/incidents/zkm687kx885m), [Anthropic incident 21:34 UTC](https://status.claude.com/incidents/9w9f5y5k2vwx), [OpenAI status](https://status.openai.com/)
-- **Summary:** Anthropic recorded two incidents rated major on 2026-07-25. The first ran 18:40 to 19:44 UTC with elevated errors on Mythos 5, Fable 5, Opus 5, and Haiku 4.5, listing claude.ai, the Claude API, Claude Code, and Claude Cowork as affected components, and was marked identified within four minutes. The second ran 21:34 to 22:08 UTC with elevated errors on Fable 5, Sonnet 5, Haiku 4.5, and other models across the same components, and was resolved without a stated cause. A third, minor entry earlier the same day covered about 10 minutes of elevated Sonnet 4.6 and Sonnet 5 errors. Separately, OpenAI opened an incident at 22:09 UTC on 2026-07-25 for intermittent errors preventing some users from loading or continuing ChatGPT conversations, dating impact from about 13:00 PT, identified the source at 23:16 UTC, and applied a mitigation at 23:57 UTC. That incident was still in monitoring at the time of this run and neither provider has published a root cause. The OpenAI details above were read from the root status page, which was the only OpenAI status surface readable this run, and its content changes once the incident closes. The Anthropic incident permalinks are on the same status page cited in the story below.
-- **Why it matters:** Both providers took multiple model-serving hits inside one day with no cause published, which is the pattern that turns an agent pipeline's retry budget into the thing that decides whether a job completes.
-- **Follow-up:** Watch for whether OpenAI closes the ChatGPT conversation incident and whether either provider publishes a cause for the 2026-07-25 cluster.
+- **Sources:** [Anthropic incident 18:40 UTC](https://status.claude.com/incidents/zkm687kx885m), [Anthropic incident 21:34 UTC](https://status.claude.com/incidents/9w9f5y5k2vwx)
+- **Summary:** Anthropic recorded two incidents rated major on 2026-07-25. The first ran 18:40 to 19:44 UTC with elevated errors on Mythos 5, Fable 5, Opus 5, and Haiku 4.5, listing claude.ai, the Claude API, Claude Code, and Claude Cowork as affected components, and was marked identified within four minutes. The second ran 21:34 to 22:08 UTC with elevated errors on Fable 5, Sonnet 5, Haiku 4.5, and other models across the same components, and was resolved without a stated cause. A third, minor entry earlier the same day covered about 10 minutes of elevated Sonnet 4.6 and Sonnet 5 errors. No root cause is published for any of the three. OpenAI opened its own incident at 22:09 UTC the same day, covered below.
+- **Why it matters:** Three model-serving hits at one provider inside one day with no cause published is the pattern that turns an agent pipeline's retry budget into the thing that decides whether a job completes.
+- **Follow-up:** Watch for whether Anthropic publishes a cause for the 2026-07-25 cluster.
 
 ### Anthropic logs model-serving error incidents on six consecutive days
 
 - **Category:** Outage
 - **Status:** confirmed
 - **Sources:** [incident zftg3gqkmv18](https://status.claude.com/incidents/zftg3gqkmv18), [incident history feed](https://status.claude.com/history.rss), [HN 49056194](https://news.ycombinator.com/item?id=49056194)
-- **Summary:** The most recent incident, titled elevated errors for Opus 5, opened as investigating at 2026-07-26 09:17 UTC, was identified at 09:45 UTC, moved to monitoring at 10:34 UTC, and was marked resolved at 10:44 UTC. The incident history feed lists model-serving error incidents on each day from 2026-07-21 through 2026-07-26. That includes three separate incidents on 2026-07-25, covering Sonnet 4.6 with Sonnet 5, then Mythos 5 with Fable 5 and Haiku 4.5, then Fable 5 with Sonnet 5 and Haiku 4.5. Two of the earlier entries were broader service disruptions affecting document creation in claude.ai, Cowork Remote, Claude Code, Claude Code on the Web, Claude Tag, and Claude Design. No root cause is published for any of them. The 2026-07-25 incidents are covered in the story above.
+- **Summary:** The most recent incident, titled elevated errors for Opus 5, opened as investigating at 2026-07-26 09:17 UTC, was identified at 09:45 UTC, moved to monitoring at 10:34 UTC, and was marked resolved at 10:44 UTC. The incident history feed lists model-serving error incidents on each day from 2026-07-21 through 2026-07-26. That includes the three separate incidents on 2026-07-25 whose times and affected models are listed in the story above. Two of the earlier entries were broader service disruptions affecting document creation in claude.ai, Cowork Remote, Claude Code, Claude Code on the Web, Claude Tag, and Claude Design. No root cause is published for any of them.
 - **Why it matters:** Six consecutive days of model-serving errors is a base rate, and retry budgets and fallback routing on a production request path are worth sizing against that rather than against a single incident.
 - **Follow-up:** Watch for a published cause for the 2026-07-21 to 2026-07-26 cluster and for whether the daily cadence continues.
+
+### OpenAI ChatGPT conversation errors pass 15 hours without a published cause
+
+- **Category:** Outage
+- **Status:** developing
+- **Sources:** [OpenAI status page](https://status.openai.com/), [HN 49057016](https://news.ycombinator.com/item?id=49057016)
+- **Summary:** OpenAI opened an incident titled elevated errors affecting ChatGPT conversations at 2026-07-25 22:09 UTC, covering intermittent errors that prevented some users from loading or continuing ChatGPT conversations, dated impact from about 13:00 PT, identified the source at 23:16 UTC, and applied a mitigation at 23:57 UTC. It was read at this run as still open. The status page carries a full-outage marker and header text stating that OpenAI is currently experiencing issues, with the incident in the Monitoring state, a note that mitigation has been implemented and recovery of ChatGPT conversations is being monitored, and a duration label of 15 hours. No root cause is published. Separate Ask HN threads titled ChatGPT Is Down and Codex Is Down appeared the same day, so user-visible impact extends past the web product, but the status page text readable here does not name Codex as an affected component. The incident permalink returns a JavaScript shell to this environment, so the update timeline could not be read directly and the details above come from the root status page, whose content changes once the incident closes. Anthropic published no new incident after its 2026-07-26 Opus 5 entry that ran 09:17 to 10:44 UTC.
+- **Why it matters:** A mitigation applied at 23:57 UTC that still leaves the incident open 15 hours later means the fix is unconfirmed, so retry and fallback paths against the ChatGPT surface stay load-bearing.
+- **Follow-up:** Watch for the incident closing, for a root cause, and for whether Codex is named as an affected component in the final update.
 
 ## Developer tools
 
@@ -192,6 +244,14 @@ source_count = 69
 - **Summary:** Farid Zakaria published a post on 2026-07-09, surfaced on Hacker News on 2026-07-26, arguing that Anubis, the HTTP proxy that requires a proof-of-work solve before serving a page and is deployed in front of lore.kernel.org among others, does not stop its intended target. He reports that `anubis-fetch` clears the challenge by solving the proof of work natively or by driving a browser, so a determined scraper passes it. He puts the cost on legitimate users instead: about two seconds of felt wall-clock time per solve, worse on weak devices and mobile networks, and a hard block for non-JavaScript clients including text browsers, screen readers, and feed readers. Extrapolating to 10 million solves a day worldwide, he estimates roughly 230 person-years and about 20 megawatt-hours burned per year. The figures are the author's own estimates.
 - **Why it matters:** Proof-of-work gates are spreading across open-source infrastructure, and this is a concrete argument that the cost lands on readers and automation clients rather than on the crawlers driving the load.
 
+### A walkthrough of how Fedora turns a git push into ISOs and images
+
+- **Category:** Engineering post
+- **Status:** confirmed
+- **Sources:** [supakeen's weblog](https://supakeen.com/weblog/the-fedora-45-sausage-factory/), [HN 49053996](https://news.ycombinator.com/item?id=49053996)
+- **Summary:** The post traces a package from a packager's commit to a composed release and names the tool at each stage. Source definitions live in per-package Git repositories at src.fedoraproject.org, with large tarballs kept in a separate lookaside cache, and `fedpkg build` hands Koji a URL pointing at a specific commit so the build is reproducible from that hash. Koji is hub-and-spoke, a passive XML-RPC server over PostgreSQL with builder daemons that create a fresh Mock chroot per build, organized around tags that support multiple inheritance. Bodhi gates updates through pending, testing and stable using karma, holds critical path packages 14 days instead of 7, and moves builds between Koji tags rather than copying artifacts. Pungi orchestrates the compose and freezes the package set from a Koji tag in its Pkgset phase, so a build submitted mid-compose cannot slip in. Downstream, lorax produces `boot.iso`, Kiwi builds cloud and live images, Image Builder handles ostree and bootc artifacts on osbuild with 176 stages running in bubblewrap sandboxes, rpm-ostree composes the Atomic Desktops, productmd writes the compose metadata that Anaconda and openQA consume, and the Changes process routes system-wide modifications through FESCo. The author notes the document is still living because Fedora 45 is unreleased and change proposals affecting `boot.iso` production are in flight.
+- **Why it matters:** The pipeline detail usually spread across a dozen wiki pages is in one place, including the compose-time package set freeze that makes a Fedora compose auditable back to a commit hash.
+
 ## New videos
 
 ### Talk reports frontier models doing the reconnaissance but missing the logic leap in an access-control exploit
@@ -217,9 +277,18 @@ source_count = 69
 - **Category:** Video
 - **Status:** discussion
 - **Sources:** [watch](https://www.youtube.com/watch?v=KhYifX22yhE)
-- **Channel:** AI Engineer (2026-07-26)
+- **Channel:** AI Engineer (2026-07-26, view and rating counts not carried in the snapshot)
 - **Summary:** Marah Abdin and Robert McHardy of poolside describe the synthetic code-data pipeline behind a 118B agentic coding model, and a reproducibility gate in which two replicas trained on the same data must return the same number bit for bit or the run is killed. The failure taxonomy they credit that gate with catching includes a tensor-parallel accumulation precision bug and gradient corruption from a race condition.
 - **Why it matters:** Bit-exact replica agreement as a kill condition is a pre-training infrastructure practice any team running multi-replica jobs can check against its own setup, rather than another benchmark claim.
+
+### Talk applies control-theory loops to coding agents instead of larger prompts
+
+- **Category:** Video
+- **Status:** discussion
+- **Sources:** [watch](https://www.youtube.com/watch?v=xIt_mTQp6mY)
+- **Channel:** AI Engineer (publication date not carried in the snapshot, 3,680 views, 5.0 over 149 ratings)
+- **Summary:** Kyle Mistele of HumanLayer argues that the answer to a coding agent producing a 40,000 line pull request nobody can review is a different loop rather than a better prompt. The framing is a thermostat: sense the error between where the system is and where you want it, emit a control signal, measure again, so each iteration makes a small readable change that can be verified instead of one large diff that has to be trusted. The worked example is migrating a codebase one procedure at a time, where a sensor that is often just a grep or structural search finds the smallest unmigrated piece, a controller chooses what to work on next, and an actuator agent makes the change against hand-defined golden patterns, gated by deterministic CI running one loop iteration. The loop tracks its own pull requests in version control and refuses to stack a new change while an earlier one is still open. The talk content is the speaker's own account and carries no independent measurement.
+- **Why it matters:** It gives a concrete decomposition, sensor, controller, actuator, gate, for teams whose agent migrations currently produce one unreviewable diff.
 
 ## Markets and companies
 
@@ -238,9 +307,9 @@ source_count = 69
 
 - **Category:** Pulse
 - **Status:** discussion
-- **Sources:** [HN 49051361](https://news.ycombinator.com/item?id=49051361)
-- **Summary:** The Hacker News thread on Anthropic's Claude 5 context-engineering post reached the front page on 2026-07-26 with 228 points and 141 comments. Commenters read the guidance as the bitter lesson arriving in prompt engineering: several argue that long, rule-dense system prompts were always a workaround and that the endpoint is a prompt that says little and relies on model judgement. Simon Willison reports prompting Fable 5 to use its own judgement on decisions such as whether to write tests and finding it works, while noting the oddity of judgement becoming a model property practitioners now select for. Others push back that replacing explicit rules with judgement removes the only place a team could encode a requirement precisely.
-- **Why it matters:** The disagreement is about where a team's non-negotiable constraints live once the vendor advice is to delete them from the system prompt.
+- **Sources:** [Anthropic context-engineering post](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models), [HN 49051361](https://news.ycombinator.com/item?id=49051361)
+- **Summary:** The Hacker News thread on Anthropic's Claude 5 context-engineering post reached the front page on 2026-07-25 with 228 points and 141 comments counted early on 2026-07-26. Commenters read the guidance as the bitter lesson arriving in prompt engineering: several argue that long, rule-dense system prompts were always a workaround and that the endpoint is a prompt that says little and relies on model judgement. One commenter reports prompting Fable 5 to use its own judgement on decisions such as whether to write tests and finding it works, while noting the oddity of judgement becoming a model property practitioners now select for. Others push back that replacing explicit rules with judgement removes the only place a team could encode a requirement precisely. The vendor post itself was not read this run, so what the thread takes the guidance to say is the commenters' account of it.
+- **Why it matters:** The disagreement is about where a team's non-negotiable constraints live once model judgement replaces rule-dense system prompts.
 
 ### ARC-AGI leaderboard thread splits on whether the Opus 5 gap is real
 
@@ -254,7 +323,7 @@ source_count = 69
 
 - **Category:** Pulse
 - **Status:** discussion
-- **Sources:** [HN 49048034](https://news.ycombinator.com/item?id=49048034), [Tobi Knaup's post](https://tobi.knaup.me/2026-07-25-open-weight-ai-is-having-its-kubernetes-moment/)
+- **Sources:** [Tobi Knaup's post](https://tobi.knaup.me/2026-07-25-open-weight-ai-is-having-its-kubernetes-moment/), [HN 49048034](https://news.ycombinator.com/item?id=49048034)
 - **Summary:** A post arguing that open-weight AI is having its Kubernetes moment reached 334 points and 265 comments. Commenters challenged the comparison itself, on the grounds that Kubernetes is widely regarded as too complex for most users, which makes it an awkward model for a portability argument. The strongest supporting point raised is economic rather than technical: open weights give a stable floor price and let a team pin a version against unexplained pricing changes in hosted frontier APIs. The article's suggestion of using government procurement to force portability drew agreement, including a comment that large US states could move before the federal government. One commenter asked for real agentic-coding cost comparisons against subsidised hosted plans, which leaves the cheapness claim unverified in the thread.
 - **Why it matters:** The thread separates the portability argument for open weights, which commenters dispute, from the price-stability argument, which they do not.
 
@@ -262,7 +331,7 @@ source_count = 69
 
 - **Category:** Pulse
 - **Status:** discussion
-- **Sources:** [HN 49047453](https://news.ycombinator.com/item?id=49047453), [original article](https://refp.se/articles/your-shell-and-the-magic-colon)
+- **Sources:** [original article](https://refp.se/articles/your-shell-and-the-magic-colon), [HN 49047453](https://news.ycombinator.com/item?id=49047453)
 - **Summary:** A post on the shell null command reached 229 points and 92 comments, and the correction in the thread is the substance. Commenters point out that the article's truncation example is wrong, because a redirect onto a nonexistent file creates it rather than only truncating it, and the example behaves identically with the colon omitted. The thread also notes the post never states the actual teaching point, that redirections and parameter expansions are processed before the null command runs. One commenter offers the required-variable idiom, the colon combined with parameter expansion, as the case where it is genuinely useful.
 - **Why it matters:** The thread carries the correct mental model for the shell null command, which the linked article does not.
 
@@ -304,12 +373,12 @@ source_count = 69
 - **Why it matters:** The option count doubling inside a day means the ballot is not settled, and the outcome sets contribution rules for a distribution that a large amount of production infrastructure depends on.
 - **Follow-up:** Watch for the text of proposals B, C, and D, the close of the discussion period, and the vote result.
 
-### Kimi K3 full weights not confirmed one day before the promised date
+### Kimi K3 full weights are promised by 2026-07-27
 
 - **Category:** AI
 - **Status:** developing
 - **Sources:** [Moonshot AI on Hugging Face](https://huggingface.co/moonshotai)
-- **Summary:** Moonshot AI promised full Kimi K3 weights by 2026-07-27. As of this run no release is confirmed. The Hugging Face organisation page returned a JavaScript shell with no model listing readable from this environment, so absence of evidence here is not evidence of absence. The open questions carried forward are the license, since K2 shipped under a modified MIT license, and whether a technical report accompanies the weights.
+- **Summary:** Moonshot AI promised full Kimi K3 weights by 2026-07-27. The release status could not be resolved this run: the Hugging Face organisation page returned a JavaScript shell with no model listing readable from this environment, and no other readable surface was checked, so this item carries the date rather than a status. The open questions carried forward are the license, since K2 shipped under a modified MIT license, and whether a technical report accompanies the weights.
 - **Why it matters:** The release is the test of the open-weight claims made for K3 since 2026-07-16, and it arrives against a standing accusation that K3 was distilled from another lab's model.
 - **Follow-up:** Watch for the weight upload, the license text, and the technical report on or after 2026-07-27.
 
@@ -333,12 +402,12 @@ source_count = 69
 - ML research: arXiv API across the watchlist categories, 117 items. One paper cleared the engineering-relevance bar. A Petri-net-guided Rust test-generation preprint was read and dropped because the abstract carries no results.
 - Events watchlist: no upcoming or active events.
 - Books: publisher feeds returned 20 items, all conference proceedings or introductory titles, so the section is omitted.
-- YouTube: 36 new videos across 89 channels, none carrying a Hacker News discussion, so the two published items were selected on conference-talk substance. Reaction and commentary uploads were excluded regardless of view count.
+- YouTube: 36 new videos across 89 channels, none carrying a Hacker News discussion, so the published items were selected on the substance of their own descriptions and on conference-talk content rather than on discussion signal. Reaction and commentary uploads were excluded regardless of view count.
 - GitHub stars of tracked people: zero starring events across 29 tracked accounts, a quiet fetch rather than degraded coverage, so no block is published.
 - Engineering blogs: LWN, Phoronix, sourceware libc-announce, Fly.io, Box2D, marimo, Farid Zakaria's blog. The linux-crypto list archive at lore.kernel.org is behind an Anubis proof-of-work gate and returned only the challenge page.
 - Apple sources: Apple Developer release listing checked, nothing posted since 2026-07-21, so the section is omitted.
 - Markets and company sources: no item with clear engineering impact beyond the DeepSeek funding pause above.
 - Not published: a post arguing against memory-safety absolutism, surfaced on Hacker News and r/rust, carries a publication date of 2026-07-28 on its own page, which is in the future, so it was left out rather than published with an unreliable date.
-- Second run of 2026-07-26, covering the 11:43 UTC collection. Items already published by the 05:42 UTC run were excluded rather than repeated. Hacker News, papers, books, and YouTube ran clean on the algolia, arxiv-api, publisher-rss, and youtube-rss backends. YouTube yielded one further conference talk, again with no Hacker News discussion. Books returned nothing clearing the bar, so the section stays omitted.
-- Second-run coverage gaps: the GitHub stars and events collections both returned zero items with no degraded flag, so no repository velocity and no conference material was available on this run. astral.sh returns a JavaScript shell, so the Ruff 0.16.0 figures were verified against the repository CHANGELOG instead. huggingface.co/moonshotai returns a JavaScript shell, so the Kimi K3 weight status could not be resolved.
-- Dropped from the second-run selection as already published: the UK AISI and CAISI preliminary assessment of Kimi K3's cyber capabilities, published as a top story in the 2026-07-25 digest, and the Android proposal to bind the ADB daemon to the Wi-Fi interface only, published under Developer tools in the same digest, neither carrying a new source. A selected paper on standard-deviation normalization in GRPO was dropped because it is the same arXiv preprint as the ML research item above.
+- Pages unreadable to this environment: astral.sh returns a JavaScript shell, so the Ruff 0.16.0 figures were verified against the repository CHANGELOG instead. huggingface.co organisation and model pages return a JavaScript shell, so the Kimi K3 weight status is unresolved and a claimed complete voice model in 9.36M parameters could not be verified and was dropped. OpenAI status incident permalinks return a JavaScript shell, so the ongoing ChatGPT incident was read from the root status page only.
+- GitHub stars of tracked accounts and the events watchlist returned zero items with no degraded flag on the later collections, so no repository velocity and no conference material was available.
+- Papers ran clean on the arxiv-api backend and books ran clean on the publisher-rss backend. No book cleared the engineering-relevance bar, so the section stays omitted.

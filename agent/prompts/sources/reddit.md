@@ -70,6 +70,11 @@ Include a Reddit topic when one of these is true:
 - It reveals adoption friction for a watched tool or platform.
 - It shows fast-moving hype around AI or developer tooling that needs labeling.
 
+That list is an inclusion test, not a quota. Reddit earns space when it carries
+something the primary sources do not: a failure mode being reported repeatedly,
+adoption friction, or a link worth surfacing on its own. A day without one omits
+the section.
+
 Label Reddit-only items as `discussion` unless independently verified. Place
 findings in the `Reddit and social pulse` section.
 

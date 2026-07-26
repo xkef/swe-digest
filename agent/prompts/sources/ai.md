@@ -51,6 +51,9 @@ Selection rules:
 - Do not restate benchmark numbers without the reported method.
 - Label preprints as developing until independently reproduced.
 - Do not include a paper only because it trends.
+- Rank against the day. A typical fetch holds 110 to 140 arXiv entries and a
+  heavy one several hundred; zero or one clearing the bar is the normal
+  outcome. Omit `ML research` rather than publishing the best of a weak field.
 
 ## Agentic coding checks
 
