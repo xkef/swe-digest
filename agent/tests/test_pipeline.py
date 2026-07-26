@@ -13,7 +13,7 @@ from typing import Any
 
 import pytest
 
-from swe_digest.agent import pipeline, specs
+from swe_digest.agent import auth, pipeline, specs
 from swe_digest.gate import publish_run
 from swe_digest.gate.manifest import load_manifest
 
@@ -188,7 +188,7 @@ def test_the_commit_is_skipped_when_the_gate_rejects_the_run(
     # The auth guard belongs to a real run, not to this: under GITHUB_ACTIONS
     # it demands a token, so leaving it in place made the test pass locally and
     # fail in CI for a reason unrelated to what it checks.
-    monkeypatch.setattr(pipeline.auth, "check", lambda *_a, **_k: None)
+    monkeypatch.setattr(auth, "check", lambda *_a, **_k: None)
     monkeypatch.setattr(pipeline, "RUN_DIR", tmp_path)
     committed: list[str] = []
 
