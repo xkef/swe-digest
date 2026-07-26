@@ -4,6 +4,48 @@ import pytest
 
 from swe_digest.cli import build_parser
 
+# Every command the parser offers, one argv per leaf. A leaf without a handler
+# parses fine and then fails in main with AttributeError, having done nothing.
+EVERY_COMMAND = [
+    ["fetch", "hn"],
+    ["fetch", "youtube"],
+    ["fetch", "papers"],
+    ["fetch", "books"],
+    ["fetch", "reddit"],
+    ["fetch", "stars"],
+    ["fetch", "events"],
+    ["merge", "hn", "a.json", "b.json"],
+    ["commit-snapshot", "a headline"],
+    ["check-content"],
+    ["check-size"],
+    ["fmt-run"],
+    ["publish", "apply", "run.patch"],
+    ["publish", "push"],
+    ["publish", "side-effects", "manifest.json"],
+    ["build-stories"],
+    ["feedback"],
+    ["new-digest"],
+    ["run-log"],
+    ["weekly-stats"],
+    ["backtest"],
+    ["prune-runs"],
+    ["memory", "migrate"],
+    ["memory", "query", "followups"],
+    ["memory", "add", "entities", "--subject", "Zig"],
+    ["memory", "touch", "entities", "e-0001"],
+    ["memory", "close", "followups", "f-0001"],
+    ["agent", "run"],
+]
+
+
+@pytest.mark.parametrize("argv", EVERY_COMMAND, ids=lambda argv: " ".join(argv))
+def test_every_command_resolves_to_a_handler(argv: list[str]) -> None:
+    """A command's arguments and its behaviour are declared together, so this is
+    what catches a subparser that declared only the arguments."""
+    args = build_parser().parse_args(argv)
+
+    assert callable(getattr(args, "handler", None)), argv
+
 
 def test_known_commands_parse() -> None:
     parser = build_parser()

@@ -24,7 +24,8 @@ from typing import Any
 from claude_agent_sdk import McpSdkServerConfig, SdkMcpTool, create_sdk_mcp_server, tool
 
 from swe_digest import config
-from swe_digest.agent import specs
+from swe_digest.agent import catalog
+from swe_digest.fetch.run import count_items
 from swe_digest.paths import ROOT
 
 # Captured stdout/stderr per tool call. Enough for a full gate report, short
@@ -99,13 +100,6 @@ def _relative(path: Path) -> str:
     return str(path.relative_to(ROOT) if path.is_relative_to(ROOT) else path)
 
 
-def _count(items: Any) -> int:
-    """Items in a collection, list-shaped or map-shaped (comments, queries)."""
-    if isinstance(items, dict):
-        return sum(_count(value) for value in items.values())
-    return len(items) if isinstance(items, list) else 1
-
-
 def _summarize(cache_dir: Path) -> dict[str, Any]:
     """Counts and degradation from the envelope a fetcher just wrote.
 
@@ -128,7 +122,7 @@ def _summarize(cache_dir: Path) -> dict[str, Any]:
         "cache_path": _relative(latest),
         "fetched_at": envelope.get("fetched_at"),
         "degraded": envelope.get("degraded", []),
-        "counts": {name: _count(body.get("items", [])) for name, body in collections.items()},
+        "counts": {name: count_items(body.get("items", [])) for name, body in collections.items()},
         "backends": {
             name: body.get("backend") for name, body in collections.items() if body.get("backend")
         },
@@ -138,7 +132,7 @@ def _summarize(cache_dir: Path) -> dict[str, Any]:
     return summary
 
 
-def _fetch_handler(spec: specs.AgentTool) -> Handler:
+def _fetch_handler(spec: catalog.AgentTool) -> Handler:
     async def handler(args: dict[str, Any]) -> Result:
         assert spec.module is not None
         module = importlib.import_module(spec.module)
@@ -161,7 +155,7 @@ def _fetch_handler(spec: specs.AgentTool) -> Handler:
     return handler
 
 
-def _task_handler(spec: specs.AgentTool) -> Handler:
+def _task_handler(spec: catalog.AgentTool) -> Handler:
     async def handler(args: dict[str, Any]) -> Result:
         assert spec.module is not None
         module = importlib.import_module(spec.module)
@@ -217,7 +211,7 @@ async def _inbox_handler(args: dict[str, Any]) -> Result:
     )
 
 
-def _memory_handler(spec: specs.AgentTool) -> Handler:
+def _memory_handler(spec: catalog.AgentTool) -> Handler:
     """Typed access to the memory stores.
 
     This is the only route the agent has to memory: no step is granted Write or
@@ -288,26 +282,36 @@ async def _net_handler(args: dict[str, Any]) -> Result:
     return _text({"tool": "fetch_url", "url": url, "text": body})
 
 
-_HANDLERS: dict[str, Callable[[specs.AgentTool], Handler]] = {
-    "fetch": _fetch_handler,
-    "task": _task_handler,
-    "memory": _memory_handler,
-    "net": lambda _spec: _net_handler,
-    "inbox": lambda _spec: _inbox_handler,
-    "guidance": lambda _spec: _guidance_handler,
-}
+def _handler(spec: catalog.AgentTool) -> Handler:
+    """The wrapper that implements one tool, chosen by its kind.
+
+    A match rather than a dict of factories: ``kind`` is a Literal, so a kind
+    added to the catalogue without a wrapper here fails the type check instead of
+    raising a KeyError on the first call in an unattended run.
+    """
+    match spec.kind:
+        case "fetch":
+            return _fetch_handler(spec)
+        case "task":
+            return _task_handler(spec)
+        case "memory":
+            return _memory_handler(spec)
+        case "net":
+            return _net_handler
+        case "inbox":
+            return _inbox_handler
+        case "guidance":
+            return _guidance_handler
 
 
 def build_tools() -> list[SdkMcpTool[Any]]:
-    """Every tool in ``specs.TOOLS``, decorated for the SDK."""
-    built: list[SdkMcpTool[Any]] = []
-    for spec in specs.TOOLS:
-        handler = _HANDLERS[spec.kind](spec)
-        decorated = tool(spec.name, spec.description, spec.input_schema)(handler)
-        built.append(decorated)
-    return built
+    """Every tool in ``catalog.TOOLS``, decorated for the SDK."""
+    return [
+        tool(spec.name, spec.description, spec.input_schema)(_handler(spec))
+        for spec in catalog.TOOLS
+    ]
 
 
 def build_server() -> McpSdkServerConfig:
     """The in-process MCP server the stages mount as ``mcp__digest__*``."""
-    return create_sdk_mcp_server(name=specs.MCP_SERVER, version="1.0.0", tools=build_tools())
+    return create_sdk_mcp_server(name=catalog.MCP_SERVER, version="1.0.0", tools=build_tools())

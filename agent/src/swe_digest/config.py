@@ -99,7 +99,6 @@ WEEKLY_STATUS_UNRESOLVED_DAYS: int = _raw["weekly"]["status_unresolved_days"]
 WEEKLY_RECURRING_MIN_DAYS: int = _raw["weekly"]["recurring_min_days"]
 
 # Memory gate
-MEMORY_MAX_FILE_LINES: int = _raw["memory"]["max_file_lines"]
 MEMORY_MAX_LINE_CHARS: int = _raw["memory"]["max_line_chars"]
 MEMORY_MAX_FILE_BYTES: int = _raw["memory"]["max_file_bytes"]
 MEMORY_MAX_OPEN_FOLLOWUPS: int = _raw["memory"]["max_open_followups"]

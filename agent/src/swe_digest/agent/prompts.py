@@ -28,17 +28,11 @@ class UnknownPlaceholder(KeyError):
     """A prompt names a value this module does not define."""
 
 
-def path_for(spec: specs.StageSpec) -> str:
-    return spec.prompt_path
-
-
 def exists(spec: specs.StageSpec) -> bool:
     return (ROOT / spec.prompt_path).is_file()
 
 
 COMMON = "agent/prompts/common.md"
-
-PLACEHOLDER = "{{"
 
 
 def values() -> dict[str, str]:

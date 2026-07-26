@@ -21,7 +21,7 @@ import pytest
 
 pytest.importorskip("claude_agent_sdk", reason="the agent extra is not installed")
 
-from swe_digest.agent import specs, tools
+from swe_digest.agent import catalog, tools
 
 ENVELOPE: dict[str, Any] = {
     "fetched_at": "2026-07-25T09:50:00+00:00",
@@ -72,10 +72,10 @@ def _fetcher(cache_dir: Path, envelope: dict[str, Any], code: int = 0) -> Any:
 
 
 def _install(
-    monkeypatch: pytest.MonkeyPatch, module: types.ModuleType, kind: str
-) -> specs.AgentTool:
+    monkeypatch: pytest.MonkeyPatch, module: types.ModuleType, kind: catalog.ToolKind
+) -> catalog.AgentTool:
     monkeypatch.setattr(importlib, "import_module", lambda _name: module)
-    return specs.AgentTool(
+    return catalog.AgentTool(
         name=f"{kind}_fake", kind=kind, description="a stand-in", module=module.__name__
     )
 
@@ -217,5 +217,5 @@ def test_inbox_failure_is_a_tool_error(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_every_spec_becomes_a_tool() -> None:
     built = tools.build_tools()
-    assert [tool.name for tool in built] == [spec.name for spec in specs.TOOLS]
+    assert [tool.name for tool in built] == [spec.name for spec in catalog.TOOLS]
     assert all(tool.description for tool in built)

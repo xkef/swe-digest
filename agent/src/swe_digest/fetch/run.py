@@ -21,10 +21,14 @@ from swe_digest.paths import ROOT
 from swe_digest.snapshot import merge
 
 
-def _count(items: Any) -> int:
-    """Items in a collection, list-shaped or map-shaped."""
+def count_items(items: Any) -> int:
+    """Items in a collection, list-shaped or map-shaped (comments, queries).
+
+    Public because the agent's tool wrappers summarize the same envelope, and two
+    copies of this is two chances for a count to mean something different.
+    """
     if isinstance(items, dict):
-        return sum(_count(value) for value in items.values())
+        return sum(count_items(value) for value in items.values())
     return len(items) if isinstance(items, list) else 1
 
 
@@ -124,7 +128,7 @@ class FetchRun:
             if live is None:
                 continue
             merged_extra = merge_extra(accumulated.get(name, {}), live)
-            added[name] = _count(merged_extra["items"]) - _count(live["items"])
+            added[name] = count_items(merged_extra["items"]) - count_items(live["items"])
             out[name] = {**live, "items": merged_extra["items"]}
 
         self.pooled = {"snapshot_fetched_at": snapshot.get("fetched_at"), "added": added}

@@ -8,7 +8,7 @@ that drifts is the one that stops matching what the gate accepts.
 
 import pytest
 
-from swe_digest.agent import prompts, schemas, specs
+from swe_digest.agent import catalog, prompts, schemas, specs
 from swe_digest.digest import document, new
 from swe_digest.paths import ROOT
 
@@ -119,13 +119,13 @@ def test_a_prompt_only_names_tools_its_step_holds() -> None:
         text = (ROOT / spec.prompt_path).read_text()
         granted = set(spec.allowed_tools)
         for name in re.findall(r"`(\w+)`", text):
-            if name in specs.TOOLS_BY_NAME:
-                assert specs.qualified(name) in granted, f"{spec.name} names {name}, ungranted"
+            if name in catalog.TOOLS_BY_NAME:
+                assert catalog.qualified(name) in granted, f"{spec.name} names {name}, ungranted"
 
 
 def test_every_guidance_topic_has_a_fragment() -> None:
     """A topic the tool offers and cannot load is a dead end mid-run."""
-    for topic in specs.GUIDANCE_TOPICS:
+    for topic in catalog.GUIDANCE_TOPICS:
         assert (ROOT / "agent" / "prompts" / "sources" / f"{topic}.md").is_file(), topic
 
 
@@ -134,7 +134,7 @@ def test_no_fragment_is_orphaned() -> None:
     guidance that quietly stops being followed."""
     fragments = {path.stem for path in (ROOT / "agent" / "prompts" / "sources").glob("*.md")}
 
-    assert fragments == set(specs.GUIDANCE_TOPICS)
+    assert fragments == set(catalog.GUIDANCE_TOPICS)
 
 
 def test_every_placeholder_used_by_a_prompt_is_defined() -> None:
