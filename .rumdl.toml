@@ -1,20 +1,38 @@
-# rumdl owns Markdown; dprint owns TOML/JSON.
-# Generated and strict-structure trees (Zola `site/content/`, `snapshots/`)
-# are left untouched so the digest build and unattended agent runs are
-# unaffected.
+# rumdl owns Markdown; dprint owns everything else (TOML, JSON, YAML, CSS,
+# HTML, JS).
+#
+# Two formatters, on purpose. dprint has a Markdown plugin and it was tried:
+# it normalizes inline syntax, which rewrites prose rather than formatting it.
+# On this repo's own memory files it turned `~3x next-best` into `~~3x`
+# (creating strikethrough) and the X handle `@__alpoge__` into `@**alpoge**`
+# inside a link title. Memory and digests are prose dense with markdown-
+# significant characters, drawn from untrusted sources, so a normalizing
+# formatter corrupts published facts. rumdl lints instead of normalizing,
+# which is the property this content needs.
+#
+# Generated and strict-structure trees (Zola `site/content/`, `snapshots/`,
+# the run-log views under `agent/memory/runs/`) are left untouched so the
+# digest build and unattended agent runs are unaffected. The run-log views in
+# particular are generated from the JSON beside them and checked for an exact
+# match, so a formatter touching them is a gate failure, not a tidy-up.
 [global]
 respect_gitignore = true
 exclude = [
   "site/content",
   "site/data",
   "snapshots",
+  "agent/memory/runs",
   "dist",
   "public",
   ".cache",
   ".run",
   ".claude-notes",
 ]
-# MD013: do not reflow prose or enforce a hard line length.
+# MD013 (80 columns) is on: every markdown file rumdl sees is prose a human
+# reads in a diff. It lints only — rumdl cannot rewrap — so a long line is
+# fixed by hand, and the trees where that would be wrong (generated views,
+# published digests) are excluded above rather than exempted by rule.
+#
 # MD057: the README uses GitHub-relative links (../../issues/new?...) that
 # resolve on GitHub but not on the local filesystem.
-disable = ["MD013", "MD057"]
+disable = ["MD057"]
