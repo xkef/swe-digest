@@ -27,7 +27,7 @@ from importlib import import_module
 from typing import Any
 
 from swe_digest import config
-from swe_digest.agent import net, specs
+from swe_digest.agent import catalog, net
 from swe_digest.digest import runs
 from swe_digest.digest.backtest import main as score_day
 from swe_digest.digest.canonical import fmt_run
@@ -123,7 +123,7 @@ def _collect(run: Run) -> str:
     listing; what comes back here is which ones fell short.
     """
     degraded: list[str] = []
-    for tool in specs.FETCH_TOOLS:
+    for tool in catalog.FETCH_TOOLS:
         assert tool.module is not None
         main = import_module(tool.module).main
         try:
@@ -133,7 +133,7 @@ def _collect(run: Run) -> str:
             continue
         if code:
             degraded.append(tool.name)
-    count = len(specs.FETCH_TOOLS)
+    count = len(catalog.FETCH_TOOLS)
     if degraded:
         return f"{count} source(s), degraded: {', '.join(degraded)}"
     return f"{count} source(s), all complete"

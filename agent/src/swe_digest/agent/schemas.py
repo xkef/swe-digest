@@ -14,6 +14,7 @@ drifts is the one that stops matching the gate.
 
 from typing import Any
 
+from swe_digest.agent.specs import SchemaName
 from swe_digest.digest.document import CATEGORIES, MAX_TOP_STORIES, SECTIONS, STORY_STATUSES
 
 # One selected story. `primary_url` is separate from `sources` because the gate
@@ -112,14 +113,14 @@ PROPOSALS: dict[str, Any] = {
     "additionalProperties": False,
 }
 
-BY_NAME: dict[str, dict[str, Any]] = {
+BY_NAME: dict[SchemaName, dict[str, Any]] = {
     "selection": SELECTION,
     "review": REVIEW,
     "proposals": PROPOSALS,
 }
 
 
-def output_format(name: str | None) -> dict[str, Any] | None:
+def output_format(name: SchemaName | None) -> dict[str, Any] | None:
     """The ``output_format`` value for a step, or None when it returns prose."""
     if name is None:
         return None

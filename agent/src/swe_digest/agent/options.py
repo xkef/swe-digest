@@ -18,7 +18,7 @@ from claude_agent_sdk import (
     McpSdkServerConfig,
 )
 
-from swe_digest.agent import hooks, prompts, schemas, specs
+from swe_digest.agent import catalog, hooks, prompts, schemas, specs
 from swe_digest.paths import ROOT
 
 
@@ -41,7 +41,7 @@ def build(
         setting_sources=[],
         cwd=str(ROOT),
         max_turns=spec.max_turns,
-        mcp_servers={specs.MCP_SERVER: server},
+        mcp_servers={catalog.MCP_SERVER: server},
         hooks={"PreToolUse": [HookMatcher(matcher=hooks.MATCHER, hooks=[guard])]},
         output_format=schemas.output_format(spec.schema),
     )

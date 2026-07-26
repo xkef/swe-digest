@@ -26,7 +26,7 @@ from collections import deque
 from collections.abc import Collection, Sequence
 from typing import Any
 
-from swe_digest.agent import auth, net, prompts, specs, steps
+from swe_digest.agent import auth, catalog, net, prompts, specs, steps
 from swe_digest.agent.hooks import writes_for
 from swe_digest.agent.steps import Code, Run, Skipped, StepError, StepResult
 
@@ -294,8 +294,8 @@ def dry_run(day: str, stages: Collection[str], mode: str = "daily") -> int:
     print("writes      denied by a PreToolUse guard outside each step's declared files")
     print()
 
-    print(f"tools exposed as mcp__{specs.MCP_SERVER}__*:")
-    for agent_tool in specs.TOOLS:
+    print(f"tools exposed as mcp__{catalog.MCP_SERVER}__*:")
+    for agent_tool in catalog.TOOLS:
         target = agent_tool.module or "built in to agent.tools"
         print(f"  {agent_tool.name:<14} {agent_tool.kind:<8} {target}")
     print()
