@@ -41,6 +41,7 @@ YT_WINDOW_SECONDS: int = _raw["youtube"]["window_hours"] * 3600
 YT_SNAPSHOT_MAX_AGE_HOURS: int = _raw["youtube"]["snapshot_max_age_hours"]
 YT_DESCRIPTION_MAX_CHARS: int = _raw["youtube"]["description_max_chars"]
 YT_DISCUSSION_LOOKUPS: int = _raw["youtube"]["discussion_lookups"]
+YT_POOL_MAX_ITEMS: int = _raw["youtube"]["pool_max_items"]
 YT_SNAPSHOT_MAX_ITEMS: int = _raw["youtube"]["snapshot_max_items"]
 
 # Reddit fetcher
@@ -58,12 +59,14 @@ PAPERS_API_PAUSE: int = _raw["papers"]["api_pause_seconds"]
 PAPERS_WINDOW_SECONDS: int = _raw["papers"]["window_hours"] * 3600
 PAPERS_SNAPSHOT_MAX_AGE_HOURS: int = _raw["papers"]["snapshot_max_age_hours"]
 PAPERS_SUMMARY_MAX_CHARS: int = _raw["papers"]["summary_max_chars"]
+PAPERS_POOL_MAX_ITEMS: int = _raw["papers"]["pool_max_items"]
 PAPERS_SNAPSHOT_MAX_ITEMS: int = _raw["papers"]["snapshot_max_items"]
 
 # Book feeds fetcher
 BOOKS_WINDOW_SECONDS: int = _raw["books"]["window_days"] * 24 * 3600
 BOOKS_SNAPSHOT_MAX_AGE_HOURS: int = _raw["books"]["snapshot_max_age_hours"]
 BOOKS_DESCRIPTION_MAX_CHARS: int = _raw["books"]["description_max_chars"]
+BOOKS_POOL_MAX_ITEMS: int = _raw["books"]["pool_max_items"]
 BOOKS_SNAPSHOT_MAX_ITEMS: int = _raw["books"]["snapshot_max_items"]
 
 # GitHub stars fetcher
@@ -78,6 +81,9 @@ EVENTS_SOON_DAYS: int = _raw["events"]["soon_days"]
 
 # Digest document vocabulary (section order stays in digest.document)
 DIGEST_MAX_TOP_STORIES: int = _raw["digest"]["max_top_stories"]
+DIGEST_MAX_STORIES: int = _raw["digest"]["max_stories"]
+DIGEST_MAX_SECTION_STORIES: int = _raw["digest"]["max_section_stories"]
+DIGEST_MAX_STORIES_SINCE: str = _raw["digest"]["max_stories_since"]
 DIGEST_CATEGORIES: list[str] = _raw["digest"]["categories"]
 DIGEST_SOURCES_CHECKED: list[str] = _raw["digest"]["sources_checked"]
 

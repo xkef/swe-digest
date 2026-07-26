@@ -74,7 +74,10 @@ Include an HN item when one of these is true:
   security issue.
 - It is a Show HN project with unusual technical substance.
 
-Do not treat HN ranking as verification.
+Do not treat HN ranking as verification. The list is an inclusion test, not a
+quota: a thread with a verifiable primary source belongs in that source's
+topical section, and what is left for the `Hacker News` section is only what the
+discussion itself carries.
 
 ### Hacker News section
 

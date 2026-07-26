@@ -20,7 +20,8 @@ content gate (`run_gate`) enforces the order, the known names, and the anchor
 sections. Empty sections are omitted (see `write.md`). This is what belongs in
 each section:
 
-1. `Top stories`: 3 to 7 items.
+1. `Top stories`: the day's defining items, from 3 up to the cap the step
+   prompt states.
 2. `AI`: model releases, tooling, infra, policy, notable product changes.
 3. `ML research`: papers with engineering relevance from arXiv, Papers with
    Code, and Hugging Face Papers.
@@ -60,6 +61,20 @@ keynote, or announcement from a conference goes into its topical section as a
 story tagged `**Category:** Event` (see Events checks).
 
 ## Ranking rules
+
+Every per-source rule below, and every rule in the `guidance` fragments, is an
+inclusion test: it says what may be published, never what must be. The day's
+budget decides the rest. A section holds only its strongest items up to the
+per-section cap, not everything that passed its test, and the day has a total
+budget. Both numbers are in the step prompt, and the gate enforces them. Where
+an inclusion test and the budget disagree, the budget wins.
+
+Two sections have always been written this way, and it is the standard for all
+of them: `Books` and `New videos` state a high bar, prefer omitting the section
+to filling it, and rank on external validation (a real discussion thread)
+rather than on volume or channel size. Apply that posture everywhere. An empty
+section is a fact about the day. A padded one is a claim the reader has to
+check.
 
 Prefer primary sources over commentary.
 

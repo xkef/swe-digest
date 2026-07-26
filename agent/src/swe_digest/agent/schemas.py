@@ -15,7 +15,13 @@ drifts is the one that stops matching the gate.
 from typing import Any
 
 from swe_digest.agent.specs import SchemaName
-from swe_digest.digest.document import CATEGORIES, MAX_TOP_STORIES, SECTIONS, STORY_STATUSES
+from swe_digest.digest.document import (
+    CATEGORIES,
+    MAX_STORIES,
+    MAX_TOP_STORIES,
+    SECTIONS,
+    STORY_STATUSES,
+)
 
 # One selected story. `primary_url` is separate from `sources` because the gate
 # rejects two stories sharing a primary URL, so the selection has to name it.
@@ -45,7 +51,20 @@ SELECTION: dict[str, Any] = {
             "items": STORY,
             "description": "strongest first; the lead is the day's headline",
         },
-        "stories": {"type": "array", "items": STORY},
+        # Bounded by the day budget for the same reason top_stories is bounded
+        # by its cap: an over-long selection fails here rather than after the
+        # write step has spent tokens on stories the gate will reject. Earlier
+        # runs of the same date have already used part of the budget, which
+        # only the prompt can account for.
+        "stories": {"type": "array", "maxItems": MAX_STORIES, "items": STORY},
+        "displace": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": (
+                "titles of stories already in today's digest this selection replaces,"
+                " when its section or the day budget is full"
+            ),
+        },
         "degraded": {
             "type": "array",
             "items": {"type": "string"},

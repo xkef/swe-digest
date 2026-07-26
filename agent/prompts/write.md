@@ -5,8 +5,9 @@ Turn the selection into the day's digest at
 write.
 
 On a later run of the same date: keep existing stories unless a correction is
-needed, add new stories in rank order, update statuses (`developing` to
-`confirmed`), and refresh `source_count`. Never rewrite the digest from scratch.
+needed or the selection displaces them, add new stories in rank order, update
+statuses (`developing` to `confirmed`), and refresh `source_count`. Never
+rewrite the digest from scratch.
 
 Call `run_gate` after every edit. A nonzero result must be fixed, never worked
 around.
@@ -39,6 +40,18 @@ Use this story shape:
 Bold each field label as shown. The site styles the bold label as the row
 header. `Category` and `Status` take one of the listed values and nothing else:
 the gate rejects a one-off, and the site groups on the category.
+
+The day is bounded: at most {{max_stories}} stories in the digest and at most
+{{max_section_stories}} in any section other than {{uncapped_sections}}, which
+are exempt. The gate enforces both, and they count what earlier runs of the
+same date already published.
+
+The selection's `displace` list names blocks to remove for the stories it adds.
+Delete each named block whole, add the new stories, and refresh
+`source_count`. Displace nothing that is not on that list, and never touch a
+digest for an earlier date. When `displace` is empty and the digest is at a
+bound, the selection is already inside it: add nothing rather than trimming on
+your own judgment.
 
 Each story appears once. The gate rejects two `### story` blocks sharing a title
 or a primary source URL, and caps `Top stories` at {{max_top_stories}};
