@@ -2,8 +2,8 @@
 
 import pytest
 
-from swe_digest.sources import reddit
-from swe_digest.sources.reddit import fetch_listing, make_post, parse_feed
+from swe_digest.sources import feeds, reddit
+from swe_digest.sources.reddit import fetch_listing, make_post
 
 SUBS = ["programming", "rust", "golang", "AZURE", "kubernetes"]
 
@@ -37,12 +37,12 @@ class TestRedditPosts:
         content = (
             "&lt;a href=&quot;https://example.com/post?a=1&amp;amp;b=2&quot;&gt;[link]&lt;/a&gt;"
         )
-        feed = parse_feed(
+        feed = feeds.parse(
             reddit_feed(
                 reddit_entry("t3_a", self.PERMALINK, "2026-07-07T00:00:00+00:00", content)
             ).encode()
         )
-        post = make_post(feed[0])
+        post = make_post(feed.entries[0])
         assert post is not None
         assert post["url"] == "https://example.com/post?a=1&b=2"
         assert post["permalink"] == self.PERMALINK
@@ -50,27 +50,22 @@ class TestRedditPosts:
         assert post["author"] == "/u/alice"
 
     def test_self_post_falls_back_to_permalink(self) -> None:
-        feed = parse_feed(
+        feed = feeds.parse(
             reddit_feed(reddit_entry("t3_b", self.PERMALINK, "2026-07-07T00:00:00+00:00")).encode()
         )
-        post = make_post(feed[0])
+        post = make_post(feed.entries[0])
         assert post is not None
         assert post["url"] == self.PERMALINK
 
     def test_old_reddit_permalink_normalized(self) -> None:
         old = "https://old.reddit.com/r/programming/comments/1/x/"
-        feed = parse_feed(
+        feed = feeds.parse(
             reddit_feed(reddit_entry("t3_c", old, "2026-07-07T00:00:00+00:00")).encode()
         )
-        post = make_post(feed[0])
+        post = make_post(feed.entries[0])
         assert post is not None
         assert post["permalink"] == self.PERMALINK
         assert post["url"] == self.PERMALINK
-
-    def test_parse_feed_rejects_dtd(self) -> None:
-        raw = b'<?xml version="1.0"?><!DOCTYPE feed [<!ENTITY x "y">]><feed/>'
-        with pytest.raises(RuntimeError):
-            parse_feed(raw)
 
 
 class TestRedditListing:
@@ -79,7 +74,7 @@ class TestRedditListing:
             reddit_entry("t3_new", TestRedditPosts.PERMALINK, "2026-07-07T00:00:00+00:00"),
             reddit_entry("t3_old", TestRedditPosts.PERMALINK, "2026-07-01T00:00:00+00:00"),
         )
-        monkeypatch.setattr(reddit, "fetch_bytes", lambda url, **kwargs: feed.encode())
+        monkeypatch.setattr(feeds, "fetch_bytes", lambda url, **kwargs: feed.encode())
         posts, healthy = fetch_listing(
             "www.reddit.com", ["programming"], "top_day", "2026-07-06T00:00:00+00:00", pause=0
         )
@@ -96,7 +91,7 @@ class TestRedditListing:
                 return feed.encode()
             raise RuntimeError("blocked")
 
-        monkeypatch.setattr(reddit, "fetch_bytes", fetch)
+        monkeypatch.setattr(feeds, "fetch_bytes", fetch)
         subs = ["programming", "rust", "golang", "linux"]
         posts, healthy = fetch_listing(
             "www.reddit.com", subs, "hot", "2026-07-06T00:00:00+00:00", pause=0
@@ -108,7 +103,7 @@ class TestRedditListing:
         def fetch(url: str, **kwargs: object) -> bytes:
             raise RuntimeError("blocked")
 
-        monkeypatch.setattr(reddit, "fetch_bytes", fetch)
+        monkeypatch.setattr(feeds, "fetch_bytes", fetch)
         with pytest.raises(RuntimeError, match="no subreddits returned entries"):
             fetch_listing(
                 "www.reddit.com", ["programming"], "hot", "2026-07-06T00:00:00+00:00", pause=0

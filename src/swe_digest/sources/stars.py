@@ -22,11 +22,7 @@ from datetime import datetime
 from typing import Any
 
 from swe_digest import settings
-from swe_digest.domain import sources as registry
-from swe_digest.sources.run import FetchRun
-from swe_digest.sources.watchlist import load_watchlist
-
-SOURCE = registry.BY_NAME["stars"]
+from swe_digest.sources import fetch, watchlist
 
 PAUSE_SECONDS = settings.STARS_REQUEST_PAUSE_SECONDS
 MAX_REPO_LOOKUPS = settings.STARS_MAX_REPO_LOOKUPS
@@ -38,8 +34,7 @@ MIN_USER_FRACTION = 0.5
 
 
 def parse_users() -> list[str]:
-    raw = load_watchlist().get("stars", {}).get("users", [])
-    return [login.strip() for login in raw if login.strip()]
+    return [login.strip() for login in watchlist.entries("stars", "users") if login.strip()]
 
 
 def gh_api(path: str) -> Any:
@@ -62,10 +57,10 @@ def gh_api(path: str) -> Any:
 
 def to_iso(value: str) -> str | None:
     """Event timestamps arrive as ...Z; normalize to +00:00 ISO so lexical
-    comparison against the window cutoff is exact. Fail closed like books:
-    an unparseable date drops the event instead of passing permanently."""
+    comparison against the window cutoff is exact. Fail closed: an unparseable
+    date drops the event instead of passing permanently."""
     try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00")).isoformat()
+        return datetime.fromisoformat(value).isoformat()
     except ValueError:
         return None
 
@@ -158,25 +153,29 @@ def enrich(stars: list[dict], pause: float = PAUSE_SECONDS) -> None:
             star["stars"] = data.get("stargazers_count")
 
 
+def describe(item: tuple[str, list[fetch.Item]]) -> str:
+    repo, repo_stars = item
+    actors = sorted({star["actor"] for star in repo_stars})
+    return f"  {len(actors)}x {repo}  ({', '.join(actors)})"
+
+
 def main() -> int:
     users = parse_users()
-    if not users:
-        print("no users configured in watchlist [stars].users", file=sys.stderr)
-        return 1
-
-    run = FetchRun(SOURCE)
+    run = fetch.start("stars")
     partial: list[str] = []
-    stars = run.collect(
-        "stars",
-        [("gh-events", lambda: fetch_all_stars(users, run.since_iso, partial))],
+    stars = fetch.collect(
+        run, "stars", [("gh-events", lambda: fetch_all_stars(users, run.since_iso, partial))]
     )
     if stars["items"]:
         enrich(stars["items"])
     run.failures.extend(partial)
 
-    print(f"stars: {len(stars['items'])} events from {len(users)} users via {stars['backend']}")
-    for repo, repo_stars in ranked_repos(stars["items"])[:15]:
-        actors = sorted({star["actor"] for star in repo_stars})
-        print(f"  {len(actors)}x {repo}  ({', '.join(actors)})")
-
-    return run.finish({"stars": stars})
+    collections = {"stars": stars}
+    ranked = ranked_repos(stars["items"])[:15]
+    return fetch.report(
+        run,
+        collections,
+        unit="events",
+        counted=f" from {len(users)} users",
+        notes=[describe(item) for item in ranked],
+    )

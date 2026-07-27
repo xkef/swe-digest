@@ -21,6 +21,8 @@ import pytest
 
 pytest.importorskip("claude_agent_sdk", reason="the agent extra is not installed")
 
+from swe_digest import paths
+from swe_digest.domain import sources as registry
 from swe_digest.llm import catalog, tools
 
 ENVELOPE: dict[str, Any] = {
@@ -72,21 +74,36 @@ def _fetcher(cache_dir: Path, envelope: dict[str, Any], code: int = 0) -> Any:
 
 
 def _install(
-    monkeypatch: pytest.MonkeyPatch, module: types.ModuleType, kind: catalog.ToolKind
+    monkeypatch: pytest.MonkeyPatch,
+    module: types.ModuleType,
+    kind: catalog.ToolKind,
+    source: str = "fake",
 ) -> catalog.AgentTool:
     monkeypatch.setattr(importlib, "import_module", lambda _name: module)
     return catalog.AgentTool(
-        name=f"{kind}_fake", kind=kind, description="a stand-in", module=module.__name__
+        name=f"{kind}_{source}", kind=kind, description="a stand-in", module=module.__name__
     )
 
 
-def test_fetch_returns_counts_not_items(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+@pytest.fixture
+def cache_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    """Where the handler will look for hn's envelope.
+
+    The handler derives the directory from the source registry rather than
+    from the module it just called, so a fake fetcher has to write where the
+    real one would.
+    """
+    monkeypatch.setattr(paths, "ROOT", tmp_path)
+    return registry.BY_NAME["hn"].cache_dir
+
+
+def test_fetch_returns_counts_not_items(cache_dir: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """The summary is the contract: shape and provenance, never the payload.
 
     Returning items would put four hundred stories in the window on the first
     tool call, and map-shaped collections have to count their leaves.
     """
-    spec = _install(monkeypatch, _fetcher(tmp_path, ENVELOPE), "fetch")
+    spec = _install(monkeypatch, _fetcher(cache_dir, ENVELOPE), "fetch", "hn")
 
     payload = _payload(_run(tools._fetch_handler(spec)({})))
 
@@ -98,11 +115,11 @@ def test_fetch_returns_counts_not_items(tmp_path: Path, monkeypatch: pytest.Monk
 
 
 def test_degraded_fetch_is_reported_not_raised(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    cache_dir: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Incomplete coverage is a fact the digest must state, not a tool error."""
     spec = _install(
-        monkeypatch, _fetcher(tmp_path, {**ENVELOPE, "degraded": ["mirror"]}, 1), "fetch"
+        monkeypatch, _fetcher(cache_dir, {**ENVELOPE, "degraded": ["mirror"]}, 1), "fetch", "hn"
     )
 
     result = _run(tools._fetch_handler(spec)({}))
@@ -127,9 +144,9 @@ def test_a_raising_fetcher_becomes_a_tool_error(monkeypatch: pytest.MonkeyPatch)
 
 
 def test_missing_cache_file_is_described_not_crashed(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    cache_dir: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    spec = _install(monkeypatch, _module("quiet", lambda: 0, tmp_path), "fetch")
+    spec = _install(monkeypatch, _module("quiet", lambda: 0, cache_dir), "fetch", "hn")
 
     payload = _payload(_run(tools._fetch_handler(spec)({})))
 

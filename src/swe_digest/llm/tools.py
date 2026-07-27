@@ -24,8 +24,9 @@ from typing import Any
 from claude_agent_sdk import McpSdkServerConfig, SdkMcpTool, create_sdk_mcp_server, tool
 
 from swe_digest import paths, settings
+from swe_digest.domain import sources as registry
 from swe_digest.llm import catalog
-from swe_digest.sources.run import count_items
+from swe_digest.sources.fetch import count_items
 
 # Captured stdout/stderr per tool call. Enough for a full gate report, short
 # enough that a pathological run cannot dominate the window.
@@ -82,19 +83,6 @@ async def _capture(call: Callable[[], int]) -> tuple[int, str]:
     return code, _clip(output)
 
 
-def _cache_dir(module: Any) -> Path:
-    """Where a fetcher writes its envelope.
-
-    Most fetchers carry a ``Source``; events writes its cache directly because
-    it does no network work and has no snapshot to degrade to.
-    """
-    source = getattr(module, "SOURCE", None)
-    if source is not None:
-        cache_dir: Path = source.cache_dir
-        return cache_dir
-    return Path(module.CACHE_DIR)
-
-
 def _relative(path: Path) -> str:
     return str(path.relative_to(paths.ROOT) if path.is_relative_to(paths.ROOT) else path)
 
@@ -142,7 +130,8 @@ def _fetch_handler(spec: catalog.AgentTool) -> Handler:
         except TOOL_FAILURES as error:
             return _failed(spec.name, error)
 
-        payload = {"tool": spec.name, "exit_code": code, **_summarize(_cache_dir(module))}
+        cache_dir = registry.BY_NAME[spec.name.removeprefix("fetch_")].cache_dir
+        payload = {"tool": spec.name, "exit_code": code, **_summarize(cache_dir)}
         if code:
             payload["note"] = (
                 "Coverage is degraded. Say so in Sources checked; do not present this "

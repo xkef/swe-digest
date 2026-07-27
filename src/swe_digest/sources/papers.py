@@ -10,20 +10,12 @@ Exits nonzero when collection is degraded, so the routine never silently skips
 paper coverage.
 """
 
-import sys
 import time
 import urllib.parse
-from datetime import UTC, datetime
-from xml.etree import ElementTree
+from typing import Any
 
 from swe_digest import settings
-from swe_digest.adapters import http
-from swe_digest.domain import sources as registry
-from swe_digest.sources import _feeds
-from swe_digest.sources.run import FetchRun
-from swe_digest.sources.watchlist import load_watchlist
-
-SOURCE = registry.BY_NAME["papers"]
+from swe_digest.sources import feeds, fetch, watchlist
 
 API = "https://export.arxiv.org/api/query"
 RSS = "https://rss.arxiv.org/rss/"
@@ -32,62 +24,53 @@ TIMEOUT = settings.PAPERS_HTTP_TIMEOUT
 API_PAUSE = settings.PAPERS_API_PAUSE
 SUMMARY_MAX_CHARS = settings.PAPERS_SUMMARY_MAX_CHARS
 
-NS = {
-    "atom": "http://www.w3.org/2005/Atom",
-    "arxiv": "http://arxiv.org/schemas/atom",
-}
-
 
 def load_config() -> tuple[list[str], list[str]]:
-    table = load_watchlist().get("papers", {})
-    return table.get("categories", []), table.get("queries", [])
-
-
-def parse_published(value: str | None) -> datetime | None:
-    if not value:
-        return None
-    try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00"))
-    except ValueError:
-        return None
+    table = watchlist.load_watchlist().get("papers", {})
+    categories, queries = table.get("categories", []), table.get("queries", [])
+    if not categories and not queries:
+        print("nothing configured in watchlist [papers]")
+        raise SystemExit(1)
+    return categories, queries
 
 
 def arxiv_id(raw: str) -> str:
     return raw.rstrip("/").split("/abs/")[-1]
 
 
-def make_paper(entry: ElementTree.Element) -> dict | None:
-    raw_id = entry.findtext("atom:id", namespaces=NS)
-    title = entry.findtext("atom:title", namespaces=NS)
+def make_paper(entry: Any, category: str | None = None) -> fetch.Item | None:
+    """One entry, from either the API's Atom or a category RSS feed.
+
+    Both dialects arrive through feedparser with the same names, so the only
+    difference left is where the primary category comes from: the API carries
+    ``arxiv:primary_category``, and an RSS feed is per-category already.
+    """
+    raw_id, title = entry.get("id"), entry.get("title")
     if not raw_id or not title:
         return None
-    authors = [
-        node.text.strip() for node in entry.findall("atom:author/atom:name", NS) if node.text
-    ]
-    summary = (entry.findtext("atom:summary", namespaces=NS) or "").strip()
-    category = entry.find("arxiv:primary_category", NS)
+    primary = entry.get("arxiv_primary_category") or {}
+    paper_id = arxiv_id(raw_id if "/abs/" in raw_id else entry.get("link", raw_id))
     return {
-        "id": arxiv_id(raw_id),
+        "id": paper_id,
         "title": " ".join(title.split()),
-        "url": f"https://arxiv.org/abs/{arxiv_id(raw_id)}",
-        "authors": authors,
-        "published_at": entry.findtext("atom:published", namespaces=NS),
-        "summary": summary[:SUMMARY_MAX_CHARS],
-        "category": category.get("term") if category is not None else None,
+        "url": f"https://arxiv.org/abs/{paper_id}",
+        "authors": [name for author in entry.get("authors", []) if (name := author.get("name"))],
+        "published_at": feeds.published(entry),
+        "summary": feeds.plain(entry.get("summary") or "", SUMMARY_MAX_CHARS),
+        "category": primary.get("term") or category,
     }
 
 
-def within_window(paper: dict, since: datetime) -> bool:
-    published = parse_published(paper["published_at"])
-    return published is not None and published >= since
+def newest_first(papers: dict[str, fetch.Item]) -> list[fetch.Item]:
+    return sorted(papers.values(), key=lambda p: p["published_at"] or "", reverse=True)
 
 
-def fetch_api(categories: list[str], queries: list[str], since: datetime) -> list[dict]:
+def fetch_api(categories: list[str], queries: list[str], since_iso: str) -> list[fetch.Item]:
     searches = []
     if categories:
         searches.append(" OR ".join(f"cat:{cat}" for cat in categories))
     searches.extend(f'all:"{query}"' for query in queries)
-    papers: dict[str, dict] = {}
+    papers: dict[str, fetch.Item] = {}
     for index, search in enumerate(searches):
         if index:
             time.sleep(API_PAUSE)
@@ -99,79 +82,46 @@ def fetch_api(categories: list[str], queries: list[str], since: datetime) -> lis
                 "max_results": 100 if index == 0 else 25,
             }
         )
-        feed = ElementTree.fromstring(http.fetch_bytes(f"{API}?{params}", timeout=TIMEOUT))
-        for entry in feed.findall("atom:entry", NS):
-            paper = make_paper(entry)
-            if paper is None or not within_window(paper, since):
-                continue
+        parsed = feeds.read(f"{API}?{params}", timeout=TIMEOUT)
+        found = [p for entry in parsed.entries if (p := make_paper(entry))]
+        for paper in fetch.within(found, since_iso):
             papers.setdefault(paper["id"], paper)
     if not papers:
         raise RuntimeError("no papers in window from arXiv API")
-    return sorted(papers.values(), key=lambda p: p["published_at"] or "", reverse=True)
+    return newest_first(papers)
 
 
-def fetch_rss(categories: list[str], since: datetime) -> list[dict]:
-    papers: dict[str, dict] = {}
-    for category in categories:
-        try:
-            feed = ElementTree.fromstring(http.fetch_bytes(RSS + category, timeout=TIMEOUT))
-        except (RuntimeError, ElementTree.ParseError) as error:
-            print(f"warn: rss {category}: {error}", file=sys.stderr)
-            continue
-        for item in feed.findall(".//item"):
-            link = item.findtext("link") or ""
-            title = item.findtext("title") or ""
-            if not link or not title:
-                continue
-            pid = arxiv_id(link)
-            paper = {
-                "id": pid,
-                "title": " ".join(title.split()),
-                "url": f"https://arxiv.org/abs/{pid}",
-                "authors": [
-                    a.strip()
-                    for a in (
-                        item.findtext("{http://purl.org/dc/elements/1.1/}creator") or ""
-                    ).split(",")
-                    if a.strip()
-                ],
-                "published_at": _feeds.to_iso(item.findtext("pubDate")),
-                "summary": (item.findtext("description") or "").strip()[:SUMMARY_MAX_CHARS],
-                "category": category,
-            }
-            if within_window(paper, since):
-                papers.setdefault(pid, paper)
-    if not papers:
-        raise RuntimeError("no papers from arXiv RSS")
-    return sorted(papers.values(), key=lambda p: p["published_at"] or "", reverse=True)
+def fetch_rss(categories: list[str], since_iso: str) -> list[fetch.Item]:
+    papers: dict[str, fetch.Item] = {}
+
+    def read(_label: str, category: str) -> list[fetch.Item]:
+        parsed = feeds.read(RSS + category, timeout=TIMEOUT)
+        found = [p for entry in parsed.entries if (p := make_paper(entry, category))]
+        return fetch.within(found, since_iso)
+
+    for paper in fetch.gather([(c, c) for c in categories], read, "rss"):
+        papers.setdefault(paper["id"], paper)
+    return newest_first(papers)
 
 
 def main() -> int:
     categories, queries = load_config()
-    if not categories and not queries:
-        print("no categories or queries in watchlist [papers]", file=sys.stderr)
-        return 1
-
-    run = FetchRun(SOURCE)
-    since = datetime.fromtimestamp(run.since, tz=UTC)
-    papers = run.collect(
+    run = fetch.start("papers")
+    papers = fetch.collect(
+        run,
         "papers",
         [
-            ("arxiv-api", lambda: fetch_api(categories, queries, since)),
-            ("arxiv-rss", lambda: fetch_rss(categories, since)),
-            ("repo-snapshot", lambda: run.snapshot("papers")),
+            ("arxiv-api", lambda: fetch_api(categories, queries, run.since_iso)),
+            ("arxiv-rss", lambda: fetch_rss(categories, run.since_iso)),
+            ("repo-snapshot", lambda: fetch.snapshot(run, "papers")),
         ],
     )
 
-    collections = run.pool({"papers": papers})
-    papers = collections["papers"]
-    pooled = (run.pooled or {}).get("added", {}).get("papers")
-
-    print(
-        f"papers: {len(papers['items'])} items"
-        f" via {papers['backend']}{f' (+{pooled} pooled)' if pooled else ''}"
+    collections, pooled = fetch.pool(run, {"papers": papers})
+    return fetch.report(
+        run,
+        collections,
+        pooled,
+        show="papers",
+        line=lambda p: f"  {p['category'] or '?':>8}  {p['title']}  [{p['url']}]",
     )
-    for paper in papers["items"][:15]:
-        print(f"  {paper['category'] or '?':>8}  {paper['title']}  [{paper['url']}]")
-
-    return run.finish(collections)

@@ -11,20 +11,17 @@ routine never silently falls back to web search.
 import re
 import sys
 import urllib.parse
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from html import unescape
 from typing import Any
-from xml.etree import ElementTree
 
 from swe_digest import settings
 from swe_digest.adapters.http import fetch_bytes, fetch_json
-from swe_digest.domain import sources as registry
-from swe_digest.sources._backends import FETCH_ERRORS
-from swe_digest.sources.run import FetchRun, count_items
-from swe_digest.sources.watchlist import load_watchlist
-
-SOURCE = registry.BY_NAME["hn"]
+from swe_digest.sources import feeds, fetch, watchlist
+from swe_digest.sources.fetch import FETCH_ERRORS
 
 ALGOLIA = "https://hn.algolia.com/api/v1"
 FIREBASE = "https://hacker-news.firebaseio.com/v0"
@@ -173,31 +170,21 @@ def html_front_page() -> list[dict]:
 
 
 def hnrss_front_page() -> list[dict]:
-    raw = fetch_bytes("https://hnrss.org/frontpage?count=30")
-    if re.search(rb"<!\s*(DOCTYPE|ENTITY)", raw, re.IGNORECASE):
-        raise RuntimeError("hnrss feed contains DTD or entity declarations")
-    feed = ElementTree.fromstring(raw)
     stories = []
-    for item in feed.iter("item"):
-        comments_url = item.findtext("comments") or ""
-        id_match = re.search(r"id=(\d+)", comments_url)
-        title = item.findtext("title")
+    for entry in feeds.read("https://hnrss.org/frontpage?count=30").entries:
+        id_match = re.search(r"id=(\d+)", entry.get("comments") or "")
+        title = entry.get("title")
         if not id_match or not title:
             continue
-        stories.append(
-            make_story(id_match.group(1), title, item.findtext("link"), None, None, None)
-        )
+        stories.append(make_story(id_match.group(1), title, entry.get("link"), None, None, None))
     if not stories:
         raise RuntimeError("hnrss yielded no stories")
     return stories
 
 
 def comment_text(raw: str) -> str:
-    """Untrusted HTML comment body to bounded plain text. Comments are data
-    for discovery and paraphrase, never instructions or verbatim quotes."""
-    text = unescape(re.sub(r"<[^>]+>", " ", raw.replace("<p>", "\n")))
-    text = re.sub(r"\s+", " ", text).strip()
-    return text[:COMMENT_MAX_CHARS]
+    """Untrusted HTML comment body to bounded plain text."""
+    return re.sub(r"\s+", " ", feeds.plain(raw, COMMENT_MAX_CHARS)).strip()
 
 
 def algolia_comments(stories: list[dict]) -> dict:
@@ -316,117 +303,109 @@ def match_queries(
     return results
 
 
-def main() -> int:
-    queries = load_watchlist()["hacker_news"]["queries"]
+@dataclass(frozen=True, slots=True)
+class Listing:
+    """One HN listing, and the four strings its backends differ by.
 
-    run = FetchRun(SOURCE)
+    The five backends behind each listing speak five protocols, so they stay
+    written out below. What varied between the four listings was only this,
+    and it was 83 lines of copied backend lists to say it.
+    """
+
+    name: str
+    tags: str  # Algolia's tag filter
+    firebase: str  # the Firebase list name
+    path: str  # the path segment both JSON mirrors use
+    hits: int
+    # Whether the listing is the day's window (rather than "right now"), which
+    # is what decides both the Algolia filter and the mirror reader.
+    windowed: bool
+    firebase_ids: int = 0
+    pages: int = 1
+    # Last resorts only the front page has, in the order they are tried:
+    # before the JSON mirrors and after them.
+    before_mirrors: tuple[str, ...] = ()
+    after_mirrors: tuple[str, ...] = ()
+
+
+LISTINGS = (
+    Listing(
+        "front_page",
+        tags="front_page",
+        firebase="topstories",
+        path="news",
+        hits=30,
+        windowed=False,
+        before_mirrors=("html",),
+        after_mirrors=("hnrss",),
+    ),
+    Listing(
+        "top_day",
+        tags="story",
+        firebase="beststories",
+        path="news",
+        hits=50,
+        windowed=True,
+        firebase_ids=100,
+        pages=2,
+    ),
+    Listing("ask_hn", tags="ask_hn", firebase="askstories", path="ask", hits=30, windowed=True),
+    Listing("show_hn", tags="show_hn", firebase="showstories", path="show", hits=30, windowed=True),
+)
+
+# The two front-page-only backends, named in the table above rather than
+# reached for by a branch on the listing name.
+LAST_RESORTS: dict[str, Callable[[], list[dict]]] = {
+    "html": html_front_page,
+    "hnrss": hnrss_front_page,
+}
+
+
+def listing_backends(run: fetch.Run, listing: Listing) -> list[fetch.Backend]:
+    since, cutoff = run.since, run.since_iso
+
+    def algolia() -> list[dict]:
+        params: dict[str, Any] = {"tags": listing.tags, "hitsPerPage": listing.hits}
+        if listing.windowed:
+            params["numericFilters"] = f"created_at_i>{since}"
+        return algolia_stories(params)
+
+    def firebase() -> list[dict]:
+        stories = firebase_list(listing.firebase, listing.firebase_ids or listing.hits)
+        if not listing.windowed:
+            return stories
+        return [s for s in stories if s["created_at"] is None or s["created_at"] >= cutoff]
+
+    def mirror(base: str, suffix: str) -> Callable[[], list[dict]]:
+        pages = range(1, listing.pages + 1)
+        urls = [f"{base}/{listing.path}{suffix.format(page=page)}" for page in pages]
+        if listing.windowed:
+            return lambda: mirror_window(urls, since)
+        return lambda: mirror_stories(urls[0])
+
+    return [
+        ("algolia", algolia),
+        ("firebase", firebase),
+        *((name, LAST_RESORTS[name]) for name in listing.before_mirrors),
+        ("hnapi-mirror", mirror(HNAPI, "?page={page}")),
+        ("hnpwa-mirror", mirror(HNPWA, "/{page}.json")),
+        *((name, LAST_RESORTS[name]) for name in listing.after_mirrors),
+        ("repo-snapshot", lambda: fetch.snapshot(run, listing.name)),
+    ]
+
+
+def query_backends(
+    run: fetch.Run, queries: list[str], raw: dict[str, int], listings: dict[str, fetch.Collection]
+) -> list[fetch.Backend]:
+    """Watchlist-term hits, and what to do when Algolia search is unavailable.
+
+    The snapshot backend refuses a snapshot that came from the title-match
+    fallback or is missing a term, because either would silently answer a
+    question it does not have the data for.
+    """
     since = run.since
 
-    front_page = run.collect(
-        "front_page",
-        [
-            ("algolia", lambda: algolia_stories({"tags": "front_page", "hitsPerPage": 30})),
-            ("firebase", lambda: firebase_list("topstories", 30)),
-            ("html", html_front_page),
-            ("hnapi-mirror", lambda: mirror_stories(f"{HNAPI}/news?page=1")),
-            ("hnpwa-mirror", lambda: mirror_stories(f"{HNPWA}/news/1.json")),
-            ("hnrss", hnrss_front_page),
-            ("repo-snapshot", lambda: run.snapshot("front_page")),
-        ],
-    )
-    top_day = run.collect(
-        "top_day",
-        [
-            (
-                "algolia",
-                lambda: algolia_stories(
-                    {
-                        "tags": "story",
-                        "numericFilters": f"created_at_i>{since}",
-                        "hitsPerPage": 50,
-                    }
-                ),
-            ),
-            (
-                "firebase",
-                lambda: [
-                    story
-                    for story in firebase_list("beststories", 100)
-                    if story["created_at"] is None
-                    or story["created_at"] >= datetime.fromtimestamp(since, tz=UTC).isoformat()
-                ],
-            ),
-            (
-                "hnapi-mirror",
-                lambda: mirror_window([f"{HNAPI}/news?page=1", f"{HNAPI}/news?page=2"], since),
-            ),
-            (
-                "hnpwa-mirror",
-                lambda: mirror_window([f"{HNPWA}/news/1.json", f"{HNPWA}/news/2.json"], since),
-            ),
-            ("repo-snapshot", lambda: run.snapshot("top_day")),
-        ],
-    )
-    ask = run.collect(
-        "ask_hn",
-        [
-            (
-                "algolia",
-                lambda: algolia_stories(
-                    {
-                        "tags": "ask_hn",
-                        "numericFilters": f"created_at_i>{since}",
-                        "hitsPerPage": 30,
-                    }
-                ),
-            ),
-            ("firebase", lambda: firebase_list("askstories", 30)),
-            ("hnapi-mirror", lambda: mirror_stories(f"{HNAPI}/ask?page=1")),
-            ("hnpwa-mirror", lambda: mirror_stories(f"{HNPWA}/ask/1.json")),
-            ("repo-snapshot", lambda: run.snapshot("ask_hn")),
-        ],
-    )
-    show = run.collect(
-        "show_hn",
-        [
-            (
-                "algolia",
-                lambda: algolia_stories(
-                    {
-                        "tags": "show_hn",
-                        "numericFilters": f"created_at_i>{since}",
-                        "hitsPerPage": 30,
-                    }
-                ),
-            ),
-            ("firebase", lambda: firebase_list("showstories", 30)),
-            ("hnapi-mirror", lambda: mirror_stories(f"{HNAPI}/show?page=1")),
-            ("hnpwa-mirror", lambda: mirror_stories(f"{HNPWA}/show/1.json")),
-            ("repo-snapshot", lambda: run.snapshot("show_hn")),
-        ],
-    )
-
-    thread_candidates = {story["id"]: story for story in front_page["items"]}
-    for story in top_day["items"]:
-        thread_candidates.setdefault(story["id"], story)
-    top_threads = sorted(
-        thread_candidates.values(), key=lambda story: story["points"] or 0, reverse=True
-    )[:COMMENT_STORIES]
-    comments = run.collect(
-        "comments",
-        [
-            ("algolia", lambda: algolia_comments(top_threads)),
-            ("firebase", lambda: firebase_comments(top_threads)),
-            ("repo-snapshot", lambda: run.snapshot("comments")),
-        ],
-    )
-
-    query_results: dict
-    # Raw Algolia hit counts, kept beside the filtered lists so the discovery
-    # value of a loose match stays visible without entering the yield metric.
-    query_raw: dict[str, int] = {}
-    query_backend = "algolia"
-    try:
+    def algolia() -> dict[str, list[dict[str, Any]]]:
         hits = {
             query: algolia_stories(
                 {
@@ -438,94 +417,128 @@ def main() -> int:
             )
             for query in queries
         }
-        query_raw = {query: len(items) for query, items in hits.items()}
-        query_results = filter_queries(hits)
-    except FETCH_ERRORS as error:
-        print(f"warn: queries: algolia: {error}", file=sys.stderr)
-        try:
-            snapshot_queries = run.load_snapshot()["collections"]["queries"]
-            if snapshot_queries["backend"] != "algolia":
-                raise RuntimeError(f"snapshot queries came from {snapshot_queries['backend']}")
-            missing = [q for q in queries if q not in snapshot_queries["items"]]
-            if missing:
-                raise RuntimeError(f"snapshot missing queries: {missing[:3]}")
-            query_backend = "repo-snapshot"
-            query_results = {q: snapshot_queries["items"][q] for q in queries}
-        except FETCH_ERRORS as snapshot_error:
-            print(f"warn: queries: repo-snapshot: {snapshot_error}", file=sys.stderr)
-            query_backend = "title-match"
-            corpus = {
-                story["id"]: story
-                for section in (front_page, top_day, ask, show)
-                for story in section["items"]
-            }
-            try:
-                for story in firebase_list("newstories", QUERY_CORPUS_NEW_IDS):
-                    corpus.setdefault(story["id"], story)
-            except FETCH_ERRORS as corpus_error:
-                print(f"warn: queries: corpus: {corpus_error}", file=sys.stderr)
-                try:
-                    urls = [f"{HNAPI}/newest?page={page}" for page in (1, 2, 3)]
-                    for story in mirror_window(urls, since):
-                        corpus.setdefault(story["id"], story)
-                except FETCH_ERRORS as mirror_error:
-                    print(
-                        f"warn: queries: corpus mirror: {mirror_error}",
-                        file=sys.stderr,
-                    )
-            if corpus:
-                query_results = match_queries(queries, list(corpus.values()), since)
-                run.failures.append("queries (title-match fallback, Algolia search unavailable)")
-            else:
-                query_results = {}
-                run.failures.append("queries")
+        raw.update({query: len(items) for query, items in hits.items()})
+        return filter_queries(hits)
 
-    collections: dict[str, Any] = {
-        "front_page": front_page,
-        "top_day": top_day,
-        "ask_hn": ask,
-        "show_hn": show,
-        "comments": comments,
-        "queries": {"backend": query_backend, "items": query_results, "raw": query_raw},
+    def from_snapshot() -> dict[str, list[dict[str, Any]]]:
+        stored = fetch.newest_snapshot(run)["collections"]["queries"]
+        if stored["backend"] != "algolia":
+            raise RuntimeError(f"snapshot queries came from {stored['backend']}")
+        missing = [q for q in queries if q not in stored["items"]]
+        if missing:
+            raise RuntimeError(f"snapshot missing queries: {missing[:3]}")
+        return {q: stored["items"][q] for q in queries}
+
+    def by_title() -> dict[str, list[dict[str, Any]]]:
+        corpus = {story["id"]: story for listing in listings.values() for story in listing["items"]}
+        corpus_backends: tuple[Callable[[], list[dict]], ...] = (
+            lambda: firebase_list("newstories", QUERY_CORPUS_NEW_IDS),
+            lambda: mirror_window([f"{HNAPI}/newest?page={page}" for page in (1, 2, 3)], since),
+        )
+        for backend in corpus_backends:
+            try:
+                for story in backend():
+                    corpus.setdefault(story["id"], story)
+                break
+            except FETCH_ERRORS as error:
+                print(f"warn: queries: corpus: {error}", file=sys.stderr)
+        if not corpus:
+            raise RuntimeError("no corpus to match against")
+        return match_queries(queries, list(corpus.values()), since)
+
+    return [("algolia", algolia), ("repo-snapshot", from_snapshot), ("title-match", by_title)]
+
+
+def describe(story: dict[str, Any]) -> str:
+    points = story["points"] if story["points"] is not None else "?"
+    comments = story["comments"] if story["comments"] is not None else "?"
+    return f"  {points:>4} pts {comments:>4} cmt  {story['title']}  [{story['hn_url']}]"
+
+
+def main() -> int:
+    queries = watchlist.entries("hacker_news", "queries")
+    run = fetch.start("hn")
+
+    listings = {
+        listing.name: fetch.collect(run, listing.name, listing_backends(run, listing))
+        for listing in LISTINGS
     }
 
-    collections = run.pool(collections)
+    threads = {story["id"]: story for story in listings["front_page"]["items"]}
+    for story in listings["top_day"]["items"]:
+        threads.setdefault(story["id"], story)
+    top_threads = sorted(threads.values(), key=lambda story: story["points"] or 0, reverse=True)[
+        :COMMENT_STORIES
+    ]
+    comments = fetch.collect(
+        run,
+        "comments",
+        [
+            ("algolia", lambda: algolia_comments(top_threads)),
+            ("firebase", lambda: firebase_comments(top_threads)),
+            ("repo-snapshot", lambda: fetch.snapshot(run, "comments")),
+        ],
+    )
+
+    # Raw Algolia hit counts, kept beside the filtered lists so the discovery
+    # value of a loose match stays visible without entering the yield metric.
+    query_raw: dict[str, int] = {}
+    queried = fetch.collect(run, "queries", query_backends(run, queries, query_raw, listings))
+    if queried["backend"] == "title-match":
+        run.failures.append("queries (title-match fallback, Algolia search unavailable)")
+
+    collections: dict[str, Any] = {
+        **listings,
+        "comments": comments,
+        "queries": {**queried, "raw": query_raw},
+    }
+    collections, pooled = fetch.pool(run, collections)
+
     # Today's accumulator can hold hits collected before the strict filter
     # existed, and the snapshot fallback path takes its lists verbatim, so the
     # merged result is filtered again and what pooling added is restated
     # against the kept matches rather than the raw ones.
-    live_matches = count_items(query_results)
+    live_matches = fetch.count_items(queried["items"])
     collections["queries"] |= {"items": filter_queries(collections["queries"]["items"])}
-    if run.pooled:
-        run.pooled["added"]["queries"] = count_items(collections["queries"]["items"]) - live_matches
-    pooled = (run.pooled or {}).get("added", {})
+    kept = fetch.count_items(collections["queries"]["items"])
+    if pooled:
+        pooled.added["queries"] = kept - live_matches
 
-    for name in ("front_page", "top_day", "ask_hn", "show_hn"):
-        section = collections[name]
-        extra = f" (+{pooled[name]} pooled)" if pooled.get(name) else ""
-        print(f"{name}: {len(section['items'])} items via {section['backend']}{extra}")
+    return fetch.report(
+        run,
+        collections,
+        pooled,
+        counts=[listing.name for listing in LISTINGS],
+        notes=(
+            summarize_comments(collections),
+            summarize_queries(collections, queries, query_raw, live_matches, pooled),
+        ),
+        show="front_page",
+        line=describe,
+    )
+
+
+def summarize_comments(collections: dict[str, Any]) -> str:
     comments = collections["comments"]
-    comment_entries = comments["items"].values() if comments["items"] else []
-    comment_count = sum(len(entry["comments"]) for entry in comment_entries)
-    print(
-        f"comments: {comment_count} across {len(comments['items'])} stories"
-        f" via {comments['backend']}"
-    )
-    query_results = collections["queries"]["items"]
-    query_hits = sum(1 for items in query_results.values() if items)
-    extra = f" (+{pooled['queries']} pooled)" if pooled.get("queries") else ""
-    raw_total = sum(query_raw.values())
-    dropped = f", {raw_total - live_matches} off-topic hits dropped" if raw_total else ""
-    print(
-        f"queries: {query_hits}/{len(queries)} terms with hits via {query_backend}{extra}{dropped}"
-    )
+    entries = comments["items"].values() if comments["items"] else []
+    total = sum(len(entry["comments"]) for entry in entries)
+    return f"comments: {total} across {len(comments['items'])} stories via {comments['backend']}"
 
-    ranked = sorted(
-        collections["front_page"]["items"], key=lambda story: story["points"] or 0, reverse=True
-    )
-    for story in ranked[:15]:
-        points = story["points"] if story["points"] is not None else "?"
-        cmt = story["comments"] if story["comments"] is not None else "?"
-        print(f"  {points:>4} pts {cmt:>4} cmt  {story['title']}  [{story['hn_url']}]")
 
-    return run.finish(collections)
+def summarize_queries(
+    collections: dict[str, Any],
+    queries: list[str],
+    raw: dict[str, int],
+    live_matches: int,
+    pooled: fetch.Pooled | None,
+) -> str:
+    results = collections["queries"]["items"]
+    hits = sum(1 for items in results.values() if items)
+    added = pooled.added.get("queries") if pooled else None
+    raw_total = sum(raw.values())
+    return (
+        f"queries: {hits}/{len(queries)} terms with hits"
+        f" via {collections['queries']['backend']}"
+        f"{f' (+{added} pooled)' if added else ''}"
+        f"{f', {raw_total - live_matches} off-topic hits dropped' if raw_total else ''}"
+    )

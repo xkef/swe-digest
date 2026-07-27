@@ -4,11 +4,15 @@ version = "1.0.0"
 description = "Collection, validation, and publishing code for the daily software engineering digest"
 license = "MIT"
 requires-python = ">=3.14"
-# One dependency, installed by the privileged publish job too. Run logs and
-# memory are YAML because they are public records a human reads in a pull
-# request, and that is the whole of what PyYAML is here for.
+# Installed by the privileged publish job too, so each one is a decision. Run
+# logs and memory are YAML because they are public records a human reads in a
+# pull request, and that is the whole of what PyYAML is here for.
 dependencies = [
   "pyyaml>=6.0.3",
+  # RSS and Atom, in every dialect the watchlist feeds actually serve. It
+  # replaced five hand-written ElementTree parsers and three date normalizers,
+  # and it is pure Python with one transitive package.
+  "feedparser>=6.0.12",
 ]
 
 [project.optional-dependencies]
@@ -89,6 +93,12 @@ files = ["src", "tests"]
 # The fetchers traffic in untrusted JSON/XML blobs; Any is inherent there.
 # warn_return_any stays on so typed modules cannot leak Any silently.
 disallow_any_generics = false
+
+# feedparser ships no stubs. It is reached only through sources/feeds.py, which
+# is typed and is the only module allowed to import it.
+[[tool.mypy.overrides]]
+module = "feedparser"
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -13,102 +13,51 @@ degraded, so the routine never silently skips YouTube coverage.
 """
 
 import json
-import sys
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any
-from xml.etree import ElementTree
 
 from swe_digest import settings
 from swe_digest.adapters.http import fetch_bytes
-from swe_digest.domain import sources as registry
-from swe_digest.sources import _feeds
-from swe_digest.sources.run import FetchRun
-from swe_digest.sources.watchlist import load_watchlist
-
-SOURCE = registry.BY_NAME["youtube"]
+from swe_digest.sources import feeds, fetch, watchlist
 
 FEED = "https://www.youtube.com/feeds/videos.xml?channel_id="
 ALGOLIA = "https://hn.algolia.com/api/v1/search"
 DESCRIPTION_MAX_CHARS = settings.YT_DESCRIPTION_MAX_CHARS
 DISCUSSION_LOOKUPS = settings.YT_DISCUSSION_LOOKUPS
 
-NS = {
-    "atom": "http://www.w3.org/2005/Atom",
-    "yt": "http://www.youtube.com/xml/schemas/2015",
-    "media": "http://search.yahoo.com/mrss/",
-}
-
 
 def parse_channels() -> list[tuple[str, str]]:
     """Watchlist entries are "UC...|Channel Name"; skip the placeholder and
     any entry without a real channel id."""
-    raw = load_watchlist()["youtube"]["channels"]
-    channels = []
-    for entry in raw:
-        channel_id, _, label = entry.partition("|")
-        channel_id = channel_id.strip()
-        if not channel_id.startswith("UC"):
-            continue
-        channels.append((channel_id, label.strip() or channel_id))
-    return channels
+    return watchlist.pairs("youtube", "channels", valid=lambda part: part.startswith("UC"))
 
 
-def make_video(entry: ElementTree.Element, fallback_channel: str) -> dict[str, Any] | None:
-    video_id = entry.findtext("yt:videoId", namespaces=NS)
-    title = entry.findtext("atom:title", namespaces=NS)
+def make_video(entry: Any, fallback_channel: str) -> fetch.Item | None:
+    video_id, title = entry.get("yt_videoid"), entry.get("title")
     if not video_id or not title:
         return None
-    channel_id = entry.findtext("yt:channelId", namespaces=NS)
-    channel = entry.findtext("atom:author/atom:name", namespaces=NS) or fallback_channel
-    published = entry.findtext("atom:published", namespaces=NS)
-    group = entry.find("media:group", NS)
-    description = ""
-    views = None
-    rating = None
-    if group is not None:
-        description = (group.findtext("media:description", namespaces=NS) or "").strip()
-        community = group.find("media:community", NS)
-        if community is not None:
-            stats = community.find("media:statistics", NS)
-            views_raw = stats.get("views") if stats is not None else None
-            if views_raw:
-                views = int(views_raw)
-            star = community.find("media:starRating", NS)
-            count_raw = star.get("count") if star is not None else None
-            average_raw = star.get("average") if star is not None else None
-            if count_raw and average_raw:
-                rating = {"average": float(average_raw), "count": int(count_raw)}
+    stars = entry.get("media_starrating") or {}
+    average, count = stars.get("average"), stars.get("count")
+    views = (entry.get("media_statistics") or {}).get("views")
     return {
         "id": video_id,
         "title": title.strip(),
         "url": f"https://www.youtube.com/watch?v={video_id}",
-        "channel": channel,
-        "channel_id": channel_id,
-        "published_at": published,
-        "views": views,
-        "rating": rating,
+        "channel": entry.get("author") or fallback_channel,
+        "channel_id": entry.get("yt_channelid"),
+        "published_at": feeds.published(entry),
+        "views": int(views) if views else None,
+        "rating": {"average": float(average), "count": int(count)} if average and count else None,
         "discussion": None,
-        "description": description[:DESCRIPTION_MAX_CHARS],
+        "description": (entry.get("summary") or "").strip()[:DESCRIPTION_MAX_CHARS],
     }
 
 
-def fetch_channel(channel_id: str, label: str, since_iso: str) -> list[dict]:
-    feed = ElementTree.fromstring(fetch_bytes(FEED + channel_id))
-    videos = [
-        video
-        for entry in feed.findall("atom:entry", NS)
-        if (video := make_video(entry, label)) is not None
-    ]
-    return _feeds.within(videos, since_iso)
-
-
-def fetch_all_channels(channels: list[tuple[str, str]], since_iso: str) -> list[dict]:
-    return _feeds.gather(
-        [(label, channel_id) for channel_id, label in channels],
-        lambda label, channel_id: fetch_channel(channel_id, label, since_iso),
-        "channel",
-    )
+def fetch_channel(label: str, channel_id: str, since_iso: str) -> list[fetch.Item]:
+    parsed = feeds.read(FEED + channel_id)
+    videos = [video for entry in parsed.entries if (video := make_video(entry, label))]
+    return fetch.within(videos, since_iso)
 
 
 def fetch_discussion(video_id: str) -> dict[str, Any] | None:
@@ -149,21 +98,30 @@ def attach_discussion(videos: list[dict]) -> None:
             video["discussion"] = discussion
 
 
+def describe(video: fetch.Item) -> str:
+    views = video["views"] if video["views"] is not None else "?"
+    rating, discussion = video["rating"], video["discussion"]
+    stars = f" {rating['average']:.1f}({rating['count']})" if rating else ""
+    hn = f" HN {discussion['points']}pts/{discussion['num_comments']}c" if discussion else ""
+    return f"  {views:>8} views{stars}{hn}  {video['channel']}: {video['title']}  [{video['url']}]"
+
+
 def main() -> int:
     channels = parse_channels()
-    if not channels:
-        print(
-            "no channels configured in watchlist [youtube].channels",
-            file=sys.stderr,
-        )
-        return 1
-
-    run = FetchRun(SOURCE)
-    videos = run.collect(
+    run = fetch.start("youtube")
+    videos = fetch.collect(
+        run,
         "videos",
         [
-            ("youtube-rss", lambda: fetch_all_channels(channels, run.since_iso)),
-            ("repo-snapshot", lambda: run.snapshot("videos")),
+            (
+                "youtube-rss",
+                lambda: fetch.gather(
+                    channels,
+                    lambda label, channel_id: fetch_channel(label, channel_id, run.since_iso),
+                    "channel",
+                ),
+            ),
+            ("repo-snapshot", lambda: fetch.snapshot(run, "videos")),
         ],
     )
 
@@ -173,27 +131,17 @@ def main() -> int:
     # Pooled after enrichment: an accumulated video already carries the
     # discussion object from the run that fetched it, and the day's channel
     # feeds are the point. A 48-hour RSS window still misses what an earlier
-    # run saw, and per-channel failures are silent here (fetch_all_channels
-    # only raises when every channel fails), so a partial live fetch was
-    # writing a partial day.
-    collections = run.pool({"videos": videos})
-    videos = collections["videos"]
-    pooled = (run.pooled or {}).get("added", {}).get("videos")
-
-    print(
-        f"videos: {len(videos['items'])} items from {len(channels)} channels"
-        f" via {videos['backend']}{f' (+{pooled} pooled)' if pooled else ''}"
+    # run saw, and per-channel failures are silent here (gather only raises
+    # when every channel fails), so a partial live fetch was writing a partial
+    # day.
+    collections, pooled = fetch.pool(run, {"videos": videos})
+    discussed = sum(1 for video in collections["videos"]["items"] if video.get("discussion"))
+    return fetch.report(
+        run,
+        collections,
+        pooled,
+        show="videos",
+        counted=f" from {len(channels)} channels",
+        notes=(f"  {discussed} videos with Hacker News discussion",),
+        line=describe,
     )
-    discussed = sum(1 for video in videos["items"] if video.get("discussion"))
-    print(f"  {discussed} videos with Hacker News discussion")
-    for video in videos["items"][:15]:
-        views = video["views"] if video["views"] is not None else "?"
-        rating = video["rating"]
-        stars = f" {rating['average']:.1f}({rating['count']})" if rating else ""
-        discussion = video["discussion"]
-        hn = f" HN {discussion['points']}pts/{discussion['num_comments']}c" if discussion else ""
-        print(
-            f"  {views:>8} views{stars}{hn}  {video['channel']}: {video['title']}  [{video['url']}]"
-        )
-
-    return run.finish(collections)

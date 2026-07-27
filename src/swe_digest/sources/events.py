@@ -19,19 +19,13 @@ Exits nonzero only when the watchlist table is missing or unparseable, matching
 the degraded-coverage contract of the other fetchers.
 """
 
-import json
 import sys
 import tomllib
-from datetime import UTC, date, datetime
-from pathlib import Path
+from datetime import UTC, date, datetime, time
 
 from swe_digest import paths, settings
+from swe_digest.sources import fetch
 from swe_digest.sources.watchlist import load_watchlist
-
-
-def cache_dir() -> Path:
-    return paths.CACHE_FILE.dir() / "events"
-
 
 LEAD_DAYS = settings.EVENTS_LEAD_DAYS
 SOON_DAYS = settings.EVENTS_SOON_DAYS
@@ -91,41 +85,32 @@ def strip(event: dict) -> dict:
 
 def main(day: str | None = None) -> int:
     today = parse_day(day)
-    failures: list[str] = []
+    # The day is an argument rather than the clock, so the lead-time math is
+    # testable; the envelope is the same one every source writes.
+    run = fetch.start("events", clock=datetime.combine(today, time(), UTC).timestamp)
     try:
         parsed = [event for entry in load_events() if (event := parse_event(entry))]
     except (OSError, tomllib.TOMLDecodeError) as error:
         print(f"warn: events: {error}", file=sys.stderr)
         parsed = []
-        failures.append("events")
+        run.failures.append("events")
 
     upcoming, active = partition(parsed, today)
-
-    result = {
-        "fetched_at": datetime.now(UTC).isoformat(),
-        "today": today.isoformat(),
-        "lead_days": LEAD_DAYS,
-        "degraded": failures,
-        "collections": {
-            "upcoming": {"items": upcoming},
-            "active": {"items": active},
-        },
+    collections = {
+        "upcoming": {"backend": "watchlist", "items": upcoming},
+        "active": {"backend": "watchlist", "items": active},
     }
 
-    directory = cache_dir()
-    directory.mkdir(parents=True, exist_ok=True)
-    output_path = directory / f"{today.isoformat()}.json"
-    output_path.write_text(json.dumps(result, indent=2) + "\n")
-
     print(f"events: {len(upcoming)} upcoming, {len(active)} active as of {today}")
-    print(f"wrote {output_path.relative_to(paths.ROOT)}")
+    written = fetch.write(run, collections, None)
+    print(f"wrote {written.relative_to(paths.ROOT)}")
     for event in active:
         print(f"  ACTIVE  {event['name']}  ({event['start']}..{event['end']})")
     for event in upcoming:
         flag = "SOON" if event.get("soon") else "    "
         print(f"  {flag}  in {event['days_until']:>3}d  {event['name']}  ({event['start']})")
 
-    if failures:
-        print(f"DEGRADED: {', '.join(failures)}", file=sys.stderr)
+    if run.failures:
+        print(f"DEGRADED: {', '.join(run.failures)}", file=sys.stderr)
         return 1
     return 0

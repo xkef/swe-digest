@@ -22,34 +22,16 @@ import sys
 import time
 from html import unescape
 from typing import Any
-from xml.etree import ElementTree
 
 from swe_digest import settings
-from swe_digest.adapters.http import fetch_bytes
-from swe_digest.domain import sources as registry
-from swe_digest.sources._backends import FETCH_ERRORS
-from swe_digest.sources.run import FetchRun
-from swe_digest.sources.watchlist import load_watchlist
-
-SOURCE = registry.BY_NAME["reddit"]
+from swe_digest.sources import feeds, fetch, watchlist
 
 LISTING_PATHS = {"top_day": "top/.rss?t=day", "hot": "hot/.rss"}
 PAUSE_SECONDS = settings.REDDIT_REQUEST_PAUSE_SECONDS
 MIN_SUBREDDIT_FRACTION = settings.REDDIT_MIN_SUBREDDIT_FRACTION
 MIN_DAY_COVERAGE_FRACTION = settings.REDDIT_MIN_DAY_COVERAGE_FRACTION
 
-NS = {"atom": "http://www.w3.org/2005/Atom"}
-
 LINK_ANCHOR = re.compile(r'<a href="([^"]+)">\[link\]</a>')
-
-
-def parse_feed(raw: bytes) -> ElementTree.Element:
-    """Parse untrusted feed XML, refusing DTD and entity declarations so a
-    hostile feed cannot mount entity-expansion or external-entity attacks
-    (same guard as the hnrss backend in fetch/hn.py)."""
-    if re.search(rb"<!\s*(DOCTYPE|ENTITY)", raw, re.IGNORECASE):
-        raise RuntimeError("feed contains DTD or entity declarations")
-    return ElementTree.fromstring(raw)
 
 
 def external_url(content: str) -> str | None:
@@ -60,25 +42,23 @@ def external_url(content: str) -> str | None:
     return unescape(match.group(1)) if match else None
 
 
-def make_post(entry: ElementTree.Element) -> dict[str, Any] | None:
-    post_id = entry.findtext("atom:id", namespaces=NS)
-    title = entry.findtext("atom:title", namespaces=NS)
-    link = entry.find("atom:link", NS)
-    permalink = link.get("href") if link is not None else None
+def make_post(entry: Any) -> fetch.Item | None:
+    post_id, title = entry.get("id"), entry.get("title")
+    permalink = entry.get("link")
     if not post_id or not title or not permalink:
         return None
     permalink = permalink.replace("//old.reddit.com/", "//www.reddit.com/")
-    category = entry.find("atom:category", NS)
-    content = entry.findtext("atom:content", namespaces=NS) or ""
+    tags = entry.get("tags") or []
+    content = (entry.get("content") or [{}])[0].get("value") or ""
     url = external_url(content) or permalink
     return {
         "id": post_id,
         "title": title.strip(),
         "url": url.replace("//old.reddit.com/", "//www.reddit.com/"),
         "permalink": permalink,
-        "subreddit": category.get("term") if category is not None else None,
-        "author": (entry.findtext("atom:author/atom:name", namespaces=NS) or "").strip(),
-        "published_at": entry.findtext("atom:published", namespaces=NS),
+        "subreddit": tags[0].get("term") if tags else None,
+        "author": (entry.get("author") or "").strip(),
+        "published_at": feeds.published(entry),
     }
 
 
@@ -102,11 +82,11 @@ def fetch_listing(
         try:
             # Single attempt per feed: an immediate retry against a
             # rate-limited endpoint burns request budget without succeeding.
-            feed = parse_feed(fetch_bytes(f"https://{host}/r/{subreddit}/{path}", retries=1))
-        except (RuntimeError, ElementTree.ParseError) as error:
+            parsed = feeds.read(f"https://{host}/r/{subreddit}/{path}", retries=1)
+        except fetch.FETCH_ERRORS as error:
             print(f"warn: r/{subreddit} {listing}: {error}", file=sys.stderr)
             continue
-        entries = [post for post in map(make_post, feed.findall("atom:entry", NS)) if post]
+        entries = [post for post in map(make_post, parsed.entries) if post]
         if entries:
             healthy += 1
         posts.extend(
@@ -151,16 +131,12 @@ def order_subreddits(subreddits: list[str], covered: set[str], offset: int) -> l
 
 
 def main() -> int:
-    subreddits = load_watchlist()["reddit"]["subreddits"]
-    if not subreddits:
-        print("no subreddits configured in watchlist [reddit].subreddits", file=sys.stderr)
-        return 1
-
-    run = FetchRun(SOURCE)
+    subreddits = watchlist.entries("reddit", "subreddits")
+    run = fetch.start("reddit")
     minimum = max(1, math.ceil(len(subreddits) * MIN_SUBREDDIT_FRACTION))
     try:
-        covered = covered_subreddits(run.load_day_snapshot())
-    except FETCH_ERRORS as error:
+        covered = covered_subreddits(fetch.day_snapshot(run))
+    except fetch.FETCH_ERRORS as error:
         print(f"warn: rotation: no accumulator for {run.day}: {error}", file=sys.stderr)
         covered = set()
     offset = (run.now // (6 * 3600)) % len(subreddits)
@@ -181,14 +157,13 @@ def main() -> int:
         return [
             ("reddit-rss", from_host("www.reddit.com")),
             ("old-reddit-rss", from_host("old.reddit.com")),
-            ("repo-snapshot", lambda: run.snapshot(name)),
+            ("repo-snapshot", lambda: fetch.snapshot(run, name)),
         ]
 
-    collections = {name: run.collect(name, listing_backends(name)) for name in LISTING_PATHS}
+    collections = {name: fetch.collect(run, name, listing_backends(name)) for name in LISTING_PATHS}
     run.failures.extend(partial)
 
-    collections = run.pool(collections)
-    pooled = (run.pooled or {}).get("added", {})
+    collections, pooled = fetch.pool(run, collections)
 
     # Coverage is a day-level property, so it is measured on the pooled result.
     # The per-run floor above only detects a dead or fully blocking host: one
@@ -203,10 +178,10 @@ def main() -> int:
             f"day coverage ({len(day_covered)}/{len(subreddits)} subreddits, floor {day_minimum})"
         )
 
-    for name, collection in collections.items():
-        extra = f" (+{pooled[name]} pooled)" if pooled.get(name) else ""
-        print(f"{name}: {len(collection['items'])} items via {collection['backend']}{extra}")
-    for post in collections["top_day"]["items"][:15]:
-        print(f"  r/{post['subreddit']}: {post['title']}  [{post['permalink']}]")
-
-    return run.finish(collections)
+    return fetch.report(
+        run,
+        collections,
+        pooled,
+        show="top_day",
+        line=lambda post: f"  r/{post['subreddit']}: {post['title']}  [{post['permalink']}]",
+    )
