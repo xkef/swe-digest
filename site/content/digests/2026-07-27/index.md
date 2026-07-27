@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-27."
 
 [extra]
 status = "published"
-source_count = 28
+source_count = 31
 +++
 
 ## Top stories
@@ -45,7 +45,6 @@ source_count = 28
 - **Sources:** [ImperialViolet](https://www.imperialviolet.org/2026/07/26/zstd-lean.html), [HN 49062291](https://news.ycombinator.com/item?id=49062291)
 - **Summary:** Adam Langley published a post dated 2026-07-26 describing a Zstandard decompressor written in Lean. What he proves is one scoped theorem about FSE table construction, named `ofDistribution_wellFormed`, not the decompressor as a whole, and he states he is not publishing the code. He cites the seL4 retrospective, which reported roughly ten times as much time spent proving as designing and implementing and more than twenty times as many lines of proof code as C code, as the cost that made dependently-typed languages niche. He writes that LLMs promise to be an extremely capable form of proof automation, that perhaps proof engineering no longer needs as much attention, and that LLMs potentially make dependent-type systems dramatically more practical. He qualifies that much more experience would be needed and that proof effort may scale poorly in larger systems. He contrasts LLM proof automation with SMT-based approaches such as F*, where he describes solver behaviour as difficult to predict, and reports that in his limited tests LLMs avoided blowing up the type checker. The post also carries his own compression measurements on 64 MiB of Lean and mathlib source taken on an Apple machine, and notes that Apple's gzip is unusually optimised.
 - **Why it matters:** The suggestion is that machine-generated proofs could remove much of the proof-engineering overhead that kept dependent types out of production, which is distinct from the usual code-generation claims and is testable by anyone with a spec-heavy component.
-- **Follow-up:** Watch for measurements of proof effort from other projects applying LLM proof automation to spec-heavy components, since the author states this code will not be published.
 
 ## ML research
 
@@ -85,6 +84,15 @@ source_count = 28
 - **Why it matters:** The 2026-07-26 digest covered GrapheneOS's own account of what stops forensic extraction from a locked device, and this is the other half of that threat model, where the defence works and the consequence moves from data loss to criminal exposure.
 - **Follow-up:** Watch for the court filing and the specific charges, and for whether GrapheneOS changes its duress credential guidance.
 
+### Researcher reports GitHub code search still returns trojan-bearing repositories a month after 10,000 were deleted
+
+- **Category:** Security
+- **Status:** developing
+- **Sources:** [follow-up post](https://orchidfiles.com/github-security-team/), [June write-up](https://orchidfiles.com/github-repositories-distributing-malware/), [HN 49061769](https://news.ycombinator.com/item?id=49061769)
+- **Summary:** A post dated 2026-07-26 on orchidfiles.com follows up the author's June write-up that the 2026-06-18 digest covered, and states that after that article published a script and a list of about 10,000 repositories whose README linked to a zip archive containing a Trojan, GitHub deleted all of them within a few hours and took no further action, while repositories the author found hours later and appended to the same article are still not blocked a month on. The post gives three reproducible GitHub code-search queries against README download headings and against links to version-numbered zip archives on raw.githubusercontent.com, and reports that the result counts GitHub returns for the same query move between 111 and 4,400. The counts and the claim of inaction are the author's own observations, and GitHub has not responded.
+- **Why it matters:** The delivery channel is GitHub's own code search, so the exposed party is any developer who searches for a tool and follows a README download link, and the reported remediation was takedown of a supplied list rather than detection of the pattern that produced it.
+- **Follow-up:** Watch for a GitHub response and for whether the reported search queries stop returning unblocked repositories.
+
 ## Outages
 
 ### OpenAI's ChatGPT conversation-error incident stays in monitoring for over a day with no further update
@@ -103,9 +111,9 @@ source_count = 28
 - **Category:** Dev tools
 - **Status:** confirmed
 - **Sources:** [repository](https://github.com/NikolayS/pgsimcity), [hosted demo](https://nikolays.github.io/PGSimCity/), [HN 49063754](https://news.ycombinator.com/item?id=49063754)
-- **Summary:** PGSimCity is an open-source interactive model of PostgreSQL internals, published as a GitHub repository with a hosted demo page. The Hacker News thread reached 288 points at this run.
+- **Summary:** PGSimCity is an open-source interactive model of PostgreSQL internals, published as a GitHub repository with a hosted demo page. The Hacker News thread reached 288 points at this run. Neither the repository nor the demo was read at this run, so which internals the model simulates is not established here.
 - **Comments:** Commenters report that the guided tour presents too much at once and ask for interactive rather than passive stepping. One commenter suggests the same approach would transfer to Kubernetes and cloud infrastructure.
-- **Why it matters:** Database scheduling and buffer behaviour are usually taught through static architecture diagrams, and an explorable open-source model is a reusable format for the same problem in other systems.
+- **Why it matters:** PostgreSQL internals are usually taught through static architecture diagrams, and commenters in the thread already propose reusing an explorable open-source model for Kubernetes and cloud infrastructure.
 
 ## Hacker News
 
@@ -117,9 +125,9 @@ source_count = 28
 - **Summary:** The day's largest Hacker News thread, at 883 points, points at killthecookiebanner.eu, a campaign site whose name calls for ending per-site cookie banners. The page returned stylesheet output with no readable body text to this run, so its own text, any EU proposal it references, and any legislative stage are not established here. Commenters in the thread describe the campaign as backing an EU move toward automated privacy signals exchanged between device and site in place of per-site banners, and that characterisation is the thread's rather than a resolved primary document.
 - **Comments:** The thread's recurring technical point is that uBlock Origin's EasyList cookie-notices filter combined with blocking third-party cookies already removes most banners today. Several commenters argue the browser was always the right layer and blame ad-industry incentives rather than the absence of a rule.
 - **Why it matters:** Browser-level consent signalling would move consent handling out of per-site banner code, which is why the thread matters to web developers even though the campaign itself is advocacy.
-- **Follow-up:** Watch for the EU Commission proposal text and its legislative stage.
+- **Follow-up:** Watch for whether an EU Commission proposal exists behind the campaign and, if one does, for its text and legislative stage.
 
-### htmx 4.0 is distributed on a Game Boy cartridge while the repository's newest tag is v4.0.0-beta6
+### A Hacker News thread covers an htmx 4.0 Game Boy cartridge while the repository's newest tag is v4.0.0-beta6
 
 - **Category:** Pulse
 - **Status:** discussion
@@ -137,7 +145,7 @@ source_count = 28
 - **Status:** developing
 - **Sources:** [Hugging Face moonshotai](https://huggingface.co/moonshotai)
 - **Summary:** Moonshot AI promised full K3 weights by 2026-07-27. The Hugging Face models API read at 2026-07-27 lists Kimi-K2.7-Code, last modified 2026-06-15, as the organisation's most recently modified model, and no K3 repository appears. This resolves the status the 2026-07-26 digest could not read, because the organisation web page returns a JavaScript shell to this environment while the API does not. The license and whether a technical report accompanies the weights stay open.
-- **Why it matters:** The weight release is the test of the open-weight claims made for K3 since 2026-07-16, and it arrives against a standing accusation that K3 was distilled from another lab's model, so a missed date is the fact to record rather than an absence of news.
+- **Why it matters:** The weight release is the test of the open-weight claims made for K3 since 2026-07-16, so a missed date is the fact to record rather than an absence of news.
 - **Follow-up:** Watch the Hugging Face models API for a K3 repository, its license, and any accompanying technical report.
 
 ### Hugging Face's CEO calls for radical transparency after the OpenAI agent breach
@@ -161,7 +169,8 @@ source_count = 28
 - Events watchlist: both the upcoming and active collections returned zero items, so no conference or CFP item is published.
 - Books: publisher feeds returned 23 items, all Springer conference proceedings or introductory titles, so the section is omitted.
 - YouTube: 20 videos across the watchlist, none carrying a Hacker News thread and none with a comment count in the snapshot. No video description was verifiable at this run, so New videos is omitted rather than published on titles alone.
-- Engineering blogs: ImperialViolet, the ast-grep blog, and the cJSON disclosure write-up, all published above.
+- Engineering blogs: ImperialViolet, the ast-grep blog, the cJSON disclosure write-up, and the orchidfiles.com GitHub malware follow-up, all published above.
+- github.blog: the RSS feed's newest post is dated 2026-07-23, so a reported repository-ownership change circulating on Reddit has no first-party source and is not published.
 - Apple sources: nothing new resolved this run, so the section is omitted.
 - Markets and company sources: wsj.com is paywalled to this environment, so reported Nvidia and OpenAI data-center financing talks and a reported Google stake in SpaceX could not be verified beyond headlines and are not published. reuters.com and bloomberg.com return HTTP 401 and 403 to automated fetch, unchanged from 2026-07-26.
-- Pages unreadable to this environment: astral.sh returns a JavaScript shell, as recorded on 2026-07-26. killthecookiebanner.eu returned stylesheet content with no readable body text, so the EU proposal it advocates could not be resolved to a primary document and the item is published as discussion only. huggingface.co organisation pages return a JavaScript shell, so the Kimi K3 status was read through the models API instead.
+- Pages unreadable to this environment: astral.sh returns a JavaScript shell, as recorded on 2026-07-26. killthecookiebanner.eu returned stylesheet content with no readable body text, so the EU proposal it advocates could not be resolved to a primary document and the item is published as discussion only. huggingface.co organisation pages return a JavaScript shell, so the Kimi K3 status was read through the models API instead. A NIST-hosted UK AISI and CAISI preliminary assessment of Kimi K3 cyber capabilities returned only inline analytics script within the fetch bound, so its content is unread and it is not published. A relay-market write-up on vectoral.com rendered its title, author, and 2026-06-28 date but no article body, so it is not published.
