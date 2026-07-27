@@ -54,16 +54,16 @@ src = ["src", "tests"]
 
 [tool.ruff.lint.per-file-ignores]
 # The digest story template must stay a single literal line.
-"src/swe_digest/publish/skeleton.py" = ["E501"]
+"src/swe_digest/publish/skeleton.py" = ["line-too-long"]
 # The SDK's hook and tool protocols take async callbacks. These two await
 # nothing, and still cannot be plain functions.
-"src/swe_digest/llm/hooks.py" = ["RUF029"]
-"src/swe_digest/llm/tools.py" = ["RUF029"]
+"src/swe_digest/llm/hooks.py" = ["unused-async"]
+"src/swe_digest/llm/tools.py" = ["unused-async"]
 # Tests reach for private helpers on purpose: several of them exist to be
 # tested directly rather than through the one public entry point. RUF029 for
 # the same reason as the two modules above: a stand-in for an async callback
 # has to match its signature.
-"tests/**" = ["SLF001", "PLC2701", "RUF029"]
+"tests/**" = ["private-member-access", "import-private-name", "unused-async"]
 
 [tool.ruff.lint]
 # PLC2701 is a preview rule, and it is the one that catches a module reaching
@@ -78,8 +78,8 @@ select = [
   "B", # bugbear
   "SIM", # simplify
   "RUF", # ruff-specific
-  "PLC2701", # importing a private name from another module
-  "SLF001", # reaching for another object's private member
+  "import-private-name", # importing a private name from another module
+  "private-member-access", # reaching for another object's private member
 ]
 
 [tool.mypy]

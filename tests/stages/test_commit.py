@@ -88,9 +88,7 @@ class RecordingGh(FakeGh):
         return self.staged if args[:3] == ("git", "diff", "--cached") else ""
 
 
-def test_an_approved_run_stages_and_commits(
-    at_root: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_an_approved_run_stages_and_commits(at_root: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """The step past both of its guards.
 
     The guards were the only part under test, so a name shadowing the ``paths``
