@@ -71,7 +71,7 @@ as `.run/run.patch` plus requested side effects in `.run/manifest.json`.
 #### 2. A deterministic validator holds the write token
 
 The publish job applies the artifact only after
-`swe_digest.gate.publish_run` validates it, with no LLM in the loop:
+`swe_digest.gate.publish` validates it, with no LLM in the loop:
 
 - at most two commits, subjects matched against exact regexes;
 - every added or modified path in every commit matched against the publish
@@ -96,12 +96,12 @@ which is outside the publish allowlist: a run cannot rewrite its own gate.
 
 #### 3. The content gate fails closed
 
-`swe_digest.gate.check_content` runs in `make check`, in the publish job,
+`swe_digest.gate.content` runs in `make check`, in the publish job,
 and in CI. It rejects raw HTML elements, inline event handlers,
 `javascript:` and scripty `data:` URIs (including HTML-entity-encoded
 forms), URL shorteners, and high-signal secret patterns across digests,
 memory, run logs, and snapshots. The site build escapes raw HTML
-independently (`swe_digest.digest.stories.neutralize_html`), so the gate
+independently (`swe_digest.publish.stories.neutralize_html`), so the gate
 and the
 renderer back each other up.
 
@@ -112,7 +112,7 @@ injection. It is four YAML stores reached only through `memory.store`: no step
 holds `Write` or `Edit` on `data/memory/`, identity and dates are assigned by
 code rather than supplied by a caller, and the entry and byte bounds are
 enforced on the write that would break them rather than detected at publish
-time. `swe_digest.gate.check_memory` re-checks the same properties
+time. The content gate's `gate/_memory.py` re-checks the same properties
 independently, so a file edited by something that bypassed the store still
 fails. Content screening (HTML, secrets, shorteners) applies to memory the same
 as to digests. `config/profile.md` is writable only through the
@@ -150,7 +150,7 @@ without that signature did not come from the pipeline.
 #### 7. The staged pipeline prevents what the gate detects
 
 The agent runs as bounded steps rather than one open-ended session
-(`swe_digest.agent`). No step is granted `Bash`, `WebFetch`, or `WebSearch`:
+(`swe_digest.stages`). No step is granted `Bash`, `WebFetch`, or `WebSearch`:
 collection, the backtest, feedback, the run log, formatting, the gate, and the
 commit are Python the model cannot steer, and the web is reached only through
 `llm/net.py`, which allows https alone, refuses shorteners and any host
@@ -174,12 +174,13 @@ does not restore caches the untrusted agent job could have poisoned.
 
 ### Verification
 
-The controls above are executable, not prose. `tests/test_publish_gate.py`,
-`tests/test_check_content.py`, and `tests/test_check_memory.py` replay the
-attacks (workflow edits, gate-source edits, forged subjects, symlinks,
-add-then-delete smuggling, third-party issue closes, off-site comment links,
-encoded `javascript:` URIs, oversized memory) against the real gate code and
-assert rejection. `tests/test_hostile.py` does the same for section 7 with
+The controls above are executable, not prose.
+`tests/security/test_publish_gate.py`, `tests/gate/test_content.py`, and
+`tests/gate/test_memory.py` replay the attacks (workflow edits, gate-source
+edits, forged subjects, symlinks, add-then-delete smuggling, third-party issue
+closes, off-site comment links, encoded `javascript:` URIs, oversized memory)
+against the real gate code and assert rejection.
+`tests/security/test_hostile.py` does the same for section 7 with
 fakes built to misbehave: a redirect to the metadata service, an issue whose
 body claims an authority its API fields deny, a record supplying its own dates,
 a config granting itself a shell. CI enforces a coverage floor on the gate
