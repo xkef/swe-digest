@@ -22,7 +22,7 @@ from pathlib import Path
 from swe_digest import paths, settings
 from swe_digest.adapters.vcs import GitGh, commit_addition, parse_changes, working_addition
 from swe_digest.domain.document import slugify
-from swe_digest.gate.manifest import IssueClose, NewIssue, load_manifest
+from swe_digest.gate._manifest import IssueClose, NewIssue, load_manifest
 from swe_digest.paths import writable_paths as writable_paths
 
 REPO = settings.REPO

@@ -9,12 +9,10 @@ import pytest
 
 from swe_digest import paths, serial, settings
 from swe_digest.analysis import weekly as weekly_stats
-from swe_digest.domain import document
 
 from ..conftest import digest_text
 
 STREAK = settings.WEEKLY_SECTION_EMPTY_STREAK_DAYS
-UNRESOLVED = settings.WEEKLY_STATUS_UNRESOLVED_DAYS
 RECURRING = settings.WEEKLY_RECURRING_MIN_DAYS
 
 
@@ -100,92 +98,6 @@ def test_section_coverage_streak_boundary() -> None:
     assert flagged["Security"]["max_empty_streak"] == STREAK
     below = weekly_stats.section_coverage(days_with_streak(STREAK - 1), STREAK)
     assert "flagged" not in below["Security"]
-
-
-def story_block(title: str, status: str, url: str) -> str:
-    return (
-        f"### {title}\n\n"
-        "- **Category:** AI\n"
-        f"- **Status:** {status}\n"
-        f"- **Sources:** [primary]({url})\n"
-        "- **Summary:** One sentence.\n"
-        "- **Why it matters:** One sentence.\n"
-    )
-
-
-def digest_with(day: str, blocks: list[str]) -> tuple[str, document.Digest]:
-    body = "## Top stories\n\n" + "\n".join(blocks)
-    return day, document.parse(body)
-
-
-def test_status_outcomes_url_and_title_resolution() -> None:
-    end = "2026-07-10"
-    digests = [
-        digest_with(
-            "2026-07-01",
-            [
-                story_block("Big outage developing", "developing", "https://a.example/incident"),
-                story_block("Rumored acquisition of ExampleCo", "rumor", "https://b.example/rumor"),
-            ],
-        ),
-        digest_with(
-            "2026-07-02",
-            [
-                story_block("Postmortem published", "confirmed", "https://a.example/incident/"),
-                story_block(
-                    "Rumored acquisition of ExampleCo", "confirmed", "https://c.example/pr"
-                ),
-            ],
-        ),
-    ]
-    outcomes = weekly_stats.status_outcomes(digests, "2026-07-01", end, UNRESOLVED, 0.75)
-    assert outcomes["labels"]["developing"] == {"total": 1, "confirmed": 1, "rate": 1.0}
-    assert outcomes["labels"]["rumor"] == {"total": 1, "confirmed": 1, "rate": 1.0}
-    assert outcomes["unresolved"] == []
-
-
-def test_status_outcomes_unresolved_age_boundary() -> None:
-    end_date = date(2026, 7, 30)
-    at_boundary = (end_date - timedelta(days=UNRESOLVED)).isoformat()
-    past_boundary = (end_date - timedelta(days=UNRESOLVED + 1)).isoformat()
-    digests = [
-        digest_with(at_boundary, [story_block("Still open A", "rumor", "https://a.example/x")]),
-        digest_with(past_boundary, [story_block("Still open B", "rumor", "https://b.example/y")]),
-    ]
-    outcomes = weekly_stats.status_outcomes(
-        digests, past_boundary, end_date.isoformat(), UNRESOLVED, 0.75
-    )
-    assert [item["title"] for item in outcomes["unresolved"]] == ["Still open B"]
-    assert outcomes["unresolved"][0]["age_days"] == UNRESOLVED + 1
-
-
-def test_status_outcomes_same_date_never_self_resolves() -> None:
-    digests = [
-        digest_with(
-            "2026-07-01",
-            [
-                story_block("Same day story", "developing", "https://a.example/z"),
-                story_block("Same day story", "confirmed", "https://a.example/z"),
-            ],
-        ),
-    ]
-    outcomes = weekly_stats.status_outcomes(digests, "2026-07-01", "2026-07-01", UNRESOLVED, 0.75)
-    assert outcomes["labels"]["developing"]["confirmed"] == 0
-
-
-def test_status_outcomes_scores_the_window_but_resolves_beyond_it() -> None:
-    # The tally is stored under a window key and read as a per-window number,
-    # while resolution legitimately happens on a later day outside it.
-    digests = [
-        digest_with("2026-06-01", [story_block("Old rumor", "rumor", "https://a.example/old")]),
-        digest_with("2026-07-02", [story_block("In window", "developing", "https://b.example/x")]),
-        digest_with(
-            "2026-07-20", [story_block("Later confirmation", "confirmed", "https://b.example/x")]
-        ),
-    ]
-    outcomes = weekly_stats.status_outcomes(digests, "2026-07-01", "2026-07-07", UNRESOLVED, 0.75)
-    assert outcomes["labels"]["rumor"]["total"] == 0
-    assert outcomes["labels"]["developing"] == {"total": 1, "confirmed": 1, "rate": 1.0}
 
 
 class FakeGh:
@@ -311,10 +223,7 @@ def test_main_merge_preserves_agent_keys_and_is_idempotent(
     )
     (runs_dir / "2026-07-20.yaml").write_text(serial.dump(day), encoding="utf-8")
     (weekly_dir / "2026-07-14.yaml").write_text(
-        serial.dump(
-            {"date": "2026-07-14", "mechanical": {"interest_signal": {"topics": {"rust": 3}}}}
-        ),
-        encoding="utf-8",
+        serial.dump({"date": "2026-07-14"}), encoding="utf-8"
     )
     (weekly_dir / "2026-07-21.yaml").write_text(
         serial.dump(
@@ -339,11 +248,9 @@ def test_main_merge_preserves_agent_keys_and_is_idempotent(
     assert len(mechanical["days_missing"]) == 6
     assert mechanical["query_totals"]["rust"]["matched"] == 1
     assert mechanical["miss_review"]["watchlist_gap"][0]["title"] == "Gap story"
-    # The signal is mechanical now, so the previous marker's is read from the
-    # same place and the drift diff survives the change.
-    assert mechanical["previous_interest_signal"] == {"topics": {"rust": 3}}
-    assert mechanical["interest_signal"] == {}
     assert mechanical["feedback"] == {"available": True, "kinds": {}}
+    # Every key the table declares, and nothing else beyond the timestamp.
+    assert set(mechanical) == {"generated_at", *(key for key, _, _ in weekly_stats._KEYS)}
 
     first = record
     assert weekly_stats.main("2026-07-21", gh=FakeGh(stdout="[]")) == 0  # type: ignore[arg-type]

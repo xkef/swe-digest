@@ -53,8 +53,8 @@ class StageSpec:
 # Selection is the only stage that collects, so it is the only one that may
 # fetch. It also gets yesterday's backtest, so a recurring miss can change
 # today's ranking, and the inbox, so an owner story request is considered
-# alongside everything else. run_log and weekly_stats are mechanical and run
-# from the pipeline; no stage is granted them.
+# alongside everything else. The run log and the weekly aggregation are not
+# tools at all: they are mechanical, and the pipeline runs them as code steps.
 _COLLECT_TOOLS = tuple(qualified(tool.name) for tool in FETCH_TOOLS)
 
 # The grant per step, and the only place a grant is written. Config supplies

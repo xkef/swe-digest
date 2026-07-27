@@ -130,7 +130,7 @@ def test_a_stage_that_raises_fails_the_stage_not_the_run() -> None:
     `asyncio.run` and killed the pipeline, so a digest already written to disk
     got no run log, no gate, and no commit. A stage's failure is now its own.
     """
-    import swe_digest.llm.options as options_module
+    import swe_digest.llm._options as options_module
 
     def explode(*_args: Any, **_kwargs: Any) -> Any:
         raise RuntimeError("Reached maximum number of turns (20)")

@@ -105,7 +105,6 @@ BACKTEST_TITLE_RATIO: float = _raw["backtest"]["title_ratio"]
 
 # Weekly stats
 WEEKLY_SECTION_EMPTY_STREAK_DAYS: int = _raw["weekly"]["section_empty_streak_days"]
-WEEKLY_STATUS_UNRESOLVED_DAYS: int = _raw["weekly"]["status_unresolved_days"]
 WEEKLY_RECURRING_MIN_DAYS: int = _raw["weekly"]["recurring_min_days"]
 
 # Memory gate

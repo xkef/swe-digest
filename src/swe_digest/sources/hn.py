@@ -19,7 +19,7 @@ from xml.etree import ElementTree
 
 from swe_digest import settings
 from swe_digest.adapters.http import fetch_bytes, fetch_json
-from swe_digest.sources.backends import FETCH_ERRORS
+from swe_digest.sources._backends import FETCH_ERRORS
 from swe_digest.sources.run import FetchRun, Source, count_items
 from swe_digest.sources.watchlist import load_watchlist
 

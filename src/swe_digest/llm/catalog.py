@@ -108,39 +108,6 @@ TASK_TOOLS: tuple[AgentTool, ...] = (
         ),
         input_schema=_optional_date("date", "YYYY-MM-DD, defaults to yesterday UTC"),
     ),
-    AgentTool(
-        name="run_log",
-        kind="task",
-        module="swe_digest.stages.run_log",
-        description=(
-            "Write the mechanical keys of today's run log and preserve the judgment "
-            "subtree. Call near the end of a run, after the digest is written."
-        ),
-        input_schema=_optional_date("date", "YYYY-MM-DD, defaults to today UTC"),
-    ),
-    AgentTool(
-        name="weekly_stats",
-        kind="task",
-        module="swe_digest.analysis.weekly",
-        description=(
-            "Aggregate the run-log window into the weekly marker's mechanical evidence: "
-            "query totals, dead queries, miss causes, section streaks, status outcomes, "
-            "feedback tallies, recurring candidates. Weekly runs only. Read the marker it "
-            "writes rather than the raw run logs."
-        ),
-        input_schema={
-            "type": "object",
-            "properties": {
-                "date": {"type": "string", "description": "YYYY-MM-DD, defaults to today UTC"},
-                "since": {
-                    "type": "string",
-                    "description": "window start YYYY-MM-DD, defaults to the day after "
-                    "the previous marker",
-                },
-            },
-            "additionalProperties": False,
-        },
-    ),
 )
 
 _STORE_NAMES = ["followups", "entities", "source-reliability", "access-notes"]

@@ -18,14 +18,14 @@ from typing import Any
 
 from swe_digest import paths
 from swe_digest.domain import sources as registry
-from swe_digest.sources.backends import (
+from swe_digest.sources._backends import (
     FETCH_ERRORS,
     Backend,
     load_day_snapshot,
     load_snapshot,
     snapshot_collection,
 )
-from swe_digest.sources.backends import (
+from swe_digest.sources._backends import (
     collect as try_backends,
 )
 from swe_digest.store import snapshots

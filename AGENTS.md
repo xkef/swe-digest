@@ -102,6 +102,18 @@ READMEs. If behaviour and a docstring disagree, one of them is a bug.
 history. A comment that narrates a past shape ages into a lie; a comment that
 states a reason stays true or becomes visibly false.
 
+**Prefer a table to a block that repeats itself.** Most of this repository is a
+pipeline over data, and the modules that read best say so: `cli._FORWARDING` is
+one row per passthrough command, `weekly._KEYS` is one row per key the marker
+carries and how it prints, `pipeline.DAILY` is one row per step. Adding to any
+of them is adding a row, and what the code does is legible without reading how
+it does it.
+
+**A module named `_thing` is its package's own business.** `sources/_feeds.py`,
+`llm/_options.py`, and `gate/_manifest.py` have no caller outside the package
+that holds them, and ruff's `PLC2701` is what keeps it that way. Everything
+else in a package is what that layer offers the layers above it.
+
 - `mypy --strict`, ruff (line length 100), and the import contract are enforced
   in CI. Markdown is rumdl at 80 columns, and rumdl only lints line length: a
   long line is a hand fix. `data/` and the generated trees under `site/` are

@@ -263,7 +263,7 @@ async def _guidance_handler(args: dict[str, Any]) -> Result:
     candidates from a handful of sources.
     """
     topic = args["topic"]
-    path = paths.ROOT / "agent" / "prompts" / "sources" / f"{topic}.md"
+    path = paths.prompts_dir() / "topics" / f"{topic}.md"
     try:
         return _text({"topic": topic, "guidance": path.read_text(encoding="utf-8")})
     except OSError as error:

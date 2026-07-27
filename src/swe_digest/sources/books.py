@@ -12,13 +12,11 @@ book coverage.
 """
 
 import sys
-from concurrent.futures import ThreadPoolExecutor
-from datetime import UTC, datetime
-from email.utils import parsedate_to_datetime
 from xml.etree import ElementTree
 
 from swe_digest import settings
 from swe_digest.adapters.http import fetch_bytes
+from swe_digest.sources import _feeds
 from swe_digest.sources.run import FetchRun, Source
 from swe_digest.sources.watchlist import load_watchlist
 
@@ -47,21 +45,6 @@ def parse_feeds() -> list[tuple[str, str]]:
     return feeds
 
 
-def to_iso(value: str | None) -> str | None:
-    if not value:
-        return None
-    value = value.strip()
-    try:
-        return parsedate_to_datetime(value).astimezone(UTC).isoformat()
-    except TypeError, ValueError:
-        try:
-            return datetime.fromisoformat(value.replace("Z", "+00:00")).isoformat()
-        except ValueError:
-            # An unparseable date must not fail open: a raw string would compare
-            # lexically against the ISO window cutoff and pass permanently.
-            return None
-
-
 def local(tag: str) -> str:
     return tag.rsplit("}", 1)[-1]
 
@@ -76,7 +59,7 @@ def make_book(
         "title": " ".join(title.split()),
         "url": link,
         "source": source,
-        "published_at": to_iso(published),
+        "published_at": _feeds.to_iso(published),
         "description": description.strip()[:DESCRIPTION_MAX_CHARS],
     }
 
@@ -105,43 +88,25 @@ def parse_atom_entry(entry: ElementTree.Element, source: str) -> dict | None:
 
 
 def fetch_feed(label: str, url: str, since_iso: str) -> list[dict]:
+    """One publisher feed, in whichever dialect it serves.
+
+    RSS first, Atom only if that found nothing: a feed is one or the other, and
+    trying both unconditionally would double-count a feed that carries `<item>`
+    elements inside an Atom document.
+    """
     root = ElementTree.fromstring(fetch_bytes(url))
-    books = []
-    for item in root.findall(".//item"):
-        book = parse_rss_item(item, label)
-        if book:
-            books.append(book)
+    books = [book for item in root.findall(".//item") if (book := parse_rss_item(item, label))]
     if not books:
-        for entry in root.findall(f".//{{{ATOM}}}entry"):
-            book = parse_atom_entry(entry, label)
-            if book:
-                books.append(book)
-    fresh = []
-    for book in books:
-        if book["published_at"] and book["published_at"] < since_iso:
-            continue
-        fresh.append(book)
-    return fresh
+        books = [
+            book
+            for entry in root.findall(f".//{{{ATOM}}}entry")
+            if (book := parse_atom_entry(entry, label))
+        ]
+    return _feeds.within(books, since_iso)
 
 
 def fetch_all_feeds(feeds: list[tuple[str, str]], since_iso: str) -> list[dict]:
-    books: list[dict] = []
-
-    def one(feed: tuple[str, str]) -> list[dict]:
-        label, url = feed
-        try:
-            return fetch_feed(label, url, since_iso)
-        except (RuntimeError, ElementTree.ParseError) as error:
-            print(f"warn: feed {label} ({url}): {error}", file=sys.stderr)
-            return []
-
-    with ThreadPoolExecutor(max_workers=8) as pool:
-        for found in pool.map(one, feeds):
-            books.extend(found)
-    if not books:
-        raise RuntimeError("no books from any feed")
-    books.sort(key=lambda book: book["published_at"] or "", reverse=True)
-    return books
+    return _feeds.gather(feeds, lambda label, url: fetch_feed(label, url, since_iso), "feed")
 
 
 def main() -> int:

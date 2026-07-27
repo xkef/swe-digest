@@ -37,7 +37,7 @@ from swe_digest.domain.document import (
     split_front_matter,
 )
 from swe_digest.domain.vocab import SHORTENERS
-from swe_digest.gate.memory import check_memory
+from swe_digest.gate._memory import check_memory
 
 __all__ = ["SECTIONS", "main", "split_front_matter"]
 

@@ -2,8 +2,10 @@
 
 Each command declares its arguments and its handler in the same place, and
 ``main`` does nothing but call the handler ``argparse`` chose, so reading one
-command means reading one block rather than holding a parser and a dispatch
-table apart.
+command means reading one place rather than holding a parser and a dispatch
+table apart. Most commands only forward their arguments to a module's ``main``,
+and those are one row each in ``_FORWARDING``; the handful that decide something
+get a function below.
 
 Handlers resolve their module on first call. That laziness is load-bearing, not
 stylistic: the snapshot workflows run with only the standard library, the
@@ -31,6 +33,89 @@ type Handler = Callable[[argparse.Namespace], int]
 
 def _today() -> str:
     return datetime.now(UTC).strftime("%Y-%m-%d")
+
+
+_DAY: dict[str, Any] = {"nargs": "?", "help": "YYYY-MM-DD, default today UTC"}
+
+# Every command whose handler only forwards its arguments to a module's
+# ``main``, as one row each: name, help, module, and the arguments to declare.
+# The arguments are a mapping rather than a set because their order is the
+# order ``main`` receives them.
+_FORWARDING: tuple[tuple[str, str, str, dict[str, dict[str, Any]]], ...] = (
+    (
+        "merge",
+        "merge a fresh fetch into a committed snapshot",
+        "swe_digest.store.snapshots",
+        {"kind": {"choices": registry.ACCUMULATING}, "src": {}, "dest": {}},
+    ),
+    (
+        "commit-snapshot",
+        "verified commit of the staged changes",
+        "swe_digest.store.commit",
+        {"headline": {}},
+    ),
+    (
+        "check-content",
+        "validate digest structure and screen content",
+        "swe_digest.gate.content",
+        {},
+    ),
+    (
+        "check-size",
+        "enforce the per-page gzip size budget",
+        "swe_digest.gate.size",
+        {"dist": {"nargs": "?", "default": "dist"}},
+    ),
+    (
+        "build-stories",
+        "generate story pages and the home index",
+        "swe_digest.publish.stories",
+        {},
+    ),
+    (
+        "feedback",
+        "record owner feedback issues into memory",
+        "swe_digest.stages.feedback",
+        {},
+    ),
+    (
+        "new-digest",
+        "create the daily digest skeleton",
+        "swe_digest.publish.skeleton",
+        {"day": _DAY},
+    ),
+    (
+        "run-log",
+        "write the day's machine-readable run log",
+        "swe_digest.stages.run_log",
+        {"date": _DAY},
+    ),
+    (
+        "weekly-stats",
+        "aggregate the run-log window into the weekly marker",
+        "swe_digest.analysis.weekly",
+        {
+            "date": _DAY,
+            "--since": {"help": "window start YYYY-MM-DD, default after the previous marker"},
+        },
+    ),
+    (
+        "backtest",
+        "find high-signal HN stories a digest missed",
+        "swe_digest.analysis.backtest",
+        {
+            "date": {"nargs": "?", "help": "YYYY-MM-DD, default yesterday UTC"},
+            "--min-points": {"type": int, "default": None},
+            "--matched-min-points": {"type": int, "default": None},
+        },
+    ),
+    (
+        "prune-runs",
+        "compact run logs past the detail window",
+        "swe_digest.store.prune",
+        {"--keep-days": {"type": int, "default": None}},
+    ),
+)
 
 
 def _call(module: str, *fields: str) -> Handler:
@@ -114,11 +199,6 @@ def _memory(args: argparse.Namespace) -> int:
 
     from swe_digest.store import memory as memory_store
 
-    if args.step == "migrate":
-        from swe_digest.store.migrate import main as migrate_main
-
-        return migrate_main(args.check)
-
     payload: list[Any]
     try:
         match args.step:
@@ -185,23 +265,12 @@ def build_parser() -> argparse.ArgumentParser:
         else:
             one.set_defaults(handler=_call(source.module))
 
-    merge = sub.add_parser("merge", help="merge a fresh fetch into a committed snapshot")
-    merge.add_argument("kind", choices=registry.ACCUMULATING)
-    merge.add_argument("src")
-    merge.add_argument("dest")
-    merge.set_defaults(handler=_call("swe_digest.store.snapshots", "kind", "src", "dest"))
-
-    commit = sub.add_parser("commit-snapshot", help="Verified commit of the staged changes")
-    commit.add_argument("headline")
-    commit.set_defaults(handler=_call("swe_digest.store.commit", "headline"))
-
-    sub.add_parser(
-        "check-content", help="validate digest structure and screen content"
-    ).set_defaults(handler=_call("swe_digest.gate.content"))
-
-    check_size = sub.add_parser("check-size", help="enforce the per-page gzip size budget")
-    check_size.add_argument("dist", nargs="?", default="dist")
-    check_size.set_defaults(handler=_call("swe_digest.gate.size", "dist"))
+    for name, help_text, module, arguments in _FORWARDING:
+        forwarded = sub.add_parser(name, help=help_text)
+        for flag, options in arguments.items():
+            forwarded.add_argument(flag, **options)
+        fields = tuple(flag.lstrip("-").replace("-", "_") for flag in arguments)
+        forwarded.set_defaults(handler=_call(module, *fields))
 
     fmt_run = sub.add_parser("fmt-run", help="put a run's own output in canonical form")
     fmt_run.add_argument("date", nargs="?", help="YYYY-MM-DD, default today UTC")
@@ -216,43 +285,6 @@ def build_parser() -> argparse.ArgumentParser:
     publish_sub.add_parser("apply").add_argument("patch")
     publish_sub.add_parser("push")
     publish_sub.add_parser("side-effects").add_argument("manifest")
-
-    sub.add_parser("build-stories", help="generate story pages and the home index").set_defaults(
-        handler=_call("swe_digest.publish.stories")
-    )
-
-    sub.add_parser("feedback", help="record owner feedback issues into memory").set_defaults(
-        handler=_call("swe_digest.stages.feedback")
-    )
-
-    new_digest = sub.add_parser("new-digest", help="create the daily digest skeleton")
-    new_digest.add_argument("day", nargs="?", help="YYYY-MM-DD, default today UTC")
-    new_digest.set_defaults(handler=_call("swe_digest.publish.skeleton", "day"))
-
-    run_log = sub.add_parser("run-log", help="write the day's machine-readable run log")
-    run_log.add_argument("date", nargs="?", help="YYYY-MM-DD, default today UTC")
-    run_log.set_defaults(handler=_call("swe_digest.stages.run_log", "date"))
-
-    weekly_stats = sub.add_parser(
-        "weekly-stats", help="aggregate the run-log window into the weekly marker"
-    )
-    weekly_stats.add_argument("date", nargs="?", help="YYYY-MM-DD, default today UTC")
-    weekly_stats.add_argument(
-        "--since", help="window start YYYY-MM-DD, default day after the previous marker"
-    )
-    weekly_stats.set_defaults(handler=_call("swe_digest.analysis.weekly", "date", "since"))
-
-    backtest = sub.add_parser("backtest", help="find high-signal HN stories a digest missed")
-    backtest.add_argument("date", nargs="?", help="YYYY-MM-DD, default yesterday UTC")
-    backtest.add_argument("--min-points", type=int, default=None)
-    backtest.add_argument("--matched-min-points", type=int, default=None)
-    backtest.set_defaults(
-        handler=_call("swe_digest.analysis.backtest", "date", "min_points", "matched_min_points")
-    )
-
-    prune_runs = sub.add_parser("prune-runs", help="compact run logs past the detail window")
-    prune_runs.add_argument("--keep-days", type=int, default=None)
-    prune_runs.set_defaults(handler=_call("swe_digest.store.prune", "keep_days"))
 
     runs_cmd = sub.add_parser("runs", help="what a run did, from its committed record")
     runs_sub = runs_cmd.add_subparsers(dest="step", required=True)
@@ -273,10 +305,6 @@ def build_parser() -> argparse.ArgumentParser:
     memory = sub.add_parser("memory", help="read and write the memory stores")
     memory.set_defaults(handler=_memory)
     memory_sub = memory.add_subparsers(dest="step", required=True)
-    memory_migrate = memory_sub.add_parser("migrate", help="rebuild stores from the old markdown")
-    memory_migrate.add_argument(
-        "--check", action="store_true", help="verify the parse without writing"
-    )
     memory_query = memory_sub.add_parser("query", help="print records as JSON, newest first")
     memory_query.add_argument("store", choices=sorted(STORES))
     memory_query.add_argument("--contains", default="", help="substring filter")

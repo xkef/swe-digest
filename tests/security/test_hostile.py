@@ -19,7 +19,7 @@ from swe_digest import paths, settings
 from swe_digest.adapters import http
 from swe_digest.adapters.vcs import GitGh
 from swe_digest.gate import publish
-from swe_digest.gate.manifest import IssueClose, NewIssue, parse_manifest
+from swe_digest.gate._manifest import IssueClose, NewIssue, parse_manifest
 from swe_digest.llm import hooks, net, specs
 from swe_digest.stages import feedback
 from swe_digest.store import memory as memory_store

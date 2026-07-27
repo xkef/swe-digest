@@ -16,7 +16,7 @@ from pathlib import Path
 import pytest
 
 from swe_digest import serial, settings
-from swe_digest.gate.memory import check_memory
+from swe_digest.gate._memory import check_memory
 from swe_digest.store import memory as memory_store
 
 TODAY = date(2026, 7, 2)

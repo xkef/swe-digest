@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from swe_digest import paths
-from swe_digest.gate.manifest import load_manifest
+from swe_digest.gate._manifest import load_manifest
 from swe_digest.stages import pipeline, steps
 
 

@@ -135,10 +135,34 @@ def test_a_prompt_only_names_tools_its_step_holds() -> None:
                 assert catalog.qualified(name) in granted, f"{spec.name} names {name}, ungranted"
 
 
-def test_every_guidance_topic_has_a_fragment() -> None:
-    """A topic the tool offers and cannot load is a dead end mid-run."""
+def test_every_tool_is_granted_to_some_stage() -> None:
+    """A tool no grant names is surface nothing can reach.
+
+    It still costs the schema, the wrapper, and the prose describing when to
+    call it, and it reads as capability the run has when it does not.
+    """
+    granted = {tool for spec in specs.STAGES.values() for tool in spec.allowed_tools}
+
+    for name in catalog.TOOLS_BY_NAME:
+        assert catalog.qualified(name) in granted, f"{name} is granted to no stage"
+
+
+def test_every_guidance_topic_loads_through_the_handler() -> None:
+    """A topic the tool offers and cannot load is a dead end mid-run.
+
+    Through the handler, not the path the catalogue builds: the two once
+    disagreed about where fragments live, and asserting only on the
+    catalogue's spelling is what let the handler keep a stale one.
+    """
+    import asyncio
+    import json
+
+    from swe_digest.llm.tools import _guidance_handler
+
     for topic in catalog.GUIDANCE_TOPICS:
-        assert paths.PROMPT.path(name=f"topics/{topic}").is_file(), topic
+        result = asyncio.run(_guidance_handler({"topic": topic}))
+        assert not result.get("is_error"), topic
+        assert json.loads(result["content"][0]["text"])["guidance"].strip(), topic
 
 
 def test_no_fragment_is_orphaned() -> None:

@@ -5,14 +5,20 @@ on an agent eyeballing a fortnight of raw logs. It owns the ``date``,
 ``window``, and ``mechanical`` keys and rewrites them idempotently; every
 agent-owned key is preserved.
 
+The shape is one table: ``_KEYS`` says what the window produces, one row per
+key. Everything above it is a pure function of the window, and ``main`` is the
+part that reads the logs, applies the table, and writes the marker. A key is
+added by adding a row.
+
 The window runs from the day after the previous marker through the given date,
 falling back to seven days when there is no previous marker.
 """
 
-import difflib
 import json
 import re
 import sys
+from collections.abc import Callable
+from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from datetime import date as date_type
 from typing import Any
@@ -21,8 +27,6 @@ from swe_digest import paths, settings
 from swe_digest.adapters.vcs import GitGh
 from swe_digest.domain import document
 from swe_digest.store import runs
-
-TRACKED_STATUSES = ("developing", "rumor")
 
 NO_RESPONSE = "_no response_"
 
@@ -83,8 +87,21 @@ STOPWORDS = {
     "your",
 }
 TABLE_CAP = 20
-UNRESOLVED_CAP = 20
 PRINT_CAP = 10
+
+
+@dataclass(frozen=True, slots=True)
+class Window:
+    """One window's inputs, so every row in ``_KEYS`` takes the same argument.
+
+    ``totals`` is here rather than recomputed per row because three keys are
+    derived from it and it walks every run log in the window.
+    """
+
+    days: dict[str, dict]
+    missing: list[str]
+    totals: dict[str, dict]
+    gh: GitGh
 
 
 def today() -> str:
@@ -183,81 +200,6 @@ def section_coverage(days: dict[str, dict], streak_days: int) -> dict[str, dict]
     return out
 
 
-def primary_url(story: document.Story) -> str | None:
-    links = document.LINK.findall(story.fields.get("sources", ""))
-    return document.normalize_url(links[0]) if links else None
-
-
-def _confirmed_index(digests: list[tuple[str, document.Digest]]) -> list[tuple[str, str, str]]:
-    """(date, normalized primary url or empty, lowercase title) for every
-    confirmed story."""
-    index = []
-    for day, digest in digests:
-        for _, stories in digest.sections:
-            for story in stories:
-                if story.fields.get("status", "").strip() == "confirmed":
-                    index.append((day, primary_url(story) or "", story.title.lower()))
-    return index
-
-
-def status_outcomes(
-    digests: list[tuple[str, document.Digest]],
-    start: str,
-    end: str,
-    unresolved_days: int,
-    title_ratio: float,
-) -> dict:
-    """How often this window's developing and rumor labels later resolved.
-
-    The tally is scored over the window only, because it is stored under a
-    ``window`` key and read as a per-window number. The resolution index
-    spans the whole archive on purpose: a story labelled developing inside
-    the window is confirmed on some later day, usually outside it.
-    """
-    labels = {label: {"total": 0, "confirmed": 0} for label in TRACKED_STATUSES}
-    unresolved: list[dict] = []
-    confirmed = _confirmed_index(digests)
-    end_date = date_type.fromisoformat(end)
-    for day, digest in ((day, d) for day, d in digests if start <= day <= end):
-        for _, stories in digest.sections:
-            for story in stories:
-                label = story.fields.get("status", "").strip()
-                if label not in labels:
-                    continue
-                labels[label]["total"] += 1
-                url = primary_url(story)
-                title = story.title.lower()
-                resolved = any(
-                    (url and other_url == url)
-                    or difflib.SequenceMatcher(None, title, other_title).ratio() >= title_ratio
-                    for other_day, other_url, other_title in confirmed
-                    if other_day > day
-                )
-                if resolved:
-                    labels[label]["confirmed"] += 1
-                    continue
-                age = (end_date - date_type.fromisoformat(day)).days
-                if age > unresolved_days:
-                    unresolved.append(
-                        {"date": day, "title": story.title, "status": label, "age_days": age}
-                    )
-    rates: dict[str, dict] = {}
-    for label, entry in labels.items():
-        rate = round(entry["confirmed"] / entry["total"], 2) if entry["total"] else None
-        rates[label] = {**entry, "rate": rate}
-    unresolved.sort(key=lambda item: item["date"], reverse=True)
-    return {"labels": rates, "unresolved": unresolved[:UNRESOLVED_CAP]}
-
-
-def load_digests() -> list[tuple[str, document.Digest]]:
-    if not paths.DIGEST.dir().exists():
-        return []
-    return [
-        (path.stem, document.parse(path.read_text(encoding="utf-8")))
-        for path in paths.DIGEST.glob()
-    ]
-
-
 def _form_value(body: str, label: str) -> str | None:
     match = re.search(rf"^### {label}\s*\n+(?P<value>.+)$", body, re.MULTILINE)
     if not match:
@@ -311,45 +253,6 @@ def feedback_tally(gh: GitGh) -> tuple[dict, bool]:
     return dict(sorted(kinds.items())), False
 
 
-def interest_signal(gh: GitGh) -> dict:
-    """The owner's public account, aggregated into topic and language counts.
-
-    Evidence for the interest-drift axis: a topic recurring here across markers
-    and absent from the watchlist and the profile. Computed here rather than
-    asked of a step, because no step has a shell to compute it with.
-
-    **Aggregate only.** Repository names, starred repos, and follows are
-    counted and discarded; only the normalized counts are recorded. A public
-    list of what the owner follows is not something this repository publishes.
-    """
-    counts: dict[str, dict[str, int]] = {"languages": {}, "topics": {}, "orgs": {}}
-
-    def tally(bucket: str, values: Any) -> None:
-        for value in values or []:
-            if value:
-                counts[bucket][str(value)] = counts[bucket].get(str(value), 0) + 1
-
-    try:
-        for repo in gh.gh_json(f"users/{settings.OWNER}/repos?per_page=100"):
-            tally("languages", [repo.get("language")])
-            tally("topics", repo.get("topics"))
-        for repo in gh.gh_json(f"users/{settings.OWNER}/starred?per_page=100"):
-            tally("languages", [repo.get("language")])
-            tally("topics", repo.get("topics"))
-            tally("orgs", [(repo.get("owner") or {}).get("login")])
-        for account in gh.gh_json(f"users/{settings.OWNER}/following?per_page=100"):
-            tally("orgs", [account.get("login")] if account.get("type") == "Organization" else [])
-    except SystemExit, OSError, json.JSONDecodeError, TypeError, AttributeError:
-        print("warn: account signal unavailable", file=sys.stderr)
-        return {}
-
-    # Singletons are noise; drift is what recurs.
-    return {
-        bucket: dict(sorted(((k, v) for k, v in values.items() if v > 1), key=lambda kv: -kv[1]))
-        for bucket, values in counts.items()
-    }
-
-
 def recurring_candidates(days: dict[str, dict], min_days: int) -> dict:
     domains: dict[str, set[str]] = {}
     keywords: dict[str, set[str]] = {}
@@ -372,12 +275,98 @@ def recurring_candidates(days: dict[str, dict], min_days: int) -> dict:
     return {"domains": keep(domains), "keywords": keep(keywords)}
 
 
-def _print_list(label: str, items: list[str]) -> None:
-    if not items:
-        return
-    shown = ", ".join(items[:PRINT_CAP])
-    more = f", and {len(items) - PRINT_CAP} more" if len(items) > PRINT_CAP else ""
-    print(f"{label} ({len(items)}): {shown}{more}")
+def _feedback(gh: GitGh) -> dict:
+    kinds, degraded = feedback_tally(gh)
+    return {"available": not degraded, "kinds": kinds}
+
+
+type Say = Callable[[Any], list[str]]
+
+
+def _say_list(label: str) -> Say:
+    """The summary for a key that is just a list of names."""
+
+    def say(items: list[str]) -> list[str]:
+        if not items:
+            return []
+        shown = ", ".join(items[:PRINT_CAP])
+        more = f", and {len(items) - PRINT_CAP} more" if len(items) > PRINT_CAP else ""
+        return [f"{label} ({len(items)}): {shown}{more}"]
+
+    return say
+
+
+def _say_nothing(_: Any) -> list[str]:
+    """For a key worth recording and not worth a line of the summary."""
+    return []
+
+
+def _say_misses(misses: dict) -> list[str]:
+    causes = ", ".join(f"{cause} {count}" for cause, count in misses["totals"].items())
+    return [
+        *([f"miss causes: {causes}"] if misses["totals"] else []),
+        *(
+            f"watchlist_gap: {gap['date']} {gap['title']} ({gap['id']})"
+            for gap in misses["watchlist_gap"]
+        ),
+    ]
+
+
+def _say_sections(coverage: dict) -> list[str]:
+    return _say_list("flagged sections")(
+        [
+            f"{section} (empty {entry['max_empty_streak']} days)"
+            for section, entry in coverage.items()
+            if entry.get("flagged")
+        ]
+    )
+
+
+def _say_feedback(feedback: dict) -> list[str]:
+    if not feedback["available"]:
+        return ["feedback: unavailable"]
+    return [
+        f"feedback {kind}: {entry['count']} ({' '.join(f'#{n}' for n in entry['numbers'])})"
+        for kind, entry in feedback["kinds"].items()
+    ]
+
+
+def _say_recurring(recurring: dict) -> list[str]:
+    def counted(table: dict[str, list[str]]) -> list[str]:
+        return [f"{key} ({len(seen)} days)" for key, seen in table.items()]
+
+    return [
+        *_say_list("recurring candidate domains")(counted(recurring["domains"])),
+        *_say_list("recurring candidate keywords")(counted(recurring["keywords"])),
+    ]
+
+
+# Every mechanical key the marker carries, as one row: the key, what computes it
+# from the window, and how it says itself in the printed summary. What a reader
+# sees and what the marker holds cannot drift, because both come from here.
+_KEYS: tuple[tuple[str, Callable[[Window], Any], Say], ...] = (
+    ("days_with_log", lambda w: sorted(w.days), _say_nothing),
+    ("days_missing", lambda w: w.missing, _say_nothing),
+    ("query_totals", lambda w: w.totals, _say_nothing),
+    ("dead_queries", lambda w: dead_queries(w.totals), _say_list("dead queries")),
+    (
+        "matched_never_published",
+        lambda w: matched_never_published(w.totals),
+        _say_list("matched but never published"),
+    ),
+    ("miss_review", lambda w: miss_totals(w.days), _say_misses),
+    (
+        "sections",
+        lambda w: section_coverage(w.days, settings.WEEKLY_SECTION_EMPTY_STREAK_DAYS),
+        _say_sections,
+    ),
+    ("feedback", lambda w: _feedback(w.gh), _say_feedback),
+    (
+        "recurring_candidates",
+        lambda w: recurring_candidates(w.days, settings.WEEKLY_RECURRING_MIN_DAYS),
+        _say_recurring,
+    ),
+)
 
 
 def main(date: str | None = None, since: str | None = None, gh: GitGh | None = None) -> int:
@@ -388,96 +377,30 @@ def main(date: str | None = None, since: str | None = None, gh: GitGh | None = N
 
     dates = window_dates(start, end)
     days = {day: runs.load_run_log(day) for day in dates if runs.run_log_path(day).exists()}
-    days_missing = [day for day in dates if day not in days]
+    scope = Window(
+        days=days,
+        missing=[day for day in dates if day not in days],
+        totals=query_totals(days),
+        gh=gh or GitGh(),
+    )
 
-    totals = query_totals(days)
-    dead = dead_queries(totals)
-    never_published = matched_never_published(totals)
-    misses = miss_totals(days)
-    coverage = section_coverage(days, settings.WEEKLY_SECTION_EMPTY_STREAK_DAYS)
-    outcomes = status_outcomes(
-        load_digests(),
-        start,
-        end,
-        settings.WEEKLY_STATUS_UNRESOLVED_DAYS,
-        settings.BACKTEST_TITLE_RATIO,
-    )
-    adapter = gh or GitGh()
-    feedback, degraded = feedback_tally(adapter)
-    recurring = recurring_candidates(days, settings.WEEKLY_RECURRING_MIN_DAYS)
-    previous = runs.load_weekly_marker(prev) if prev else {}
-    # Markers written before the signal became mechanical carry it at the top
-    # level, so week-over-week drift still diffs across the change.
-    previous_signal = (previous.get("mechanical") or {}).get("interest_signal") or previous.get(
-        "interest_signal"
-    )
-    signal = interest_signal(adapter)
+    computed = {key: compute(scope) for key, compute, _ in _KEYS}
 
     record = runs.load_weekly_marker(date)
     record["date"] = date
     record["window"] = f"{start}..{end}"
     record["mechanical"] = {
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
-        "days_with_log": sorted(days),
-        "days_missing": days_missing,
-        "query_totals": totals,
-        "dead_queries": dead,
-        "matched_never_published": never_published,
-        "miss_review": misses,
-        "sections": coverage,
-        "status_outcomes": outcomes,
-        "feedback": {"available": not degraded, "kinds": feedback},
-        "recurring_candidates": recurring,
-        # Computed rather than asked for: no step has the shell this needed,
-        # and an aggregate nobody can hand-edit is better evidence anyway.
-        "interest_signal": signal,
-        "previous_interest_signal": previous_signal,
+        **computed,
     }
     path = runs.save_weekly_marker(date, record)
 
     print(
         f"weekly-stats {date}: window {start}..{end}, {len(days)} run log(s)"
-        + (f", {len(days_missing)} day(s) without a log" if days_missing else "")
+        + (f", {len(scope.missing)} day(s) without a log" if scope.missing else "")
     )
-    _print_list("dead queries", dead)
-    _print_list("matched but never published", never_published)
-    if misses["totals"]:
-        causes = ", ".join(f"{cause} {count}" for cause, count in misses["totals"].items())
-        print(f"miss causes: {causes}")
-    for gap in misses["watchlist_gap"]:
-        print(f"watchlist_gap: {gap['date']} {gap['title']} ({gap['id']})")
-    flagged = [
-        f"{section} (empty {entry['max_empty_streak']} days)"
-        for section, entry in coverage.items()
-        if entry.get("flagged")
-    ]
-    _print_list("flagged sections", flagged)
-    for label, entry in outcomes["labels"].items():
-        if entry["total"]:
-            print(
-                f"status {label}: {entry['confirmed']}/{entry['total']} confirmed"
-                f" (rate {entry['rate']})"
-            )
-    if outcomes["unresolved"]:
-        print(
-            f"unresolved past {settings.WEEKLY_STATUS_UNRESOLVED_DAYS} days:"
-            f" {len(outcomes['unresolved'])}"
-        )
-    if degraded:
-        print("feedback: unavailable")
-    else:
-        for kind, entry in feedback.items():
-            numbers = " ".join(f"#{n}" for n in entry["numbers"])
-            print(f"feedback {kind}: {entry['count']} ({numbers})")
-    _print_list(
-        "recurring candidate domains",
-        [f"{host} ({len(seen)} days)" for host, seen in recurring["domains"].items()],
-    )
-    _print_list(
-        "recurring candidate keywords",
-        [f"{word} ({len(seen)} days)" for word, seen in recurring["keywords"].items()],
-    )
-    if previous_signal is None:
-        print("previous interest signal: none")
+    for key, _, say in _KEYS:
+        for line in say(computed[key]):
+            print(line)
     print(f"wrote {path.relative_to(paths.ROOT)}")
     return 0

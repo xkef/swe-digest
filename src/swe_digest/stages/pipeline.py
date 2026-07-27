@@ -48,8 +48,6 @@ DAILY: tuple[Step, ...] = (
     specs.STAGES["select"],
     specs.STAGES["write"],
     specs.STAGES["review"],
-    # Before run_log, which overwrites the page state this compares against.
-    Code("edits", steps.record_edits),
     Code("judgment", steps.record_judgment),
     # Yesterday's log, not today's: the day the backtest above scored.
     Code("miss_review", steps.record_miss_review),

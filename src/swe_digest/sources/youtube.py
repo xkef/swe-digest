@@ -21,6 +21,7 @@ from xml.etree import ElementTree
 
 from swe_digest import settings
 from swe_digest.adapters.http import fetch_bytes
+from swe_digest.sources import _feeds
 from swe_digest.sources.run import FetchRun, Source
 from swe_digest.sources.watchlist import load_watchlist
 
@@ -99,35 +100,20 @@ def make_video(entry: ElementTree.Element, fallback_channel: str) -> dict[str, A
 
 def fetch_channel(channel_id: str, label: str, since_iso: str) -> list[dict]:
     feed = ElementTree.fromstring(fetch_bytes(FEED + channel_id))
-    videos = []
-    for entry in feed.findall("atom:entry", NS):
-        video = make_video(entry, label)
-        if video is None:
-            continue
-        if video["published_at"] and video["published_at"] < since_iso:
-            continue
-        videos.append(video)
-    return videos
+    videos = [
+        video
+        for entry in feed.findall("atom:entry", NS)
+        if (video := make_video(entry, label)) is not None
+    ]
+    return _feeds.within(videos, since_iso)
 
 
 def fetch_all_channels(channels: list[tuple[str, str]], since_iso: str) -> list[dict]:
-    videos: list[dict] = []
-
-    def one(channel: tuple[str, str]) -> list[dict]:
-        channel_id, label = channel
-        try:
-            return fetch_channel(channel_id, label, since_iso)
-        except (RuntimeError, ElementTree.ParseError, ValueError, TypeError) as error:
-            print(f"warn: channel {label} ({channel_id}): {error}", file=sys.stderr)
-            return []
-
-    with ThreadPoolExecutor(max_workers=8) as pool:
-        for found in pool.map(one, channels):
-            videos.extend(found)
-    if not videos:
-        raise RuntimeError("no videos from any channel feed")
-    videos.sort(key=lambda video: video["published_at"] or "", reverse=True)
-    return videos
+    return _feeds.gather(
+        [(label, channel_id) for channel_id, label in channels],
+        lambda label, channel_id: fetch_channel(channel_id, label, since_iso),
+        "channel",
+    )
 
 
 def fetch_discussion(video_id: str) -> dict[str, Any] | None:

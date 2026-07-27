@@ -55,7 +55,7 @@ async def run_stage(
     try:
         from claude_agent_sdk import AssistantMessage, ResultMessage, ToolUseBlock, query
 
-        from swe_digest.llm.options import build
+        from swe_digest.llm._options import build
 
         options = build(spec, server(), day)  # type: ignore[arg-type]
         async for message in query(prompt=task, options=options):

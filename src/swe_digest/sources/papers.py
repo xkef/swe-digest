@@ -14,11 +14,11 @@ import sys
 import time
 import urllib.parse
 from datetime import UTC, datetime
-from email.utils import parsedate_to_datetime
 from xml.etree import ElementTree
 
 from swe_digest import settings
 from swe_digest.adapters import http
+from swe_digest.sources import _feeds
 from swe_digest.sources.run import FetchRun, Source
 from swe_digest.sources.watchlist import load_watchlist
 
@@ -54,17 +54,6 @@ def parse_published(value: str | None) -> datetime | None:
     try:
         return datetime.fromisoformat(value.replace("Z", "+00:00"))
     except ValueError:
-        return None
-
-
-def rss_published_iso(value: str | None) -> str | None:
-    """RSS pubDate is RFC 822 (e.g. "Mon, 30 Jun 2026 00:00:00 -0400"). Normalize
-    to ISO so the window filter and the snapshot sort match the API path."""
-    if not value:
-        return None
-    try:
-        return parsedate_to_datetime(value).isoformat()
-    except TypeError, ValueError:
         return None
 
 
@@ -151,7 +140,7 @@ def fetch_rss(categories: list[str], since: datetime) -> list[dict]:
                     ).split(",")
                     if a.strip()
                 ],
-                "published_at": rss_published_iso(item.findtext("pubDate")),
+                "published_at": _feeds.to_iso(item.findtext("pubDate")),
                 "summary": (item.findtext("description") or "").strip()[:SUMMARY_MAX_CHARS],
                 "category": category,
             }

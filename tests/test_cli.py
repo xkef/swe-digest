@@ -29,7 +29,6 @@ EVERY_COMMAND = [
     ["weekly-stats"],
     ["backtest"],
     ["prune-runs"],
-    ["memory", "migrate"],
     ["memory", "query", "followups"],
     ["memory", "add", "entities", "--subject", "Zig"],
     ["memory", "touch", "entities", "e-0001"],
