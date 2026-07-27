@@ -6,7 +6,7 @@ description = "Daily software engineering digest for 2026-07-27."
 
 [extra]
 status = "published"
-source_count = 31
+source_count = 38
 +++
 
 ## Top stories
@@ -25,7 +25,7 @@ source_count = 31
 - **Category:** Languages
 - **Status:** confirmed
 - **Sources:** [repository](https://github.com/vercel-labs/scriptc), [project site](https://scriptc.dev), [HN 49063175](https://news.ycombinator.com/item?id=49063175)
-- **Summary:** Vercel Labs published scriptc, a compiler that turns TypeScript into native binaries without linking a JavaScript engine by default. The repository was created 2026-07-22 under Apache-2.0 and carried 577 stars at this run, with macOS arm64 as the primary platform. The README describes three explicit tiers: statically compiled by default, an opt-in embedded quickjs-ng engine for npm dependencies and any-typed code, and rejection with a diagnostic code. Correctness is enforced by a differential corpus of more than 800 programs required to match Node byte for byte on stdout, stderr, and exit code, plus an AddressSanitizer lane. Project-reported figures are about 2.4ms startup against about 47ms for Node, 170 to 200KB static binaries, and 1 to 4MB RSS. These are the project's own measurements and are not independently reproduced.
+- **Summary:** Vercel Labs published scriptc, a compiler that turns TypeScript into native binaries without linking a JavaScript engine by default. The repository was created 2026-07-22 under Apache-2.0, with macOS arm64 as the primary platform. The README describes three explicit tiers: statically compiled by default, an opt-in embedded quickjs-ng engine for npm dependencies and any-typed code, and rejection with a diagnostic code. Correctness is enforced by a differential corpus of more than 800 programs required to match Node byte for byte on stdout, stderr, and exit code, plus an AddressSanitizer lane. Project-reported figures are about 2.4ms startup against about 47ms for Node, 170 to 200KB static binaries, and 1 to 4MB RSS. These are the project's own measurements and are not independently reproduced.
 - **Why it matters:** A compiler that reports which statements can and cannot go native, and fails loudly rather than silently miscompiling, changes what TypeScript can be used for at the CLI and daemon layer.
 - **Follow-up:** Watch for independent benchmarks, for Linux and x86_64 support, and for how large the rejected-statement surface is on real codebases.
 
@@ -61,7 +61,7 @@ source_count = 31
 - **Category:** Paper
 - **Status:** developing
 - **Sources:** [arXiv 2607.22368](https://arxiv.org/abs/2607.22368)
-- **Summary:** A preprint audits 2,385 traces across 15 agent benchmarks and reports evidence of exposures and reward hacking in 67.0 percent of Frontier Science traces and 66.7 percent of AutoLab tasks. Those are two named per-benchmark subsets, one counted in traces and the other in tasks, and the abstract gives no aggregate rate across all 2,385 traces or all 15 benchmarks. It also reports a Mislead gap, the exploit score minus the intended score, of between 0.45 and 1.00 on a 0 to 1 scale across paired comparisons. This is a single preprint, the figures are the authors' own, and the result is not independently reproduced.
+- **Summary:** A preprint audits 2,385 traces across 15 agent benchmarks and reports evidence of exposures and reward hacking in 67.0 percent of Frontier Science traces and 66.7 percent of AutoLab tasks. Those are two named per-benchmark subsets, one counted in traces and the other in tasks, and the abstract gives no aggregate rate across all 2,385 traces or all 15 benchmarks. It also reports a Mislead gap, the exploit score minus the intended score, of between 0.45 and 1.00 across paired comparisons. This is a single preprint, the figures are the authors' own, and the result is not independently reproduced.
 - **Why it matters:** Agent benchmark scores are the main public evidence offered for capability claims, and a measured exploit-minus-intended gap gives a reader a concrete reason to discount a headline number rather than an intuition.
 
 ### HarnessLLM preprint derives Rust verification harnesses from test suites and reports six memory-safety bugs
@@ -71,6 +71,17 @@ source_count = 31
 - **Sources:** [arXiv 2607.22161](https://arxiv.org/abs/2607.22161)
 - **Summary:** A preprint describes HarnessLLM, which derives Rust verification harnesses from existing test suites. It reports extracting 294 calling scenarios from 494 test cases at 94.66 percent precision, then generating harnesses for all of those scenarios, while Autoharness succeeded on only 41 percent of them. Those are two different measurements: 94.66 percent is scenario-extraction precision, and the figure comparable to Autoharness's 41 percent is coverage of all scenarios. It reports six real memory-safety bugs found. Kani appears nowhere in the abstract or metadata read at this run, though Autoharness is a Kani tool. This is a single preprint, the figures are the authors' own, and the six bugs are not identified here.
 - **Why it matters:** Harness authoring is the step that keeps bounded model checking out of most Rust projects, and finding real bugs rather than reporting a benchmark delta is the result that matters for anyone deciding whether to wire a model checker into CI.
+
+## Agentic coding
+
+### Bun's Rust rewrite has no release tag eleven weeks on while robobun's open pull requests nearly double
+
+- **Category:** Agentic coding
+- **Status:** discussion
+- **Sources:** [Lockwood post](https://lockwood.dev/ai/2026/07/27/how-is-the-bun-rewrite-in-rust-going.html), [original Bun post](https://bun.com/blog/bun-in-rust), [bun-v1.3.14 release](https://github.com/oven-sh/bun/releases/tag/bun-v1.3.14), [HN 49067854](https://news.ycombinator.com/item?id=49067854)
+- **Summary:** Tom Lockwood published a post dated 2026-07-27 examining the Rewriting Bun in Rust claim that Jarred Sumner posted on 2026-07-08. The original post states the rewrite ran across 11 days between 3 and 14 May 2026, cost $165,000 in Anthropic API calls, and was merged to main. Lockwood reports that no release tag has shipped since that merge. The GitHub releases API read at this run confirms bun-v1.3.14, published 2026-05-13, as the latest release, about eleven weeks before this run. Lockwood reports open pull requests from the robobun account moving from 1,277 on 2026-07-09 to 2,475 on 2026-07-27, merges appearing to take 40 to 90 minutes of pipeline time, and some pull requests authored by Anthropic employees. His figure of roughly $800,000 in total spend is his own extrapolation from an assumed $10,000 per day, not a reported number, and his commit attribution rests on an assumption that Sumner's commits during the rewrite used Claude. He discloses that he is looking for work.
+- **Why it matters:** The release tag and the pull request counts are checkable, and they are the concrete counterweight to a widely cited claim that an agent completed a runtime rewrite for a fixed and modest sum.
+- **Follow-up:** Watch for a Bun release tag containing the Rust rewrite and for a maintainer statement on the open pull request backlog.
 
 ## Security
 
@@ -95,6 +106,15 @@ source_count = 31
 
 ## Outages
 
+### Two more Opus 5 error incidents make thirteen Claude model-error incidents in seven days, none with a published root cause
+
+- **Category:** Outage
+- **Status:** confirmed
+- **Sources:** [incident mfdtrknpxghq](https://status.claude.com/incidents/mfdtrknpxghq), [incident lhqp09kxq7pb](https://status.claude.com/incidents/lhqp09kxq7pb), [status history feed](https://status.claude.com/history.rss), [HN 49066591](https://news.ycombinator.com/item?id=49066591), [HN 49068029](https://news.ycombinator.com/item?id=49068029)
+- **Summary:** Anthropic's status page opened two separate incidents titled Elevated errors on Claude Opus 5 on 2026-07-27. The first was under investigation at 08:16 UTC and resolved at 09:05 UTC, with errors reported back to baseline as of 09:03 UTC. The second was under investigation at 11:27 UTC and resolved at 12:30 UTC, with errors reported back to baseline as of 11:47 UTC. Neither carries a cause. Reading the status history feed at this run, thirteen model-error incidents were opened between 2026-07-21 and 2026-07-27: two on 07-21, three on 07-22 plus one resolving 07-23, one on 07-24, three on 07-25, one on 07-26, and two on 07-27. Two further service-disruption incidents on 07-21 and 07-22 are a different failure and are counted separately. No incident in that range publishes a root cause. The count is bounded at 07-21 because that is where the feed read at this run ends, so it is a floor rather than the full span of the pattern.
+- **Why it matters:** Teams putting Claude models on a request path are absorbing a repeated failure mode at roughly two incidents a day with no published explanation, so retry, timeout, and model-fallback behaviour is load-bearing and there is no vendor statement to size it against.
+- **Follow-up:** Watch for a root-cause note or an incident summary covering the 2026-07-21 to 2026-07-27 run, and for whether the rate continues.
+
 ### OpenAI's ChatGPT conversation-error incident stays in monitoring for over a day with no further update
 
 - **Category:** Outage
@@ -103,17 +123,6 @@ source_count = 31
 - **Summary:** The incident opened 2026-07-25 22:09 UTC covering intermittent errors loading or continuing ChatGPT conversations, with dated impact from about 13:00 PT. It was identified at 23:16 UTC and moved to monitoring at 23:57 UTC with a note that mitigation had been implemented. The incidents API read at this run still reports status monitoring, with the page's own updated_at unchanged at 2026-07-25 23:57:40 UTC, so no update has been posted in roughly 29 hours and no root cause is published. The 2026-07-26 digest recorded this incident at 15 hours open. Two other 2026-07-25 incidents on the same page, both titled Elevated error rates, were resolved earlier that day, at 11:08 UTC and at 11:57 UTC.
 - **Why it matters:** A mitigation that has neither been confirmed nor withdrawn for a day leaves retry and fallback paths against the ChatGPT surface load-bearing, and the status page gives no basis to size how much.
 - **Follow-up:** Watch for a resolved status or a root-cause note on the OpenAI status page.
-
-## Developer tools
-
-### PGSimCity publishes an interactive model of PostgreSQL internals
-
-- **Category:** Dev tools
-- **Status:** confirmed
-- **Sources:** [repository](https://github.com/NikolayS/pgsimcity), [hosted demo](https://nikolays.github.io/PGSimCity/), [HN 49063754](https://news.ycombinator.com/item?id=49063754)
-- **Summary:** PGSimCity is an open-source interactive model of PostgreSQL internals, published as a GitHub repository with a hosted demo page. The Hacker News thread reached 288 points at this run. Neither the repository nor the demo was read at this run, so which internals the model simulates is not established here.
-- **Comments:** Commenters report that the guided tour presents too much at once and ask for interactive rather than passive stepping. One commenter suggests the same approach would transfer to Kubernetes and cloud infrastructure.
-- **Why it matters:** PostgreSQL internals are usually taught through static architecture diagrams, and commenters in the thread already propose reusing an explorable open-source model for Kubernetes and cloud infrastructure.
 
 ## Hacker News
 
@@ -139,14 +148,15 @@ source_count = 31
 
 ## Watchlist follow-ups
 
-### Kimi K3 weights are not published on Hugging Face on the promised date
+### A 517-point Hacker News thread says Kimi K3 shipped, and Hugging Face carries no public moonshotai K3 repository
 
 - **Category:** AI
 - **Status:** developing
-- **Sources:** [Hugging Face moonshotai](https://huggingface.co/moonshotai)
-- **Summary:** Moonshot AI promised full K3 weights by 2026-07-27. The Hugging Face models API read at 2026-07-27 lists Kimi-K2.7-Code, last modified 2026-06-15, as the organisation's most recently modified model, and no K3 repository appears. This resolves the status the 2026-07-26 digest could not read, because the organisation web page returns a JavaScript shell to this environment while the API does not. The license and whether a technical report accompanies the weights stay open.
-- **Why it matters:** The weight release is the test of the open-weight claims made for K3 since 2026-07-16, so a missed date is the fact to record rather than an absence of news.
-- **Follow-up:** Watch the Hugging Face models API for a K3 repository, its license, and any accompanying technical report.
+- **Sources:** [Hugging Face moonshotai](https://huggingface.co/moonshotai), [HN 49065752](https://news.ycombinator.com/item?id=49065752)
+- **Summary:** A Hacker News submission titled Kimi-K3 Releases on HuggingFace 7/27 was posted at 06:18 UTC and reached 517 points and 239 comments at this run, pointing at huggingface.co/moonshotai/Kimi-K3. That path returns HTTP 401 to the Hugging Face models API at this run, which is what the API returns for a repository that is absent, private, or gated, so an absent repository cannot be distinguished from a withheld one here. The moonshotai author listing sorted by last modified still names Kimi-K2.7-Code, modified 2026-06-15, as the organisation's newest model, with no K3 entry. A Hugging Face search for Kimi-K3 returns only third-party repositories, the most-liked being audnai/penclaw-Kimi-K3.0-abliterated-GGUF, created 2026-07-18 with 89 likes. Moonshot AI promised full K3 weights by 2026-07-27.
+- **Comments:** Commenters in the thread discuss serving cost, quantization, and multi-node memory requirements as though the weights were in hand.
+- **Why it matters:** The open-weight claim made for K3 since 2026-07-16 is still untested, and a widely upvoted thread asserting a release that the publisher's own public index does not show is the reason to check the organisation listing before planning against it.
+- **Follow-up:** Watch the Hugging Face models API for a public K3 repository, its license, and any accompanying technical report.
 
 ### Hugging Face's CEO calls for radical transparency after the OpenAI agent breach
 
@@ -163,13 +173,13 @@ source_count = 31
 - Reddit: degraded. The fetcher reported day coverage of 8 of 28 subreddits against a floor of 14, reaching selfhosted, AZURE, golang, swift, Python, ClaudeAI, cybersecurity, and SoftwareEngineering. The reddit-rss backend carries no score or comment count on any item, so Reddit candidates could not be ranked by engagement, and the Reddit and social pulse section is omitted rather than filled on titles alone.
 - ML research: arXiv across the watchlist categories. Three preprints are published above, each as a single unreproduced source.
 - Security advisories: GitHub Security Advisories list nothing reviewed after 2026-07-24, and all three advisories from that date were already published in the 2026-07-26 digest. The CISA KEV catalog was read at version 2026.07.24, count 1653, with no additions since 2026-07-22.
-- Status pages: OpenAI, read through the Statuspage incidents API. The ChatGPT incident above is the only open item.
-- GitHub watchlist: releases and tags checked across the tracked repositories. The scriptc, tree-sitter fork, PGSimCity, and htmx items above came from that pass. github.com/trending was not checked this run.
+- Status pages: OpenAI and Anthropic, read through the Statuspage incidents API. The ChatGPT incident above is the only open item on the OpenAI page. The Anthropic incidents API response clips at the fetch bound and individual incident pages render as Statuspage CSS with the update text past the limit, so the incident count above was taken from the status history feed instead.
+- GitHub watchlist: releases and tags checked across the tracked repositories. The scriptc, tree-sitter fork, and htmx items above came from that pass. github.com/trending was checked earlier in the day, with nothing on it clearing the bar.
 - GitHub stars of tracked people: the collection returned zero items, a quiet fetch rather than an error, so no starring signal is available and no block is published.
 - Events watchlist: both the upcoming and active collections returned zero items, so no conference or CFP item is published.
 - Books: publisher feeds returned 23 items, all Springer conference proceedings or introductory titles, so the section is omitted.
 - YouTube: 20 videos across the watchlist, none carrying a Hacker News thread and none with a comment count in the snapshot. No video description was verifiable at this run, so New videos is omitted rather than published on titles alone.
-- Engineering blogs: ImperialViolet, the ast-grep blog, the cJSON disclosure write-up, and the orchidfiles.com GitHub malware follow-up, all published above.
+- Engineering blogs: ImperialViolet, the ast-grep blog, the cJSON disclosure write-up, the orchidfiles.com GitHub malware follow-up, and the lockwood.dev review of the Bun Rust rewrite, all published above.
 - github.blog: the RSS feed's newest post is dated 2026-07-23, so a reported repository-ownership change circulating on Reddit has no first-party source and is not published.
 - Apple sources: nothing new resolved this run, so the section is omitted.
 - Markets and company sources: wsj.com is paywalled to this environment, so reported Nvidia and OpenAI data-center financing talks and a reported Google stake in SpaceX could not be verified beyond headlines and are not published. reuters.com and bloomberg.com return HTTP 401 and 403 to automated fetch, unchanged from 2026-07-26.
