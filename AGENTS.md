@@ -77,7 +77,9 @@ READMEs. If behaviour and a docstring disagree, one of them is a bug.
   rumdl at 80 columns, and rumdl only lints line length: a long line is a
   hand fix. Generated trees (`site/content/`, `agent/memory/`, `snapshots/`)
   are excluded from both formatters because the code that writes them owns
-  their form and the content gate checks it.
+  their form and the content gate checks it. `site/templates/` is excluded for
+  a different reason and is hand-formatted — see the note above `fmt` in the
+  Makefile.
 - Coverage has an 85% floor scoped to the security boundary — `gate/`,
   `git_gh.py`, `snapshot/merge.py`. Fetchers are network code, exercised by
   every scheduled run and deliberately outside the floor.
