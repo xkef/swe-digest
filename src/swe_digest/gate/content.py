@@ -444,12 +444,10 @@ def main(root: Path | None = None) -> int:
     for path in files:
         errors.extend(check_digest(path))
     # Memory holds text derived from untrusted sources, so it is screened for
-    # unsafe markup and secrets exactly like a digest is. The stores are JSONL
-    # now, but the screening is over the text either way.
+    # unsafe markup and secrets exactly like a digest is. `scan_unsafe` carries
+    # the secret scan, so screening a store is the one call.
     for path in paths.MEMORY_STORE.glob(root):
-        text = path.read_text(encoding="utf-8")
-        errors.extend(scan_unsafe(path, text))
-        errors.extend(scan_secrets(path, text))
+        errors.extend(scan_unsafe(path, path.read_text(encoding="utf-8")))
     errors.extend(check_memory(root))
     for path in (*paths.RUN_LOG.glob(root), *paths.WEEKLY_LOG.glob(root)):
         errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))

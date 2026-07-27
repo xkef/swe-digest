@@ -243,8 +243,8 @@ class TestWritablePaths:
         assert writable == [f"data/digests/{DIGEST_DATE}.md"]
 
     def test_missing_digest_omitted(self, repo_tree: Path) -> None:
-        # The memory stores are not here: JSONL written by memory.store has
-        # exactly one valid formatting, so a formatter has nothing to say.
+        # The memory stores are not here: what memory.store writes has exactly
+        # one valid formatting, so a formatter has nothing to say.
         assert publish.writable_paths("2031-01-01", repo_tree) == []
 
     def test_every_writable_path_is_inside_the_allowlist(self, repo_tree: Path) -> None:

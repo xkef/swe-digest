@@ -27,8 +27,8 @@ class Record:
     last_seen: str
 
     def to_json(self) -> str:
-        """One line of JSONL. Keys are sorted so a rewrite of unchanged data
-        produces an identical line and git shows no diff."""
+        """The record as JSON. Keys are sorted so the YAML the store writes has
+        one key order and a rewrite of unchanged data shows no diff."""
         return json.dumps(asdict(self), sort_keys=True, ensure_ascii=False)
 
     @classmethod

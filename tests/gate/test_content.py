@@ -421,13 +421,21 @@ def test_github_token_in_digest_fails(repo_tree: Path) -> None:
     assert main(root=repo_tree) == 1
 
 
-def test_secret_in_memory_file_fails(repo_tree: Path) -> None:
-    """Memory holds text from untrusted sources, so it is screened like a digest."""
+def test_secret_in_memory_file_fails(repo_tree: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    """Memory holds text from untrusted sources, so it is screened like a digest.
+
+    Reported once: ``scan_unsafe`` already carries the secret scan, and a gate
+    that says the same thing twice teaches a reader to skim its output.
+    """
     record = {"id": "e-1", "last_seen": "2026-07-01", "note": f"key sk-ant-{'b' * 24}"}
     paths.MEMORY_STORE.path(repo_tree, store="entities").write_text(
         serial.dump([record]), encoding="utf-8"
     )
+
     assert main(root=repo_tree) == 1
+
+    reported = capsys.readouterr().err.splitlines()
+    assert len([line for line in reported if "secret" in line]) == 1
 
 
 def test_secret_in_run_log_fails(repo_tree: Path) -> None:
