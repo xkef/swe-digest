@@ -104,7 +104,7 @@ snapshot_max_items = 1200
 # 16 days old on 2026-07-26, No Starch's about 5 months). The run never saw a
 # title it could publish. The wider window multiplies the proceedings volume
 # the bar already discards, which is the accepted cost.
-window_days = 30
+window_hours = 720
 snapshot_max_age_hours = 36
 description_max_chars = 2000
 # See [hn].pool_max_items. Sparse feeds, so this is a runaway guard.
@@ -118,6 +118,10 @@ snapshot_max_items = 150
 # public events API through gh (authenticated locally by gh login and in
 # Actions by GH_TOKEN).
 window_hours = 24
+# Stars has no committed accumulator: nothing to fall back on and nothing to
+# pool. Stated rather than defaulted, so every source's bounds read alike.
+snapshot_max_age_hours = 0
+pool_max_items = 0
 # gh is authenticated (5000 req/h), so spacing is politeness, not survival.
 request_pause_seconds = 0.5
 # Cap on per-run repos/{full_name} enrichment lookups.
@@ -125,6 +129,11 @@ max_repo_lookups = 30
 description_max_chars = 300
 
 [events]
+# Local only: no window to fetch over, no snapshot, nothing to pool. See the
+# note under [stars] for why the zeros are written out.
+window_hours = 0
+snapshot_max_age_hours = 0
+pool_max_items = 0
 # Lead window is deliberately short so the fetcher's context covers only
 # events that could plausibly produce talk news now.
 lead_days = 3

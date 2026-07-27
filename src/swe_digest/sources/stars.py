@@ -22,17 +22,11 @@ from datetime import datetime
 from typing import Any
 
 from swe_digest import settings
-from swe_digest.sources.run import FetchRun, Source
+from swe_digest.domain import sources as registry
+from swe_digest.sources.run import FetchRun
 from swe_digest.sources.watchlist import load_watchlist
 
-SOURCE = Source(
-    name="stars",
-    label="Stars",
-    # Inert: stars has no committed snapshot. run.snapshot() is never called,
-    # so this directory is never created or read.
-    snapshot_max_age_hours=0,
-    window_seconds=settings.STARS_WINDOW_SECONDS,
-)
+SOURCE = registry.BY_NAME["stars"]
 
 PAUSE_SECONDS = settings.STARS_REQUEST_PAUSE_SECONDS
 MAX_REPO_LOOKUPS = settings.STARS_MAX_REPO_LOOKUPS

@@ -26,17 +26,12 @@ from xml.etree import ElementTree
 
 from swe_digest import settings
 from swe_digest.adapters.http import fetch_bytes
+from swe_digest.domain import sources as registry
 from swe_digest.sources._backends import FETCH_ERRORS
-from swe_digest.sources.run import FetchRun, Source
+from swe_digest.sources.run import FetchRun
 from swe_digest.sources.watchlist import load_watchlist
 
-SOURCE = Source(
-    name="reddit",
-    label="Reddit",
-    snapshot_max_age_hours=settings.REDDIT_SNAPSHOT_MAX_AGE_HOURS,
-    window_seconds=settings.REDDIT_WINDOW_SECONDS,
-    pool_max_items=settings.REDDIT_POOL_MAX_ITEMS,
-)
+SOURCE = registry.BY_NAME["reddit"]
 
 LISTING_PATHS = {"top_day": "top/.rss?t=day", "hot": "hot/.rss"}
 PAUSE_SECONDS = settings.REDDIT_REQUEST_PAUSE_SECONDS

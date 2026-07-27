@@ -21,17 +21,12 @@ from xml.etree import ElementTree
 
 from swe_digest import settings
 from swe_digest.adapters.http import fetch_bytes
+from swe_digest.domain import sources as registry
 from swe_digest.sources import _feeds
-from swe_digest.sources.run import FetchRun, Source
+from swe_digest.sources.run import FetchRun
 from swe_digest.sources.watchlist import load_watchlist
 
-SOURCE = Source(
-    name="youtube",
-    label="YouTube",
-    snapshot_max_age_hours=settings.YT_SNAPSHOT_MAX_AGE_HOURS,
-    window_seconds=settings.YT_WINDOW_SECONDS,
-    pool_max_items=settings.YT_POOL_MAX_ITEMS,
-)
+SOURCE = registry.BY_NAME["youtube"]
 
 FEED = "https://www.youtube.com/feeds/videos.xml?channel_id="
 ALGOLIA = "https://hn.algolia.com/api/v1/search"

@@ -7,9 +7,10 @@ from pathlib import Path
 
 import pytest
 
-from swe_digest import paths
+from swe_digest import paths, settings
+from swe_digest.domain import sources as registry
 from swe_digest.sources import books, hn, papers, reddit, stars, youtube
-from swe_digest.sources.run import FetchRun, Source
+from swe_digest.sources.run import FetchRun
 from swe_digest.store import snapshots
 
 
@@ -25,36 +26,44 @@ def _rooted_at_tmp(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def make_source(
-    tmp_path: Path,
-    window_seconds: int = 3600,
+    monkeypatch: pytest.MonkeyPatch,
+    window_hours: int = 1,
     snapshot_kind: str | None = None,
     pool_max_items: int = 0,
-) -> Source:
-    """An envelope rooted at the fixture tree.
+) -> registry.Source:
+    """A real registry row with the bounds this case wants.
 
-    ``name`` is a real registry entry rather than a synthetic one: the cache
+    The name is a real registry entry rather than a synthetic one: the cache
     directory, the snapshot directory and the merge kind are all derived from
-    it now. ``stars`` is the source with no committed accumulator, which is what
-    the no-pooling cases want.
+    it. The numbers live in the settings table the row reads, so a case that
+    wants different ones patches that rather than building its own source.
+    ``stars`` is the source with no committed accumulator.
     """
-    return Source(
-        name=snapshot_kind or "stars",
-        label="Test",
-        snapshot_max_age_hours=6,
-        window_seconds=window_seconds,
-        pool_max_items=pool_max_items,
+    source = registry.BY_NAME[snapshot_kind or "stars"]
+    monkeypatch.setitem(
+        settings.SOURCE_BOUNDS,
+        source.name,
+        {
+            "window_hours": window_hours,
+            "snapshot_max_age_hours": 6,
+            "pool_max_items": pool_max_items,
+            "snapshot_max_items": 0,
+        },
     )
+    return source
 
 
 class TestFetchRun:
-    def test_window_math(self, tmp_path: Path) -> None:
-        run = FetchRun(make_source(tmp_path, window_seconds=7200), clock=lambda: 1_750_000_000)
+    def test_window_math(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        run = FetchRun(make_source(monkeypatch, window_hours=2), clock=lambda: 1_750_000_000)
         assert run.now == 1_750_000_000
         assert run.since == 1_750_000_000 - 7200
         assert run.since_iso == datetime.fromtimestamp(run.since, tz=UTC).isoformat()
 
-    def test_finish_writes_envelope(self, tmp_path: Path, capsys: pytest.CaptureFixture) -> None:
-        source = make_source(tmp_path)
+    def test_finish_writes_envelope(
+        self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+    ) -> None:
+        source = make_source(monkeypatch)
         run = FetchRun(source, clock=lambda: 1_750_000_000)
         collections = {"things": {"backend": "test", "items": [{"id": 1}]}}
         assert run.finish(collections) == 0
@@ -67,18 +76,18 @@ class TestFetchRun:
         assert "DEGRADED" not in capsys.readouterr().err
 
     def test_finish_degraded_exits_nonzero(
-        self, tmp_path: Path, capsys: pytest.CaptureFixture
+        self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
     ) -> None:
-        run = FetchRun(make_source(tmp_path), clock=lambda: 1_750_000_000)
+        run = FetchRun(make_source(monkeypatch), clock=lambda: 1_750_000_000)
         collection = run.collect("things", [("bad", lambda: (_ for _ in ()).throw(RuntimeError))])
         assert collection == {"backend": None, "items": []}
         assert run.finish({"things": collection}) == 1
         err = capsys.readouterr().err
         assert "DEGRADED: things" in err
-        assert "Test coverage is incomplete" in err
+        assert f"{run.source.label} coverage is incomplete" in err
 
-    def test_snapshot_bound_to_source(self, tmp_path: Path) -> None:
-        source = make_source(tmp_path)
+    def test_snapshot_bound_to_source(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        source = make_source(monkeypatch)
         source.snapshot_dir.mkdir(parents=True)
         (source.snapshot_dir / "2026-07-04.json").write_text(
             json.dumps(
@@ -97,11 +106,15 @@ class TestFetchRun:
 NOW = datetime.now(UTC)
 
 
-def pool_source(tmp_path: Path, kind: str | None = "reddit", cap: int = 0) -> Source:
-    return make_source(tmp_path, window_seconds=3600, snapshot_kind=kind, pool_max_items=cap)
+def pool_source(
+    monkeypatch: pytest.MonkeyPatch, kind: str | None = "reddit", cap: int = 0
+) -> registry.Source:
+    return make_source(monkeypatch, snapshot_kind=kind, pool_max_items=cap)
 
 
-def write_snapshot(source: Source, collections: dict, fetched_at: datetime | None = None) -> None:
+def write_snapshot(
+    source: registry.Source, collections: dict, fetched_at: datetime | None = None
+) -> None:
     source.snapshot_dir.mkdir(parents=True, exist_ok=True)
     (source.snapshot_dir / f"{NOW.strftime('%Y-%m-%d')}.json").write_text(
         json.dumps(
@@ -118,13 +131,13 @@ def post(post_id: int, offset_seconds: int = 0) -> dict:
     return {"id": post_id, "published_at": stamp}
 
 
-def pool_run(source: Source) -> FetchRun:
+def pool_run(source: registry.Source) -> FetchRun:
     return FetchRun(source, clock=NOW.timestamp)
 
 
 class TestPool:
-    def test_unions_the_accumulator_and_live_wins(self, tmp_path: Path) -> None:
-        source = pool_source(tmp_path)
+    def test_unions_the_accumulator_and_live_wins(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        source = pool_source(monkeypatch)
         write_snapshot(
             source,
             {"top_day": {"backend": "reddit-rss", "items": [post(1), post(2), post(3)]}},
@@ -135,10 +148,12 @@ class TestPool:
         assert set(items) == {1, 2, 3}
         assert items[1]["fresh"] is True
 
-    def test_live_backend_and_failures_survive_a_failed_collection(self, tmp_path: Path) -> None:
+    def test_live_backend_and_failures_survive_a_failed_collection(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         # Pooling is additive. It must never relabel a collection whose live
         # backends all failed, or degradation stops being loud.
-        source = pool_source(tmp_path)
+        source = pool_source(monkeypatch)
         write_snapshot(source, {"top_day": {"backend": "reddit-rss", "items": [post(1)]}})
         run = pool_run(source)
         live = {"top_day": run.collect("top_day", [("bad", _boom)])}
@@ -147,11 +162,11 @@ class TestPool:
         assert run.failures == ["top_day"]
         assert [item["id"] for item in out["top_day"]["items"]] == [1]
 
-    def test_only_todays_accumulator_is_pooled(self, tmp_path: Path) -> None:
+    def test_only_todays_accumulator_is_pooled(self, monkeypatch: pytest.MonkeyPatch) -> None:
         # The accumulator is taken whole rather than re-filtered through this
         # run's rolling window, which would discard the early-day coverage
         # pooling exists to recover. Day scoping is what bounds it instead.
-        source = pool_source(tmp_path)
+        source = pool_source(monkeypatch)
         source.snapshot_dir.mkdir(parents=True, exist_ok=True)
         (source.snapshot_dir / "2020-01-01.json").write_text(
             json.dumps(
@@ -166,8 +181,10 @@ class TestPool:
         assert run.pool(live) == live
         assert run.pooled is None
 
-    def test_early_day_items_outside_the_window_are_kept(self, tmp_path: Path) -> None:
-        source = pool_source(tmp_path)
+    def test_early_day_items_outside_the_window_are_kept(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        source = pool_source(monkeypatch)
         write_snapshot(
             source,
             {
@@ -180,8 +197,8 @@ class TestPool:
         out = pool_run(source).pool({"top_day": {"backend": "x", "items": []}})
         assert {item["id"] for item in out["top_day"]["items"]} == {1, 2}
 
-    def test_cap_bounds_the_pooled_collection(self, tmp_path: Path) -> None:
-        source = pool_source(tmp_path, cap=2)
+    def test_cap_bounds_the_pooled_collection(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        source = pool_source(monkeypatch, cap=2)
         write_snapshot(
             source,
             {"top_day": {"backend": "reddit-rss", "items": [post(n) for n in range(1, 6)]}},
@@ -190,25 +207,25 @@ class TestPool:
         assert len(out["top_day"]["items"]) == 2
 
     def test_missing_accumulator_warns_and_changes_nothing(
-        self, tmp_path: Path, capsys: pytest.CaptureFixture
+        self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
     ) -> None:
-        source = pool_source(tmp_path)
+        source = pool_source(monkeypatch)
         run = pool_run(source)
         live = {"top_day": {"backend": "x", "items": [post(1)]}}
         assert run.pool(live) == live
         assert run.pooled is None
         assert "warn: pool" in capsys.readouterr().err
 
-    def test_disabled_without_a_snapshot_kind(self, tmp_path: Path) -> None:
-        source = pool_source(tmp_path, kind=None)
+    def test_disabled_without_a_snapshot_kind(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        source = pool_source(monkeypatch, kind=None)
         write_snapshot(source, {"top_day": {"backend": "reddit-rss", "items": [post(9)]}})
         run = pool_run(source)
         live = {"top_day": {"backend": "x", "items": []}}
         assert run.pool(live) == live
         assert run.pooled is None
 
-    def test_envelope_records_what_pooling_added(self, tmp_path: Path) -> None:
-        source = pool_source(tmp_path)
+    def test_envelope_records_what_pooling_added(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        source = pool_source(monkeypatch)
         write_snapshot(source, {"top_day": {"backend": "reddit-rss", "items": [post(1), post(2)]}})
         run = pool_run(source)
         out = run.pool({"top_day": {"backend": "x", "items": [post(1)]}})
@@ -217,10 +234,10 @@ class TestPool:
         assert written["pooled"]["added"] == {"top_day": 1}
         assert written["pooled"]["snapshot_fetched_at"] == NOW.isoformat()
 
-    def test_map_shaped_collections_merge_per_key(self, tmp_path: Path) -> None:
+    def test_map_shaped_collections_merge_per_key(self, monkeypatch: pytest.MonkeyPatch) -> None:
         # queries maps a term to a story list and comments maps a story id to
         # its thread; both must merge per key rather than being replaced.
-        source = pool_source(tmp_path, kind="hn")
+        source = pool_source(monkeypatch, kind="hn")
         story = {"id": 1, "points": 10, "created_at": NOW.isoformat()}
         other = {"id": 2, "points": 20, "created_at": NOW.isoformat()}
         write_snapshot(

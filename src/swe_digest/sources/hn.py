@@ -19,17 +19,12 @@ from xml.etree import ElementTree
 
 from swe_digest import settings
 from swe_digest.adapters.http import fetch_bytes, fetch_json
+from swe_digest.domain import sources as registry
 from swe_digest.sources._backends import FETCH_ERRORS
-from swe_digest.sources.run import FetchRun, Source, count_items
+from swe_digest.sources.run import FetchRun, count_items
 from swe_digest.sources.watchlist import load_watchlist
 
-SOURCE = Source(
-    name="hn",
-    label="HN",
-    snapshot_max_age_hours=settings.HN_SNAPSHOT_MAX_AGE_HOURS,
-    window_seconds=settings.HN_WINDOW_SECONDS,
-    pool_max_items=settings.HN_POOL_MAX_ITEMS,
-)
+SOURCE = registry.BY_NAME["hn"]
 
 ALGOLIA = "https://hn.algolia.com/api/v1"
 FIREBASE = "https://hacker-news.firebaseio.com/v0"

@@ -11,9 +11,7 @@ import json
 import sys
 import time
 from collections.abc import Callable, Iterable
-from dataclasses import dataclass
 from datetime import UTC, datetime
-from pathlib import Path
 from typing import Any
 
 from swe_digest import paths
@@ -42,43 +40,12 @@ def count_items(items: Any) -> int:
     return len(items) if isinstance(items, list) else 1
 
 
-@dataclass(frozen=True, slots=True)
-class Source:
-    """One invocation's bounds. Identity comes from the registry row.
-
-    ``label`` is what a degraded-coverage message calls this source to a reader;
-    everything else — the directories, the merge kind — is derived from the
-    registry name, so a source is spelled once.
-    """
-
-    name: str
-    label: str
-    snapshot_max_age_hours: float
-    window_seconds: int
-    # Cap per pooled list collection; 0 means unbounded. The pooled cache is
-    # what the agent reads, so this bounds read cost as well as runaway merges.
-    pool_max_items: int = 0
-
-    @property
-    def cache_dir(self) -> Path:
-        return paths.CACHE_FILE.dir() / self.name
-
-    @property
-    def snapshot_dir(self) -> Path:
-        return paths.SNAPSHOT.dir() / self.name
-
-    @property
-    def snapshot_kind(self) -> str | None:
-        """The merge spec, or None for a source with no committed accumulator."""
-        return self.name if registry.BY_NAME[self.name].accumulates else None
-
-
 class FetchRun:
     """Window math, degradation tracking, and the result envelope for one
     invocation. Collections are built by the caller through ``collect`` and
     ``snapshot``; ``finish`` writes the cache file and reports degradation."""
 
-    def __init__(self, source: Source, clock: Callable[[], float] = time.time) -> None:
+    def __init__(self, source: registry.Source, clock: Callable[[], float] = time.time) -> None:
         self.source = source
         self.now = int(clock())
         self.since = self.now - source.window_seconds

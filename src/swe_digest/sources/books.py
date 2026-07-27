@@ -16,17 +16,12 @@ from xml.etree import ElementTree
 
 from swe_digest import settings
 from swe_digest.adapters.http import fetch_bytes
+from swe_digest.domain import sources as registry
 from swe_digest.sources import _feeds
-from swe_digest.sources.run import FetchRun, Source
+from swe_digest.sources.run import FetchRun
 from swe_digest.sources.watchlist import load_watchlist
 
-SOURCE = Source(
-    name="books",
-    label="Book",
-    snapshot_max_age_hours=settings.BOOKS_SNAPSHOT_MAX_AGE_HOURS,
-    window_seconds=settings.BOOKS_WINDOW_SECONDS,
-    pool_max_items=settings.BOOKS_POOL_MAX_ITEMS,
-)
+SOURCE = registry.BY_NAME["books"]
 
 DESCRIPTION_MAX_CHARS = settings.BOOKS_DESCRIPTION_MAX_CHARS
 

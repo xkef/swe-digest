@@ -30,29 +30,23 @@ HTTP_TIMEOUT: int = _raw["http"]["timeout_seconds"]
 HTTP_RETRIES: int = _raw["http"]["retries"]
 HTTP_MAX_BYTES: int = _raw["http"]["max_response_bytes"]
 
+# The per-source numeric bounds, keyed by the one spelling of a source name.
+# Read through the registry row (``domain.sources.Source.bounds``) rather than
+# unpacked into a constant each: every source carries the same four, and a
+# fetcher asks its own row for them.
+SOURCE_BOUNDS: dict[str, dict[str, Any]] = {name: _raw[name] for name in paths.SOURCE_DIRS}
+
 # Hacker News fetcher
-HN_WINDOW_SECONDS: int = _raw["hn"]["window_hours"] * 3600
-HN_SNAPSHOT_MAX_AGE_HOURS: int = _raw["hn"]["snapshot_max_age_hours"]
-HN_POOL_MAX_ITEMS: int = _raw["hn"]["pool_max_items"]
-HN_SNAPSHOT_MAX_ITEMS: int = _raw["hn"]["snapshot_max_items"]
 HN_QUERY_CORPUS_NEW_IDS: int = _raw["hn"]["query_corpus_new_ids"]
 HN_COMMENT_STORIES: int = _raw["hn"]["comment_stories"]
 HN_COMMENTS_PER_STORY: int = _raw["hn"]["comments_per_story"]
 HN_COMMENT_MAX_CHARS: int = _raw["hn"]["comment_max_chars"]
 
 # YouTube fetcher
-YT_WINDOW_SECONDS: int = _raw["youtube"]["window_hours"] * 3600
-YT_SNAPSHOT_MAX_AGE_HOURS: int = _raw["youtube"]["snapshot_max_age_hours"]
 YT_DESCRIPTION_MAX_CHARS: int = _raw["youtube"]["description_max_chars"]
 YT_DISCUSSION_LOOKUPS: int = _raw["youtube"]["discussion_lookups"]
-YT_POOL_MAX_ITEMS: int = _raw["youtube"]["pool_max_items"]
-YT_SNAPSHOT_MAX_ITEMS: int = _raw["youtube"]["snapshot_max_items"]
 
 # Reddit fetcher
-REDDIT_WINDOW_SECONDS: int = _raw["reddit"]["window_hours"] * 3600
-REDDIT_SNAPSHOT_MAX_AGE_HOURS: int = _raw["reddit"]["snapshot_max_age_hours"]
-REDDIT_POOL_MAX_ITEMS: int = _raw["reddit"]["pool_max_items"]
-REDDIT_SNAPSHOT_MAX_ITEMS: int = _raw["reddit"]["snapshot_max_items"]
 REDDIT_REQUEST_PAUSE_SECONDS: float = _raw["reddit"]["request_pause_seconds"]
 REDDIT_MIN_SUBREDDIT_FRACTION: float = _raw["reddit"]["min_subreddit_fraction"]
 REDDIT_MIN_DAY_COVERAGE_FRACTION: float = _raw["reddit"]["min_day_coverage_fraction"]
@@ -60,21 +54,12 @@ REDDIT_MIN_DAY_COVERAGE_FRACTION: float = _raw["reddit"]["min_day_coverage_fract
 # arXiv papers fetcher
 PAPERS_HTTP_TIMEOUT: int = _raw["papers"]["http_timeout_seconds"]
 PAPERS_API_PAUSE: int = _raw["papers"]["api_pause_seconds"]
-PAPERS_WINDOW_SECONDS: int = _raw["papers"]["window_hours"] * 3600
-PAPERS_SNAPSHOT_MAX_AGE_HOURS: int = _raw["papers"]["snapshot_max_age_hours"]
 PAPERS_SUMMARY_MAX_CHARS: int = _raw["papers"]["summary_max_chars"]
-PAPERS_POOL_MAX_ITEMS: int = _raw["papers"]["pool_max_items"]
-PAPERS_SNAPSHOT_MAX_ITEMS: int = _raw["papers"]["snapshot_max_items"]
 
 # Book feeds fetcher
-BOOKS_WINDOW_SECONDS: int = _raw["books"]["window_days"] * 24 * 3600
-BOOKS_SNAPSHOT_MAX_AGE_HOURS: int = _raw["books"]["snapshot_max_age_hours"]
 BOOKS_DESCRIPTION_MAX_CHARS: int = _raw["books"]["description_max_chars"]
-BOOKS_POOL_MAX_ITEMS: int = _raw["books"]["pool_max_items"]
-BOOKS_SNAPSHOT_MAX_ITEMS: int = _raw["books"]["snapshot_max_items"]
 
 # GitHub stars fetcher
-STARS_WINDOW_SECONDS: int = _raw["stars"]["window_hours"] * 3600
 STARS_REQUEST_PAUSE_SECONDS: float = _raw["stars"]["request_pause_seconds"]
 STARS_MAX_REPO_LOOKUPS: int = _raw["stars"]["max_repo_lookups"]
 STARS_DESCRIPTION_MAX_CHARS: int = _raw["stars"]["description_max_chars"]

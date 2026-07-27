@@ -18,17 +18,12 @@ from xml.etree import ElementTree
 
 from swe_digest import settings
 from swe_digest.adapters import http
+from swe_digest.domain import sources as registry
 from swe_digest.sources import _feeds
-from swe_digest.sources.run import FetchRun, Source
+from swe_digest.sources.run import FetchRun
 from swe_digest.sources.watchlist import load_watchlist
 
-SOURCE = Source(
-    name="papers",
-    label="Paper",
-    snapshot_max_age_hours=settings.PAPERS_SNAPSHOT_MAX_AGE_HOURS,
-    window_seconds=settings.PAPERS_WINDOW_SECONDS,
-    pool_max_items=settings.PAPERS_POOL_MAX_ITEMS,
-)
+SOURCE = registry.BY_NAME["papers"]
 
 API = "https://export.arxiv.org/api/query"
 RSS = "https://rss.arxiv.org/rss/"

@@ -24,8 +24,10 @@ What is deliberately *not* here:
 """
 
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
 
-from swe_digest import settings
+from swe_digest import paths, settings
 
 
 @dataclass(frozen=True, slots=True)
@@ -39,11 +41,12 @@ class Source:
     # What the model is told the tool does. Descriptions are the model's whole
     # view of a tool, so they live beside the source they describe.
     description: str
+    # What a degraded-coverage message calls this source to a reader.
+    label: str = ""
     # The collections a snapshot merges, and how they are ordered. Empty for a
     # source with no committed accumulator.
     collections: tuple[str, ...] = ()
     sort: str = "published_at"
-    max_items: int = 0
     extras: tuple[str, ...] = ()
     # The watchlist table this source reads. Not always the source name: the
     # watchlist is written for a human editing coverage, not for the fetcher.
@@ -60,10 +63,51 @@ class Source:
         """Whether this source has a committed day accumulator to merge into."""
         return bool(self.collections)
 
+    # The numeric bounds are read off the source's own ``config/settings.toml``
+    # table rather than restated here, so tuning a window is a config change and
+    # the row stays the declaration of what a source *is*.
+    @property
+    def bounds(self) -> dict[str, Any]:
+        return settings.SOURCE_BOUNDS[self.name]
+
+    @property
+    def window_seconds(self) -> int:
+        return int(self.bounds["window_hours"]) * 3600
+
+    @property
+    def snapshot_max_age_hours(self) -> float:
+        return float(self.bounds["snapshot_max_age_hours"])
+
+    @property
+    def pool_max_items(self) -> int:
+        """Cap per pooled list collection; 0 means unbounded. The pooled cache
+        is what the agent reads, so this bounds read cost as well as merges."""
+        return int(self.bounds["pool_max_items"])
+
+    @property
+    def max_items(self) -> int:
+        """Cap on the committed day accumulator. Only an accumulating source
+        has one, and only ``store.snapshots`` asks."""
+        return int(self.bounds["snapshot_max_items"])
+
+    @property
+    def cache_dir(self) -> Path:
+        return paths.CACHE_FILE.dir() / self.name
+
+    @property
+    def snapshot_dir(self) -> Path:
+        return paths.SNAPSHOT.dir() / self.name
+
+    @property
+    def snapshot_kind(self) -> str | None:
+        """The merge spec, or None for a source with no committed accumulator."""
+        return self.name if self.accumulates else None
+
 
 SOURCES: tuple[Source, ...] = (
     Source(
         name="hn",
+        label="HN",
         module="swe_digest.sources.hn",
         description=(
             "Fetch Hacker News (front page, top of day, Ask HN, Show HN, comment threads, "
@@ -74,12 +118,12 @@ SOURCES: tuple[Source, ...] = (
         ),
         collections=("front_page", "top_day", "ask_hn", "show_hn"),
         sort="points",
-        max_items=settings.HN_SNAPSHOT_MAX_ITEMS,
         extras=("comments", "queries"),
         watchlist_table="hacker_news",
     ),
     Source(
         name="youtube",
+        label="YouTube",
         module="swe_digest.sources.youtube",
         description=(
             "Fetch new videos from the watchlist channels via channel RSS into "
@@ -87,11 +131,11 @@ SOURCES: tuple[Source, ...] = (
             "Call before writing New videos. Returns counts and degraded backends."
         ),
         collections=("videos",),
-        max_items=settings.YT_SNAPSHOT_MAX_ITEMS,
         watchlist_table="youtube",
     ),
     Source(
         name="papers",
+        label="Paper",
         module="swe_digest.sources.papers",
         description=(
             "Fetch recent arXiv papers for the watchlist categories into "
@@ -99,22 +143,22 @@ SOURCES: tuple[Source, ...] = (
             "and degraded backends."
         ),
         collections=("papers",),
-        max_items=settings.PAPERS_SNAPSHOT_MAX_ITEMS,
         watchlist_table="papers",
     ),
     Source(
         name="books",
+        label="Book",
         module="swe_digest.sources.books",
         description=(
             "Fetch publisher release feeds from the watchlist into .cache/books/DATE.json. "
             "Call before writing Books. Returns counts and degraded backends."
         ),
         collections=("books",),
-        max_items=settings.BOOKS_SNAPSHOT_MAX_ITEMS,
         watchlist_table="books",
     ),
     Source(
         name="reddit",
+        label="Reddit",
         module="swe_digest.sources.reddit",
         description=(
             "Fetch the watchlist subreddits (top of day and hot) over public RSS into "
@@ -123,11 +167,11 @@ SOURCES: tuple[Source, ...] = (
             "counts, per-subreddit coverage, and degraded backends."
         ),
         collections=("top_day", "hot"),
-        max_items=settings.REDDIT_SNAPSHOT_MAX_ITEMS,
         watchlist_table="reddit",
     ),
     Source(
         name="stars",
+        label="Stars",
         module="swe_digest.sources.stars",
         description=(
             "Fetch recent GitHub starring activity for the watchlist accounts into "
@@ -138,6 +182,7 @@ SOURCES: tuple[Source, ...] = (
     ),
     Source(
         name="events",
+        label="Events",
         module="swe_digest.sources.events",
         description=(
             "Partition the watchlist conference entries into upcoming and active for a "
