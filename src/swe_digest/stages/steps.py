@@ -477,11 +477,11 @@ def commit(run: Run) -> str:
         raise Skipped("the gate rejected this run")
 
     gh = GitGh()
-    paths = [path for path in committable(run.day, run.mode) if (paths.ROOT / path).exists()]
-    if not paths:
+    present = [path for path in committable(run.day, run.mode) if (paths.ROOT / path).exists()]
+    if not present:
         return "nothing to commit"
 
-    gh.sh("git", "add", "--", *paths)
+    gh.sh("git", "add", "--", *present)
     staged = gh.sh("git", "diff", "--cached", "--name-only").split()
     if not staged:
         return "no changes to commit"

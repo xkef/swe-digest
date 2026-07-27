@@ -75,6 +75,42 @@ class FakeGh:
         return Result()
 
 
+class RecordingGh(FakeGh):
+    """Enough of ``GitGh`` for the commit step, recording what it was asked to do."""
+
+    def __init__(self, staged: str = "") -> None:
+        super().__init__(published=False)
+        self.staged = staged
+        self.calls: list[tuple[str, ...]] = []
+
+    def sh(self, *args: str, stdin: str | None = None) -> str:
+        self.calls.append(args)
+        return self.staged if args[:3] == ("git", "diff", "--cached") else ""
+
+
+def test_an_approved_run_stages_and_commits(
+    at_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The step past both of its guards.
+
+    The guards were the only part under test, so a name shadowing the ``paths``
+    module inside the staging comprehension raised on every approved commit and
+    the driver's catch-all reported it as an ordinary step failure.
+    """
+    digest = paths.DIGEST.path(at_root, day="2026-07-25")
+    digest.parent.mkdir(parents=True)
+    digest.write_text("# digest", encoding="utf-8")
+    gh = RecordingGh(staged=paths.DIGEST.rel(day="2026-07-25"))
+    monkeypatch.setattr(steps, "GitGh", lambda: gh)
+    state = steps.Run(day="2026-07-25", mode="daily", gate_ok=True)
+
+    detail = steps.commit(state)
+
+    assert detail == "1 file(s)"
+    assert ("git", "add", "--", paths.DIGEST.rel(day="2026-07-25")) in gh.calls
+    assert any(call[:2] == ("git", "commit") for call in gh.calls)
+
+
 @pytest.mark.parametrize(
     ("mode", "published", "expected"),
     [
