@@ -11,9 +11,9 @@ canonical serialization (sorted keys, two-space indent) means an unchanged
 record rewrites to an identical file, which a prose-friendly YAML dumper could
 never guarantee.
 
-The site links every day's log, so ``save_run_log`` writes the human-readable
-markdown view beside the JSON. Keeping the two writes in one function is what
-stops a published page from linking a view that was never generated.
+Every writer goes through ``save_run_log``, which is what keeps the one
+canonical serialization the content gate checks from depending on which step
+did the writing.
 """
 
 import json

@@ -220,6 +220,99 @@ def _record_edits(run: Run) -> str:
     )
 
 
+def _record_judgment(run: Run) -> str:
+    """Put what the run decided into today's log, beside what it measured.
+
+    No stage may write ``agent/memory/`` — the write guard grants the write step
+    the digest and nothing else — so a run's judgment travels as fields on the
+    selection and is merged here by code. The log keeps its one valid shape,
+    enforced in Python, and the weekly review still hears about a degraded
+    source or an owner request in the run's own words.
+
+    A day is written by several runs against one log, so both keys accumulate:
+    the note appends, and a repeated selection adds neither a second copy of its
+    paragraph nor a second entry for an issue already recorded.
+    """
+    selection = run.selection or {}
+    note = (selection.get("notes") or "").strip()
+    used = [int(number) for number in selection.get("inbox_used") or []]
+    if not note and not used:
+        raise Skipped("the selection recorded no judgment")
+
+    record = runs.load_run_log(run.day)
+    judgment = record.setdefault("judgment", {})
+    said: list[str] = []
+
+    existing = (judgment.get("notes") or "").strip()
+    if note and note not in existing:
+        judgment["notes"] = "\n\n".join(part for part in (existing, note) if part) + "\n"
+        said.append(f"{len(note)} chars of notes")
+
+    inbox = judgment.setdefault("inbox", [])
+    recorded = {entry.get("number") for entry in inbox if isinstance(entry, dict)}
+    fresh = [number for number in used if number not in recorded]
+    inbox.extend(
+        {"number": number, "action": f"published in the {run.day} digest; close requested"}
+        for number in fresh
+    )
+    if fresh:
+        said.append(f"{len(fresh)} inbox issue(s)")
+
+    if not said:
+        raise Skipped("already recorded")
+    runs.save_run_log(run.day, record)
+    return ", ".join(said)
+
+
+def _record_miss_review(run: Run) -> str:
+    """Correct yesterday's seeded miss causes where the run says they are wrong.
+
+    ``backtest`` seeds a default from each candidate's pre-class, which is right
+    at the base rate and wrong at exactly the cases worth reviewing: a genuine
+    miss no query caught, and a false entity match. Only the step that read the
+    candidates knows which, and it cannot write the log, so the correction
+    arrives on the selection.
+
+    It lands in yesterday's log, because that is the day the backtest scored.
+    """
+    day = yesterday(run.day)
+    corrections = {
+        int(entry["id"]): entry["cause"]
+        for entry in (run.selection or {}).get("miss_review") or []
+        if isinstance(entry, dict) and entry.get("id") is not None and entry.get("cause")
+    }
+    if not corrections:
+        raise Skipped("no seeded cause was reported wrong")
+
+    record = runs.load_run_log(day)
+    scored = {
+        str(candidate["id"])
+        for candidate in (record.get("mechanical", {}).get("backtest") or {}).get("candidates", [])
+    }
+    miss_review = record.setdefault("judgment", {}).setdefault("miss_review", {})
+
+    applied = 0
+    unscored = 0
+    for story_id, cause in corrections.items():
+        key = str(story_id)
+        # A candidate the backtest never scored has no miss to explain, and
+        # writing one anyway would put a cause in the log that no evidence in
+        # it supports.
+        if key not in scored:
+            unscored += 1
+            continue
+        if miss_review.get(key) == cause:
+            continue
+        miss_review[key] = cause
+        applied += 1
+
+    if not applied:
+        raise Skipped(f"nothing to correct in {day} ({unscored} id(s) it never scored)")
+    runs.save_run_log(day, record)
+    detail = f"{applied} cause(s) corrected in {day}"
+    return f"{detail}, {unscored} id(s) ignored" if unscored else detail
+
+
 def _run_log(run: Run) -> str:
     path = f"agent/memory/runs/{run.day}.yaml"
     if write_run_log(run.day):
@@ -299,10 +392,30 @@ def _manifest(run: Run) -> str:
     return f"{len(run.closes)} close(s), {len(run.new_issues)} new issue(s)"
 
 
+def dated_run_logs() -> list[str]:
+    """Every dated run log, because a daily run writes more than today's.
+
+    ``run_log`` writes today's, ``backtest`` seeds yesterday's, and ``prune``
+    compacts every log past the detail window. Staging only today's is how the
+    backtest's seeded causes and the prune's reclaimed bytes came to be computed
+    on the runner and then discarded with it. Enumerating the directory rather
+    than naming today and yesterday means a fourth writer cannot reintroduce
+    that silently.
+
+    Every name here matches the dated form ``gate.publish_run`` accepts, so the
+    list stays a subset of the publish allowlist.
+    """
+    return sorted(
+        f"agent/memory/runs/{path.name}"
+        for path in runs.RUNS_DIR.glob("*.yaml")
+        if runs.DATE_STEM.fullmatch(path.stem)
+    )
+
+
 def committable(day: str, mode: str) -> list[str]:
     """The repo-relative paths a run may commit.
 
-    The daily run writes the digest, its log, and the memory stores. The
+    The daily run writes the digest, the run logs, and the memory stores. The
     improvement run writes the weekly marker and whatever the memory step
     closed. Both lists are subsets of the allowlist ``gate.publish_run``
     validates, so the pipeline cannot stage a path its own gate would reject.
@@ -310,7 +423,7 @@ def committable(day: str, mode: str) -> list[str]:
     stores = [f"agent/memory/{name}.yaml" for name in MEMORY_FILES]
     if mode == "improve":
         return [f"agent/memory/runs/weekly/{day}.yaml", *stores]
-    return [f"site/content/digests/{day}/index.md", f"agent/memory/runs/{day}.yaml", *stores]
+    return [f"site/content/digests/{day}/index.md", *dated_run_logs(), *stores]
 
 
 def subject(run: Run, gh: Any) -> str:

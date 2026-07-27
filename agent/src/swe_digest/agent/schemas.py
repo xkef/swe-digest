@@ -15,6 +15,7 @@ drifts is the one that stops matching the gate.
 from typing import Any
 
 from swe_digest.agent.specs import SchemaName
+from swe_digest.digest.backtest import CAUSES
 from swe_digest.digest.document import (
     CATEGORIES,
     MAX_STORIES,
@@ -85,6 +86,39 @@ SELECTION: dict[str, Any] = {
             "type": "array",
             "items": {"type": "string"},
             "description": "sources with incomplete coverage, for Sources checked",
+        },
+        # Only the exceptions. `backtest` seeds a cause for every candidate it
+        # scored, and the run that read them is the only thing that knows which
+        # seeds are wrong, so this carries corrections rather than a full map.
+        "miss_review": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "Hacker News item id, from the backtest candidates",
+                    },
+                    "cause": {"type": "string", "enum": list(CAUSES)},
+                },
+                "required": ["id", "cause"],
+                "additionalProperties": False,
+            },
+            "description": (
+                "backtest candidates whose seeded cause is wrong,"
+                " with the cause each should carry instead"
+            ),
+        },
+        # The run's account of itself, for the weekly review. It arrives as
+        # structured output because no stage may write agent/memory/; the
+        # `judgment` step merges it into judgment.notes.
+        "notes": {
+            "type": "string",
+            "description": (
+                "for the weekly review, not the page: degraded sources, backtest"
+                " causes you overrode, sources that would not load, and calls a"
+                " reader of the digest could not infer"
+            ),
         },
         # The reader inbox closes itself: the run names the issues it acted on
         # and the pipeline requests each close, which the publish job then

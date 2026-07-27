@@ -31,13 +31,21 @@ written. The script owns `mechanical` and preserves everything else:
   for the day.
 - `mechanical.backtest`: written by the next day's first `backtest`.
 
-The agent adds `judgment`:
+The `judgment` subtree is what a run decided rather than what it measured. No
+step may write `agent/memory/` — the write guard grants the write step the
+digest and nothing else — so nothing here is filled with an editor. Each key is
+merged by a code step from a field of the select step's structured output:
 
-- `judgment.inbox`: story issue numbers processed and the action taken.
-- `judgment.miss_review`: final cause per backtest candidate.
 - `judgment.notes`: degraded sources, unusual calls, anything the weekly routine
-  should see. Run logs are YAML; write `notes` as a block scalar (`notes: |`) or
-  a list of short lines, not one long line.
+  should see. From `notes`. Later runs of the same day append rather than
+  replace.
+- `judgment.miss_review`: final cause per backtest candidate. `backtest` seeds
+  every candidate it scored from the pre-classes below; `miss_review` carries
+  only the seeds you say are wrong, and it corrects *yesterday's* log, the day
+  the backtest scored. An id the backtest never scored is ignored.
+- `judgment.inbox`: story issue numbers processed and the action taken. From
+  `inbox_used`, the same field the manifest's close requests are built from, so
+  the log and the requested side effect cannot disagree.
 
 Run logs are the durable evidence store; `snapshots/hn/` snapshots are pruned to
 seven days and `.cache/` is local.
@@ -64,10 +72,11 @@ miss well below the generic points bar. The taxonomy:
 - `out_of_scope`: not an engineering story. Pre-class `no_query_match` without
   an entity match; seeded by default. Override when the story was in scope.
 
-The agent skims the printed candidates and fixes only wrong defaults: it
-promotes a genuine miss to `watchlist_gap` and demotes a false entity match back
-to `out_of_scope`. A `watchlist_gap` also gets carried into today's digest or
-the `followups` store.
+The agent skims the printed candidates and corrects only wrong defaults, in
+`miss_review`: it promotes a genuine miss to `watchlist_gap` and demotes a false
+entity match back to `out_of_scope`. A `watchlist_gap` also gets carried into
+today's digest or the `followups` store, which is the part that does not wait
+for the weekly review.
 
 ### Weekly stats
 

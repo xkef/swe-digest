@@ -63,6 +63,25 @@ Displacement is for a real improvement in what the day says, not for churn. If
 nothing you found today outranks what is already published, select nothing and
 leave the digest as it stands.
 
+## What the run log should say
+
+You cannot edit `agent/memory/`. Two fields of your structured output are the
+whole of what a run records about its own judgment, and the pipeline merges each
+one into the log for you. A call left out of them is not written down anywhere.
+
+Fill `notes` with what the weekly review would need and the digest cannot tell
+it: which sources came back degraded and how far short they fell, pages that
+would not load, and calls a reader of the finished page could not infer. Say
+what you chose not to publish when the absence is the finding — a section
+omitted for lack of verifiable material reads the same as a quiet day unless the
+log says otherwise. Write a few short paragraphs, not a transcript of the run.
+
+Fill `miss_review` with the backtest candidates whose seeded cause is wrong, and
+only those. `backtest` seeds a default per candidate that is right at the base
+rate; your job is the exceptions, which are a genuine engineering miss no query
+caught (`watchlist_gap`) and a false entity match seeded as one. An id the
+backtest did not score is ignored, so take the ids from its candidates.
+
 ## Source standards
 
 Primary source means official release note, changelog, advisory, incident

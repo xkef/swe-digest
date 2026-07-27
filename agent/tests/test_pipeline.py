@@ -11,6 +11,7 @@ runs without an SDK, a session, or a network.
 """
 
 import asyncio
+import contextlib
 import json
 from pathlib import Path
 from typing import Any
@@ -53,6 +54,30 @@ def test_the_daily_run_stages_the_digest_and_the_improvement_run_does_not() -> N
     assert "site/content/digests/2026-07-25/index.md" in daily
     assert not [path for path in improve if path.startswith("site/")]
     assert "agent/memory/runs/weekly/2026-07-25.yaml" in improve
+
+
+def test_the_daily_run_stages_every_log_it_writes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Not only today's.
+
+    ``backtest`` seeds yesterday's log and ``prune`` compacts the ones past the
+    detail window. Staging today's alone is how both were computed on the runner
+    and then thrown away with it.
+    """
+    for name in ("2026-06-01.yaml", "2026-07-24.yaml", "2026-07-25.yaml", "weekly.yaml"):
+        (tmp_path / name).write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(steps.runs, "RUNS_DIR", tmp_path)
+
+    daily = steps.committable("2026-07-25", "daily")
+
+    assert "agent/memory/runs/2026-07-25.yaml" in daily
+    assert "agent/memory/runs/2026-07-24.yaml" in daily
+    assert "agent/memory/runs/2026-06-01.yaml" in daily
+    # Only the dated form, so the list stays inside the publish allowlist.
+    assert "agent/memory/runs/weekly.yaml" not in daily
+    for path in daily:
+        assert any(pattern.match(path) for pattern in publish_run.ALLOWED_PATHS), path
 
 
 class FakeGh:
@@ -140,6 +165,149 @@ def test_the_manifest_parses_as_the_gate_will_read_it(
     assert [entry.number for entry in manifest.issue_closes] == [4]
     assert [issue.labels for issue in manifest.new_issues] == [("improvement",)]
     assert "```diff" in manifest.new_issues[0].body
+
+
+# -------------------------------------------- what the run says about itself
+
+
+@pytest.fixture
+def log_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    monkeypatch.setattr(steps.runs, "RUNS_DIR", tmp_path)
+    return tmp_path
+
+
+def judged(day: str, *selections: dict[str, Any] | None) -> dict[str, Any]:
+    for selection in selections:
+        with contextlib.suppress(steps.Skipped):
+            steps._record_judgment(steps.Run(day=day, selection=selection))
+    return steps.runs.load_run_log(day)["judgment"]
+
+
+def notes_after(day: str, *selections: dict[str, Any]) -> str:
+    return judged(day, *selections)["notes"]
+
+
+def test_the_run_records_its_own_account_in_the_log(log_dir: Path) -> None:
+    """No stage may write agent/memory/, so the note travels on the selection
+    and is merged by code. Without this the key stayed at its seeded empty
+    string and the weekly review saw nothing a run decided."""
+    assert notes_after("2026-07-25", {"notes": "Reddit degraded: 8 of 28."}) == (
+        "Reddit degraded: 8 of 28.\n"
+    )
+
+
+def test_the_acted_on_inbox_issues_are_recorded_beside_the_note(log_dir: Path) -> None:
+    """From the same field the manifest's close requests are built from, so the
+    log and the requested side effect cannot disagree."""
+    inbox = judged("2026-07-25", {"inbox_used": [11, 12]})["inbox"]
+
+    assert [entry["number"] for entry in inbox] == [11, 12]
+    assert all("close requested" in entry["action"] for entry in inbox)
+
+
+def test_an_issue_already_recorded_is_not_recorded_twice(log_dir: Path) -> None:
+    inbox = judged("2026-07-25", {"inbox_used": [11]}, {"inbox_used": [11, 12]})["inbox"]
+
+    assert [entry["number"] for entry in inbox] == [11, 12]
+
+
+def test_later_runs_of_a_day_append_rather_than_replace(log_dir: Path) -> None:
+    """A day is written by several runs against one log, and the first run's
+    account is not superseded by the third's."""
+    notes = notes_after(
+        "2026-07-25",
+        {"notes": "First run: created the digest."},
+        {"notes": "Third run: displaced the Fly.io item."},
+    )
+
+    assert notes == "First run: created the digest.\n\nThird run: displaced the Fly.io item.\n"
+
+
+def test_a_repeated_selection_does_not_duplicate_its_paragraph(log_dir: Path) -> None:
+    notes = notes_after("2026-07-25", {"notes": "Reddit degraded."}, {"notes": "Reddit degraded."})
+
+    assert notes == "Reddit degraded.\n"
+
+
+@pytest.mark.parametrize(
+    "selection", [None, {}, {"notes": ""}, {"notes": "   "}, {"inbox_used": []}]
+)
+def test_a_run_with_nothing_to_say_writes_no_log(
+    log_dir: Path, selection: dict[str, Any] | None
+) -> None:
+    """Skipped, not failed: a quiet run is not a broken one, and an empty
+    paragraph in the log is worse than an absent one."""
+    with pytest.raises(steps.Skipped):
+        steps._record_judgment(steps.Run(day="2026-07-25", selection=selection))
+
+    assert not list(log_dir.iterdir())
+
+
+def test_seeding_a_log_does_not_clobber_a_note_already_merged(log_dir: Path) -> None:
+    """The coupling the judgment step depends on.
+
+    ``run_log`` and ``_record_edits`` both reseed the judgment skeleton after
+    the note is merged. ``seed_judgment`` only ever fills an absent key, and a
+    seed that reset ``notes`` instead would silently empty it again.
+    """
+    notes_after("2026-07-25", {"notes": "Reddit degraded."})
+    record = steps.runs.load_run_log("2026-07-25")
+
+    steps.seed_judgment(record)
+
+    assert record["judgment"]["notes"] == "Reddit degraded.\n"
+
+
+# ------------------------------------------ what the run says about yesterday
+
+
+def scored(day: str, *ids: int) -> None:
+    """A log shaped as ``backtest`` leaves it: candidates, each seeded."""
+    steps.runs.save_run_log(
+        day,
+        {
+            "date": day,
+            "judgment": {"miss_review": {str(item): "out_of_scope" for item in ids}},
+            "mechanical": {"backtest": {"candidates": [{"id": item} for item in ids]}},
+        },
+    )
+
+
+def corrected(day: str, *corrections: dict[str, Any]) -> dict[str, str]:
+    run = steps.Run(day=day, selection={"miss_review": list(corrections)})
+    with contextlib.suppress(steps.Skipped):
+        steps._record_miss_review(run)
+    return steps.runs.load_run_log(steps.yesterday(day))["judgment"]["miss_review"]
+
+
+def test_a_wrong_seeded_cause_is_corrected_in_yesterdays_log(log_dir: Path) -> None:
+    """Today's run scores yesterday, so the correction belongs to yesterday's
+    log — the one holding the candidates it explains."""
+    scored("2026-07-24", 49034292, 49043192)
+
+    causes = corrected("2026-07-25", {"id": 49034292, "cause": "watchlist_gap"})
+
+    assert causes == {"49034292": "watchlist_gap", "49043192": "out_of_scope"}
+
+
+def test_a_correction_for_an_unscored_id_is_ignored(log_dir: Path) -> None:
+    """Otherwise a run could put a cause in the log for a miss no evidence in
+    it supports."""
+    scored("2026-07-24", 49034292)
+
+    causes = corrected(
+        "2026-07-25",
+        {"id": 49034292, "cause": "watchlist_gap"},
+        {"id": 111, "cause": "watchlist_gap"},
+    )
+
+    assert causes == {"49034292": "watchlist_gap"}
+
+
+def test_seeded_causes_survive_a_run_that_corrects_none(log_dir: Path) -> None:
+    scored("2026-07-24", 49034292)
+
+    assert corrected("2026-07-25") == {"49034292": "out_of_scope"}
 
 
 # ------------------------------------------------- what a stage is handed

@@ -36,6 +36,11 @@ DEFAULT_CAUSES = {
     "seen_and_matched": "relevance_skip",
 }
 
+# Every cause a candidate may end up carrying, seeded or corrected. Written
+# here, beside the defaults, because the selection schema offers the same list
+# to the step that corrects them and a second copy is the one that drifts.
+CAUSES: tuple[str, ...] = ("scrape_gap", "watchlist_gap", "relevance_skip", "out_of_scope")
+
 NAME_SPLIT = re.compile(r", | / | and ")
 PARENTHETICAL = re.compile(r"\((?P<inner>[^)]*)\)")
 
