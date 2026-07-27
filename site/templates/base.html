@@ -15,17 +15,18 @@
       type="image/svg+xml"
     >
     {% if page is defined %}
-    <title>{{ page.title }} | {{ config.title }}</title>
+      <title>{{ page.title }} | {{ config.title }}</title>
     {% elif section is defined and section.path != "/" %}
-    <title>{{ section.title }} | {{ config.title }}</title>
+      <title>{{ section.title }} | {{ config.title }}</title>
     {% else %}
-    <title>{{ config.title }}</title>
-    {% endif %} {% if page is defined and page.description %}
-    <meta name="description" content="{{ page.description }}">
+      <title>{{ config.title }}</title>
+    {% endif %}
+    {% if page is defined and page.description %}
+      <meta name="description" content="{{ page.description }}">
     {% elif section is defined and section.description %}
-    <meta name="description" content="{{ section.description }}">
+      <meta name="description" content="{{ section.description }}">
     {% elif config.description %}
-    <meta name="description" content="{{ config.description }}">
+      <meta name="description" content="{{ config.description }}">
     {% endif %}
     <link
       rel="canonical"
@@ -41,7 +42,9 @@
       rel="stylesheet"
       href="{{ get_url(path='/style.css', cachebust=true) | safe }}"
     >
-    <script src="{{ get_url(path='/theme.js', cachebust=true) | safe }}"></script>
+    <script
+      src="{{ get_url(path='/theme.js', cachebust=true) | safe }}"
+    ></script>
     {% block head %}{% endblock head %}
   </head>
   <body>
@@ -91,21 +94,26 @@
     <main id="main">
       {% block content %}{% endblock content %}
     </main>
-    {% set release = get_env(name="RELEASE", default="dev") %} {% set build_date
-    = get_env(name="BUILD_DATE", default="") %}
+    {% set release = get_env(name="RELEASE", default="dev") %}
+    {% set build_date = get_env(name="BUILD_DATE", default="") %}
+    {% if build_date %}
+      {% set_global built_iso = build_date %}
+      {% set_global built_label = build_date | replace(from="T", to=" ") %}
+      {% set_global built_label = built_label | replace(from="Z", to=" UTC") %}
+    {% else %}
+      {% set_global built_iso = now() | date(format='%Y-%m-%dT%H:%M:%SZ') %}
+      {% set_global built_label = now() | date(format='%Y-%m-%d %H:%M UTC') %}
+    {% endif %}
     <footer class="site-footer">
       <p>
         <span>{{ config.title }}</span>
         <span class="footer-build">
+          {# The commit link opens and closes around the timestamp, so both
+             halves of the <a> live inside their own {% if %}. #}
           {% if release != "dev" %}<a
             href="{{ config.extra.repository | safe }}/commit/{{ release }}"
-          >{% endif %}<time
-              class="js-localtime"
-              datetime="{% if build_date %}{{ build_date }}{% else %}{{ now() | date(format='%Y-%m-%dT%H:%M:%SZ') }}{% endif %}"
-            >{% if build_date %}{{ build_date | replace(from="T", to=" ") |
-              replace(from="Z", to=" UTC") }}{% else %}{{ now() |
-              date(format='%Y-%m-%d %H:%M UTC') }}{% endif %}</time>{% if
-            release != "dev" %}</a>{% endif %}
+          >{% endif %}<time class="js-localtime" datetime="{{ built_iso }}"
+          >{{ built_label }}</time>{% if release != "dev" %}</a>{% endif %}
         </span>
       </p>
     </footer>

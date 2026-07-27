@@ -1,70 +1,84 @@
-{% extends "base.html" %} {% import "macros.html" as macros %} {% block content
-%} {% set digests = get_section(path="digests/_index.md") %} {% set latest =
-digests.pages | first %} {% set day = latest.date | date(format='%Y-%m-%d') %}
-{% set digest = load_data(path="data/digests/" ~ day ~ ".json") %}
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+{% block content %}
+  {% set digests = get_section(path="digests/_index.md") %}
+  {% set latest = digests.pages | first %}
+  {% set day = latest.date | date(format='%Y-%m-%d') %}
+  {% set digest = load_data(path="data/digests/" ~ day ~ ".json") %}
 
-<section
-  class="layout story-index"
-  data-base="{{ config.base_url | safe }}"
-  aria-label="Latest digest"
->
-  <div class="filter-bar">
-    <label class="filter-search">
-      <span class="visually-hidden">Search stories</span>
-      <input
-        type="search"
-        id="story-search"
-        placeholder="Search {{ macros::total_stories() }} stories"
-        autocomplete="off"
-      >
-    </label>
-    <p class="filter-count" id="story-count" aria-live="polite"></p>
-  </div>
+  <section
+    class="layout story-index"
+    data-base="{{ config.base_url | safe }}"
+    aria-label="Latest digest"
+  >
+    <div class="filter-bar">
+      <label class="filter-search">
+        <span class="visually-hidden">Search stories</span>
+        <input
+          type="search"
+          id="story-search"
+          placeholder="Search {{ macros::total_stories() }} stories"
+          autocomplete="off"
+        >
+      </label>
+      <p class="filter-count" id="story-count" aria-live="polite"></p>
+    </div>
 
-  <div id="browse">
-    <header class="page-header">
-      <p class="eyebrow">
-        Latest digest{% if digest.count %} · {{ digest.count }} stories{% endif
-        %}
-      </p>
-      <h1>{{ day }}</h1>
-      {% if digest.updated %}<p>
-        Updated <time class="js-localtime" datetime="{{ digest.updated_at }}"
-        >{{ digest.updated }}</time>.
-      </p>{% endif %}
-      <p class="meta">
-        <a
-          rel="nofollow"
-          href="{{ config.extra.repository | safe }}/issues/new?template=story.yml"
-        >Suggest a story</a>
-      </p>
-    </header>
-    {{ macros::day_sections(sections=digest.sections) }} {% if digests.pages |
-    length > 1 %} {{ macros::day_pager(older=digests.pages | nth(n=1)) }} {%
-    else %} {{ macros::day_pager() }} {% endif %} {% if digest.run %}
-    <footer class="run-meta">
-      <p class="meta">
-        {% if digest.run.hn_degraded %}Degraded Hacker News collections this
-        run: {{ digest.run.hn_degraded | join(sep=", ") }} · {% endif %}<a
-          rel="nofollow"
-          href="{{ config.extra.repository | safe }}/blob/main/agent/memory/runs/{{ day }}.yaml"
-        >Full run log</a>
-      </p>
-    </footer>
-    {% endif %}
-  </div>
+    <div id="browse">
+      <header class="page-header">
+        <p class="eyebrow">
+          Latest digest
+          {%- if digest.count %} · {{ digest.count }} stories{% endif %}
+        </p>
+        <h1>{{ day }}</h1>
+        {% if digest.updated %}
+          <p>
+            Updated <time
+              class="js-localtime"
+              datetime="{{ digest.updated_at }}"
+            >{{ digest.updated }}</time>.
+          </p>
+        {% endif %}
+        <p class="meta">
+          <a
+            rel="nofollow"
+            href="{{ config.extra.repository | safe }}/issues/new?template=story.yml"
+          >Suggest a story</a>
+        </p>
+      </header>
+      {{ macros::day_sections(sections=digest.sections) }}
+      {% if digests.pages | length > 1 %}
+        {{ macros::day_pager(older=digests.pages | nth(n=1)) }}
+      {% else %}
+        {{ macros::day_pager() }}
+      {% endif %}
+      {% if digest.run %}
+        <footer class="run-meta">
+          <p class="meta">
+            {% if digest.run.hn_degraded %}
+              Degraded Hacker News collections this run:
+              {{ digest.run.hn_degraded | join(sep=", ") }} ·
+            {% endif %}
+            <a
+              rel="nofollow"
+              href="{{ config.extra.repository | safe }}/blob/main/data/runs/{{ day }}.yaml"
+            >Full run log</a>
+          </p>
+        </footer>
+      {% endif %}
+    </div>
 
-  <ol class="story-list" id="archive-results" hidden></ol>
-  <p class="story-empty" id="story-empty" hidden>
-    No stories match this search.
-  </p>
-  <button type="button" class="search-more" id="search-more" hidden>
-    Load more results
-  </button>
-</section>
+    <ol class="story-list" id="archive-results" hidden></ol>
+    <p class="story-empty" id="story-empty" hidden>
+      No stories match this search.
+    </p>
+    <button type="button" class="search-more" id="search-more" hidden>
+      Load more results
+    </button>
+  </section>
 
-<script
-  src="{{ get_url(path='/search-init.js', cachebust=true) | safe }}"
-  defer
-></script>
+  <script
+    src="{{ get_url(path='/search-init.js', cachebust=true) | safe }}"
+    defer
+  ></script>
 {% endblock content %}
