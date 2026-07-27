@@ -25,13 +25,18 @@ token, running gate code the agent may not touch — applies only after
 deterministic checks. One directory per concern; each module's docstring
 explains the decision it encodes.
 
-- [`agent/`](agent/): everything the agent is, grouped by who may write it —
-  the `swe-digest` Python package, the human-owned config and prompts, and the
-  run's own memory, which is the only part a run may change.
-- [`site/`](site/): the Zola site and the digest authoring format.
-- [`snapshots/`](snapshots/): bot-committed source snapshots, so a run whose
-  own fetch is thin, rate-limited, or badly timed still reads the day's
-  coverage.
+Four trees, one writer each:
+
+- [`src/swe_digest/`](src/swe_digest/): the Python package, layered so the
+  import direction is a CI failure rather than a review comment.
+- [`config/`](config/) and [`prompts/`](prompts/): human-owned. A run may
+  propose a change to the config through an owner-approved pull request, and
+  may propose nothing under `prompts/`: it does not edit its own instructions.
+- [`data/`](data/): everything the bot writes — the digests, the run logs, the
+  memory stores, and the committed source snapshots that keep a run whose own
+  fetch is thin, rate-limited, or badly timed reading the day's coverage.
+- [`site/`](site/): the Zola source, hand-authored. The day pages are generated
+  into it at build time, so no path under it is in the publish allowlist.
 - `.github/workflows/`: the schedules, the two-job publish pipeline, and the
   deterministic issue triage that outside suggestions pass through.
 

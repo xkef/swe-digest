@@ -1,0 +1,181 @@
+[project]
+name = "swe-digest"
+version = "1.0.0"
+description = "Collection, validation, and publishing code for the daily software engineering digest"
+license = "MIT"
+requires-python = ">=3.14"
+# One dependency, installed by the privileged publish job too. Run logs and
+# memory are YAML because they are public records a human reads in a pull
+# request, and that is the whole of what PyYAML is here for.
+dependencies = [
+  "pyyaml>=6.0.3",
+]
+
+[project.optional-dependencies]
+# The Agent SDK harness. Optional on purpose: `make check` and the publish gate
+# run on python3 plus PyYAML, and this extra resolves to 30-odd packages
+# including cryptography, starlette, and uvicorn, none of which belong in the
+# job that holds the write token. Only the unattended agent job installs it,
+# via `requirements-agent.txt`; nothing outside `swe_digest.agent` imports it.
+agent = [
+  "claude-agent-sdk>=0.2.128,<0.3",
+]
+
+[project.scripts]
+swe-digest = "swe_digest.cli:main"
+
+[project.urls]
+Repository = "https://github.com/xkef/swe-digest"
+Site = "https://xkef.github.io/swe-digest/"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3",
+  "pytest-cov>=6.0",
+  "mypy>=2.3.0",
+  "ruff>=0.16.0",
+  "hypothesis>=6.161.5",
+  "types-pyyaml>=6.0.12.20260724",
+  # The layer contract below is only a contract if something fails on it.
+  "import-linter>=2.3",
+  # Present so the agent tool wrappers are exercised rather than skipped. This
+  # is the test environment only; the publish job never installs it.
+  "claude-agent-sdk>=0.2.128,<0.3",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.32,<0.12"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+src = ["src", "tests"]
+
+[tool.ruff.lint.per-file-ignores]
+# The digest story template must stay a single literal line.
+"src/swe_digest/publish/skeleton.py" = ["E501"]
+# The SDK's hook and tool protocols take async callbacks. These two await
+# nothing, and still cannot be plain functions.
+"src/swe_digest/llm/hooks.py" = ["RUF029"]
+"src/swe_digest/llm/tools.py" = ["RUF029"]
+# Tests reach for private helpers on purpose: several of them exist to be
+# tested directly rather than through the one public entry point. RUF029 for
+# the same reason as the two modules above: a stand-in for an async callback
+# has to match its signature.
+"tests/**" = ["SLF001", "PLC2701", "RUF029"]
+
+[tool.ruff.lint]
+# PLC2701 is a preview rule, and it is the one that catches a module reaching
+# for another module's private name — the convention the package layout rests on.
+preview = true
+select = [
+  "E", # pycodestyle errors
+  "W", # pycodestyle warnings
+  "F", # pyflakes
+  "I", # isort
+  "UP", # pyupgrade
+  "B", # bugbear
+  "SIM", # simplify
+  "RUF", # ruff-specific
+  "PLC2701", # importing a private name from another module
+  "SLF001", # reaching for another object's private member
+]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+files = ["src", "tests"]
+# The fetchers traffic in untrusted JSON/XML blobs; Any is inherent there.
+# warn_return_any stays on so typed modules cannot leak Any silently.
+disallow_any_generics = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "repo: reads the real repository rather than a fixture tree",
+]
+addopts = "--cov=swe_digest --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["swe_digest"]
+
+[tool.coverage.report]
+# The security boundary, held to a high bar: the gates, the one subprocess seam,
+# the snapshot merge a run's commit passes through, and paths.py, which is now
+# where the publish allowlist is written. Fetchers are network code exercised by
+# every scheduled run and stay outside the floor.
+include = [
+  "*/swe_digest/gate/*",
+  "*/swe_digest/paths.py",
+  "*/swe_digest/adapters/vcs.py",
+  "*/swe_digest/store/snapshots.py",
+]
+fail_under = 85
+
+# The import direction, as a contract rather than a convention. `lint-imports`
+# fails CI on a violation, so the layering below is the one place it is stated
+# and the one place it can change.
+[tool.importlinter]
+root_package = "swe_digest"
+# Needed so the SDK contract below can name a package outside the root.
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Layers"
+type = "layers"
+layers = [
+  "swe_digest.cli",
+  "swe_digest.stages",
+  "swe_digest.analysis",
+  "swe_digest.gate | swe_digest.llm | swe_digest.publish",
+  "swe_digest.sources",
+  "swe_digest.store",
+  "swe_digest.adapters",
+  "swe_digest.domain",
+  "swe_digest.settings | swe_digest.serial",
+  "swe_digest.paths",
+]
+
+# The gate is the deterministic backstop for a run it must not trust, so it
+# reaches for nothing the run is made of. It stays runnable on python3 and
+# PyYAML for the same reason.
+[[tool.importlinter.contracts]]
+name = "The gate depends on nothing the agent is"
+type = "forbidden"
+source_modules = ["swe_digest.gate"]
+forbidden_modules = [
+  "swe_digest.llm",
+  "swe_digest.stages",
+  "swe_digest.sources",
+  "swe_digest.analysis",
+  "swe_digest.publish",
+]
+
+# And the other direction: prevention lives in llm.hooks, detection lives in
+# gate.publish, and both read the allowlist from paths. A run that subverted the
+# guard still meets a validator that never loaded it.
+[[tool.importlinter.contracts]]
+name = "Prevention does not import detection"
+type = "forbidden"
+source_modules = ["swe_digest.llm"]
+forbidden_modules = ["swe_digest.gate"]
+
+# The SDK is an optional extra the publish job never installs, so nothing below
+# `llm` may reach for it. `cli` and `stages` are absent because they call into
+# `llm` by design, which makes the static graph reach the SDK through it; what
+# matters there is the runtime property — importing them must not *require* the
+# SDK — and that is asserted by the subprocess test in tests/consistency/.
+[[tool.importlinter.contracts]]
+name = "Only llm imports the Agent SDK"
+type = "forbidden"
+source_modules = [
+  "swe_digest.domain",
+  "swe_digest.adapters",
+  "swe_digest.store",
+  "swe_digest.sources",
+  "swe_digest.gate",
+  "swe_digest.analysis",
+  "swe_digest.publish",
+]
+forbidden_modules = ["claude_agent_sdk"]

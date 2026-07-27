@@ -7,37 +7,22 @@ RUMDL      = $(MISE) exec rumdl@0.2.9 --
 UV         = $(MISE) exec -- uv
 # Install-free invocation: works with only python3 + PyYAML, so the scheduled
 # workflows and the publish job never need a package install.
-PY         = PYTHONPATH=agent/src python3 -m swe_digest
+PY         = PYTHONPATH=src python3 -m swe_digest
 DIST       = dist
 TODAY      = $(shell date -u +%Y-%m-%d)
 RELEASE    = $(if $(GITHUB_SHA),$(shell git rev-parse --short HEAD 2>/dev/null || echo dev),$(shell git describe --tags --always 2>/dev/null || echo dev))
 BUILD_DATE = $(shell date -u +%Y-%m-%dT%H:%MZ)
 
-.PHONY: build serve check check-content fmt fmt-check fmt-run stories clean new-digest hn yt events papers books reddit stars run-log backtest weekly-stats test lint typecheck clean-all
+.PHONY: build serve check check-content fmt fmt-check fmt-run stories clean new-digest run-log backtest weekly-stats test lint typecheck imports clean-all
 
 stories:
 	@$(PY) build-stories
 
-hn:
-	@$(PY) fetch hn
-
-yt:
-	@$(PY) fetch youtube
-
-events:
-	@$(PY) fetch events
-
-papers:
-	@$(PY) fetch papers
-
-books:
-	@$(PY) fetch books
-
-reddit:
-	@$(PY) fetch reddit
-
-stars:
-	@$(PY) fetch stars
+# One rule for every source rather than one target each: `make fetch-hn`,
+# `make fetch-reddit`. The list of sources lives in the registry, so a new one
+# is fetchable here without touching this file.
+fetch-%:
+	@$(PY) fetch $*
 
 run-log:
 	@$(PY) run-log
@@ -51,14 +36,19 @@ weekly-stats:
 # Developer/CI checks for the Python package itself. Not part of `check`, so
 # the publish gate stays runnable with only python3 + PyYAML.
 test:
-	@cd agent && $(UV) run pytest
+	@$(UV) run pytest
 
 lint:
-	@cd agent && $(UV) run ruff check .
-	@cd agent && $(UV) run ruff format --check .
+	@$(UV) run ruff check .
+	@$(UV) run ruff format --check .
 
 typecheck:
-	@cd agent && $(UV) run mypy
+	@$(UV) run mypy
+
+# The layer contract in pyproject.toml. A violation is a CI failure rather than
+# a review comment, which is the only way an import rule survives.
+imports:
+	@$(UV) run lint-imports
 
 build: stories
 	@$(PY) check-content
@@ -90,6 +80,12 @@ check-content:
 # the root and both skip site/content/ and snapshots/. The tools install on
 # demand here, so they stay out of the mise [tools] config.
 #
+# site/templates/ is the one thing dprint does not own. markup_fmt picks its
+# language from the file extension, so Zola's .html templates parse as plain
+# HTML and Tera tags get reflowed as prose — `{% block content` on one line and
+# `%}` on the next. They are hand-formatted instead: block tags on their own
+# line, indented as blocks, and no tag ever wrapped.
+#
 # Two tools rather than one: dprint's Markdown plugin normalizes inline syntax
 # and corrupts this repo's prose (see the note in .rumdl.toml). One config per
 # tool, both at the root, so neither needs a second invocation.
@@ -111,19 +107,19 @@ fmt-run:
 new-digest:
 	@$(PY) new-digest $(TODAY)
 
-# Everything a build or a check regenerates, at both levels: the tool caches
-# predate the move to agent/ and still accumulate at the root when a command is
-# run from there. Not the fetch cache and not the virtualenvs — see clean-all.
+# Everything a build or a check regenerates, including the generated day pages
+# under site/content/digests/. Not the fetch cache and not the virtualenv — see
+# clean-all.
 CACHES = .mypy_cache .ruff_cache .pytest_cache .hypothesis .rumdl_cache .coverage
 
 clean:
-	@rm -rf $(DIST) public site/data site/content/stories site/content/home
-	@rm -rf $(CACHES) $(addprefix agent/,$(CACHES))
+	@rm -rf $(DIST) public site/data site/content/stories site/content/home site/content/digests/[0-9]*
+	@rm -rf $(CACHES)
 	@find . -name .DS_Store -not -path './.git/*' -delete
 	@echo "clean ok (kept .cache/ and the virtualenvs; use clean-all to drop those)"
 
 # Also the day's collected sources and the virtualenvs. Re-fetching is not free:
 # the Reddit fetcher paces its requests and takes tens of minutes to refill.
 clean-all: clean
-	@rm -rf .cache .run .venv agent/.venv
-	@echo "clean-all ok (uv sync in agent/ rebuilds the environment)"
+	@rm -rf .cache .run .venv
+	@echo "clean-all ok (uv sync rebuilds the environment)"

@@ -3,13 +3,17 @@
 /public/
 /.zola-cache/
 
-# Derived by `make stories`, rebuilt on every build
+# Derived by `make stories`, rebuilt on every build. The day pages are copied
+# from data/digests/; site/content/digests/_index.md is the authored section
+# index and stays tracked.
 /site/data/
 /site/content/stories/
 /site/content/home/
+/site/content/digests/*/
 
 # Private and local-only
 PRIVATE_CONTEXT.md
+.claude/
 /.claude-notes/
 /.idea/
 .DS_Store
@@ -19,9 +23,8 @@ PRIVATE_CONTEXT.md
 /.cache/
 /.run/
 
-# Tool caches. Unanchored on purpose: the package lives under agent/, so these
-# appear there as well as at the root. Anchored to the root they were invisible
-# only because each tool writes a self-ignoring .gitignore inside its own cache.
+# Tool caches. Unanchored on purpose: a command run from a subdirectory writes
+# them there rather than at the root.
 __pycache__/
 .venv/
 .coverage

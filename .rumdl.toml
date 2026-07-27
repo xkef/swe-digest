@@ -10,18 +10,16 @@
 # formatter corrupts published facts. rumdl lints instead of normalizing,
 # which is the property this content needs.
 #
-# Generated and strict-structure trees (Zola `site/content/`, `snapshots/`,
-# the run-log views under `agent/memory/runs/`) are left untouched so the
-# digest build and unattended agent runs are unaffected. The run-log views in
-# particular are generated from the JSON beside them and checked for an exact
-# match, so a formatter touching them is a gate failure, not a tidy-up.
+# `data/` is excluded whole: it is the tree the bot writes, the code that writes
+# it owns the form, and the content gate checks that form byte for byte. A
+# formatter touching anything under it is a gate failure, not a tidy-up. The
+# generated Zola trees under `site/` are excluded for the same reason.
 [global]
 respect_gitignore = true
 exclude = [
+  "data",
   "site/content",
   "site/data",
-  "snapshots",
-  "agent/memory/runs",
   "dist",
   "public",
   ".cache",

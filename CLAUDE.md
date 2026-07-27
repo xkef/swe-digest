@@ -1,30 +1,26 @@
 # CLAUDE.md
 
-This file is a pointer. It used to be the digest routine, loaded implicitly as
-project memory, which turned 600 lines of editorial policy into an invisible
-prompt every session paid for whether or not it was doing digest work.
-
-The routine now lives with the rest of the agent, as configuration read
-deliberately rather than inherited:
+This file is a pointer. The digest routine is configuration read deliberately,
+not project memory inherited by every session:
 
 | What | Where |
 |---|---|
-| Standing rules, prepended to every step | `agent/prompts/common.md` |
-| Per-step prompts | `agent/prompts/{select,write,review}.md` and `agent/prompts/improve/` |
-| Selection field guide | `agent/prompts/sources.md` |
-| Per-source mechanics, loaded on demand | `agent/prompts/sources/` |
-| Watchlist, tunables, reading profile | `agent/config/` |
-| The order the steps run in | `agent/src/swe_digest/agent/pipeline.py` |
-| What each step does | `agent/src/swe_digest/agent/steps.py` |
+| Standing rules, prepended to every step | `prompts/common.md` |
+| Per-step prompts | `prompts/stages/` and `prompts/improve/` |
+| Selection field guide | `prompts/sources.md` |
+| Per-topic mechanics, loaded on demand | `prompts/topics/` |
+| Watchlist, tunables, reading profile | `config/` |
+| The order the steps run in | `src/swe_digest/stages/pipeline.py` |
+| What each step does | `src/swe_digest/stages/steps.py` |
 
 There is no end-to-end routine document. The control flow is Python — one
 ordered list of steps per mode, drained by one loop — and each step's prompt
 covers only what that step decides.
 
 **Developing this repository is a different job**, and `AGENTS.md` covers it:
-layout, `make` targets, the test and lint commands, and the two constraints
-that look like inertia and are not.
+layout, `make` targets, the test and lint commands, the import contract, and the
+two constraints that look like inertia and are not.
 
-`agent/prompts/` is maintainer-only. A run may propose changes to the watchlist
-or the reading profile through the owner-approved improvement path; it may not
-propose changes to its own instructions.
+`prompts/` is maintainer-only. A run may propose changes to the watchlist or the
+reading profile through the owner-approved improvement path; it may not propose
+changes to its own instructions.

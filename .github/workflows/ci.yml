@@ -9,7 +9,7 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - "snapshots/**"
+      - "data/snapshots/**"
 
 permissions:
   contents: read
@@ -53,7 +53,7 @@ jobs:
       # still look green. Nothing else in CI installs it; the first failure
       # would otherwise be the unattended digest run.
       - name: Agent requirements resolve
-        run: python3 -m pip install --dry-run --require-hashes -r agent/requirements-agent.txt
+        run: python3 -m pip install --dry-run --require-hashes -r requirements/agent.txt
 
   site:
     runs-on: ubuntu-latest
@@ -70,7 +70,7 @@ jobs:
           install: true
           cache: true
       - name: Install Python deps
-        run: python3 -m pip install --require-hashes -r agent/requirements.txt
+        run: python3 -m pip install --require-hashes -r requirements/base.txt
       - name: Build and check site
         run: make check
 

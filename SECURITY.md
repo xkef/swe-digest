@@ -19,7 +19,7 @@ automated digest pipeline in GitHub Actions. Reports of interest:
   YouTube metadata) to escape the content gates and inject markup,
   scripts, or secrets into the published site.
 - Ways for a prompt-injected agent run to bypass the publish gate in
-  `agent/src/swe_digest/gate/` (path allowlist, commit-subject checks, issue
+  `src/swe_digest/gate/` (path allowlist, commit-subject checks, issue
   authorship re-verification).
 - Workflow or token-permission weaknesses in `.github/workflows/`.
 
@@ -44,7 +44,7 @@ Anyone who can put text where the routine reads it:
   results (fetched every run).
 - GitHub issues and comments (public; the feedback links on the site invite
   them).
-- Previously committed memory (`agent/memory/*.yaml`) and snapshots (`snapshots/*/*.json`),
+- Previously committed memory (`data/memory/*.yaml`) and snapshots (`data/snapshots/*/*.json`),
   as a persistence channel for an earlier injection.
 
 Assumed attacker goal: make the agent publish attacker content (XSS, SEO
@@ -75,8 +75,8 @@ The publish job applies the artifact only after
 
 - at most two commits, subjects matched against exact regexes;
 - every added or modified path in every commit matched against the publish
-  allowlist (`site/content/digests/`, `agent/memory/runs/`, and the four writable
-  `agent/memory/` files) — checked per commit, so a file added in one commit and
+  allowlist (`data/digests/`, `data/runs/`, and the four writable
+  `data/memory/` files) — checked per commit, so a file added in one commit and
   deleted in the next is still caught;
 - file modes restricted to regular/executable, rejecting symlinks and
   gitlinks that could smuggle file contents;
@@ -85,13 +85,13 @@ The publish job applies the artifact only after
   state, labels), never against claims in issue text; close comments are
   bounded and may link only to the site or this repository;
 - improvement PRs require an `OWNER` approval comment, apply only the diff
-  from the issue body, and may touch only `agent/config/config.toml`,
-  `agent/config/watchlist.toml`, and `agent/config/profile.md`. The prompts
+  from the issue body, and may touch only `config/settings.toml`,
+  `config/watchlist.toml`, and `config/profile.md`. The prompts
   are deliberately absent: a run may not propose edits to its own
   instructions.
 
 GitHub additionally rejects any `GITHUB_TOKEN` push that modifies
-`.github/workflows/`. The validator itself lives in `agent/src/swe_digest/gate/`,
+`.github/workflows/`. The validator itself lives in `src/swe_digest/gate/`,
 which is outside the publish allowlist: a run cannot rewrite its own gate.
 
 #### 3. The content gate fails closed
@@ -109,13 +109,13 @@ renderer back each other up.
 
 Memory persists across runs, so it is the natural home for a persistent
 injection. It is four YAML stores reached only through `memory.store`: no step
-holds `Write` or `Edit` on `agent/memory/`, identity and dates are assigned by
+holds `Write` or `Edit` on `data/memory/`, identity and dates are assigned by
 code rather than supplied by a caller, and the entry and byte bounds are
 enforced on the write that would break them rather than detected at publish
 time. `swe_digest.gate.check_memory` re-checks the same properties
 independently, so a file edited by something that bypassed the store still
 fails. Content screening (HTML, secrets, shorteners) applies to memory the same
-as to digests. `agent/config/profile.md` is writable only through the
+as to digests. `config/profile.md` is writable only through the
 owner-approved improvement-PR path.
 
 #### 5. Issues are untrusted input
@@ -153,7 +153,7 @@ The agent runs as bounded steps rather than one open-ended session
 (`swe_digest.agent`). No step is granted `Bash`, `WebFetch`, or `WebSearch`:
 collection, the backtest, feedback, the run log, formatting, the gate, and the
 commit are Python the model cannot steer, and the web is reached only through
-`agent/net.py`, which allows https alone, refuses shorteners and any host
+`llm/net.py`, which allows https alone, refuses shorteners and any host
 resolving inside the network boundary, re-applies those rules to every redirect
 hop, and records what was read. A `PreToolUse` hook denies a write outside the
 step's declared files when it is attempted, and `permission_mode="dontAsk"`

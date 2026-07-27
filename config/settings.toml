@@ -1,0 +1,317 @@
+# Central project configuration. Every behavioral tunable lives here and is
+# loaded by src/swe_digest/settings.py; content configuration (queries,
+# channels, feeds, events) stays in config/watchlist.toml. This file is
+# outside the unattended publish allowlist: it changes only through the
+# owner-approved improvement-PR path, like config/watchlist.toml.
+
+[repo]
+name = "xkef/swe-digest"
+owner = "xkef"
+site = "https://xkef.github.io/swe-digest/"
+branch = "main"
+
+[http]
+user_agent = "swe-digest-fetcher/1.0 (daily digest collection script)"
+timeout_seconds = 15
+retries = 2
+max_response_bytes = 8388608 # 8 MiB
+
+[hn]
+window_hours = 24
+snapshot_max_age_hours = 12
+# The digest is written from .cache/, so each fetch unions the day's committed
+# accumulator into its own window (swe_digest.fetch.run.pool). Without it a run
+# saw roughly half the day's stories. This caps each pooled list collection:
+# the pooled cache is the agent's read cost as well as its coverage. Measured
+# 2026-07-19 per collection: front_page 86, top_day 91, show_hn 72, ask_hn 45,
+# so this is a runaway guard, not a live constraint.
+pool_max_items = 400
+# Cap per list collection in the committed day accumulator. pool_max_items
+# bounds what a run reads back; this bounds what the snapshot workflow writes,
+# and merge sorts before truncating so the cap keeps the strongest items.
+snapshot_max_items = 400
+query_corpus_new_ids = 300
+comment_stories = 12
+comments_per_story = 5
+comment_max_chars = 1200
+
+[youtube]
+window_hours = 48
+snapshot_max_age_hours = 24
+description_max_chars = 2000
+# Cap on per-run Hacker News discussion lookups, ample for the ~50 video
+# window while bounding calls to the public Algolia API.
+discussion_lookups = 80
+# See [hn].pool_max_items. A 48-hour RSS window across 89 channels still misses
+# what an earlier run saw, and per-channel failures are silent, so the run
+# pools the day accumulator. Observed 41-61 videos a day, so this is a runaway
+# guard rather than a live constraint.
+pool_max_items = 200
+# Cap on the committed day accumulator (see snapshot_max_items under [hn]).
+# Observed 41-61 a day across the retained week.
+snapshot_max_items = 200
+
+[reddit]
+window_hours = 24
+snapshot_max_age_hours = 12
+# See [hn].pool_max_items. Two listings across 28 subreddits, so the ceiling is
+# higher than the observed per-listing counts by a wide margin.
+pool_max_items = 600
+# See snapshot_max_items under [hn]. Observed 88-224 per listing.
+snapshot_max_items = 600
+# Space sequential feed fetches: unauthenticated Reddit access is limited to
+# about 10 requests per minute, and faster spacing gets 429s (observed
+# 2026-07-07 at 1s spacing, see data/memory/access-notes.yaml).
+request_pause_seconds = 7.0
+# Per-run floor: one unauthenticated run reaches only a handful of feeds
+# before the rate limiter closes, so this detects a dead or fully blocking
+# host, not partial coverage. At 0.5 it was tripped by every run and 41 of 44
+# published digests disclosed the same degradation figure.
+min_subreddit_fraction = 0.1
+# What the digest actually depends on: how much of the list the day's pooled
+# coverage reaches, measured after swe_digest.fetch.run.pool. Below this the
+# run degrades and Sources checked says so.
+min_day_coverage_fraction = 0.5
+
+[papers]
+# arXiv responses are slower than the default HTTP budget allows.
+http_timeout_seconds = 20
+api_pause_seconds = 3
+window_hours = 72
+snapshot_max_age_hours = 24
+summary_max_chars = 2000
+# See [hn].pool_max_items, and unlike the other pools this one binds. The
+# accumulator reaches 500 to 900 entries on a heavy arXiv day against a
+# typical 130, and every pooled entry is read cost the run pays with no score
+# to rank it by. 300 keeps the newest slice (merging sorts by published_at
+# before truncating) without turning the papers cache into the largest thing
+# the run reads.
+pool_max_items = 300
+# Cap on the committed day accumulator (see snapshot_max_items under [hn]).
+# Papers swings hardest: a typical day holds 113-137 entries, but 2026-07-20,
+# 07-22 and 07-23 reached 541, 739 and 879. Those spikes are real arXiv
+# volume, not corruption, so the cap sits above the observed maximum and
+# stays a runaway guard rather than a live constraint. Bytes are a separate
+# problem, better solved by summary_max_chars than by dropping papers: the
+# item carries no score, so truncation can only fall back on recency.
+snapshot_max_items = 1200
+
+[books]
+# 30 days, not 7 (issue #60). Books published nothing for 32 consecutive
+# digests because every item inside a 7-day window came from the Springer
+# feed, which is overwhelmingly LNCS proceedings the high bar excludes: the
+# two trade feeds publish far slower than weekly (Pragmatic's newest entry was
+# 16 days old on 2026-07-26, No Starch's about 5 months). The run never saw a
+# title it could publish. The wider window multiplies the proceedings volume
+# the bar already discards, which is the accepted cost.
+window_days = 30
+snapshot_max_age_hours = 36
+description_max_chars = 2000
+# See [hn].pool_max_items. Sparse feeds, so this is a runaway guard.
+pool_max_items = 150
+# Cap on the committed day accumulator (see snapshot_max_items under [hn]).
+# Observed 20-31 a day across the retained week; a wide runaway guard.
+snapshot_max_items = 150
+
+[stars]
+# GitHub starring activity of the people in watchlist [stars].users, via the
+# public events API through gh (authenticated locally by gh login and in
+# Actions by GH_TOKEN).
+window_hours = 24
+# gh is authenticated (5000 req/h), so spacing is politeness, not survival.
+request_pause_seconds = 0.5
+# Cap on per-run repos/{full_name} enrichment lookups.
+max_repo_lookups = 30
+description_max_chars = 300
+
+[events]
+# Lead window is deliberately short so the fetcher's context covers only
+# events that could plausibly produce talk news now.
+lead_days = 3
+# Nearer subset of the lead window; must stay below lead_days or every
+# upcoming event is flagged "soon".
+soon_days = 1
+
+[publish]
+# One digest commit, optionally followed by the weekly fallback commit.
+max_commits = 2
+comment_max_chars = 500
+issue_title_max_chars = 120
+issue_body_max_chars = 8000
+# Verified snapshot/publish commits (GraphQL createCommitOnBranch).
+commit_retries = 4
+
+[backtest]
+min_points = 100
+# Lower candidate floor for stories a watchlist query matched. The digest
+# ranks by impact, not popularity, so an interest-matched story is a
+# candidate miss well below the generic points bar.
+matched_min_points = 25
+title_ratio = 0.75
+
+[weekly]
+# Aggregation thresholds for `make weekly-stats`, which writes the
+# mechanical evidence into the weekly marker.
+# Flag a section empty for this many consecutive logged days.
+section_empty_streak_days = 4
+# List a developing/rumor story as unresolved after this many days.
+status_unresolved_days = 14
+# A backtest candidate domain or title keyword recurring on this many
+# distinct days becomes exploration-slot evidence.
+recurring_min_days = 3
+
+[memory]
+# Structure and growth bounds for memory/*.md, enforced by the content gate.
+# Staleness past entity_stale_days is a warning (a nudge to compact), never a
+# gate failure. A followups.md entry older than followup_max_age_days fails
+# the gate: re-date it after re-verifying, or delete it, so the file prunes
+# itself instead of drifting into the byte bound below.
+max_line_chars = 2000
+# Bytes are what every run pays to re-read, and the line bound never
+# constrained them: followups.md reached 110 KB inside 792 lines, half the
+# line cap, because entries are long single lines.
+max_file_bytes = 180224
+# Entry counts, the unit the routine acts on. The age gate alone cannot hold a
+# target: at about 3.5 new follow-ups a day, a 45-day horizon settles near 158
+# open entries and 198 KB, so both bounds sit deliberately below equilibrium
+# and compaction is what keeps the file legal.
+#
+# They must not bite before a compaction can realistically land, though. The
+# first values (131072 bytes, 95 entries) were set just above the tree as it
+# stood and left only two days of headroom at the observed growth rate, which
+# would have blocked publishing rather than prompting a compaction. These give
+# roughly two weeks. Ratchet down once followups.md is compacted, and re-check
+# the headroom against the current size when doing so.
+max_open_followups = 130
+max_dated_bullets = 130
+entity_stale_days = 60
+followup_max_age_days = 45
+# access-notes.md entries describe volatile network state; past this age an
+# entry warns so the routine re-verifies the block before trusting it.
+access_note_stale_days = 30
+
+# Days of full run-log detail to keep. Past this, `swe-digest prune-runs` drops
+# the query_yield id arrays and keeps their counts: the backtest reads the ids
+# for the previous day only, and the weekly aggregator reads counts. Judgment
+# blocks are never touched. 30 covers two weekly windows plus slack.
+run_log_detail_days = 30
+
+[agent]
+# The staged pipeline (`swe-digest agent run`). Model, prompt, and turn bound
+# per step, so changing which model writes the digest is a config change
+# rather than a code change.
+#
+# The tool grant is deliberately NOT here. This file is proposable through the
+# owner-approved improvement path, and a proposable tool grant would let a run
+# propose widening its own capability. Grants live in
+# swe_digest.agent.specs, which no run may write. For the same reason
+# max_turns is clamped: config can lower a bound, never raise it past the
+# ceiling in code.
+model = "claude-opus-5"
+# Characters of a fetched page a step sees. Enough to verify a claim against a
+# primary source, not enough for a page of markup to crowd out the digest.
+fetch_max_chars = 20000
+# Captured stdout/stderr per tool call: a full gate report, and no more.
+tool_output_max_chars = 8000
+
+[agent.steps.select]
+prompt = "stages/select"
+schema = "selection"
+max_turns = 60
+
+[agent.steps.write]
+prompt = "stages/write"
+max_turns = 40
+
+[agent.steps.review]
+prompt = "stages/review"
+schema = "review"
+# 20 was not enough: the review reads a 27-story digest and calls run_gate, and
+# the first real run exhausted the budget mid-read. A step that runs out of
+# turns produces nothing at all, so this is the bound to be generous with.
+max_turns = 40
+
+[agent.steps."improve:memory"]
+prompt = "improve/memory"
+max_turns = 30
+
+[agent.steps."improve:watchlist"]
+prompt = "improve/watchlist"
+schema = "proposals"
+max_turns = 20
+
+[agent.steps."improve:profile"]
+prompt = "improve/profile"
+schema = "proposals"
+max_turns = 20
+
+[digest]
+# The document vocabulary, in one place. The section order lives in code
+# (swe_digest.digest.document) because published digests must stay an ordered
+# subsequence of it including retired names; what is here is what an owner may
+# reasonably propose changing.
+#
+# The prompts do not restate any of this: swe_digest.agent.prompts substitutes
+# it in at load time, so a change here reaches the instructions and the gate
+# together instead of leaving one behind.
+max_top_stories = 5
+# What one day may publish in total, and what any one section may hold. Both
+# are enforced by the content gate from max_stories_since onward, because a
+# cap stated only in prose has not held: Top stories is the one bounded
+# section and is also the only one never exceeded across 46 digests.
+#
+# The digest had no day bound at all, and the write step appends to the same
+# page on every run of the day without ever removing, so volume ratcheted:
+# 2026-07-25 went 18 -> 29 -> 35 -> 39 stories across four runs against a
+# 46-digest median of 20. Pooling the day accumulator (2026-07-24) roughly
+# doubled the candidate pool, which is what made an absolute per-story bar
+# with no budget visible. 25 is a backstop: it clips the runaway days and a
+# typical day never reaches it.
+max_stories = 25
+# Per section, so one loud topic cannot eat the whole budget. A section
+# reaches 4 on about 40% of days, so this binds regularly without being the
+# normal case. Security and Outages are exempt (see UNCAPPED_SECTIONS in
+# swe_digest.digest.document): a twelve-advisory day is signal, not padding.
+# Security sits outside max_stories as well (UNBUDGETED_SECTIONS), so
+# advisories never cost the reader the rest of the digest.
+max_section_stories = 4
+# The caps postdate the archive, like the category and source_count rules:
+# published digests reach 76 stories, and rewriting them to satisfy a new
+# rule would be worse than scoping it forward.
+max_stories_since = "2026-07-27"
+categories = [
+  "AI",
+  "ML research",
+  "Agentic coding",
+  "Security",
+  "Outage",
+  "Dev tools",
+  "Languages",
+  "Apple",
+  "Linux/Kernel",
+  "Infrastructure",
+  "Engineering post",
+  "Event",
+  "Book",
+  "Paper",
+  "Video",
+  "Markets",
+  "Pulse",
+]
+# The coverage claim at the foot of every digest: the source classes a run
+# checks. A source added to the watchlist that a reader would recognize as new
+# coverage belongs here too.
+sources_checked = [
+  "Hacker News",
+  "Reddit",
+  "AI sources",
+  "ML research and arXiv papers",
+  "Events watchlist",
+  "Books and publisher feeds",
+  "Security advisories",
+  "Status pages",
+  "GitHub watchlist",
+  "Engineering blogs",
+  "YouTube channels",
+  "Markets and company sources",
+]
