@@ -26,7 +26,7 @@ from datetime import UTC, datetime, timedelta
 from importlib import import_module
 from typing import Any
 
-from swe_digest import config
+from swe_digest import config, serial
 from swe_digest.agent import catalog, net
 from swe_digest.digest import document, runs
 from swe_digest.digest.backtest import main as score_day
@@ -243,10 +243,14 @@ def _record_judgment(run: Run) -> str:
     judgment = record.setdefault("judgment", {})
     said: list[str] = []
 
-    existing = (judgment.get("notes") or "").strip()
-    if note and note not in existing:
-        judgment["notes"] = "\n\n".join(part for part in (existing, note) if part) + "\n"
-        said.append(f"{len(note)} chars of notes")
+    # Compared and stored as paragraphs, not as one blob: the stored form is
+    # wrapped at the margin, so a raw note would never match the text it was
+    # written from and every run would append its own paragraphs again.
+    kept = serial.paragraphs(judgment.get("notes") or "")
+    added = [para for para in serial.paragraphs(note) if para not in kept]
+    if added:
+        judgment["notes"] = serial.wrap("\n\n".join([*kept, *added])) + "\n"
+        said.append(f"{len(added)} paragraph(s) of notes")
 
     inbox = judgment.setdefault("inbox", [])
     recorded = {entry.get("number") for entry in inbox if isinstance(entry, dict)}

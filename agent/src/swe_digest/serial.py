@@ -15,6 +15,8 @@ The dumper is a subclass rather than a global representer, so importing this
 module never changes how anything else in the process serializes YAML.
 """
 
+import re
+import textwrap
 from typing import Any
 
 import yaml
@@ -67,6 +69,40 @@ def _string(dumper: yaml.SafeDumper, data: str) -> yaml.Node:
 
 
 Dumper.add_representer(str, _string)
+
+
+BLANK_LINE = re.compile(r"\n\s*\n")
+
+
+def paragraphs(text: str) -> list[str]:
+    """The blank-line-separated paragraphs of ``text``, each collapsed to one
+    line. The normal form to compare against, so the same paragraph is
+    recognised whatever margin it was last written at."""
+    return [" ".join(block.split()) for block in BLANK_LINE.split(text.strip()) if block.strip()]
+
+
+def wrap(text: str) -> str:
+    """Multi-paragraph prose, wrapped at the margin the folded form uses.
+
+    ``dump`` folds one paragraph for free, but a string that already has
+    newlines has to keep them, so the emitter writes it verbatim and every
+    paragraph lands as one enormous line — the JSON problem this module exists
+    to avoid, reached the long way round.
+
+    Long words are never broken: a URL or an id split across a line reads back
+    with a newline inside it, which is worse than an overlong line.
+    """
+    return "\n\n".join(
+        "\n".join(
+            textwrap.wrap(
+                paragraph,
+                width=WIDTH - ASSUMED_INDENT,
+                break_long_words=False,
+                break_on_hyphens=False,
+            )
+        )
+        for paragraph in paragraphs(text)
+    )
 
 
 def dump(data: Any, *, sort_keys: bool = True) -> str:

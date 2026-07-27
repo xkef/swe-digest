@@ -18,7 +18,10 @@ from typing import Any
 
 import pytest
 
+from swe_digest import serial
 from swe_digest.agent import auth, pipeline, specs, steps
+from swe_digest.digest import runs
+from swe_digest.digest.run_log import seed_judgment
 from swe_digest.gate import publish_run
 from swe_digest.gate.manifest import load_manifest
 
@@ -67,7 +70,7 @@ def test_the_daily_run_stages_every_log_it_writes(
     """
     for name in ("2026-06-01.yaml", "2026-07-24.yaml", "2026-07-25.yaml", "weekly.yaml"):
         (tmp_path / name).write_text("{}", encoding="utf-8")
-    monkeypatch.setattr(steps.runs, "RUNS_DIR", tmp_path)
+    monkeypatch.setattr(runs, "RUNS_DIR", tmp_path)
 
     daily = steps.committable("2026-07-25", "daily")
 
@@ -172,7 +175,7 @@ def test_the_manifest_parses_as_the_gate_will_read_it(
 
 @pytest.fixture
 def log_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    monkeypatch.setattr(steps.runs, "RUNS_DIR", tmp_path)
+    monkeypatch.setattr(runs, "RUNS_DIR", tmp_path)
     return tmp_path
 
 
@@ -180,11 +183,13 @@ def judged(day: str, *selections: dict[str, Any] | None) -> dict[str, Any]:
     for selection in selections:
         with contextlib.suppress(steps.Skipped):
             steps._record_judgment(steps.Run(day=day, selection=selection))
-    return steps.runs.load_run_log(day)["judgment"]
+    judgment: dict[str, Any] = runs.load_run_log(day)["judgment"]
+    return judgment
 
 
 def notes_after(day: str, *selections: dict[str, Any]) -> str:
-    return judged(day, *selections)["notes"]
+    notes: str = judged(day, *selections)["notes"]
+    return notes
 
 
 def test_the_run_records_its_own_account_in_the_log(log_dir: Path) -> None:
@@ -229,6 +234,26 @@ def test_a_repeated_selection_does_not_duplicate_its_paragraph(log_dir: Path) ->
     assert notes == "Reddit degraded.\n"
 
 
+def test_a_note_is_wrapped_at_the_margin(log_dir: Path) -> None:
+    """A run log is a public record read in a pull request. The folded form
+    ``dump`` picks for one paragraph wraps for free; a multi-paragraph note has
+    to keep its newlines, so it is written verbatim unless wrapped here."""
+    notes = notes_after("2026-07-25", {"notes": "word " * 80})
+
+    assert len(notes.splitlines()) > 1
+    assert max(len(line) for line in notes.splitlines()) <= serial.WIDTH
+
+
+def test_a_paragraph_already_wrapped_is_recognised_as_the_same_one(log_dir: Path) -> None:
+    """The stored form is wrapped and the incoming one is not, so comparing
+    the blobs would append the same paragraph on every run of the day."""
+    paragraph = "The Reddit fetcher reached 8 of 28 subreddits. " * 5
+
+    notes = notes_after("2026-07-25", {"notes": paragraph}, {"notes": paragraph})
+
+    assert serial.paragraphs(notes) == [paragraph.strip()]
+
+
 @pytest.mark.parametrize(
     "selection", [None, {}, {"notes": ""}, {"notes": "   "}, {"inbox_used": []}]
 )
@@ -251,9 +276,9 @@ def test_seeding_a_log_does_not_clobber_a_note_already_merged(log_dir: Path) -> 
     seed that reset ``notes`` instead would silently empty it again.
     """
     notes_after("2026-07-25", {"notes": "Reddit degraded."})
-    record = steps.runs.load_run_log("2026-07-25")
+    record = runs.load_run_log("2026-07-25")
 
-    steps.seed_judgment(record)
+    seed_judgment(record)
 
     assert record["judgment"]["notes"] == "Reddit degraded.\n"
 
@@ -263,7 +288,7 @@ def test_seeding_a_log_does_not_clobber_a_note_already_merged(log_dir: Path) -> 
 
 def scored(day: str, *ids: int) -> None:
     """A log shaped as ``backtest`` leaves it: candidates, each seeded."""
-    steps.runs.save_run_log(
+    runs.save_run_log(
         day,
         {
             "date": day,
@@ -277,7 +302,8 @@ def corrected(day: str, *corrections: dict[str, Any]) -> dict[str, str]:
     run = steps.Run(day=day, selection={"miss_review": list(corrections)})
     with contextlib.suppress(steps.Skipped):
         steps._record_miss_review(run)
-    return steps.runs.load_run_log(steps.yesterday(day))["judgment"]["miss_review"]
+    causes: dict[str, str] = runs.load_run_log(steps.yesterday(day))["judgment"]["miss_review"]
+    return causes
 
 
 def test_a_wrong_seeded_cause_is_corrected_in_yesterdays_log(log_dir: Path) -> None:
