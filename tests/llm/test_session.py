@@ -55,3 +55,35 @@ def test_a_refused_tool_is_counted_as_a_failure(monkeypatch: pytest.MonkeyPatch)
 
     assert outcome.tools == {"Bash": 1, "Read": 1}
     assert outcome.failed == {"Bash": 1}
+
+
+@pytest.mark.repo
+def test_a_result_matching_no_call_is_still_counted(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A denial that cannot be attributed is the case that hid one.
+
+    The 2026-07-28 run showed a Bash attempt with no failure beside it, which
+    read as "it succeeded" when the grant makes that impossible. Silence here
+    has to be impossible too.
+    """
+    monkeypatch.setattr(
+        "claude_agent_sdk.query",
+        _stream(
+            SdkUserMessage(
+                content=[ToolResultBlock(tool_use_id="orphan", content="denied", is_error=True)]
+            ),
+            ResultMessage(
+                subtype="success",
+                duration_ms=1,
+                duration_api_ms=1,
+                is_error=False,
+                num_turns=1,
+                session_id="s",
+                result="done",
+                usage={},
+            ),
+        ),
+    )
+
+    outcome = asyncio.run(session.run_stage(specs.STAGES["review"], "task", lambda: object(), "d"))
+
+    assert outcome.failed == {"unmatched:orphan": 1}

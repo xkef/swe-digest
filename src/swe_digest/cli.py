@@ -167,12 +167,15 @@ def _runs_show(args: argparse.Namespace) -> int:
             if step.get("status") == "fail":
                 print(f"        {step.get('detail', '')}")
             if step.get("tools"):
-                failed = step.get("failed_tools") or {}
-                calls = ", ".join(
-                    f"{name}={n}" + (f" ({failed[name]} failed)" if name in failed else "")
+                failed = dict(step.get("failed_tools") or {})
+                calls = [
+                    f"{name}={n}" + (f" ({failed.pop(name)} failed)" if name in failed else "")
                     for name, n in step["tools"].items()
-                )
-                print(f"        tools: {calls}")
+                ]
+                # Whatever is left failed without a call to attribute it to.
+                # Printing it is the point: silence here read as success.
+                calls += [f"{name}={n} failed, uncalled" for name, n in failed.items()]
+                print(f"        tools: {', '.join(calls)}")
         for path, count in (entry.get("denied_writes") or {}).items():
             print(f"  denied {path} ({count})")
         print()

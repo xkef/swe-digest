@@ -83,7 +83,12 @@ async def run_stage(
             if isinstance(message, UserMessage) and not isinstance(message.content, str):
                 for block in message.content:
                     if isinstance(block, ToolResultBlock) and block.is_error:
-                        failed[called.get(block.tool_use_id, "?")] += 1
+                        # Under the id's own name when it is unknown, rather
+                        # than a shared bucket: a result that matches no call is
+                        # the case that hid a denial, and it has to be visible.
+                        failed[
+                            called.get(block.tool_use_id) or f"unmatched:{block.tool_use_id}"
+                        ] += 1
             if isinstance(message, ResultMessage):
                 detail = str(getattr(message, "result", "") or "")
                 usage = getattr(message, "usage", None) or {}
