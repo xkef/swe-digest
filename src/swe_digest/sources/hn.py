@@ -308,8 +308,7 @@ class Listing:
     """One HN listing, and the four strings its backends differ by.
 
     The five backends behind each listing speak five protocols, so they stay
-    written out below. What varied between the four listings was only this,
-    and it was 83 lines of copied backend lists to say it.
+    written out below. This is the whole of what varies between listings.
     """
 
     name: str

@@ -1,9 +1,8 @@
 """The one door untrusted feed bytes go through.
 
-Five fetchers each walked RSS or Atom with ``ElementTree`` and each decided for
-itself whether to refuse a document type declaration; two did and three did
-not. feedparser normalizes the dialects, and the guard below is the only place
-that decision is made, so a new source cannot forget it.
+feedparser normalizes the dialects, and the guard below is the only place a
+document type declaration is refused, so a source cannot forget it: no fetcher
+parses XML itself, which is asserted rather than assumed.
 
 Never hand feedparser a URL. ``feedparser.parse(url)`` does its own urllib
 fetch, which has no byte cap, no timeout, no retries and not our User-Agent.

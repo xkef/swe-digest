@@ -15,7 +15,7 @@ Two shapes cover all four stores, because the data has two shapes:
 
 import json
 from dataclasses import asdict, dataclass, field, fields
-from datetime import date
+from datetime import UTC, date, datetime, timedelta
 from typing import Any, Self
 
 
@@ -129,9 +129,13 @@ STORES: dict[str, StoreSpec] = {
 
 
 def today() -> str:
-    from datetime import UTC, datetime
-
+    """Now, as a UTC date. The one spelling: four modules had their own, and a
+    run that straddles midnight has to agree with itself about which day it is."""
     return datetime.now(UTC).strftime("%Y-%m-%d")
+
+
+def yesterday() -> str:
+    return (datetime.now(UTC) - timedelta(days=1)).strftime("%Y-%m-%d")
 
 
 def parse_iso(value: str) -> date | None:

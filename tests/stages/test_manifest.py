@@ -1,6 +1,5 @@
 """The side effects a run requests, as data the publish job re-verifies."""
 
-import asyncio
 import json
 from pathlib import Path
 
@@ -8,21 +7,7 @@ import pytest
 
 from swe_digest import paths
 from swe_digest.gate._manifest import load_manifest
-from swe_digest.stages import pipeline, steps
-
-
-def drive(state: steps.Run, *steps: pipeline.Step) -> steps.Run:
-    """Run the driver over ``steps`` and hand back the state it filled in."""
-    asyncio.run(pipeline._drive(state, steps))
-    return state
-
-
-def ok(detail: str = "ok") -> steps.Code:
-    return steps.Code(detail, lambda _run: detail)
-
-
-def test_yesterday_is_the_day_before() -> None:
-    assert steps.yesterday("2026-07-01") == "2026-06-30"
+from swe_digest.stages import steps
 
 
 def test_the_manifest_carries_only_what_the_run_requested(

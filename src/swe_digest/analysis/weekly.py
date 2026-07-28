@@ -26,6 +26,7 @@ from typing import Any
 from swe_digest import paths, settings
 from swe_digest.adapters.vcs import GitGh
 from swe_digest.domain import document
+from swe_digest.domain.records import today
 from swe_digest.store import runs
 
 NO_RESPONSE = "_no response_"
@@ -34,15 +35,14 @@ KEYWORD = re.compile(r"[a-z0-9][a-z0-9+_.-]{3,}")
 # Words a recurring-topic count would otherwise be made of. Common English
 # plus "algorithm", which is a keyword everywhere in this corpus and therefore
 # distinguishes nothing.
-STOPWORDS = set(
-    """
+_STOPWORDS = """
     about after against algorithm before being best between could does down
     every first from have here inside into just like made make more most much
     never only other over show should some still than that their them there
     they this under using were what when where which will with without would
     years your
-    """.split()
-)
+"""
+STOPWORDS = frozenset(_STOPWORDS.split())
 TABLE_CAP = 20
 PRINT_CAP = 10
 
@@ -59,10 +59,6 @@ class Window:
     missing: list[str]
     totals: dict[str, dict]
     gh: GitGh
-
-
-def today() -> str:
-    return datetime.now(UTC).strftime("%Y-%m-%d")
 
 
 def window(date: str, since: str | None) -> tuple[str, str, str | None]:

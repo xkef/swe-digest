@@ -9,19 +9,7 @@ import pytest
 from swe_digest.llm import specs
 from swe_digest.stages import pipeline, steps
 
-
-def drive(state: steps.Run, *steps: pipeline.Step) -> steps.Run:
-    """Run the driver over ``steps`` and hand back the state it filled in."""
-    asyncio.run(pipeline._drive(state, steps))
-    return state
-
-
-def ok(detail: str = "ok") -> steps.Code:
-    return steps.Code(detail, lambda _run: detail)
-
-
-def test_yesterday_is_the_day_before() -> None:
-    assert steps.yesterday("2026-07-01") == "2026-06-30"
+from .conftest import drive, ok
 
 
 def test_the_selection_is_handed_to_the_write_step() -> None:

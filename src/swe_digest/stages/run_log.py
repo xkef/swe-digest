@@ -14,12 +14,9 @@ from typing import Any
 
 from swe_digest import paths
 from swe_digest.domain import document
+from swe_digest.domain.records import today
 from swe_digest.sources.watchlist import load_watchlist
 from swe_digest.store import runs
-
-
-def today() -> str:
-    return datetime.now(UTC).strftime("%Y-%m-%d")
 
 
 def query_yield(hn: dict, digest: document.Digest) -> dict:

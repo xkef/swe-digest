@@ -268,11 +268,7 @@ def run_log(run: Run) -> str:
 
 
 def record_reading(run: Run) -> str:
-    """Put what the run read into its own log.
-
-    New capability rather than restriction: there is no record at all of what
-    the action-driven agent fetches.
-    """
+    """Put what the run read into its own log, because nothing else does."""
     fetched = net.record()
     record = runs.load_run_log(run.day)
     mechanical = record.setdefault("mechanical", {})
@@ -353,11 +349,10 @@ def manifest(run: Run) -> str:
 def record_run(run: Run) -> str:
     """What this run did, in the file the run commits.
 
-    Until this existed the step table was printed to stderr and dropped, so
-    everything about how a digest came to be — which stages ran, which failed
-    and why, what they cost, which tools they called, what the write guard
-    refused — lived only in an Actions log that expires. A digest is a public
-    artifact and this is the record of how it was made.
+    A digest is a public artifact, so how it was made — which stages ran, which
+    failed and why, what they cost, which tools they called, what the write
+    guard refused — belongs in the repository rather than in an Actions log
+    that expires.
 
     Placed immediately before ``commit``, so it sees every earlier step. It
     cannot record its own outcome or the commit's: there is no second write, and
@@ -419,11 +414,11 @@ def dated_run_logs() -> list[str]:
     """Every dated run log, because a daily run writes more than today's.
 
     ``run_log`` writes today's, ``backtest`` seeds yesterday's, and ``prune``
-    compacts every log past the detail window. Staging only today's is how the
-    backtest's seeded causes and the prune's reclaimed bytes came to be computed
-    on the runner and then discarded with it. Enumerating the directory rather
-    than naming today and yesterday means a fourth writer cannot reintroduce
-    that silently.
+    compacts every log past the detail window. Stage only today's and the
+    backtest's seeded causes and the prune's reclaimed bytes are computed on
+    the runner and discarded with it. Enumerating the directory rather than
+    naming today and yesterday means a fourth writer cannot reintroduce that
+    silently.
 
     Every name here matches the dated form ``gate.publish_run`` accepts, so the
     list stays a subset of the publish allowlist.

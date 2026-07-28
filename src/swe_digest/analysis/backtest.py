@@ -15,10 +15,10 @@ import json
 import re
 import sys
 from collections.abc import Iterable
-from datetime import UTC, datetime, timedelta
 
 from swe_digest import paths, settings
 from swe_digest.domain import document
+from swe_digest.domain.records import yesterday
 from swe_digest.domain.vocab import CAUSES as CAUSES
 from swe_digest.store import memory as memory_store
 from swe_digest.store.runs import hn_snapshot_dir, hn_stories, load_run_log, save_run_log
@@ -38,10 +38,6 @@ DEFAULT_CAUSES = {
 
 NAME_SPLIT = re.compile(r", | / | and ")
 PARENTHETICAL = re.compile(r"\((?P<inner>[^)]*)\)")
-
-
-def yesterday() -> str:
-    return (datetime.now(UTC) - timedelta(days=1)).strftime("%Y-%m-%d")
 
 
 def title_matches(title: str, digest_titles: list[str]) -> bool:

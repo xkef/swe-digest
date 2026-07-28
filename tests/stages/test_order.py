@@ -1,23 +1,7 @@
 """The order the steps run in, per mode."""
 
-import asyncio
-
 from swe_digest.llm import specs
 from swe_digest.stages import pipeline, steps
-
-
-def drive(state: steps.Run, *steps: pipeline.Step) -> steps.Run:
-    """Run the driver over ``steps`` and hand back the state it filled in."""
-    asyncio.run(pipeline._drive(state, steps))
-    return state
-
-
-def ok(detail: str = "ok") -> steps.Code:
-    return steps.Code(detail, lambda _run: detail)
-
-
-def test_yesterday_is_the_day_before() -> None:
-    assert steps.yesterday("2026-07-01") == "2026-06-30"
 
 
 def test_stage_selection_narrows_the_stages_and_keeps_every_code_step() -> None:

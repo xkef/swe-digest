@@ -1,6 +1,5 @@
 """The code steps, each on its own."""
 
-import asyncio
 from typing import Any
 
 import pytest
@@ -8,15 +7,7 @@ import pytest
 from swe_digest.llm import auth
 from swe_digest.stages import pipeline, steps
 
-
-def drive(state: steps.Run, *steps: pipeline.Step) -> steps.Run:
-    """Run the driver over ``steps`` and hand back the state it filled in."""
-    asyncio.run(pipeline._drive(state, steps))
-    return state
-
-
-def ok(detail: str = "ok") -> steps.Code:
-    return steps.Code(detail, lambda _run: detail)
+from .conftest import drive, ok
 
 
 def test_yesterday_is_the_day_before() -> None:
