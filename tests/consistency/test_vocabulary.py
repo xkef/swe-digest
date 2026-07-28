@@ -67,7 +67,7 @@ def test_an_unknown_placeholder_is_an_error() -> None:
     """Substituting a typo silently would ship `{{catgeories}}` to the model
     and quietly drop the rule it was meant to state."""
     with pytest.raises(prompts.UnknownPlaceholder, match="catgeories"):
-        prompts.render("Use one of {{catgeories}}.")
+        prompts.render("Use one of {{catgeories}}.", specs.STAGES["write"])
 
 
 def test_every_path_a_prompt_names_exists() -> None:
@@ -176,8 +176,8 @@ def test_no_fragment_is_orphaned() -> None:
 def test_every_placeholder_used_by_a_prompt_is_defined() -> None:
     import re
 
-    defined = set(prompts.values())
     for spec in specs.STAGES.values():
-        text = (ROOT / spec.prompt_path).read_text()
-        for name in re.findall(r"\{\{([^}]+)\}\}", text):
-            assert name.strip() in defined, f"{spec.name}: {name}"
+        defined = set(prompts.values(spec))
+        for path in (ROOT / "prompts" / "common.md", ROOT / spec.prompt_path):
+            for name in re.findall(r"\{\{([^}]+)\}\}", path.read_text()):
+                assert name.strip() in defined, f"{spec.name}: {name}"

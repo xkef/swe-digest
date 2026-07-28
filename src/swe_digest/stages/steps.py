@@ -75,6 +75,9 @@ class StepResult:
     # Which tools a model stage called, and how many times each. Empty for a
     # code step, which calls none.
     tools: dict[str, int] = field(default_factory=dict)
+    # Of those, the calls that came back an error: a tool the step does not
+    # hold, or one that failed. Turns paid for and wasted.
+    failed_tools: dict[str, int] = field(default_factory=dict)
 
 
 @dataclass
@@ -95,6 +98,10 @@ class Run:
     selection: dict[str, Any] | None = None
     review: dict[str, Any] | None = None
     pruned: list[str] = field(default_factory=list)
+    # Where the reviewer still objected when the repair passes ran out. A
+    # digest the reviewer calls wrong is worse than no digest, so this
+    # withholds the commit the way a rejected gate does.
+    unresolved: list[str] = field(default_factory=list)
     proposals: list[dict[str, Any]] = field(default_factory=list)
 
     # What the manifest and the report are built from.
@@ -379,6 +386,11 @@ def record_run(run: Run) -> str:
                 else {}
             )
             | ({"tools": dict(sorted(result.tools.items()))} if result.tools else {})
+            | (
+                {"failed_tools": dict(sorted(result.failed_tools.items()))}
+                if result.failed_tools
+                else {}
+            )
             for result in run.results
         ],
     }
@@ -470,6 +482,8 @@ def commit(run: Run) -> str:
         # Publishing something the gate rejected is the one outcome worse than
         # publishing nothing.
         raise Skipped("the gate rejected this run")
+    if run.unresolved:
+        raise Skipped(f"the review left {len(run.unresolved)} blocking finding(s) unresolved")
 
     gh = GitGh()
     present = [path for path in committable(run.day, run.mode) if (paths.ROOT / path).exists()]

@@ -2,7 +2,7 @@
 
 import pytest
 
-from swe_digest.llm import catalog, specs
+from swe_digest.llm import catalog, prompts, specs
 
 
 @pytest.mark.repo
@@ -45,3 +45,24 @@ def test_the_improvement_steps_cannot_write() -> None:
             tool.startswith(catalog.qualified("memory_")) and tool.endswith(writes)
             for tool in granted
         ), name
+
+
+@pytest.mark.repo
+def test_every_stage_is_told_its_own_grant() -> None:
+    """A step that is not told its grant spends turns discovering it: the
+    2026-07-28 run attempted Bash eleven times and Task four times in its most
+    expensive stage, every one denied."""
+    for spec in specs.STAGES.values():
+        text = prompts.load(spec)
+        for tool in spec.allowed_tools:
+            assert f"`{tool}`" in text, f"{spec.name} is not told it holds {tool}"
+        for tool in specs.UNGRANTABLE:
+            assert f"`{tool}`" in text, f"{spec.name} is not told {tool} is refused"
+
+
+def test_the_grant_in_the_prompt_is_the_grant_the_sdk_gets() -> None:
+    """Derived, not restated, so the instructions cannot offer a tool the step
+    does not hold."""
+    spec = specs.STAGES["review"]
+
+    assert prompts.granted(spec).count("- `") == len(spec.allowed_tools)

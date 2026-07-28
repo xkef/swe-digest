@@ -167,7 +167,11 @@ def _runs_show(args: argparse.Namespace) -> int:
             if step.get("status") == "fail":
                 print(f"        {step.get('detail', '')}")
             if step.get("tools"):
-                calls = ", ".join(f"{name}={n}" for name, n in step["tools"].items())
+                failed = step.get("failed_tools") or {}
+                calls = ", ".join(
+                    f"{name}={n}" + (f" ({failed[name]} failed)" if name in failed else "")
+                    for name, n in step["tools"].items()
+                )
                 print(f"        tools: {calls}")
         for path, count in (entry.get("denied_writes") or {}).items():
             print(f"  denied {path} ({count})")

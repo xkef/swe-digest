@@ -107,7 +107,12 @@ def _task(spec: specs.StageSpec, run: Run) -> str:
             hand("The selection to write up, as returned by the select step:", run.selection)
         if run.review is not None:
             hand(
-                "The review found these blocking problems. Repair exactly these:",
+                "The review found these blocking problems. Repair exactly these, and"
+                " nothing else. Dropping the story is always an acceptable repair and"
+                " is the right one when the source does not support the claim: this is"
+                " the last pass, so a finding you argue with rather than resolve"
+                " withholds the whole digest. Say what you dropped and why in Sources"
+                " checked.",
                 run.review.get("findings", []),
             )
     if spec.name == "improve:memory" and run.pruned:
@@ -146,6 +151,13 @@ def _absorb(spec: specs.StageSpec, result: StepResult, run: Run) -> None:
             run.proposals.extend((result.data or {}).get("proposals", []))
 
 
+def _is_disclosure(finding: dict[str, Any]) -> bool:
+    """Whether a finding is about the run's own coverage note rather than a
+    story. ``Sources checked`` is the digest explaining what it did and did not
+    reach, so an imprecise line there misleads nobody about a fact."""
+    return str(finding.get("where") or "").strip().lower().startswith("sources checked")
+
+
 def _repair(spec: specs.StageSpec, run: Run, stages: Collection[str]) -> tuple[str, ...]:
     """The stages to re-run after a review that found blocking problems.
 
@@ -160,7 +172,32 @@ def _repair(spec: specs.StageSpec, run: Run, stages: Collection[str]) -> tuple[s
         for finding in (run.review or {}).get("findings", [])
         if finding.get("severity") == "blocking"
     ]
-    if not blocking or run.repairs >= MAX_REPAIRS or "write" not in stages:
+    if not blocking:
+        run.review = None
+        return ()
+    # A finding against the coverage note is not a reason to publish nothing.
+    # Withholding is for a claim a reader would act on being wrong; an
+    # imprecise Sources checked line is worse published than fixed, and far
+    # better published than a digest suppressed over it.
+    reader_facing = [f for f in blocking if not _is_disclosure(f)]
+    if run.repairs >= MAX_REPAIRS or "write" not in stages:
+        if not reader_facing:
+            run.notes.append(
+                f"review left {len(blocking)} finding(s) against Sources checked unresolved"
+            )
+            run.review = None
+            return ()
+        # Out of repair passes with the reviewer still objecting. The content
+        # gate is mechanical and says nothing about whether a claim matches its
+        # source, so a run that published here would ship exactly the errors
+        # the reviewer named — on 2026-07-28 a misattributed licence and a
+        # cooldown length the source stated plainly.
+        run.unresolved = [str(finding.get("where") or "?") for finding in reader_facing]
+        run.notes.append(f"review left {len(reader_facing)} blocking finding(s) unresolved")
+        print(
+            f"-- unresolved ({len(reader_facing)} blocking, no repair passes left)",
+            file=sys.stderr,
+        )
         run.review = None
         return ()
     run.repairs += 1
@@ -187,6 +224,7 @@ async def _model_step(spec: specs.StageSpec, run: Run, server: Callable[[], obje
             outcome.input_tokens,
             outcome.output_tokens,
             tools=outcome.tools,
+            failed_tools=outcome.failed,
         )
 
     data = _parse(spec, outcome.detail)
@@ -200,6 +238,7 @@ async def _model_step(spec: specs.StageSpec, run: Run, server: Callable[[], obje
             outcome.input_tokens,
             outcome.output_tokens,
             tools=outcome.tools,
+            failed_tools=outcome.failed,
         )
     return StepResult(
         spec.name,
@@ -209,6 +248,7 @@ async def _model_step(spec: specs.StageSpec, run: Run, server: Callable[[], obje
         outcome.output_tokens,
         data,
         tools=outcome.tools,
+        failed_tools=outcome.failed,
     )
 
 

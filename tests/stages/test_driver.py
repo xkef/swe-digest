@@ -191,7 +191,13 @@ def test_the_repair_pass_re_runs_write_and_review_before_finalize(
     assert calls == ["select", "write", "review", "write", "review"]
     assert [result.name for result in state.results] == [*calls, "gate"]
     assert state.repairs == pipeline.MAX_REPAIRS
-    assert state.notes == ["repair pass 1: 1 blocking finding(s)"]
+    # The stub review objects every time, so the second one exhausts the repair
+    # budget and the run records that it never cleared rather than publishing.
+    assert state.notes == [
+        "repair pass 1: 1 blocking finding(s)",
+        "review left 1 blocking finding(s) unresolved",
+    ]
+    assert state.unresolved
 
 
 def test_a_review_without_write_in_the_plan_does_not_repair(
@@ -206,3 +212,73 @@ def test_a_review_without_write_in_the_plan_does_not_repair(
     assert calls == ["review"]
     assert state.repairs == 0
     assert state.review is None, "stale findings must not reach a later write step"
+
+
+def review(findings: list[dict]) -> steps.Code:
+    """A stand-in review stage, since what matters is what the driver does
+    with a verdict rather than how the verdict was reached."""
+
+    def stage(run: steps.Run) -> str:
+        run.review = {"ready": not findings, "findings": findings}
+        return "reviewed"
+
+    return steps.Code("review", stage)
+
+
+def test_a_review_that_never_clears_withholds_the_commit() -> None:
+    """One repair pass, then the reviewer is still objecting.
+
+    The content gate is mechanical and says nothing about whether a claim
+    matches its source, so a run that published here would ship exactly the
+    errors the reviewer named.
+    """
+    blocking = [{"severity": "blocking", "where": "Security / a story"}]
+    state = steps.Run(day="2026-07-25", gate_ok=True)
+    state.repairs = pipeline.MAX_REPAIRS
+    state.review = {"ready": False, "findings": blocking}
+
+    assert pipeline._repair(specs.STAGES["review"], state, ("write", "review")) == ()
+    assert state.unresolved == ["Security / a story"]
+    with pytest.raises(steps.Skipped, match="1 blocking finding"):
+        steps.commit(state)
+
+
+def test_a_clean_review_leaves_the_commit_alone() -> None:
+    state = steps.Run(day="2026-07-25", gate_ok=True)
+    state.review = {"ready": True, "findings": []}
+
+    assert pipeline._repair(specs.STAGES["review"], state, ("write", "review")) == ()
+    assert state.unresolved == []
+
+
+def test_an_unresolved_sources_checked_finding_does_not_withhold() -> None:
+    """The coverage note is the digest explaining what it reached.
+
+    Suppressing sixteen stories because that note is imprecise is worse than
+    publishing it imprecise, which is what the 2026-07-28 clean-room run did.
+    """
+    state = steps.Run(day="2026-07-25", gate_ok=True)
+    state.repairs = pipeline.MAX_REPAIRS
+    state.review = {
+        "ready": False,
+        "findings": [{"severity": "blocking", "where": "Sources checked: GitHub watchlist"}],
+    }
+
+    assert pipeline._repair(specs.STAGES["review"], state, ("write", "review")) == ()
+    assert state.unresolved == []
+
+
+def test_a_story_finding_still_withholds_alongside_a_disclosure_one() -> None:
+    state = steps.Run(day="2026-07-25", gate_ok=True)
+    state.repairs = pipeline.MAX_REPAIRS
+    state.review = {
+        "ready": False,
+        "findings": [
+            {"severity": "blocking", "where": "Sources checked: GitHub watchlist"},
+            {"severity": "blocking", "where": "Security / a story"},
+        ],
+    }
+
+    pipeline._repair(specs.STAGES["review"], state, ("write", "review"))
+
+    assert state.unresolved == ["Security / a story"]

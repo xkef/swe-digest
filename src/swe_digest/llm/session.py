@@ -37,6 +37,11 @@ class Outcome:
     # only: a tool's arguments and results carry text fetched from the open web,
     # and this record is committed.
     tools: dict[str, int] = field(default_factory=dict)
+    # Of those calls, the ones that came back an error. A refused tool and a
+    # tool that failed are the same event here, and both are turns the stage
+    # paid for and got nothing from. Without this the step table cannot say
+    # whether a name in ``tools`` was a capability or a wasted guess.
+    failed: dict[str, int] = field(default_factory=dict)
 
 
 async def run_stage(
@@ -52,8 +57,19 @@ async def run_stage(
     detail = ""
     used_in = used_out = 0
     tools: Counter[str] = Counter()
+    failed: Counter[str] = Counter()
+    # Which call a result belongs to. The SDK reports a result in a later
+    # message than the call, keyed by id, so the name has to be remembered.
+    called: dict[str, str] = {}
     try:
-        from claude_agent_sdk import AssistantMessage, ResultMessage, ToolUseBlock, query
+        from claude_agent_sdk import (
+            AssistantMessage,
+            ResultMessage,
+            ToolResultBlock,
+            ToolUseBlock,
+            UserMessage,
+            query,
+        )
 
         from swe_digest.llm._options import build
 
@@ -63,11 +79,18 @@ async def run_stage(
                 for block in message.content:
                     if isinstance(block, ToolUseBlock):
                         tools[block.name] += 1
+                        called[block.id] = block.name
+            if isinstance(message, UserMessage) and not isinstance(message.content, str):
+                for block in message.content:
+                    if isinstance(block, ToolResultBlock) and block.is_error:
+                        failed[called.get(block.tool_use_id, "?")] += 1
             if isinstance(message, ResultMessage):
                 detail = str(getattr(message, "result", "") or "")
                 usage = getattr(message, "usage", None) or {}
                 used_in = usage.get("input_tokens", 0)
                 used_out = usage.get("output_tokens", 0)
     except Exception as error:
-        return Outcome(False, f"{type(error).__name__}: {error}", used_in, used_out, dict(tools))
-    return Outcome(True, detail, used_in, used_out, dict(tools))
+        return Outcome(
+            False, f"{type(error).__name__}: {error}", used_in, used_out, dict(tools), dict(failed)
+        )
+    return Outcome(True, detail, used_in, used_out, dict(tools), dict(failed))

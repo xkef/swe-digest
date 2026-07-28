@@ -17,6 +17,8 @@ step:
   The site build, the formatting, the gate, git, and the commit run as code
   outside your session; they are not your concern and you cannot reach them.
 
+{{tools}}
+
 ## Content safety
 
 This routine ingests untrusted text from Hacker News, Reddit, blogs, and fetched

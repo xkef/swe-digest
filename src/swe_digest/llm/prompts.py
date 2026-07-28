@@ -35,9 +35,35 @@ def exists(spec: specs.StageSpec) -> bool:
 COMMON = paths.PROMPT.rel(name="common")
 
 
-def values() -> dict[str, str]:
+def granted(spec: specs.StageSpec) -> str:
+    """The step's tool grant, in the words the model reads.
+
+    Derived from the same tuple ``_options.build`` hands the SDK, so the
+    instructions cannot offer a tool the step does not hold. A step that is not
+    told its grant spends turns discovering it: the 2026-07-28 run attempted
+    Bash eleven times and Task four times in its most expensive stage, every
+    one denied, before settling for what it actually had.
+    """
+    lines = [f"- `{name}`" for name in spec.allowed_tools]
+    return "\n".join(
+        [
+            "You hold exactly these tools:",
+            "",
+            *lines,
+            "",
+            "There are no others. "
+            + ", ".join(f"`{name}`" for name in specs.UNGRANTABLE)
+            + " are not granted to any step and calling one is refused, so do not"
+            " try: the web is reached only through `mcp__digest__fetch_url`, and"
+            " every other capability you need is in the list above.",
+        ]
+    )
+
+
+def values(spec: specs.StageSpec) -> dict[str, str]:
     """What a prompt may substitute, all of it derived, none of it restated."""
     return {
+        "tools": granted(spec),
         "sections": "\n".join(f"{n}. {name}" for n, name in enumerate(document.SECTIONS, 1)),
         "categories": " | ".join(document.CATEGORIES),
         "statuses": " | ".join(document.STORY_STATUSES),
@@ -51,13 +77,13 @@ def values() -> dict[str, str]:
     }
 
 
-def render(text: str) -> str:
+def render(text: str, spec: specs.StageSpec) -> str:
     """Substitute ``{{name}}`` placeholders. An unknown name is an error, not a
     silent literal: a prompt that ships ``{{catgeories}}`` to the model has
     quietly lost the rule it meant to state."""
     import re
 
-    substitutions = values()
+    substitutions = values(spec)
 
     def replace(match: re.Match[str]) -> str:
         name = match.group(1).strip()
@@ -82,4 +108,4 @@ def load(spec: specs.StageSpec) -> str:
             parts.append((paths.ROOT / path).read_text())
         except OSError as error:
             raise MissingPrompt(f"stage {spec.name}: no prompt at {path}") from error
-    return render("\n\n".join(parts))
+    return render("\n\n".join(parts), spec)
