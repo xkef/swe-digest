@@ -35,18 +35,19 @@ jobs:
           cache: true
       - name: Sync environment
         run: uv sync --frozen
-        working-directory: agent
       - name: Lint
         run: |
           uv run ruff check .
           uv run ruff format --check .
-        working-directory: agent
       - name: Type check
         run: uv run mypy
-        working-directory: agent
+      # AGENTS.md says the layer direction is a CI failure rather than a review
+      # comment. It was neither until now: the contracts existed and nothing ran
+      # them outside a developer's own `make imports`.
+      - name: Import contract
+        run: uv run lint-imports
       - name: Tests
         run: uv run pytest
-        working-directory: agent
 
       # requirements-agent.txt is a flat pinned file, so a dependabot bump of
       # one transitive pin can contradict another package's exact peer pin and
