@@ -31,61 +31,18 @@ from swe_digest.store import runs
 NO_RESPONSE = "_no response_"
 
 KEYWORD = re.compile(r"[a-z0-9][a-z0-9+_.-]{3,}")
-STOPWORDS = {
-    "about",
-    "after",
-    "against",
-    "algorithm",
-    "before",
-    "being",
-    "best",
-    "between",
-    "could",
-    "does",
-    "down",
-    "every",
-    "first",
-    "from",
-    "have",
-    "here",
-    "inside",
-    "into",
-    "just",
-    "like",
-    "made",
-    "make",
-    "more",
-    "most",
-    "much",
-    "never",
-    "only",
-    "other",
-    "over",
-    "show",
-    "should",
-    "some",
-    "still",
-    "than",
-    "that",
-    "their",
-    "them",
-    "there",
-    "they",
-    "this",
-    "under",
-    "using",
-    "were",
-    "what",
-    "when",
-    "where",
-    "which",
-    "will",
-    "with",
-    "without",
-    "would",
-    "years",
-    "your",
-}
+# Words a recurring-topic count would otherwise be made of. Common English
+# plus "algorithm", which is a keyword everywhere in this corpus and therefore
+# distinguishes nothing.
+STOPWORDS = set(
+    """
+    about after against algorithm before being best between could does down
+    every first from have here inside into just like made make more most much
+    never only other over show should some still than that their them there
+    they this under using were what when where which will with without would
+    years your
+    """.split()
+)
 TABLE_CAP = 20
 PRINT_CAP = 10
 
@@ -280,6 +237,8 @@ def _feedback(gh: GitGh) -> dict:
     return {"available": not degraded, "kinds": kinds}
 
 
+# How one mechanical key says itself in the printed summary. ``None`` for a key
+# worth recording and not worth a line.
 type Say = Callable[[Any], list[str]]
 
 
@@ -296,11 +255,6 @@ def _say_list(label: str) -> Say:
     return say
 
 
-def _say_nothing(_: Any) -> list[str]:
-    """For a key worth recording and not worth a line of the summary."""
-    return []
-
-
 def _say_misses(misses: dict) -> list[str]:
     causes = ", ".join(f"{cause} {count}" for cause, count in misses["totals"].items())
     return [
@@ -313,13 +267,12 @@ def _say_misses(misses: dict) -> list[str]:
 
 
 def _say_sections(coverage: dict) -> list[str]:
-    return _say_list("flagged sections")(
-        [
-            f"{section} (empty {entry['max_empty_streak']} days)"
-            for section, entry in coverage.items()
-            if entry.get("flagged")
-        ]
-    )
+    flagged = [
+        f"{section} (empty {entry['max_empty_streak']} days)"
+        for section, entry in coverage.items()
+        if entry.get("flagged")
+    ]
+    return _say_list("flagged sections")(flagged)
 
 
 def _say_feedback(feedback: dict) -> list[str]:
@@ -344,10 +297,10 @@ def _say_recurring(recurring: dict) -> list[str]:
 # Every mechanical key the marker carries, as one row: the key, what computes it
 # from the window, and how it says itself in the printed summary. What a reader
 # sees and what the marker holds cannot drift, because both come from here.
-_KEYS: tuple[tuple[str, Callable[[Window], Any], Say], ...] = (
-    ("days_with_log", lambda w: sorted(w.days), _say_nothing),
-    ("days_missing", lambda w: w.missing, _say_nothing),
-    ("query_totals", lambda w: w.totals, _say_nothing),
+_KEYS: tuple[tuple[str, Callable[[Window], Any], Say | None], ...] = (
+    ("days_with_log", lambda w: sorted(w.days), None),
+    ("days_missing", lambda w: w.missing, None),
+    ("query_totals", lambda w: w.totals, None),
     ("dead_queries", lambda w: dead_queries(w.totals), _say_list("dead queries")),
     (
         "matched_never_published",
@@ -400,7 +353,7 @@ def main(date: str | None = None, since: str | None = None, gh: GitGh | None = N
         + (f", {len(scope.missing)} day(s) without a log" if scope.missing else "")
     )
     for key, _, say in _KEYS:
-        for line in say(computed[key]):
+        for line in say(computed[key]) if say else ():
             print(line)
     print(f"wrote {path.relative_to(paths.ROOT)}")
     return 0
