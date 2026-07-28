@@ -142,7 +142,10 @@ jobs:
           PYTHONPATH=agent/src python3 -m swe_digest publish apply .run/run.patch
           make check
           PYTHONPATH=agent/src python3 -m swe_digest publish push
-          gh workflow run site.yml
+          # Name the commit just pushed. Dispatching without it lets GitHub
+          # re-resolve main, which can still read the pre-push ref and deploy a
+          # site without today's digest while every job reports success.
+          gh workflow run site.yml -f sha="$(git rev-parse HEAD)"
       - name: Side effects
         env:
           GH_TOKEN: ${{ github.token }}
