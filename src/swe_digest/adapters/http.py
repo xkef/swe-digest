@@ -14,6 +14,16 @@ from typing import Any
 from swe_digest.settings import HTTP_MAX_BYTES, HTTP_RETRIES, HTTP_TIMEOUT, USER_AGENT
 
 
+class RateLimited(RuntimeError):
+    """The host asked us to slow down.
+
+    Distinct from an ordinary failure because it says something about the host
+    rather than about one URL: a caller walking many paths on one host has
+    learned about all of them. Retrying is the one thing the response asks us
+    not to do, so this raises without one.
+    """
+
+
 def fetch_bytes(
     url: str,
     *,
@@ -38,6 +48,11 @@ def fetch_bytes(
                 if len(data) > max_bytes:
                     raise RuntimeError(f"response exceeds {max_bytes} bytes: {url}")
                 return data
+        except urllib.error.HTTPError as error:
+            if error.code == 429:
+                raise RateLimited(f"rate limited: {url}") from error
+            last_error = error
+            time.sleep(1 + attempt)
         except (urllib.error.URLError, TimeoutError, OSError) as error:
             last_error = error
             time.sleep(1 + attempt)

@@ -2,6 +2,7 @@
 
 import pytest
 
+from swe_digest.adapters.http import RateLimited
 from swe_digest.sources import feeds, reddit
 from swe_digest.sources.reddit import fetch_listing, make_post
 
@@ -150,3 +151,50 @@ class TestRedditRotation:
 
     def test_covered_subreddits_tolerates_an_empty_snapshot(self) -> None:
         assert reddit.covered_subreddits({}) == set()
+
+
+class TestRateLimiting:
+    """Unauthenticated Reddit closes for a while once it closes.
+
+    A run on 2026-07-28 spent 23 requests per listing being told 429, each one
+    after the seven-second inter-request pause, which is over five minutes of a
+    run re-learning what the first response said.
+    """
+
+    def test_a_run_of_rate_limits_stops_the_listing(
+        self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        tried: list[str] = []
+
+        def fetch(url: str, **kwargs: object) -> bytes:
+            tried.append(url)
+            raise RateLimited(f"rate limited: {url}")
+
+        monkeypatch.setattr(feeds, "fetch_bytes", fetch)
+
+        with pytest.raises(RuntimeError, match="no subreddits returned entries"):
+            fetch_listing("www.reddit.com", SUBS, "hot", "2026-07-06T00:00:00+00:00", pause=0)
+
+        assert len(tried) == reddit.RATE_LIMIT_GIVE_UP, "gave up later than the third 429"
+        assert "stopping after 3/5" in capsys.readouterr().err
+
+    def test_one_rate_limit_among_healthy_feeds_does_not_stop_it(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """A single 429 can be a blip; only a run of them is the limiter."""
+        feed = reddit_feed(
+            reddit_entry("t3_a", TestRedditPosts.PERMALINK, "2026-07-07T00:00:00+00:00")
+        )
+
+        def fetch(url: str, **kwargs: object) -> bytes:
+            if "/r/rust/" in url:
+                raise RateLimited(f"rate limited: {url}")
+            return feed.encode()
+
+        monkeypatch.setattr(feeds, "fetch_bytes", fetch)
+
+        posts, healthy = fetch_listing(
+            "www.reddit.com", SUBS, "hot", "2026-07-06T00:00:00+00:00", pause=0
+        )
+
+        assert healthy == len(SUBS) - 1

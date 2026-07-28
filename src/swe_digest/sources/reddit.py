@@ -24,12 +24,20 @@ from html import unescape
 from typing import Any
 
 from swe_digest import settings
+from swe_digest.adapters.http import RateLimited
 from swe_digest.sources import feeds, fetch, watchlist
 
 LISTING_PATHS = {"top_day": "top/.rss?t=day", "hot": "hot/.rss"}
 PAUSE_SECONDS = settings.REDDIT_REQUEST_PAUSE_SECONDS
 MIN_SUBREDDIT_FRACTION = settings.REDDIT_MIN_SUBREDDIT_FRACTION
 MIN_DAY_COVERAGE_FRACTION = settings.REDDIT_MIN_DAY_COVERAGE_FRACTION
+# Consecutive rate-limited feeds before this listing gives up. Unauthenticated
+# Reddit closes for a while once it closes, and every further request costs the
+# inter-request pause to be told so again: 23 of them is five minutes of a run
+# spent re-learning what the first one said. One 429 can be a blip, a run of
+# them is the limiter. What was already collected is kept, and the rotation
+# means the next round starts on the subreddits this one never reached.
+RATE_LIMIT_GIVE_UP = 3
 
 LINK_ANCHOR = re.compile(r'<a href="([^"]+)">\[link\]</a>')
 
@@ -76,6 +84,7 @@ def fetch_listing(
     path = LISTING_PATHS[listing]
     posts: list[dict] = []
     healthy = 0
+    limited = 0
     for index, subreddit in enumerate(subreddits):
         if index:
             time.sleep(pause)
@@ -83,9 +92,21 @@ def fetch_listing(
             # Single attempt per feed: an immediate retry against a
             # rate-limited endpoint burns request budget without succeeding.
             parsed = feeds.read(f"https://{host}/r/{subreddit}/{path}", retries=1)
+        except RateLimited:
+            limited += 1
+            print(f"warn: r/{subreddit} {listing}: rate limited", file=sys.stderr)
+            if limited >= RATE_LIMIT_GIVE_UP:
+                print(
+                    f"warn: {listing}: {host} rate limited {limited}x in a row,"
+                    f" stopping after {index + 1}/{len(subreddits)}",
+                    file=sys.stderr,
+                )
+                break
+            continue
         except fetch.FETCH_ERRORS as error:
             print(f"warn: r/{subreddit} {listing}: {error}", file=sys.stderr)
             continue
+        limited = 0
         entries = [post for post in map(make_post, parsed.entries) if post]
         if entries:
             healthy += 1
