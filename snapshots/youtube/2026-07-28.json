@@ -1,0 +1,437 @@
+{
+  "fetched_at": "2026-07-28T14:38:00+00:00",
+  "window_hours": 48,
+  "degraded": [],
+  "pooled": null,
+  "collections": {
+    "videos": {
+      "backend": "youtube-rss",
+      "items": [
+        {
+          "id": "lyL5QhgIOxc",
+          "title": "Serving 2 Million Models Without Melting: Scaling the Hugging Face Hub \u2014 Arek Borucki, Hugging Face",
+          "url": "https://www.youtube.com/watch?v=lyL5QhgIOxc",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-07-28T13:41:11+00:00",
+          "views": 161,
+          "rating": {
+            "average": 5.0,
+            "count": 10
+          },
+          "discussion": null,
+          "description": "Type llama into a catalog of 3 million public models and the result still has to feel instant. At 20,000 models any query is fast; at Hugging Face's scale, 14 million users and a million datasets on top, search becomes the hard part. Arek Borucki shows how the Hub keeps it quick: full text search on Apache Lucene, served through MongoDB Atlas, which stores only the metadata while the model artifacts sit in S3 so compute scales on its own. Regex ranking did not hold, so relevance now runs through one unified query with the $search operator, sorted by downloads, likes, and trending.\n\nUnderneath is a seven node MongoDB cluster where only the primary takes writes, with a hidden analytics node soaking up the heavy queries so production traffic never feels them. Keep queries light, push everything else elsewhere, and once the catalog outgrows a single primary, shard the data across nodes by key. The front end scales the same way: Kubernetes goes from 10 to 500 pods and CastAI adds machines underneath, and because HPA only watches CPU and memory, they scale on event loop utilization through KEDA, which sees the request queue HPA cannot.\n\nSpeaker info:\n- https://x.com/_Aras_B\n- https://www.linkedin.com/in/arekborucki/\n- https://arekborucki.cloud/\n\nTimestamps:\n0:00 - Introduction: scaling the Hugging Face Hub\n1:44 - The numbers: 14 million users, millions of models\n3:57 - Why search at scale is the hard part\n5:09 - Full text search on Apache Lucene\n5:46 - Request flow: autoscaling, MongoDB Atlas, and S3\n7:55 - How a search for \"llama\" works\n10:11 - Ranking and Atlas Search with the $search operator\n13:00 - The seven node cluster and a hidden analytics node\n16:42 - Sharding the database\n18:14 - Kubernetes autoscaling: 10 to 500 pods and CastAI\n20:07 - Scaling on event loop utilization with KEDA"
+        },
+        {
+          "id": "5rFuv4SK7OY",
+          "title": "Green AI: Making Machine Learning Environmentally Sustainable \u2022 Charles Humble \u2022 YOW! 2025",
+          "url": "https://www.youtube.com/watch?v=5rFuv4SK7OY",
+          "channel": "GOTO Conferences",
+          "channel_id": "UCs_tLP3AiwYKwdUHpltJPuA",
+          "published_at": "2026-07-28T12:00:31+00:00",
+          "views": 42,
+          "rating": {
+            "average": 5.0,
+            "count": 1
+          },
+          "discussion": null,
+          "description": "This presentation was recorded at YOW! Australia 2025. #GOTOcon #YOW\nhttps://yowcon.com\n\nCharles Humble - Freelance Techie, Podcaster, Editor, Author & Consultant\n\nRESOURCES\nhttps://bsky.app/profile/charleshumble.bsky.social\nhttps://linkedin.com/in/charleshumble\nhttps://mastodon.social/@charleshumble\nhttps://conissaunce.com\n\nLinks\nhttps://www.iea.org/energy-system/buildings/data-centres-and-data-transmission-networks#tracking\nhttps://www.microsoft.com/en-us/corporate-responsibility/sustainability/report\nhttps://www.gstatic.com/gumdrop/sustainability/google-2024-environmental-report.pdf\nhttps://www.epa.gov/climatechange-science/causes-climate-change\nhttps://app.electricitymaps.com/map\nhttps://www.conissaunce.com/demand-shifting-and-shaping\nhttps://thenewstack.io/why-tech-professionals-must-lead-the-charge-on-genai-safety\nhttps://time.com/6247678/openai-chatgpt-kenya-workers\nhttps://ieeexplore.ieee.org/document/6128960\nhttps://thenewstack.io/ai-at-the-edge-federated-learning-for-greater-performance\nhttps://github.com/google/aqt\nhttps://research.google/blog/looking-back-at-speculative-decoding\nhttps://thenewstack.io/ebooks/cloud-infrastructure/developers-guide-to-cloud-infrastructure-efficiency-and-sustainability-2\n\nABSTRACT\nAfter considering the significance of the carbon footprint of AI, Charles will offer practical strategies to reduce environmental impact at each stage of the AI lifecycle. These strategies include using smaller datasets, leveraging transfer learning, employing model compression techniques, and considering edge computing. [...]\n\nTIMECODES\n00:00 Intro\n01:34 AI development\n06:25 AI's hidden environmental cost rises\n11:27 How much carbon is IT responsible for?\n14:07 Embodied carbon vs. Direct emissions\n17:23 Project planning\n25:07 Data collection\n27:10 Side quest: Data collection ethics\n29:05 Training\n36:00 Deployment & maintenance\n38:28 4 steps to make all computing greener\n40:58 Resources\n42:04 Outro\n\nDownload slides and read the full abstract here:\n"
+        },
+        {
+          "id": "KwhgfwOSToQ",
+          "title": "Forward Deployed Engineering 101 \u2014 Kevin Bai, Anthropic",
+          "url": "https://www.youtube.com/watch?v=KwhgfwOSToQ",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-07-28T09:04:22+00:00",
+          "views": 2,
+          "rating": {
+            "average": 5.0,
+            "count": 2
+          },
+          "discussion": null,
+          "description": "Look at public software companies and very few ever crack half a million dollars in average contract value, and that gap is where forward deployed engineering lives. Kevin Bai's 101 starts from the shape of the deal: when your buyer is not technical and the thing you sell is not a finished product they can pick up and configure themselves, you cannot just ship software and walk away. You loan them engineers who build a real solution on top of your platform, so the customer is neither buying a product nor a service but the outcome in between. That is the model Palantir made famous, and it is how you land Fortune 500 contracts a self serve motion never reaches.\n\nThe trap is doing it as pure custom work. Build a bespoke thing for every customer and you reinvent the wheel each time; what makes a forward deployed program work is a platform of reusable pieces the engineers assemble against, not a pile of one offs. So starting one comes down to two questions: is your product complex enough to need hand holding into a non technical org, and do you have engineers who can carry that. What has changed since the Palantir days is that building is easy now and nearly everything is agentic, which pulls this once niche motion toward the center of how software gets sold.\n\nSpeaker info:\n- https://x.com/zkevinbai\n- https://www.linkedin.com/in/zkevinbai\n- https://zkevinbai.com/\n\nTimestamps:\n0:00 - Introduction: what this 101 covers\n1:47 - What Palantir does, and where FDE fits\n3:14 - Selling a solution, not a product or a service\n4:18 - When your buyer isn't technical\n5:59 - The business case: landing large contracts\n7:16 - FDE as a partnership on a reusable platform\n9:48 - How to start: two questions to ask\n11:34 - What has changed since Palantir\n13:08 - Q&A"
+        },
+        {
+          "id": "Ywl6ZXPgBa0",
+          "title": "Spring Office Hours: S5E19 - Docker, Compose, Testcontainers, Oh My! \ud83d\udcf1",
+          "url": "https://www.youtube.com/watch?v=Ywl6ZXPgBa0",
+          "channel": "SpringDeveloper",
+          "channel_id": "UC7yfnfvEUlXUIfm8rGLwZdA",
+          "published_at": "2026-07-28T06:21:04+00:00",
+          "views": 395,
+          "rating": {
+            "average": 5.0,
+            "count": 8
+          },
+          "discussion": null,
+          "description": "Join Dan Vega and DaShaun Carter for the latest updates from the Spring Ecosystem. In this episode, Dan and DaShaun will discuss some of the new features around Docker, Testcontainers and the Spring Boot plugin.You can participate in our live stream to ask questions or catch the replay on your preferred podcast platform."
+        },
+        {
+          "id": "jWWi0J6ggeI",
+          "title": "Spring Office Hours: S5E19 - Docker, Compose, Testcontainers, Oh My!",
+          "url": "https://www.youtube.com/watch?v=jWWi0J6ggeI",
+          "channel": "SpringDeveloper",
+          "channel_id": "UC7yfnfvEUlXUIfm8rGLwZdA",
+          "published_at": "2026-07-28T06:20:50+00:00",
+          "views": 294,
+          "rating": {
+            "average": 5.0,
+            "count": 11
+          },
+          "discussion": null,
+          "description": "Join Dan Vega and DaShaun Carter for the latest updates from the Spring Ecosystem. In this episode, Dan and DaShaun will discuss some of the new features around Docker, Testcontainers and the Spring Boot plugin.You can participate in our live stream to ask questions or catch the replay on your preferred podcast platform."
+        },
+        {
+          "id": "XCz6yAndfq0",
+          "title": "JHT Course Launch! Home Labs with Proxmox",
+          "url": "https://www.youtube.com/watch?v=XCz6yAndfq0",
+          "channel": "John Hammond",
+          "channel_id": "UCVeW9qkBjo3zosnqUbG7CFw",
+          "published_at": "2026-07-28T03:47:14+00:00",
+          "views": 0,
+          "rating": {
+            "average": 5.0,
+            "count": 6
+          },
+          "discussion": null,
+          "description": "Just Hacking Training livestream for Joram Stith's new course launch: Home Labs with Proxmox! Friday, July 31 at 1pm ET"
+        },
+        {
+          "id": "CgsWxRUY5Eo",
+          "title": "AI Agents for Performance: Ship Faster, Pay Less \u2014 Rajat Shah, Netflix",
+          "url": "https://www.youtube.com/watch?v=CgsWxRUY5Eo",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-07-28T00:59:04+00:00",
+          "views": 1591,
+          "rating": {
+            "average": 5.0,
+            "count": 39
+          },
+          "discussion": null,
+          "description": "An inefficient quadratic-time pattern was hiding inside a tensor merge method on a live Netflix service, quietly wasting CPU on every request - nothing in a code review caught it, but it stood out clearly in a call stack. That's usually how this kind of waste gets missed - the normal process of catching it (profiling, reading a flamegraph, tracing it through the codebase, writing a fix, validating it) takes long enough that inefficiencies sit in production for months before anyone looks at them. AI-assisted coding adds to this, since it produces more code optimized for how fast it's written, not how fast it runs. Rajat Shah's team at Netflix built an agent to handle this loop: it took a call stack, traced the issue to the exact source line, proposed a fix, and validated it against a canary - a real production traffic split, with no regression allowed before it could ship. The result was based on measured outcomes, not the model's own assessment.\n\nThe talk covers what it took to get an agent to a point where it could act in production, and walks through this specific case from start to finish - found, fixed, and confirmed by canary without anyone stepping in. It also covers what's next: the same pattern turned up independently in seven other services in one session, which is why it makes sense to build a shared catalog of patterns like this so they aren't rediscovered each time, and which could eventually be used to catch these issues in coding agents before the code ships at all. We'll also share the approach itself - how it was built, what it took to trust it, and what it caught - so other teams can adopt the same loop in their own SDLC rather than starting from scratch.\n\nSpeaker info:\n- https://www.linkedin.com/in/rajatsshah/\n- https://github.com/shahrajat\n- https://shahrajat.com/\n\nTimestamps:\n0:00 - Introduction: performance for ML serving\n2:24 - The manual profiling loop today\n4:46 - The experiment: can an LLM read a profile?\n7:37 - From call stack to the exact "
+        },
+        {
+          "id": "q2KCrmQz9WE",
+          "title": "Did an AI Really Hack Hugging Face?",
+          "url": "https://www.youtube.com/watch?v=q2KCrmQz9WE",
+          "channel": "LiveOverflow",
+          "channel_id": "UClcE-kVhqyiHCcjYwcpfj9w",
+          "published_at": "2026-07-27T22:43:41+00:00",
+          "views": 24128,
+          "rating": {
+            "average": 5.0,
+            "count": 2032
+          },
+          "discussion": {
+            "hn_url": "https://news.ycombinator.com/item?id=49077382",
+            "points": 3,
+            "num_comments": 0
+          },
+          "description": "Checkout our new AI courses: https://app.hextree.io/map/artificial-intelligence (ad)\n\nAn OpenAI agent reportedly escaped its sandbox, found multiple zero-days, and hacked Hugging Face... all to cheat on a cybersecurity benchmark?\n\nThe story sounded almost too crazy to be true. Mohan (S1r1u5) investigated and reconstructed the likely attack chain, examined the patches, and reproduced vulnerabilities that match the public disclosures.\n\nWas this really a rogue AI, clever marketing, or \"just\" an agent that lost track of its task and caused real-world damage?\n\nhttps://x.com/S1r1u5_\nhttps://www.hacktron.ai/blog/here-is-how-openai-model-hacked-huggingface\n\nRelevant links:\n- https://huggingface.co/blog/security-incident-july-2026\n- https://openai.com/index/hugging-face-model-evaluation-security-incident/\n- https://github.com/sunblaze-ucb/exploitgym\n- https://docs.jfrog.com/releases/docs/artifactory-self-managed-releases\n- https://github.com/huggingface/dataset-viewer/pull/3367\n\n00:00 - Intro\n02:04 - ExploitGym\n05:08 - JFrog's Artifactory\n09:06 - Hugging Face\n13:41 - Conclusion\n17:01 - Outro\n\n=[ \u2764\ufe0f Support ]=\n\n\u2192 My courses: https://www.hextree.io/\n\u2192 My font: https://shop.liveoverflow.com/\n\u2192 per Video: https://www.patreon.com/join/liveoverflow\n\u2192 per Month: https://www.youtube.com/channel/UClcE-kVhqyiHCcjYwcpfj9w/join\n\n2nd Channel: https://www.youtube.com/LiveUnderflow\n\n=[ \ud83d\udc15 Social ]=\n\n\u2192 LinkedIn: https://www.linkedin.com/in/liveoverflow\n\u2192 X / Twitter: https://x.com/LiveOverflow/\n\u2192 Instagram: https://instagram.com/LiveOverflow/\n\u2192 Streaming: https://twitch.tv/LiveOverflow/\n\u2192 TikTok: https://www.tiktok.com/@liveoverflow_\n\u2192 Blog: https://liveoverflow.com/"
+        },
+        {
+          "id": "6oZZcWsBDK0",
+          "title": "Why Time Runs Slower Near a Black Hole - Adam Brown",
+          "url": "https://www.youtube.com/watch?v=6oZZcWsBDK0",
+          "channel": "Dwarkesh Patel",
+          "channel_id": "UCXl4i9dYBrFOabk0xGmbkRA",
+          "published_at": "2026-07-27T21:04:45+00:00",
+          "views": 12105,
+          "rating": {
+            "average": 5.0,
+            "count": 659
+          },
+          "discussion": null,
+          "description": ""
+        },
+        {
+          "id": "luBr8XNe9n4",
+          "title": "Payload Podcast 010 - Olaf Hartong",
+          "url": "https://www.youtube.com/watch?v=luBr8XNe9n4",
+          "channel": "John Hammond",
+          "channel_id": "UCVeW9qkBjo3zosnqUbG7CFw",
+          "published_at": "2026-07-27T20:33:40+00:00",
+          "views": 0,
+          "rating": {
+            "average": 5.0,
+            "count": 2
+          },
+          "discussion": null,
+          "description": "Payload Podcast with Olaf Hartong! Live Tuesday, July 28 at 3pm ET."
+        },
+        {
+          "id": "AEU73mjeh0c",
+          "title": "AI Week: Monday announcements",
+          "url": "https://www.youtube.com/watch?v=AEU73mjeh0c",
+          "channel": "Grafana",
+          "channel_id": "UCYCwgQAMm9sTJv0rgwQLCxw",
+          "published_at": "2026-07-27T19:00:15+00:00",
+          "views": 188,
+          "rating": {
+            "average": 5.0,
+            "count": 3
+          },
+          "discussion": null,
+          "description": "AI Week has begun! Check out grafana.ai for more details on what we've announced and what else is coming out today."
+        },
+        {
+          "id": "nZ9PBEXyBYA",
+          "title": "My IntelliJ IDEA Setup for Java Development",
+          "url": "https://www.youtube.com/watch?v=nZ9PBEXyBYA",
+          "channel": "ForrestKnight",
+          "channel_id": "UC2WHjPDvbE6O328n17ZGcfg",
+          "published_at": "2026-07-27T18:45:12+00:00",
+          "views": 8316,
+          "rating": {
+            "average": 5.0,
+            "count": 477
+          },
+          "discussion": null,
+          "description": "I've been a Java developer for many years now, and I wanted to share my IntelliJ IDEA setup for it Java development after about 7 years of refining my setup.\n\nTry these and many other new features in the latest IntelliJ IDEA 2026.2 release:\n\ud83d\udd0d Explore what's new in IntelliJ IDEA: https://jetty.to/intellij-26-2\n\ud83d\udcbb Download IntelliJ IDEA to get started: https://jetty.to/intellij\n\nThis video is sponsored by IntelliJ IDEA by JetBrains.\n\nIf you're a developer, sign up to my free newsletter Dev Notes (about to get rebranded and revived) \ud83d\udc49 https://www.devnotesdaily.com/\n\nDon't know why you'd want to follow me on other socials. I don't even post. But here you go.\n\ud83d\udc31\u200d\ud83d\ude80 GitHub: https://github.com/forrestknight\n\ud83d\udc26 Twitter: https://www.twitter.com/forrestpknight\n\ud83d\udcbc LinkedIn: https://www.linkedin.com/in/forrestpknight\n\ud83d\udcf8 Instagram: https://www.instagram.com/forrestpknight"
+        },
+        {
+          "id": "zf10Onuyegs",
+          "title": "One framework. Access to new models.",
+          "url": "https://www.youtube.com/watch?v=zf10Onuyegs",
+          "channel": "Apple Developer",
+          "channel_id": "UCwrVwiJllwhJUKXKmjLcckQ",
+          "published_at": "2026-07-27T17:00:08+00:00",
+          "views": 3111,
+          "rating": {
+            "average": 5.0,
+            "count": 212
+          },
+          "discussion": null,
+          "description": "The Foundation Models framework now provides you seamless access to multiple models\u2014with all new capabilities in a single native Swift AP. \n\nWatch \"What's new in the Foundation Models framework\" from WWDC26 to learn more.\n\n#WWDC26 #AppleDeveloper #AppleIntelligence #FoundationModels"
+        },
+        {
+          "id": "OaGCB7Sdr9g",
+          "title": "The BIOS Company Is Getting Acquired",
+          "url": "https://www.youtube.com/watch?v=OaGCB7Sdr9g",
+          "channel": "TechTechPotato",
+          "channel_id": "UC1r0DG-KEPyqOeW6o79PByw",
+          "published_at": "2026-07-27T16:43:43+00:00",
+          "views": 14600,
+          "rating": {
+            "average": 5.0,
+            "count": 840
+          },
+          "discussion": null,
+          "description": "There's a new shake-up in the semiconductor landscape: Lattice Semiconductor's $1.65 billion acquisition of American Megatrends (AMI). While massive data center racks showcase high-profile CPUs, GPUs, and specialized accelerators, the underlying platform firmware and low-power companion chips dictate whether a system can safely and reliably boot at all. We sit down at Computex in Taipei with Ford Tamer, CEO of Lattice, and Sanjoy Maity, CEO of AMI, to explore how this integration drives a \"shift left\" strategy for secure hardware management, power optimization, and cooling. We address critical industry anxieties regarding ecosystem trust, open-source firmware neutrality via the Open Compute Project (OCP), firewall protections for competing silicon vendors, and upcoming compliance pathways for the EU's Cyber Resilience Act (CRA).  \n\n[00:00] - Introduction to AMI\n[01:49] - Acquisition announcement\n[02:25] - FPGA market positioning\n[04:01] - Hardware lifecycles \n[05:19] - Ecosystem trust concerns\n[07:14] - Interview with Ford Tamer and Sanjoy Maity\n[08:48] - AMI as the infrastructure layer\n[11:06] - Neutrality guarantees \n[12:33] - OCP commitment\n[13:40] - Combined financial run rate \n[16:30] - Custom IP development and EU CRA compliance\n[19:55] - Wrap-up\n\n-----------------------\nNeed POTATO merch? There's a chip for that!\nhttp://merch.techtechpotato.com\n\nhttp://more-moore.com : Sign up to the More Than Moore Newsletter\nhttps://www.patreon.com/TechTechPotato : Patreon gets you access to the TTP Discord server!\n\nFollow Ian on Twitter at http://twitter.com/IanCutress\nFollow TechTechPotato on Twitter at http://twitter.com/TechTechPotato\n\nIf you're in the market for something from Amazon, please use the following links. TTP may receive a commission if you purchase anything through these links.\nAmazon USA : https://geni.us/AmazonUS-TTP\nAmazon UK  : https://geni.us/AmazonUK-TTP\nAmazon CAN : https://geni.us/AmazonCAN-TTP\nAmazon GER : https://geni.us/AmazonDE-TTP\nAmazon Other "
+        },
+        {
+          "id": "qsuR0g4Gy_s",
+          "title": "Engineers \u201ccash in\u201d on AI time savings",
+          "url": "https://www.youtube.com/watch?v=qsuR0g4Gy_s",
+          "channel": "The Pragmatic Engineer",
+          "channel_id": "UCPbwhExawYrn9xxI21TFfyw",
+          "published_at": "2026-07-27T16:00:18+00:00",
+          "views": 9241,
+          "rating": {
+            "average": 5.0,
+            "count": 282
+          },
+          "discussion": null,
+          "description": "With Dax Raad, co-founder of OpenCode on The Pragmatic Engineer podcast"
+        },
+        {
+          "id": "3eh2DPeO1nw",
+          "title": "Meet Assistant Workspace: Full-page experience for Grafana Assistant",
+          "url": "https://www.youtube.com/watch?v=3eh2DPeO1nw",
+          "channel": "Grafana",
+          "channel_id": "UCYCwgQAMm9sTJv0rgwQLCxw",
+          "published_at": "2026-07-27T15:30:33+00:00",
+          "views": 296,
+          "rating": {
+            "average": 5.0,
+            "count": 10
+          },
+          "discussion": null,
+          "description": "Introducing Assistant Workspace, a full-page surface for Grafana Assistant, built for the conversations that outgrow a sidebar. Dig into longer investigations, compare data side by side, and keep your train of thought in one place \u2014 then turn what you find into a dashboard without starting over. When a quick question becomes a real investigation, open it in Workspace and keep going.\n\nIn this video, Ed Poole gives us a demo of how to use Workspace, including the use of canvases to see more information than before.\n\nThis feature is now available for everyone with Grafana Assistant.\n\nLinks/resources: \nLearn about Assistant Workspace: https://grafana.com/docs/grafana-cloud/machine-learning/assistant/platform/workspace/\nLearn about Grafana Assistant: https://grafana.com/products/cloud/ai-assistant/?pg=hp&plcmt=txt-img-alternating\nLearn more about AI Week and everything AI-related at Grafana: https://grafana.ai\nGet started with the Grafana Cloud forever-free tier: https://grafana.com/g/cloud\nHave a question? Ask Grot, your AI helper: https://grafana.com/grot/\nReach out in our community forums: https://gra.fan/communityyf\n\n---\nThanks for watching! \n\n\ud83d\udc4d Was this video helpful? Like and subscribe to our channel for more videos.\n\nConnect with Grafana Labs: \nX: (https://www.twitter.com/grafana)   \nLinkedIn: (https://www.linkedin.com/company/grafana-labs/)\nFacebook: (https://www.facebook.com/grafana)\n\n#Grafana #Observability #assistant #llm #aiops"
+        },
+        {
+          "id": "SbmuRUgOGzY",
+          "title": "IntelliJ IDEA 2026.2 in 90 seconds",
+          "url": "https://www.youtube.com/watch?v=SbmuRUgOGzY",
+          "channel": "IntelliJ IDEA, a JetBrains IDE",
+          "channel_id": "UC4ogdcPcIAOOMJktgBMhQnQ",
+          "published_at": "2026-07-27T13:22:10+00:00",
+          "views": 2657,
+          "rating": {
+            "average": 5.0,
+            "count": 181
+          },
+          "discussion": null,
+          "description": "Curious about what's new in IntelliJ IDEA 2026.2, but short on time?\n\nHere's the quick version! Anton Arhipov covers the key highlights of the release in just a couple of minutes. \n\n00:00 Intro \n00:05 Agents\n00:24 Logpoints\n00:42 Spring Security inlays\n00:52 Docker Compose improvements\n01:06 Kotlin, dependency completion, Java  \n\nFor a deeper dive with demos and detailed explanations, check out our: \n\n- full walkthrough: https://youtu.be/1wzW-gM9OZE\n- What's New page: https://www.jetbrains.com/idea/whatsnew/ \n- release blog post: https://blog.jetbrains.com/idea/2026/07/intellij-idea-2026-2/ \n\nJoin us:\nWebsite: https://jb.gg/website\nBlog: https://jb.gg/blog\nX: https://twitter.com/intellijidea\nBluesky: https://bsky.app/profile/intellijidea.com\nLinkedIn: https://www.linkedin.com/showcase/intellijidea\nFacebook: https://www.facebook.com/IntelliJIDEA/\n\nDownload IntelliJ IDEA: https://jb.gg/download-intellij-idea"
+        },
+        {
+          "id": "SKuJ60kD8wg",
+          "title": "Wordpress Situation is Absolutely Insane",
+          "url": "https://www.youtube.com/watch?v=SKuJ60kD8wg",
+          "channel": "Low Level",
+          "channel_id": "UC6biysICWOJ-C3P4Tyeggzg",
+          "published_at": "2026-07-27T13:05:14+00:00",
+          "views": 204699,
+          "rating": {
+            "average": 5.0,
+            "count": 7102
+          },
+          "discussion": null,
+          "description": "https://github.com/Icex0/wp2shell-poc\n\n\ud83c\udfeb MY COURSES\nSign-up for my FREE 3-Day C Course: https://lowlevel.academy\n\n\ud83e\uddd9\u200d\u2642\ufe0f HACK YOUR CAREER\nWanna learn to hack? Join my new CTF platform: https://labs.lowlevel.tv\n\n\u2328\ufe0f KEYBOARD\nLike what you hear? Grab a Q5 at https://go.lowlevel.tv/keyboard\n\n\ud83d\udd25COME HANG OUT   \nCheck out my other stuff: https://lowlevel.tv"
+        },
+        {
+          "id": "qSl8VxsI3W8",
+          "title": "Rethinking Data: Moving From the Traditional Three-Tier Web Stack to Client-Side Event Sourcing",
+          "url": "https://www.youtube.com/watch?v=qSl8VxsI3W8",
+          "channel": "InfoQ",
+          "channel_id": "UCkQX1tChV7Z7l1LFF4L9j_g",
+          "published_at": "2026-07-27T12:19:06+00:00",
+          "views": 208,
+          "rating": {
+            "average": 5.0,
+            "count": 5
+          },
+          "discussion": null,
+          "description": "Johannes Schickling explores how he moved beyond the traditional three-tier web stack to a local-first approach. He shares his experience transitioning from Prisma to developing Overtone\u2014a music curation app leveraging client-side event sourcing and SQLite. The discussion highlights the trade-offs between event sourcing and CRDTs, providing actionable insights for architects weighing the complexities of local-first development.\n\nRead a transcript of this interview: https://bit.ly/4pDjvPr\n\nNewsletter:\nSubscribe to the Software Architects' Newsletter, a monthly roundup of the patterns and technologies senior practitioners are working through, with the news and lessons from people doing the work:\nhttps://www.infoq.com/software-architects-newsletter\n\n\nInfoQ Online Certification Programs:\n5-week online cohorts for senior engineers and architects, built around QCon talks. Programs now cover software architecture, AI engineering, and organizational architecture. Each week you join a four-hour live session with a confidential peer group of practitioners from other companies, apply frameworks from QCon talks to the decisions you're making at work, and earn an InfoQ certification. You leave with new approaches, or confirmation that the calls you're already making are the right ones. Learn more:\nhttps://certification.qconferences.com/\n\n\nUpcoming Events:\nQCon San Francisco 2026 (November 16-20, 2026)\nhttps://qconsf.com/\n\n\nQCon London 2027 (April 13-16, 2027)\nhttps://qconlondon.com/\n\n\nThe InfoQ Podcasts:\nWeekly conversations with senior software leaders about how they build systems and teams, including what they'd do differently. Listen to all our podcasts and read interview transcripts:\nThe InfoQ Podcast: https://www.infoq.com/podcasts/\nEngineering Culture Podcast by InfoQ: https://www.infoq.com/podcasts/#engineering_culture\nGenerally AI: https://www.infoq.com/generally-ai-podcast/\n\n\nFollow InfoQ:\nMastodon: https://techhub.social/@infoq\nX: https://x.com/InfoQ\nLinkedIn: https://"
+        },
+        {
+          "id": "yQDARWdrPeY",
+          "title": "I'm ditching tmux for herdr!",
+          "url": "https://www.youtube.com/watch?v=yQDARWdrPeY",
+          "channel": "typecraft",
+          "channel_id": "UCo71RUe6DX4w-Vd47rFLXPg",
+          "published_at": "2026-07-27T12:04:46+00:00",
+          "views": 32514,
+          "rating": {
+            "average": 5.0,
+            "count": 1786
+          },
+          "discussion": null,
+          "description": "Check out Cursor: https://typecraft.dev/cursor\n\nAfter about 10 years. I\u2019m saying goodbye to a close friend of mine. That friend\u2026 is tmux. sorry, was that a little too dramatic?\n\nBut seriously, check this out! THIS is herdr. Herdr is a new terminal multiplexer re-imagined from the ground up. It has all the amazing keybindings and features of tmux, amazing configuration, but it comes with one little twist. Ok, its a big twist\u2026 and I\u2019m going to talk about it in this video\n\nLet\u2019s get into herdr gang!!"
+        },
+        {
+          "id": "Xn3vE95FPlo",
+          "title": "Beyond Memory Safety: How Rust Guarantees Code Correctness",
+          "url": "https://www.youtube.com/watch?v=Xn3vE95FPlo",
+          "channel": "InfoQ",
+          "channel_id": "UCkQX1tChV7Z7l1LFF4L9j_g",
+          "published_at": "2026-07-27T07:56:14+00:00",
+          "views": 258,
+          "rating": {
+            "average": 5.0,
+            "count": 7
+          },
+          "discussion": null,
+          "description": "Think Rust is only about memory safety and borrow checkers? Think again. Autonomous systems engineer Andy Brinkmeyer demonstrates how Rust\u2019s advanced type system embeds runtime protocols, typestates, and resource lifecycles directly into compile-time guarantees. \n\n\u23f1\ufe0f Video Timestamps (For Navigation)\n0:00 - The Real Reason Engineers Fall in Love with Rust\n01:31 - Rust\u2019s Core: Data + Functions (Why It's Simple)\n02:45 - Rich Enums & Exhaustive Pattern Matching\n03:48 - Modeling Optional Data & Application State\n05:01 - Ownership: Eliminating Double-Use Bugs\n06:58 - Resource Lifecycle Management with the Drop Trait\n08:35 - Borrowing, Lifetimes, and Data Race Safety\n09:30 - Embedding Runtime Protocols into the Type System\n12:12 - How Mutex Safety is Guaranteed at Compile Time\n13:51 - The Typestate Pattern for Failure-Proof State Machines\n16:35 - Advanced Typestate Builders (Zero-Cost Abstractions)\n19:00 - Q&A: Macros, Compile Times, & Memory Locality\n\n\ud83d\udd17 Transcript & slides available on InfoQ:  https://bit.ly/4gZmQWM         \n                            \n#RustLang #SoftwareArchitecture #Coding #SoftwareEngineering #Programming"
+        },
+        {
+          "id": "rhDdWu_lsP0",
+          "title": "What That docker-compose.yml Actually Does",
+          "url": "https://www.youtube.com/watch?v=rhDdWu_lsP0",
+          "channel": "Dan Vega",
+          "channel_id": "UCc98QQw1D-y38wg6mO3w4MQ",
+          "published_at": "2026-07-27T00:13:08+00:00",
+          "views": 1648,
+          "rating": {
+            "average": 5.0,
+            "count": 29
+          },
+          "discussion": null,
+          "description": "That docker-compose.yml in your Java repo isn't for shipping your app in a container. It's for running everything your app needs, so any project just runs when you clone it."
+        },
+        {
+          "id": "POHghOLL5gc",
+          "title": "READMEs Cost Me Weeks. Docker Compose Fixed It",
+          "url": "https://www.youtube.com/watch?v=POHghOLL5gc",
+          "channel": "Dan Vega",
+          "channel_id": "UCc98QQw1D-y38wg6mO3w4MQ",
+          "published_at": "2026-07-27T00:11:45+00:00",
+          "views": 751,
+          "rating": {
+            "average": 5.0,
+            "count": 10
+          },
+          "discussion": null,
+          "description": "Long setup READMEs used to cost me one to two weeks just to get productive on a new project. Docker Compose fixes that by spinning up throwaway containers for the services your app depends on."
+        },
+        {
+          "id": "eTZygkJLmqs",
+          "title": "Anthropic and OpenAI are terrified of Kimi",
+          "url": "https://www.youtube.com/watch?v=eTZygkJLmqs",
+          "channel": "Theo - t3\u2024gg",
+          "channel_id": "UCbRP3c757lWg9M-U7TyEkXA",
+          "published_at": "2026-07-26T23:53:34+00:00",
+          "views": 111130,
+          "rating": {
+            "average": 5.0,
+            "count": 3462
+          },
+          "discussion": null,
+          "description": "Kimi K3 is so good it has frontier AI labs and the U.S. government publicly crashing out, and the panic is more revealing than the benchmarks.\n\nThank you Mux for sponsoring! Check them out at: https://soydev.link/mux\n\nWant to sponsor a video? Learn more here: https://soydev.link/sponsor-me\n\nCheck out my Twitch, Twitter, Discord more at https://t3.gg\n\nS/O @Ph4seon3 for the awesome edit \ud83d\ude4f"
+        },
+        {
+          "id": "byWZoKCdePo",
+          "title": "True 3D DRAM",
+          "url": "https://www.youtube.com/watch?v=byWZoKCdePo",
+          "channel": "Asianometry",
+          "channel_id": "UC1LpsuAUaKoMzzJSEt5WImw",
+          "published_at": "2026-07-26T23:00:00+00:00",
+          "views": 51692,
+          "rating": {
+            "average": 5.0,
+            "count": 2828
+          },
+          "discussion": null,
+          "description": "Links:\n- Patreon (Support the channel directly!): https://www.patreon.com/Asianometry\n- X: https://twitter.com/asianometry\n- Newsletter & Podcast (available through Stratechery Plus): https://asianometry.passport.online/\n- LinkedIn (feel free to connect): www.linkedin.com/in/jon-y-asianometry"
+        },
+        {
+          "id": "Yk87oUPVaxU",
+          "title": "DeepSWE: A Contamination-Resistant Coding Benchmark \u2014 James Shi, Datacurve",
+          "url": "https://www.youtube.com/watch?v=Yk87oUPVaxU",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-07-26T18:10:56+00:00",
+          "views": 2183,
+          "rating": {
+            "average": 5.0,
+            "count": 50
+          },
+          "discussion": null,
+          "description": "DeepSWE is 113 software engineering tasks written from scratch, not scraped from pull requests, so a model cannot have seen them in training. Each one is a long horizon problem drawn from a real open source repository, authored by engineers who actually maintain that code, with isolated environments and program based verifiers that check observable behavior rather than trusting the model's own account. James Shi's point is that once you remove the contamination the leaderboard stops clustering: strong models pull far ahead and others, Gemini 3.1 Pro among them, fall toward the bottom.\n\nThe more revealing signal is in how models fail. Some quietly expand a task beyond what was asked, a failure mode DeepSWE scores in its own right, and Claude models did this a good fraction of the time while GPT models did it less often. Stronger models also tend not to verify their own work, and there is a real gap between the ones that test what they wrote and the ones that assume it is correct. Since reward hacking is a constant temptation, the verifiers are built to be gamed as little as possible, keeping the score anchored to the objective rather than to a convincing looking rollout.\n\nSpeaker info:\n- https://x.com/shiqyy\n- https://www.linkedin.com/in/jamesshi117/\n- https://deepswe.datacurve.ai\n\nTimestamps:\n0:00 - Introduction: the DeepSWE benchmark\n1:03 - 113 original, contamination-resistant tasks\n2:08 - What makes a good benchmark\n3:51 - The leaderboard and model spread\n5:18 - Failure mode: over-scoping the task\n7:16 - Do models verify their own work?\n8:45 - Tasks authored by core contributors\n10:15 - Writing realistic, high level prompts\n11:45 - Program based verifiers and observable behavior\n13:43 - Limitations and future work\n15:25 - Reward hacking and keeping it cheating proof"
+        },
+        {
+          "id": "ZyIoTOAbRfs",
+          "title": "State of Data \u2014 Sean Cai, Independent / State of Data",
+          "url": "https://www.youtube.com/watch?v=ZyIoTOAbRfs",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-07-26T17:00:06+00:00",
+          "views": 3504,
+          "rating": {
+            "average": 5.0,
+            "count": 127
+          },
+          "discussion": null,
+          "description": "Data Quality Research at Prime Intellect and State of Data Author. Prior investor at Hummingbird and Costanoa.\n\nSpeaker:\nSean Cai \u2014 CEO, Independent / State of Data\n\nX: https://x.com/SeanZCai\nWebsite: https://www.seancai.com/"
+        },
+        {
+          "id": "xeVUXweQmz8",
+          "title": "Any App Notification",
+          "url": "https://www.youtube.com/watch?v=xeVUXweQmz8",
+          "channel": "John Hammond",
+          "channel_id": "UCVeW9qkBjo3zosnqUbG7CFw",
+          "published_at": "2026-07-26T16:01:18+00:00",
+          "views": 7033,
+          "rating": {
+            "average": 5.0,
+            "count": 129
+          },
+          "discussion": null,
+          "description": "What makes a fake notification convincing?\n\nThis proof of concept explores how trusted Windows features can be used to make notifications appear as though they came from familiar applications. Understanding how these techniques work helps defenders recognize how legitimate functionality can be abused for phishing and social engineering.\n\nWatch the full video here: https://youtu.be/wrAFZLa1TAk?si=CxyHDhZ_iMSh3Ia1"
+        }
+      ]
+    }
+  }
+}
