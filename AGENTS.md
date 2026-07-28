@@ -109,10 +109,10 @@ carries and how it prints, `pipeline.DAILY` is one row per step. Adding to any
 of them is adding a row, and what the code does is legible without reading how
 it does it.
 
-**A module named `_thing` is its package's own business.** `sources/_feeds.py`,
-`llm/_options.py`, and `gate/_manifest.py` have no caller outside the package
-that holds them, and ruff's `PLC2701` is what keeps it that way. Everything
-else in a package is what that layer offers the layers above it.
+**A module named `_thing` is its package's own business.** `llm/_options.py`,
+`gate/_manifest.py`, and `gate/_memory.py` have no caller outside the package
+that holds them, and ruff's `import-private-name` is what keeps it that way.
+Everything else in a package is what that layer offers the layers above it.
 
 - `mypy --strict`, ruff (line length 100), and the import contract are enforced
   in CI. Markdown is rumdl at 80 columns, and rumdl only lints line length: a
@@ -123,22 +123,24 @@ else in a package is what that layer offers the layers above it.
   `paths.py`, `adapters/vcs.py`, `store/snapshots.py`. Fetchers are network
   code, exercised by every scheduled run and deliberately outside the floor.
 - The two impure boundaries are injected so no test needs a network or a git
-  remote: `GitGh` for subprocess, `Source` plus a clock for fetches.
+  remote: `GitGh` for subprocess, and for a fetch the registry row plus the
+  clock a `fetch.Run` is built from.
 - Tests are isolated from the real repository by an autouse fixture that points
   `paths.ROOT` at a scratch tree. A test that reads the real repository says so
   with `@pytest.mark.repo`.
 
 ## Two constraints that look like inertia and are not
 
-**The base package has one dependency.** `requirements/base.txt` is PyYAML and
-nothing else, because the privileged publish job installs it too. Run logs and
-memory are YAML because they are public records a human reads in a pull request,
-and JSON has no multi-line string: every note became one enormous line. That one
-dependency is the whole budget — it is why the CLI is `argparse` rather than a
-nicer framework, and why pydantic appears only in `llm/`. The Agent SDK and its
-transitive packages live in the separate `agent` extra
-(`requirements/agent.txt`), installed by the unattended agent job alone. Both
-files are `uv pip compile --generate-hashes` output, consumed by
+**The privileged publish job installs the base dependencies**, so each one is a
+decision rather than a convenience. There are two. Run logs and memory are YAML
+because they are public records a human reads in a pull request, and JSON has no
+multi-line string: every note became one enormous line. That is PyYAML.
+feedparser is what a watchlist feed is read with, and it replaced five
+hand-written RSS/Atom parsers, three of which had no guard against a document
+type declaration. The Agent SDK and its thirty transitive packages stay in the
+separate `agent` extra (`requirements/agent.txt`), installed by the unattended
+agent job alone, because that job is the one holding a model in the loop. Both
+requirements files are `uv pip compile --generate-hashes` output, consumed by
 `pip install --require-hashes`; regenerate them, do not hand-edit them.
 
 **The gate does not import the agent.** `gate/` is the deterministic backstop
