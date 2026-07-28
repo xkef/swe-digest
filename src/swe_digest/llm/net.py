@@ -12,7 +12,9 @@ https URL that redirects to http, to a shortener target, or to 169.254.169.254
 would otherwise sail past every rule above.
 """
 
+import html
 import ipaddress
+import re
 import socket
 import urllib.request
 from dataclasses import dataclass
@@ -77,6 +79,43 @@ def resolves_privately(host: str) -> bool:
     return False
 
 
+_HTML = re.compile(r"<\s*(!doctype\s+html|html)\b", re.I)
+_LD_JSON = re.compile(
+    r"<script[^>]*\btype\s*=\s*[\"']application/ld\+json[\"'][^>]*>(.*?)</script\s*>",
+    re.I | re.S,
+)
+_TITLE = re.compile(r"<title[^>]*>(.*?)</title\s*>", re.I | re.S)
+_DROPPED = re.compile(r"<(script|style|template|svg|noscript)\b.*?</\1\s*>|<!--.*?-->", re.I | re.S)
+_BLOCK = re.compile(r"</\s*(p|div|section|article|li|h[1-6]|tr|br)\s*/?>", re.I)
+_TAG = re.compile(r"<[^>]*>")
+_BLANK_LINES = re.compile(r"\n{3,}")
+
+
+def readable(body: str) -> str:
+    """A page as the text a reader sees, plus the metadata a citation needs.
+
+    The character bound below is the whole of what the model gets to read, and
+    on a modern page the first twenty thousand characters are stylesheets and
+    inline scripts. Returning markup spent the budget before the article
+    started, so pages resolved to head, meta and inline CSS and the run dropped
+    the story for want of a verified primary. ``fetch_url`` says it returns
+    text; this is that promise kept.
+
+    The title and any JSON-LD are lifted out before the markup goes, because
+    that is where a publication date lives on most news sites and a date is
+    what a citation needs. Anything that is not HTML — an API's JSON, a plain
+    text file — is passed through untouched.
+    """
+    if not _HTML.search(body[:2048]):
+        return body
+    head = [html.unescape(match).strip() for match in _TITLE.findall(body)[:1]]
+    head += [f"ld+json: {' '.join(match.split())}" for match in _LD_JSON.findall(body)]
+    text = _BLOCK.sub("\n", _DROPPED.sub(" ", body))
+    text = html.unescape(_TAG.sub(" ", text)).replace("﻿", "")
+    text = "\n".join(" ".join(line.split()) for line in text.splitlines())
+    return "\n\n".join([*head, _BLANK_LINES.sub("\n\n", text).strip()])
+
+
 def check(url: str) -> None:
     """Every rule the proxy enforces, for one URL. Raises ``Refused``.
 
@@ -130,7 +169,7 @@ def fetch(url: str) -> tuple[bool, str]:
     except RuntimeError as error:
         return _refuse(url, f"failed: {error}")
 
-    text = body.decode("utf-8", errors="replace")
+    text = readable(body.decode("utf-8", errors="replace"))
     clipped = len(text) > MAX_TEXT_CHARS
     if clipped:
         text = text[:MAX_TEXT_CHARS] + f"\n... [truncated at {MAX_TEXT_CHARS} characters]"

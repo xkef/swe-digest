@@ -148,7 +148,10 @@ jobs:
           PYTHONPATH=src python3 -m swe_digest publish apply .run/run.patch
           make check
           PYTHONPATH=src python3 -m swe_digest publish push
-          gh workflow run site.yml
+          # Name the commit just pushed. Dispatching without it lets GitHub
+          # re-resolve main, which can still read the pre-push ref and deploy a
+          # site without today's digest while every job reports success.
+          gh workflow run site.yml -f sha="$(git rev-parse HEAD)"
       # Guarded on the run having produced a patch. A run whose gate rejected the
       # digest closes no issue and opens none: its manifest is written empty by
       # the manifest step for the same reason. Two independent checks, because

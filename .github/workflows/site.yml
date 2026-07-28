@@ -7,8 +7,15 @@ name: Site
 # meant renaming the deploy workflow silently stopped it running. As a
 # `needs: deploy` job the coupling is structural and cannot drift.
 #
-# `workflow_dispatch` is load-bearing: the publish job in digest.yml runs
-# `gh workflow run site.yml` after a successful push.
+# `workflow_dispatch` is load-bearing: the publish job in digest.yml pushes with
+# GITHUB_TOKEN, and GitHub suppresses the `push` trigger for those, so the
+# dispatch is the only thing that rebuilds the site after a digest is published.
+#
+# It carries the commit to build rather than letting GitHub re-resolve the
+# branch. On 2026-07-28 the dispatch landed 1.6s after the push and resolved
+# `main` to the commit *before* the digest: the run went green, Pages deployed,
+# and the published site was a day stale with nothing failing. A dispatch names
+# the tree it means, so the deploy cannot race the ref that triggered it.
 on:
   push:
     branches: [main]
@@ -16,6 +23,11 @@ on:
       - "data/snapshots/**"
       - "data/runs/**"
   workflow_dispatch:
+    inputs:
+      sha:
+        description: Commit on main to build. Defaults to the branch head.
+        type: string
+        required: false
 
 permissions:
   contents: read
@@ -32,7 +44,19 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ inputs.sha || github.sha }}
+          # Full history so the target can be proven to be on main.
+          fetch-depth: 0
           persist-credentials: false
+      # The input names a commit, and this job holds pages:write, so the commit
+      # has to be one main already carries. A push event satisfies this by
+      # construction; a dispatch is checked rather than trusted.
+      - name: Verify the build target is on main
+        run: |
+          git rev-parse --verify origin/main >/dev/null ||
+            { echo "origin/main not fetched; cannot prove the target is on main"; exit 1; }
+          git merge-base --is-ancestor HEAD origin/main ||
+            { echo "refusing to build $(git rev-parse HEAD): not on main"; exit 1; }
       # cache disabled: this pages:write / id-token:write job must not restore
       # a tool cache the untrusted agent job could have poisoned.
       - uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
