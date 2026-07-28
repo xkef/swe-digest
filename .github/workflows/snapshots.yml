@@ -74,7 +74,13 @@ jobs:
             echo "hn=$(due 3)"
             echo "youtube=$(due 6)"
             echo "papers=$(due 6)"
-            echo "reddit=$(due 6)"
+            # Every round, unlike the other feed sources. Unauthenticated
+            # Reddit rate-limits hard enough that one round reaches about a
+            # third of the list, and the fetcher orders uncovered subreddits
+            # first, so rounds compound rather than repeat. At `due 6` the
+            # 04:36Z digest had one round behind it and pooled 8 of 28 against
+            # a floor of 14; the section was dropped for want of coverage.
+            echo "reddit=$(due 3)"
             echo "books=$(due 12)"
           } >> "$GITHUB_OUTPUT"
       - name: Fetch hn
