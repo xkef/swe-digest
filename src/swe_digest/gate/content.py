@@ -36,7 +36,7 @@ from swe_digest.domain.document import (
     slugify,
     split_front_matter,
 )
-from swe_digest.domain.vocab import SHORTENERS
+from swe_digest.domain.vocab import SECRETS, SHORTENERS
 from swe_digest.gate._memory import check_memory
 
 __all__ = ["SECTIONS", "main", "split_front_matter"]
@@ -93,6 +93,11 @@ JUDGMENT_KEYS = ("inbox", "miss_review", "notes")
 # unsafe-content scan here would let any submitter fail the gate closed and
 # block publishing. What reaches a page is screened by check_digest and escaped
 # again by publish.stories.neutralize_html.
+#
+# The secret scan has the same property, and did veto a publish once. It stays
+# because store.snapshots now redacts a match before the file is written, which
+# leaves this a backstop against a path that skipped the merge rather than a
+# check third-party text can trip.
 SCANNED_SNAPSHOTS = registry.ACCUMULATING
 
 # Raw HTML / active-content patterns that must never reach a published page.
@@ -109,16 +114,6 @@ UNSAFE_HTML = [
     (re.compile(r"data:\s*text/html", re.I), "data:text/html URI"),
     (re.compile(r"data:\s*image/svg\+xml", re.I), "data:image/svg+xml URI"),
     (re.compile(r"data:[^,]*(javascript|ecmascript)", re.I), "data: script URI"),
-]
-
-# High-signal secret shapes. Digests must never publish credentials.
-SECRETS = [
-    (re.compile(r"gh[pousr]_[A-Za-z0-9]{20,}"), "GitHub token"),
-    (re.compile(r"\bAKIA[0-9A-Z]{16}\b"), "AWS access key id"),
-    (re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"), "private key block"),
-    (re.compile(r"xox[baprs]-[A-Za-z0-9-]{10,}"), "Slack token"),
-    (re.compile(r"sk-ant-[A-Za-z0-9_-]{20,}"), "Anthropic key"),
-    (re.compile(r"\bsk-[A-Za-z0-9]{16,}"), "secret key (sk-...)"),
 ]
 
 

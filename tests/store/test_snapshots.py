@@ -164,3 +164,32 @@ def test_every_kind_declares_a_cap_above_observed_volume() -> None:
 
     assert all(kind.max_items > 0 for kind in KINDS.values())
     assert KINDS["papers"].max_items > 879  # highest single day in the retained week
+
+
+def test_a_submitted_secret_is_redacted_before_it_reaches_disk(tmp_path: Path) -> None:
+    # A presigned S3 URL in an HN submission carried an AKIA credential into
+    # the 2026-07-29 snapshot, and the gate's fail-closed secret scan withheld
+    # a written digest over an item no story cited. The submitter must not hold
+    # that veto: the match never reaches the file.
+    poisoned = "https://s3.amazonaws.com/b/k?X-Amz-Credential=AKIAS6XDIRHKHO4F5SU4%2F20260729"
+    src = write(tmp_path / "src.json", hn_snapshot([{**story(1, 2), "url": poisoned}]))
+    dest = tmp_path / "dest.json"
+    merge_snapshot("hn", src, dest)
+
+    text = dest.read_text()
+    assert "AKIAS6XDIRHKHO4F5SU4" not in text
+    assert "[redacted AWS access key id]" in text
+    # Still a snapshot: redaction rewrites inside the string, not around it.
+    kept = json.loads(text)["collections"]["front_page"]["items"]
+    assert kept[0]["url"].startswith("https://s3.amazonaws.com/b/k?X-Amz-Credential=")
+
+
+def test_merging_heals_a_snapshot_committed_before_redaction_existed(tmp_path: Path) -> None:
+    # The whole file is rewritten on every merge, so the poisoned entry already
+    # on main clears itself the next time the snapshots job runs.
+    stale = "ghp_00000000000000000000000000"
+    dest = write(tmp_path / "dest.json", hn_snapshot([{**story(1, 2), "url": stale}]))
+    src = write(tmp_path / "src.json", hn_snapshot([story(2, 3)]))
+    merge_snapshot("hn", src, dest)
+
+    assert stale not in dest.read_text()

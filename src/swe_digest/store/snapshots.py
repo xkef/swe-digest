@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from swe_digest.domain import sources as registry
+from swe_digest.domain.vocab import redact_secrets
 
 type Item = dict[str, Any]
 type SortKey = Callable[[Item], Any]
@@ -121,7 +122,15 @@ def merge_snapshot(kind: str, src: Path, dest: Path) -> str:
         )
 
     dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_text(json.dumps(out, indent=2) + "\n")
+    # Redacted over the serialized document rather than field by field, so a
+    # field added later is covered without being remembered here. A snapshot
+    # holds third-party text — a submitted URL, a title, a comment body — and
+    # the content gate's secret scan is fail-closed over every snapshot file,
+    # so a match reaching disk is a submitter vetoing the day's publish. On
+    # 2026-07-29 a presigned S3 link carrying an `AKIA` credential in its query
+    # string did exactly that, from an HN item no story cited. Merging rewrites
+    # the whole file, so this also heals a snapshot committed before it existed.
+    dest.write_text(redact_secrets(json.dumps(out, indent=2)) + "\n")
     counts = ", ".join(
         f"{name}={len(out['collections'][name]['items'])}"
         for name in [*spec.collections, *spec.extras]
