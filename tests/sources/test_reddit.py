@@ -193,7 +193,7 @@ class TestRateLimiting:
 
         monkeypatch.setattr(feeds, "fetch_bytes", fetch)
 
-        posts, healthy = fetch_listing(
+        _, healthy = fetch_listing(
             "www.reddit.com", SUBS, "hot", "2026-07-06T00:00:00+00:00", pause=0
         )
 
