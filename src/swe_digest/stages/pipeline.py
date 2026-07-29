@@ -31,11 +31,15 @@ from swe_digest.llm.hooks import writes_for
 from swe_digest.stages import steps
 from swe_digest.stages.steps import Code, Run, Skipped, StepError, StepResult
 
-# Two repair passes. One was not enough to converge: the first pass does real
-# work — two runs took four blocking findings to two — and then ran out, so the
-# digest was withheld both times. A third would be the write and review steps
-# disagreeing about a sentence on the run's budget.
-MAX_REPAIRS = 2
+# One repair pass. The second was bought to reach a clean review and never did:
+# the reviewer keeps a floor of roughly two objections, so five runs went four
+# findings to two, or six to two to two, and stopped there either way. It cost
+# 21k of the 2026-07-29 run's 98k output tokens to move two findings to two.
+# Now that an unresolved review is recorded rather than vetoing the commit,
+# converging is no longer what the budget is for: the first pass is the one that
+# does real work, and the rest is the write and review steps disagreeing about a
+# sentence on the run's budget.
+MAX_REPAIRS = 1
 
 # What goes in the queue. A model step is its spec; there is no wrapper type,
 # because both of these already carry the only thing the driver needs, a name.
