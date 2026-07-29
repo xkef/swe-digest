@@ -26,10 +26,14 @@
   const choice = stored();
   if (choice === "light" || choice === "dark") root.dataset.theme = choice;
 
+  // What reveals the toggle, which CSS keeps hidden otherwise. Set here rather
+  // than once the button exists, because this runs before the first paint and
+  // DOMContentLoaded does not: revealing it later shifted the page.
+  root.dataset.js = "";
+
   document.addEventListener("DOMContentLoaded", function() {
     const button = document.getElementById("theme-toggle");
     if (!button) return;
-    button.hidden = false;
     button.addEventListener("click", function() {
       const system = matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"

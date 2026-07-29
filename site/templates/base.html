@@ -67,16 +67,15 @@
           <a href="{{ get_url(path='/about/', trailing_slash=true) | safe }}"
           >about</a>
           <a href="{{ get_url(path='/feed.xml') | safe }}">rss</a>
-          <button
-            id="theme-toggle"
-            class="theme-toggle"
-            type="button"
-            aria-label="Toggle color theme"
-            hidden
-          >
+          <button id="theme-toggle" class="theme-toggle" type="button">
             {# Both words ship; CSS shows the one naming the theme a click
-               switches to, so the label needs no JS and cannot flash. #}
-            <span class="theme-to-dark">dark</span
+               switches to, so the label needs no JS and cannot flash. The
+               name is built from the visible word instead of an aria-label:
+               a static label cannot contain whichever word is showing, and
+               WCAG 2.5.3 wants the visible text inside the accessible name,
+               so speech control has something to say. #}
+            <span class="visually-hidden">switch to </span
+            ><span class="theme-to-dark">dark</span
             ><span class="theme-to-light">light</span>
           </button>
         </div>

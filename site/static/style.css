@@ -72,12 +72,23 @@
     --bg: light-dark(#eff1f5, #303446); /* base                          */
     --fg: light-dark(#4c4f69, #c6d0f5); /* text                          */
     --muted: light-dark(#5c5f77, #b5bfe2); /* subtext1                   */
-    --quiet: light-dark(#7c7f93, #949cbb); /* overlay2                   */
-    --dim: light-dark(#9ca0b0, #737994); /* overlay0                     */
+    /* The de-emphasis steps are darkened past Latte's overlay shades and
+       lightened past Frappe's: stock overlay2/overlay0 land at 3.49 and 2.30
+       against the light base, and the site asserts a perfect Lighthouse
+       accessibility score, which wants 4.5:1 on text this small. Everything
+       from --fg (7.06) down to 4.5 is the whole usable band, so the steps are
+       close together by necessity. Measured against --bg: 5.06 and 4.63
+       light, 4.87 and 4.53 dark. Restoring the palette values reopens the
+       color-contrast audit. */
+    --quiet: light-dark(#62657b, #9aa2c0); /* subtext0 / overlay2-ish    */
+    --dim: light-dark(#686b81, #949cbb); /* subtext0 / overlay2          */
     --surface: light-dark(#e6e9ef, #414559); /* mantle / surface0        */
     --hover: light-dark(#eaedf2, #383c4f); /* base to mantle / surface0  */
     --border: light-dark(#ccd0da, #494e63); /* surface0 / surface0 to 1  */
-    --accent: light-dark(#df8e1d, #e5c890); /* yellow                    */
+    /* Latte yellow is 2.31 on the light base, and this is text on the
+       developing badge as well as the focus ring. Darkened to 4.79; Frappe's
+       yellow already clears it at 7.62. */
+    --accent: light-dark(#8f6100, #e5c890); /* yellow, darkened light   */
 
     --wide: 51.25rem;
     --gutter: clamp(1rem, 4vw, 1.5rem);
@@ -186,13 +197,24 @@
   }
 
   /* A word, not a glyph: the button names the theme a click switches to. */
+  /* Hidden until the theme script announces itself, because the button does
+     nothing without JS. The announcement is an attribute set in a blocking
+     head script, so the button is there from the first paint; revealing it on
+     DOMContentLoaded instead grew the nav afterwards and pushed main down by
+     0.073, which was the whole layout-shift budget on a page that otherwise
+     never moves. */
   .theme-toggle {
+    display: none;
     padding: var(--space-3xs) var(--space-xs);
     border: 1px solid var(--border);
     background: transparent;
     color: var(--quiet);
     font-size: 0.75rem;
     cursor: pointer;
+  }
+
+  :root[data-js] .theme-toggle {
+    display: inline-block;
   }
 
   .theme-toggle:hover {
