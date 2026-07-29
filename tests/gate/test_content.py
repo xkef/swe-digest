@@ -5,6 +5,7 @@ raw HTML, entity-encoded javascript: URIs, secrets, URL shorteners, and
 structural corruption. The gate must reject each one.
 """
 
+import json
 import subprocess
 from pathlib import Path
 
@@ -15,7 +16,7 @@ from swe_digest.domain import sources as registry
 from swe_digest.domain.canonical import canonicalize
 from swe_digest.gate.content import SCANNED_SNAPSHOTS, main
 
-from ..conftest import DIGEST_DATE, digest_text, with_source_count, write_run_log
+from ..conftest import DIGEST_DATE, STORY, digest_text, with_source_count, write_run_log
 
 
 def filled_judgment(notes: str | None = "Nothing unusual.") -> dict[str, object]:
@@ -591,3 +592,80 @@ def test_scanned_snapshots_cover_every_accumulator() -> None:
     # is derived from the registry now, so this asserts the derivation rather
     # than a hand-kept copy: every source with an accumulator is screened.
     assert set(SCANNED_SNAPSHOTS) == {s.name for s in registry.SOURCES if s.accumulates}
+
+
+# --- HN id membership -------------------------------------------------------
+# The ids reach the page by model transcription, and four published days
+# carried plausible but wrong ids that resolved to unrelated comments. The
+# gate holds every story's HN link to the day's fetch record.
+
+HN_DATE = "2026-07-25"  # past HN_ID_SINCE, unlike the shared fixture date
+
+
+def write_hn_snapshot(root: Path, date: str, story_ids: list[int]) -> None:
+    snapshot = paths.SNAPSHOT.path(root, source="hn", day=date)
+    snapshot.parent.mkdir(parents=True, exist_ok=True)
+    items = [{"id": item, "title": f"story {item}"} for item in story_ids]
+    snapshot.write_text(
+        json.dumps({"collections": {"front_page": {"items": items}}}), encoding="utf-8"
+    )
+
+
+def hn_digest(root: Path, item: int, *, followup: bool = False) -> Path:
+    """The fixture digest for HN_DATE, its story linking HN item ``item`` from
+    Top stories or, with ``followup``, from Watchlist follow-ups."""
+    text = digest_text(date=HN_DATE)
+    if followup:
+        block = STORY.replace("### Example story", "### Followed-up story").replace(
+            "id=1", f"id={item}"
+        )
+        text = with_source_count(
+            # The Top stories block gets the id every test's snapshot carries,
+            # so only the follow-up block is at stake.
+            text.replace("id=1", "id=49096188").replace(
+                "## Watchlist follow-ups\n\nNo major items found.\n",
+                f"## Watchlist follow-ups\n\n{block}",
+            )
+        )
+    else:
+        text = text.replace("id=1", f"id={item}")
+    path = paths.DIGEST.path(root, day=HN_DATE)
+    path.write_text(text, encoding="utf-8")
+    return path
+
+
+def test_hn_id_absent_from_the_fetch_fails(repo_tree: Path) -> None:
+    hn_digest(repo_tree, 49096221)
+    write_hn_snapshot(repo_tree, HN_DATE, [49096188])
+    assert main(root=repo_tree) == 1
+
+
+def test_hn_id_in_the_days_snapshot_passes(repo_tree: Path) -> None:
+    hn_digest(repo_tree, 49096188)
+    write_hn_snapshot(repo_tree, HN_DATE, [49096188])
+    assert main(root=repo_tree) == 0
+
+
+def test_hn_id_from_an_earlier_day_in_the_window_passes(repo_tree: Path) -> None:
+    hn_digest(repo_tree, 49090000)
+    write_hn_snapshot(repo_tree, HN_DATE, [49096188])
+    write_hn_snapshot(repo_tree, "2026-07-19", [49090000])
+    assert main(root=repo_tree) == 0
+
+
+def test_hn_id_older_than_the_window_fails(repo_tree: Path) -> None:
+    hn_digest(repo_tree, 49090000)
+    write_hn_snapshot(repo_tree, HN_DATE, [49096188])
+    write_hn_snapshot(repo_tree, "2026-07-17", [49090000])
+    assert main(root=repo_tree) == 1
+
+
+def test_followup_blocks_are_exempt_from_the_id_check(repo_tree: Path) -> None:
+    hn_digest(repo_tree, 49090000, followup=True)
+    write_hn_snapshot(repo_tree, HN_DATE, [49096188])
+    assert main(root=repo_tree) == 0
+
+
+def test_day_without_a_fetch_record_is_not_checked(repo_tree: Path) -> None:
+    hn_digest(repo_tree, 49096221)
+    assert main(root=repo_tree) == 0

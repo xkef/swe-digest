@@ -8,6 +8,7 @@ stops the build before it can be published.
 
 import datetime
 import html
+import json
 import re
 import subprocess
 import sys
@@ -20,6 +21,7 @@ from swe_digest.domain import sources as registry
 from swe_digest.domain.document import (
     ANCHOR_SECTIONS,
     CATEGORIES,
+    HN_ITEM,
     LINK,
     MAX_SECTION_STORIES,
     MAX_STORIES,
@@ -79,6 +81,16 @@ ARCHIVE_MAX_TOP_STORIES = 7
 # the rule). It applies from this date forward; the title-slug rule and the
 # Top stories cap hold for every digest.
 STORY_URL_DUP_SINCE = "2026-07-06"
+
+# The HN id check starts with the committed snapshots: earlier digests have no
+# record to check a link against.
+HN_ID_SINCE = "2026-07-23"
+
+# A story may link a thread the fetch first saw on an earlier day (a backtest
+# repair, a story carried across runs), so the pool spans the preceding week.
+# Watchlist follow-ups are exempt instead: they track threads up to the 45-day
+# age bound, far past any window worth loading here.
+HN_ID_WINDOW_DAYS = 7
 
 # The run-log keys the agent owns. `make run-log` writes the mechanical half
 # and preserves these, so an unfilled key means the run skipped its own
@@ -400,6 +412,74 @@ def check_repo_links(root: Path) -> list[str]:
     return errors
 
 
+def _hn_ids_fetched(root: Path, day: str) -> set[int] | None:
+    """Every HN id the day's fetch recorded: the fresh cache during a run, else
+    the committed snapshot. None when the day has neither."""
+    from swe_digest.store import runs
+
+    for family in (paths.CACHE_FILE, paths.SNAPSHOT):
+        path = family.path(root, source="hn", day=day)
+        if not path.exists():
+            continue
+        collections = json.loads(path.read_text(encoding="utf-8"))["collections"]
+        ids: set[int] = set()
+        for name in runs.STORY_COLLECTIONS:
+            ids.update(item["id"] for item in collections.get(name, {}).get("items", []))
+        for items in (collections.get("queries", {}).get("items") or {}).values():
+            ids.update(item["id"] for item in items)
+        ids.update(int(key) for key in collections.get("comments", {}).get("items", {}))
+        return ids
+    return None
+
+
+def check_hn_ids(root: Path) -> list[str]:
+    """Every HN item a story links is one the day's fetch actually saw.
+
+    The id reaches the page by model transcription — snapshot to selection to
+    markdown — and 2026-07-26 through 2026-07-29 published eleven plausible
+    but wrong ids that resolved to unrelated comments. Existence on HN proves
+    nothing (a mistyped id usually lands on a real comment, and the 2026-07-28
+    run fetched one and moved on), so the check is membership in the fetch
+    record: the day's cache or snapshot, plus the preceding week for stories
+    first seen on an earlier day. The step prompts hold the write and review
+    stages to the same rule; this is the backstop when both miss.
+    """
+    errors: list[str] = []
+    pools: dict[str, set[int] | None] = {}
+
+    def pool(day: str) -> set[int] | None:
+        if day not in pools:
+            pools[day] = _hn_ids_fetched(root, day)
+        return pools[day]
+
+    for path in paths.DIGEST.glob(root):
+        day = path.stem
+        # A day with no fetch record at all predates the snapshots (or the
+        # check is running against a tree without them); there is nothing to
+        # hold the links to.
+        if day < HN_ID_SINCE or pool(day) is None:
+            continue
+        start = datetime.date.fromisoformat(day)
+        seen: set[int] = set()
+        for offset in range(HN_ID_WINDOW_DAYS + 1):
+            seen |= pool((start - datetime.timedelta(days=offset)).isoformat()) or set()
+        digest = parse(path.read_text(encoding="utf-8"))
+        for section, stories in digest.sections:
+            if section in FOLLOWUP_SECTIONS:
+                continue
+            for story in stories:
+                for url in LINK.findall(story.fields.get("sources", "")):
+                    match = HN_ITEM.search(url)
+                    if match and int(match.group(1)) not in seen:
+                        errors.append(
+                            f"{path}: story '{story.title}' links HN item"
+                            f" {match.group(1)}, which no fetch in the"
+                            f" {HN_ID_WINDOW_DAYS} days up to {day} recorded;"
+                            f" copy the id from the day's HN data, never from memory"
+                        )
+    return errors
+
+
 def check_private_context(root: Path) -> list[str]:
     try:
         tracked = subprocess.run(
@@ -448,6 +528,7 @@ def main(root: Path | None = None) -> int:
         errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))
     errors.extend(check_run_logs(root))
     errors.extend(check_repo_links(root))
+    errors.extend(check_hn_ids(root))
     for snapshot_dir in SCANNED_SNAPSHOTS:
         for path in sorted((paths.SNAPSHOT.dir(root) / snapshot_dir).glob("*.json")):
             errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))
