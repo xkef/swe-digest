@@ -18,7 +18,9 @@
                   <span class="badge badge-status status-{{ story.status }}"
                   >{{ story.status }}</span>
                 {% endif %}
-                {% if story.category %}
+                {# Only under the lead section; every other section heading
+                   already says what the category would. #}
+                {% if story.show_category %}
                   <span class="badge badge-cat">{{ story.category }}</span>
                 {% endif %}
               </span>
@@ -55,8 +57,6 @@
     {% else %}
       <span></span>
     {% endif %}
-    <a href="{{ get_url(path='/digests/', trailing_slash=true) | safe }}"
-    >archive</a>
     {% if older %}
       <a rel="next" href="{{ older.permalink | safe }}"
       >{{ older.date | date(format='%Y-%m-%d') }} &rarr;</a>

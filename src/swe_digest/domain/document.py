@@ -38,6 +38,11 @@ SECTIONS = [
     "Sources checked",
 ]
 
+# The lead section, and the only one that is not itself a topic: a story under
+# it is grouped by prominence, so its category is the only thing naming what it
+# is about. Everywhere else the section heading already says it.
+LEAD_SECTION = SECTIONS[0]
+
 # Every section name a digest may use, in the only order they may appear.
 # "HN and Reddit pulse" is the pre-2026-06-13 name for the Hacker News /
 # Reddit split and slots after it. "Conferences and events" is the

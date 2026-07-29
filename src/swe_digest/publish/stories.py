@@ -116,6 +116,7 @@ def parse_digest(path: Path) -> tuple[str, list[dict]]:
             continue
         for story in entries:
             slug = document.slugify(story.title)
+            category = strip_markdown(story.fields.get("category", ""))
             stories.append(
                 {
                     "date": date,
@@ -123,7 +124,9 @@ def parse_digest(path: Path) -> tuple[str, list[dict]]:
                     "title": story.title,
                     "slug": slug,
                     "url": f"/digests/{date}/{slug}/",
-                    "category": strip_markdown(story.fields.get("category", "")),
+                    "category": category,
+                    # Shown only under the lead section; see LEAD_SECTION.
+                    "show_category": bool(category) and section == document.LEAD_SECTION,
                     "status": strip_markdown(story.fields.get("status", "")),
                     "summary": strip_markdown(story.fields.get("summary", "")),
                     "lines": list(story.lines),
@@ -165,6 +168,7 @@ def write_story_page(story: dict) -> None:
         f"day = {toml_str(story['date'])}",
         f"section = {toml_str(story['section'])}",
         f"category = {toml_str(story['category'])}",
+        f"show_category = {'true' if story['show_category'] else 'false'}",
         f"status = {toml_str(story['status'])}",
         "+++",
         "",

@@ -53,8 +53,12 @@
      is whatever color-scheme resolves to: the OS preference by default, or
      the explicit data-theme override set by theme.js.
 
-     One ramp, no hue: text, muted, quiet, dim. --accent is the single warm
-     tone and marks exactly one thing, a story whose status is developing. */
+     Ramps drawn from Catppuccin Frappe (dark) and Latte (light), used as a
+     grey scale rather than as a palette: one faintly blue hue across text,
+     muted, quiet and dim, and a single accent that marks exactly one thing,
+     a story whose status is developing. --hover and --border are midpoints
+     between two neighbouring Catppuccin steps; every other value is a named
+     one. */
   :root {
     color-scheme: light dark;
     --font-mono:
@@ -64,15 +68,16 @@
       Menlo,
       Consolas,
       monospace;
-    --bg: light-dark(#f7f7f4, #15181b);
-    --fg: light-dark(#191c1e, #d7dcde);
-    --muted: light-dark(#5c6469, #98a2a7);
-    --quiet: light-dark(#868e93, #6f787d);
-    --dim: light-dark(#a4abaf, #4a5257);
-    --surface: light-dark(#ffffff, #1a1e21);
-    --hover: light-dark(#efefeb, #1b1f22);
-    --border: light-dark(#e2e2dc, #262b2f);
-    --accent: light-dark(#8a6d33, #b79a6b);
+    /*                    Latte     Frappe                                 */
+    --bg: light-dark(#eff1f5, #303446); /* base                          */
+    --fg: light-dark(#4c4f69, #c6d0f5); /* text                          */
+    --muted: light-dark(#5c5f77, #b5bfe2); /* subtext1                   */
+    --quiet: light-dark(#7c7f93, #949cbb); /* overlay2                   */
+    --dim: light-dark(#9ca0b0, #737994); /* overlay0                     */
+    --surface: light-dark(#e6e9ef, #414559); /* mantle / surface0        */
+    --hover: light-dark(#eaedf2, #383c4f); /* base to mantle / surface0  */
+    --border: light-dark(#ccd0da, #494e63); /* surface0 / surface0 to 1  */
+    --accent: light-dark(#df8e1d, #e5c890); /* yellow                    */
 
     --wide: 51.25rem;
     --gutter: clamp(1rem, 4vw, 1.5rem);
@@ -89,7 +94,6 @@
     --space-md: 1rem;
     --space-lg: 1.5rem;
     --space-xl: 2rem;
-    --space-3xl: 4rem;
 
     /* Horizontal gaps. Two registers: one for rows of small labels and links,
        one for the nav, whose items sit at reading size. */
@@ -222,8 +226,10 @@
     display: inline;
   }
 
+  /* body is a three-row grid with main at 1fr, so this sits on the bottom
+     edge when the page is shorter than the viewport. */
   .site-footer {
-    margin-top: var(--space-xl);
+    margin-top: var(--space-lg);
     color: var(--dim);
   }
 
@@ -232,23 +238,13 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--gap-inline);
-    padding-bottom: var(--space-3xl);
+    padding-bottom: var(--space-lg);
     font-size: 0.75rem;
-  }
-
-  /* The rule fills whatever the two ends leave, so the build stamp sits hard
-     right without a fixed column. */
-  .site-footer > p::after {
-    content: "";
-    flex: 1;
-    order: 1;
-    height: 1px;
-    background: var(--border);
   }
 
   .footer-build {
     display: flex;
-    order: 2;
+    margin-left: auto;
     gap: var(--space-sm);
   }
 }
@@ -349,22 +345,12 @@
     margin-top: var(--space-xl);
   }
 
-  /* A section head is a label plus a rule that runs out to the column edge. */
+  /* A section head is the label alone. The story rows below carry their own
+     hairlines, so a rule here only competes with them. */
   .day-section h2,
   .digest-month h2 {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-inline);
     margin-bottom: var(--space-2xs);
   }
-  .day-section h2::after,
-  .digest-month h2::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
   .digest-row {
     display: grid;
     grid-template-columns: 8.125rem 1fr auto;
@@ -393,20 +379,16 @@
     font-size: 0.75rem;
   }
 
-  /* Left-bunched links closed by a rule, matching the site footer. Empty spans
-     stand in for a missing newer/older neighbour and become that rule. */
+  /* Newer and older sit at the two edges. An empty span stands in for a
+     missing neighbour so the surviving link keeps its own side. */
   .pagination {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: var(--gap-inline);
     margin-top: var(--space-xl);
     color: var(--dim);
     font-size: 0.75rem;
-  }
-  .pagination > span:empty {
-    flex: 1;
-    height: 1px;
-    background: var(--border);
   }
 
   /* Home index */
@@ -615,12 +597,6 @@
     text-decoration: none;
   }
 
-  /* Reading measure. Capping the children rather than the article keeps the
-     column's left edge on the brand instead of re-centring it. */
-  .prose > * {
-    max-width: 41.25rem;
-  }
-
   .story-page h1 {
     font-size: 1.5rem;
     line-height: 1.32;
@@ -708,12 +684,8 @@
     flex-wrap: nowrap;
     gap: var(--space-sm);
   }
-  .site-footer > p::after {
-    display: none;
-  }
   .footer-build {
     flex-shrink: 0;
-    margin-left: auto;
     white-space: nowrap;
   }
 }

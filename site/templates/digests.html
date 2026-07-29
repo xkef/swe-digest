@@ -3,10 +3,12 @@
 {% block content %}
   <section class="layout listing">
     <header class="page-header">
-      <h1>archive</h1>
+      {# The nav already names the page, so the heading only needs to exist
+         for screen readers and the document outline. #}
+      <h1 class="visually-hidden">Archive</h1>
       <p>
-        {{ macros::total_stories() }} stories across {{ paginator.total_pages }}
-        days, newest first.
+        {{ macros::total_stories() }} stories across
+        {{ paginator.total_pages }} days.
       </p>
     </header>
     {% set_global month = "" %}
