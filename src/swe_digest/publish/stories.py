@@ -30,6 +30,11 @@ from swe_digest.store.runs import runs_dir
 
 SKIP_SECTIONS = {"Watchlist follow-ups", "Sources checked"}
 
+# Category and status are one word each and already ride in the story page's
+# header, so their bullets would spend a full field row restating it. They stay
+# in the day JSON and in front matter; only the page body drops them.
+HEADER_FIELDS = {"category", "status"}
+
 
 def day_pages_dir() -> Path:
     return paths.site_digests_dir()
@@ -127,6 +132,23 @@ def parse_digest(path: Path) -> tuple[str, list[dict]]:
     return date, stories
 
 
+def page_body(lines: list[str]) -> list[str]:
+    """The story's field lines, less the ones the page header already prints.
+
+    A field is its `- **Label:** value` line plus any indented continuations,
+    so dropping one means dropping every line up to the next field.
+    """
+    kept: list[str] = []
+    dropping = False
+    for line in lines:
+        field = document.FIELD.match(line)
+        if field:
+            dropping = field.group("label").strip().lower() in HEADER_FIELDS
+        if not dropping:
+            kept.append(line)
+    return kept
+
+
 def write_story_page(story: dict) -> None:
     fm = [
         "+++",
@@ -142,11 +164,12 @@ def write_story_page(story: dict) -> None:
         "[extra]",
         f"day = {toml_str(story['date'])}",
         f"section = {toml_str(story['section'])}",
+        f"category = {toml_str(story['category'])}",
         f"status = {toml_str(story['status'])}",
         "+++",
         "",
     ]
-    body = "\n".join(neutralize_html(line) for line in story["lines"]) + "\n"
+    body = "\n".join(neutralize_html(line) for line in page_body(story["lines"])) + "\n"
     out = stories_dir() / f"{story['date']}-{story['slug']}.md"
     out.write_text("\n".join(fm) + body, encoding="utf-8")
 
