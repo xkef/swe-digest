@@ -95,6 +95,9 @@ Rules:
 
 - Link primary sources first.
 - Link discussion sources after primary sources.
+- Copy an HN item URL digit-for-digit from the day's cache entry, never from
+  memory. A reconstructed id usually resolves to a real but unrelated comment,
+  so it looks valid and links the wrong thread.
 - Do not write a claim as fact unless the source supports it.
 - Mark uncertain items as `rumor` or `developing`.
 - Mark pure discussion as `discussion`.

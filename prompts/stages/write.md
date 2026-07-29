@@ -41,6 +41,12 @@ Bold each field label as shown. The site styles the bold label as the row
 header. `Category` and `Status` take one of the listed values and nothing else:
 the gate rejects a one-off, and the site groups on the category.
 
+Source URLs are copied, never retyped. An HN item URL comes verbatim from the
+selection's `sources`; if a story needs one the selection does not carry,
+`Read` the id out of `.cache/hn/YYYY-MM-DD.json` rather than writing it from
+memory. A reconstructed id usually resolves to a real but unrelated comment,
+so it looks valid and links the wrong thread.
+
 The day is bounded: at most {{max_stories}} stories outside
 {{unbudgeted_sections}}, and at most {{max_section_stories}} in any section
 other than {{uncapped_sections}}. The gate enforces both, counting what earlier

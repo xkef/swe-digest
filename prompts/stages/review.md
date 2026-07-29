@@ -25,6 +25,11 @@ Before publishing, verify:
   marginal items is a worse failure than a short one: name the blocks to drop.
 - Every story has at least one source.
 - Primary sources precede discussion links.
+- Every HN link's item id is one the day's fetch saw: `Grep` each id in
+  `.cache/hn/YYYY-MM-DD.json` (or `data/snapshots/hn/YYYY-MM-DD.json` when the
+  cache is absent). An id found in neither is a mistranscription and a blocking
+  finding, even though the link loads — a wrong id lands on a real but
+  unrelated comment. 2026-07-26 through 2026-07-29 each published some.
 - Rumors and discussions are labeled.
 - Security items include affected versions or state that they are not yet known.
 - Outage items avoid root cause speculation.
