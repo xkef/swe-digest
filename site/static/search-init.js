@@ -143,7 +143,8 @@
     results.hidden = false;
     empty.hidden = true;
     hideBrowse();
-    count.textContent = total + (total === 1 ? " result" : " results");
+    count.textContent =
+      total.toLocaleString() + (total === 1 ? " result" : " results");
     more.hidden = shown >= total;
   }
 

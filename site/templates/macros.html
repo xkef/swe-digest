@@ -30,6 +30,12 @@
   {% endfor %}
 {% endmacro %}
 
+{# "2026-07-29 07:10 UTC" -> "07:10 UTC": the digest header states the day
+   once, in the heading beside the timestamp. #}
+{% macro clock(stamp) %}
+  {{- stamp | split(pat=" ") | slice(start=1) | join(sep=" ") -}}
+{% endmacro %}
+
 {% macro total_stories() %}
   {%- set digest_index = get_section(path="digests/_index.md") -%}
   {%- set_global total = 0 -%}
@@ -38,7 +44,7 @@
     {%- set day_data = load_data(path="data/digests/" ~ day ~ ".json") -%}
     {%- set_global total = total + day_data.count -%}
   {%- endfor -%}
-  {{- total -}}
+  {{- total | num_format -}}
 {% endmacro %}
 
 {% macro day_pager(newer="", older="") %}
