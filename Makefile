@@ -56,7 +56,10 @@ build: stories
 	@rm -rf $(DIST)
 	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) --root site build --output-dir "$(CURDIR)/$(DIST)"
 	@$(MISE) exec -- pagefind --site $(DIST) --glob "digests/[0-9]*/*/index.html"
-	@rm -f $(DIST)/pagefind/pagefind-ui.* $(DIST)/pagefind/pagefind-component-ui.* $(DIST)/pagefind/pagefind-modular-ui.* $(DIST)/pagefind/pagefind-highlight.js
+# wasm.unknown.pagefind is Pagefind's fallback backend. Every page is lang="en"
+# and the entry manifest holds one index, so the runtime always resolves to
+# wasm.en.pagefind and never fetches the fallback.
+	@rm -f $(DIST)/pagefind/pagefind-ui.* $(DIST)/pagefind/pagefind-component-ui.* $(DIST)/pagefind/pagefind-modular-ui.* $(DIST)/pagefind/pagefind-highlight.js $(DIST)/pagefind/wasm.unknown.pagefind
 
 serve: stories
 	@command -v $(MISE) >/dev/null || { echo "mise not found"; exit 1; }
