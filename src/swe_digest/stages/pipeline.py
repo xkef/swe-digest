@@ -31,9 +31,11 @@ from swe_digest.llm.hooks import writes_for
 from swe_digest.stages import steps
 from swe_digest.stages.steps import Code, Run, Skipped, StepError, StepResult
 
-# One repair pass. A second is how a review/write pair spends a run's whole
-# budget disagreeing about a sentence.
-MAX_REPAIRS = 1
+# Two repair passes. One was not enough to converge: the first pass does real
+# work — two runs took four blocking findings to two — and then ran out, so the
+# digest was withheld both times. A third would be the write and review steps
+# disagreeing about a sentence on the run's budget.
+MAX_REPAIRS = 2
 
 # What goes in the queue. A model step is its spec; there is no wrapper type,
 # because both of these already carry the only thing the driver needs, a name.

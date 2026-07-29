@@ -188,13 +188,15 @@ def test_the_repair_pass_re_runs_write_and_review_before_finalize(
         ok("gate"),
     )
 
-    assert calls == ["select", "write", "review", "write", "review"]
+    # Derived from the budget rather than spelled out, so raising it does not
+    # silently turn this into a test of a number nobody meant.
+    assert calls == ["select", *["write", "review"] * (pipeline.MAX_REPAIRS + 1)]
     assert [result.name for result in state.results] == [*calls, "gate"]
     assert state.repairs == pipeline.MAX_REPAIRS
     # The stub review objects every time, so the second one exhausts the repair
     # budget and the run records that it never cleared rather than publishing.
     assert state.notes == [
-        "repair pass 1: 1 blocking finding(s)",
+        *(f"repair pass {n}: 1 blocking finding(s)" for n in range(1, pipeline.MAX_REPAIRS + 1)),
         "review left 1 blocking finding(s) unresolved",
     ]
     assert state.unresolved
