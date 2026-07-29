@@ -20,23 +20,16 @@
     {% set_global updated = now() | date(format='%Y-%m-%d %H:%M UTC') %}
   {% endif %}
   <article class="layout digest-page">
-    <header class="page-header">
-      <p class="eyebrow">
-        Digest{% if digest.count %} · {{ digest.count }} stories{% endif %}
-        {% if page.extra.source_count %}
-          · {{ page.extra.source_count }} sources
-        {% endif %}
-      </p>
+    <header class="page-header digest-header">
       <h1>{{ day }}</h1>
-      <p>
-        Updated <time class="js-localtime" datetime="{{ updated_iso }}"
-        >{{ updated }}</time>
-      </p>
       <p class="meta">
-        <a
+        <span><time class="js-localtime" data-clock datetime="{{ updated_iso }}"
+        >{{ macros::clock(stamp=updated) }}</time></span>
+        {% if digest.count %}<span>{{ digest.count }} stories</span>{% endif %}
+        <span><a
           rel="nofollow"
           href="{{ config.extra.repository | safe }}/issues/new?template=story.yml"
-        >Suggest a story</a>
+        >Suggest a story</a></span>
       </p>
     </header>
 

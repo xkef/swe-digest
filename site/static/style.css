@@ -296,6 +296,21 @@
     color: var(--muted);
   }
 
+  /* The digest date is a label, not a headline: date, publish time, story
+     count and the suggest link share one line, wrapping only when narrow. */
+  .digest-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-3xs) var(--space-sm);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-xs);
+  }
+  .digest-header h1 {
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+  }
+
   .meta {
     display: flex;
     flex-wrap: wrap;
@@ -423,17 +438,21 @@
   /* Home index */
   .filter-bar {
     display: grid;
-    gap: var(--space-xs);
-    margin-bottom: var(--space-sm);
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
   }
 
   .filter-search {
     width: 100%;
+    min-width: 0;
   }
 
   .filter-search input {
     width: 100%;
-    padding: var(--space-xs) var(--space-sm);
+    padding: var(--space-2xs) var(--space-sm);
+    font-size: 0.92rem;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: var(--surface);
@@ -445,9 +464,9 @@
     border-color: var(--accent);
   }
 
-  /* Stays rendered when empty so the aria-live region keeps announcing. */
+  /* Stays rendered when empty so the aria-live region keeps announcing; it
+     shares the row with the input, so an empty count costs no vertical space. */
   .filter-count {
-    min-height: 1lh;
     color: var(--quiet);
     font-family: var(--font-mono);
     font-size: 0.82rem;
@@ -665,6 +684,10 @@
   .footer-build {
     flex-shrink: 0;
     white-space: nowrap;
+  }
+
+  .filter-count {
+    font-size: 0.75rem;
   }
 }
 

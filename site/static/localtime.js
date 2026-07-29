@@ -19,17 +19,21 @@
     }
   }
 
-  function format(date) {
+  function format(date, clockOnly) {
     const zone = zoneName(date);
-    return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-"
-      + pad(date.getDate())
-      + " " + pad(date.getHours()) + ":" + pad(date.getMinutes())
+    const clock = pad(date.getHours()) + ":" + pad(date.getMinutes())
       + (zone ? " " + zone : "");
+    if (clockOnly) return clock;
+    return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-"
+      + pad(date.getDate()) + " " + clock;
   }
 
   const nodes = document.querySelectorAll("time.js-localtime[datetime]");
   for (const node of nodes) {
     const date = new Date(node.getAttribute("datetime"));
-    if (!isNaN(date.getTime())) node.textContent = format(date);
+    // data-clock: the day is already stated next to the timestamp.
+    if (!isNaN(date.getTime())) {
+      node.textContent = format(date, node.hasAttribute("data-clock"));
+    }
   }
 })();
