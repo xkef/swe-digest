@@ -37,8 +37,11 @@
   [hidden] {
     display: none !important;
   }
+  /* Chrome links carry no color and no underline; the reading column adds
+     both back in the prose layer. */
   a {
     color: inherit;
+    text-decoration: none;
   }
   input, button {
     font: inherit;
@@ -48,16 +51,12 @@
 @layer base {
   /* Every color pairs light and dark via light-dark(). The effective theme
      is whatever color-scheme resolves to: the OS preference by default, or
-     the explicit data-theme override set by theme.js. */
+     the explicit data-theme override set by theme.js.
+
+     One ramp, no hue: text, muted, quiet, dim. --accent is the single warm
+     tone and marks exactly one thing, a story whose status is developing. */
   :root {
     color-scheme: light dark;
-    --font-sans:
-      ui-sans-serif,
-      system-ui,
-      -apple-system,
-      BlinkMacSystemFont,
-      "Segoe UI",
-      sans-serif;
     --font-mono:
       ui-monospace,
       SFMono-Regular,
@@ -65,23 +64,24 @@
       Menlo,
       Consolas,
       monospace;
-    --bg: light-dark(#f8f7f3, #161b24);
-    --fg: light-dark(#1a1d23, #e9eef6);
-    --muted: light-dark(#5b6573, #a8b3c4);
-    --quiet: light-dark(#636c79, #7e899b);
-    --surface: light-dark(#ffffff, #1d2431);
-    --surface-2: light-dark(#efece4, #283243);
-    --border: light-dark(#ddd8cc, #333e52);
-    --accent: light-dark(#245bd6, #8fb4ff);
-    --accent-2: light-dark(#0f766e, #6fd8c9);
+    --bg: light-dark(#f7f7f4, #15181b);
+    --fg: light-dark(#191c1e, #d7dcde);
+    --muted: light-dark(#5c6469, #98a2a7);
+    --quiet: light-dark(#868e93, #6f787d);
+    --dim: light-dark(#a4abaf, #4a5257);
+    --surface: light-dark(#ffffff, #1a1e21);
+    --hover: light-dark(#efefeb, #1b1f22);
+    --border: light-dark(#e2e2dc, #262b2f);
+    --accent: light-dark(#8a6d33, #b79a6b);
 
-    --wide: 50rem;
-    --gutter: clamp(1rem, 4vw, 2.5rem);
+    --wide: 51.25rem;
+    --gutter: clamp(1rem, 4vw, 1.5rem);
+    /* Rows pad past the reading column so the hover band is wider than the
+       text it covers. Every bleeding row pairs this with a negative margin. */
+    --bleed: 0.625rem;
 
-    --radius: 6px;
-    --radius-pill: 999px;
-
-    /* Spacing scale (0.25rem base step) */
+    /* Spacing scale. Every margin and padding on the site resolves to one of
+       these; no rule carries a bare length. */
     --space-3xs: 0.25rem;
     --space-2xs: 0.375rem;
     --space-xs: 0.5rem;
@@ -89,10 +89,18 @@
     --space-md: 1rem;
     --space-lg: 1.5rem;
     --space-xl: 2rem;
+    --space-3xl: 4rem;
 
-    /* Semantic spacing */
-    --space-section: clamp(1.75rem, 5vw, 3.5rem);
-    --pad-card: var(--space-sm) var(--space-md);
+    /* Horizontal gaps. Two registers: one for rows of small labels and links,
+       one for the nav, whose items sit at reading size. */
+    --gap-inline: 0.875rem;
+    --gap-nav: 1.25rem;
+
+    /* The label used for every section head, field name, and eyebrow. */
+    --label-size: 0.6875rem;
+    --label-track: 0.09em;
+    /* Wide enough for the longest field name, "Not established:". */
+    --label-col: 8.5rem;
   }
 
   :root[data-theme="light"] {
@@ -107,36 +115,34 @@
     grid-template-rows: auto 1fr auto;
     background-color: var(--bg);
     color: var(--fg);
-    font-family: var(--font-sans);
-    font-size: clamp(1rem, 0.96rem + 0.18vw, 1.06rem);
-    text-rendering: optimizeLegibility;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
     -webkit-font-smoothing: antialiased;
   }
 
-  a {
-    color: var(--accent);
-    text-underline-offset: 0.18em;
+  a:hover {
+    color: var(--fg);
   }
-  a:focus-visible {
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
-    border-radius: 4px;
   }
 
-  code, pre, time, .meta, .eyebrow {
-    font-family: var(--font-mono);
+  code, pre {
+    font-family: inherit;
   }
   code {
-    padding: 0.08rem 0.3rem;
-    border-radius: var(--radius);
-    background: var(--surface-2);
+    padding: 0 var(--space-3xs);
+    border: 1px solid var(--border);
+    background: var(--surface);
     color: var(--fg);
   }
   pre {
     overflow-x: auto;
     padding: var(--space-md);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
     background: var(--surface);
   }
 }
@@ -148,97 +154,102 @@
   }
 
   main {
-    padding-block: var(--space-section);
-  }
-
-  .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg);
+    padding-bottom: 0;
   }
 
   .nav {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
+    align-items: baseline;
     justify-content: space-between;
-    gap: var(--space-md);
-    padding-block: var(--space-sm);
+    gap: var(--space-lg);
+    padding-top: var(--space-xl);
   }
 
   .brand {
     color: var(--fg);
-    font-weight: 700;
-    text-decoration: none;
-    letter-spacing: -0.03em;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
 
   .nav-links {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-sm);
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
+    align-items: baseline;
+    gap: var(--gap-nav);
+    color: var(--quiet);
+    font-size: 0.8125rem;
   }
 
-  .nav-links a {
-    text-decoration: none;
-  }
-  .nav-links a:hover {
-    color: var(--fg);
-  }
-
+  /* A word, not a glyph: the button names the theme a click switches to. */
   .theme-toggle {
-    display: grid;
-    place-items: center;
-    padding: 0;
-    border: 0;
-    background: none;
-    color: var(--muted);
+    padding: var(--space-3xs) var(--space-xs);
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--quiet);
+    font-size: 0.75rem;
     cursor: pointer;
   }
 
   .theme-toggle:hover {
+    border-color: var(--quiet);
     color: var(--fg);
   }
-  .theme-toggle:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
 
-  /* The button shows the theme a click switches to: moon in light mode, sun
-     in dark. Both icons are stacked in one SVG; light-dark() hides the
-     inactive one, so the icon tracks the effective theme with no JS. */
-  .theme-toggle .icon-sun {
-    color: light-dark(transparent, currentColor);
+  /* Which word shows tracks the effective theme with no JS, the same way the
+     colors do: the OS preference by default, overridden by data-theme. */
+  .theme-to-light {
+    display: none;
   }
-  .theme-toggle .icon-moon {
-    color: light-dark(currentColor, transparent);
+  @media (prefers-color-scheme: dark) {
+    .theme-to-dark {
+      display: none;
+    }
+    .theme-to-light {
+      display: inline;
+    }
+  }
+  :root[data-theme="light"] .theme-to-dark {
+    display: inline;
+  }
+  :root[data-theme="light"] .theme-to-light {
+    display: none;
+  }
+  :root[data-theme="dark"] .theme-to-dark {
+    display: none;
+  }
+  :root[data-theme="dark"] .theme-to-light {
+    display: inline;
   }
 
   .site-footer {
-    margin-top: clamp(2.5rem, 8vw, 5rem);
-    border-top: 1px solid var(--border);
-    color: var(--quiet);
+    margin-top: var(--space-xl);
+    color: var(--dim);
   }
 
   .site-footer > p {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--space-sm);
-    padding-block: var(--space-lg) var(--space-xl);
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
+    align-items: center;
+    gap: var(--gap-inline);
+    padding-bottom: var(--space-3xl);
+    font-size: 0.75rem;
+  }
+
+  /* The rule fills whatever the two ends leave, so the build stamp sits hard
+     right without a fixed column. */
+  .site-footer > p::after {
+    content: "";
+    flex: 1;
+    order: 1;
+    height: 1px;
+    background: var(--border);
   }
 
   .footer-build {
     display: flex;
+    order: 2;
     gap: var(--space-sm);
-    margin-left: auto;
   }
 }
 
@@ -251,7 +262,6 @@
     transform: translateY(-140%);
     padding: var(--space-xs) var(--space-sm);
     border: 1px solid var(--border);
-    border-radius: 8px;
     background: var(--surface);
   }
 
@@ -271,211 +281,181 @@
     border: 0;
   }
 
-  .eyebrow {
-    color: light-dark(var(--quiet), var(--accent-2));
-    font-size: 0.74rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
+  /* One label treatment, used by every section head, field name, and eyebrow. */
+  .eyebrow,
+  .day-section h2,
+  .digest-month h2,
+  .prose h2,
+  .story-fields > ul > li > strong:first-child {
+    color: var(--muted);
+    font-size: var(--label-size);
+    font-weight: 400;
+    letter-spacing: var(--label-track);
     text-transform: uppercase;
   }
 
   .page-header {
     display: grid;
-    gap: var(--space-xs);
-    margin-bottom: var(--space-lg);
-    padding-bottom: var(--space-md);
+    gap: var(--space-2xs);
+    margin-block: var(--space-xl) 0;
+    padding-bottom: var(--space-sm);
     border-bottom: 1px solid var(--border);
   }
 
   .page-header h1 {
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    line-height: 1.04;
-    letter-spacing: -0.045em;
+    font-size: 1.3125rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
   }
   .page-header p:not(.eyebrow) {
     color: var(--muted);
   }
 
-  /* The digest date is a label, not a headline: date, publish time, story
-     count and the suggest link share one line, wrapping only when narrow. */
+  /* The digest date is a label, not a headline: date, publish time and story
+     count share one line, with the suggest link pushed to the far end. */
   .digest-header {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: var(--space-3xs) var(--space-sm);
-    margin-bottom: var(--space-md);
-    padding-bottom: var(--space-xs);
+    gap: var(--space-3xs) var(--gap-inline);
   }
-  .digest-header h1 {
-    font-size: 1.25rem;
-    letter-spacing: -0.02em;
+  .digest-header .meta {
+    flex: 1;
+  }
+  .digest-header .meta > span:last-child {
+    margin-left: auto;
   }
 
   .meta {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-xs);
-    color: var(--muted);
-    font-size: 0.82rem;
+    align-items: baseline;
+    gap: var(--gap-inline);
+    color: var(--dim);
+    font-size: 0.75rem;
   }
-  .meta span:not(:first-child)::before {
-    content: "/";
-    margin-right: var(--space-xs);
+  .meta a {
     color: var(--quiet);
-  }
-
-  .page-header p.schedule {
-    font-size: 0.8rem;
-    color: var(--quiet);
-  }
-  .schedule time {
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.01em;
   }
 
   .digest-list {
-    display: grid;
-    gap: var(--space-xs);
+    margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .digest-list > li {
-    display: grid;
-    padding: var(--pad-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
+  .digest-month {
+    margin-top: var(--space-xl);
   }
 
-  .digest-list time {
-    color: var(--quiet);
-    font-size: 0.82rem;
+  /* A section head is a label plus a rule that runs out to the column edge. */
+  .day-section h2,
+  .digest-month h2 {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-inline);
+    margin-bottom: var(--space-2xs);
   }
-  .digest-list h2 {
-    margin: 0;
-    font-size: 1.05rem;
-    letter-spacing: -0.015em;
-  }
-  .digest-list h2 a {
-    color: var(--fg);
-    text-decoration: none;
-  }
-  .digest-list h2 a:hover {
-    color: var(--accent);
-  }
-  .digest-list p {
-    color: var(--muted);
+  .day-section h2::after,
+  .digest-month h2::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border);
   }
 
   .digest-row {
-    gap: var(--space-3xs);
-  }
-  .digest-meta {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 8.125rem 1fr auto;
+    gap: var(--space-md);
     align-items: baseline;
-    gap: var(--space-xs);
+    padding: var(--space-xs) var(--bleed);
+    margin-inline: calc(var(--bleed) * -1);
+    border-bottom: 1px solid var(--border);
   }
-  .digest-meta time a {
+  .digest-row:hover {
+    background: var(--hover);
+  }
+  .digest-row time {
     color: var(--fg);
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    text-decoration: none;
-  }
-  .digest-meta time a:hover {
-    color: var(--accent);
-  }
-  .digest-count {
-    color: var(--quiet);
-    font-size: 0.82rem;
-  }
-  .digest-count::before {
-    content: "·";
-    margin-right: var(--space-xs);
-    color: var(--quiet);
   }
   .digest-lead {
     min-width: 0;
     overflow: hidden;
     color: var(--muted);
-    font-size: 0.9rem;
+    font-size: 0.8125rem;
     text-overflow: ellipsis;
     white-space: nowrap;
-    text-decoration: none;
   }
-  .digest-lead:hover {
-    color: var(--accent);
-  }
-
-  .digest-list > li.digest-month {
-    margin-top: var(--space-md);
-    padding: 0 0 var(--space-2xs);
-    border: 0;
-    border-bottom: 1px solid var(--border);
-    border-radius: 0;
-    background: none;
+  .digest-count {
+    color: var(--dim);
+    font-size: 0.75rem;
   }
 
-  .digest-month h2 {
-    font-family: var(--font-mono);
-    font-size: 0.95rem;
-    letter-spacing: -0.01em;
-  }
-
+  /* Left-bunched links closed by a rule, matching the site footer. Empty spans
+     stand in for a missing newer/older neighbour and become that rule. */
   .pagination {
     display: flex;
-    justify-content: space-between;
-    gap: var(--space-md);
-    margin-top: var(--space-lg);
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
+    align-items: center;
+    gap: var(--gap-inline);
+    margin-top: var(--space-xl);
+    color: var(--dim);
+    font-size: 0.75rem;
+  }
+  .pagination > span:empty {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
   }
 
   /* Home index */
   .filter-bar {
-    display: grid;
-    grid-template-columns: 1fr auto;
+    display: flex;
     align-items: center;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-md);
+    gap: var(--space-xs);
+    margin-top: var(--space-lg);
+    padding: var(--space-xs) var(--space-sm);
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .filter-bar::before {
+    content: "/";
+    color: var(--quiet);
   }
 
   .filter-search {
-    width: 100%;
+    display: flex;
+    flex: 1;
     min-width: 0;
   }
 
   .filter-search input {
     width: 100%;
-    padding: var(--space-2xs) var(--space-sm);
-    font-size: 0.92rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
+    padding: 0;
+    border: 0;
+    background: transparent;
     color: var(--fg);
+    font-size: 0.8125rem;
   }
 
-  .filter-search input:focus-visible {
+  .filter-search input::placeholder {
+    color: var(--dim);
+  }
+  .filter-search input:focus {
     outline: none;
-    border-color: var(--accent);
   }
 
   /* Stays rendered when empty so the aria-live region keeps announcing; it
      shares the row with the input, so an empty count costs no vertical space. */
   .filter-count {
-    color: var(--quiet);
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
+    color: var(--dim);
+    font-size: 0.75rem;
     white-space: nowrap;
   }
 
   .story-list {
-    display: grid;
-    gap: var(--space-xs);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -487,120 +467,128 @@
 
   .story-link {
     display: grid;
-    gap: var(--space-2xs);
-    padding: var(--pad-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
-    text-decoration: none;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--bleed);
+    margin-inline: calc(var(--bleed) * -1);
+    border-bottom: 1px solid var(--border);
     color: var(--fg);
   }
 
   .story-link:hover {
-    border-color: var(--accent);
-  }
-
-  .story-meta {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--space-xs);
-  }
-
-  .badge {
-    padding: 0.1rem 0.5rem;
-    border-radius: var(--radius-pill);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    border: 1px solid var(--border);
-  }
-
-  .badge-cat {
-    background: light-dark(
-      var(--surface-2),
-      color-mix(in oklab, var(--accent) 14%, var(--surface))
-    );
-    color: light-dark(
-      var(--muted),
-      color-mix(in oklab, var(--accent) 45%, var(--muted))
-    );
-  }
-  .badge-status {
-    background: transparent;
-    color: var(--quiet);
+    background: var(--hover);
   }
 
   .story-title {
-    font-weight: 650;
+    font-size: 0.9375rem;
+    font-weight: 600;
     letter-spacing: -0.01em;
+    text-wrap: pretty;
   }
 
   .story-summary {
-    color: var(--muted);
-    font-size: 0.9rem;
     display: -webkit-box;
+    overflow: hidden;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow: hidden;
+    color: var(--muted);
+    font-size: 0.78125rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  /* Category and status read after the summary, not before the title: the
+     headline is what the eye should land on first. */
+  .story-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--gap-inline);
+    color: var(--dim);
+    font-size: var(--label-size);
+    letter-spacing: 0.04em;
+  }
+
+  .badge {
+    color: var(--dim);
+  }
+
+  .status-developing {
+    color: var(--accent);
   }
 
   .story-empty {
-    color: var(--muted);
     padding: var(--space-md) 0;
+    color: var(--muted);
+    font-size: 0.8125rem;
   }
 
   .search-more {
     width: 100%;
-    margin-top: var(--space-xs);
+    margin-top: var(--space-md);
     padding: var(--space-xs) var(--space-md);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
+    background: transparent;
+    color: var(--quiet);
+    font-size: 0.75rem;
     cursor: pointer;
   }
 
   .search-more::-moz-focus-inner {
     border: 0;
   }
-  .search-more:focus {
-    outline: none;
-  }
   .search-more:hover,
   .search-more:focus-visible {
-    border-color: var(--accent);
+    border-color: var(--quiet);
     color: var(--fg);
   }
 }
 
 @layer prose {
-  .prose {
-    display: grid;
-    gap: var(--space-md);
+  .prose > * + * {
+    margin-top: var(--space-sm);
+  }
+
+  /* One block rhythm, shared by the about page's headed blocks and the story
+     page's fields: a rule with --space-md on each side. The page header's own
+     border is the first block's rule, so the first block draws none and the
+     gap below the header matches every other gap below a rule. */
+  .prose > .page-header + * {
+    margin-top: var(--space-sm);
   }
   .prose h2 {
-    margin-top: var(--space-md);
-    font-size: 1.4rem;
-    letter-spacing: -0.025em;
+    margin-top: var(--space-sm);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--border);
+  }
+  .prose > h2:first-child,
+  .prose > .page-header + h2 {
+    padding-top: 0;
+    border-top: 0;
+  }
+  /* Label to its content, the same 6px used by every other label on the site. */
+  .prose h2 + * {
+    margin-top: var(--space-2xs);
   }
   .prose h3 {
-    margin-top: var(--space-sm);
-    font-size: 1.1rem;
+    margin-top: var(--space-md);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
   .prose p, .prose li {
-    color: color-mix(in oklab, var(--fg) 90%, var(--muted));
+    color: var(--fg);
+    line-height: 1.7;
+    text-wrap: pretty;
   }
   .prose ul, .prose ol {
-    padding-left: 1.35rem;
+    padding-left: var(--space-lg);
   }
   .prose li + li {
     margin-top: var(--space-3xs);
   }
   .prose blockquote {
     padding-left: var(--space-md);
-    border-left: 3px solid var(--accent);
+    border-left: 1px solid var(--border);
     color: var(--muted);
   }
   .prose table {
@@ -613,58 +601,77 @@
     text-align: left;
   }
 
+  /* The reading column is the one place a link is marked as one. */
+  .prose a {
+    color: var(--fg);
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 0.18em;
+  }
+  .prose a:hover {
+    text-decoration-color: var(--quiet);
+  }
+  .prose .meta a {
+    text-decoration: none;
+  }
+
+  /* Reading measure. Capping the children rather than the article keeps the
+     column's left edge on the brand instead of re-centring it. */
+  .prose > * {
+    max-width: 41.25rem;
+  }
+
+  .story-page h1 {
+    font-size: 1.5rem;
+    line-height: 1.32;
+  }
+
+  /* The generated story body is one list of "**Label:** value" bullets. Each
+     becomes a labelled block: no card, no bullet, a rule between fields. */
   .story-fields > ul {
-    padding: var(--space-3xs) var(--space-md) var(--space-xs);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
+    padding: 0;
     list-style: none;
   }
 
+  /* The field name hangs in its own column so a one-word value costs one
+     line, not two. A hanging indent rather than a grid: the values carry
+     inline <code> and <a>, and every one of those would become its own cell
+     in a grid container. */
   .story-fields > ul > li {
     margin-top: 0;
-    padding: var(--space-xs) 0;
-    border-top: 1px solid color-mix(in oklab, var(--border) 55%, transparent);
+    padding: var(--space-sm) 0;
+    padding-left: var(--label-col);
+    border-top: 1px solid var(--border);
+    line-height: 1.7;
+    text-indent: calc(var(--label-col) * -1);
   }
 
   .story-fields > ul > li:first-child {
+    padding-top: 0;
     border-top: 0;
   }
 
   .story-fields > ul > li > strong:first-child {
-    color: var(--muted);
-    font-weight: 600;
+    display: inline-block;
+    width: var(--label-col);
+    /* Markdown always emits a space after the label. Pull the value back by
+       exactly one character so its first line starts on the column, level
+       with the lines that wrap under it. */
+    margin-right: -1ch;
+    text-indent: 0;
   }
 
   .day-section {
     margin-top: var(--space-xl);
   }
 
-  .day-section h2 {
-    margin-bottom: var(--space-sm);
-    padding-bottom: var(--space-2xs);
-    border-bottom: 1px solid
-      light-dark(
-        var(--border),
-        color-mix(in oklab, var(--accent) 25%, var(--border))
-      );
-    font-size: 1.1rem;
-    letter-spacing: -0.02em;
-  }
-
   .run-meta {
+    margin-top: var(--space-md);
+    color: var(--dim);
+  }
+
+  .story-feedback {
     margin-top: var(--space-xl);
-    color: var(--muted);
-    font-size: 0.85rem;
-  }
-
-  .run-meta .meta {
-    margin-top: var(--space-sm);
-    font-size: 0.78rem;
-  }
-
-  .story-page .meta a {
-    text-decoration: none;
   }
 }
 
@@ -674,20 +681,40 @@
   }
   .nav-links {
     flex-wrap: nowrap;
+    gap: var(--space-md);
+  }
+
+  /* Both label columns stop earning their width: stack instead. */
+  .story-fields > ul > li {
+    padding-left: 0;
+    text-indent: 0;
+  }
+  .story-fields > ul > li > strong:first-child {
+    display: block;
+    width: auto;
+    margin-right: 0;
+    margin-bottom: var(--space-2xs);
+  }
+
+  .digest-row {
+    grid-template-columns: 1fr auto;
+    gap: var(--space-3xs) var(--space-sm);
+  }
+  .digest-lead {
+    grid-column: 1 / -1;
   }
 
   .site-footer > p {
     flex-wrap: nowrap;
-    font-size: 0.72rem;
+    gap: var(--space-sm);
   }
-
+  .site-footer > p::after {
+    display: none;
+  }
   .footer-build {
     flex-shrink: 0;
+    margin-left: auto;
     white-space: nowrap;
-  }
-
-  .filter-count {
-    font-size: 0.75rem;
   }
 }
 

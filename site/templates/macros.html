@@ -9,19 +9,19 @@
               class="story-link"
               href="{{ config.base_url | safe }}{{ story.url | safe }}"
             >
-              <span class="story-meta">
-                {% if story.category %}
-                  <span class="badge badge-cat">{{ story.category }}</span>
-                {% endif %}
-                {% if story.status %}
-                  <span class="badge badge-status status-{{ story.status }}"
-                  >{{ story.status }}</span>
-                {% endif %}
-              </span>
               <span class="story-title">{{ story.title }}</span>
               {% if story.summary %}
                 <span class="story-summary">{{ story.summary }}</span>
               {% endif %}
+              <span class="story-meta">
+                {% if story.status %}
+                  <span class="badge badge-status status-{{ story.status }}"
+                  >{{ story.status }}</span>
+                {% endif %}
+                {% if story.category %}
+                  <span class="badge badge-cat">{{ story.category }}</span>
+                {% endif %}
+              </span>
             </a>
           </li>
         {% endfor %}
@@ -56,7 +56,7 @@
       <span></span>
     {% endif %}
     <a href="{{ get_url(path='/digests/', trailing_slash=true) | safe }}"
-    >Archive</a>
+    >archive</a>
     {% if older %}
       <a rel="next" href="{{ older.permalink | safe }}"
       >{{ older.date | date(format='%Y-%m-%d') }} &rarr;</a>

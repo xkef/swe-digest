@@ -67,16 +67,6 @@
     const link = document.createElement("a");
     link.className = "story-link";
     link.href = resolveUrl(data.url);
-    const row = document.createElement("span");
-    row.className = "story-meta";
-    if (meta.date) row.appendChild(badge("badge", meta.date));
-    if (meta.category) row.appendChild(badge("badge badge-cat", meta.category));
-    if (meta.status) {
-      row.appendChild(
-        badge("badge badge-status status-" + meta.status, meta.status),
-      );
-    }
-    link.appendChild(row);
     const title = document.createElement("span");
     title.className = "story-title";
     title.textContent = meta.title || "";
@@ -87,6 +77,18 @@
       summary.innerHTML = data.excerpt;
       link.appendChild(summary);
     }
+    // Same order as the server-rendered rows in macros.html: the title leads,
+    // the labels close the row.
+    const row = document.createElement("span");
+    row.className = "story-meta";
+    if (meta.status) {
+      row.appendChild(
+        badge("badge badge-status status-" + meta.status, meta.status),
+      );
+    }
+    if (meta.category) row.appendChild(badge("badge badge-cat", meta.category));
+    if (meta.date) row.appendChild(badge("badge", meta.date));
+    link.appendChild(row);
     li.appendChild(link);
     return li;
   }

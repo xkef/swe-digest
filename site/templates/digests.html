@@ -3,8 +3,7 @@
 {% block content %}
   <section class="layout listing">
     <header class="page-header">
-      <p class="eyebrow">Archive</p>
-      <h1>All digests</h1>
+      <h1>archive</h1>
       <p>
         {{ macros::total_stories() }} stories across {{ paginator.total_pages }}
         days, newest first.
@@ -21,17 +20,19 @@
           <li class="digest-month"><h2>{{ day_month }}</h2></li>
         {% endif %}
         <li class="digest-row">
-          <div class="digest-meta">
-            <time datetime="{{ day }}"><a href="{{ day_page.permalink | safe }}"
-            >{{ day_page.date | date(format='%a %Y-%m-%d') }}</a></time>
-            <span class="digest-count">{{ day_data.count }} stories</span>
-          </div>
+          <time datetime="{{ day }}"><a href="{{ day_page.permalink | safe }}"
+          >{{ day_page.date | date(format='%a %Y-%m-%d') | lower }}</a></time>
+          {# The lead placeholder keeps the count in its own column on a day
+             whose digest carried no sections. #}
           {% set lead = day_data.sections | first %}
           {% if lead and lead.stories %}
             {% set top = lead.stories | first %}
             <a class="digest-lead" href="{{ day_page.permalink | safe }}"
             >{{ top.title }}</a>
+          {% else %}
+            <span></span>
           {% endif %}
+          <span class="digest-count">{{ day_data.count }} stories</span>
         </li>
       {% endfor %}
     </ol>
