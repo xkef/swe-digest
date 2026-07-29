@@ -429,6 +429,16 @@
     outline: none;
   }
 
+  /* iOS Safari zooms the page whenever a text field under 16px takes focus,
+     and leaves it zoomed. Only touch devices do it, so only they pay the
+     larger text. The alternative fix, user-scalable=no on the viewport, would
+     also take pinch zoom away from everyone. */
+  @media (pointer: coarse) {
+    .filter-search input {
+      font-size: 1rem;
+    }
+  }
+
   /* Stays rendered when empty so the aria-live region keeps announcing; it
      shares the row with the input, so an empty count costs no vertical space. */
   .filter-count {
