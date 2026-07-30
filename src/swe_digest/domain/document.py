@@ -61,6 +61,12 @@ SECTION_VOCABULARY = [
 # always-checked risk sections, and the coverage statement.
 ANCHOR_SECTIONS = ("Security", "Outages", "Sources checked")
 
+# Sections whose blocks track stories covered on other days (or the same
+# day), so a repeated primary URL there is an update, not a duplicate story.
+# They also carry their own field shape (open/closed rather than a story
+# status, and no source of their own), so the story-shape rules skip them.
+FOLLOWUP_SECTIONS = {"Watchlist follow-ups"}
+
 # The rest of the vocabulary. This module is the single source: the gate
 # validates against it, the skeleton is generated from it, the selection schema
 # constrains the model to it, and the prompts have it substituted in, so a

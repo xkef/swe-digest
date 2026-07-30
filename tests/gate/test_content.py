@@ -173,6 +173,44 @@ def test_followup_section_may_repeat_primary_url(repo_tree: Path) -> None:
     assert main(root=repo_tree) == 0
 
 
+def test_cross_day_duplicate_primary_url_fails(repo_tree: Path) -> None:
+    # The fixture digest already carries STORY on 2026-07-02; running the same
+    # primary URL again on a later day republishes a published story.
+    later_digest(repo_tree, digest_text(date="2026-07-30"), date="2026-07-30")
+    assert main(root=repo_tree) == 1
+
+
+def test_cross_day_duplicate_grandfathered_before_cutoff(repo_tree: Path) -> None:
+    # The published archive holds two cross-day pairs from before the rule and
+    # must keep validating unchanged.
+    later_digest(repo_tree, digest_text(date="2026-07-06"))
+    assert main(root=repo_tree) == 0
+
+
+def test_followup_may_track_a_story_published_earlier(repo_tree: Path) -> None:
+    followup = SECOND_STORY.replace("### Another take entirely", "### Tracking the example story")
+    text = digest_text(date="2026-07-30").replace(
+        "https://example.com/post", "https://example.com/newer"
+    )
+    text = text.replace(
+        "## Watchlist follow-ups\n\nNo major items found.\n",
+        f"## Watchlist follow-ups\n\n{followup}",
+    )
+    later_digest(repo_tree, with_source_count(text), date="2026-07-30")
+    assert main(root=repo_tree) == 0
+
+
+def test_repeat_as_secondary_source_passes(repo_tree: Path) -> None:
+    # A published story's URL may back a later story as context; only leading
+    # with it republishes the story.
+    text = digest_text(date="2026-07-30").replace(
+        "[primary](https://example.com/post)",
+        "[primary](https://example.com/newer), [context](https://example.com/post)",
+    )
+    later_digest(repo_tree, with_source_count(text), date="2026-07-30")
+    assert main(root=repo_tree) == 0
+
+
 def test_top_stories_over_cap_fails(repo_tree: Path) -> None:
     extra = "".join(
         f"\n### Filler story {n}\n\n- **Category:** AI\n- **Status:** confirmed\n"

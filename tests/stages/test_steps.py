@@ -1,17 +1,45 @@
 """The code steps, each on its own."""
 
+from pathlib import Path
 from typing import Any
 
 import pytest
 
+from swe_digest import paths
 from swe_digest.llm import auth
 from swe_digest.stages import pipeline, steps
 
+from ..conftest import digest_text
 from .conftest import drive, ok
 
 
 def test_yesterday_is_the_day_before() -> None:
     assert steps.yesterday("2026-07-01") == "2026-06-30"
+
+
+def test_dedup_rewrites_the_day_without_republished_stories(at_root: Path) -> None:
+    earlier = paths.DIGEST.path(day="2026-07-02")
+    earlier.parent.mkdir(parents=True)
+    earlier.write_text(digest_text(), encoding="utf-8")
+    today = paths.DIGEST.path(day="2026-07-30")
+    today.write_text(digest_text(date="2026-07-30"), encoding="utf-8")
+
+    detail = steps.dedup(steps.Run(day="2026-07-30"))
+
+    assert "Example story" in detail
+    assert "### Example story" not in today.read_text(encoding="utf-8")
+    # The day it was published on is not the filter's to touch.
+    assert "### Example story" in earlier.read_text(encoding="utf-8")
+
+
+def test_dedup_skips_a_day_with_nothing_republished(at_root: Path) -> None:
+    today = paths.DIGEST.path(day="2026-07-30")
+    today.parent.mkdir(parents=True)
+    today.write_text(digest_text(date="2026-07-30"), encoding="utf-8")
+
+    with pytest.raises(steps.Skipped):
+        steps.dedup(steps.Run(day="2026-07-30"))
+    assert "### Example story" in today.read_text(encoding="utf-8")
 
 
 def test_a_code_step_that_raises_fails_only_itself() -> None:

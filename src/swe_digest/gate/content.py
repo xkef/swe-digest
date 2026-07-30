@@ -21,6 +21,7 @@ from swe_digest.domain import sources as registry
 from swe_digest.domain.document import (
     ANCHOR_SECTIONS,
     CATEGORIES,
+    FOLLOWUP_SECTIONS,
     HN_ITEM,
     LINK,
     MAX_SECTION_STORIES,
@@ -49,12 +50,6 @@ REQUIRED_KEYS = ["title", "date", "status", "source_count"]
 # Top stories cap — comes from digest.document, which the skeleton generator
 # and the step prompts are also built from. The gate does not keep its own copy.
 
-# Sections whose blocks track stories covered on other days (or the same
-# day), so a repeated primary URL there is an update, not a duplicate story.
-# They also carry their own field shape (open/closed rather than a story
-# status, and no source of their own), so the story-shape rules skip them.
-FOLLOWUP_SECTIONS = {"Watchlist follow-ups"}
-
 # The category check postdates the archive: published digests carry free-text
 # categories the vocabulary does not list, and rewriting them to satisfy a new
 # rule would be worse than scoping it forward.
@@ -81,6 +76,12 @@ ARCHIVE_MAX_TOP_STORIES = 7
 # the rule). It applies from this date forward; the title-slug rule and the
 # Top stories cap hold for every digest.
 STORY_URL_DUP_SINCE = "2026-07-06"
+
+# The cross-day form of the same rule postdates the archive too: two published
+# pairs (2026-07-08/09 and 2026-07-19/20) repeat a primary URL across
+# consecutive days, and rewriting published pages would be worse than scoping
+# the rule forward.
+ARCHIVE_URL_DUP_SINCE = "2026-07-30"
 
 # The HN id check starts with the committed snapshots: earlier digests have no
 # record to check a link against.
@@ -412,6 +413,42 @@ def check_repo_links(root: Path) -> list[str]:
     return errors
 
 
+def check_archive_dups(root: Path) -> list[str]:
+    """A story published once does not run again on a later day.
+
+    The second 2026-07-30 run drafted eight stories the 2026-07-29 page
+    already carried under the same primary source URL, and only the review
+    stage caught them. The step prompts hold selection to the archive rule —
+    each story appears once — and this is the backstop when they miss: a
+    primary URL leads a story on at most one day. Repeating it as a secondary
+    source stays legal, and Watchlist follow-ups are exempt because tracking
+    published stories is their job.
+    """
+    errors: list[str] = []
+    first_seen: dict[str, tuple[str, str]] = {}
+    for path in sorted(paths.DIGEST.glob(root)):
+        day = path.stem
+        digest = parse(path.read_text(encoding="utf-8"))
+        for section, stories in digest.sections:
+            if section in FOLLOWUP_SECTIONS:
+                continue
+            for story in stories:
+                links = LINK.findall(story.fields.get("sources", ""))
+                if not links:
+                    continue
+                primary = normalize_url(links[0])
+                seen = first_seen.get(primary)
+                if seen is None:
+                    first_seen[primary] = (day, story.title)
+                elif seen[0] != day and day >= ARCHIVE_URL_DUP_SINCE:
+                    errors.append(
+                        f"{path}: story '{story.title}' repeats the primary source of"
+                        f" '{seen[1]}' published on {seen[0]}; each story appears once"
+                        f" across the archive"
+                    )
+    return errors
+
+
 def _hn_ids_fetched(root: Path, day: str) -> set[int] | None:
     """Every HN id the day's fetch recorded: the fresh cache during a run, else
     the committed snapshot. None when the day has neither."""
@@ -528,6 +565,7 @@ def main(root: Path | None = None) -> int:
         errors.extend(scan_secrets(path, path.read_text(encoding="utf-8")))
     errors.extend(check_run_logs(root))
     errors.extend(check_repo_links(root))
+    errors.extend(check_archive_dups(root))
     errors.extend(check_hn_ids(root))
     for snapshot_dir in SCANNED_SNAPSHOTS:
         for path in sorted((paths.SNAPSHOT.dir(root) / snapshot_dir).glob("*.json")):

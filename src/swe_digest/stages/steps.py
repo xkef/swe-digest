@@ -30,6 +30,7 @@ from swe_digest import paths, serial, settings
 from swe_digest.adapters.vcs import GitGh
 from swe_digest.analysis.backtest import main as score_day
 from swe_digest.analysis.weekly import main as aggregate_window
+from swe_digest.domain.dedup import filter_republished
 from swe_digest.gate.content import main as check_content
 from swe_digest.llm import catalog, hooks, net, specs
 from swe_digest.publish.format import fmt_run
@@ -287,6 +288,27 @@ def record_reading(run: Run) -> str:
     runs.save_run_log(run.day, record)
     refused = sum(1 for item in fetched if not item.ok)
     return f"{len(fetched)} fetch(es), {refused} refused"
+
+
+def dedup(run: Run) -> str:
+    """Drop stories the archive already carries, before anything records them.
+
+    The second 2026-07-30 run drafted eight stories the 2026-07-29 page already
+    published under the same primary source URL, and only the review stage
+    caught them. The gate's archive rule now rejects a page that republishes,
+    and rejection withholds the whole day — so the pipeline filters first: the
+    republished blocks go, the rest of the day stands, and the gate stays the
+    backstop for what this step misses.
+    """
+    path = paths.DIGEST.path(day=run.day)
+    if not path.exists():
+        raise Skipped(f"no digest for {run.day}")
+    prior = (p.read_text(encoding="utf-8") for p in paths.DIGEST.glob() if p.stem < run.day)
+    filtered, dropped = filter_republished(path.read_text(encoding="utf-8"), prior)
+    if not dropped:
+        raise Skipped("no story republishes the archive")
+    path.write_text(filtered, encoding="utf-8")
+    return f"dropped {len(dropped)} republished: {', '.join(dropped)}"
 
 
 def prune(run: Run) -> str:

@@ -54,6 +54,10 @@ DAILY: tuple[Step, ...] = (
     specs.STAGES["select"],
     specs.STAGES["write"],
     specs.STAGES["review"],
+    # After the model stages, before anything records or validates the page:
+    # a story the archive already carries is filtered out, not published twice
+    # and not left for the gate to reject the whole day over.
+    Code("dedup", steps.dedup),
     Code("judgment", steps.record_judgment),
     # Yesterday's log, not today's: the day the backtest above scored.
     Code("miss_review", steps.record_miss_review),
