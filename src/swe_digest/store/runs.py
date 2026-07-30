@@ -1,19 +1,8 @@
 """The day's evidence store: run logs under data/runs/ and the day's HN data.
 
-Run logs are the durable record each digest day leaves behind (data/snapshots/hn/
-files are pruned to seven days and .cache/ is gitignored), so the run-log
-command, the backtest, and the yield stats all read and write them through
-this module.
-
-JSON rather than YAML, for two reasons. The base package then has no
-dependencies at all, so the privileged publish job installs nothing. And one
-canonical serialization (sorted keys, two-space indent) means an unchanged
-record rewrites to an identical file, which a prose-friendly YAML dumper could
-never guarantee.
-
-Every writer goes through ``save_run_log``, which is what keeps the one
-canonical serialization the content gate checks from depending on which step
-did the writing.
+Run logs are the durable record each digest day leaves behind — data/snapshots/hn/
+is pruned to seven days and .cache/ is gitignored — so the run-log command, the
+backtest, and the yield stats all read and write them through this module.
 """
 
 import json
@@ -48,7 +37,7 @@ STORY_COLLECTIONS = ["front_page", "top_day", "ask_hn", "show_hn"]
 
 
 def dumps(record: dict) -> str:
-    """The one valid serialization of a log, which the content gate enforces."""
+    """A log's serialization, which the content gate re-derives and compares."""
     return serial.dump(record)
 
 
