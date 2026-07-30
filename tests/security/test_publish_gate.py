@@ -54,8 +54,9 @@ class FakeGitGh(GitGh):
 
     def commit_on_branch(
         self, repo: str, branch: str, message: dict, additions: list[dict], deletions: list[dict]
-    ) -> None:
+    ) -> str:
         self.commits.append((repo, branch, message, len(additions), len(deletions)))
+        return f"oid{len(self.commits)}"
 
 
 class RepoGitGh(GitGh):
@@ -74,8 +75,9 @@ class RepoGitGh(GitGh):
 
     def commit_on_branch(
         self, repo: str, branch: str, message: dict, additions: list[dict], deletions: list[dict]
-    ) -> None:
+    ) -> str:
         self.commits.append((repo, branch, message, len(additions), len(deletions)))
+        return f"oid{len(self.commits)}"
 
 
 def commit_all(repo: Path, subject: str) -> None:
@@ -616,3 +618,15 @@ class TestPush:
         gh = RepoGitGh()
         publish.push(gh)
         assert gh.commits == []
+
+    def test_push_writes_landed_head_oid(self, gate_repo: Path) -> None:
+        touch_digest(gate_repo)
+        commit_all(gate_repo, DIGEST_SUBJECT)
+        head_file = gate_repo / "head"
+        publish.push(RepoGitGh(), str(head_file))
+        assert head_file.read_text() == "oid1\n"
+
+    def test_push_without_commits_writes_no_head_file(self, gate_repo: Path) -> None:
+        head_file = gate_repo / "head"
+        publish.push(RepoGitGh(), str(head_file))
+        assert not head_file.exists()

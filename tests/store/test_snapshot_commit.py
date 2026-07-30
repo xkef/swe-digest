@@ -19,8 +19,9 @@ class RecordingGh(GitGh):
 
     def commit_on_branch(
         self, repo: str, branch: str, message: dict, additions: list[dict], deletions: list[dict]
-    ) -> None:
+    ) -> str:
         self.commits.append((repo, branch, message, additions, deletions))
+        return "oid1"
 
 
 def test_requires_repo_env(monkeypatch: pytest.MonkeyPatch) -> None:

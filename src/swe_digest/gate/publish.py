@@ -8,7 +8,8 @@ push outside the allowlist or act on issues that fail API-field checks.
 
 Subcommands:
   apply PATCH      git am, then commit-count, subject, and path checks
-  push             recreate each applied commit on main as a signed Verified commit
+  push [HEAD_FILE] recreate each applied commit on main as a signed Verified
+                   commit; write the landed head oid to HEAD_FILE if given
   side-effects M   close story issues, create issues, open improvement PRs
 
 Every git and gh call crosses the GitGh adapter, injected by the entry
@@ -111,7 +112,11 @@ def commit_message(gh: GitGh, commit: str) -> dict:
     return message
 
 
-def push(gh: GitGh | None = None) -> None:
+def push(gh: GitGh | None = None, head_file: str | None = None) -> None:
+    """Recreate each applied commit on main. When `head_file` is given, write
+    the oid of the last landed commit there, so the caller can dispatch the
+    site deploy against the exact tree that landed instead of re-reading main
+    (which can still return the pre-push head)."""
     gh = gh or GitGh()
     commits = gh.sh("git", "rev-list", "--reverse", "origin/main..HEAD").split()
     if not commits:
@@ -122,7 +127,9 @@ def push(gh: GitGh | None = None) -> None:
             gh.sh("git", "diff", "--name-status", "-z", f"{commit}^", commit),
             partial(commit_addition, gh, commit),
         )
-        gh.commit_on_branch(REPO, "main", commit_message(gh, commit), additions, deletions)
+        head = gh.commit_on_branch(REPO, "main", commit_message(gh, commit), additions, deletions)
+    if head_file:
+        Path(head_file).write_text(head + "\n")
     print(f"push ok ({len(commits)} verified commit(s))")
 
 

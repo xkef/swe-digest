@@ -147,15 +147,17 @@ jobs:
         run: |
           PYTHONPATH=src python3 -m swe_digest publish apply .run/run.patch
           make check
-          PYTHONPATH=src python3 -m swe_digest publish push
-          # Name the commit that actually landed, read back from the branch.
-          # Not `git rev-parse HEAD`: `publish push` commits through the
-          # createCommitOnBranch mutation, which builds a new commit object
-          # server-side, so the local SHA is never a ref the remote has and the
-          # deploy failed with "not our ref" on every publish. Dispatching with
-          # no sha at all is the other failure, where GitHub re-resolves main
-          # and can still read the pre-push commit.
-          gh workflow run site.yml -f sha="$(gh api "repos/${GITHUB_REPOSITORY}/commits/main" --jq .sha)"
+          # The head oid goes to RUNNER_TEMP, not .run: the artifact under
+          # .run comes from the untrusted agent job, which could pre-seed a
+          # file there for the dispatch to read.
+          PYTHONPATH=src python3 -m swe_digest publish push "$RUNNER_TEMP/head"
+          # Name the commit that actually landed, from the mutation response
+          # `publish push` wrote out. Not `git rev-parse HEAD`: the commit is
+          # built server-side, so the local SHA is never a ref the remote has.
+          # Not an API read of main either: on 2026-07-30 that read, made a
+          # second after the push, returned the pre-push head, and the deploy
+          # went green with a stale tree.
+          gh workflow run site.yml -f sha="$(cat "$RUNNER_TEMP/head")"
       # Guarded on the run having produced a patch. A run whose gate rejected the
       # digest closes no issue and opens none: its manifest is written empty by
       # the manifest step for the same reason. Two independent checks, because

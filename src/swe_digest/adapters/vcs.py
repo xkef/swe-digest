@@ -70,10 +70,13 @@ class GitGh:
 
     def commit_on_branch(
         self, repo: str, branch: str, message: dict, additions: list[dict], deletions: list[dict]
-    ) -> None:
-        """Create one signed commit on `branch`. Re-reads the branch head each
-        attempt, so it composes with commits landing concurrently on disjoint
-        paths."""
+    ) -> str:
+        """Create one signed commit on `branch` and return its oid. Re-reads
+        the branch head each attempt, so it composes with commits landing
+        concurrently on disjoint paths. The oid comes from the mutation
+        response, not a branch read-back: reading the ref right after the
+        mutation can return the pre-commit head (observed 2026-07-30, when the
+        site deploy built a stale tree because of it)."""
         for attempt in range(settings.COMMIT_RETRIES):
             payload = {
                 "query": COMMIT_MUTATION,
@@ -92,7 +95,7 @@ class GitGh:
                 if not response.get("errors"):
                     commit = response["data"]["createCommitOnBranch"]["commit"]
                     print(f"committed {commit['oid']} {commit['url']}")
-                    return
+                    return str(commit["oid"])
                 sys.stderr.write(json.dumps(response["errors"]) + "\n")
             else:
                 sys.stderr.write(proc.stderr)

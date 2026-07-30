@@ -189,7 +189,7 @@ def _publish(args: argparse.Namespace) -> int:
         case "apply":
             publish.apply(args.patch)
         case "push":
-            publish.push()
+            publish.push(head_file=args.head_file)
         case _:
             publish.side_effects(args.manifest)
     return 0
@@ -290,7 +290,9 @@ def build_parser() -> argparse.ArgumentParser:
     publish.set_defaults(handler=_publish)
     publish_sub = publish.add_subparsers(dest="step", required=True)
     publish_sub.add_parser("apply").add_argument("patch")
-    publish_sub.add_parser("push")
+    publish_sub.add_parser("push").add_argument(
+        "head_file", nargs="?", help="write the landed head oid here"
+    )
     publish_sub.add_parser("side-effects").add_argument("manifest")
 
     runs_cmd = sub.add_parser("runs", help="what a run did, from its committed record")

@@ -48,7 +48,8 @@ class TestGitGh:
 
     def test_commit_on_branch_success(self, capsys: pytest.CaptureFixture) -> None:
         gh = CannedGh([(0, graphql_success("abc123"), "")])
-        gh.commit_on_branch("o/r", "main", {"headline": "h"}, [{"path": "a"}], [])
+        oid = gh.commit_on_branch("o/r", "main", {"headline": "h"}, [{"path": "a"}], [])
+        assert oid == "abc123"
         assert "committed abc123" in capsys.readouterr().out
         args, stdin = gh.invocations[0]
         assert args[:3] == ("gh", "api", "graphql")
