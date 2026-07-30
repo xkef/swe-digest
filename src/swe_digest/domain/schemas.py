@@ -1,15 +1,12 @@
 """JSON Schemas for the steps that return structured output.
 
 A step whose result is data rather than prose declares a schema, so the result
-arrives validated instead of being parsed out of a paragraph. That matters most
-for the selection: the Top stories cap and the story shape become a
-precondition the write step can rely on, rather than a rule the content gate
-discovers has been broken after the digest is already written.
+arrives validated instead of parsed out of a paragraph. That matters most for
+the selection: the Top stories cap and the story shape become a precondition the
+write step relies on, rather than a rule the content gate finds broken after the
+digest is written.
 
-The vocabulary comes from ``digest.document``, the one place it is written.
-Restating the section or category list here would create a second source of
-truth for the thing the whole document format hangs on, and the copy that
-drifts is the one that stops matching the gate.
+The vocabulary comes from ``domain.document``, the one place it is written.
 """
 
 from typing import Any, Literal, get_args
@@ -24,8 +21,8 @@ from swe_digest.domain.document import (
 from swe_digest.domain.vocab import CAUSES
 
 # Which structured shape a stage returns, and the key ``BY_NAME`` is read with.
-# Here rather than with the step specs: the schema decides the shape, and a spec
-# only names one.
+# Here rather than with the step specs, because the schema decides the shape and
+# a spec only names one.
 SchemaName = Literal["selection", "review", "proposals"]
 
 SCHEMA_NAMES: tuple[str, ...] = get_args(SchemaName)
@@ -58,11 +55,9 @@ SELECTION: dict[str, Any] = {
             "items": STORY,
             "description": "strongest first; the lead is the day's headline",
         },
-        # Bounded by the day budget for the same reason top_stories is bounded
-        # by its cap: an over-long selection fails here rather than after the
-        # write step has spent tokens on stories the gate will reject. Earlier
-        # runs of the same date have already used part of the budget, which
-        # only the prompt can account for.
+        # Bounded by the day budget, for the same reason top_stories is bounded
+        # by its cap. Earlier runs of the same date have already used part of
+        # the budget, which only the prompt can account for.
         "stories": {"type": "array", "maxItems": MAX_STORIES, "items": STORY},
         # Each displacement carries its reason, so the record says why the day
         # changed rather than only that it did. The weekly review reads these.
@@ -116,8 +111,8 @@ SELECTION: dict[str, Any] = {
             ),
         },
         # The run's account of itself, for the weekly review. It arrives as
-        # structured output because no stage may write data/memory/; the
-        # `judgment` step merges it into judgment.notes.
+        # structured output because no stage may write data/, and the `judgment`
+        # step merges it into judgment.notes.
         "notes": {
             "type": "string",
             "description": (
@@ -196,7 +191,7 @@ BY_NAME: dict[SchemaName, dict[str, Any]] = {
 
 
 def output_format(name: SchemaName | None) -> dict[str, Any] | None:
-    """The ``output_format`` value for a step, or None when it returns prose."""
+    """Returns a step's ``output_format``, or None when it returns prose."""
     if name is None:
         return None
     return {"type": "json_schema", "schema": BY_NAME[name]}

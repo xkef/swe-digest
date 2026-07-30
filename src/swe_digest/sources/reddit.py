@@ -1,19 +1,16 @@
-"""Fetch Reddit posts for the daily digest.
+"""Fetches Reddit posts for the daily digest.
 
-Reads the [reddit] subreddits from the watchlist and pulls each one's
-public RSS listings (top of day and hot), the feeds Reddit publishes for
-unauthenticated automated consumption. No .json endpoints and no
-authenticated scrape, to stay within Reddit's automated-access terms.
+Reads the ``[reddit]`` subreddits from the watchlist and pulls each one's public
+RSS listings, top of day and hot, which are the feeds Reddit publishes for
+unauthenticated automated consumption. No .json endpoints and no authenticated
+scrape, to stay within Reddit's automated-access terms.
 
-Tries backends in order (www.reddit.com, old.reddit.com, then the committed
-data/snapshots/reddit files from the snapshots workflow) and exits nonzero when any
-listing is degraded. Reddit rate-limits unauthenticated datacenter traffic to
-a handful of requests, so partial coverage is expected and the design works
-with it rather than against it: each run orders the uncovered subreddits
-first (from the day's accumulator), pools that accumulator into its result,
-and reports two floors. The per-run floor detects a dead or blocking host;
-the day floor measures how much of the list the day's pooled coverage
-reaches, which is what the digest actually depends on.
+Reddit rate-limits unauthenticated datacenter traffic to a handful of requests,
+so partial coverage is expected and the design works with it: each run orders
+the uncovered subreddits first, pools the day's accumulator into its result, and
+reports two floors. The per-run floor detects a dead or blocking host, and the
+day floor measures how much of the list the day's pooled coverage reaches, which
+is what the digest depends on.
 """
 
 import math
@@ -43,9 +40,11 @@ LINK_ANCHOR = re.compile(r'<a href="([^"]+)">\[link\]</a>')
 
 
 def external_url(content: str) -> str | None:
-    """The submitted URL of a link post, from the untrusted feed HTML. Reddit
-    marks it with a [link] anchor; a self post points that anchor back at the
-    permalink, so the caller's permalink fallback covers both shapes."""
+    """Returns the submitted URL of a link post, from the untrusted feed HTML.
+
+    Reddit marks it with a [link] anchor. A self post points that anchor back at
+    the permalink, so the caller's permalink fallback covers both shapes.
+    """
     match = LINK_ANCHOR.search(content)
     return unescape(match.group(1)) if match else None
 
@@ -77,10 +76,11 @@ def fetch_listing(
     since_iso: str,
     pause: float = PAUSE_SECONDS,
 ) -> tuple[list[dict], int]:
-    """One listing across all subreddits: the windowed posts plus how many
-    subreddits returned entries. Raises only when none did, so a rate-limited
-    pass keeps its partial coverage while a dead host falls through to the
-    next backend."""
+    """Returns one listing across all subreddits, and how many returned entries.
+
+    Raises only when none did, so a rate-limited pass keeps its partial coverage
+    while a dead host falls through to the next backend.
+    """
     path = LISTING_PATHS[listing]
     posts: list[dict] = []
     healthy = 0
@@ -122,9 +122,10 @@ def fetch_listing(
 
 
 def covered_subreddits(snapshot: dict[str, Any]) -> set[str]:
-    """Subreddits the day's accumulator already holds posts for, lowercased:
-    the watchlist carries display casing (AZURE, MachineLearning) while feed
-    entries carry their own."""
+    """Returns the subreddits the day's accumulator holds posts for, lowercased.
+
+    The watchlist carries display casing and feed entries carry their own.
+    """
     covered = set()
     for collection in snapshot.get("collections", {}).values():
         for post in collection.get("items", []):
@@ -135,16 +136,14 @@ def covered_subreddits(snapshot: dict[str, Any]) -> set[str]:
 
 
 def order_subreddits(subreddits: list[str], covered: set[str], offset: int) -> list[str]:
-    """Uncovered subreddits first, so a rate-limited run spends its handful of
-    successful requests on what the day is still missing.
+    """Returns the subreddits with the uncovered ones first.
 
-    Ordering by observed coverage rather than by the clock is what makes this
-    self-correcting. The seven daily fetches are as little as 80 minutes
-    apart and GitHub delays scheduled runs by 90 to 110 minutes, so no time
-    quantum survives the jitter, and a clock offset is blind to how many
-    feeds actually got through last time. The rotation below is only the
-    cold-start tiebreak for the first run of a UTC day, when nothing is
-    covered yet; do not restore it as the primary rule.
+    A rate-limited run then spends its handful of successful requests on what
+    the day is still missing. Ordering by observed coverage rather than by the
+    clock is what makes this self-correcting: the daily fetches are as little as
+    80 minutes apart and GitHub delays scheduled runs by 90 to 110 minutes, so
+    no time quantum survives the jitter. The rotation below is the cold-start
+    tiebreak for the day's first run, not the primary rule.
     """
     rotated = subreddits[offset:] + subreddits[:offset]
     fresh = [name for name in rotated if name.lower() not in covered]

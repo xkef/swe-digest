@@ -1,20 +1,20 @@
-"""The memory schema gate: bounds, dated facts, staleness.
+"""Checks the memory schema: bounds, dated facts, and staleness.
 
-Memory is now typed stores rather than hand-edited markdown, which moves most
-of this check earlier: ``memory.store`` enforces the entry and byte bounds on
-the write that would break them, so by the time the gate runs they have already
-held. What remains here is what a store cannot check about itself — that the
-records on disk are well formed, that facts carry a real date, and that nothing
-has quietly gone stale.
+Memory is typed stores rather than hand-edited markdown, which moves most of
+this check earlier. ``store.memory`` enforces the entry and byte bounds on the
+write that would break them, so the bounds already hold when the gate runs.
+What remains here is what a store cannot check about itself: that the records
+on disk are well formed, that facts carry a real date, and that nothing has
+gone stale.
 
 Two rules survive from the markdown era, for the same reasons they existed:
 
-- A **fact** must carry an ISO ``last_seen``. Guidance must not, because it is
-  standing policy with no freshness to record.
-- A follow-up older than the age bound is a **hard failure**, forcing the run
-  to re-verify and re-date it or close it. Nothing else expires: an entity or
-  access note going stale is a **warning only**, because time passing alone
-  must never block publishing.
+- A **fact** must carry an ISO ``last_seen`` date. Guidance must not, because
+  guidance is standing policy with no freshness to record.
+- A follow-up older than the age bound is a **hard failure**, which forces the
+  run to re-verify and re-date it or to close it. Nothing else expires: an
+  entity or access note that goes stale is a **warning only**, because time
+  passing alone must never block publishing.
 """
 
 import sys
@@ -27,7 +27,7 @@ from swe_digest.store import memory as memory_store
 
 
 def check_dates(name: str, records: list, today: date) -> tuple[list[str], list[str]]:
-    """Errors and warnings for one store's dates."""
+    """Checks one store's dates and returns errors and warnings."""
     errors: list[str] = []
     warnings: list[str] = []
     spec = memory_store.spec(name)
@@ -64,7 +64,7 @@ def check_dates(name: str, records: list, today: date) -> tuple[list[str], list[
 
 
 def check_memory(root: Path, today: date | None = None) -> list[str]:
-    """Validate every memory_store. Returns errors; warnings go to stderr."""
+    """Validates every memory store. Returns errors and prints warnings to stderr."""
     today = today or datetime.now(UTC).date()
     errors: list[str] = []
     warnings: list[str] = []
@@ -77,8 +77,8 @@ def check_memory(root: Path, today: date | None = None) -> list[str]:
             errors.append(str(error))
             continue
 
-        # The store enforces these on write; re-checking here catches a file
-        # edited by hand or by a tool that bypassed the memory_store.
+        # The store enforces these bounds on write. Re-checking here catches a
+        # file edited by hand or by a tool that bypassed the memory_store.
         limit = getattr(settings, memory_store.spec(name).max_entries)
         if len(records) > limit:
             errors.append(f"{name}: {len(records)} entries over the bound of {limit}")
@@ -87,9 +87,10 @@ def check_memory(root: Path, today: date | None = None) -> list[str]:
             bound = settings.MEMORY_MAX_FILE_BYTES
             errors.append(f"{name}: {size} bytes over the bound of {bound}")
 
-        # One valid serialization per store: the records as the store would
-        # write them. A hand edit that reorders keys or reflows a line parses
-        # fine and would otherwise churn the next write's diff.
+        # Each store has one valid serialization: the records as the store
+        # would write them. A hand edit that reorders keys or reflows a line
+        # still parses, but the next write would then restore the canonical
+        # form and add unrelated changes to its diff.
         path = memory_store.path_for(name, root)
         if records and path.read_text(encoding="utf-8") != memory_store.serialize(records):
             errors.append(f"{name}: not in canonical form; rewrite it with the memory tools")

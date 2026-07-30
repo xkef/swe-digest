@@ -1,22 +1,14 @@
 """The swe-digest command line: one entry point for every project task.
 
-Each command declares its arguments and its handler in the same place, and
-``main`` does nothing but call the handler ``argparse`` chose, so reading one
-command means reading one place rather than holding a parser and a dispatch
-table apart. Most commands only forward their arguments to a module's ``main``,
-and those are one row each in ``_FORWARDING``; the handful that decide something
-get a function below.
+Each command declares its arguments and its handler in the same place, so
+reading one command means reading one place rather than holding a parser and a
+dispatch table apart. A command that only forwards its arguments to a module's
+``main`` is one row in ``_FORWARDING``, and the few that decide something get a
+function below.
 
-Handlers resolve their module on first call. That laziness is load-bearing, not
-stylistic: the snapshot workflows run with only the standard library, the
-privileged publish job with only PyYAML, and importing this module must never
-pull in the Agent SDK.
-
-Usable three ways, all equivalent:
-
-- ``uv run swe-digest ...`` (dev machines, via [project.scripts])
-- ``python3 -m swe_digest ...`` with ``PYTHONPATH=src`` (CI, no install)
-- ``swe-digest ...`` from any environment that installed the package
+Handlers resolve their module on first call. That laziness is load-bearing: the
+snapshot workflows run with only the standard library, the privileged publish job
+with only PyYAML, and importing this module must never pull in the Agent SDK.
 """
 
 import argparse
@@ -119,9 +111,11 @@ _FORWARDING: tuple[tuple[str, str, str, dict[str, dict[str, Any]]], ...] = (
 
 
 def _call(module: str, *fields: str) -> Handler:
-    """A handler that imports ``module`` on first call and hands its ``main``
-    the named arguments, in order. For the commands that are pure passthrough;
-    anything with a default or a keyword gets a named function below."""
+    """Returns a handler that imports ``module`` and calls its ``main``.
+
+    For pure passthrough commands. Anything with a default or a keyword gets a
+    named function below.
+    """
 
     def handler(args: argparse.Namespace) -> int:
         main: Callable[..., int] = import_module(module).main
@@ -141,7 +135,7 @@ def _fmt_run(args: argparse.Namespace) -> int:
 
 
 def _runs_show(args: argparse.Namespace) -> int:
-    """Print what each invocation of a day did, from the record it committed.
+    """Prints what each invocation of a day did, from the record it committed.
 
     The alternative is scrolling a thousand-line YAML file, or an Actions log
     that has expired.
@@ -172,8 +166,8 @@ def _runs_show(args: argparse.Namespace) -> int:
                     f"{name}={n}" + (f" ({failed.pop(name)} failed)" if name in failed else "")
                     for name, n in step["tools"].items()
                 ]
-                # Whatever is left failed without a call to attribute it to.
-                # Printing it is the point: silence here read as success.
+                # Whatever is left failed with no call to attribute it to, and
+                # silence here reads as success.
                 calls += [f"{name}={n} failed, uncalled" for name, n in failed.items()]
                 print(f"        tools: {', '.join(calls)}")
         for path, count in (entry.get("denied_writes") or {}).items():
@@ -196,11 +190,11 @@ def _publish(args: argparse.Namespace) -> int:
 
 
 def _memory(args: argparse.Namespace) -> int:
-    """The memory subcommands, printing JSON so a caller can read ids back.
+    """Runs the memory subcommands, printing JSON so a caller can read ids back.
 
-    Every write goes through ``memory.store``, which assigns the id and the
+    Every write goes through ``store.memory``, which assigns the id and the
     dates. A caller cannot supply them, which is what keeps a record's dates
-    describing when it was actually verified.
+    describing when it was verified.
     """
     import json
 
@@ -250,7 +244,7 @@ def _agent(args: argparse.Namespace) -> int:
         return pipeline.run(day, stages, mode=args.mode, commit=not args.no_commit)
     except auth.AuthError as error:
         # A misconfigured credential is an operator problem with one obvious
-        # fix, not a bug: say so plainly, without a traceback.
+        # fix, so it prints plainly rather than as a traceback.
         print(error, file=sys.stderr)
         return 2
 
@@ -259,9 +253,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="swe-digest", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
 
-    # Both lists come from the source registry: one row per source is the whole
-    # declaration, so a source added there is fetchable and mergeable here
-    # without a second edit.
+    # Both lists come from the source registry, so a source added there is
+    # fetchable and mergeable here without a second edit.
     fetch = sub.add_parser("fetch", help="fetch one source into .cache/")
     fetch_sub = fetch.add_subparsers(dest="source", required=True)
     for source in registry.SOURCES:
@@ -304,11 +297,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     runs_show.set_defaults(handler=_runs_show)
 
-    # The memory stores are reachable two ways and only two: this CLI, and the
-    # memory_* tools in swe_digest.llm.tools. Both call swe_digest.store.memory,
-    # so identity, dates, and the bounds are owned by code in either engine.
-    # Imported here rather than at module scope so the common commands keep their
-    # minimal import graph.
+    # Imported here rather than at module scope, so the common commands keep
+    # their minimal import graph.
     from swe_digest.domain.records import STORES
 
     memory = sub.add_parser("memory", help="read and write the memory stores")
@@ -337,8 +327,8 @@ def build_parser() -> argparse.ArgumentParser:
     memory_close.add_argument("store", choices=sorted(STORES))
     memory_close.add_argument("id")
 
-    # specs is plain data and pulls in no SDK; the stage names are the --stage
-    # choices, so the parser has to know them.
+    # The stage names are the --stage choices, so the parser has to know them.
+    # ``specs`` is plain data and pulls in no SDK.
     from swe_digest.llm import specs
 
     agent = sub.add_parser("agent", help="run the routine on the Claude Agent SDK")

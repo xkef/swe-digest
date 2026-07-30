@@ -1,13 +1,13 @@
-"""Fetch recent arXiv papers for the daily digest.
+"""Fetches recent arXiv papers for the daily digest.
 
-Reads the [papers] categories and queries from the watchlist and pulls the
-arXiv API (sorted by submission date), falling back to the per-category arXiv
-RSS feeds and then the committed data/snapshots/papers files. Feeds the ML research
-section: the digest agent paraphrases the abstract and verifies relevance
-before publishing, never restating benchmark numbers without the method.
+Reads the ``[papers]`` categories and queries from the watchlist and pulls the
+arXiv API sorted by submission date, falling back to the per-category RSS feeds
+and then to the committed snapshots. Feeds the ML research section, where the
+run paraphrases the abstract and verifies relevance before publishing, and never
+restates benchmark numbers without the method.
 
-Exits nonzero when collection is degraded, so the routine never silently skips
-paper coverage.
+Exits nonzero when collection is degraded, so the routine never skips paper
+coverage without saying so.
 """
 
 import time
@@ -39,7 +39,7 @@ def arxiv_id(raw: str) -> str:
 
 
 def make_paper(entry: Any, category: str | None = None) -> fetch.Item | None:
-    """One entry, from either the API's Atom or a category RSS feed.
+    """Builds one paper from the API's Atom or from a category RSS feed.
 
     Both dialects arrive through feedparser with the same names, so the only
     difference left is where the primary category comes from: the API carries

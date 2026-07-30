@@ -1,18 +1,17 @@
 """Stage prompts, read from ``prompts/``.
 
-The prompts are maintainer-only. They live in the repository next to the config
-they steer, but unlike the config they are deliberately absent from
-``IMPROVEMENT_FILES``: a run may propose changes to the watchlist or the
-profile, and may not propose changes to its own instructions.
+The prompts are maintainer-only. Unlike the config beside them they are absent
+from ``paths.IMPROVEMENT_FILES``, so a run may propose changes to the watchlist
+or the profile and never to its own instructions.
 
 A prompt does not restate the document vocabulary. It names a placeholder and
-``render`` substitutes the value from ``digest.document``, so the sections, the
-categories, the statuses, and the story shape reach the instructions and the
-gate from the same place. Restating them in prose is how a prompt ends up
-describing a format the gate does not accept.
+``render`` substitutes the value from ``domain.document``, so the instructions
+and the gate read the sections, categories, statuses, and story shape from one
+place. Restating them in prose is how a prompt ends up describing a format the
+gate does not accept.
 
-Missing prompts are reported rather than raised at import, so the dry run can
-say which stages are not yet written instead of failing on the first one.
+A missing prompt is reported rather than raised at import, so the dry run can
+say which stages are not written yet instead of failing on the first one.
 """
 
 from swe_digest import paths
@@ -36,13 +35,12 @@ COMMON = paths.PROMPT.rel(name="common")
 
 
 def granted(spec: specs.StageSpec) -> str:
-    """The step's tool grant, in the words the model reads.
+    """Returns the step's tool grant, in the words the model reads.
 
     Derived from the same tuple ``_options.build`` hands the SDK, so the
-    instructions cannot offer a tool the step does not hold. A step that is not
-    told its grant spends turns discovering it: the 2026-07-28 run attempted
-    Bash eleven times and Task four times in its most expensive stage, every
-    one denied, before settling for what it actually had.
+    instructions cannot offer a tool the step does not hold. A step not told its
+    grant spends turns discovering it: one run attempted Bash eleven times and
+    Task four times in its most expensive stage, every one denied.
     """
     lines = [f"- `{name}`" for name in spec.allowed_tools]
     return "\n".join(
@@ -61,7 +59,7 @@ def granted(spec: specs.StageSpec) -> str:
 
 
 def values(spec: specs.StageSpec) -> dict[str, str]:
-    """What a prompt may substitute, all of it derived, none of it restated."""
+    """Returns what a prompt may substitute, all of it derived, none restated."""
     return {
         "tools": granted(spec),
         "sections": "\n".join(f"{n}. {name}" for n, name in enumerate(document.SECTIONS, 1)),
@@ -78,9 +76,11 @@ def values(spec: specs.StageSpec) -> dict[str, str]:
 
 
 def render(text: str, spec: specs.StageSpec) -> str:
-    """Substitute ``{{name}}`` placeholders. An unknown name is an error, not a
-    silent literal: a prompt that ships ``{{catgeories}}`` to the model has
-    quietly lost the rule it meant to state."""
+    """Substitutes the ``{{name}}`` placeholders.
+
+    An unknown name is an error rather than a literal, because a prompt that
+    ships ``{{catgeories}}`` to the model has lost the rule it meant to state.
+    """
     import re
 
     substitutions = values(spec)
@@ -95,12 +95,11 @@ def render(text: str, spec: specs.StageSpec) -> str:
 
 
 def load(spec: specs.StageSpec) -> str:
-    """The system prompt for a stage: the standing rules, then its own.
+    """Returns a stage's system prompt: the standing rules, then its own.
 
-    The rules every step must obey — repository rules, content safety, writing
-    rules — live in one file rather than being restated per stage. Three copies
-    of a safety rule is three chances for them to disagree, and the copy that
-    drifts is the one that stops being enforced.
+    The rules every step obeys sit in one file rather than being restated per
+    stage. Three copies of a safety rule are three chances to disagree, and the
+    copy that drifts is the one that stops being enforced.
     """
     parts = []
     for path in (COMMON, spec.prompt_path):

@@ -230,10 +230,10 @@ def review(findings: list[dict]) -> steps.Code:
 def test_a_review_that_never_clears_is_recorded_and_still_publishes() -> None:
     """The reviewer keeps a floor of objections no repair budget clears.
 
-    Withholding on them published nothing for four consecutive runs — six
-    findings to two to two on the last one, after both repair passes did real
-    work. A daily digest that records its own unresolved objections beats no
-    digest, so these are evidence for the weekly review rather than a veto.
+    Withholding on them published nothing for four consecutive runs, even after
+    both repair passes did real work. A daily digest that records its own
+    unresolved objections beats no digest, so they are evidence for the weekly
+    review rather than a veto.
     """
     blocking = [{"severity": "blocking", "where": "Security / a story"}]
     state = steps.Run(day="2026-07-25", gate_ok=True)

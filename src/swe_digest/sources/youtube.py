@@ -1,15 +1,14 @@
-"""Fetch new YouTube videos for the daily digest.
+"""Fetches new YouTube videos for the daily digest.
 
-Reads the [youtube] channels from the watchlist and pulls each channel's
-public RSS syndication feed
-(https://www.youtube.com/feeds/videos.xml?channel_id=...), the same feed
-Google publishes for automated consumption. No API key, no transcript
-scraping (that violates YouTube's Terms of Service): each item carries the
-video description, which the digest agent paraphrases into a summary.
+Reads the ``[youtube]`` channels from the watchlist and pulls each channel's
+public RSS syndication feed, the one Google publishes for automated consumption.
+No API key, and no transcript scraping, which violates YouTube's terms of
+service. Each item carries the video description, which the run paraphrases into
+a summary.
 
-Falls back to the committed data/snapshots/youtube files from the yt-snapshot
-workflow when the network is blocked, and exits nonzero when collection is
-degraded, so the routine never silently skips YouTube coverage.
+Falls back to the committed snapshots when the network is blocked, and exits
+nonzero when collection is degraded, so the routine never skips YouTube coverage
+without saying so.
 """
 
 import json
@@ -28,8 +27,10 @@ DISCUSSION_LOOKUPS = settings.YT_DISCUSSION_LOOKUPS
 
 
 def parse_channels() -> list[tuple[str, str]]:
-    """Watchlist entries are "UC...|Channel Name"; skip the placeholder and
-    any entry without a real channel id."""
+    """Parses the ``"UC...|Channel Name"`` watchlist entries.
+
+    The placeholder and any entry without a real channel id are skipped.
+    """
     return watchlist.pairs("youtube", "channels", valid=lambda part: part.startswith("UC"))
 
 
@@ -61,10 +62,13 @@ def fetch_channel(label: str, channel_id: str, since_iso: str) -> list[fetch.Ite
 
 
 def fetch_discussion(video_id: str) -> dict[str, Any] | None:
-    """Best-effort Hacker News discussion signal for a video. Queries the
-    public Algolia search API (no key) for stories whose URL links this exact
+    """Returns the Hacker News discussion signal for a video, or None.
+
+    Queries the public Algolia search API for stories whose URL links this exact
     video and returns the highest-scoring one. A good video gets discussed, so
-    this is the New videos ranking signal. Returns None on any miss or error."""
+    this is what ranks the New videos section. Best effort: any miss or error
+    returns None.
+    """
     params = urllib.parse.urlencode(
         {"query": video_id, "restrictSearchableAttributes": "url", "tags": "story"}
     )
@@ -87,9 +91,11 @@ def fetch_discussion(video_id: str) -> dict[str, Any] | None:
 
 
 def attach_discussion(videos: list[dict]) -> None:
-    """Annotate the most recent videos in place with HN discussion signal.
-    Best-effort: a failed lookup leaves discussion as None and never degrades
-    the run."""
+    """Annotates the most recent videos in place with the HN discussion signal.
+
+    Best effort: a failed lookup leaves the field None and never degrades the
+    run.
+    """
     targets = videos[:DISCUSSION_LOOKUPS]
     with ThreadPoolExecutor(max_workers=8) as pool:
         for video, discussion in zip(

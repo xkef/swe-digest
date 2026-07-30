@@ -1,14 +1,14 @@
 # Step: improve / watchlist
 
 Propose changes to what the digest watches. **You write nothing and you commit
-nothing.** Your output is a list of proposals; the pipeline turns each into an
+nothing.** Your output is a list of proposals. The pipeline turns each into an
 `improvement` issue, and only an owner-approved comment turns one into a pull
 request.
 
-The weekly marker has already been aggregated. Read `data/runs/weekly/`
-for the newest marker and work from its `mechanical` block, never from the raw
-run logs: the aggregation exists so a weekly review does not pull a fortnight of
-logs into context.
+The weekly marker is already aggregated. Read `data/runs/weekly/` for the newest
+marker and work from its `mechanical` block, never from the raw run logs. The
+aggregation exists so a weekly review does not pull two weeks of logs into
+context.
 
 ## Evidence
 
@@ -20,7 +20,7 @@ logs into context.
 3. `mechanical.recurring_candidates`: a domain or keyword that recurred across
    the window and no query covers. This is the exploration slot's source.
 4. `mechanical.feedback`: kinds tallied over the window. A `missed story` maps
-   to a watchlist gap, `more like this` to an addition.
+   to a watchlist gap, and `more like this` maps to an addition.
 5. The memory stores, through `memory_query`.
 
 ## What a proposal must carry
@@ -43,5 +43,5 @@ Each proposal is one concrete change with the fields the schema requires:
   removal date four weeks out if it yields nothing.
 - A prediction that came due and went unmet is a rollback proposal, using the
   rollback line the original issue recorded.
-- Owner feedback is binding: every feedback kind in the window maps to either a
+- Owner feedback is binding. Every feedback kind in the window maps to either a
   proposal or an explicit rejection with a reason.

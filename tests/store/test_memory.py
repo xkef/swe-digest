@@ -140,11 +140,10 @@ def test_close_and_update_reject_an_unknown_id(tmp_path: Path) -> None:
 
 
 def aged(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, when: str, **values: str) -> None:
-    """Add a record as of a past date.
+    """Adds a record as of a past date.
 
-    The memory_store owns `last_seen` — passing it to `update` is overridden on
-    purpose — so ageing a record means moving the clock, the same way the
-    fetchers inject one.
+    The store owns ``last_seen`` and overrides whatever ``update`` is passed, so
+    aging a record means moving the clock, as the fetchers do.
     """
     monkeypatch.setattr(memory_store, "today", lambda: when)
     memory_store.add("entities", tmp_path, **values)

@@ -1,9 +1,9 @@
-"""Validate digest structure and screen content for unsafe output.
+"""Validates digest structure and screens content for unsafe output.
 
-Runs anywhere python3 is available, so the gate works in environments where
-mise or Zola are not installed. Fails closed: any structural problem, raw
-HTML/script in a digest, leaked secret pattern, or a tracked PRIVATE_CONTEXT.md
-stops the build before it can be published.
+The gate runs anywhere python3 is available, so it works in environments
+where mise or Zola are not installed. The gate fails closed: any structural
+problem, raw HTML or script in a digest, a leaked secret pattern, or a
+tracked PRIVATE_CONTEXT.md stops the build before publication.
 """
 
 import datetime
@@ -46,8 +46,8 @@ __all__ = ["SECTIONS", "main", "split_front_matter"]
 
 REQUIRED_KEYS = ["title", "date", "status", "source_count"]
 
-# The document vocabulary — sections, anchors, statuses, categories, and the
-# Top stories cap — comes from digest.document, which the skeleton generator
+# The document vocabulary (sections, anchors, statuses, categories, and the
+# Top stories cap) comes from digest.document, which the skeleton generator
 # and the step prompts are also built from. The gate does not keep its own copy.
 
 # The category check postdates the archive: published digests carry free-text
@@ -62,7 +62,7 @@ CATEGORY_SINCE = "2026-07-27"
 SOURCE_COUNT_SINCE = "2026-06-13"
 
 # The day budget and the per-section cap postdate the archive too, and their
-# date is a tunable because the day they start binding is an editorial call.
+# date is a tunable because the day they start binding is an editorial decision.
 MAX_STORIES_SINCE = settings.DIGEST_MAX_STORIES_SINCE
 
 # The Top stories cap held for every digest while it was 7, and no digest ever
@@ -72,9 +72,9 @@ MAX_STORIES_SINCE = settings.DIGEST_MAX_STORIES_SINCE
 ARCHIVE_MAX_TOP_STORIES = 7
 
 # The primary-URL uniqueness rule postdates the archive: 8 already-published
-# digests contain restatement blocks sharing a primary source (they motivated
-# the rule). It applies from this date forward; the title-slug rule and the
-# Top stories cap hold for every digest.
+# digests contain restatement blocks that share a primary source, and they
+# motivated the rule. The rule applies from this date forward. The title-slug
+# rule and the Top stories cap hold for every digest.
 STORY_URL_DUP_SINCE = "2026-07-06"
 
 # The cross-day form of the same rule postdates the archive too: two published
@@ -87,34 +87,35 @@ ARCHIVE_URL_DUP_SINCE = "2026-07-30"
 # record to check a link against.
 HN_ID_SINCE = "2026-07-23"
 
-# A story may link a thread the fetch first saw on an earlier day (a backtest
-# repair, a story carried across runs), so the pool spans the preceding week.
-# Watchlist follow-ups are exempt instead: they track threads up to the 45-day
-# age bound, far past any window worth loading here.
+# A story may link a thread the fetch first saw on an earlier day (for
+# example, a backtest repair or a story carried across runs), so the pool
+# spans the preceding week. Watchlist follow-ups are exempt instead: they
+# track threads up to the 45-day age bound, far past any window worth
+# loading here.
 HN_ID_WINDOW_DAYS = 7
 
-# The run-log keys the agent owns. `make run-log` writes the mechanical half
-# and preserves these, so an unfilled key means the run skipped its own
-# review rather than that the tooling failed.
+# The run-log keys that the agent owns. `make run-log` writes the mechanical
+# half and preserves these keys, so an unfilled key means the run skipped its
+# own review rather than that the tooling failed.
 JUDGMENT_KEYS = ("inbox", "miss_review", "notes")
 
 # Every snapshot accumulator, from the registry, so a source added there is
 # screened without a second edit. hn and reddit were once omitted for months
-# with nothing catching it.
+# and nothing caught it.
 #
 # Secrets only: these files hold verbatim titles and comment bodies, so an
 # unsafe-content scan here would let any submitter fail the gate closed and
-# block publishing. What reaches a page is screened by check_digest and escaped
-# again by publish.stories.neutralize_html.
+# block publishing. What reaches a page is screened by check_digest and
+# escaped again by publish.stories.neutralize_html.
 #
-# The secret scan has the same property, and did veto a publish once. It stays
-# because store.snapshots now redacts a match before the file is written, which
-# leaves this a backstop against a path that skipped the merge rather than a
-# check third-party text can trip.
+# The secret scan has the same property, and it did veto a publish once. It
+# stays because store.snapshots now redacts a match before the file is
+# written, which leaves this scan a backstop against a path that skipped the
+# merge rather than a check that third-party text can trip.
 SCANNED_SNAPSHOTS = registry.ACCUMULATING
 
-# Raw HTML / active-content patterns that must never reach a published page.
-# Scanned against prose with code spans removed, so a security story may still
+# Raw HTML and active-content patterns that must never reach a published page.
+# The gate scans prose with code spans removed, so a security story may still
 # mention `<script>` inside backticks (which Zola escapes).
 UNSAFE_HTML = [
     (re.compile(r"<\s*/?\s*script\b", re.I), "raw <script> tag"),
@@ -140,11 +141,12 @@ def check_structure(path: Path, front: str, body: str) -> list[str]:
     for key in REQUIRED_KEYS:
         if not re.search(rf"^\s*{key}\s*=", front, re.MULTILINE):
             errors.append(f"{path}: front matter missing '{key}'")
-    # The day-page URL derives from the file name and everything else (feed
-    # order, latest-day selection, pagers) from the front-matter date; a
-    # mismatch would silently split them. Parsed as real TOML so a date-shaped
-    # line inside a string cannot spoof the check; anything but a plain date
-    # equal to the file name (datetime, free text, invalid TOML) fails closed.
+    # The day-page URL derives from the file name, and everything else (feed
+    # order, latest-day selection, and pagers) derives from the front-matter
+    # date, so a mismatch would silently split them. The check parses real
+    # TOML so that a date-shaped line inside a string cannot spoof it.
+    # Anything but a plain date equal to the file name (a datetime, free
+    # text, or invalid TOML) fails closed.
     try:
         date = tomllib.loads(front).get("date")
     except tomllib.TOMLDecodeError:
@@ -154,7 +156,7 @@ def check_structure(path: Path, front: str, body: str) -> list[str]:
         errors.append(f"{path}: file name must equal the front-matter date")
     headers = re.findall(r"^##\s+(.+?)\s*$", body, re.MULTILINE)
     # Headers must be a strictly increasing subsequence of the vocabulary:
-    # known names only, canonical order, no duplicates.
+    # known names only, canonical order, and no duplicates.
     index = {name: i for i, name in enumerate(SECTION_VOCABULARY)}
     last = -1
     for header in headers:
@@ -176,10 +178,10 @@ def check_structure(path: Path, front: str, body: str) -> list[str]:
 def check_story_shape(
     path: Path, section: str, story: Story, links: list[str], *, categories: bool
 ) -> list[str]:
-    """A published story carries a source, an honest status, and a known category.
+    """Checks that a story carries a source, an honest status, and a known category.
 
-    The first two were quality-gate prose until now. Unsourced claims and
-    unlabelled rumors are the two ways untrusted input reaches a reader as
+    The first two checks were quality-gate prose until now. Unsourced claims
+    and unlabeled rumors are the two ways untrusted input reaches a reader as
     fact, so they belong in the gate rather than in a checklist. The category
     is what the site groups and filters on, so a one-off spelling silently
     drops the story out of its group.
@@ -416,13 +418,10 @@ def check_repo_links(root: Path) -> list[str]:
 def check_archive_dups(root: Path) -> list[str]:
     """A story published once does not run again on a later day.
 
-    The second 2026-07-30 run drafted eight stories the 2026-07-29 page
-    already carried under the same primary source URL, and only the review
-    stage caught them. The step prompts hold selection to the archive rule —
-    each story appears once — and this is the backstop when they miss: a
-    primary URL leads a story on at most one day. Repeating it as a secondary
-    source stays legal, and Watchlist follow-ups are exempt because tracking
-    published stories is their job.
+    The step prompts hold selection to the archive rule, and this is the
+    backstop when they miss: a primary URL leads a story on at most one day.
+    Repeating it as a secondary source stays legal, and Watchlist follow-ups are
+    exempt because tracking published stories is their job.
     """
     errors: list[str] = []
     first_seen: dict[str, tuple[str, str]] = {}
@@ -450,8 +449,11 @@ def check_archive_dups(root: Path) -> list[str]:
 
 
 def _hn_ids_fetched(root: Path, day: str) -> set[int] | None:
-    """Every HN id the day's fetch recorded: the fresh cache during a run, else
-    the committed snapshot. None when the day has neither."""
+    """Returns every HN id the day's fetch recorded, or None when it has none.
+
+    The source is the fresh cache during a run, and the committed snapshot
+    otherwise.
+    """
     from swe_digest.store import runs
 
     for family in (paths.CACHE_FILE, paths.SNAPSHOT):
@@ -470,16 +472,14 @@ def _hn_ids_fetched(root: Path, day: str) -> set[int] | None:
 
 
 def check_hn_ids(root: Path) -> list[str]:
-    """Every HN item a story links is one the day's fetch actually saw.
+    """Every HN item a story links is one the day's fetch saw.
 
-    The id reaches the page by model transcription — snapshot to selection to
-    markdown — and 2026-07-26 through 2026-07-29 published eleven plausible
-    but wrong ids that resolved to unrelated comments. Existence on HN proves
-    nothing (a mistyped id usually lands on a real comment, and the 2026-07-28
-    run fetched one and moved on), so the check is membership in the fetch
-    record: the day's cache or snapshot, plus the preceding week for stories
-    first seen on an earlier day. The step prompts hold the write and review
-    stages to the same rule; this is the backstop when both miss.
+    The id reaches the page by model transcription, from snapshot to selection
+    to markdown, and four consecutive days published eleven plausible but wrong
+    ids that resolved to unrelated comments. Existence on HN proves nothing,
+    because a mistyped id usually lands on a real comment, so the check is
+    membership in the fetch record: the day's cache or snapshot, plus the
+    preceding week for stories first seen on an earlier day.
     """
     errors: list[str] = []
     pools: dict[str, set[int] | None] = {}

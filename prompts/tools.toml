@@ -1,17 +1,17 @@
 # The tool surface the model reads.
 #
-# A tool description is prescriptive about *when* to call, not just what the
-# tool does: it is the text the model actually reads when deciding. That makes
-# it prompt copy, so it lives here under `prompts/` — maintainer-only, and
-# outside what a run may propose — rather than in `config/`, where an
-# improvement proposal could rewrite the instructions that steer tool use.
+# A tool description is prescriptive about *when* to call, not only about what
+# the tool does, because it is the text the model reads when deciding. That makes
+# it prompt copy, so it lives here under `prompts/`, which is maintainer-only and
+# outside what a run may propose, rather than in `config/`, where an improvement
+# proposal could rewrite the instructions that steer tool use.
 #
 # `swe_digest.llm.catalog` loads this and builds the JSON Schema each tool
-# advertises. Arguments are declared compactly: one table per argument, with
-# `enum_from` for a list that must be derived rather than restated, so the
-# memory stores and the guidance topics cannot drift from the code that owns
-# them. The fetch tools are not here — their descriptions travel with the
-# source registry row in `swe_digest.domain.sources`, so a source is one row.
+# advertises. Arguments are declared one table per argument, with `enum_from` for
+# a list that must be derived rather than restated, so the memory stores and the
+# guidance topics cannot drift from the code that owns them. The fetch tools are
+# absent because their descriptions travel with the source registry row in
+# `swe_digest.domain.sources`, which keeps a source to one row.
 
 [run_gate]
 kind = "task"
@@ -21,7 +21,7 @@ Run the fail-closed content gate over the digest, memory, and run logs: \
 section order and vocabulary, story shape, duplicate titles and primary URLs, \
 the Top stories cap, source_count, raw HTML and secret screening, and the \
 memory bounds. Call after every edit to today's digest. Returns the exit code \
-and the gate's own diagnostics; a nonzero result must be fixed, never worked \
+and the gate's own diagnostics. A nonzero result must be fixed, never worked \
 around."""
 
 [backtest]

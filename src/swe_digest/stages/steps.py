@@ -1,22 +1,16 @@
 """The work a run does, as steps, with no opinion about their order.
 
 Each step takes the run state and returns the one line the report shows. Failure
-is a raise, not a return, so no step builds its own result or repeats its own
-name, and the driver in ``pipeline`` owns every error path. Two exceptions carry
-the two outcomes that are not plain success:
+is a raise, not a return, so no step builds its own result and the driver in
+``pipeline`` owns every error path. ``StepError`` says this step failed, and
+``Skipped`` says it correctly did nothing, such as a commit withheld because the
+gate rejected the run.
 
-- ``StepError`` — this step failed, and the message says why. A step that
-  reported its success line with a failure flag beside it is how the report grew
-  able to contradict itself.
-- ``Skipped`` — this step correctly did nothing, and the message says why. A
-  commit withheld because the gate rejected the run is the pipeline working.
+Every step is ordinary Python. Nothing shells out to ``make``, so a run cannot do
+the work differently than a manual invocation would.
 
-Every step here is ordinary Python. Nothing shells out to ``make``: a step has no
-shell to run it with, and the work runs as function calls, so a run cannot do it
-differently than a manual invocation would.
-
-``pipeline`` names these in the order they run. Nothing in this module knows what
-comes before or after it, which is what keeps the order readable in one place.
+Nothing here knows what runs before or after it, which is what keeps the order
+readable in ``pipeline`` alone.
 """
 
 import json
@@ -41,12 +35,12 @@ from swe_digest.store import memory as memory_store
 from swe_digest.store import runs
 from swe_digest.store.prune import main as compact_run_logs
 
-# What the run record keeps of a step's detail line. Enough to say what failed,
-# bounded because these files are re-read by every later run of the day.
+# Enough of a step's detail line to say what failed. Bounded because every later
+# run of the day re-reads the record.
 RECORD_DETAIL_MAX_CHARS = 300
 
-# How many invocations of a day stay in the record. A day is three or four runs;
-# the bound is what stops a re-run loop from growing the file without end.
+# How many invocations of a day stay in the record. A day is three or four runs,
+# and the bound is what stops a re-run loop from growing the file all day.
 RECORD_MAX_RUNS = 8
 
 
@@ -55,11 +49,7 @@ class StepError(Exception):
 
 
 class Skipped(Exception):
-    """A step that correctly did nothing. The message is the reason.
-
-    A commit withheld because the gate rejected the run is the pipeline working,
-    so it belongs in the report rather than only in a line of stderr.
-    """
+    """A step that correctly did nothing. The message is the reason."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -73,11 +63,9 @@ class StepResult:
     data: dict[str, Any] | None = None
     # Correctly did nothing. Still ``ok``: a skip must not fail the run.
     skipped: bool = False
-    # Which tools a model stage called, and how many times each. Empty for a
-    # code step, which calls none.
+    # Which tools a model stage called, and how many times each.
     tools: dict[str, int] = field(default_factory=dict)
-    # Of those, the calls that came back an error: a tool the step does not
-    # hold, or one that failed. Turns paid for and wasted.
+    # Of those, the calls that came back an error: turns paid for and wasted.
     failed_tools: dict[str, int] = field(default_factory=dict)
 
 
@@ -89,8 +77,8 @@ class Run:
     mode: str = "daily"
     may_commit: bool = True
 
-    # Decided during the run. ``gate_ok`` defaults closed so a gate that crashed
-    # cannot be read as approval by the commit step.
+    # ``gate_ok`` defaults closed, so the commit step cannot read a gate that
+    # crashed as approval.
     gate_ok: bool = False
     decision_failed: bool = False
     repairs: int = 0
@@ -101,9 +89,8 @@ class Run:
     pruned: list[str] = field(default_factory=list)
     # Where the reviewer still objected when the repair passes ran out.
     # Recorded, not enforced: withholding on this published nothing for four
-    # consecutive runs, because the reviewer keeps a floor of objections no
-    # repair budget clears — six findings to two to two on the last one. A
-    # daily digest that states its own unresolved objections beats no digest.
+    # consecutive runs, because the reviewer keeps a floor of objections that no
+    # repair budget clears.
     unresolved: list[str] = field(default_factory=list)
     proposals: list[dict[str, Any]] = field(default_factory=list)
 
@@ -127,12 +114,11 @@ def yesterday(day: str) -> str:
 
 
 def collect(run: Run) -> str:
-    """Run every fetcher, in Python, before any model sees anything.
+    """Runs every fetcher, in Python, before any model sees anything.
 
     A degraded source is reported, not fatal: incomplete coverage is a fact the
     digest states in Sources checked, and a run that stopped on the first
-    rate-limited feed would rarely publish at all. Each fetcher prints its own
-    listing; what comes back here is which ones fell short.
+    rate-limited feed would rarely publish at all.
     """
     degraded: list[str] = []
     for tool in catalog.FETCH_TOOLS:
@@ -157,7 +143,7 @@ def skeleton(run: Run) -> str:
 
 
 def backtest(run: Run) -> str:
-    """Score yesterday before selecting today, so a recurring miss can move
+    """Scores yesterday before today's selection, so a recurring miss can move
     today's ranking rather than only the weekly review."""
     day = yesterday(run.day)
     if score_day(day):
@@ -166,25 +152,23 @@ def backtest(run: Run) -> str:
 
 
 def feedback(run: Run) -> str:
-    """Owner feedback, recorded deterministically. No model reads an issue to
-    decide what it meant; the form says so."""
+    """Records owner feedback deterministically. No model reads an issue to
+    decide what it meant, because the form already says so."""
     closes, report = owner_feedback()
     run.closes.extend(closes)
     return "; ".join(report) or "no owner feedback"
 
 
 def record_judgment(run: Run) -> str:
-    """Put what the run decided into today's log, beside what it measured.
+    """Puts what the run decided into today's log, beside what it measured.
 
-    No stage may write ``data/memory/`` — the write guard grants the write step
-    the digest and nothing else — so a run's judgment travels as fields on the
-    selection and is merged here by code. The log keeps its one valid shape,
-    enforced in Python, and the weekly review still hears about a degraded
-    source or an owner request in the run's own words.
+    The write guard grants the write step the digest and nothing else, so a
+    run's judgment travels as fields on the selection and code merges it here.
+    The log keeps its one valid shape, and the weekly review still hears about a
+    degraded source or an owner request in the run's own words.
 
-    A day is written by several runs against one log, so both keys accumulate:
-    the note appends, and a repeated selection adds neither a second copy of its
-    paragraph nor a second entry for an issue already recorded.
+    Several runs write one log, so both keys accumulate without duplicating a
+    paragraph or an issue already recorded.
     """
     selection = run.selection or {}
     note = (selection.get("notes") or "").strip()
@@ -196,9 +180,9 @@ def record_judgment(run: Run) -> str:
     judgment = record.setdefault("judgment", {})
     said: list[str] = []
 
-    # Compared and stored as paragraphs, not as one blob: the stored form is
-    # wrapped at the margin, so a raw note would never match the text it was
-    # written from and every run would append its own paragraphs again.
+    # Compared as paragraphs, because the stored form is wrapped at the margin:
+    # a raw note never matches the text it was written from, and every run would
+    # append its own paragraphs again.
     kept = serial.paragraphs(judgment.get("notes") or "")
     added = [para for para in serial.paragraphs(note) if para not in kept]
     if added:
@@ -222,15 +206,13 @@ def record_judgment(run: Run) -> str:
 
 
 def record_miss_review(run: Run) -> str:
-    """Correct yesterday's seeded miss causes where the run says they are wrong.
+    """Corrects yesterday's seeded miss causes where the run says they are wrong.
 
     ``backtest`` seeds a default from each candidate's pre-class, which is right
     at the base rate and wrong at exactly the cases worth reviewing: a genuine
     miss no query caught, and a false entity match. Only the step that read the
     candidates knows which, and it cannot write the log, so the correction
     arrives on the selection.
-
-    It lands in yesterday's log, because that is the day the backtest scored.
     """
     day = yesterday(run.day)
     corrections = {
@@ -252,9 +234,8 @@ def record_miss_review(run: Run) -> str:
     unscored = 0
     for story_id, cause in corrections.items():
         key = str(story_id)
-        # A candidate the backtest never scored has no miss to explain, and
-        # writing one anyway would put a cause in the log that no evidence in
-        # it supports.
+        # A candidate the backtest never scored has no miss to explain, so a
+        # cause written for it would be one no evidence in the log supports.
         if key not in scored:
             unscored += 1
             continue
@@ -278,7 +259,7 @@ def run_log(run: Run) -> str:
 
 
 def record_reading(run: Run) -> str:
-    """Put what the run read into its own log, because nothing else does."""
+    """Puts what the run read into its own log, because nothing else does."""
     fetched = net.record()
     record = runs.load_run_log(run.day)
     mechanical = record.setdefault("mechanical", {})
@@ -291,14 +272,12 @@ def record_reading(run: Run) -> str:
 
 
 def dedup(run: Run) -> str:
-    """Drop stories the archive already carries, before anything records them.
+    """Drops stories the archive already carries, before anything records them.
 
-    The second 2026-07-30 run drafted eight stories the 2026-07-29 page already
-    published under the same primary source URL, and only the review stage
-    caught them. The gate's archive rule now rejects a page that republishes,
-    and rejection withholds the whole day — so the pipeline filters first: the
-    republished blocks go, the rest of the day stands, and the gate stays the
-    backstop for what this step misses.
+    The gate rejects a page that republishes, and a rejection withholds the
+    whole day, so the pipeline filters first: the republished blocks go, the
+    rest of the day stands, and the gate stays the backstop for what this step
+    misses.
     """
     path = paths.DIGEST.path(day=run.day)
     if not path.exists():
@@ -324,10 +303,10 @@ def format(run: Run) -> str:
 
 
 def gate(run: Run) -> str:
-    """The fail-closed content gate, and the one thing the commit step consults.
+    """Runs the fail-closed content gate, the one thing ``commit`` consults.
 
-    Recording the verdict on the run rather than having the driver watch for it
-    by name is what lets ``commit`` state its own precondition.
+    The verdict is recorded on the run rather than watched for by name in the
+    driver, which is what lets ``commit`` state its own precondition.
     """
     run.gate_ok = check_content() == 0
     if not run.gate_ok:
@@ -336,11 +315,11 @@ def gate(run: Run) -> str:
 
 
 def inbox_closes(run: Run) -> str:
-    """Close the reader-inbox issues this run acted on.
+    """Closes the reader-inbox issues this run acted on.
 
-    The select step names the numbers; the comment and the request are built
+    The select step names the numbers. The comment and the request are built
     here, and the publish job re-verifies each one against API fields before
-    acting. The run itself holds no write capability at any point.
+    acting, because the run itself holds no write capability.
     """
     used = (run.selection or {}).get("inbox_used") or []
     page = f"{settings.SITE}digests/{run.day}/"
@@ -352,14 +331,13 @@ def inbox_closes(run: Run) -> str:
 
 
 def manifest(run: Run) -> str:
-    """Every side effect the run wants, as data for the publish job to
-    re-verify. Written by code from typed values, never by the model.
+    """Writes every side effect the run wants, for the publish job to re-verify.
 
-    A run the gate rejected asks for nothing. Its issues were closed against a
-    digest that will not be published, so acting on them would announce a page
-    that does not exist. The workflow also guards the side-effects step on the
-    run having produced a patch at all; both checks stand alone, because either
-    one alone has been enough to let a rejected run touch the tracker.
+    Built by code from typed values, never by the model. A run the gate rejected
+    asks for nothing: its issues were closed against a digest that will not be
+    published, so acting on them would announce a page that does not exist. The
+    workflow guards the side-effects step separately on the run having produced
+    a patch, because each check alone has failed to stop this.
     """
     run_dir = paths.run_dir()
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -378,16 +356,16 @@ def manifest(run: Run) -> str:
 
 
 def record_run(run: Run) -> str:
-    """What this run did, in the file the run commits.
+    """Records what this run did, in the file the run commits.
 
-    A digest is a public artifact, so how it was made — which stages ran, which
-    failed and why, what they cost, which tools they called, what the write
-    guard refused — belongs in the repository rather than in an Actions log
-    that expires.
+    A digest is a public artifact, so how it was made belongs in the repository
+    rather than in an Actions log that expires: which stages ran, which failed
+    and why, what they cost, which tools they called, and what the write guard
+    refused.
 
     Placed immediately before ``commit``, so it sees every earlier step. It
-    cannot record its own outcome or the commit's: there is no second write, and
-    a run that fails at the commit has no commit to carry the record anyway.
+    cannot record its own outcome or the commit's, and a run that fails at the
+    commit has no commit to carry the record anyway.
 
     Names and counts only, never a tool's arguments or results. Those carry text
     fetched from the open web, and this file is published.
@@ -420,8 +398,8 @@ def record_run(run: Run) -> str:
     }
     denied = hooks.denials()
     if denied:
-        # A refused write is the write guard working, and it should be as
-        # visible as a step that failed.
+        # A refused write is the write guard working, and belongs in the record
+        # as visibly as a step that failed.
         entry["denied_writes"] = dict(sorted(denied.items()))
 
     load, save = (
@@ -432,8 +410,6 @@ def record_run(run: Run) -> str:
     record = load(run.day)
     history = record.setdefault("mechanical", {}).setdefault("runs", [])
     history.append(entry)
-    # A day is written by three or four runs and the file is re-read by each of
-    # them, so the history is bounded rather than allowed to grow all day.
     del history[:-RECORD_MAX_RUNS]
     save(run.day, record)
 
@@ -447,16 +423,14 @@ def record_run(run: Run) -> str:
 
 
 def dated_run_logs() -> list[str]:
-    """Every dated run log, because a daily run writes more than today's.
+    """Returns every dated run log, because a daily run writes more than today's.
 
     ``run_log`` writes today's, ``backtest`` seeds yesterday's, and ``prune``
-    compacts every log past the detail window. Stage only today's and the
-    backtest's seeded causes and the prune's reclaimed bytes are computed on
-    the runner and discarded with it. Enumerating the directory rather than
-    naming today and yesterday means a fourth writer cannot reintroduce that
-    silently.
+    compacts every log past the detail window. Staging only today's would
+    discard the other two with the runner. Enumerating the directory instead of
+    naming the days means a fourth writer cannot go missing unnoticed.
 
-    Every name here matches the dated form ``gate.publish_run`` accepts, so the
+    Every name here matches the dated form ``gate.publish`` accepts, so the
     list stays a subset of the publish allowlist.
     """
     return sorted(
@@ -467,12 +441,10 @@ def dated_run_logs() -> list[str]:
 
 
 def committable(day: str, mode: str) -> list[str]:
-    """The repo-relative paths a run may commit.
+    """Returns the repo-relative paths a run may commit.
 
-    The daily run writes the digest, the run logs, and the memory stores. The
-    improvement run writes the weekly marker and whatever the memory step
-    closed. Both lists are subsets of the allowlist ``gate.publish_run``
-    validates, so the pipeline cannot stage a path its own gate would reject.
+    Both lists are subsets of the allowlist ``gate.publish`` validates, so
+    the pipeline cannot stage a path its own gate would reject.
     """
     stores = [paths.MEMORY_STORE.rel(store=name) for name in paths.MEMORY_STORES]
     if mode == "improve":
@@ -481,10 +453,10 @@ def committable(day: str, mode: str) -> list[str]:
 
 
 def subject(run: Run, gh: Any) -> str:
-    """The commit subject, chosen from the ones the gate's regexes accept.
+    """Returns the commit subject, from the ones the gate's regexes accept.
 
-    `publish` for the day's first digest commit and `update` for a later run of
-    the same date; the improvement run has one subject of its own.
+    ``publish`` for the day's first digest commit, ``update`` for a later run of
+    the same date, and one subject of its own for the improvement run.
     """
     if run.mode == "improve":
         return f"chore: weekly improvement review {run.day}"
@@ -494,7 +466,7 @@ def subject(run: Run, gh: Any) -> str:
 
 
 def commit(run: Run) -> str:
-    """One commit, of exactly the paths the publish gate allows.
+    """Makes one commit, of exactly the paths the publish gate allows.
 
     Both reasons to withhold it are stated here rather than in the driver.
     ``git add`` names the allowlist rather than ``-A``, so a stray file in the
@@ -503,8 +475,6 @@ def commit(run: Run) -> str:
     if not run.may_commit:
         raise Skipped("--no-commit")
     if not run.gate_ok:
-        # Publishing something the gate rejected is the one outcome worse than
-        # publishing nothing.
         raise Skipped("the gate rejected this run")
 
     gh = GitGh()
@@ -522,12 +492,12 @@ def commit(run: Run) -> str:
 
 
 def prune_memory(run: Run) -> str:
-    """Drop what is past its age bound, before the model looks at the rest.
+    """Drops what is past its age bound, before the model looks at the rest.
 
     Age is arithmetic, not judgment, and the content gate hard-fails on an
-    over-age follow-up, so leaving this to the model means a publish blocked on
-    a decision nobody made. What was dropped is handed to the memory step,
-    which can re-open anything still live.
+    over-age follow-up, so leaving this to the model blocks a publish on a
+    decision nobody made. The memory step receives what was dropped and can
+    re-open anything still live.
     """
     dropped = memory_store.prune("followups", settings.MEMORY_FOLLOWUP_MAX_AGE_DAYS)
     run.pruned = [getattr(record, "subject", record.id) for record in dropped]
@@ -535,10 +505,10 @@ def prune_memory(run: Run) -> str:
 
 
 def weekly_stats(run: Run) -> str:
-    """The window's mechanical evidence, aggregated before anything reads it.
+    """Aggregates the window's mechanical evidence before anything reads it.
 
     The improvement steps read this rather than the raw logs, which is what
-    keeps a weekly review from pulling a fortnight of run logs into context.
+    keeps a weekly review from pulling two weeks of run logs into context.
     """
     if aggregate_window(run.day, None):
         raise StepError(f"could not aggregate the window for {run.day}")
@@ -559,10 +529,10 @@ PROPOSAL_BODY = """- **Axis:** {axis}
 
 
 def proposals(run: Run) -> str:
-    """Turn the proposal steps' structured output into issue requests.
+    """Turns the proposal steps' structured output into issue requests.
 
-    The body shape is assembled here, not by the model, so every proposal
-    carries the fields the owner-approval path needs to act on it.
+    Code assembles the body, not the model, so every proposal carries the fields
+    the owner-approval path needs to act on it.
     """
     for proposal in run.proposals:
         run.new_issues.append(

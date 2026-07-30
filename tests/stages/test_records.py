@@ -151,7 +151,7 @@ def corrected(day: str, *corrections: dict[str, Any]) -> dict[str, str]:
 
 def test_a_wrong_seeded_cause_is_corrected_in_yesterdays_log(log_dir: Path) -> None:
     """Today's run scores yesterday, so the correction belongs to yesterday's
-    log — the one holding the candidates it explains."""
+    log, the one holding the candidates it explains."""
     scored("2026-07-24", 49034292, 49043192)
 
     causes = corrected("2026-07-25", {"id": 49034292, "cause": "watchlist_gap"})

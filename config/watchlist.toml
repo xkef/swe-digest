@@ -532,17 +532,23 @@ channels = [
 ]
 
 [social]
-# X/Twitter has no free read feed, so these are name-based web-search
-# targets, not subscribed feeds. During a run the agent searches for recent,
-# engineering-relevant posts or threads by these people, labels findings as
-# discussion, and links a primary source when a post points to one.
+# Tracked voices. X/Twitter has no free read feed, and the run holds no web
+# search tool, so a person reaches the digest only through a feed named here or
+# through what another source surfaces. Format: "Name|https://feed-url" for a
+# person with a public feed, read with fetch_url, or a bare "Name" for someone
+# who has none. A bare name is a watch term for the other sources, never an
+# instruction to go looking for one.
+# Every URL below returned a feed when it was added. Verify a feed resolves over
+# https before adding it. A Mastodon or Bluesky account exposes one at
+# `https://{instance}/@{user}.rss` or
+# `https://bsky.app/profile/{handle}/rss`.
 # Removal: anyone listed may ask to be dropped (see the site About page or a
-# repository issue). Honor the request, remove the name here, and omit them
+# repository issue). Honor the request, remove the entry here, and omit them
 # from future runs. No reason is required.
 people = [
   "Linus Torvalds",
   "Greg Kroah-Hartman",
-  "Guido van Rossum",
+  "Guido van Rossum|https://bsky.app/profile/gvanrossum.bsky.social/rss",
   "Brendan Eich",
   "Anders Hejlsberg",
   "Rich Hickey",
@@ -552,33 +558,33 @@ people = [
   "Andrew Kelley",
   "Graydon Hoare",
   "David Heinemeier Hansson",
-  "John Carmack",
+  "John Carmack|https://bsky.app/profile/johncarmack.bsky.social/rss",
   "Jeff Dean",
-  "Kelsey Hightower",
-  "Mitchell Hashimoto",
-  "Brendan Gregg",
-  "Bryan Cantrill",
-  "Charity Majors",
-  "Gergely Orosz",
-  "Simon Willison",
-  "Julia Evans",
-  "Dan Abramov",
+  "Kelsey Hightower|https://bsky.app/profile/kelseyhightower.com/rss",
+  "Mitchell Hashimoto|https://mitchellh.com/feed.xml",
+  "Brendan Gregg|https://www.brendangregg.com/blog/rss.xml",
+  "Bryan Cantrill|https://bsky.app/profile/bcantrill.bsky.social/rss",
+  "Charity Majors|https://charity.wtf/feed/",
+  "Gergely Orosz|https://blog.pragmaticengineer.com/rss/",
+  "Simon Willison|https://simonwillison.net/atom/everything/",
+  "Julia Evans|https://jvns.ca/atom.xml",
+  "Dan Abramov|https://overreacted.io/rss.xml",
   "Evan You",
-  "Rich Harris",
+  "Rich Harris|https://bsky.app/profile/rich-harris.dev/rss",
   "Ryan Dahl",
-  "Kent Beck",
-  "Martin Fowler",
-  "Martin Kleppmann",
-  "Armin Ronacher",
+  "Kent Beck|https://tidyfirst.substack.com/feed",
+  "Martin Fowler|https://martinfowler.com/feed.atom",
+  "Martin Kleppmann|https://martin.kleppmann.com/feed.rss",
+  "Armin Ronacher|https://lucumr.pocoo.org/feed.atom",
   "Fabrice Bellard",
-  "Salvatore Sanfilippo",
-  "Thorsten Ball",
+  "Salvatore Sanfilippo|https://antirez.com/rss",
+  "Thorsten Ball|https://registerspill.thorstenball.com/feed",
   "Theo Browne",
   "Mitchell Baker",
   "Nat Friedman",
   "Thomas Dohmke",
-  "Andrej Karpathy",
-  "Sebastian Raschka",
+  "Andrej Karpathy|https://karpathy.bearblog.dev/feed/",
+  "Sebastian Raschka|https://magazine.sebastianraschka.com/feed",
   "Soumith Chintala",
   "Chris Lattner",
   "Shawn Wang",
@@ -727,27 +733,23 @@ feeds = [
   "Pragmatic Bookshelf|https://pragprog.com/rss.xml",
   "Springer Computer Science|https://link.springer.com/search.rss?facet-content-type=Book&facet-discipline=Computer+Science&sortOrder=newestFirst",
 ]
-# Important software-engineering and ML presses that publish no usable public
-# new-release RSS (catalogs moved behind learning platforms). Like [social],
-# these are name-based web-search targets: each run the agent searches for
-# recent notable releases and verifies them against the publisher's own catalog
-# page before publishing. Keep this list wide: it is the main lever for book
-# coverage because working publisher feeds are scarce. See the Books procedure.
-search_targets = [
-  "O'Reilly Media",
-  "Manning Publications",
-  "Packt",
-  "Addison-Wesley",
-  "Pragmatic Bookshelf",
-  "No Starch Press",
-  "MIT Press",
-  "Apress",
-  "Microsoft Press",
-  "Wiley",
-  "Pearson",
-  "A K Peters / CRC Press",
-  "Cambridge University Press",
-  "Princeton University Press",
-  "Stripe Press",
-  "Leanpub",
+# Presses with no usable new-release RSS, as catalog pages the run reads with
+# fetch_url. Format: "Label|https://page-url". The run holds no web search tool,
+# so a press reaches the digest only through a page named here or through Hacker
+# News. Every URL below returned 200 when it was added; verify a page resolves
+# before adding it, and prefer a newest-first view over a general catalog.
+#
+# Absent on purpose: MIT Press, O'Reilly, and Packt return HTTP 403 from
+# datacenter ranges, so listing them would spend a fetch per run on a refusal.
+# Apress is a Springer imprint and already arrives through the Springer feed
+# above. Pearson imprints appear through informit. Leanpub and Princeton
+# University Press publish no stable new-release view.
+catalog_pages = [
+  "Addison-Wesley and Pearson imprints|https://www.informit.com/store/browse/newest",
+  "Microsoft Press|https://www.microsoftpressstore.com/store/browse/newest",
+  "Manning Publications|https://www.manning.com/catalog",
+  "Stripe Press|https://press.stripe.com/",
+  "A K Peters / CRC Press|https://www.routledge.com/our-products/books?subject=Computer+Science",
+  "Cambridge University Press|https://www.cambridge.org/core/publications/books",
+  "Wiley|https://www.wiley.com/en-us/search?pq=computer+science",
 ]

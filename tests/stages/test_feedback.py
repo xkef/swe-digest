@@ -1,10 +1,10 @@
 """Tests for deterministic feedback processing.
 
-Feedback is the one inbox a model could plausibly read: it would read the
-issues, decided what they meant, and wrote memory. These cases pin the two
-properties that made moving it into code worthwhile — authorship is decided
-from an API field, and an unrecognized kind is skipped rather than guessed —
-plus the mapping itself, which is now a lookup a test can assert.
+Feedback is the one inbox a model could plausibly read, deciding what each issue
+meant and writing memory from it. These cases pin the two properties that made
+moving it into code worthwhile, authorship decided from an API field and an
+unrecognized kind skipped rather than guessed, plus the mapping itself, which is
+now a lookup a test can assert.
 """
 
 from pathlib import Path

@@ -1,8 +1,8 @@
-"""Create the daily digest skeleton with the current section layout.
+"""Creates the daily digest skeleton with the current section layout.
 
-Every vocabulary the skeleton needs comes from ``digest.document``, which the
-gate validates against and the prompts are rendered from. A second copy here
-is how the template and the rules drift apart.
+Every vocabulary the skeleton needs comes from ``domain.document``, which the
+gate validates against and the prompts render from. A second copy here is how
+the template and the rules drift apart.
 """
 
 from datetime import UTC, date, datetime

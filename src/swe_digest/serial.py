@@ -1,15 +1,10 @@
-"""How this repository writes the files a human reads: YAML, prose-shaped.
+"""Defines how this repository writes the files a human reads: YAML shaped for prose.
 
 Run logs and memory stores are public records reviewed in pull requests, so
-their readability is the point. JSON cannot hold a paragraph: it has no
-multi-line string, so a kilobyte of prose becomes a kilobyte-long line with
-escaped quotes. YAML has two forms that fit, and this module is the one place
-that chooses between them:
-
-- a **folded** scalar (``>``) for long prose, which wraps at the margin and
-  re-joins to the identical string on load;
-- a **literal** scalar (``|``) for text that already has newlines, which would
-  otherwise be flattened.
+they must stay readable, and JSON has no multi-line string: a kilobyte of prose
+becomes one kilobyte-long line of escaped quotes. This module is the one place
+that picks between the two YAML forms that fit, the folded scalar (``>``) for
+long prose and the literal scalar (``|``) for text that already has newlines.
 
 The dumper is a subclass rather than a global representer, so importing this
 module never changes how anything else in the process serializes YAML.
@@ -21,26 +16,24 @@ from typing import Any
 
 import yaml
 
-# Wrap prose at the margin. Nesting eats into it, so the fold simulation
-# assumes a typical indent rather than the real one, which the emitter knows
-# and the representer does not.
+# Only the emitter knows the real indent, so the fold simulation assumes a
+# typical one.
 WIDTH = 100
 ASSUMED_INDENT = 4
 
-# Past this a value is prose and folds whatever the last line looks like.
-# Below it, folding has to earn its place: a title a little over the margin
-# becomes one full line plus an orphaned word, which reads worse than the long
-# line it replaced.
+# Above this length a value is prose and folds regardless of its last line.
+# Below it, folding a title slightly over the margin yields one full line plus
+# a single trailing word, which reads worse than the long line it replaced.
 ALWAYS_FOLD = 200
 MIN_TAIL = (WIDTH - ASSUMED_INDENT) // 3
 
 
 class Dumper(yaml.SafeDumper):
-    """SafeDumper with prose-friendly strings, kept local to this module."""
+    """Extends SafeDumper with string styles suited to prose and stays local to this module."""
 
 
 def folds_well(data: str) -> bool:
-    """Whether folding this string yields full lines rather than a stub tail."""
+    """Returns whether folding this string yields full lines rather than a short last line."""
     width = WIDTH - ASSUMED_INDENT
     if len(data) <= width:
         return False
@@ -75,22 +68,22 @@ BLANK_LINE = re.compile(r"\n\s*\n")
 
 
 def paragraphs(text: str) -> list[str]:
-    """The blank-line-separated paragraphs of ``text``, each collapsed to one
-    line. The normal form to compare against, so the same paragraph is
-    recognised whatever margin it was last written at."""
+    """Returns the paragraphs of ``text``, each collapsed to one line.
+
+    This is the form to compare against, so a paragraph is recognized at
+    whatever margin it was last written.
+    """
     return [" ".join(block.split()) for block in BLANK_LINE.split(text.strip()) if block.strip()]
 
 
 def wrap(text: str) -> str:
-    """Multi-paragraph prose, wrapped at the margin the folded form uses.
+    """Wraps multi-paragraph prose at the margin the folded form uses.
 
-    ``dump`` folds one paragraph for free, but a string that already has
-    newlines has to keep them, so the emitter writes it verbatim and every
-    paragraph lands as one enormous line — the JSON problem this module exists
-    to avoid, reached the long way round.
+    ``dump`` folds a lone paragraph on its own, but multi-paragraph text keeps
+    its newlines and so is emitted verbatim, one very long line per paragraph.
 
-    Long words are never broken: a URL or an id split across a line reads back
-    with a newline inside it, which is worse than an overlong line.
+    Long words stay intact: a URL split across a line reads back with a newline
+    inside it, which is worse than an overlong line.
     """
     return "\n\n".join(
         "\n".join(
@@ -106,8 +99,11 @@ def wrap(text: str) -> str:
 
 
 def dump(data: Any, *, sort_keys: bool = True) -> str:
-    """The one valid serialization of a record. Sorted by default, so an
-    unchanged record re-serializes identically and git shows no diff."""
+    """Returns the one valid serialization of a record.
+
+    Keys sort by default, so an unchanged record serializes identically and git
+    shows no diff.
+    """
     return yaml.dump(
         data,
         Dumper=Dumper,
@@ -119,6 +115,9 @@ def dump(data: Any, *, sort_keys: bool = True) -> str:
 
 
 def load(text: str) -> Any:
-    """Parse a record. ``safe_load``, always: these files carry text derived
-    from untrusted sources, and no tag in one may construct anything."""
+    """Parses a record.
+
+    Always ``safe_load``: these files carry text from untrusted sources, and no
+    tag in a record may construct anything.
+    """
     return yaml.safe_load(text)

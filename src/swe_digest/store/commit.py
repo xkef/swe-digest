@@ -1,12 +1,14 @@
-"""Commit the staged changes onto the default branch with a Verified signature.
+"""Commits the staged changes onto the default branch with a Verified signature.
 
-Sends the staged index through the GraphQL `createCommitOnBranch` mutation, so
-GitHub creates the commit server-side and signs it as `github-actions[bot]`. The
-commit carries the Verified badge. No private key or secret is involved: the
-workflow's `GITHUB_TOKEN` with `contents: write` is enough.
+The module sends the staged index through the GraphQL `createCommitOnBranch`
+mutation, so GitHub creates the commit server-side and signs it as
+`github-actions[bot]`. The commit carries the Verified badge. No private key
+or secret is involved: the workflow's `GITHUB_TOKEN` with `contents: write` is
+enough.
 
-Reads additions and deletions from the git index, so stage the intended files
-with `git add` / `git rm` first. Exits 0 with a message when nothing is staged.
+The module reads additions and deletions from the git index, so stage the
+intended files with `git add` or `git rm` first. It exits 0 with a message
+when nothing is staged.
 """
 
 import os

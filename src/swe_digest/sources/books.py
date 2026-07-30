@@ -1,11 +1,11 @@
-"""Fetch new technical-book releases for the daily digest.
+"""Fetches new technical-book releases for the daily digest.
 
 Reads the [books] feeds from the watchlist and pulls each publisher or imprint
-RSS/Atom feed, falling back to the committed data/snapshots/books files when the
-network is blocked. Feeds the Books section. Book-release feeds are sparse
-industry-wide, so coverage is best-effort and supplemented by Hacker News; the
-digest agent labels unverified items as discussion and links the publisher page
-first.
+RSS/Atom feed. Falls back to the committed data/snapshots/books files when the
+network is blocked. Supplies the Books section. Book-release feeds are sparse
+across the industry, so coverage is best effort and Hacker News supplements
+it. The digest agent labels unverified items as discussion and links the
+publisher page first.
 
 Exits nonzero when every feed is degraded, so the routine never silently skips
 book coverage.
@@ -20,7 +20,7 @@ DESCRIPTION_MAX_CHARS = settings.BOOKS_DESCRIPTION_MAX_CHARS
 
 
 def parse_feeds() -> list[tuple[str, str]]:
-    """Watchlist entries are "Label|https://feed-url"."""
+    """Parses watchlist entries of the form "Label|https://feed-url"."""
     return watchlist.pairs("books", "feeds", valid=lambda part: part.startswith("http"))
 
 

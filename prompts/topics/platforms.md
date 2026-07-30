@@ -16,7 +16,7 @@ Selection rules:
   behavior change.
 - Cover Swift and SwiftUI, the Swift toolchain, Apple Silicon, and macOS
   internals.
-- Keep the Swift language itself in `Languages and runtimes`; SDK, tooling, and
+- Keep the Swift language itself in `Languages and runtimes`. SDK, tooling, and
   platform changes go here.
 
 ## Linux and kernel checks

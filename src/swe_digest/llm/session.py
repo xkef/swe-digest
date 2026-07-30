@@ -1,17 +1,14 @@
 """One bounded model call, and everything the SDK is needed for.
 
-``stages`` decides which steps run and in what order; this decides nothing. It
-exists so the SDK import has exactly one home: the publish job installs PyYAML
-and nothing else, so a step family that reached for ``claude_agent_sdk`` at
-module scope would break the job that holds the write token, in the job that
-holds it.
+This module decides nothing. It exists so the SDK import has exactly one home:
+the publish job installs PyYAML and nothing else, so a module that reached for
+``claude_agent_sdk`` at import time would break the job holding the write token.
 
 A stage that raises fails that stage and nothing else. The SDK raises on turn
 exhaustion, and letting that propagate killed the whole run, losing the run log,
-the gate and the manifest for work already on disk. Whatever the stage managed
-to do stands, and the pipeline goes on to validate it. The imports are inside
-the guard for the same reason: an SDK that will not load is a stage failure on
-the same terms as a turn limit.
+the gate, and the manifest for work already on disk. The imports sit inside the
+guard for the same reason: an SDK that will not load is a stage failure on the
+same terms as a turn limit.
 """
 
 from collections import Counter
@@ -25,34 +22,31 @@ from swe_digest.llm import specs
 class Outcome:
     """What one stage produced, as data rather than as a step result.
 
-    Deliberately not a ``stages.StepResult``: this layer sits below the one that
-    owns the report, and the driver is what turns an outcome into a line of it.
+    Not a ``stages.StepResult``, because this layer sits below the one that owns
+    the report, and the driver is what turns an outcome into a line of it.
     """
 
     ok: bool
     detail: str
     input_tokens: int = 0
     output_tokens: int = 0
-    # Which tools the stage called, and how many times each. Names and counts
-    # only: a tool's arguments and results carry text fetched from the open web,
-    # and this record is committed.
+    # Names and counts only: a tool's arguments and results carry text fetched
+    # from the open web, and this record is committed.
     tools: dict[str, int] = field(default_factory=dict)
     # Of those calls, the ones that came back an error. A refused tool and a
     # tool that failed are the same event here, and both are turns the stage
-    # paid for and got nothing from. Without this the step table cannot say
-    # whether a name in ``tools`` was a capability or a wasted guess.
+    # paid for and got nothing from.
     failed: dict[str, int] = field(default_factory=dict)
 
 
 async def run_stage(
     spec: specs.StageSpec, task: str, server: Callable[[], object], day: str
 ) -> Outcome:
-    """One stage: one query, fresh context, bounded turns.
+    """Runs one stage: one query, fresh context, bounded turns.
 
     ``server`` is a factory called inside the guard rather than a value built
-    before it, because a tool server that will not build is a stage failure on
-    the same terms as a turn limit — and resolving it earlier took down a run
-    that had already paid for all of its collection.
+    before it, because resolving it earlier took down a run that had already
+    paid for all of its collection.
     """
     detail = ""
     used_in = used_out = 0
@@ -83,9 +77,8 @@ async def run_stage(
             if isinstance(message, UserMessage) and not isinstance(message.content, str):
                 for block in message.content:
                     if isinstance(block, ToolResultBlock) and block.is_error:
-                        # Under the id's own name when it is unknown, rather
-                        # than a shared bucket: a result that matches no call is
-                        # the case that hid a denial, and it has to be visible.
+                        # Keyed by the id itself when the call is unknown,
+                        # because a result matching no call is what hid a denial.
                         failed[
                             called.get(block.tool_use_id) or f"unmatched:{block.tool_use_id}"
                         ] += 1

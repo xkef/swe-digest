@@ -1,11 +1,10 @@
-"""Write the machine-readable run log for one digest day.
+"""Writes the machine-readable run log for one digest day.
 
-Produces data/runs/YYYY-MM-DD.yaml from the day's HN fetch
-(.cache/hn/, falling back to the committed data/data/snapshots/hn/ files), the
-published digest, and the watchlist queries. The script owns the
-"mechanical" keys (hn, digest, query_yield) and rewrites them
-idempotently; everything else in the file, including the agent's
-"judgment" subtree and mechanical.backtest, is preserved.
+The log is built from the day's HN fetch, the published digest, and the
+watchlist queries. This module owns the ``mechanical`` keys ``hn``, ``digest``,
+and ``query_yield``, and rewrites them idempotently. Everything else in the
+file, including the run's own ``judgment`` subtree and ``mechanical.backtest``,
+is preserved.
 """
 
 import sys
@@ -26,7 +25,7 @@ def query_yield(hn: dict, digest: document.Digest) -> dict:
     collection = hn["collections"].get("queries", {})
     queries = collection.get("items", {})
     # Raw Algolia hits before the strict term filter, when the fetch recorded
-    # them. `matched` is what the weekly review prunes on; `raw` only says how
+    # them. The weekly review prunes on ``matched``, and ``raw`` only says how
     # much loose relevance the search returned behind it.
     raw = collection.get("raw") or {}
     for query, items in queries.items():
@@ -49,13 +48,11 @@ def query_yield(hn: dict, digest: document.Digest) -> dict:
 
 
 def seed_judgment(record: dict[str, Any]) -> None:
-    """Give a fresh log the agent-owned skeleton the content gate requires.
+    """Gives a fresh log the skeleton the content gate requires.
 
-    ``check_content.check_run_logs`` rejects a log whose ``judgment`` block is
-    absent or holds a null, so without a skeleton the first ``make check`` of
-    the day would block publishing on a file the tooling had just created.
-    ``setdefault`` never overwrites, so a log the run already filled is left
-    exactly as it is.
+    The gate rejects a log whose ``judgment`` block is absent or holds a null,
+    so without a skeleton the day's first ``make check`` would block publishing
+    on a file the tooling had just created. ``setdefault`` never overwrites.
     """
     judgment = record.setdefault("judgment", {})
     judgment.setdefault("inbox", [])
@@ -90,9 +87,8 @@ def main(date: str | None = None) -> int:
                 for name in [*runs.STORY_COLLECTIONS, "comments"]
             },
             "queries_backend": collections.get("queries", {}).get("backend"),
-            # What the live fetch gained from the day's committed accumulator,
-            # so seen_ids stays interpretable: source names the file, pooled
-            # names how much of it came from earlier runs that day.
+            # How much of seen_ids came from earlier runs that day, which is
+            # what makes the count interpretable.
             "pooled": hn.get("pooled"),
         }
         yields = query_yield(hn, digest)

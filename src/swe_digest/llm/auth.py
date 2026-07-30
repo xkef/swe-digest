@@ -1,18 +1,15 @@
-"""Fail-closed check that a run bills the Claude subscription.
+"""Verifies, before anything runs, that a run bills the Claude subscription.
 
-The routine has always run on a subscription: the workflow passes
-``CLAUDE_CODE_OAUTH_TOKEN`` and no Anthropic API key exists anywhere in the
-repo. Nothing enforced that, though, and the failure mode is silent. Every
-credential source below outranks or shadows the subscription token, so a
-single stray variable in a workflow, a shell profile, or a runner image moves
-the whole routine onto metered API billing with no visible change in output.
+The routine runs on a subscription: the workflow passes
+``CLAUDE_CODE_OAUTH_TOKEN`` and no Anthropic API key exists in the repo. Every
+credential source in ``FORBIDDEN`` takes precedence over that token, so one
+stray variable in a workflow, a shell profile, or a runner image moves the whole
+routine onto metered API billing with no visible change in output.
 
-So the check refuses to start rather than warn. It runs before any session is
-opened, in ``pipeline.py`` and in the dry run alike.
-
-Presence is the test, not truthiness: an empty ``ANTHROPIC_API_KEY`` still
-occupies its slot in the SDK's credential resolution and authenticates with an
-empty key, which fails in a way that looks like a subscription problem.
+The check therefore refuses to start rather than warn, and it runs before any
+session opens. It tests presence rather than truthiness, because an empty
+``ANTHROPIC_API_KEY`` still takes part in the SDK's credential resolution and
+then fails in a way that looks like a subscription problem.
 """
 
 import os
@@ -20,12 +17,13 @@ from collections.abc import Mapping
 
 OAUTH_TOKEN = "CLAUDE_CODE_OAUTH_TOKEN"
 
-# Set by GitHub Actions on every runner. Locally the `claude` CLI login supplies
-# credentials from disk, so the token variable is not required there.
+# GitHub Actions sets this variable on every runner. Locally the `claude` CLI
+# login supplies credentials from disk, so the token variable is not required
+# there.
 CI = "GITHUB_ACTIONS"
 
-# Anything here either bills the API instead of the subscription or routes
-# inference through a third-party provider.
+# Each variable here either bills the API instead of the subscription or
+# routes inference through a third-party provider.
 FORBIDDEN: tuple[str, ...] = (
     "ANTHROPIC_API_KEY",
     "ANTHROPIC_AUTH_TOKEN",
@@ -37,14 +35,15 @@ FORBIDDEN: tuple[str, ...] = (
 
 
 class AuthError(RuntimeError):
-    """The environment would not bill this run to the subscription."""
+    """The environment does not bill this run to the subscription."""
 
 
 def check(env: Mapping[str, str] | None = None) -> None:
-    """Raise unless this environment bills the Claude subscription.
+    """Raises ``AuthError`` unless this environment bills the Claude subscription.
 
-    Raises ``AuthError`` when a credential that outranks the subscription token
-    is present, or when running unattended without that token.
+    The error is raised when a credential that takes precedence over the
+    subscription token is present, or when the run is unattended and lacks
+    that token.
     """
     environ = os.environ if env is None else env
 
@@ -66,7 +65,7 @@ def check(env: Mapping[str, str] | None = None) -> None:
 
 
 def describe(env: Mapping[str, str] | None = None) -> str:
-    """One line naming the credential source, for the dry run and run logs."""
+    """Returns one line that names the credential source, for the dry run and run logs."""
     environ = os.environ if env is None else env
     if environ.get(OAUTH_TOKEN):
         return f"subscription via {OAUTH_TOKEN}"

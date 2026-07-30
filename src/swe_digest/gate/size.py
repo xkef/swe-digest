@@ -1,9 +1,9 @@
-"""Enforce the per-page gzip size budget on the built site.
+"""Enforces the per-page gzip size budget on the built site.
 
-The site stays lightweight by contract: every built HTML/CSS/JS file outside
-the Pagefind index must gzip below the budget. This ran as a shell loop in the
-Makefile check target; it lives in the gate so every publish rule is Python
-under the coverage floor. Stdlib only.
+The site stays small by contract: every built HTML, CSS, and JS file outside
+the Pagefind index must gzip below the budget. This check ran as a shell loop
+in the Makefile check target. It lives in the gate so that every publish rule
+is Python under the coverage floor. The module uses only the standard library.
 """
 
 import gzip
@@ -12,7 +12,7 @@ from pathlib import Path
 
 PAGE_BUDGET_BYTES = 32 * 1024
 ASSET_SUFFIXES = {".html", ".css", ".js"}
-# gzip -c's default level, which the Makefile loop measured with.
+# The default level of gzip -c, which the Makefile loop measured with.
 GZIP_LEVEL = 6
 
 

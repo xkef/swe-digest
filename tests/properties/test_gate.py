@@ -1,10 +1,10 @@
-"""Property-based tests over the gate's pure screening functions.
+"""Tests the gate's pure screening functions with property-based inputs.
 
 Hypothesis generates adversarial inputs around the invariants the publish
 gate relies on: an unsafe payload embedded in arbitrary prose is always
-flagged, entity-encoded payloads cannot slip past the decoder, secret
-patterns survive arbitrary surroundings, and the path allowlist never
-matches a traversal. Payload templates below are inert test fixtures.
+flagged, an entity-encoded payload cannot pass the decoder undetected, a
+secret pattern survives arbitrary surroundings, and the path allowlist never
+matches a traversal. The payload templates below are inert test fixtures.
 """
 
 from pathlib import Path
@@ -22,8 +22,8 @@ from swe_digest.gate.publish import ALLOWED_PATHS
 
 PATH = Path("digest.md")
 
-# Prose excludes backticks so generated text cannot open a code span that
-# would legitimately swallow the injected payload.
+# Prose excludes backticks so that generated text cannot open a code span
+# that would make the injected payload legitimate.
 prose = st.text(
     alphabet=st.characters(blacklist_characters="`"),
     max_size=200,

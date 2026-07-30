@@ -1,14 +1,14 @@
-"""Compact old run logs.
+"""Compacts old run logs.
 
-Deleting them would be the easy answer and the wrong one twice over: the
-``judgment`` block is the editorial record of what a run missed and why, and
-every published digest page links its day's log, so a deleted log is a 404 on a
-page already out in the world.
+Deleting a log would be wrong for two reasons: the ``judgment`` block is the
+editorial record of what a run missed and why, and every published digest page
+links its day's log, so a deleted log turns a link on a published page into a
+404.
 
-What dominates the bytes is machine detail — the ``query_yield`` id arrays,
-whose only consumer is the previous day's backtest. Past the retention window
-those go and their counts stay, so the weekly aggregator notices nothing.
-Retention here means smaller files, never fewer.
+Machine detail dominates the bytes: the ``query_yield`` id arrays, whose only
+consumer is the previous day's backtest. Past the retention window, compaction
+removes the id arrays and keeps their counts, so the weekly aggregator sees no
+change. Retention here means smaller files, never fewer files.
 """
 
 import sys
@@ -18,12 +18,12 @@ from swe_digest import paths, serial, settings
 from swe_digest.store import runs
 from swe_digest.store.runs import runs_dir
 
-# The id arrays that carry the bulk and have a one-day consumer.
+# The id arrays that hold most of the bytes and have a one-day consumer.
 DETAIL_KEYS = ("matched_ids", "published_ids")
 
 
 def compact_query_yield(mechanical: dict) -> int:
-    """Drop the id arrays from one log's query_yield. Returns ids dropped."""
+    """Drops the id arrays from one log's query_yield. Returns the number of dropped ids."""
     yields = mechanical.get("query_yield")
     if not isinstance(yields, dict):
         return 0

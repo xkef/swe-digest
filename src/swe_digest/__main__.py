@@ -1,4 +1,4 @@
-"""Allow ``python3 -m swe_digest`` in environments without an installed package."""
+"""Allows ``python3 -m swe_digest`` to run in environments without an installed package."""
 
 import sys
 

@@ -1,11 +1,10 @@
-"""Filter stories the archive already carries out of a day's digest.
+"""Filters stories the archive already carries out of a day's digest.
 
-The editorial rule is that each story appears once across the archive, keyed
-by the primary source URL, and ``gate.content`` fails a page that repeats one.
-This is the pipeline half of the same rule: the transform that removes a
-republished block so the run publishes the rest of its day instead of failing
-on the backstop. Pure text in, text out — reading the archive is the caller's
-job, which keeps this importable by anything that can import ``document``.
+Each story appears once across the archive, keyed by the primary source URL, and
+``gate.content`` fails a page that repeats one. This is the pipeline half of that
+rule: the transform that removes a republished block so the run publishes the
+rest of its day instead of failing on the backstop. Text in, text out. Reading
+the archive is the caller's job.
 """
 
 import re
@@ -25,7 +24,7 @@ from swe_digest.domain.document import (
     split_front_matter,
 )
 
-# What an emptied anchor section states instead of vanishing: the line every
+# What an emptied anchor section states instead of vanishing, in the words every
 # published digest already uses for a section it checked and found quiet.
 NO_ITEMS = "No major items found."
 
@@ -38,7 +37,8 @@ def primary_url(story: Story) -> str | None:
 
 
 def published_primaries(texts: Iterable[str]) -> set[str]:
-    """Every primary URL that leads a story in ``texts``, follow-ups aside."""
+    """Returns every primary URL that leads a story in ``texts``, minus
+    follow-ups."""
     urls: set[str] = set()
     for text in texts:
         for section, stories in parse(text).sections:
@@ -49,12 +49,11 @@ def published_primaries(texts: Iterable[str]) -> set[str]:
 
 
 def drop_stories(text: str, titles: Collection[str]) -> str:
-    """The digest without the named story blocks, still a valid page.
+    """Returns the digest without the named story blocks, still a valid page.
 
-    A section left with no content keeps the page valid: the lead and the
-    anchors state ``No major items found.`` and any other emptied header goes.
-    ``source_count`` is recomputed from the remaining links, and the result is
-    in canonical form.
+    The lead and the anchors state ``No major items found.`` when emptied, and
+    any other emptied header goes. ``source_count`` is recomputed from the
+    remaining links, and the result is in canonical form.
     """
     parts = split_front_matter(text)
     front, body = parts if parts else ("", text)
@@ -101,9 +100,10 @@ def drop_stories(text: str, titles: Collection[str]) -> str:
 
 
 def filter_republished(text: str, prior: Iterable[str]) -> tuple[str, list[str]]:
-    """``text`` with every story the archive already carries removed, and the
-    titles that went. Follow-up blocks stay: tracking published stories is
-    their job."""
+    """Returns ``text`` without the stories the archive carries, and their titles.
+
+    Follow-up blocks stay, because tracking published stories is their job.
+    """
     published = published_primaries(prior)
     titles = [
         story.title

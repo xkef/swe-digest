@@ -2,12 +2,12 @@
 
 ## Events checks
 
-Collection: `fetch_events` (`swe_digest.fetch.events`) reads the `[[events]]`
-table in `config/watchlist.toml` and partitions it by date into events
-upcoming within 3 days (with a `days_until` countdown, flagged `soon`) and
-events active today. It makes no network call; the committed dates are the
-source of truth and must be kept current and verified against each event's
-official page.
+Collection: `fetch_events` runs `swe_digest.sources.events`, which reads the
+`[[events]]` table in `config/watchlist.toml` and partitions it by date into
+events starting within 3 days, flagged `soon` with a `days_until` countdown, and
+events active today. It makes no network call, because the committed dates are
+the source of truth. Keep them current and verified against each event's official
+page.
 
 The fetcher output is context, not content. It tells the run which conferences
 are active or imminent so the HN, YouTube, and web passes can watch for talk

@@ -1,9 +1,9 @@
 """The digest document format: the section vocabulary and the one parser.
 
-Every consumer of digest markdown crosses this interface: the skeleton
-generator and the content gate take the section layout from here, and the
-run log, story-page builder, and backtest all read digests through
-``parse``. Stdlib only, so the gate stays runnable with bare python3.
+Every consumer of digest markdown crosses this interface. The skeleton generator
+and the content gate take the section layout from here, and the run log, the
+story-page builder, and the backtest all read digests through ``parse``. Only
+the standard library, so the gate stays runnable with bare python3.
 """
 
 import re
@@ -13,9 +13,8 @@ from functools import cached_property
 
 from swe_digest import settings
 
-# The current section order. A digest carries these sections in this order,
-# omitting empty ones; the gate additionally requires the anchors in
-# check_content.check_structure.
+# The current section order. A digest carries these sections in this order and
+# omits the empty ones, except for the anchors the gate requires.
 SECTIONS = [
     "Top stories",
     "AI",
@@ -38,17 +37,14 @@ SECTIONS = [
     "Sources checked",
 ]
 
-# The lead section, and the only one that is not itself a topic: a story under
+# The lead section, and the only one that is not itself a topic. A story under
 # it is grouped by prominence, so its category is the only thing naming what it
 # is about. Everywhere else the section heading already says it.
 LEAD_SECTION = SECTIONS[0]
 
-# Every section name a digest may use, in the only order they may appear.
-# "HN and Reddit pulse" is the pre-2026-06-13 name for the Hacker News /
-# Reddit split and slots after it. "Conferences and events" is the
-# pre-2026-07-19 dedicated events section, retired in favor of
-# `Category: Event` stories in topical sections. Both stay here so every
-# published digest, old or new, is an ordered subsequence of this list.
+# Every section name a digest may use, in the only order they may appear. The
+# two retired names stay here so every published digest, old or new, is an
+# ordered subsequence of this list.
 SECTION_VOCABULARY = [
     SECTIONS[0],
     "Conferences and events",
@@ -61,16 +57,14 @@ SECTION_VOCABULARY = [
 # always-checked risk sections, and the coverage statement.
 ANCHOR_SECTIONS = ("Security", "Outages", "Sources checked")
 
-# Sections whose blocks track stories covered on other days (or the same
-# day), so a repeated primary URL there is an update, not a duplicate story.
-# They also carry their own field shape (open/closed rather than a story
-# status, and no source of their own), so the story-shape rules skip them.
+# Sections whose blocks track stories covered on other days, so a repeated
+# primary URL there is an update rather than a duplicate story. They carry their
+# own field shape too, so the story-shape rules skip them.
 FOLLOWUP_SECTIONS = {"Watchlist follow-ups"}
 
-# The rest of the vocabulary. This module is the single source: the gate
-# validates against it, the skeleton is generated from it, the selection schema
-# constrains the model to it, and the prompts have it substituted in, so a
-# change cannot leave one of the four behind.
+# The rest of the vocabulary, from one source: the gate validates against it,
+# the skeleton is generated from it, the selection schema constrains the model
+# to it, and the prompts substitute it in.
 #
 # Statuses stay in code. Separating fact from rumor is a content-safety rule
 # rather than an editorial preference, and the weekly status scoring is defined
@@ -84,19 +78,15 @@ MAX_STORIES: int = settings.DIGEST_MAX_STORIES
 MAX_SECTION_STORIES: int = settings.DIGEST_MAX_SECTION_STORIES
 
 # Sections the per-section cap does not apply to. Both are risk sections the
-# digest is expected to state in full: a day with twelve advisories or four
-# concurrent incidents is what the reader came for, and truncating it would
-# hide operational fact rather than trim padding. Top stories has its own,
-# lower cap.
+# digest states in full, because truncating a day of twelve advisories or four
+# concurrent incidents hides operational fact rather than trimming padding.
 UNCAPPED_SECTIONS = ("Security", "Outages")
 
-# Sections outside the day budget entirely. Exempting Security from the
-# per-section cap was not enough: a twelve-advisory day still consumed twelve
-# of the day's slots, so the budget silently traded advisories against
-# everything else. Security is not editorial volume that competes with the
-# rest of the digest, so it does not count. Outages is capped-exempt but still
-# budgeted, on the grounds that an incident count is bounded by the day while
-# an advisory count is bounded by whoever published that morning.
+# Sections outside the day budget entirely. Exempting Security from the cap was
+# not enough, because a twelve-advisory day still consumed twelve of the day's
+# slots and traded advisories against everything else. Outages stays budgeted:
+# an incident count is bounded by the day, an advisory count by whoever
+# published that morning.
 UNBUDGETED_SECTIONS = ("Security",)
 
 # The story block, in field order. Rendered into the skeleton and into the
@@ -121,7 +111,7 @@ STORY_FIELDS: tuple[tuple[str, str], ...] = (
 
 
 def story_shape() -> str:
-    """The story block as it appears in the prompt and the skeleton."""
+    """Returns the story block as it appears in the prompt and the skeleton."""
     lines = "\n".join(f"- **{label}:** {value}" for label, value in STORY_FIELDS)
     return f"### Story title\n\n{lines}\n"
 
@@ -135,9 +125,9 @@ def split_front_matter(text: str) -> tuple[str, str] | None:
     return text[3:end], text[end + 4 :]
 
 
-# Campaign and referrer parameters identify the click, not the document, so
-# they are dropped before comparison; two links differing only in utm_source
-# are the same source.
+# Campaign and referrer parameters identify the click, not the document, so they
+# are dropped before comparison. Two links differing only in utm_source are the
+# same source.
 TRACKING_PARAMS = frozenset(
     {
         "utm_source",
@@ -154,13 +144,12 @@ TRACKING_PARAMS = frozenset(
 
 
 def normalize_url(url: str) -> str:
-    """The dedup key for a source link: host without ``www.``, path without a
-    trailing slash, and the identifying query.
+    """Returns the dedup key for a source link.
 
-    The query has to stay. On the sites the digest links most, the whole
-    identity of the document lives there: ``watch?v=ID`` and ``item?id=ID``
-    share a host and path across every video and every thread, so dropping it
-    collapses them onto one key.
+    The key is the host without ``www.``, the path without a trailing slash, and
+    the identifying query. The query has to stay: on the sites the digest links
+    most, ``watch?v=ID`` and ``item?id=ID`` share a host and path across every
+    video and every thread, so dropping it collapses them onto one key.
     """
     parts = urllib.parse.urlsplit(url)
     host = parts.netloc.lower().removeprefix("www.")
@@ -195,12 +184,14 @@ class Story:
     fields: dict[str, str]
 
 
-# No slots here, unlike the other frozen records: the derived views below are
-# cached_property, which needs a __dict__ to cache into.
+# No slots here, unlike the other frozen records, because the derived views below
+# are cached_property and need a __dict__ to cache into.
 @dataclass(frozen=True)
 class Digest:
-    """A parsed digest: raw front matter, body, and ordered sections with
-    their stories, plus the derived views the run log and backtest read."""
+    """A parsed digest: front matter, body, and ordered sections with stories.
+
+    The derived views are what the run log and the backtest read.
+    """
 
     front: str
     body: str
@@ -229,12 +220,11 @@ class Digest:
 
 
 def parse(text: str) -> Digest:
-    """Sections, stories, and their field lines.
+    """Parses a digest into sections, stories, and their field lines.
 
-    A field's indented continuation lines are joined into its value. Without
-    that, a wrapped ``- **Summary:**`` kept only its first line: the gate saw a
-    shortened claim and the story page published one, with nothing to say a
-    sentence had gone missing.
+    A field's indented continuation lines join into its value. Without that, a
+    wrapped ``- **Summary:**`` kept only its first line, and both the gate and
+    the story page saw a shortened claim with nothing to mark it as truncated.
     """
     parts = split_front_matter(text)
     front, body = parts if parts else ("", text)

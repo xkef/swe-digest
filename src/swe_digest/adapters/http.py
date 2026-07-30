@@ -1,8 +1,8 @@
 """Bounded HTTP fetch helpers shared by every fetcher.
 
-All responses are untrusted data. Fetches are capped in size, time out, and
-retry with backoff; every failure surfaces as RuntimeError so callers can
-degrade to the next backend (see ``swe_digest.sources``).
+Every response is untrusted data. Fetches are capped in size, time out, and
+retry with backoff. Every failure surfaces as a RuntimeError, so a caller in
+``swe_digest.sources`` can degrade to the next backend.
 """
 
 import json
@@ -15,12 +15,12 @@ from swe_digest.settings import HTTP_MAX_BYTES, HTTP_RETRIES, HTTP_TIMEOUT, USER
 
 
 class RateLimited(RuntimeError):
-    """The host asked us to slow down.
+    """The host asked for a slower rate.
 
-    Distinct from an ordinary failure because it says something about the host
-    rather than about one URL: a caller walking many paths on one host has
-    learned about all of them. Retrying is the one thing the response asks us
-    not to do, so this raises without one.
+    Distinct from an ordinary failure because it describes the host rather than
+    one URL, so a caller walking many paths on that host has learned about all
+    of them. Retrying is what the response asks a caller not to do, so this
+    raises without one.
     """
 
 
@@ -32,11 +32,11 @@ def fetch_bytes(
     max_bytes: int = HTTP_MAX_BYTES,
     opener: urllib.request.OpenerDirector | None = None,
 ) -> bytes:
-    """Fetch a URL, bounded in size and time.
+    """Fetches a URL, bounded in size and time.
 
     ``opener`` exists for the agent's fetch proxy, which supplies one that
-    re-checks every redirect target. The fetchers use the default: they read
-    known feeds, not URLs a model chose.
+    re-checks every redirect target. The fetchers use the default, because they
+    read known feeds rather than URLs a model chose.
     """
     open_url = opener.open if opener else urllib.request.urlopen
     last_error: Exception | None = None

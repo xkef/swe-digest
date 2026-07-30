@@ -1,9 +1,9 @@
-"""Typed model of the unattended run manifest (.run/manifest.json).
+"""Models the unattended run manifest (.run/manifest.json) with typed dataclasses.
 
-The read-only agent job requests every write side effect through this file;
-the publish job parses it here and re-verifies each request against GitHub
-API fields before acting. Parsing is strict: unknown keys or malformed
-entries stop the run.
+The read-only agent job requests every write side effect through this file.
+The publish job parses the file here and re-verifies each request against
+GitHub API fields before it acts. Parsing is strict: unknown keys or
+malformed entries stop the run.
 """
 
 import json

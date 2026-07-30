@@ -1,19 +1,8 @@
-"""The day's evidence store: run logs under data/runs/ and the day's HN data.
+"""Reads and writes the day's evidence: run logs, weekly markers, and HN data.
 
-Run logs are the durable record each digest day leaves behind (data/snapshots/hn/
-files are pruned to seven days and .cache/ is gitignored), so the run-log
-command, the backtest, and the yield stats all read and write them through
-this module.
-
-JSON rather than YAML, for two reasons. The base package then has no
-dependencies at all, so the privileged publish job installs nothing. And one
-canonical serialization (sorted keys, two-space indent) means an unchanged
-record rewrites to an identical file, which a prose-friendly YAML dumper could
-never guarantee.
-
-Every writer goes through ``save_run_log``, which is what keeps the one
-canonical serialization the content gate checks from depending on which step
-did the writing.
+A run log is the only durable record of a digest day, because HN snapshots are
+pruned after seven days and ``.cache/`` is gitignored. Every write goes through
+``serial``, which is what lets the content gate compare a log byte for byte.
 """
 
 import json
@@ -25,9 +14,8 @@ from swe_digest import paths, serial
 DATE_STEM = re.compile(r"\d{4}-\d{2}-\d{2}")
 
 
-# Resolved on call rather than bound at import, so pointing ``paths.ROOT`` at a
-# fixture tree moves every one of them together. A constant captured at import
-# is a second root a test has to remember to move.
+# Resolved on call, not bound at import: a directory captured at import is a
+# second root that pointing ``paths.ROOT`` at a fixture tree would not move.
 def runs_dir() -> Path:
     return paths.RUN_LOG.dir()
 
@@ -48,7 +36,6 @@ STORY_COLLECTIONS = ["front_page", "top_day", "ask_hn", "show_hn"]
 
 
 def dumps(record: dict) -> str:
-    """The one valid serialization of a log, which the content gate enforces."""
     return serial.dump(record)
 
 
@@ -86,7 +73,7 @@ def save_weekly_marker(date: str, record: dict) -> Path:
 
 
 def previous_weekly_date(before: str) -> str | None:
-    """The newest date-named weekly marker strictly before `before`."""
+    """Returns the newest date-named weekly marker strictly before ``before``."""
     if not weekly_dir().exists():
         return None
     dates = sorted(
@@ -98,8 +85,11 @@ def previous_weekly_date(before: str) -> str | None:
 
 
 def load_hn(date: str) -> tuple[dict, str] | None:
-    """The day's HN fetch: the fresh .cache file when present, else the
-    committed data/snapshots/hn files."""
+    """Returns the day's HN data and its origin, or None when neither exists.
+
+    The origin is the fresh cache file when present, and the committed snapshot
+    otherwise.
+    """
     for path, source in (
         (hn_cache_dir() / f"{date}.json", "cache"),
         (hn_snapshot_dir() / f"{date}.json", "snapshot"),

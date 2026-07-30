@@ -1,5 +1,5 @@
-"""Every read and write of ``data/``.
+"""Performs every read and write of ``data/``.
 
-One module per tree the bot owns. Nothing outside this package writes those
-files, so the schema and the bounds are enforced in one place.
+Each tree the bot owns has one module. Nothing outside this package writes
+those files, so one place enforces the schema and the bounds.
 """

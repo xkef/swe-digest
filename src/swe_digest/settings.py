@@ -1,13 +1,13 @@
-"""The tunables, read once from config/settings.toml.
+"""Reads the tunables once from config/settings.toml.
 
-The TOML file drives behavior; this module maps it to typed constants so the
-rest of the package keeps plain-name imports. ``config/`` sits outside the
+The TOML file drives behavior. This module maps it to typed constants so the
+rest of the package keeps plain-name imports. ``config/`` is outside the
 publish allowlist and changes only through the owner-approved improvement path.
 
-Read at import, and every lookup is a direct subscript rather than a ``get``
-with a default: a settings file missing a key fails on import with the key that
-is missing, which is the failure a scheduled run can act on. A default would let
-it run to completion against a number nobody chose.
+The module reads the file at import, and every lookup is a direct subscript
+rather than a ``get`` with a default: a settings file that misses a key fails
+on import and names the missing key, which is the failure a scheduled run can
+act on. A default would let the run finish against a number nobody chose.
 """
 
 import tomllib
@@ -30,10 +30,10 @@ HTTP_TIMEOUT: int = _raw["http"]["timeout_seconds"]
 HTTP_RETRIES: int = _raw["http"]["retries"]
 HTTP_MAX_BYTES: int = _raw["http"]["max_response_bytes"]
 
-# The per-source numeric bounds, keyed by the one spelling of a source name.
-# Read through the registry row (``domain.sources.Source.bounds``) rather than
-# unpacked into a constant each: every source carries the same four, and a
-# fetcher asks its own row for them.
+# The per-source numeric bounds, keyed by the one spelling of each source name.
+# Code reads them through the registry row (``domain.sources.Source.bounds``)
+# rather than through one constant each: every source carries the same four
+# bounds, and a fetcher asks its own row for them.
 SOURCE_BOUNDS: dict[str, dict[str, Any]] = {name: _raw[name] for name in paths.SOURCE_DIRS}
 
 # Hacker News fetcher
@@ -102,9 +102,9 @@ MEMORY_FOLLOWUP_MAX_AGE_DAYS: int = _raw["memory"]["followup_max_age_days"]
 MEMORY_ACCESS_NOTE_STALE_DAYS: int = _raw["memory"]["access_note_stale_days"]
 MEMORY_RUN_DETAIL_DAYS: int = _raw["memory"]["run_log_detail_days"]
 
-# Staged pipeline. The tool grant is not here on purpose: this file is
-# proposable through the improvement path, so a grant here would let a run
-# propose widening its own capability. See swe_digest.llm.specs.
+# Staged pipeline. By design, the tool grant is not here: a run may propose
+# changes to the settings file through the improvement path, so a grant here
+# would let a run propose widening its own capability. See swe_digest.llm.specs.
 AGENT_MODEL: str = _raw["agent"]["model"]
 AGENT_FETCH_MAX_CHARS: int = _raw["agent"]["fetch_max_chars"]
 AGENT_TOOL_OUTPUT_MAX_CHARS: int = _raw["agent"]["tool_output_max_chars"]

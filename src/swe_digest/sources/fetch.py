@@ -1,16 +1,14 @@
 """The shared envelope for one network-fetcher invocation.
 
-Every fetcher has the same shape, and it is spelled here once as functions over
-a ``Run``: open the window, try backends per collection (degrading loudly,
-never silently), union today's committed accumulator in, then report and write
-the envelope to ``.cache/``. A fetcher module is what is left — the backends
-that speak one host's protocol, and the normaliser that gives their items a
-common shape.
+Every fetcher has the same shape, written here once as functions over a ``Run``:
+open the window, try backends per collection while reporting every degradation,
+union today's committed accumulator in, then report and write the envelope to
+``.cache/``. What is left in a fetcher module is the backends that speak one
+host's protocol and the normalizer that gives their items a common shape.
 
-The clock is injected so the window math is testable, and a run is otherwise
-immutable except for ``failures``: a backend that half-succeeded reports its
-own degradation from inside its closure, which is the one thing a return value
-cannot carry out of ``collect``.
+The clock is injected so the window math is testable. A run is otherwise
+immutable except for ``failures``, which is how a backend that half-succeeded
+reports its own degradation from inside its closure.
 """
 
 import json
@@ -43,10 +41,10 @@ GATHER_WORKERS = 8
 
 
 def count_items(items: Any) -> int:
-    """Items in a collection, list-shaped or map-shaped (comments, queries).
+    """Counts the items in a collection, whether list-shaped or map-shaped.
 
-    Public because the agent's tool wrappers summarize the same envelope, and two
-    copies of this is two chances for a count to mean something different.
+    Public because the agent's tool wrappers summarize the same envelope, and
+    two copies are two chances for a count to mean something different.
     """
     if isinstance(items, dict):
         return sum(count_items(value) for value in items.values())
@@ -87,8 +85,10 @@ def start(name: str, clock: Callable[[], float] = time.time) -> Run:
 
 
 def collect(run: Run, label: str, backends: Iterable[Backend]) -> Collection:
-    """Try backends in order; the first success wins. A bad backend degrades to
-    the next one instead of killing the whole run. See FETCH_ERRORS."""
+    """Tries the backends in order, and the first success wins.
+
+    A failing backend degrades to the next one instead of killing the run.
+    """
     for backend_name, backend in backends:
         try:
             return {"backend": backend_name, "items": backend()}
@@ -99,11 +99,10 @@ def collect(run: Run, label: str, backends: Iterable[Backend]) -> Collection:
 
 
 def within(items: list[Item], since_iso: str) -> list[Item]:
-    """The items inside the window.
+    """Returns the items inside the window.
 
-    An item whose date could not be read is kept. Dropping it would narrow
-    coverage silently on a feed that omits the field, and the fetchers already
-    treat a missing date as unknown rather than as old.
+    An item whose date could not be read is kept, because dropping it would
+    narrow coverage without notice on a feed that omits the field.
     """
     return [item for item in items if not item["published_at"] or item["published_at"] >= since_iso]
 
@@ -111,11 +110,11 @@ def within(items: list[Item], since_iso: str) -> list[Item]:
 def gather(
     jobs: Sequence[tuple[str, Any]], read: Callable[[str, Any], list[Item]], what: str
 ) -> list[Item]:
-    """Every job in parallel, newest first, tolerating individual failures.
+    """Runs every job in parallel and returns the items, newest first.
 
-    One dead feed is a warning; nothing found at all is a ``RuntimeError``, so
-    the caller degrades to its committed snapshot rather than writing an empty
-    collection that reads like a quiet day.
+    One dead feed is a warning. Nothing found at all raises, so the caller
+    degrades to its committed snapshot rather than writing an empty collection
+    that reads like a quiet day.
     """
 
     def guarded(job: tuple[str, Any]) -> list[Item]:
@@ -137,8 +136,10 @@ def gather(
 
 
 def newest_snapshot(run: Run) -> dict[str, Any]:
-    """Newest committed snapshot from the source's accumulator directory. Last
-    resort for environments where every network backend is blocked."""
+    """Returns the newest committed snapshot for the source.
+
+    The last resort, for an environment where every network backend is blocked.
+    """
     files = sorted(run.source.snapshot_dir.glob("*.json"))
     if not files:
         raise RuntimeError(f"no committed snapshot in {run.source.name}")
@@ -154,13 +155,12 @@ def newest_snapshot(run: Run) -> dict[str, Any]:
 
 
 def day_snapshot(run: Run) -> dict[str, Any]:
-    """The accumulator for this run's UTC day.
+    """Returns the accumulator for this run's UTC day.
 
-    ``newest_snapshot`` answers "is there anything fresh enough to fall back
-    on"; this answers "what has today already collected", which is a different
-    question and takes no age bound: the day's file is the day's coverage
-    however early it was last written. Raises RuntimeError rather than
-    FileNotFoundError so callers can catch it with FETCH_ERRORS.
+    ``newest_snapshot`` asks whether anything is fresh enough to fall back on.
+    This asks what today has already collected, which takes no age bound: the
+    day's file is the day's coverage however early it was last written. Raises
+    RuntimeError rather than FileNotFoundError, so ``FETCH_ERRORS`` catches it.
     """
     path = run.source.snapshot_dir / f"{run.day}.json"
     if not path.exists():
@@ -170,7 +170,7 @@ def day_snapshot(run: Run) -> dict[str, Any]:
 
 
 def snapshot(run: Run, name: str) -> Items:
-    """One collection out of the newest committed snapshot."""
+    """Returns one collection out of the newest committed snapshot."""
     collection = newest_snapshot(run)["collections"].get(name)
     if not collection or not collection["items"]:
         raise RuntimeError(f"snapshot has no {name} items")
@@ -180,19 +180,17 @@ def snapshot(run: Run, name: str) -> Items:
 def pool(
     run: Run, collections: dict[str, Collection]
 ) -> tuple[dict[str, Collection], Pooled | None]:
-    """Union today's committed accumulator into this run's collections.
+    """Unions today's committed accumulator into this run's collections.
 
-    A live fetch only ever sees its own rolling window, while the day's
-    accumulator holds everything that surfaced today, so the digest was being
-    written from about half the material the repo already collects. The
-    accumulator is taken whole rather than re-filtered through this run's
-    window: it is already day-scoped by filename, every entry passed a window
-    check when it was fetched, and re-filtering would discard exactly the
-    early-day coverage this exists to recover.
+    A live fetch sees only its own rolling window, while the day's accumulator
+    holds everything that surfaced today, so the digest was written from about
+    half the material the repo collects. The accumulator is taken whole rather
+    than re-filtered through this run's window, because re-filtering would
+    discard exactly the early-day coverage this exists to recover.
 
-    Pooling is strictly additive and never revises what ``collect`` decided:
-    the live item wins per id, ``backend`` keeps its live label, ``failures``
-    is untouched, and a missing accumulator is a warning, not a failure.
+    Pooling is additive and never revises what ``collect`` decided: the live
+    item wins per id, ``backend`` keeps its live label, ``failures`` is
+    untouched, and a missing accumulator is a warning rather than a failure.
     """
     kind = run.source.snapshot_kind
     if kind is None:
@@ -261,12 +259,11 @@ def report(
     notes: Sequence[str] = (),
     limit: int = 15,
 ) -> int:
-    """One count line per collection, a sample of ``show``, the envelope, and
-    the exit code. Every fetcher ends here, so degradation reads the same
-    whichever source produced it.
+    """Prints the counts, writes the envelope, and returns the exit code.
 
-    ``counts`` names the collections that get a plain count line, for a source
-    whose other collections are not lists and say more in a note of their own.
+    Every fetcher ends here, so degradation reads the same whichever source
+    produced it. ``counts`` names the collections that get a plain count line,
+    for a source whose other collections are not lists.
     """
     listed = {name: collections[name] for name in (counts or collections)}
     for name, collection in listed.items():

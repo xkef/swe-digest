@@ -1,15 +1,14 @@
 """The fetch proxy: the only way a step reaches the open web.
 
-No step is granted ``WebFetch`` or ``WebSearch``, so everything crosses here,
-which buys what the built-in tool does not: a size bound, https only, the
+No step is granted ``WebFetch`` or ``WebSearch``, so everything crosses here.
+That buys what the built-in tool does not: a size bound, https only, the
 shortener denylist the content gate already screens published links against, a
 refusal for anything resolving inside the network boundary, and a record of
 every fetch for the run log.
 
-**The rules are re-applied per redirect hop.** Checking only the URL the model
-supplied is the hole this closes: urllib follows redirects by default, so an
-https URL that redirects to http, to a shortener target, or to 169.254.169.254
-would otherwise sail past every rule above.
+**The rules are re-applied per redirect hop.** urllib follows redirects by
+default, so checking only the URL the model supplied would let an https URL
+redirect to http, to a shortener target, or to 169.254.169.254.
 """
 
 import html
@@ -43,7 +42,7 @@ _LOG: list[Fetch] = []
 
 
 def record() -> list[Fetch]:
-    """Every fetch this process attempted, for the run log."""
+    """Returns every fetch this process attempted, for the run log."""
     return list(_LOG)
 
 
@@ -61,12 +60,11 @@ class Refused(RuntimeError):
 
 
 def resolves_privately(host: str) -> bool:
-    """Whether a hostname resolves to an address inside the network boundary.
+    """Returns whether a host resolves inside the network boundary.
 
-    Every address it resolves to must be public: a name with one public and one
-    loopback answer is a DNS-rebinding shape, and refusing it costs nothing.
-    Unresolvable is not private — that failure belongs to the fetch, which
-    reports it with a useful message.
+    Every address it resolves to must be public, because a name with one public
+    and one loopback answer is a DNS-rebinding shape. An unresolvable name is
+    not private: that failure belongs to the fetch, which reports it usefully.
     """
     try:
         answers = socket.getaddrinfo(host, None)
@@ -92,19 +90,16 @@ _BLANK_LINES = re.compile(r"\n{3,}")
 
 
 def readable(body: str) -> str:
-    """A page as the text a reader sees, plus the metadata a citation needs.
+    """Returns a page as the text a reader sees, plus a citation's metadata.
 
-    The character bound below is the whole of what the model gets to read, and
-    on a modern page the first twenty thousand characters are stylesheets and
-    inline scripts. Returning markup spent the budget before the article
-    started, so pages resolved to head, meta and inline CSS and the run dropped
-    the story for want of a verified primary. ``fetch_url`` says it returns
-    text; this is that promise kept.
+    ``MAX_TEXT_CHARS`` is the whole of what the model gets to read, and on a
+    modern page the first twenty thousand characters are stylesheets and inline
+    scripts. Returning markup spent that budget before the article started, and
+    the run then dropped the story for want of a verified primary.
 
     The title and any JSON-LD are lifted out before the markup goes, because
-    that is where a publication date lives on most news sites and a date is
-    what a citation needs. Anything that is not HTML — an API's JSON, a plain
-    text file — is passed through untouched.
+    that is where most news sites put the publication date a citation needs.
+    Anything that is not HTML passes through untouched.
     """
     if not _HTML.search(body[:2048]):
         return body
@@ -117,10 +112,10 @@ def readable(body: str) -> str:
 
 
 def check(url: str) -> None:
-    """Every rule the proxy enforces, for one URL. Raises ``Refused``.
+    """Applies every rule the proxy enforces to one URL, raising ``Refused``.
 
-    Called for the URL the model supplied *and* for every redirect target, so
-    a redirect cannot reach what a direct request could not.
+    Called for the URL the model supplied and for every redirect target, so a
+    redirect cannot reach what a direct request could not.
     """
     parsed = urlparse(url)
     if parsed.scheme != "https":
@@ -143,12 +138,7 @@ def check(url: str) -> None:
 
 
 class GuardedRedirects(urllib.request.HTTPRedirectHandler):
-    """Re-applies ``check`` to every redirect target.
-
-    Without this the whole check is decorative: urllib follows redirects on its
-    own, so one https URL under an attacker's control reaches http, a
-    shortener's target, or the metadata service.
-    """
+    """Re-applies ``check`` to every redirect target."""
 
     def redirect_request(self, req: Any, fp: Any, code: int, msg: str, headers: Any, newurl: str):  # type: ignore[no-untyped-def]
         check(newurl)
@@ -156,7 +146,7 @@ class GuardedRedirects(urllib.request.HTTPRedirectHandler):
 
 
 def fetch(url: str) -> tuple[bool, str]:
-    """Fetch a URL as text. Returns (ok, text-or-reason)."""
+    """Fetches a URL as text. Returns (ok, text or reason)."""
     try:
         check(url)
     except Refused as refusal:

@@ -1,17 +1,13 @@
 """The write guard: a step may only write the files it declared.
 
-Today the publish gate catches a write outside the allowlist — at push time,
-after the run has finished and spent its tokens. This denies the write when it
-is attempted, which turns a late failure into an immediate, explainable one.
+The publish gate catches a write outside the allowlist at push time, after the
+run has spent its tokens. Denying the write when it is attempted turns that late
+failure into an immediate one.
 
-It does not replace the gate. Prevention lives here, detection lives in
-``gate.publish_run``, and the two stay independent: a run that subverted this
-hook still has to get past a validator it never loaded. That is why the gate
-does not import this module and never will.
-
-The allowlist is built from ``gate.publish_run.writable_paths``, the same
-function the formatter uses, so a step's write permission cannot drift from
-what the gate will accept.
+This does not replace the gate. Prevention is here and detection is in
+``gate.publish``, and the two stay independent, so a run that subverted this
+hook still meets a validator it never loaded. Both read the allowlist from
+``paths``, so a step's write permission cannot drift from what the gate accepts.
 """
 
 import os
@@ -24,9 +20,9 @@ from swe_digest import paths
 from swe_digest.llm import specs
 from swe_digest.paths import writable_paths
 
-# Every tool that can put bytes on disk. NotebookEdit is included because it
-# is a write tool even though no step is granted it today: a guard that only
-# knows the tools currently in use stops guarding the moment one is added.
+# Every tool that can put bytes on disk, including the ones no step is granted
+# today. A guard that knows only the tools in use stops guarding the moment one
+# is added.
 WRITE_TOOLS = ("Write", "Edit", "MultiEdit", "NotebookEdit")
 MATCHER = "|".join(WRITE_TOOLS)
 
@@ -36,15 +32,14 @@ type Hook = Callable[[dict[str, Any], str | None, Any], Awaitable[HookResult]]
 ALLOW: HookResult = {}
 
 # Every write this guard refused, by the path it was asked for. A denial is
-# reported to the model and otherwise leaves no trace, which for a prevention
-# control is the wrong default: a step that tried to write the settings file
-# fifteen times and was stopped every time is indistinguishable from a step that
-# never tried. The run record commits the count.
+# otherwise reported only to the model, which leaves a step stopped fifteen
+# times indistinguishable from a step that never tried. The run record commits
+# the count.
 _DENIALS: Counter[str] = Counter()
 
 
 def denials() -> dict[str, int]:
-    """What this process refused to write, for the run record."""
+    """Returns what this process refused to write, for the run record."""
     return dict(_DENIALS)
 
 
@@ -64,12 +59,11 @@ def _deny(path: str, reason: str) -> HookResult:
 
 
 def resolve(path: str, root: Path | None = None) -> Path | None:
-    """A tool's file_path as a real path under the repo, or None if it escapes.
+    """Returns a tool's file_path under the repo, or None when it escapes.
 
-    Resolves symlinks and ``..`` before comparing, so a path that merely looks
-    contained cannot pass. A path outside the repo is None rather than an
-    exception: the caller turns it into a denial with a message the model can
-    act on.
+    Symlinks and ``..`` resolve before the comparison, so a path that merely
+    looks contained cannot pass. An escaping path returns None rather than
+    raising, so the caller can turn it into a denial the model can act on.
     """
     base = (root or paths.ROOT).resolve()
     candidate = Path(os.path.expanduser(path))
@@ -79,7 +73,7 @@ def resolve(path: str, root: Path | None = None) -> Path | None:
 
 
 def write_guard(allowed: Sequence[str], root: Path | None = None) -> Hook:
-    """A PreToolUse hook that denies writes outside ``allowed``.
+    """Returns a PreToolUse hook that denies writes outside ``allowed``.
 
     ``allowed`` is repo-relative, as the publish allowlist is.
     """
@@ -122,15 +116,11 @@ def _show(allowed: Sequence[str]) -> str:
 
 
 def writes_for(spec: specs.StageSpec, day: str) -> list[str]:
-    """The files a step may write, repo-relative.
+    """Returns the repo-relative files a step may write.
 
-    Derived from ``writable_paths``, the same function the formatter and the
-    publish gate use, so a step's write permission cannot drift from what the
-    gate will accept. A step that writes nothing declares nothing, and the
-    guard then denies every write.
-
-    Lives here rather than in ``options`` so the dry run can report a step's
-    write permission without importing the SDK.
+    A step that writes nothing declares nothing, and the guard then denies every
+    write. This lives here rather than in ``_options`` so the dry run can report
+    a step's write permission without importing the SDK.
     """
     if not spec.writes_digest:
         return []

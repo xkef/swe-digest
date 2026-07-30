@@ -1,13 +1,13 @@
-"""swe-digest: collection, validation, and publishing code for the daily digest.
+"""Collects, validates, and publishes the daily digest.
 
-One package per concern, layered, with the import direction enforced by the
-contract in ``pyproject.toml`` rather than by review:
+The code keeps one package per concern, layered. The contract in
+``pyproject.toml``, not code review, enforces the import direction:
 
     cli -> stages -> analysis -> (gate | llm | publish)
         -> sources -> store -> adapters -> domain -> paths
 
-A module named with a leading underscore is that package's own business; every
-other module is what the layer offers the ones above it.
+A module whose name starts with an underscore is private to its package. Every
+other module is the interface that the layer offers to the layers above it.
 
 Every entry point goes through ``cli`` (``swe-digest ...`` or
 ``python3 -m swe_digest ...``), so the Makefile, the workflows, and the docs

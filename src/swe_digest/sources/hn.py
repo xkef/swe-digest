@@ -1,11 +1,9 @@
-"""Fetch Hacker News stories for the daily digest.
+"""Fetches Hacker News stories for the daily digest.
 
-Collects the front page, top stories from the last 24 hours, Ask HN,
-Show HN, and the watchlist queries. Tries structured backends in order
-(Algolia API, Firebase API, front page HTML, community mirrors,
-hnrss.org, then the committed data/snapshots/hn files from the hn-snapshot
-workflow) and exits nonzero when any collection is degraded, so the
-routine never silently falls back to web search.
+Collects the front page, top stories from the last 24 hours, Ask HN, Show HN,
+and the watchlist queries. Structured backends are tried in order, ending at the
+committed snapshots, and the run exits nonzero when any collection is degraded,
+so the routine never falls back to web search without saying so.
 """
 
 import re
@@ -102,8 +100,11 @@ def firebase_list(name: str, limit: int) -> list[dict]:
 
 
 def mirror_stories(url: str) -> list[dict]:
-    """Community JSON mirrors (node-hnapi shape). Discovery only: points may
-    lag and content is not first-party; published links stay canonical."""
+    """Reads the community JSON mirrors, in the node-hnapi shape.
+
+    Discovery only, because points can lag and the content is not first-party.
+    Published links stay canonical.
+    """
     stories = []
     for item in fetch_json(url):
         if not item.get("id") or not item.get("title") or item.get("type") == "job":
@@ -183,7 +184,7 @@ def hnrss_front_page() -> list[dict]:
 
 
 def comment_text(raw: str) -> str:
-    """Untrusted HTML comment body to bounded plain text."""
+    """Converts an untrusted HTML comment body to bounded plain text."""
     return re.sub(r"\s+", " ", feeds.plain(raw, COMMENT_MAX_CHARS)).strip()
 
 
@@ -265,22 +266,23 @@ def query_pattern(query: str) -> re.Pattern[str]:
 
 
 def query_matches(pattern: re.Pattern[str], story: dict[str, Any]) -> bool:
-    """Does the story actually mention the term, in its title or its URL?
+    """Returns whether the story mentions the term in its title or its URL.
 
     Both query backends are held to this. Algolia relevance falls back to
-    loosely related popular stories when a term has few exact hits, so its
-    raw hits were about half off-topic (2026-07-20..26: 39% to 53%), which
-    inverted the prune signal the weekly review reads: a term padded by
-    fallback can never look dead, and a strictly matched term on a quiet week
-    always can. Filtering both backends the same way makes the numbers
-    comparable, so query_yield before and after this change are not.
+    loosely related popular stories when a term has few exact hits, and about
+    half its raw hits were off-topic, which inverted the prune signal the weekly
+    review reads: a term padded by fallback can never look dead, and a strictly
+    matched term on a quiet week always can.
     """
     return bool(pattern.search(story["title"]) or pattern.search(story.get("url") or ""))
 
 
 def filter_queries(results: dict[str, list[dict[str, Any]]]) -> dict[str, list[dict[str, Any]]]:
-    """Drop the off-topic hits from each term's list. Applied after pooling
-    too, because the day's accumulator can hold entries fetched before this."""
+    """Drops the off-topic hits from each term's list.
+
+    Applied after pooling too, because the day's accumulator can hold entries
+    fetched before this filter existed.
+    """
     return {
         query: [story for story in items if query_matches(query_pattern(query), story)]
         for query, items in results.items()
@@ -307,8 +309,8 @@ def match_queries(
 class Listing:
     """One HN listing, and the four strings its backends differ by.
 
-    The five backends behind each listing speak five protocols, so they stay
-    written out below. This is the whole of what varies between listings.
+    The backends behind each listing speak five protocols, so they stay written
+    out below. This is the whole of what varies between listings.
     """
 
     name: str
@@ -396,11 +398,11 @@ def listing_backends(run: fetch.Run, listing: Listing) -> list[fetch.Backend]:
 def query_backends(
     run: fetch.Run, queries: list[str], raw: dict[str, int], listings: dict[str, fetch.Collection]
 ) -> list[fetch.Backend]:
-    """Watchlist-term hits, and what to do when Algolia search is unavailable.
+    """Returns the watchlist-term backends, in the order they are tried.
 
     The snapshot backend refuses a snapshot that came from the title-match
-    fallback or is missing a term, because either would silently answer a
-    question it does not have the data for.
+    fallback or is missing a term, because either would answer a question it
+    does not have the data for.
     """
     since = run.since
 

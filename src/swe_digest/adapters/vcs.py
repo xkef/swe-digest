@@ -1,10 +1,10 @@
 """Adapter for git and the GitHub CLI: the one seam where subprocess runs.
 
 The snapshot committer and the publish gate both cross this seam. The real
-adapter shells out to git and gh; tests substitute an in-memory fake, so the
-callers are exercised without a network or a git remote. Verified commits go
-through the GraphQL createCommitOnBranch mutation, so GitHub creates the
-commit server-side and signs it as github-actions[bot].
+adapter shells out to git and gh, and tests substitute an in-memory fake, so the
+callers run without a network or a git remote. Verified commits go through the
+GraphQL createCommitOnBranch mutation, so GitHub creates the commit server-side
+and signs it as github-actions[bot].
 """
 
 import base64
@@ -54,8 +54,10 @@ class GitGh:
         ).strip()
 
     def issue_last_edited_at(self, repo: str, number: int) -> str | None:
-        """When the issue body was last edited (ISO 8601), or None if never.
-        GraphQL only; the REST issue payload has no body-edit timestamp."""
+        """Returns when the issue body was last edited, or None if never.
+
+        GraphQL only, because the REST issue payload has no body-edit timestamp.
+        """
         owner, name = repo.split("/")
         payload = {
             "query": LAST_EDITED_QUERY,
@@ -71,12 +73,13 @@ class GitGh:
     def commit_on_branch(
         self, repo: str, branch: str, message: dict, additions: list[dict], deletions: list[dict]
     ) -> str:
-        """Create one signed commit on `branch` and return its oid. Re-reads
-        the branch head each attempt, so it composes with commits landing
-        concurrently on disjoint paths. The oid comes from the mutation
-        response, not a branch read-back: reading the ref right after the
-        mutation can return the pre-commit head (observed 2026-07-30, when the
-        site deploy built a stale tree because of it)."""
+        """Creates one signed commit on ``branch`` and returns its oid.
+
+        The branch head is re-read each attempt, so this composes with commits
+        landing concurrently on disjoint paths. The oid comes from the mutation
+        response rather than a branch read-back, because reading the ref right
+        after the mutation can return the pre-commit head.
+        """
         for attempt in range(settings.COMMIT_RETRIES):
             payload = {
                 "query": COMMIT_MUTATION,
@@ -106,10 +109,12 @@ class GitGh:
 def parse_changes(
     status_output: str, read: Callable[[str], dict[str, str]]
 ) -> tuple[list[dict], list[dict]]:
-    """Additions and deletions from a -z name-status stream, so spaced paths
-    survive. `read(path)` returns the addition dict (path plus base64 content)
-    from wherever the caller has the file: a commit object or the working tree.
-    A rename is recorded as delete-old plus add-new."""
+    """Returns the additions and deletions in a ``-z`` name-status stream.
+
+    The ``-z`` form is what lets a path with a space survive. ``read(path)``
+    returns the addition dict from wherever the caller has the file, a commit
+    object or the working tree. A rename becomes delete-old plus add-new.
+    """
     tokens = status_output.split("\0")
     additions: list[dict] = []
     deletions: list[dict] = []

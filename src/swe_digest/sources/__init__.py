@@ -1,1 +1,1 @@
-"""Fetchers that pull untrusted source data into ``.cache/`` JSON files."""
+"""Contains the fetchers that pull untrusted source data into ``.cache/`` JSON files."""

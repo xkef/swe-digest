@@ -3,20 +3,18 @@
 A run is a queue of steps drained by a single loop. Two kinds go in it: a
 ``steps.Code`` step, which is ordinary Python, and a ``specs.StageSpec``, which
 is one bounded model call with its own prompt, tool grant, turn limit, and write
-allowlist. The interesting decisions are *not* made by a model; ``DAILY`` and
-``IMPROVE`` say exactly where one is called.
+allowlist. ``DAILY`` and ``IMPROVE`` say exactly where a model is called.
 
-The step bodies are in ``steps``. What is here is order, the driver, and the
-report — so the sequence a run follows can be read without the work in the way.
+The step bodies are in ``steps``. Order, the driver, and the report are here, so
+the sequence a run follows reads without the work in the way.
 
 One rule governs failure: a stage is skipped once an earlier stage failed,
 because the next one would work from a selection or a digest that was never
 produced. The code steps after them still run, so a digest already on disk keeps
 its run log, its gate, and its manifest.
 
-Only the SDK-touching imports are function-local. The configuration has to be
-reviewable, and a pipeline of code steps alone has to be runnable, in an
-environment that never installed the SDK.
+Only the SDK-touching imports are function-local, so an environment that never
+installed the SDK can still review the configuration and run the code steps.
 """
 
 import asyncio
@@ -31,18 +29,15 @@ from swe_digest.llm.hooks import writes_for
 from swe_digest.stages import steps
 from swe_digest.stages.steps import Code, Run, Skipped, StepError, StepResult
 
-# One repair pass. The second was bought to reach a clean review and never did:
-# the reviewer keeps a floor of roughly two objections, so five runs went four
-# findings to two, or six to two to two, and stopped there either way. It cost
-# 21k of the 2026-07-29 run's 98k output tokens to move two findings to two.
-# Now that an unresolved review is recorded rather than vetoing the commit,
-# converging is no longer what the budget is for: the first pass is the one that
-# does real work, and the rest is the write and review steps disagreeing about a
-# sentence on the run's budget.
+# One repair pass. The second never reached a clean review: the reviewer keeps a
+# floor of roughly two objections, and buying a second pass cost 21k of the
+# 2026-07-29 run's 98k output tokens to move two findings to two. An unresolved
+# review is now recorded rather than vetoing the commit, so converging is not
+# what the budget is for.
 MAX_REPAIRS = 1
 
-# What goes in the queue. A model step is its spec; there is no wrapper type,
-# because both of these already carry the only thing the driver needs, a name.
+# A model step is its spec, with no wrapper type, because both kinds already
+# carry the only thing the driver needs: a name.
 type Step = Code | specs.StageSpec
 
 
@@ -54,9 +49,8 @@ DAILY: tuple[Step, ...] = (
     specs.STAGES["select"],
     specs.STAGES["write"],
     specs.STAGES["review"],
-    # After the model stages, before anything records or validates the page:
-    # a story the archive already carries is filtered out, not published twice
-    # and not left for the gate to reject the whole day over.
+    # After the model stages and before anything records or validates the page,
+    # so a republished story costs its own block rather than the whole day.
     Code("dedup", steps.dedup),
     Code("judgment", steps.record_judgment),
     # Yesterday's log, not today's: the day the backtest above scored.
@@ -92,17 +86,17 @@ PIPELINES: dict[str, tuple[Step, ...]] = {"daily": DAILY, "improve": IMPROVE}
 
 
 def plan(mode: str, stages: Collection[str]) -> tuple[Step, ...]:
-    """The mode's steps, with the model stages narrowed to ``stages``.
+    """Returns the mode's steps, with the model stages narrowed to ``stages``.
 
-    ``--stage`` selects among the model stages only. The code steps are not
-    optional: they are what collects the material, validates the result, and
-    writes the manifest the publish job consumes.
+    ``--stage`` selects among the model stages only. The code steps collect the
+    material, validate the result, and write the manifest the publish job
+    consumes, so they are not optional.
     """
     return tuple(step for step in PIPELINES[mode] if isinstance(step, Code) or step.name in stages)
 
 
 def _task(spec: specs.StageSpec, run: Run) -> str:
-    """The user turn for a step: what to do, plus what the previous step decided.
+    """Builds the user turn: what to do, plus what the previous step decided.
 
     The selection reaches the write step as data rather than as something it has
     to go looking for.
@@ -135,8 +129,11 @@ def _task(spec: specs.StageSpec, run: Run) -> str:
 
 
 def _parse(spec: specs.StageSpec, text: str) -> dict[str, Any] | None:
-    """A schema step's structured result. Malformed output fails the step
-    rather than being half-read: the write step depends on the shape."""
+    """Parses a schema step's structured result.
+
+    Malformed output fails the step rather than being half-read, because the
+    write step depends on the shape.
+    """
     if spec.schema is None:
         return None
     try:
@@ -147,10 +144,10 @@ def _parse(spec: specs.StageSpec, text: str) -> dict[str, Any] | None:
 
 
 def _absorb(spec: specs.StageSpec, result: StepResult, run: Run) -> None:
-    """Put a stage's structured output where the next stage will look for it.
+    """Puts a stage's structured output where the next stage looks for it.
 
-    Keyed on the schema, not the stage name: the schema is what decides the shape
-    of ``result.data``, so this stays correct for any stage that declares one.
+    Keyed on the schema rather than the stage name, because the schema decides
+    the shape of ``result.data``.
     """
     match spec.schema:
         case "selection":
@@ -162,18 +159,19 @@ def _absorb(spec: specs.StageSpec, result: StepResult, run: Run) -> None:
 
 
 def _is_disclosure(finding: dict[str, Any]) -> bool:
-    """Whether a finding is about the run's own coverage note rather than a
-    story. ``Sources checked`` is the digest explaining what it did and did not
-    reach, so an imprecise line there misleads nobody about a fact."""
+    """Returns whether a finding is about the coverage note rather than a story.
+
+    ``Sources checked`` is the digest explaining what it did and did not reach,
+    so an imprecise line there misleads nobody about a fact.
+    """
     return str(finding.get("where") or "").strip().lower().startswith("sources checked")
 
 
 def _repair(spec: specs.StageSpec, run: Run, stages: Collection[str]) -> tuple[str, ...]:
-    """The stages to re-run after a review that found blocking problems.
+    """Returns the stages to re-run after a review that found blocking problems.
 
-    One pass; beyond that the write and review steps are arguing and the gate is
-    the arbiter. Clearing ``run.review`` when there is nothing to repair is what
-    keeps a later write step from being handed stale findings.
+    Clearing ``run.review`` when there is nothing to repair is what keeps a
+    later write step from being handed stale findings.
     """
     if spec.schema != "review":
         return ()
@@ -185,10 +183,8 @@ def _repair(spec: specs.StageSpec, run: Run, stages: Collection[str]) -> tuple[s
     if not blocking:
         run.review = None
         return ()
-    # A finding against the coverage note is not a reason to publish nothing.
-    # Withholding is for a claim a reader would act on being wrong; an
-    # imprecise Sources checked line is worse published than fixed, and far
-    # better published than a digest suppressed over it.
+    # Withholding is for a claim a reader would act on being wrong, so a finding
+    # against the coverage note alone is not a reason to publish nothing.
     reader_facing = [f for f in blocking if not _is_disclosure(f)]
     if run.repairs >= MAX_REPAIRS or "write" not in stages:
         if not reader_facing:
@@ -199,9 +195,7 @@ def _repair(spec: specs.StageSpec, run: Run, stages: Collection[str]) -> tuple[s
             return ()
         # Out of repair passes with the reviewer still objecting. The content
         # gate is mechanical and says nothing about whether a claim matches its
-        # source, so a run that published here would ship exactly the errors
-        # the reviewer named — on 2026-07-28 a misattributed licence and a
-        # cooldown length the source stated plainly.
+        # source, so what publishes here ships the errors the reviewer named.
         run.unresolved = [str(finding.get("where") or "?") for finding in reader_facing]
         run.notes.append(f"review left {len(reader_facing)} blocking finding(s) unresolved")
         print(
@@ -217,13 +211,10 @@ def _repair(spec: specs.StageSpec, run: Run, stages: Collection[str]) -> tuple[s
 
 
 async def _model_step(spec: specs.StageSpec, run: Run, server: Callable[[], object]) -> StepResult:
-    """One stage, as a step result.
+    """Runs one stage and returns it as a step result.
 
-    The call itself is ``llm.session``; what is here is the part the pipeline
-    owns — naming the step, and deciding that a stage which declared a schema
-    and returned something else has failed. ``server`` is a factory called
-    inside the session rather than a value built before the loop, so failing to
-    build one is reported by the stage that asked for it.
+    ``llm.session`` makes the call. What the pipeline owns is naming the step
+    and failing a stage that declared a schema and returned something else.
     """
     outcome = await session.run_stage(spec, _task(spec, run), server, run.day)
     if not outcome.ok:
@@ -239,8 +230,8 @@ async def _model_step(spec: specs.StageSpec, run: Run, server: Callable[[], obje
 
     data = _parse(spec, outcome.detail)
     if spec.schema and data is None:
-        # With the tokens: this stage spent them, and dropping them printed a
-        # blank usage column next to a stage that had in fact done the work.
+        # Reported with the tokens the stage spent, because dropping them
+        # printed a blank usage column next to a stage that had done the work.
         return StepResult(
             spec.name,
             False,
@@ -263,8 +254,10 @@ async def _model_step(spec: specs.StageSpec, run: Run, server: Callable[[], obje
 
 
 def _code_step(step: Code, run: Run) -> StepResult:
-    """The one place a code step's outcome becomes a result. ``Skipped`` stays
-    ok; anything else fails this step and only this step."""
+    """Turns a code step's outcome into a result.
+
+    ``Skipped`` stays ok. Anything else fails this step and only this step.
+    """
     try:
         return StepResult(step.name, True, step.run(run))
     except Skipped as reason:
@@ -280,10 +273,10 @@ def _report(result: StepResult) -> None:
 
 
 def _lazy_server() -> Callable[[], object]:
-    """One tool server per run, built on the first stage that actually needs it.
+    """Returns a factory for the run's one tool server.
 
-    A factory so the import stays lazy — a pipeline of code steps alone needs no
-    SDK — and so failing to build one is reported by the stage that asked.
+    A factory rather than a value keeps the SDK import lazy and reports a server
+    that fails to build against the stage that asked for it.
     """
     built: object = None
 
@@ -299,11 +292,11 @@ def _lazy_server() -> Callable[[], object]:
 
 
 async def _drive(run: Run, steps: Sequence[Step]) -> None:
-    """Every step in order, from one queue, in one loop.
+    """Runs every step in order, from one queue, in one loop.
 
-    The queue always drains. A stage skipped because an earlier one failed is the
-    only cascade: the code steps after them are how a run validates and records
-    what already reached disk.
+    The queue always drains. A stage skipped because an earlier one failed is
+    the only cascade, because the code steps after them are how a run validates
+    and records what already reached disk.
     """
     stages = {step.name for step in steps if isinstance(step, specs.StageSpec)}
     queue: deque[Step] = deque(steps)
@@ -345,10 +338,10 @@ def _stage_report(spec: specs.StageSpec) -> list[str]:
 
 
 def dry_run(day: str, stages: Collection[str], mode: str = "daily") -> int:
-    """Print the resolved configuration for a run. No model call, no session.
+    """Prints the resolved configuration for a run, without opening a session.
 
-    Returns nonzero when a step has no prompt yet, so this is usable as a
-    readiness check rather than only as documentation.
+    Returns nonzero when a step has no prompt yet, which makes this a readiness
+    check rather than only documentation.
     """
     auth.check()
     steps = plan(mode, stages)
@@ -368,8 +361,8 @@ def dry_run(day: str, stages: Collection[str], mode: str = "daily") -> int:
         print(f"  {agent_tool.name:<14} {agent_tool.kind:<8} {target}")
     print()
 
-    # Derived from the grants rather than asserted in prose, so this line
-    # always says what the grants actually say.
+    # Derived from the grants rather than asserted in prose, so the line cannot
+    # drift from what the grants say.
     granted = {
         tool for step in steps if isinstance(step, specs.StageSpec) for tool in step.allowed_tools
     }
@@ -405,11 +398,10 @@ def dry_run(day: str, stages: Collection[str], mode: str = "daily") -> int:
 
 
 def run(day: str, stages: Collection[str], mode: str = "daily", commit: bool = True) -> int:
-    """Collect, decide, then finalize. Only the middle involves a model.
+    """Collects, decides, then finalizes. Only the middle involves a model.
 
     ``commit=False`` is the shadow run: everything happens except the commit, so
-    a run can be compared against a published day without leaving a commit
-    behind.
+    a run can be compared against a published day without leaving one behind.
     """
     auth.check()
     steps = plan(mode, stages)

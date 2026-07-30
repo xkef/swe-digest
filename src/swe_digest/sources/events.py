@@ -1,22 +1,17 @@
-"""Surface upcoming and active tech events as context for the daily digest.
+"""Surfaces upcoming and active tech events as context for the daily digest.
 
-Reads the [[events]] table from the watchlist and partitions it by date into
-events starting within the lead window (with a days_until countdown) and events
-active today. There is no network call: the committed dates are the source of
-truth, so this runs live during every digest.
+Reads the ``[[events]]`` table from the watchlist and partitions it by date into
+events starting within the lead window and events active today. There is no
+network call, because the committed dates are the source of truth.
 
-The output is context, not content: it tells the run which conferences are
-active or imminent so the HN, YouTube, and web passes can watch for notable
-talks and announcements. An event never gets a digest entry of its own; only a
-notable talk, keynote, or announcement does, as a `Category: Event` story in
-its topical section. The short lead window (3 days) keeps the context focused
-on events that could plausibly produce news now.
+The output is context rather than content. It tells the run which conferences
+are active or imminent, so the other passes can watch for notable talks and
+announcements. An event never gets a digest entry of its own: only a notable
+talk, keynote, or announcement does, as a `Category: Event` story in its topical
+section.
 
-Takes an optional YYYY-MM-DD argument (default today UTC) so the lead-time math
-is testable without mocking the clock.
-
-Exits nonzero only when the watchlist table is missing or unparseable, matching
-the degraded-coverage contract of the other fetchers.
+Exits nonzero only when the watchlist table is missing or unparseable, which
+matches the degraded-coverage contract of the other fetchers.
 """
 
 import sys
@@ -86,7 +81,7 @@ def strip(event: dict) -> dict:
 def main(day: str | None = None) -> int:
     today = parse_day(day)
     # The day is an argument rather than the clock, so the lead-time math is
-    # testable; the envelope is the same one every source writes.
+    # testable. The envelope is the same one every source writes.
     run = fetch.start("events", clock=datetime.combine(today, time(), UTC).timestamp)
     try:
         parsed = [event for entry in load_events() if (event := parse_event(entry))]

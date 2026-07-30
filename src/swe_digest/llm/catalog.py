@@ -1,16 +1,16 @@
-"""The tool catalogue: every tool in the in-process MCP server, as plain data.
+"""The tool catalog describes every tool in the in-process MCP server as plain data.
 
-Deliberately free of any ``claude_agent_sdk`` import. ``tools.py`` turns this
-table into SDK objects; keeping the description of the surface separate from its
-construction means ``--dry-run`` and the tests can read the whole configuration
-in an environment that never installed the SDK, which is also what keeps the
-import-guard test honest.
+This module deliberately imports nothing from ``claude_agent_sdk``.
+``tools.py`` turns this table into SDK objects. Keeping the description of the
+surface separate from its construction lets ``--dry-run`` and the tests read
+the whole configuration in an environment that never installed the SDK, and
+the same separation is what the import-guard test verifies.
 
 The copy and the argument declarations are in ``prompts/tools.toml``, because a
 tool description is prompt text: it tells the model *when* to call, and
-``prompts/`` is the tree a run may not propose changes to. What is here is the
-shape — how an argument declaration becomes the JSON Schema a tool advertises,
-and which enums are derived rather than restated.
+``prompts/`` is the tree a run may not propose changes to. This module holds
+the shape: how an argument declaration becomes the JSON Schema a tool
+advertises, and which enums are derived rather than restated.
 """
 
 import tomllib

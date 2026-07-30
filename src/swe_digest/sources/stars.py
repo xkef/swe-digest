@@ -1,16 +1,15 @@
-"""Fetch GitHub starring activity of tracked people for the daily digest.
+"""Fetches the GitHub starring activity of tracked people.
 
-Reads the [stars] users from the watchlist and pulls each account's public
-event feed through ``gh api`` (authenticated by gh locally and by GH_TOKEN in
-Actions, so the anonymous 60-requests-per-hour limit never applies). Keeps
+Reads the ``[stars]`` users from the watchlist and pulls each account's public
+event feed through ``gh api``, which gh authenticates locally and GH_TOKEN
+authenticates in Actions, so the anonymous rate limit never applies. Keeps the
 WatchEvents inside the window and enriches the most-starred repos with
-description, language, and star count. Feeds the "Notable stars from tracked
-people" block in the Reddit and social pulse section.
+description, language, and star count.
 
-Zero stars from healthy accounts is a quiet day, not degradation: the run
+Zero stars from healthy accounts is a quiet day rather than degradation: the run
 exits 0 with an empty collection and the digest omits the block. There is no
-committed snapshot fallback; when the GitHub API is unreachable the run exits
-nonzero and the digest states the degraded coverage in Sources checked.
+committed snapshot fallback, so an unreachable GitHub API exits nonzero and the
+digest states the degraded coverage in Sources checked.
 """
 
 import json
@@ -38,8 +37,10 @@ def parse_users() -> list[str]:
 
 
 def gh_api(path: str) -> Any:
-    """One authenticated GitHub API call through the gh CLI. Every failure
-    mode raises inside sources.FETCH_ERRORS so collect() degrades cleanly."""
+    """Makes one authenticated GitHub API call through the gh CLI.
+
+    Every failure mode raises inside ``FETCH_ERRORS``, so ``collect`` degrades.
+    """
     try:
         proc = subprocess.run(
             ["gh", "api", path],
@@ -56,9 +57,11 @@ def gh_api(path: str) -> Any:
 
 
 def to_iso(value: str) -> str | None:
-    """Event timestamps arrive as ...Z; normalize to +00:00 ISO so lexical
-    comparison against the window cutoff is exact. Fail closed: an unparseable
-    date drops the event instead of passing permanently."""
+    """Normalizes an event timestamp to +00:00 ISO.
+
+    Lexical comparison against the window cutoff is then exact. An unparseable
+    date drops the event rather than passing forever.
+    """
     try:
         return datetime.fromisoformat(value).isoformat()
     except ValueError:
@@ -85,8 +88,11 @@ def make_star(event: dict, since_iso: str) -> dict | None:
 
 
 def fetch_user_stars(login: str, since_iso: str) -> list[dict]:
-    """One page of the public events API covers well over a day of activity
-    (the API serves at most ~300 events across 90 days per account)."""
+    """Returns one user's windowed stars.
+
+    One page covers well over a day, because the events API serves at most
+    about 300 events across 90 days per account.
+    """
     events = gh_api(f"users/{login}/events/public?per_page=100")
     return [star for star in (make_star(event, since_iso) for event in events) if star]
 
@@ -97,9 +103,11 @@ def fetch_all_stars(
     partial: list[str],
     pause: float = PAUSE_SECONDS,
 ) -> list[dict]:
-    """All users' windowed stars plus a degradation marker when coverage is
-    thin. Raises only when no user returned events, so a partly rate-limited
-    pass keeps what it got; an empty list from healthy users is a quiet day."""
+    """Returns every user's windowed stars, and whether coverage is thin.
+
+    Raises only when no user returned events, so a partly rate-limited pass
+    keeps what it got. An empty list from healthy users is a quiet day.
+    """
     stars: list[dict] = []
     healthy = 0
     for index, login in enumerate(users):
@@ -122,8 +130,10 @@ def fetch_all_stars(
 
 
 def ranked_repos(stars: list[dict]) -> list[tuple[str, list[dict]]]:
-    """Repos grouped from recency-sorted items, clusters (most distinct
-    actors) first; the stable sort keeps recency order within equal counts."""
+    """Groups recency-sorted items into repos, most distinct actors first.
+
+    The sort is stable, so recency order holds within equal counts.
+    """
     by_repo: dict[str, list[dict]] = {}
     for star in stars:
         by_repo.setdefault(star["repo"], []).append(star)
@@ -135,9 +145,11 @@ def ranked_repos(stars: list[dict]) -> list[tuple[str, list[dict]]]:
 
 
 def enrich(stars: list[dict], pause: float = PAUSE_SECONDS) -> None:
-    """Fill description, language, and star count for the top repos. Best
-    effort: a failed lookup warns and leaves the fields None, never degrading
-    the run."""
+    """Fills description, language, and star count for the top repos.
+
+    Best effort: a failed lookup warns, leaves the fields None, and never
+    degrades the run.
+    """
     for index, (repo, repo_stars) in enumerate(ranked_repos(stars)[:MAX_REPO_LOOKUPS]):
         if index:
             time.sleep(pause)

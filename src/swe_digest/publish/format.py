@@ -1,13 +1,11 @@
-"""Put the day's own output in canonical form.
+"""Puts the day's own output in canonical form.
 
-Only the digest. The memory stores and the run logs are written by code that
-already emits their one valid form, so there is nothing here for a formatter to
-decide, and the content gate checks that form byte for byte.
+Only the digest. Code writes the memory stores and the run logs in their one
+valid form already, so a formatter has nothing to decide there.
 
-Separate from ``domain.canonical``, which decides what canonical *is* and
-touches no file. This is the half that reads and writes one, which is also why
-it must keep running on a bare python3: the publish job verifies the same
-property it enforces.
+``domain.canonical`` decides what canonical is and touches no file. This is the
+half that reads and writes one, and it runs on a bare python3 because the
+publish job verifies the same property it enforces.
 """
 
 from swe_digest import paths

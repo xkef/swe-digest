@@ -1,19 +1,16 @@
 """The one canonical form of a digest, computed with the standard library.
 
-Agent output was the only tree with no formatting contract: rumdl and dprint
-both skip ``site/content/``, and the run's own ``fmt`` step was best-effort. It
-could not be anything else, because the privileged publish job installs nothing
-and so cannot shell out to a formatter.
+The privileged publish job installs nothing and cannot shell out to a formatter,
+so the canonical form has to be one the gate computes for itself.
 
-The fix is a form the gate can compute for itself. This normalizes whitespace
-and nothing else: line endings, trailing spaces, blank-line runs, and the blank
-line around a heading. It never touches inline markdown, which is exactly what
-disqualified dprint's Markdown plugin — on this repo's own text it turned
-``~3x next-best`` into a strikethrough and ``@__alpoge__`` into bold. The
-digest is prose dense with markdown-significant characters drawn from untrusted
-sources, so a normalizing formatter corrupts published facts.
+This normalizes whitespace and nothing else: line endings, trailing spaces,
+blank-line runs, and the blank line around a heading. Inline markdown is never
+touched, which is what disqualified dprint's Markdown plugin: on this repo's own
+text it turned ``~3x next-best`` into a strikethrough and ``@__alpoge__`` into
+bold. The digest is prose dense with markdown-significant characters drawn from
+untrusted sources, so a normalizing formatter corrupts published facts.
 
-Fenced code blocks pass through untouched: inside a fence, whitespace is
+Fenced code blocks pass through untouched, because inside a fence whitespace is
 content.
 """
 
@@ -26,7 +23,7 @@ HEADING = re.compile(r"^#{1,6} ")
 
 
 def canonical_body(body: str) -> str:
-    """Whitespace-normalized markdown: one blank line between blocks, one
+    """Normalizes markdown whitespace: one blank line between blocks, one
     before every heading, no trailing spaces, one newline at the end."""
     out: list[str] = []
     in_fence = False
@@ -60,8 +57,10 @@ def canonical_body(body: str) -> str:
 
 
 def canonicalize(text: str) -> str:
-    """A whole digest file. Front matter is TOML and is left as written, apart
-    from its own trailing whitespace."""
+    """Canonicalizes a whole digest file.
+
+    Front matter is TOML and stays as written, apart from trailing whitespace.
+    """
     parts = split_front_matter(text)
     if parts is None:
         return canonical_body(text)
@@ -71,9 +70,9 @@ def canonicalize(text: str) -> str:
 
 
 def first_difference(text: str) -> int | None:
-    """The 1-indexed line where a file departs from its canonical form, or None.
+    """Returns the 1-indexed line where a file departs from canonical form.
 
-    Reported rather than a diff so the gate's message points at one place.
+    One line rather than a diff, so the gate's message points at one place.
     """
     canonical = canonicalize(text)
     if canonical == text:

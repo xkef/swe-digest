@@ -1,19 +1,13 @@
-"""Apply and publish an unattended run produced by the read-only agent job.
+"""Applies and publishes an unattended run produced by the read-only agent job.
 
-The agent job runs without a write token: it commits locally, exports the
-commits as .run/run.patch, and requests side effects in .run/manifest.json.
-This script runs in the publish job, which holds the write token, and applies
-both only after deterministic validation, so a prompt-injected agent cannot
-push outside the allowlist or act on issues that fail API-field checks.
+The agent job holds no write token. It commits locally, exports the commits as
+``.run/run.patch``, and requests side effects in ``.run/manifest.json``. This
+module runs in the publish job, which does hold the write token, and applies
+both only after deterministic validation, so a prompt-injected agent cannot push
+outside the allowlist or act on issues that fail the API-field checks.
 
-Subcommands:
-  apply PATCH      git am, then commit-count, subject, and path checks
-  push [HEAD_FILE] recreate each applied commit on main as a signed Verified
-                   commit; write the landed head oid to HEAD_FILE if given
-  side-effects M   close story issues, create issues, open improvement PRs
-
-Every git and gh call crosses the GitGh adapter, injected by the entry
-points, so the gate's checks are testable against an in-memory fake.
+Every git and gh call crosses the ``GitGh`` adapter, which the entry points
+inject, so these checks are testable against an in-memory fake.
 """
 
 import re
@@ -36,9 +30,9 @@ SUBJECTS = [
     re.compile(r"^chore: weekly improvement review \d{4}-\d{2}-\d{2}$"),
 ]
 # What a run's commit may carry, and what it may propose, both from paths.py.
-# The write guard in llm.hooks reads the same families, so prevention and
-# detection cannot drift — and neither imports the other, so a run that
-# subverted the guard still meets a validator it never loaded.
+# The write guard in llm.hooks reads the same families without importing this
+# module, so a run that subverted the guard still meets a validator it never
+# loaded.
 MEMORY_FILES = paths.MEMORY_STORES
 ALLOWED_PATHS = [family.pattern for family in paths.PUBLISHABLE]
 IMPROVEMENT_FILES = paths.IMPROVEMENT_FILES
@@ -47,23 +41,24 @@ COMMENT_MAX_CHARS = settings.PUBLISH_COMMENT_MAX_CHARS
 # Approval must lead a line ("approved" / "approve" / "/approve"), so a
 # negation like "this is not approved yet" does not satisfy the gate.
 APPROVAL = re.compile(r"^\s*/?approved?\b", re.I | re.M)
-# Outsider approvals require the explicit command form the triage bot reacts
-# to: the comment must start with /approve. Prose like "Approve of the idea,
-# but hold off" never fires.
+# An outsider approval must be the command form, so prose like "Approve of the
+# idea, but hold off" never fires.
 COMMAND_APPROVAL = re.compile(r"\A\s*/approved?\b", re.I)
-# Regular file and executable; a symlink (120000) or gitlink (160000) staged at
-# an allowed path could publish the target's bytes (e.g. a persisted token).
+# Regular file and executable only. A symlink (120000) or gitlink (160000)
+# staged at an allowed path could publish the target's bytes, such as a
+# persisted token.
 ALLOWED_MODES = {"100644", "100755"}
 DIFF_BLOCK = re.compile(r"```diff\n(.*?)```", re.S)
 URL = re.compile(r"https?://[^\s)\"'<>]+")
 
 
 def check_paths(entries: list[tuple[str, str]], scope: str) -> None:
-    """Reject a file mode outside {regular, executable} or a path outside the
-    publish allowlist. Each commit is replayed individually on main, so this
-    runs per commit, not only on the cumulative HEAD diff: a file added in one
-    commit and deleted in another never shows in the net diff yet still lands
-    in main's history."""
+    """Rejects a disallowed file mode or a path outside the publish allowlist.
+
+    Runs per commit rather than on the cumulative HEAD diff, because a file
+    added in one commit and deleted in another never shows in the net diff and
+    still lands in main's history.
+    """
     for mode, path in entries:
         if mode not in ALLOWED_MODES:
             raise SystemExit(f"disallowed file mode {mode} for {path} ({scope})")
@@ -72,8 +67,7 @@ def check_paths(entries: list[tuple[str, str]], scope: str) -> None:
 
 
 def added_entries(gh: GitGh, *rev: str) -> list[tuple[str, str]]:
-    """(dst_mode, path) for every added or modified file in a diff range,
-    skipping pure deletions (dst mode 000000)."""
+    """Returns (dst_mode, path) for every added or modified file in a range."""
     entries: list[tuple[str, str]] = []
     for line in gh.sh("git", "diff", "--raw", *rev).splitlines():
         if not line.startswith(":"):
@@ -113,10 +107,12 @@ def commit_message(gh: GitGh, commit: str) -> dict:
 
 
 def push(gh: GitGh | None = None, head_file: str | None = None) -> None:
-    """Recreate each applied commit on main. When `head_file` is given, write
-    the oid of the last landed commit there, so the caller can dispatch the
-    site deploy against the exact tree that landed instead of re-reading main
-    (which can still return the pre-push head)."""
+    """Recreates each applied commit on main as a signed Verified commit.
+
+    With ``head_file``, writes the oid of the last landed commit there, so the
+    caller can dispatch the site deploy against the exact tree that landed.
+    Re-reading main can still return the pre-push head.
+    """
     gh = gh or GitGh()
     commits = gh.sh("git", "rev-list", "--reverse", "origin/main..HEAD").split()
     if not commits:
@@ -150,10 +146,12 @@ def owner_approved(gh: GitGh, number: int) -> bool:
 
 
 def outsider_approved(gh: GitGh, number: int) -> bool:
-    """An outsider story is approved by an OWNER comment starting with
-    /approve that postdates the last body edit, so an approval cannot be
-    repurposed by editing the issue afterwards. Both timestamps are ISO 8601
-    UTC from the API, so string comparison orders them."""
+    """Returns whether an outsider story carries a valid owner approval.
+
+    The approval is an OWNER comment starting with ``/approve`` that postdates
+    the last body edit, so editing the issue afterwards cannot repurpose it.
+    Both timestamps are ISO 8601 UTC, which string comparison orders.
+    """
     comments = gh.gh_json(f"repos/{REPO}/issues/{number}/comments")
     approvals = [
         c["created_at"]
@@ -173,8 +171,8 @@ def close_issue(gh: GitGh, entry: IssueClose) -> None:
     if issue["state"] != "open" or not labels & {"story", "feedback"}:
         raise SystemExit(f"issue #{number} fails inbox checks; refusing to close")
     if issue["user"]["login"] != OWNER:
-        # Outsider issues: only a story suggestion carrying a valid OWNER
-        # approval is inbox material. Feedback counts only from the owner.
+        # From an outsider, only an approved story suggestion is inbox
+        # material. Feedback counts only from the owner.
         if "story" not in labels:
             raise SystemExit(f"issue #{number} fails inbox checks; refusing to close")
         if not outsider_approved(gh, number):

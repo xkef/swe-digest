@@ -1,13 +1,13 @@
-"""Find high-signal HN stories a published digest missed.
+"""Finds high-signal HN stories a published digest missed.
 
-Compares the day's accumulated snapshot against the digest published for it,
-and seeds a default cause per candidate into ``judgment.miss_review`` from
+Compares the day's accumulated snapshot against the digest published for it, and
+seeds a default cause per candidate into ``judgment.miss_review`` from
 mechanical evidence: whether the story was in the publish-time fetch, and
-whether any watchlist query matched it. The agent reviews exceptions only, so a
-recurring miss becomes evidence without costing a judgment call per story.
+whether any watchlist query matched it. The run reviews the exceptions only, so
+a recurring miss becomes evidence without a judgment call per story.
 
-Entity matching is deliberately conservative — a wrong seed costs one review
-glance, a missed one costs a watchlist gap nobody notices.
+Entity matching stays conservative. A wrong seed costs one review glance, and a
+missed one costs a watchlist gap nobody notices.
 """
 
 import difflib
@@ -25,11 +25,10 @@ from swe_digest.store.runs import hn_snapshot_dir, hn_stories, load_run_log, sav
 
 TITLE_RATIO = settings.BACKTEST_TITLE_RATIO
 
-# Default final cause per pre-class, seeded into judgment.miss_review for
-# candidates the agent has not labeled. The defaults encode the observed
-# base rates; the agent's job is the exceptions (a real miss becomes
-# watchlist_gap by hand). no_run_log candidates carry no evidence and stay
-# unseeded.
+# Default cause per pre-class, seeded into judgment.miss_review for candidates
+# the run has not labeled. The defaults encode the observed base rates, and the
+# run corrects the exceptions. A no_run_log candidate carries no evidence and
+# stays unseeded.
 DEFAULT_CAUSES = {
     "not_in_publish_fetch": "scrape_gap",
     "no_query_match": "out_of_scope",
@@ -49,15 +48,13 @@ def title_matches(title: str, digest_titles: list[str]) -> bool:
 
 
 def classify(story_id: int, seen_ids: set[int], query_ids: set[int], have_run_log: bool) -> str:
-    """Why the digest does not carry this story, from the run log alone.
+    """Returns why the digest does not carry this story, from the run log alone.
 
     Query membership is tested first because it is the stronger evidence of
-    visibility. ``seen_ids`` covers only the story collections
-    (``runs.hn_stories`` iterates STORY_COLLECTIONS), while ``query_ids``
-    comes from the same fetch's watchlist matches, so a story the fetch saw
-    only through the queries collection is absent from ``seen_ids``. Testing
-    ``seen_ids`` first labelled those not_in_publish_fetch and seeded
-    scrape_gap, blaming collection for what was a relevance decision.
+    visibility. ``seen_ids`` covers only the story collections, so a story the
+    fetch saw through the queries collection alone is absent from it. Testing
+    ``seen_ids`` first labeled those ``not_in_publish_fetch`` and blamed
+    collection for what was a relevance decision.
     """
     if not have_run_log:
         return "no_run_log"
@@ -77,12 +74,12 @@ def _keep_name(name: str, from_parenthetical: bool) -> bool:
 
 
 def entity_names(subjects: Iterable[str]) -> list[str]:
-    """Matchable names from entity subjects.
+    """Returns the matchable names in a set of entity subjects.
 
-    A subject is written for a reader — ``Name / Other (alt, owner/repo)`` — so
-    one entry offers several ways a title might name the same thing, and a miss
-    is worth catching under any of them. Longest first, so the most specific
-    name wins a match.
+    A subject is written for a reader, as in ``Name / Other (alt, owner/repo)``,
+    so one entry offers several ways a title might name the same thing and a
+    miss is worth catching under any of them. Longest first, so the most
+    specific name wins a match.
     """
     names: list[str] = []
     for prefix in subjects:
@@ -112,14 +109,14 @@ def entity_match(title: str, names: list[str]) -> str | None:
 
 
 def load_entity_names() -> list[str]:
-    """The tracked entity names, read from the typed store.
+    """Returns the tracked entity names, read from the typed store.
 
     A candidate whose title names something already tracked is a watchlist gap
     rather than a story out of scope, which is the distinction the improvement
     run acts on.
     """
-    # Every entities record is a Note; the base Record has no subject, so the
-    # attribute is read defensively rather than by narrowing the store's type.
+    # The base Record has no subject, so the attribute is read defensively
+    # rather than by narrowing the store's type.
     return entity_names(
         str(getattr(record, "subject", "")) for record in memory_store.load("entities")
     )
@@ -227,9 +224,8 @@ def main(
     miss_review = record.setdefault("judgment", {}).setdefault("miss_review", {})
     seeded = 0
     for candidate in candidates:
-        # JSON object keys are strings, so the id is stringified here rather
-        # than on the way back in. An int key would seed a second entry for the
-        # same story on every later run of the day.
+        # Stringified here rather than on the way back in, because an int key
+        # would seed a second entry for the same story on every later run.
         story_id = str(candidate["id"])
         cause = default_cause(candidate)
         if cause and story_id not in miss_review:

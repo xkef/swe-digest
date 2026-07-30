@@ -1,15 +1,12 @@
 """The in-process MCP server: typed tools over the code the routine already has.
 
-Every tool wraps a function the CLI also exposes, so there is one
-implementation of each behaviour and the agent path cannot drift from the
-Makefile path. The wrappers add typed arguments instead of a command string,
-**summaries instead of payloads** (a fetch returns counts and the cache path it
-wrote, because four hundred stories in the first tool call is the context
-window gone), and a bound on captured output.
+Every tool wraps a function the CLI also exposes, so each behavior has one
+implementation and the agent path cannot drift from the Makefile path. The
+wrappers add typed arguments instead of a command string, **summaries instead of
+payloads**, because four hundred stories in the first tool call is the context
+window gone, and a bound on captured output.
 
-Granting these instead of ``Bash`` is what lets a step run with no shell at
-all. A degraded fetch is reported, not raised: incomplete coverage is a fact
-the digest states in Sources checked, not a tool failure.
+Granting these instead of ``Bash`` is what lets a step run with no shell at all.
 """
 
 import asyncio
@@ -32,17 +29,15 @@ from swe_digest.sources.fetch import count_items
 # enough that a pathological run cannot dominate the window.
 MAX_OUTPUT_CHARS = settings.AGENT_TOOL_OUTPUT_MAX_CHARS
 
-# What a wrapped call may fail with. SystemExit belongs here and is easy to
-# miss: it derives from BaseException, not Exception, and it is how the gates
-# and the gh adapter report failure. Catching only Exception would let a failed
-# `gh api` call unwind the event loop and take the whole run down, turning a
-# recoverable tool error into a dead session. KeyboardInterrupt and
-# CancelledError are deliberately excluded so shutdown still works.
+# What a wrapped call may fail with. SystemExit derives from BaseException, not
+# Exception, and is how the gates and the gh adapter report failure, so catching
+# only Exception would let a failed `gh api` call kill the session.
+# KeyboardInterrupt and CancelledError stay uncaught so shutdown still works.
 TOOL_FAILURES = (Exception, SystemExit)
 
 # The fetchers and gates write to the process-wide stdout, so capturing means
-# rebinding it. Tool calls can arrive in parallel; serializing the capturing
-# ones keeps two concurrent fetches from interleaving into each other's report.
+# rebinding it. Serializing the capturing calls keeps two concurrent fetches
+# from interleaving into each other's report.
 _CAPTURE = asyncio.Lock()
 
 type Result = dict[str, Any]
@@ -50,7 +45,7 @@ type Handler = Callable[[dict[str, Any]], Awaitable[Result]]
 
 
 def _text(payload: dict[str, Any], *, is_error: bool = False) -> Result:
-    """An MCP tool result carrying JSON the model can read directly."""
+    """Returns an MCP tool result carrying JSON the model can read directly."""
     result: Result = {"content": [{"type": "text", "text": json.dumps(payload, indent=2)}]}
     if is_error:
         result["is_error"] = True
@@ -58,8 +53,10 @@ def _text(payload: dict[str, Any], *, is_error: bool = False) -> Result:
 
 
 def _failed(name: str, error: BaseException) -> Result:
-    """A tool that raised. The model sees the class and message and can retry
-    or route around it; the pipeline never dies on one bad call."""
+    """Reports a tool that raised, so one bad call never kills the pipeline.
+
+    The model sees the class and the message, and can retry or route around it.
+    """
     return _text({"tool": name, "error": f"{type(error).__name__}: {error}"}, is_error=True)
 
 
@@ -70,7 +67,7 @@ def _clip(text: str) -> str:
 
 
 async def _capture(call: Callable[[], int]) -> tuple[int, str]:
-    """Run a synchronous ``main`` off the event loop, capturing what it prints."""
+    """Runs a synchronous ``main`` off the event loop, capturing what it prints."""
 
     def invoke() -> tuple[int, str]:
         stream = io.StringIO()
@@ -88,11 +85,11 @@ def _relative(path: Path) -> str:
 
 
 def _summarize(cache_dir: Path) -> dict[str, Any]:
-    """Counts and degradation from the envelope a fetcher just wrote.
+    """Returns counts and degradation from the envelope a fetcher just wrote.
 
-    The newest file wins rather than today's date: a fetcher derives its own day
-    from its own clock, and reconstructing that here would be a second source of
-    truth for the same decision.
+    The newest file wins rather than today's date, because a fetcher derives its
+    own day from its own clock and reconstructing that here would be a second
+    source of truth for one decision.
     """
     written = sorted(cache_dir.glob("*.json"), key=lambda path: path.stat().st_mtime)
     if not written:
@@ -159,11 +156,11 @@ def _task_handler(spec: catalog.AgentTool) -> Handler:
 
 
 async def _inbox_handler(args: dict[str, Any]) -> Result:
-    """Open issues for a label, projected to API fields only.
+    """Returns the open issues for a label, projected to API fields only.
 
     Titles and bodies are untrusted text written by anyone who can open an
-    issue. They are returned as data alongside the fields that actually decide
-    authority, so the caller has no reason to infer authorship from prose.
+    issue, so they come back beside the fields that decide authority and the
+    caller has no reason to infer authorship from prose.
     """
     from swe_digest import settings
     from swe_digest.adapters.vcs import GitGh
@@ -200,11 +197,10 @@ async def _inbox_handler(args: dict[str, Any]) -> Result:
 
 
 def _memory_handler(spec: catalog.AgentTool) -> Handler:
-    """Typed access to the memory stores.
+    """Returns the handler for typed access to the memory stores.
 
-    This is the only route the agent has to memory: no step is granted Write or
-    Edit on ``data/memory/``. Identity and dates are assigned by the store, so
-    a record cannot be added without them or re-dated by rewriting its text.
+    This is the agent's only route to memory, because no step is granted Write
+    or Edit on ``data/memory/``.
     """
 
     async def handler(args: dict[str, Any]) -> Result:
@@ -245,11 +241,10 @@ def _memory_handler(spec: catalog.AgentTool) -> Handler:
 
 
 async def _guidance_handler(args: dict[str, Any]) -> Result:
-    """One source's collection mechanics, read on demand.
+    """Returns one source's collection mechanics, read on demand.
 
-    A tool rather than a line in the prompt because the alternative is what it
-    replaced: an 883-line file every run paid for in full to rank thirty
-    candidates from a handful of sources.
+    A tool rather than a line in the prompt, because it replaced an 883-line
+    file every run paid for in full to rank thirty candidates.
     """
     topic = args["topic"]
     path = paths.prompts_dir() / "topics" / f"{topic}.md"
@@ -260,7 +255,7 @@ async def _guidance_handler(args: dict[str, Any]) -> Result:
 
 
 async def _net_handler(args: dict[str, Any]) -> Result:
-    """Fetch a page through the audited proxy. Never the built-in WebFetch."""
+    """Fetches a page through the audited proxy, never the built-in WebFetch."""
     from swe_digest.llm import net
 
     url = args["url"]
@@ -271,11 +266,11 @@ async def _net_handler(args: dict[str, Any]) -> Result:
 
 
 def _handler(spec: catalog.AgentTool) -> Handler:
-    """The wrapper that implements one tool, chosen by its kind.
+    """Returns the wrapper that implements one tool, chosen by its kind.
 
-    A match rather than a dict of factories: ``kind`` is a Literal, so a kind
-    added to the catalogue without a wrapper here fails the type check instead of
-    raising a KeyError on the first call in an unattended run.
+    A match rather than a dict of factories, because ``kind`` is a Literal: a
+    kind added to the catalog without a wrapper here fails the type check
+    instead of raising a KeyError on the first call in an unattended run.
     """
     match spec.kind:
         case "fetch":
@@ -293,7 +288,7 @@ def _handler(spec: catalog.AgentTool) -> Handler:
 
 
 def build_tools() -> list[SdkMcpTool[Any]]:
-    """Every tool in ``catalog.TOOLS``, decorated for the SDK."""
+    """Returns every tool in ``catalog.TOOLS``, decorated for the SDK."""
     return [
         tool(spec.name, spec.description, spec.input_schema)(_handler(spec))
         for spec in catalog.TOOLS
@@ -301,5 +296,5 @@ def build_tools() -> list[SdkMcpTool[Any]]:
 
 
 def build_server() -> McpSdkServerConfig:
-    """The in-process MCP server the stages mount as ``mcp__digest__*``."""
+    """Builds the in-process MCP server the stages mount as ``mcp__digest__*``."""
     return create_sdk_mcp_server(name=catalog.MCP_SERVER, version="1.0.0", tools=build_tools())

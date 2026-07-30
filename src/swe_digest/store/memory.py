@@ -1,24 +1,19 @@
-"""One YAML file per store, with the bounds enforced on write.
+"""Keeps one YAML file per store and enforces the bounds on write.
 
-A file rather than a database, because this memory is public and the repo's
-premise is auditability: a changed fact must be a readable line in a pull
-request. A SQLite file would win on queries and lose exactly that.
+The stores are files rather than a database, because this memory is public and
+the repo's premise is auditability: a changed fact must be a readable line in
+a pull request. A SQLite file would serve queries better and lose exactly that
+property.
 
-YAML rather than JSON because these records are prose. A note runs to a
-kilobyte, and JSON has no multi-line string, so every one became a single
-enormous line. Folded scalars wrap at the margin and load back identical.
-The store owns the formatting and the gate enforces it, so there is one valid
-rendering and no formatter to fight with.
+The records are prose, so the file is YAML for the reasons ``serial`` states,
+and this module owns the formatting the memory gate then enforces.
 
-The important property is that **nothing outside this module writes memory**.
-The agent reaches it through tools that call these functions, so the schema
-cannot drift and the bounds in ``settings`` become impossible to exceed rather
-than merely detected at publish time. Identity and dates are assigned here, not
-supplied by a caller, which is what stops ``Last seen`` from going stale in
-place or a follow-up from losing its status marker.
-
-Writes are atomic (temp file then rename) so an interrupted run leaves the
-previous store intact rather than a half-written one.
+The property that matters is that **nothing outside this module writes
+memory**. The agent reaches memory through tools that call these functions, so
+the schema cannot drift, and the bounds in ``settings`` become impossible to
+exceed rather than merely detected at publish time. This module assigns
+identity and dates, not the caller, which is what stops ``last_seen`` from
+becoming stale or a follow-up from losing its status marker.
 """
 
 import dataclasses
@@ -33,7 +28,7 @@ from swe_digest.domain.records import STORES, Record, StoreSpec, parse_iso, toda
 
 
 class StoreError(Exception):
-    """A write that would corrupt or overgrow a store."""
+    """Signals a write that would corrupt or overgrow a store."""
 
 
 def spec(name: str) -> StoreSpec:
@@ -48,11 +43,11 @@ def path_for(name: str, root: Path | None = None) -> Path:
 
 
 def load(name: str, root: Path | None = None) -> list[Record]:
-    """Every record in a store, in file order.
+    """Reads every record in a store, in file order.
 
-    A malformed file is a hard error rather than a partial read: silently
-    dropping a record would quietly lose a tracked fact, which is the failure
-    this store exists to prevent.
+    A malformed file is a hard error rather than a partial read: dropping a
+    record without notice would lose a tracked fact, which is the failure this
+    store exists to prevent.
     """
     file = path_for(name, root)
     if not file.exists():
@@ -74,10 +69,10 @@ def load(name: str, root: Path | None = None) -> list[Record]:
 
 
 def _next_id(name: str, existing: Iterable[Record]) -> str:
-    """A short, stable, human-greppable id: the store's initials plus a count.
+    """Builds a short, stable, searchable id: the store's initials plus a count.
 
-    Not a UUID on purpose — these ids appear in pull request diffs and in tool
-    calls, so they should be readable.
+    Not a UUID, because these ids appear in pull request diffs and in tool
+    calls, where they have to stay readable.
     """
     prefix = "".join(part[0] for part in name.split("-"))
     used = {record.id for record in existing}
@@ -88,16 +83,16 @@ def _next_id(name: str, existing: Iterable[Record]) -> str:
 
 
 def serialize(records: list[Record]) -> str:
-    """A store's one valid text form, which the memory gate enforces."""
+    """Renders a store's one valid text form, which the memory gate enforces."""
     return serial.dump([json.loads(record.to_json()) for record in records])
 
 
 def save(name: str, records: list[Record], root: Path | None = None) -> None:
-    """Replace a store atomically, after checking its bounds.
+    """Replaces a store atomically after checking its bounds.
 
-    The bound is checked here rather than at publish time so an overgrown store
-    fails the write that caused it, naming what to compact, instead of failing
-    the whole run's `make check` much later.
+    The check runs here rather than at publish time, so an overgrown store
+    fails the write that caused it and names what to compact, instead of
+    failing the whole run's `make check` much later.
     """
     limit = getattr(settings, spec(name).max_entries)
     if len(records) > limit:
@@ -116,8 +111,8 @@ def save(name: str, records: list[Record], root: Path | None = None) -> None:
 
     file = path_for(name, root)
     file.parent.mkdir(parents=True, exist_ok=True)
-    # Atomic: write beside the target, then rename over it, so an interrupted
-    # run leaves the previous store intact rather than a truncated one.
+    # Write beside the target, then rename over it, so an interrupted run
+    # leaves the previous store intact rather than a truncated one.
     descriptor, temp_name = tempfile.mkstemp(dir=file.parent, prefix=f".{name}.", suffix=".tmp")
     try:
         with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
@@ -129,7 +124,7 @@ def save(name: str, records: list[Record], root: Path | None = None) -> None:
 
 
 def add(name: str, root: Path | None = None, **values: object) -> Record:
-    """Append a record. Identity and dates are assigned here, not by the caller."""
+    """Appends a record. The store assigns identity and dates, not the caller."""
     records = load(name, root)
     kind = spec(name).record
     assigned = {"id": _next_id(name, records), "last_seen": today()}
@@ -142,16 +137,16 @@ def add(name: str, root: Path | None = None, **values: object) -> Record:
 
 
 def touch(name: str, record_id: str, root: Path | None = None) -> Record:
-    """Re-date a record after re-verifying it.
+    """Re-dates a record after the caller re-verifies it.
 
-    Separate from ``update`` because re-dating is the common case and should
-    not require restating the content — restating is how content drifts.
+    Separate from ``update`` because re-dating is the common case, and having
+    to restate the content is how the content drifts.
     """
     return update(name, record_id, root=root)
 
 
 def update(name: str, record_id: str, root: Path | None = None, **values: object) -> Record:
-    """Replace fields on one record and re-date it."""
+    """Replaces fields on one record and re-dates it."""
     records = load(name, root)
     for index, record in enumerate(records):
         if record.id == record_id:
@@ -163,8 +158,11 @@ def update(name: str, record_id: str, root: Path | None = None, **values: object
 
 
 def close(name: str, record_id: str, root: Path | None = None) -> None:
-    """Delete a record. Closing means deleting: a resolved follow-up kept
-    around is not evidence, it is a cost every later run pays to re-read."""
+    """Deletes a record.
+
+    Closing means deleting: a resolved follow-up left in the store is not
+    evidence, only a cost every later run pays to re-read.
+    """
     records = load(name, root)
     remaining = [record for record in records if record.id != record_id]
     if len(remaining) == len(records):
@@ -179,7 +177,7 @@ def query(
     older_than_days: int | None = None,
     contains: str = "",
 ) -> list[Record]:
-    """Records matching a filter, newest first."""
+    """Returns the records that match a filter, newest first."""
     records = load(name, root)
     if older_than_days is not None:
         cutoff = parse_iso(today())
@@ -197,10 +195,11 @@ def query(
 
 
 def prune(name: str, max_age_days: int, root: Path | None = None) -> list[Record]:
-    """Drop records older than an age, returning what was dropped.
+    """Drops records older than a given age and returns the dropped records.
 
-    Deterministic, so the improvement step does not have to ask a model whether
-    a date is old — only whether a still-live thread is genuinely resolved.
+    Pruning is deterministic, so the improvement step does not have to ask a
+    model whether a date is old. The model only decides whether a still-open
+    thread is genuinely resolved.
     """
     stale = {record.id for record in query(name, root, older_than_days=max_age_days)}
     if not stale:
@@ -211,8 +210,11 @@ def prune(name: str, max_age_days: int, root: Path | None = None) -> list[Record
 
 
 def usage(root: Path | None = None) -> Iterator[str]:
-    """One line per store: entries against bound, and bytes. Printed by the
-    gate so the growth trend is visible before a bound becomes a failure."""
+    """Yields one line per store: entries against the bound, and bytes.
+
+    The gate prints these lines, so growth is visible before a bound becomes a
+    failure.
+    """
     for name in sorted(STORES):
         file = path_for(name, root)
         size = file.stat().st_size if file.exists() else 0

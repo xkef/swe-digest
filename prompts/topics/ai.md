@@ -29,7 +29,7 @@ when known.
 
 ## ML research checks
 
-Collection: `fetch_papers` (`swe_digest.fetch.papers`) pulls the `[papers]`
+Collection: `fetch_papers` (`swe_digest.sources.papers`) pulls the `[papers]`
 categories and queries from the watchlist via the arXiv API, with arXiv RSS and
 the committed `data/snapshots/papers/` snapshot as fallbacks. The `snapshots`
 workflow accumulates results every six hours. Paper findings go in the
@@ -52,7 +52,7 @@ Selection rules:
 - Label preprints as developing until independently reproduced.
 - Do not include a paper only because it trends.
 - Rank against the day. A typical fetch holds 110 to 140 arXiv entries and a
-  heavy one several hundred; zero or one clearing the bar is the normal
+  heavy one several hundred, and zero or one clearing the bar is the normal
   outcome. Omit `ML research` rather than publishing the best of a weak field.
 
 ## Agentic coding checks
@@ -68,7 +68,7 @@ Primary sources:
 Selection rules:
 
 - Name the agent, model, and version when known.
-- Link release notes or docs as primary; label workflow and opinion posts as
+- Link release notes or docs as primary, and label workflow and opinion posts as
   discussion.
 - Prefer posts with metrics, failure analysis, or reproducible setup over launch
   marketing.

@@ -1,17 +1,16 @@
-"""Aggregate the run-log window into the weekly marker's mechanical facts.
+"""Aggregates the run-log window into the weekly marker's mechanical facts.
 
-The improvement routine judges evidence; this computes it, so no proposal rests
-on an agent eyeballing a fortnight of raw logs. It owns the ``date``,
-``window``, and ``mechanical`` keys and rewrites them idempotently; every
-agent-owned key is preserved.
+The improvement routine judges evidence and this computes it, so no proposal
+rests on a model reading two weeks of raw logs. This module owns the ``date``,
+``window``, and ``mechanical`` keys and rewrites them idempotently, preserving
+every key the run owns.
 
-The shape is one table: ``_KEYS`` says what the window produces, one row per
-key. Everything above it is a pure function of the window, and ``main`` is the
-part that reads the logs, applies the table, and writes the marker. A key is
-added by adding a row.
+``_KEYS`` is the shape: one row per key, saying what the window produces.
+Everything above it is a pure function of the window, and ``main`` reads the
+logs, applies the table, and writes the marker. A key is added by adding a row.
 
 The window runs from the day after the previous marker through the given date,
-falling back to seven days when there is no previous marker.
+and falls back to seven days when there is no previous marker.
 """
 
 import json
@@ -32,9 +31,8 @@ from swe_digest.store import runs
 NO_RESPONSE = "_no response_"
 
 KEYWORD = re.compile(r"[a-z0-9][a-z0-9+_.-]{3,}")
-# Words a recurring-topic count would otherwise be made of. Common English
-# plus "algorithm", which is a keyword everywhere in this corpus and therefore
-# distinguishes nothing.
+# Words a recurring-topic count would otherwise be made of: common English, plus
+# "algorithm", which appears everywhere in this corpus and distinguishes nothing.
 _STOPWORDS = """
     about after against algorithm before being best between could does down
     every first from have here inside into just like made make more most much
@@ -62,8 +60,11 @@ class Window:
 
 
 def window(date: str, since: str | None) -> tuple[str, str, str | None]:
-    """(start, end, previous marker date). Start is the day after the
-    previous marker, or `since`, or six days back when neither exists."""
+    """Returns (start, end, previous marker date).
+
+    Start is the day after the previous marker, or ``since``, or six days back
+    when neither exists.
+    """
     prev = runs.previous_weekly_date(date)
     if since:
         return since, date, prev
@@ -115,10 +116,9 @@ def miss_totals(days: dict[str, dict]) -> dict:
             totals[cause] = totals.get(cause, 0) + 1
         if counts:
             daily[day] = dict(sorted(counts.items()))
-        # Compared as strings on both sides. A story id is a number in the
-        # candidate list and a mapping key in miss_review, and YAML keeps an
-        # int key an int while the seeding writes it as a string, so logs
-        # exist with each. Without this every watchlist gap reports no title.
+        # Compared as strings on both sides, because a story id is a number in
+        # the candidate list and a mapping key in miss_review, and logs exist
+        # with each. Without this every watchlist gap reports no title.
         titles = {
             str(candidate["id"]): candidate["title"]
             for candidate in record.get("mechanical", {}).get("backtest", {}).get("candidates", [])
@@ -164,8 +164,10 @@ def _form_value(body: str, label: str) -> str | None:
 
 
 def feedback_tally(gh: GitGh) -> tuple[dict, bool]:
-    """Owner-authored feedback issues tallied by kind. Returns (kinds,
-    degraded); authorship comes only from the API author field."""
+    """Tallies owner-authored feedback issues by kind.
+
+    Returns (kinds, degraded). Authorship comes only from the API author field.
+    """
     try:
         proc = gh.run(
             "gh",
@@ -239,7 +241,7 @@ type Say = Callable[[Any], list[str]]
 
 
 def _say_list(label: str) -> Say:
-    """The summary for a key that is just a list of names."""
+    """Returns the summary for a key that is only a list of names."""
 
     def say(items: list[str]) -> list[str]:
         if not items:
