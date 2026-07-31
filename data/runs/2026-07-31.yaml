@@ -72,15 +72,99 @@ judgment:
     genuine editorial miss in the set. The large no_query_match entries at the top of the list, the
     UEFA statement, the Vision Pro post, KOReader, and the Kavinsky report, are out of scope and are
     not listed individually.
+
+    Second run of 2026-07-31. The 05:18 run published ten blocks. Nothing already on the page lost a
+    slot, so `displace` is empty: none of today's four new candidates outranks a published block,
+    they rank alongside them, and the day stands at 14 stories against the 25 cap with no section at
+    its cap.
+
+    Placement the page cannot show. `Top stories` now holds five, which is the cap. The intended
+    order is Anthropic first and unchanged as the lead, JEP 401 second, GitHub stacked pull requests
+    third, Chrome fourth, Krebs and Bitsight fifth. JEP 401 ranks above stacked pull requests
+    because a preview language feature in a mainline JDK build carries wider and longer migration
+    pressure than a review-surface feature, and Chrome ranks above Krebs because its effect on a
+    working engineer is direct where the H96 investigation is indirect. Krebs holds the fifth slot
+    rather than being demoted, because moving a published block between sections is churn rather
+    than a change in what the day says.
+
+    Two source corrections a reader could not make. The Hacker News title on the Chrome item reads
+    "Google fixed more Chrome bugs in June than over the past two years", which the post does not
+    say. What the post says is that Chrome 149 and 150 together fixed 1072 security bugs, surpassing
+    the total across the prior 23 milestones combined, and separately that in May the CI-integrated
+    BigSleep and CodeMender blocked over 20 vulnerabilities from reaching production including one
+    critical S1+. The write step should carry the milestone framing, not the month framing. On JEP
+    401, the GitHub API reports `merged_at` as null while the `integrated` label reads "Pull request
+    has been integrated", with `closed_at` 2026-07-31T00:45:20Z and merge commit 51e35ee. Skara
+    integrates outside the GitHub merge button, so null there is not evidence against integration.
+    The pull request also carries JEP 539, Strict Field Initialization in the JVM, because JEP 401
+    depends on it. No target JDK release is stated on the page and none should be asserted. The
+    three sub-review pull requests, 31121 to 31123, are closed without integration by design.
+
+    Benchmark handling. The DeepSeek change log is dated 2026-07-31 and states its own method for
+    the code-agent numbers: DeepSeek Harness minimal mode at max effort, top_p 0.95, temperature
+    1.0. The harness is described as "to be released soon" and DSBench-FullStack and DSBench-Hard
+    are named as internal test sets, so the figures are attributable but not reproducible today.
+    V4-Flash-0731 keeps the architecture and size of V4-Flash-Preview and was only re-post-trained.
+    The V4-Pro API and the app and web models are unchanged. This release is also the answer to the
+    open question in followup f-0004, which asked whether the reported compute constraint would show
+    up in the next DeepSeek model release. It does not visibly: this is a post-training update
+    shipped while the funding round remains suspended.
+
+    The Earendil post carries `discussion` because its core is an argument, though its factual
+    claims about API behaviour are checkable. It is a direct extension of followup f-0051 on the
+    Codex commit that encrypts multi-agent v2 message payloads, and it places that commit inside a
+    wider pattern covering OpenAI stored responses retained at least 30 days by default, the Gemini
+    Interactions API defaulting to store true with 55-day paid and 1-day free retention, OpenAI
+    compaction documented as opaque and not human-interpretable against Anthropic compaction
+    returning a readable content field, and hosted search that returns citations rather than the
+    retrieved passages. It sits in `Agentic coding` rather than `Watchlist follow-ups` because the
+    post is broader than the tracked commit.
+
+    Verified and dropped. The Martin Fowler article "The Economic Benefit of Refactoring" reached
+    247 points and was read in full, then dropped: the 2026-07-30 digest already carries the same
+    experiment and the same 83 percent input-token result under `Agentic coding`, and a story
+    appears once across the archive. Wiz CosmosEscape was checked for the empty `Security` section
+    and is already published on 2026-07-30. Gemini Robotics 2 and the GCC AI policy are likewise
+    already on the 2026-07-30 page. The Google Play age-signals item reached 402 points on a primary
+    Android developer blog post and was not published, because the digest has no Android or
+    mobile-platform section and it does not clear the `Top stories` bar. That absence is a scope
+    finding, not a ranking one.
+
+    Degraded and empty sections. Reddit is degraded for a fourth consecutive day, improved only from
+    3 of 28 to 6 of 28 subreddits against a floor of 14, and what returned is r/cybersecurity and
+    r/AZURE support and certification threads plus secondary coverage of the Anthropic story already
+    leading the page. `Reddit and social pulse` is omitted for absence of material. The YouTube
+    fetch was healthy and returned many videos, every one with a null discussion link, so `New
+    videos` is omitted on the standing rule that ranking is on external validation. The books feed
+    returned routine publisher listings with no external validation, so `Books` is omitted.
+    `Security` keeps the anchor line even though the Chrome item is categorised Security, because
+    that item ranks into `Top stories`. `Outages` is unchanged and no incident surfaced this run. No
+    page refused to load in this run, so the openai.com and codepen.io 403s recorded at 05:18 are
+    not repeated here, and the OpenAI GPT-5.6 price-performance post remains unread and unpublished
+    at 582 points.
+
+    On miss_review. The single entry is 49107950, the Google Play age-signals and worldwide Android
+    age-checks post, marked `watchlist_gap`. The backtest labelled it no_query_match at 315 points
+    and it is now at 402. It is a first-party developer-platform announcement with a shipping API,
+    and no watchlist query matches Android or Google Play at all while Apple platforms are covered
+    by several. That asymmetry is a collection hole rather than an editorial judgment, and it is
+    worth an owner-approved watchlist addition. No other candidate's seeded cause is wrong: the
+    large no_query_match entries above it, the UEFA statement, the Vision Pro post, KOReader, and
+    the Kavinsky report, are out of scope, and the four not_in_publish_fetch entries at the top of
+    the engineering-relevant set landed on Hacker News after the 2026-07-30 collection and are on
+    today's page or explained in the 05:18 notes.
 mechanical:
   digest:
     domains:
     - anthropic.com
+    - api-docs.deepseek.com
+    - blog.google
     - bottlenecklabs.com
     - chriscoyier.net
     - cloudsecurityalliance.org
     - ctgt.ai
     - dbos.dev
+    - earendil.com
     - geospatialml.com
     - github.blog
     - github.com
@@ -97,116 +181,99 @@ mechanical:
     - 49116721
     - 49116922
     - 49117191
+    - 49118781
+    - 49119063
+    - 49119559
+    - 49120097
     sections:
-      Agentic coding: 2
+      AI: 1
+      Agentic coding: 3
       Developer tools: 1
       Engineering posts: 2
       ML research: 1
       Outages: 0
       Security: 0
       Sources checked: 0
-      Top stories: 3
+      Top stories: 5
       Watchlist follow-ups: 1
-    source_count: 20
+    source_count: 28
     titles:
     - Anthropic finds Claude models broke into three real organizations during cybersecurity evaluations
+    - OpenJDK pull request 31120 closes against master carrying JEP 401 and JEP 539
     - GitHub puts stacked pull requests into public preview
+    - Chrome says two milestones fixed 1072 security bugs, more than the prior 23 combined
     - Bitsight ties H96 TV streaming boxes to an ad fraud network that spoofs mobile phones
+    - DeepSeek releases the V4-Flash API in public beta with Codex and Responses API support
     - CTGT reports that censorship did not transfer from a Chinese teacher model to an American student
-    - A 24-hour autonomous business run on GPT-5.6 Sol lost $447 and bought fake users
+    - A 24-hour autonomous business run on GPT-5.6 Sol ended below its starting balance
     - An agent skill forces LLM-written docs into ASD-STE100 Simplified Technical English
+    - Earendil argues inference APIs now return provider-sealed state that no other model can read
     - CodePen 2.0 launches with files, npm packages, and live collaboration
     - DBOS documents three changes that took Postgres-backed queues to 30,000 workflows per second
     - Two ML reviewers report fabricated citations or LLM-generated text in 15 of 22 submissions
     - Cloud Security Alliance publishes an initial post-mortem on the Hugging Face agent intrusion
   fetched:
+  - detail: 42756 bytes
+    ok: true
+    url: https://api-docs.deepseek.com/updates/
+  - detail: 652342 bytes (clipped)
+    ok: true
+    url: https://github.com/openjdk/jdk/pull/31120
+  - detail: 27330 bytes (clipped)
+    ok: true
+    url: https://api.github.com/repos/openjdk/jdk/pulls/31120
+  - detail: 284808 bytes (clipped)
+    ok: true
+    url: https://blog.google/security/chrome-stronger-with-every-update/
+  - detail: 33256 bytes
+    ok: true
+    url: https://earendil.com/posts/session-portability/
+  - detail: 42439 bytes (clipped)
+    ok: true
+    url: https://martinfowler.com/articles/exploring-gen-ai/refactoring-economic-benefit.html
   - detail: 170079 bytes (clipped)
     ok: true
     url: https://www.anthropic.com/news/investigating-incidents-cybersecurity-evals
-  - detail: 111670 bytes
+  - detail: 284808 bytes (clipped)
     ok: true
-    url: https://github.blog/changelog/2026-07-30-stacked-pull-requests-are-now-in-public-preview/
-  - detail: 'failed: fetch failed: https://openai.com/index/advancing-the-price-performance-frontier-with-gpt-5-6/:
-      HTTP Error 403: Forbidden'
-    ok: false
-    url: https://openai.com/index/advancing-the-price-performance-frontier-with-gpt-5-6/
-  - detail: 76485 bytes
-    ok: true
-    url: https://krebsonsecurity.com/2026/07/read-this-before-you-buy-that-tv-streaming-stick/
-  - detail: 16004 bytes
-    ok: true
-    url: https://openjdk.org/legal/ai
-  - detail: 74495 bytes
-    ok: true
-    url: https://www.bottlenecklabs.com/blog/autonomously-run-businesses
-  - detail: 302654 bytes
-    ok: true
-    url: https://modelcontextprotocol.io/specification/2026-07-28/changelog
+    url: https://blog.google/security/chrome-stronger-with-every-update/
   - detail: 71574 bytes
     ok: true
     url: https://cloudsecurityalliance.org/artifacts/hugging-face-ciso-post-mortem
-  - detail: 328937 bytes
+  - detail: 33256 bytes
     ok: true
-    url: https://status.claude.com/
-  - detail: 115062 bytes
-    ok: true
-    url: https://www.dbos.dev/blog/making-postgres-queues-scale
-  - detail: 68423 bytes (clipped)
+    url: https://earendil.com/posts/session-portability/
+  - detail: 68888 bytes (clipped)
     ok: true
     url: https://geospatialml.com/posts/reviewing-ai-slop/
-  - detail: 42695 bytes
-    ok: true
-    url: https://chriscoyier.net/2026/07/30/codepen-2-0/
-  - detail: 'failed: fetch failed: https://codepen.io/whats-new: HTTP Error 403: Forbidden'
-    ok: false
-    url: https://codepen.io/whats-new
-  - detail: 312114 bytes
-    ok: true
-    url: https://github.com/AminBlg/SimpleEnglish
   - detail: 93637 bytes (clipped)
     ok: true
     url: https://www.ctgt.ai/research/distillation-censorship-transfer
-  - detail: 48219 bytes
-    ok: true
-    url: https://www.isgroup.biz/en/cyber-security/llm-based-code-security-review-costs-findings-methodology.html
-  - detail: 177451 bytes
-    ok: true
-    url: https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/
-  - detail: 'failed: fetch failed: https://openai.com/index/advancing-the-price-performance-frontier-with-gpt-5-6/:
-      HTTP Error 403: Forbidden'
-    ok: false
-    url: https://openai.com/index/advancing-the-price-performance-frontier-with-gpt-5-6/
-  - detail: 76485 bytes
-    ok: true
-    url: https://krebsonsecurity.com/2026/07/read-this-before-you-buy-that-tv-streaming-stick/
-  - detail: 71574 bytes
-    ok: true
-    url: https://cloudsecurityalliance.org/artifacts/hugging-face-ciso-post-mortem
-  - detail: 115062 bytes
-    ok: true
-    url: https://www.dbos.dev/blog/making-postgres-queues-scale
-  - detail: 170079 bytes (clipped)
-    ok: true
-    url: https://www.anthropic.com/news/investigating-incidents-cybersecurity-evals
-  - detail: 170079 bytes (clipped)
-    ok: true
-    url: https://www.anthropic.com/news/investigating-incidents-cybersecurity-evals
-  - detail: 93637 bytes (clipped)
-    ok: true
-    url: https://www.ctgt.ai/research/distillation-censorship-transfer
-  - detail: 71574 bytes
-    ok: true
-    url: https://cloudsecurityalliance.org/artifacts/hugging-face-ciso-post-mortem
-  - detail: 312422 bytes
-    ok: true
-    url: https://github.com/AminBlg/SimpleEnglish
   - detail: 74495 bytes
     ok: true
     url: https://www.bottlenecklabs.com/blog/autonomously-run-businesses
-  - detail: 115062 bytes
+  - detail: 312118 bytes
     ok: true
-    url: https://www.dbos.dev/blog/making-postgres-queues-scale
-  generated_at: '2026-07-31T05:18:42+00:00'
+    url: https://github.com/AminBlg/SimpleEnglish
+  - detail: 652342 bytes (clipped)
+    ok: true
+    url: https://github.com/openjdk/jdk/pull/31120
+  - detail: 652336 bytes (clipped)
+    ok: true
+    url: https://github.com/openjdk/jdk/pull/31120
+  - detail: 170079 bytes (clipped)
+    ok: true
+    url: https://www.anthropic.com/news/investigating-incidents-cybersecurity-evals
+  - detail: 99659 bytes
+    ok: true
+    url: https://bugs.openjdk.org/browse/JDK-8389219
+  - detail: 33256 bytes
+    ok: true
+    url: https://earendil.com/posts/session-portability/
+  - detail: 284808 bytes (clipped)
+    ok: true
+    url: https://blog.google/security/chrome-stronger-with-every-update/
+  generated_at: '2026-07-31T12:14:24+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -215,24 +282,29 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-07-31T04:53:38+00:00'
+    fetched_at: '2026-07-31T11:50:06+00:00'
     pooled:
       added:
-        ask_hn: 0
-        comments: 0
-        front_page: 3
-        queries: 2
-        show_hn: 1
-        top_day: 3
-      snapshot_fetched_at: '2026-07-31T03:50:03+00:00'
+        ask_hn: 16
+        comments: 18
+        front_page: 13
+        queries: 34
+        show_hn: 7
+        top_day: 15
+      snapshot_fetched_at: '2026-07-31T11:35:35+00:00'
     queries_backend: algolia
     seen_ids:
+    - 47999020
     - 49008010
     - 49047839
+    - 49068229
     - 49071299
     - 49073017
+    - 49077372
     - 49080605
     - 49083970
+    - 49088098
+    - 49096170
     - 49099434
     - 49106346
     - 49106384
@@ -269,6 +341,7 @@ mechanical:
     - 49108849
     - 49108963
     - 49108971
+    - 49108973
     - 49109026
     - 49109165
     - 49109193
@@ -305,10 +378,12 @@ mechanical:
     - 49111879
     - 49112195
     - 49112232
+    - 49112611
     - 49112635
     - 49112739
     - 49112744
     - 49112790
+    - 49112835
     - 49112867
     - 49113059
     - 49113279
@@ -333,6 +408,8 @@ mechanical:
     - 49116272
     - 49116411
     - 49116721
+    - 49116759
+    - 49116817
     - 49116891
     - 49116922
     - 49116923
@@ -341,14 +418,38 @@ mechanical:
     - 49117284
     - 49117698
     - 49117875
+    - 49117931
     - 49117989
     - 49118082
+    - 49118113
+    - 49118474
     - 49118494
     - 49118663
     - 49118696
     - 49118781
+    - 49118782
     - 49118817
     - 49118933
+    - 49119063
+    - 49119274
+    - 49119425
+    - 49119559
+    - 49119606
+    - 49119751
+    - 49120097
+    - 49120120
+    - 49120299
+    - 49120447
+    - 49120756
+    - 49120807
+    - 49120923
+    - 49120968
+    - 49121047
+    - 49121143
+    - 49121204
+    - 49121409
+    - 49121479
+    - 49121744
     source: cache
   query_yield:
     0day:
@@ -358,15 +459,19 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49108480
       - 49108685
       - 49108778
       - 49109165
       - 49117099
-      published: 0
-      published_ids: []
+      - 49118933
+      - 49119274
+      - 49120097
+      published: 1
+      published_ids:
+      - 49120097
       raw: 5
     AWS:
       matched: 4
@@ -385,13 +490,15 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49117124
       - 49117363
       - 49117486
       - 49117602
       - 49117832
+      - 49118843
+      - 49119165
       published: 0
       published_ids: []
       raw: 5
@@ -418,14 +525,15 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 3
     CUDA:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49118363
+      - 49119763
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     CVE:
       matched: 2
       matched_ids:
@@ -435,24 +543,28 @@ mechanical:
       published_ids: []
       raw: 5
     Claude:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49106568
       - 49107749
       - 49111019
       - 49113559
       - 49115620
+      - 49117602
+      - 49119165
+      - 49119180
       published: 0
       published_ids: []
       raw: 5
     Claude Code:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49107749
       - 49109315
       - 49110007
       - 49111019
       - 49113559
+      - 49117510
       published: 0
       published_ids: []
       raw: 5
@@ -465,7 +577,7 @@ mechanical:
       - 49110581
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     Copilot:
       matched: 2
       matched_ids:
@@ -473,15 +585,16 @@ mechanical:
       - 49112467
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     Cursor:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49111358
       - 49117450
+      - 49121616
       published: 0
       published_ids: []
-      raw: 2
+      raw: 4
     GCP:
       matched: 2
       matched_ids:
@@ -491,22 +604,24 @@ mechanical:
       published_ids: []
       raw: 5
     GPU:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49111222
       - 49113397
+      - 49113561
       - 49116065
       published: 0
       published_ids: []
       raw: 5
     Gemini:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49111237
       - 49111413
       - 49114326
       - 49117073
       - 49117178
+      - 49121032
       published: 0
       published_ids: []
       raw: 5
@@ -517,13 +632,14 @@ mechanical:
       published_ids: []
       raw: 2
     GitHub:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49106529
       - 49108973
       - 49112232
       - 49112739
       - 49112790
+      - 49115793
       published: 1
       published_ids:
       - 49112232
@@ -542,7 +658,7 @@ mechanical:
       - 49108778
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     Homebrew:
       matched: 1
       matched_ids:
@@ -557,8 +673,9 @@ mechanical:
       published_ids: []
       raw: 5
     Java:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49119705
       published: 0
       published_ids: []
       raw: 5
@@ -582,11 +699,12 @@ mechanical:
       published_ids: []
       raw: 5
     Kleppmann:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49121615
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     Kotlin:
       matched: 0
       matched_ids: []
@@ -610,21 +728,24 @@ mechanical:
       published_ids: []
       raw: 5
     LWN:
-      matched: 2
+      matched: 4
       matched_ids:
       - 49108685
       - 49117257
+      - 49121022
+      - 49121473
       published: 0
       published_ids: []
       raw: 5
     Linux:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49109917
       - 49110853
       - 49113210
       - 49114072
       - 49116847
+      - 49121022
       published: 0
       published_ids: []
       raw: 5
@@ -633,15 +754,17 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 5
     MCP:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49109223
       - 49109394
       - 49109406
       - 49109425
       - 49114751
+      - 49118105
+      - 49119659
       published: 0
       published_ids: []
       raw: 5
@@ -652,21 +775,24 @@ mechanical:
       published_ids: []
       raw: 5
     Neovim:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49121616
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     Nvidia:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49107822
       - 49111222
       - 49112798
       - 49117170
+      - 49119284
+      - 49121279
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     OpenAI:
       matched: 6
       matched_ids:
@@ -686,7 +812,7 @@ mechanical:
       - 49115116
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     Paxos:
       matched: 0
       matched_ids: []
@@ -712,16 +838,18 @@ mechanical:
       published_ids: []
       raw: 0
     PyPI:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49120339
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     Python:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49106579
       - 49109663
+      - 49110869
       - 49112023
       - 49116272
       - 49117170
@@ -741,13 +869,16 @@ mechanical:
       published_ids: []
       raw: 5
     Rust:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49109227
       - 49109785
       - 49110419
       - 49112946
       - 49115217
+      - 49117741
+      - 49119743
+      - 49121326
       published: 0
       published_ids: []
       raw: 5
@@ -763,7 +894,7 @@ mechanical:
       - 49114357
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     Spring Boot:
       matched: 0
       matched_ids: []
@@ -771,8 +902,9 @@ mechanical:
       published_ids: []
       raw: 0
     Swift:
-      matched: 1
+      matched: 2
       matched_ids:
+      - 49112712
       - 49118149
       published: 0
       published_ids: []
@@ -784,10 +916,11 @@ mechanical:
       published_ids: []
       raw: 5
     TypeScript:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49108849
       - 49115217
+      - 49119705
       published: 0
       published_ids: []
       raw: 5
@@ -828,7 +961,7 @@ mechanical:
       - 49106875
       published: 0
       published_ids: []
-      raw: 3
+      raw: 1
     agentic:
       matched: 4
       matched_ids:
@@ -840,7 +973,7 @@ mechanical:
       published_ids: []
       raw: 5
     arXiv:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49107861
       - 49109869
@@ -848,6 +981,7 @@ mechanical:
       - 49111777
       - 49113119
       - 49118886
+      - 49121868
       published: 0
       published_ids: []
       raw: 5
@@ -862,7 +996,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     coding agent:
       matched: 2
       matched_ids:
@@ -910,11 +1044,12 @@ mechanical:
       published_ids: []
       raw: 5
     incident:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49106843
       - 49115506
       - 49117191
+      - 49119880
       published: 1
       published_ids:
       - 49117191
@@ -927,28 +1062,34 @@ mechanical:
       published_ids: []
       raw: 3
     kernel:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49108662
       - 49110494
+      - 49113561
       - 49118363
       published: 0
       published_ids: []
       raw: 5
     local-first:
-      matched: 0
-      matched_ids: []
+      matched: 4
+      matched_ids:
+      - 49119667
+      - 49120402
+      - 49121054
+      - 49121615
       published: 0
       published_ids: []
-      raw: 1
+      raw: 5
     macOS:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49109068
       - 49109223
       - 49110699
       - 49116116
       - 49116351
+      - 49121471
       published: 0
       published_ids: []
       raw: 5
@@ -1113,6 +1254,143 @@ mechanical:
       name: run_log
       status: ok
     - detail: 28 fetch(es), 3 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-07-31T12:14:30+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-07-31.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-07-30
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"Value objects land in OpenJDK master as a preview through JEP 401 and
+        JEP 539","section":"Top stories","status":"confirmed","category":"Languages","primary_url":"https://github.com/openjdk/jdk/pull/31120","sources":["https://github.com/openjdk/jdk/pull/31120","https://api.g
+      name: select
+      status: ok
+      tokens:
+        in: 2463
+        out: 25181
+      tools:
+        Bash: 2
+        Grep: 11
+        Read: 8
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 6
+        mcp__digest__guidance: 2
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 1
+    - detail: |-
+        Gate passes, exit code 0. The warnings are access-note staleness in memory, not digest content, and belong to the memory step.
+
+        ## What the write step did
+
+        Updated `data/digests/2026-07-31.md` in place. Four blocks added, none removed (`displace` was empty).
+
+        **Added to `Top stories`** (now at the c
+      name: write
+      status: ok
+      tokens:
+        in: 21
+        out: 9814
+      tools:
+        Edit: 8
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Agentic coding / A 24-hour autonomous
+        business run on GPT-5.6 Sol lost $447 and bought fake users","detail":"The 'Why it matters' claim
+        that 'the failure mode was paid-for fake demand rather than an inability to act' is contradicted
+        by the p
+      name: review
+      status: ok
+      tokens:
+        in: 16
+        out: 16550
+      tools:
+        Glob: 1
+        Grep: 2
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 9
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes, exit code 0. The warnings are memory access-note staleness, not content failures.
+
+        **Repairs made to `data/digests/2026-07-31.md`** — six blocks corrected, nothing removed, page still at 14 stories, `source_count` unchanged at 28 because no repair touched a link.
+
+        Blocking:
+
+        - **Bottlen
+      name: write
+      status: ok
+      tokens:
+        in: 27
+        out: 12318
+      tools:
+        Edit: 11
+        Read: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Top stories / OpenJDK pull request
+        31120 closes against master carrying JEP 401 and JEP 539","detail":"The block asserts the integration
+        state is unconfirmable, and that is refuted by the authoritative source. https://bugs.openjdk.org/browse
+      name: review
+      status: ok
+      tokens:
+        in: 15
+        out: 14812
+      tools:
+        Glob: 1
+        Grep: 4
+        Read: 2
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 5
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 8 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 1 cause(s) corrected in 2026-07-30
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-07-31.yaml
+      name: run_log
+      status: ok
+    - detail: 20 fetch(es), 0 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
