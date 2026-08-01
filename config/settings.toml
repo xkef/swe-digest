@@ -141,6 +141,19 @@ lead_days = 3
 # upcoming event is flagged "soon".
 soon_days = 1
 
+[snapshots]
+# Day files each data/snapshots/<source>/ directory keeps. `snapshots.yml`
+# prunes to this count after every merge.
+#
+# The floor is set by the content gate, not by disk. `check_hn_ids` holds every
+# HN link on a page to the ids the fetch recorded over the digest day and the
+# preceding week, so publishing a day needs that day plus seven on disk. Below
+# that the gate reports a link it cannot verify against evidence pruned by
+# design, which fails closed and withholds the digest: retention of 7 did that
+# for the whole 2026-08-01 run. Nine is the eight the window needs plus one
+# spare day, so a snapshot round that does not run costs no coverage.
+retention_days = 9
+
 [publish]
 # One digest commit, optionally followed by the weekly fallback commit.
 max_commits = 2

@@ -128,12 +128,18 @@ jobs:
           day=$(date -u +%F)
           now=$(date -u +%H:%MZ)
           kinds=""
+          # Read, not written twice: the content gate holds a published HN link
+          # to a week of fetch record, so a retention chosen here on its own
+          # would go stale against that window and veto a publish. The number
+          # lives in config/settings.toml and a test holds it above the window.
+          keep=$(PYTHONPATH=src python3 -c \
+            'from swe_digest import settings; print(settings.SNAPSHOT_RETENTION_DAYS)')
           # One name per source now: the cache directory, the merge kind, and
           # the snapshot directory are all the registry's name for it.
-          merge() { # merge <source>: merge today's fetch, prune to 7 days, stage
+          merge() { # merge <source>: merge today's fetch, prune, stage
             dir="data/snapshots/$1"
             PYTHONPATH=src python3 -m swe_digest merge "$1" ".cache/$1/$day.json" "$dir/$day.json"
-            ls "$dir"/*.json | sort | head -n -7 | xargs -r git rm -q --
+            ls "$dir"/*.json | sort | head -n "-$keep" | xargs -r git rm -q --
             git add "$dir/$day.json"
             kinds="${kinds:+$kinds, }$1"
           }

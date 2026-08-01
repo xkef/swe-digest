@@ -92,6 +92,11 @@ HN_ID_SINCE = "2026-07-23"
 # spans the preceding week. Watchlist follow-ups are exempt instead: they
 # track threads up to the 45-day age bound, far past any window worth
 # loading here.
+#
+# Snapshots are pruned to settings.SNAPSHOT_RETENTION_DAYS, which is what puts
+# this window on disk for the day a run publishes. A test holds the two
+# numbers together, because a retention below this window turns the check into
+# a veto on evidence that no longer exists.
 HN_ID_WINDOW_DAYS = 7
 
 # The run-log keys that the agent owns. `make run-log` writes the mechanical
@@ -480,6 +485,14 @@ def check_hn_ids(root: Path) -> list[str]:
     because a mistyped id usually lands on a real comment, so the check is
     membership in the fetch record: the day's cache or snapshot, plus the
     preceding week for stories first seen on an earlier day.
+
+    A page is held to that record only while the whole window is on disk. The
+    fetch record is pruned on a fixed horizon and a page is not, so an older
+    page outlives the snapshots that justified the threads it carried over, and
+    reading what is left as the full record turns every one of them into a wrong
+    id. Two such links on the 2026-07-26 page failed the gate from the day the
+    2026-07-25 snapshot was pruned, and because the gate fails closed for the
+    whole repository, that withheld the 2026-08-01 digest.
     """
     errors: list[str] = []
     pools: dict[str, set[int] | None] = {}
@@ -489,17 +502,29 @@ def check_hn_ids(root: Path) -> list[str]:
             pools[day] = _hn_ids_fetched(root, day)
         return pools[day]
 
-    for path in paths.DIGEST.glob(root):
-        day = path.stem
-        # A day with no fetch record at all predates the snapshots (or the
-        # check is running against a tree without them); there is nothing to
-        # hold the links to.
-        if day < HN_ID_SINCE or pool(day) is None:
-            continue
+    def window(day: str) -> set[int] | None:
+        """Returns every id the fetch recorded across the day's window, or None
+        when any day of it has no fetch record to read."""
         start = datetime.date.fromisoformat(day)
         seen: set[int] = set()
         for offset in range(HN_ID_WINDOW_DAYS + 1):
-            seen |= pool((start - datetime.timedelta(days=offset)).isoformat()) or set()
+            recorded = pool((start - datetime.timedelta(days=offset)).isoformat())
+            if recorded is None:
+                return None
+            seen |= recorded
+        return seen
+
+    checked = 0
+    unrecorded: list[str] = []
+    for path in paths.DIGEST.glob(root):
+        day = path.stem
+        if day < HN_ID_SINCE:
+            continue
+        seen = window(day)
+        if seen is None:
+            unrecorded.append(day)
+            continue
+        checked += 1
         digest = parse(path.read_text(encoding="utf-8"))
         for section, stories in digest.sections:
             if section in FOLLOWUP_SECTIONS:
@@ -514,6 +539,16 @@ def check_hn_ids(root: Path) -> list[str]:
                             f" {HN_ID_WINDOW_DAYS} days up to {day} recorded;"
                             f" copy the id from the day's HN data, never from memory"
                         )
+    # Reported rather than passed over in silence: the day a run publishes is
+    # the day the transcription happens, so that day dropping out of the check
+    # is the one case worth seeing in the gate's own output.
+    if unrecorded:
+        print(
+            f"hn-ids: {checked} day(s) checked against the fetch record,"
+            f" {len(unrecorded)} without one for the full window"
+            f" (newest {unrecorded[-1]})",
+            file=sys.stderr,
+        )
     return errors
 
 

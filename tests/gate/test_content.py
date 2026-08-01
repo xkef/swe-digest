@@ -5,6 +5,7 @@ raw HTML, entity-encoded javascript: URIs, secrets, URL shorteners, and
 structural corruption. The gate must reject each one.
 """
 
+import datetime
 import json
 import subprocess
 from pathlib import Path
@@ -14,7 +15,7 @@ import pytest
 from swe_digest import paths, serial, settings
 from swe_digest.domain import sources as registry
 from swe_digest.domain.canonical import canonicalize
-from swe_digest.gate.content import SCANNED_SNAPSHOTS, main
+from swe_digest.gate.content import HN_ID_WINDOW_DAYS, SCANNED_SNAPSHOTS, main
 
 from ..conftest import DIGEST_DATE, STORY, digest_text, with_source_count, write_run_log
 
@@ -649,6 +650,19 @@ def write_hn_snapshot(root: Path, date: str, story_ids: list[int]) -> None:
     )
 
 
+def write_hn_window(root: Path, date: str = HN_DATE) -> None:
+    """Writes an empty snapshot for every day of ``date``'s window.
+
+    The gate checks a page only while the whole window is on disk, which is
+    what the retention setting keeps true for the day a run publishes. A test
+    that snapshots one day alone would be testing the skip instead of the
+    membership rule. Each test then fills in the days it cares about.
+    """
+    start = datetime.date.fromisoformat(date)
+    for offset in range(HN_ID_WINDOW_DAYS + 1):
+        write_hn_snapshot(root, (start - datetime.timedelta(days=offset)).isoformat(), [])
+
+
 def hn_digest(root: Path, item: int, *, followup: bool = False) -> Path:
     """The fixture digest for HN_DATE, its story linking HN item ``item`` from
     Top stories or, with ``followup``, from Watchlist follow-ups."""
@@ -674,18 +688,21 @@ def hn_digest(root: Path, item: int, *, followup: bool = False) -> Path:
 
 def test_hn_id_absent_from_the_fetch_fails(repo_tree: Path) -> None:
     hn_digest(repo_tree, 49096221)
+    write_hn_window(repo_tree)
     write_hn_snapshot(repo_tree, HN_DATE, [49096188])
     assert main(root=repo_tree) == 1
 
 
 def test_hn_id_in_the_days_snapshot_passes(repo_tree: Path) -> None:
     hn_digest(repo_tree, 49096188)
+    write_hn_window(repo_tree)
     write_hn_snapshot(repo_tree, HN_DATE, [49096188])
     assert main(root=repo_tree) == 0
 
 
 def test_hn_id_from_an_earlier_day_in_the_window_passes(repo_tree: Path) -> None:
     hn_digest(repo_tree, 49090000)
+    write_hn_window(repo_tree)
     write_hn_snapshot(repo_tree, HN_DATE, [49096188])
     write_hn_snapshot(repo_tree, "2026-07-19", [49090000])
     assert main(root=repo_tree) == 0
@@ -693,6 +710,7 @@ def test_hn_id_from_an_earlier_day_in_the_window_passes(repo_tree: Path) -> None
 
 def test_hn_id_older_than_the_window_fails(repo_tree: Path) -> None:
     hn_digest(repo_tree, 49090000)
+    write_hn_window(repo_tree)
     write_hn_snapshot(repo_tree, HN_DATE, [49096188])
     write_hn_snapshot(repo_tree, "2026-07-17", [49090000])
     assert main(root=repo_tree) == 1
@@ -700,6 +718,7 @@ def test_hn_id_older_than_the_window_fails(repo_tree: Path) -> None:
 
 def test_followup_blocks_are_exempt_from_the_id_check(repo_tree: Path) -> None:
     hn_digest(repo_tree, 49090000, followup=True)
+    write_hn_window(repo_tree)
     write_hn_snapshot(repo_tree, HN_DATE, [49096188])
     assert main(root=repo_tree) == 0
 
@@ -707,3 +726,23 @@ def test_followup_blocks_are_exempt_from_the_id_check(repo_tree: Path) -> None:
 def test_day_without_a_fetch_record_is_not_checked(repo_tree: Path) -> None:
     hn_digest(repo_tree, 49096221)
     assert main(root=repo_tree) == 0
+
+
+def test_day_whose_window_lost_a_fetch_record_is_not_checked(repo_tree: Path) -> None:
+    # The page outlives the snapshots that justified its links: a thread first
+    # seen earlier in the window is unverifiable once that day is pruned, and
+    # reading what is left as the full record made the gate veto the whole
+    # repository on 2026-08-01. The window is complete except for one day.
+    hn_digest(repo_tree, 49096221)
+    write_hn_window(repo_tree)
+    write_hn_snapshot(repo_tree, HN_DATE, [49096188])
+    paths.SNAPSHOT.path(repo_tree, source="hn", day="2026-07-21").unlink()
+    assert main(root=repo_tree) == 0
+
+
+def test_snapshot_retention_covers_the_id_window() -> None:
+    # The two numbers live apart: retention is a tunable the snapshots workflow
+    # reads, and the window is the gate's rule. Retention below the window
+    # prunes the evidence the gate demands, and the gate fails closed for the
+    # whole repository, so the digest stops publishing.
+    assert settings.SNAPSHOT_RETENTION_DAYS >= HN_ID_WINDOW_DAYS + 1

@@ -68,6 +68,11 @@ STARS_DESCRIPTION_MAX_CHARS: int = _raw["stars"]["description_max_chars"]
 EVENTS_LEAD_DAYS: int = _raw["events"]["lead_days"]
 EVENTS_SOON_DAYS: int = _raw["events"]["soon_days"]
 
+# Source snapshots. The snapshots workflow prunes each source directory to this
+# many day files. gate.content.check_hn_ids reads a week of them to verify a
+# published HN link, and a test holds this value at or above that window.
+SNAPSHOT_RETENTION_DAYS: int = _raw["snapshots"]["retention_days"]
+
 # Digest document vocabulary (section order stays in digest.document)
 DIGEST_MAX_TOP_STORIES: int = _raw["digest"]["max_top_stories"]
 DIGEST_MAX_STORIES: int = _raw["digest"]["max_stories"]
