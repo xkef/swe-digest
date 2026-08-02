@@ -809,51 +809,6 @@
     A published post-mortem and full network rebuild timeline; confirmation the offline backup restores
     the registry without data loss; scope of the citizen-data and source-code sale; whether the notified-but-unpatched
     vulnerability is identified; any indictment of the ByteToBreach actor.
-- category: Outage
-  id: f-0035
-  last_seen: '2026-07-18'
-  notes: >-
-    2026-07-17 AWS Billing Console incident: Cost Explorer showed inaccurate estimated billing data, some
-    accounts (including near-idle ones) seeing estimates of hundreds of millions to trillions of dollars;
-    budget alerts fired on the bad figures. Reports began ~19:38 PDT 2026-07-16; AWS opened investigation
-    01:33 PDT 2026-07-17. AWS stated root cause is a unit-pricing defect in the estimated billing computation
-    subsystem, estimates do not reflect actual usage/charges. Display/estimation layer only; no evidence
-    invoices or payment processing affected. HN 48945241 (1092 pts). 2026-07-18: AWS began backfilling
-    corrected figures in the Cost Management Console and said all accounts should show accurate amounts
-    by ~noon Pacific 2026-07-18. Covered 2026-07-17 Top stories (Outage), re-covered 2026-07-18 Top stories
-    with the correction.
-  opened: '2026-07-17'
-  sources:
-  - '[AWS Support status update](https://x.com/AWSSupport/status/2078037531036172430)'
-  - >-
-    [The Register](https://www.theregister.com/off-prem/2026/07/17/billing-software-error-sends-billion-dollar-aws-estimates/)
-  - '[HN 48945241](https://news.ycombinator.com/item?id=48945241)'
-  subject: AWS Cost Explorer inflated-billing-estimate incident
-  watch_for: >-
-    A published root-cause writeup; confirmation budget-alert/anomaly-detection false positives cleared
-    without customer action; confirmation no invoices or payment records were affected.
-- category: Security
-  id: f-0036
-  last_seen: '2026-07-17'
-  notes: >-
-    CISA KEV catalog 2026.07.16 (count 1647) added three unauthenticated remote-code flaws on 2026-07-16,
-    all federal due 2026-07-19. CVE-2026-58644: Microsoft SharePoint deserialization of untrusted data
-    (CWE-502, CVSS 9.8, code exec over network); fixed SharePoint 2016 16.0.5556.1005, 2019 16.0.10417.20153,
-    Subscription Edition 16.0.19725.20384. CVE-2026-25089 and CVE-2026-39808: Fortinet FortiSandbox /
-    Cloud / PaaS OS command injection via crafted HTTP requests; fixed 4.4.9 and 5.0.6 (Cloud/PaaS 5.0.6);
-    patched mid-2026 with exploitation observed since ~2026-06-14 (FG-IR-26-141, FG-IR-26-100). Third
-    July SharePoint KEV entry after CVE-2026-45659 and CVE-2026-56164. Covered 2026-07-17 Top stories
-    (lead).
-  opened: '2026-07-16'
-  sources:
-  - '[CVE-2026-58644 (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2026-58644)'
-  - '[CISA KEV catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)'
-  - '[FortiSandbox FG-IR-26-141](https://fortiguard.fortinet.com/psirt/FG-IR-26-141)'
-  subject: SharePoint and FortiSandbox flaws added to CISA KEV
-  watch_for: >-
-    Ransomware follow-on; internet-exposure scans of unpatched SharePoint and FortiSandbox appliances;
-    whether the 2026-07-19 federal deadline drives patch uptake; whether the SharePoint deserialization
-    flaw links to the earlier July SharePoint KEV entries in one exploitation cluster.
 - category: AI
   id: f-0037
   last_seen: '2026-07-25'
@@ -985,23 +940,6 @@
     Council and Parliament progress on the mandatory CSA Regulation ("Chat Control 2.0") that would require
     client-side scanning; any provider change to scanning or encryption defaults under the extended derogation;
     the official EP vote record.
-- category: Linux/Kernel
-  id: f-0042
-  last_seen: '2026-07-10'
-  notes: >-
-    Developer Yureka Lilian posted the first device trees and bindings to boot Apple Silicon M4 on Linux
-    (Phoronix 2026-07-09). M4 bring-up closer to M3 than the M2-to-M3 step. Most changes in the m1n1 bootloader,
-    which no longer sets CPU config bits since iBoot now sets and locks them. Reaches a bootable state
-    only, no working peripherals or usable desktop; SMP boot depends on idle=nop patches and is unstable.
-    Continues the Asahi Linux enablement effort. Covered 2026-07-10 Linux and kernel.
-  opened: '2026-07-10'
-  sources:
-  - '[Phoronix](https://www.phoronix.com/news/Apple-M4-DT-Linux)'
-  - '[Asahi M4 feature support](https://asahilinux.org/docs/platform/feature-support/m4/)'
-  subject: Initial patches boot the Apple M4 on Linux
-  watch_for: >-
-    Peripheral drivers (display, GPU, audio); stable SMP boot past the idle=nop dependency; upstream merge
-    of the M4 device trees and bindings.
 - category: Security
   id: f-0043
   last_seen: '2026-07-08'
@@ -1117,24 +1055,6 @@
   watch_for: >-
     Fix backport into stable kernel trees and distribution updates; the cryptsetup warning MR landing
     in a release; whether the fix has its own long-range interactions.
-- category: Languages
-  id: f-0048
-  last_seen: '2026-07-08'
-  notes: >-
-    Microsoft released TypeScript 7.0 stable 2026-07-08, the native Go port (Beta 2026-04-21, RC 2026-06-18).
-    Reports ~8-12x faster full builds, ~13x faster editor open (17.5s to 1.3s for VS Code), 6-26% less
-    memory; production-tested at Slack/Figma/Vanta. Breaking defaults vs 6.0: `strict` true, `types` `[]`,
-    `rootDir` project root; removed ES5/AMD/UMD/SystemJS emit; several deprecated flags now hard errors.
-    `npm install -D typescript`. Covered 2026-07-08 Top stories (lead).
-  opened: '2026-07-08'
-  sources:
-  - '[TypeScript blog](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/)'
-  - '[HN 48833715](https://news.ycombinator.com/item?id=48833715)'
-  subject: TypeScript 7.0 stable native Go compiler
-  watch_for: >-
-    Migration reports for the removed ES5/AMD/UMD/SystemJS emit and the strict-by-default / `types: []`
-    / `rootDir` default changes; editor-integration parity with the old compiler; whether large codebases
-    hit correctness or speed regressions in the Go port.
 - category: AI
   id: f-0049
   last_seen: '2026-07-11'
@@ -1232,48 +1152,6 @@
   watch_for: >-
     A Cursor patch restricting Git-binary resolution to trusted paths; a CVE assignment; exploitation
     reports; whether the agent auto-clone mass-exploitation path gets demonstrated.
-- category: Security
-  id: f-0053
-  last_seen: '2026-07-15'
-  notes: >-
-    Researcher Ayush Paul published 2026-07-09 (HN front page 2026-07-15, 360 pts, 162 cmt) a demonstrated
-    exfiltration of Claude.ai stored memory via the web_fetch tool. A page disguised as a Cloudflare CAPTCHA
-    instructed Claude to "verify" the user by navigating letter by letter through attacker-controlled
-    alphabetical links, so the sequence of fetched URLs spelled out private data to the attacker's server;
-    leaked the user's full name, employer, and hometown, and in one case inferred the hometown from a
-    hackathon name rather than a stored fact. Reported to Anthropic via HackerOne. Anthropic said it had
-    already identified the issue internally, awarded no bounty, and mitigated it by stopping web_fetch
-    from following links on external pages (navigation restricted to web-search results and user-provided
-    URLs). Extends the agent memory/tool exfiltration and prompt-injection theme. Covered 2026-07-15 Top
-    stories.
-  opened: '2026-07-15'
-  sources:
-  - '[write-up](https://www.ayush.digital/blog/the-memory-heist)'
-  - '[HN 48916975](https://news.ycombinator.com/item?id=48916975)'
-  subject: Claude memory exfiltrated via web_fetch link-following (The Memory Heist)
-  watch_for: >-
-    A public Anthropic advisory or changelog note documenting the web_fetch external-link-following restriction;
-    whether the mitigation is complete or bypassable; whether the same memory-plus-fetch exfiltration
-    works against other providers (ChatGPT memory, Gemini).
-- category: Security
-  id: f-0054
-  last_seen: '2026-07-15'
-  notes: >-
-    Bulletin TS-2026-009 (2026-07-13) reports an argument-injection flaw in Tailscale SSH: usernames with
-    leading hyphens were passed to `getent(1)` and interpreted as flags, so a principal already in the
-    tailnet ACL connecting as `-i` could dump the entire passwd file starting with root. Fixed in 1.98.9
-    (rejects leading-dash usernames). No CVE, no evidence of exploitation. Same-day TS-2026-008 is a CPU-exhaustion
-    flaw in Serve/Funnel from malformed HTTP requests. HN: tptacek called it a venerable bug class (AIX
-    3), others note `--` is the proper fix. Covered 2026-07-15 Security.
-  opened: '2026-07-13'
-  sources:
-  - '[Tailscale TS-2026-009](https://tailscale.com/security-bulletins)'
-  - '[HN 48915004](https://news.ycombinator.com/item?id=48915004)'
-  subject: Tailscale SSH argument injection TS-2026-009
-  watch_for: >-
-    A CVE assignment; whether the fix (rejecting leading-dash usernames) is complete versus a proper `--`
-    argument separator; any exploitation reports; whether other Tailscale features pass user-controlled
-    strings to shell utilities.
 - category: AI
   id: f-0055
   last_seen: '2026-07-15'
@@ -1388,39 +1266,6 @@
   subject: wp2shell WordPress Core pre-auth RCE (CVE-2026-63030 + CVE-2026-60137)
   watch_for: Mass scanning and ransomware follow-on against the batch endpoint; confirmation forced auto-updates
     reach installs without auto-update enabled; whether the withheld exploit chain is fully published.
-- category: Security
-  id: f-0060
-  last_seen: '2026-07-18'
-  notes: >-
-    TP-Link Kasa EC70/EC71 v4 cameras. CVE-2026-9770 (CVSS 8.6): hardcoded cryptographic key in firmware
-    lets a local-network attacker decrypt traffic between the camera and its web management interface.
-    CVE-2026-13230 (CVSS 5.3): GPS coordinates exposed via the unauthenticated local discovery UDP response
-    (`get_sysinfo`); a crafted discovery request returns location metadata without auth. Fixed firmware
-    2.4.0 Build 20260520 and later, coordinates removed in 2.4.1. Local-network attack only. Surfaced
-    HN 48952565. Covered 2026-07-18 Security.
-  opened: '2026-07-18'
-  sources:
-  - '[CVE-2026-9770 (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2026-9770)'
-  - '[CVE-2026-13230 (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2026-13230)'
-  subject: TP-Link Kasa EC70/EC71 v4 hardcoded key and GPS disclosure
-  watch_for: >-
-    Whether other Kasa/Tapo models share the firmware key; internet or LAN exposure scans; any escalation
-    beyond local-network reach; TP-Link advisory tracking IDs.
-- category: Security
-  id: f-0061
-  last_seen: '2026-07-16'
-  notes: >-
-    CISA added CVE-2026-46817 to KEV 2026-07-15 (catalog 2026.07.15, count 1644). Missing-authentication
-    (CWE-306/287/269) in the Oracle Payments File Transmission component of Oracle E-Business Suite 12.2.3-12.2.15,
-    CVSS 9.8, unauthenticated network-reachable; fixed in the CSPUMay2026 security alert. NVD moved exploitation
-    none-to-active on the KEV addition. Federal due 2026-07-18. Covered 2026-07-16 Top stories.
-  opened: '2026-07-16'
-  sources:
-  - '[NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-46817)'
-  - '[CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)'
-  subject: Oracle E-Business Suite CVE-2026-46817 added to CISA KEV
-  watch_for: Exploitation and ransomware reports; internet-exposure scans of unpatched EBS Payments deployments;
-    whether other CSPUMay2026 CVEs see abuse; the 2026-07-18 federal remediation deadline.
 - category: AI
   id: f-0062
   last_seen: '2026-07-18'
