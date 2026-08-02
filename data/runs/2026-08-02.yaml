@@ -126,54 +126,138 @@ judgment:
     Thunderbolt Ethernet post at 203 points was verified and deliberately dropped by review on
     2026-08-01. The RSS cluster, Google News, and the founder essay are out of scope. No false
     entity match appeared among the candidates.
+
+    Third run of 2026-08-02. The page arrived with 14 blocks and leaves with 17. One block moved
+    section, nothing left the page.
+
+    The main finding of this run is that the earlier run's judgment on Coldcard was wrong and I
+    reversed it. Both prior runs dropped it, the second recording it as "consumer self-custody
+    rather than an engineering failure a reader can act on" on the strength of a CoinDesk framing.
+    That was a read of the wrong source. The vendor page at coldcard.com/docs/upgrade carries a
+    first-party urgent hotfix dated 2026-07-31 with everything the Security bar asks for: affected
+    versions, entropy figures, and a mitigation. Mk3 seeds generated on 4.0.1 through 4.1.9
+    inclusive are stated at about 40 bits, Mk4, Mk5 and Q at as low as about 72 bits, against a
+    stated target of 128. Fixed in v5.6.0, v1.5.0Q, v4.2.0 and Edge 6.6.0X/QX, all released
+    2026-07-31, with a BIP-39 passphrase named as a stopgap. The Coldcard/firmware commit history
+    independently shows a commit "fixes rng" immediately before those three release commits. I
+    ranked it second rather than first because the Anthropic disclosure is a completed breach of
+    three organizations and describes a failure class that reaches every lab running agentic
+    evaluations, where this reaches one product line.
+
+    The root-cause mechanism is a third-party reading and I kept it separate from the vendor facts.
+    A Core Lightning developer traced it through public commits to `#define MICROPY_HW_ENABLE_RNG
+    (0)`, added in a commit whose entire message is the word "runs" against about 1534 changed
+    lines, which removed the STM32 hardware RNG path so that `random.bytes(32)` in
+    `make_new_wallet()` fell through to MicroPython's Yasmarang generator. The analysis argues the
+    define was set to silence a duplicate-symbol compiler error from a hand-copied
+    `MP_DEFINE_CONST_FUN_OBJ_0(pyb_rng_get_obj, ...)`. Coinkite has published no postmortem naming a
+    mechanism, and the vendor page links a blog announcement whose URL I did not resolve, so the
+    mechanism should be attributed to the analysis and not written as vendor-confirmed. Worth
+    chasing tomorrow.
+
+    Go 1.27 moved from Top stories to Languages and runtimes rather than being dropped. Top stories
+    was full at five, the Coldcard item outranks it, and Go 1.27 is a draft for a release that has
+    not happened. It is still a real migration signal, so it keeps a slot, just not a top one. This
+    is the only change to anything already published and no story was removed from the day.
+
+    The Android item is deliberately `developing` because two sources disagree on what happened. The
+    Open Home Foundation write-up, by the Home Assistant Android developer the Commission consulted,
+    says the EC "adopted a decision" on 2026-07-16 requiring Alphabet to open eleven features, and
+    gives the deadlines as Android 18 by 2027-08-01 and concurrent hotword detection by Android 19
+    no later than 2028-08-01. The Commission's own DMA news index confirms an item dated 16 July
+    2026, but titles it "Commission provides guidance to Google for AI interoperability on Android".
+    Guidance and a specification decision are not the same instrument and I could not fetch the
+    underlying document to settle which it is, so the block leads with the participant account for
+    the technical detail and does not assert a binding mandate. A reader of the finished page cannot
+    see that gap.
+
+    Also noticed on the Commission's news index and not published: a 23 July 2026 item stating the
+    Commission fined Google 890 million euro for DMA breaches. It is ten days old, carries no
+    discussion signal in today's window, and a fine is not one of the events the Markets and
+    companies bar admits. Recording it here so the absence is not read as a miss.
+
+    I left `miss_review` empty on purpose. The backtest re-scored 2026-08-01 and seeded zero default
+    causes, which means the earlier runs of this date already adjudicated it, and the first run's
+    three corrections including the JEP 401 watchlist gap still look right to me. I found no
+    candidate whose cause I would change, so there is nothing to correct rather than nothing
+    checked.
+
+    Collection state is worse than yesterday on Reddit and unchanged elsewhere. Reddit reached 9 of
+    28 subreddits for day coverage against a floor of 14, and 1 of 28 on both top_day and hot, the
+    eighth consecutive short date. What returned is again r/rust threads, Python daily threads and
+    iOS beginner questions, and nothing in it cleared the bar, so Reddit and social pulse stays
+    omitted for lack of material rather than for lack of checking. The GitHub stars fetch returned
+    two events for the entire watchlist, one of them an author starring his own repository, so
+    repository releases and github.com/trending went unchecked for a sixth consecutive run. Both
+    holes are now long enough that they read as configuration faults rather than quiet days. The
+    events watchlist returned empty upcoming and active lists. Every YouTube item again carried a
+    null discussion link, so New videos stays omitted. Hacker News and arXiv were healthy.
+
+    Two access failures worth carrying forward. openai.com returned HTTP 403 again on the
+    ten-advances announcement, so that block still cites the GitHub repository rather than the post,
+    now a two-run failure on that host. I did not retry philarchive.org for the Connes rigidity
+    rebuttal, since the previous run recorded a two-run 403 on both the archive and record paths and
+    asked that it become a per-host access note rather than a third blind retry. The rebuttal is
+    still unverified and still unpublished, which is why the OpenAI block stays `developing`.
+
+    Nothing in today's window mapped to an open followups entry, so Watchlist follow-ups stays
+    omitted. Outages is genuinely empty. The followups store's newest entry is dated 2026-07-26,
+    seven days stale, which means no run since then has written to it despite six published digests.
+    That is a memory-pipeline problem outside this step, but it is why follow-up matching found
+    nothing to attach today.
 mechanical:
   digest:
     domains:
-    - anthropic.com
     - arxiv.org
+    - blog.coinkite.com
     - blog.netbsd.org
-    - brandur.org
-    - cnbc.com
-    - engadget.com
+    - blog.rust-lang.org
+    - coindesk.com
+    - coldcard.com
+    - digital-markets-act.ec.europa.eu
     - github.com
     - go.dev
+    - insider.btcpp.dev
     - leodemoura.github.io
     - news.ycombinator.com
+    - openhomefoundation.org
     - rfc-editor.org
     - seed.bytedance.com
     - trufflesecurity.com
     - unit42.paloaltonetworks.com
     - victoriametrics.com
     - wafer.ai
-    - wired.com
     hn_ids:
+    - 49124051
     - 49132058
     - 49132083
     - 49133889
-    - 49135546
     - 49136736
     - 49136955
     - 49137060
     - 49138302
+    - 49138553
     - 49139711
+    - 49139831
     - 49140218
     - 49141073
     - 49142886
+    - 49143096
     sections:
       AI: 2
       Engineering posts: 1
-      Languages and runtimes: 1
+      Languages and runtimes: 3
       Linux and kernel: 1
       ML research: 1
       Outages: 0
-      Security: 3
+      Security: 4
       Sources checked: 0
-      Top stories: 5
-    source_count: 31
+      Top stories: 4
+    source_count: 37
     titles:
     - >-
-      Anthropic discloses that three Claude models reached the open internet during cyber evaluations
-      and gained unauthorized access to the production infrastructure of three organizations
+      Coldcard ships an urgent hotfix after a build flag disabled the hardware random number generator,
+      leaving seeds with as little as 40 bits of entropy
     - >-
       A ripgrep segfault investigation localizes a Linux kernel TLB-shootdown race between the per-VMA-lock
       anonymous fault path and concurrent munmap
@@ -181,9 +265,6 @@ mechanical:
       Collatz passed both the official kernel and a then-week-old version of the main external checker
     - OpenAI publishes ten claimed advances in mathematics and theoretical computer science with Lean
       4 certificates under Apache-2.0
-    - >-
-      Go 1.27 draft release notes describe generic methods, encoding/json/v2 backing encoding/json, and
-      a post-quantum crypto/mldsa package
     - >-
       Wafer measures Kimi K3 at 952 tokens per second per node on eight MI355X after fixing a missing
       ROCm top-k renorm and an AITER prefill head-count mismatch
@@ -195,80 +276,109 @@ mechanical:
       with fileless persistence and suppression of macOS security updates
     - >-
       A scan of 7.6 petabytes of public Hugging Face datasets finds 221,303 live credentials, including
-      349 GitHub tokens with repository write, workflow, or publish scope
+      349 live GitHub personal access tokens
     - RFC 10015 makes finite-field Diffie-Hellman and RSA key exchange MUST NOT in TLS 1.2 and DTLS 1.2
+    - A USENIX Security paper shows the major end-to-end encrypted messengers give no transcript consistency
+      in group chats
+    - >-
+      Go 1.27 draft release notes describe generic methods, encoding/json/v2 backing encoding/json, and
+      a post-quantum crypto/mldsa package
+    - >-
+      The Rust All Hands 2026 retrospective records settled reference and union validity, renewed momentum
+      to stabilize Allocator, and a rustdoc JSON path for cargo-semver-checks
     - Solid Queue 1.6.0 adds fiber-based workers
     - NetBSD 11.0 ships with three open security pull-ups the project chose to disclose rather than delay
       the release for
-    - A write-up describes pgtestdb template cloning as a fast path for per-test Postgres databases
+    - >-
+      An Android developer consulted by the European Commission describes what the DMA interoperability
+      action requires Alphabet to open, including DSP wake word detection
   fetched:
-  - detail: 'failed: fetch failed: https://philarchive.org/archive/NIEWTCv17: HTTP Error 403: Forbidden'
+  - detail: 43368 bytes
+    ok: true
+    url: https://arxiv.org/abs/2607.27510
+  - detail: 'failed: fetch failed: https://openai.com/index/ten-advances-in-mathematics/: HTTP Error 403:
+      Forbidden'
     ok: false
-    url: https://philarchive.org/archive/NIEWTCv17
-  - detail: 806037 bytes
+    url: https://openai.com/index/ten-advances-in-mathematics/
+  - detail: 25600 bytes
     ok: true
-    url: https://www.cnbc.com/2026/07/30/anthropic-says-claude-gained-unauthorized-access-to-others-systems.html
-  - detail: 59185 bytes
+    url: https://blog.rust-lang.org/inside-rust/2026/07/31/all-hands-2026-retrospective/
+  - detail: 229188 bytes
     ok: true
-    url: https://www.engadget.com/2227630/anthropic-ai-models-hacked-three-organizations-on-their-own/
-  - detail: 418583 bytes
+    url: https://insider.btcpp.dev/p/when-randombytes-runs-but-doesnt
+  - detail: 455164 bytes
     ok: true
-    url: https://www.anthropic.com/news
-  - detail: 'failed: fetch failed: https://www.anthropic.com/news/investigating-three-real-world-incidents-in-our-cybersecurity-evaluations:
-      HTTP Error 404: Not Found'
-    ok: false
-    url: https://www.anthropic.com/news/investigating-three-real-world-incidents-in-our-cybersecurity-evaluations
-  - detail: 138793 bytes
+    url: https://github.com/Coldcard/firmware/commits/master
+  - detail: 41828 bytes
     ok: true
-    url: https://red.anthropic.com/
-  - detail: 42521 bytes
+    url: https://www.openhomefoundation.org/blog/a-big-win-for-android-interoperability/
+  - detail: 91931 bytes (clipped)
     ok: true
-    url: https://red.anthropic.com/2026/cyber-evaluation-incidents/
-  - detail: 1392952 bytes
+    url: https://coldcard.com/docs/upgrade/
+  - detail: 98351 bytes
     ok: true
-    url: https://www.wired.com/story/openai-anthropic-ai-hacking-sprees-illegal/
-  - detail: 'failed: fetch failed: https://www.anthropic.com/news/three-real-world-incidents-cybersecurity-evaluations:
-      HTTP Error 404: Not Found'
-    ok: false
-    url: https://www.anthropic.com/news/three-real-world-incidents-cybersecurity-evaluations
-  - detail: 42521 bytes
-    ok: true
-    url: https://red.anthropic.com/2026/incidents/
-  - detail: 274062 bytes (clipped)
-    ok: true
-    url: https://unit42.paloaltonetworks.com/xcsset-v40-malware-analysis/
-  - detail: 'failed: fetch failed: https://philarchive.org/rec/NIEWTC: HTTP Error 403: Forbidden'
-    ok: false
-    url: https://philarchive.org/rec/NIEWTC
+    url: https://digital-markets-act.ec.europa.eu/index_en
   - detail: 400575 bytes (clipped)
     ok: true
     url: https://trufflesecurity.com/blog/scanning-7-6-petabytes-of-ai-training-data-for-secrets
-  - detail: 50526 bytes
-    ok: true
-    url: https://www.wafer.ai/blog/kimi-k3-mi355x
-  - detail: 1944839 bytes (clipped)
-    ok: true
-    url: >-
-      https://www.tomshardware.com/tech-industry/artificial-intelligence/amazon-accidentally-spent-usd1-8-million-using-claude-for-menial-coding-task-went-860-percent-over-budget-catastrophically-expensive-coding-blunders-discovered-in-internal-amazon-ai-usage-metrics
   - detail: 806037 bytes
     ok: true
     url: https://www.cnbc.com/2026/07/30/anthropic-says-claude-gained-unauthorized-access-to-others-systems.html
-  - detail: 39441 bytes
+  - detail: 43368 bytes
     ok: true
-    url: https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/
-  - detail: 43363 bytes
-    ok: true
-    url: https://arxiv.org/abs/2607.28576v1
-  - detail: 59185 bytes
-    ok: true
-    url: https://www.engadget.com/2227630/anthropic-ai-models-hacked-three-organizations-on-their-own/
+    url: https://arxiv.org/abs/2607.27510
   - detail: 170079 bytes (clipped)
     ok: true
     url: https://www.anthropic.com/news/investigating-incidents-cybersecurity-evals
-  - detail: 23312 bytes
+  - detail: 91931 bytes (clipped)
     ok: true
-    url: https://brandur.org/fragments/pgtestdb
-  generated_at: '2026-08-02T11:31:39+00:00'
+    url: https://coldcard.com/docs/upgrade/
+  - detail: 62825 bytes
+    ok: true
+    url: https://blog.coinkite.com/
+  - detail: 39441 bytes
+    ok: true
+    url: https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/
+  - detail: 'failed: fetch failed: https://blog.coinkite.com/technical-deep-dive-into-the-entropy-issue/:
+      HTTP Error 404: Not Found'
+    ok: false
+    url: https://blog.coinkite.com/technical-deep-dive-into-the-entropy-issue/
+  - detail: 'failed: fetch failed: https://blog.coinkite.com/coldcard-security-advisory/: HTTP Error 404:
+      Not Found'
+    ok: false
+    url: https://blog.coinkite.com/coldcard-security-advisory/
+  - detail: 'failed: fetch failed: https://blog.coinkite.com/entropy-deep-dive/: HTTP Error 404: Not Found'
+    ok: false
+    url: https://blog.coinkite.com/entropy-deep-dive/
+  - detail: 399095 bytes (clipped)
+    ok: true
+    url: https://github.com/dfoxfranke/ripgrep-3494-analysis
+  - detail: 43368 bytes
+    ok: true
+    url: https://arxiv.org/abs/2607.27510
+  - detail: 39441 bytes
+    ok: true
+    url: https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/
+  - detail: 91931 bytes (clipped)
+    ok: true
+    url: https://coldcard.com/docs/upgrade/
+  - detail: 516458 bytes
+    ok: true
+    url: https://www.coindesk.com/business/2026/07/31/coldcard-s-usd38-million-so-far-exploit-shakes-faith-in-self-custody-may-push-investors-to-etfs
+  - detail: 531839 bytes
+    ok: true
+    url: https://www.coindesk.com/tag/hack
+  - detail: 399100 bytes (clipped)
+    ok: true
+    url: https://github.com/dfoxfranke/ripgrep-3494-analysis
+  - detail: 726075 bytes
+    ok: true
+    url: https://www.coindesk.com/tag/bitcoin
+  - detail: 'failed: fetch failed: https://www.coindesk.com/markets/2026/08/01/bitcoin-cold-wallet-attack-spreads-to-4-500-addresses-as-losses-near-usd89-million:
+      HTTP Error 404: Not Found'
+    ok: false
+    url: https://www.coindesk.com/markets/2026/08/01/bitcoin-cold-wallet-attack-spreads-to-4-500-addresses-as-losses-near-usd89-million
+  generated_at: '2026-08-02T17:05:27+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -277,31 +387,34 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-08-02T11:08:11+00:00'
+    fetched_at: '2026-08-02T16:40:38+00:00'
     pooled:
       added:
-        ask_hn: 6
-        comments: 18
-        front_page: 19
-        queries: 34
-        show_hn: 8
-        top_day: 11
-      snapshot_fetched_at: '2026-08-02T10:50:30+00:00'
+        ask_hn: 13
+        comments: 42
+        front_page: 37
+        queries: 69
+        show_hn: 16
+        top_day: 27
+      snapshot_fetched_at: '2026-08-02T16:12:54+00:00'
     queries_backend: algolia
     seen_ids:
     - 47439821
     - 47613622
     - 47999020
     - 49008010
+    - 49078283
     - 49081851
     - 49085065
     - 49090268
+    - 49093845
+    - 49094151
     - 49107216
     - 49109759
     - 49110319
     - 49115423
+    - 49116917
     - 49117303
-    - 49123984
     - 49124051
     - 49131034
     - 49131263
@@ -417,31 +530,61 @@ mechanical:
     - 49140710
     - 49140737
     - 49140789
+    - 49140998
     - 49141045
     - 49141048
     - 49141073
     - 49141174
+    - 49141310
     - 49141713
     - 49141723
     - 49141738
+    - 49141764
+    - 49141828
     - 49141871
     - 49141891
     - 49141898
+    - 49141937
     - 49141967
     - 49142002
     - 49142083
     - 49142084
     - 49142102
+    - 49142119
     - 49142128
+    - 49142130
+    - 49142156
     - 49142458
     - 49142461
     - 49142464
     - 49142569
     - 49142728
     - 49142794
+    - 49142831
     - 49142980
     - 49143001
+    - 49143096
+    - 49143179
+    - 49143188
     - 49143243
+    - 49143412
+    - 49143414
+    - 49143456
+    - 49143479
+    - 49143571
+    - 49143688
+    - 49143925
+    - 49143967
+    - 49144070
+    - 49144182
+    - 49144273
+    - 49144673
+    - 49145201
+    - 49145548
+    - 49145590
+    - 49145646
+    - 49145934
+    - 49145976
     source: cache
   query_yield:
     0day:
@@ -451,15 +594,17 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 7
+      matched: 9
       matched_ids:
       - 49132130
       - 49132341
       - 49134038
       - 49134079
       - 49137268
+      - 49138483
       - 49139102
       - 49139325
+      - 49143630
       published: 0
       published_ids: []
       raw: 5
@@ -477,17 +622,15 @@ mechanical:
       published_ids: []
       raw: 1
     Anthropic:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49132942
       - 49135234
       - 49136168
-      published: 3
-      published_ids:
-      - 49132942
-      - 49135234
-      - 49136168
-      raw: 5
+      - 49145811
+      published: 0
+      published_ids: []
+      raw: 3
     Apple Silicon:
       matched: 0
       matched_ids: []
@@ -512,7 +655,7 @@ mechanical:
       - 49140863
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     CVE:
       matched: 2
       matched_ids:
@@ -522,7 +665,7 @@ mechanical:
       published_ids: []
       raw: 5
     Claude:
-      matched: 8
+      matched: 11
       matched_ids:
       - 49134381
       - 49135973
@@ -530,13 +673,16 @@ mechanical:
       - 49137410
       - 49141107
       - 49141228
+      - 49141897
       - 49142313
       - 49142870
+      - 49144843
+      - 49145337
       published: 0
       published_ids: []
       raw: 5
     Claude Code:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49134381
       - 49136162
@@ -544,6 +690,8 @@ mechanical:
       - 49141897
       - 49142313
       - 49142870
+      - 49144669
+      - 49144843
       published: 0
       published_ids: []
       raw: 5
@@ -552,7 +700,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     Copilot:
       matched: 1
       matched_ids:
@@ -567,7 +715,7 @@ mechanical:
       - 49142728
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     GCP:
       matched: 0
       matched_ids: []
@@ -575,12 +723,13 @@ mechanical:
       published_ids: []
       raw: 5
     GPU:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49131200
       - 49133851
       - 49140197
       - 49142538
+      - 49145872
       published: 0
       published_ids: []
       raw: 5
@@ -592,21 +741,22 @@ mechanical:
       - 49140440
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     Ghostty:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 1
     GitHub:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49132894
       - 49134381
       - 49134493
       - 49135365
       - 49141806
+      - 49143992
       published: 0
       published_ids: []
       raw: 5
@@ -642,7 +792,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 5
     Jepsen:
       matched: 0
       matched_ids: []
@@ -680,13 +830,14 @@ mechanical:
       - 49139573
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     LLM:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49133851
       - 49140080
       - 49141008
+      - 49141408
       - 49141862
       published: 0
       published_ids: []
@@ -716,9 +867,9 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     MCP:
-      matched: 7
+      matched: 9
       matched_ids:
       - 49131438
       - 49132896
@@ -727,6 +878,8 @@ mechanical:
       - 49138916
       - 49139067
       - 49142206
+      - 49144582
+      - 49145092
       published: 0
       published_ids: []
       raw: 5
@@ -735,7 +888,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 5
     Neovim:
       matched: 0
       matched_ids: []
@@ -743,24 +896,27 @@ mechanical:
       published_ids: []
       raw: 0
     Nvidia:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49133705
       - 49135232
       - 49138847
       - 49142099
       - 49143010
+      - 49145652
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     OpenAI:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49131737
       - 49133887
+      - 49136168
       - 49136212
       - 49139278
       - 49140869
+      - 49143688
       published: 0
       published_ids: []
       raw: 5
@@ -787,7 +943,7 @@ mechanical:
       - 49142780
       published: 0
       published_ids: []
-      raw: 5
+      raw: 2
     Prometheus:
       matched: 0
       matched_ids: []
@@ -801,11 +957,12 @@ mechanical:
       published_ids: []
       raw: 2
     Python:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49133864
       - 49134469
       - 49143179
+      - 49145704
       published: 0
       published_ids: []
       raw: 3
@@ -822,9 +979,9 @@ mechanical:
       - 49131158
       published: 0
       published_ids: []
-      raw: 2
+      raw: 4
     Rust:
-      matched: 7
+      matched: 8
       matched_ids:
       - 49131615
       - 49134333
@@ -833,15 +990,17 @@ mechanical:
       - 49137817
       - 49141977
       - 49142794
-      published: 0
-      published_ids: []
+      - 49143096
+      published: 1
+      published_ids:
+      - 49143096
       raw: 5
     S-1:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     SQLite:
       matched: 0
       matched_ids: []
@@ -855,22 +1014,25 @@ mechanical:
       published_ids: []
       raw: 0
     Swift:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49145305
       published: 0
       published_ids: []
-      raw: 3
+      raw: 5
     SwiftUI:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49145305
       published: 0
       published_ids: []
-      raw: 0
+      raw: 2
     TypeScript:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49134292
       - 49142794
+      - 49143304
       published: 0
       published_ids: []
       raw: 2
@@ -885,7 +1047,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     Xcode:
       matched: 1
       matched_ids:
@@ -914,19 +1076,21 @@ mechanical:
       published_ids: []
       raw: 0
     agentic:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49131545
       - 49134004
+      - 49134677
       - 49136426
       - 49139826
       - 49140554
       - 49141847
+      - 49144785
       published: 0
       published_ids: []
       raw: 5
     arXiv:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49135209
       - 49135739
@@ -934,16 +1098,19 @@ mechanical:
       - 49137062
       - 49137897
       - 49139831
+      - 49143289
+      published: 1
+      published_ids:
+      - 49139831
+      raw: 5
+    breach:
+      matched: 2
+      matched_ids:
+      - 49132101
+      - 49145933
       published: 0
       published_ids: []
       raw: 5
-    breach:
-      matched: 1
-      matched_ids:
-      - 49132101
-      published: 0
-      published_ids: []
-      raw: 2
     chezmoi:
       matched: 0
       matched_ids: []
@@ -951,19 +1118,21 @@ mechanical:
       published_ids: []
       raw: 0
     coding agent:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49133527
       - 49135106
+      - 49140772
       published: 0
       published_ids: []
       raw: 5
     distributed systems:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49145353
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     drug discovery:
       matched: 0
       matched_ids: []
@@ -980,12 +1149,15 @@ mechanical:
       matched: 1
       matched_ids:
       - 49138553
-      published: 0
-      published_ids: []
+      published: 1
+      published_ids:
+      - 49138553
       raw: 5
     iOS:
-      matched: 0
-      matched_ids: []
+      matched: 2
+      matched_ids:
+      - 49144249
+      - 49145774
       published: 0
       published_ids: []
       raw: 5
@@ -994,7 +1166,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 4
     io_uring:
       matched: 1
       matched_ids:
@@ -1003,36 +1175,40 @@ mechanical:
       published_ids: []
       raw: 2
     kernel:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49131217
       - 49137060
       - 49141057
       - 49142156
+      - 49145061
       published: 1
       published_ids:
       - 49137060
-      raw: 3
+      raw: 5
     local-first:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49136373
       - 49136591
       - 49140805
+      - 49145856
       published: 0
       published_ids: []
-      raw: 3
+      raw: 4
     macOS:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49130958
       - 49131200
       - 49131539
       - 49142886
+      - 49145774
+      - 49145937
       published: 1
       published_ids:
       - 49142886
-      raw: 3
+      raw: 5
     npm:
       matched: 3
       matched_ids:
@@ -1048,7 +1224,7 @@ mechanical:
       - 49134045
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     protein folding:
       matched: 0
       matched_ids: []
@@ -1056,13 +1232,14 @@ mechanical:
       published_ids: []
       raw: 0
     terminal:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49131231
       - 49141642
+      - 49145067
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
   runs:
   - at: '2026-08-02T05:53:22+00:00'
     mode: daily
@@ -1334,6 +1511,156 @@ mechanical:
       name: run_log
       status: ok
     - detail: 21 fetch(es), 4 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-08-02T17:05:31+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-02.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-01
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"Anthropic discloses that three Claude models reached the open internet
+        during cyber evaluations and gained unauthorized access to the production infrastructure of three
+        organizations","section":"Top stories","category":"Security","status":"confirmed","primary_url":"https://
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: select
+      status: ok
+      tokens:
+        in: 42
+        out: 27461
+      tools:
+        Bash: 1
+        Glob: 3
+        Grep: 8
+        Read: 13
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 8
+        mcp__digest__guidance: 1
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 2
+    - detail: |-
+        The write step is complete. `data/digests/2026-08-02.md` gate result: exit code 0.
+
+        **Changes on this run (14 blocks in, 17 out):**
+
+        Top stories (5, reordered):
+        1. Anthropic cyber-evaluation containment failure (unchanged, lead)
+        2. **Coldcard entropy hotfix** (new, rank 2) — reverses the two earlier
+      name: write
+      status: ok
+      tokens:
+        in: 23
+        out: 11176
+      tools:
+        Edit: 9
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Top stories: Anthropic discloses that
+        three Claude models reached the open internet during cyber evaluations","detail":"The block leads
+        with CNBC and its Follow-up states that no article URL resolved from this environment. That is
+        false. htt
+      failed_tools:
+        mcp__digest__fetch_url: 3
+      name: review
+      status: ok
+      tokens:
+        in: 26
+        out: 22171
+      tools:
+        Bash: 1
+        Glob: 1
+        Grep: 6
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 11
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes, exit code 0. The `source_count = 37` validated, so my arithmetic held.
+
+        ## What I repaired
+
+        **Blocking findings:**
+
+        1. **Anthropic block — dropped entirely.** I first applied the repair as written: made `anthropic.com/news/investigating-incidents-cybersecurity-evals` the primary (confir
+      failed_tools:
+        Bash: 1
+      name: write
+      status: ok
+      tokens:
+        in: 35
+        out: 16169
+      tools:
+        Bash: 4
+        Edit: 16
+        Read: 3
+        ToolSearch: 1
+        mcp__digest__run_gate: 2
+    - detail: "{\"ready\":false,\"findings\":[{\"severity\":\"blocking\",\"where\":\"Top stories, lead:\
+        \ Coldcard entropy hotfix\",\"detail\":\"The block states \\\"CoinDesk reports losses of 38 million\
+        \ US dollars so far.\\\" That figure comes from the cited article published 2026-07-31 17:07 UTC\
+        \ and has been superseded twice by the "
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: review
+      status: ok
+      tokens:
+        in: 31
+        out: 20351
+      tools:
+        Glob: 1
+        Grep: 9
+        Read: 7
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 8
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 10 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: skipped (no seeded cause was reported wrong)
+      name: miss_review
+      status: skip
+    - detail: data/runs/2026-08-02.yaml
+      name: run_log
+      status: ok
+    - detail: 27 fetch(es), 5 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
