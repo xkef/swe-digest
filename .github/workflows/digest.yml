@@ -116,6 +116,19 @@ jobs:
 
   publish:
     needs: agent
+    # A failed stage must not throw away the rest of the run. The export step
+    # above runs on always() because a run that fails mid-stage has still done
+    # work on disk, and until this condition existed the publish job dropped
+    # that work anyway: on 2026-08-02 the improvement run failed only at
+    # improve:profile, having already passed the gate and committed the memory
+    # prune, the weekly marker, and one proposal, and none of it reached main.
+    #
+    # Publishing this is what the gate is for, not a relaxation of it. A commit
+    # exists only where `steps.commit` saw a clean content gate, `publish apply`
+    # re-validates every staged path against the allowlist, and `make check`
+    # re-runs the whole gate on the applied tree. `!cancelled()` rather than
+    # `always()`: a cancelled run is a decision to stop, not a result to apply.
+    if: ${{ !cancelled() && needs.agent.outputs.has_patch == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:

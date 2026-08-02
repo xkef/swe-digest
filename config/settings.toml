@@ -263,7 +263,15 @@ max_turns = 20
 [agent.steps."improve:profile"]
 prompt = "improve/profile"
 schema = "proposals"
-max_turns = 20
+# Widest of the three improvement steps, so it gets the widest bound. The
+# prompt holds it to a proposal or a stated rejection for every owner feedback
+# issue in the window, and the 2026-08-02 window carried seven, on top of the
+# three or more weekly markers the interest-drift rule reads and the profile
+# itself. That run reached 20 turns having spent 5,566 output tokens, against
+# 21,036 for the watchlist step that finished inside the same bound, so the
+# turns went on reading evidence rather than on writing an answer. A stage that
+# ends at its ceiling returns nothing and fails the whole run.
+max_turns = 40
 
 [digest]
 # The document vocabulary, in one place. The section order lives in code
