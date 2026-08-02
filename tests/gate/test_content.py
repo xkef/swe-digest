@@ -728,6 +728,82 @@ def test_day_without_a_fetch_record_is_not_checked(repo_tree: Path) -> None:
     assert main(root=repo_tree) == 0
 
 
+def hn_run_log(
+    root: Path,
+    date: str,
+    *,
+    seen: list[int] | None = None,
+    matched: list[int] | None = None,
+    published: list[int] | None = None,
+) -> None:
+    """Writes the day's run log with the HN keys the fetch fills.
+
+    ``published`` goes to ``mechanical.digest.hn_ids``, which is read back off
+    the page rather than from the fetch, so a test can assert the gate ignores
+    it.
+    """
+    write_run_log(
+        root,
+        date,
+        {
+            "date": date,
+            "judgment": {"inbox": [], "miss_review": {}, "notes": "Nothing unusual."},
+            "mechanical": {
+                "hn": {"seen_ids": seen or []},
+                "query_yield": {"a query": {"matched": len(matched or []), "matched_ids": matched}}
+                if matched
+                else {},
+                "digest": {"hn_ids": published or []},
+            },
+        },
+    )
+
+
+def test_hn_id_the_run_log_saw_passes(repo_tree: Path) -> None:
+    # The publish job holds no `.cache`: it re-runs this gate against the
+    # committed snapshot, which is no fresher than the last snapshot round. A
+    # story the run found after that round is in its run log and nowhere else,
+    # and reading the snapshot alone withheld the 2026-08-02 digest over it.
+    hn_digest(repo_tree, 49096221)
+    write_hn_window(repo_tree)
+    write_hn_snapshot(repo_tree, HN_DATE, [49096188])
+    hn_run_log(repo_tree, HN_DATE, seen=[49096221])
+    assert main(root=repo_tree) == 0
+
+
+def test_hn_id_a_query_matched_passes(repo_tree: Path) -> None:
+    # A watchlist query is the other half of the fetch, and the run log keeps
+    # its ids under query_yield rather than with the day's stories.
+    hn_digest(repo_tree, 49096221)
+    write_hn_window(repo_tree)
+    write_hn_snapshot(repo_tree, HN_DATE, [49096188])
+    hn_run_log(repo_tree, HN_DATE, matched=[49096221])
+    assert main(root=repo_tree) == 0
+
+
+def test_ids_read_back_off_the_page_are_not_evidence(repo_tree: Path) -> None:
+    # mechanical.digest.hn_ids is parsed from the published page. Counting it
+    # would let a story vouch for its own link and retire the check.
+    hn_digest(repo_tree, 49096221)
+    write_hn_window(repo_tree)
+    write_hn_snapshot(repo_tree, HN_DATE, [49096188])
+    hn_run_log(repo_tree, HN_DATE, published=[49096221])
+    assert main(root=repo_tree) == 1
+
+
+def test_a_run_log_is_not_a_fetch_record_for_the_window(repo_tree: Path) -> None:
+    # The run log widens a day that was fetched. It must not make a pruned day
+    # count as fetched, or the window rule would read a day back as complete on
+    # a record that holds a fraction of it. The id is in no record at all, so a
+    # day this gate considered complete would fail here.
+    hn_digest(repo_tree, 49096221)
+    write_hn_window(repo_tree)
+    write_hn_snapshot(repo_tree, HN_DATE, [49096188])
+    paths.SNAPSHOT.path(repo_tree, source="hn", day="2026-07-21").unlink()
+    hn_run_log(repo_tree, "2026-07-21", seen=[49090000])
+    assert main(root=repo_tree) == 0
+
+
 def test_day_whose_window_lost_a_fetch_record_is_not_checked(repo_tree: Path) -> None:
     # The page outlives the snapshots that justified its links: a thread first
     # seen earlier in the window is unverifiable once that day is pruned, and

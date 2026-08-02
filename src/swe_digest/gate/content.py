@@ -453,27 +453,85 @@ def check_archive_dups(root: Path) -> list[str]:
     return errors
 
 
+def _ints(values: object) -> set[int]:
+    """Returns the integers in a list read back from a run log, and nothing else.
+
+    A malformed value is dropped rather than raised on, because this widens a
+    check that must not crash on a file another check already reports.
+    """
+    if not isinstance(values, list):
+        return set()
+    return {value for value in values if isinstance(value, int)}
+
+
+def _hn_ids_logged(root: Path, day: str) -> set[int]:
+    """Returns the HN ids the day's run log kept from that day's own fetch.
+
+    The run log is the only record of a run's fetch that outlives the run. The
+    agent job checks against ``.cache``, which it writes and then discards with
+    the runner, and the publish job re-runs this gate against the committed
+    snapshot alone, which is no fresher than the last snapshot round. A story
+    the run found in the hour between that round and its own fetch passed the
+    first check and failed the second, and that withheld the 2026-08-02 digest
+    over an id the run had recorded.
+
+    Two keys only, both written from the fetch: the day's story ids, and the
+    ids each watchlist query matched. Comment ids need no key of their own,
+    because the fetch takes comments from the day's own stories. Never
+    ``mechanical.digest.hn_ids``, which is read back off the page and would let
+    a story vouch for its own link.
+
+    No model stage may write a run log. The write guard grants the digest and
+    nothing else, so both keys are the fetcher's output, exactly as a snapshot
+    is.
+    """
+    path = paths.RUN_LOG.path(root, day=day)
+    if not path.exists():
+        return set()
+    try:
+        record = serial.load(path.read_text(encoding="utf-8"))
+    except Exception:
+        return set()
+    mechanical = record.get("mechanical") if isinstance(record, dict) else None
+    if not isinstance(mechanical, dict):
+        return set()
+    hn = mechanical.get("hn")
+    ids = _ints(hn.get("seen_ids")) if isinstance(hn, dict) else set()
+    yields = mechanical.get("query_yield")
+    if isinstance(yields, dict):
+        for stats in yields.values():
+            if isinstance(stats, dict):
+                ids |= _ints(stats.get("matched_ids"))
+    return ids
+
+
 def _hn_ids_fetched(root: Path, day: str) -> set[int] | None:
     """Returns every HN id the day's fetch recorded, or None when it has none.
 
-    The source is the fresh cache during a run, and the committed snapshot
-    otherwise.
+    Both fetch files count, unioned rather than ranked: the fresh cache a run
+    writes, and the committed snapshot. The run log widens whichever of them is
+    present and never stands in for them, because a day counts as recorded only
+    while a fetch file is on disk and ``check_hn_ids`` reads its window from
+    that.
     """
     from swe_digest.store import runs
 
+    ids: set[int] = set()
+    recorded = False
     for family in (paths.CACHE_FILE, paths.SNAPSHOT):
         path = family.path(root, source="hn", day=day)
         if not path.exists():
             continue
+        recorded = True
         collections = json.loads(path.read_text(encoding="utf-8"))["collections"]
-        ids: set[int] = set()
         for name in runs.STORY_COLLECTIONS:
             ids.update(item["id"] for item in collections.get(name, {}).get("items", []))
         for items in (collections.get("queries", {}).get("items") or {}).values():
             ids.update(item["id"] for item in items)
         ids.update(int(key) for key in collections.get("comments", {}).get("items", {}))
-        return ids
-    return None
+    if not recorded:
+        return None
+    return ids | _hn_ids_logged(root, day)
 
 
 def check_hn_ids(root: Path) -> list[str]:
@@ -483,8 +541,9 @@ def check_hn_ids(root: Path) -> list[str]:
     to markdown, and four consecutive days published eleven plausible but wrong
     ids that resolved to unrelated comments. Existence on HN proves nothing,
     because a mistyped id usually lands on a real comment, so the check is
-    membership in the fetch record: the day's cache or snapshot, plus the
-    preceding week for stories first seen on an earlier day.
+    membership in the fetch record: what the day's cache, snapshot, and run log
+    show it fetched, plus the preceding week for stories first seen on an
+    earlier day.
 
     A page is held to that record only while the whole window is on disk. The
     fetch record is pruned on a fixed horizon and a page is not, so an older
