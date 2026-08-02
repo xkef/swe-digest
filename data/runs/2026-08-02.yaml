@@ -1,0 +1,1067 @@
+date: '2026-08-02'
+judgment:
+  inbox: []
+  miss_review: {}
+  notes: |
+    First run of 2026-08-02. The digest file was still the empty template, so nothing was displaced
+    and `displace` is empty. Thirteen stories selected against a cap of 25, with no section above 4.
+
+    The day's shape is a formal-verification and kernel-correctness cluster, and the ranking follows
+    that rather than HN volume. The lead is not the ripgrep issue itself, which the 2026-08-01
+    digest already carried as a musl mallocng segfault. What is new today is dfoxfranke's separate
+    analysis repository, which escalates it from an allocator bug to a claimed Linux kernel race: a
+    thread's own store to a freshly faulted anonymous page is visible to an immediate reload and
+    gone about ten instructions later, with pagemap showing the address backed by the kernel zero
+    page. The repo rules out use-after-free and buffer overrun on four grounds and pins the
+    suppression to prefaulting one specific page. I marked it `developing` deliberately. It is an
+    independent source-level review of Linux 7.0.12 naming a v7.0 munmap-teardown change, not a
+    maintainer-confirmed diagnosis, and an HN commenter asked the same question. Kernel mailing-list
+    archives sit behind the Anubis gate from this environment (access-notes an-0019), so I could not
+    check for a maintainer thread and did not imply one exists.
+
+    The Lean postmortem and the OpenAI ten-proofs release are two halves of the same question and I
+    ranked them adjacently on purpose. De Moura's post is first-party and unusually candid: the bug
+    was reachable only through metaprogramming, the fix landed an hour after the report, and
+    independent checking survived only because the official kernel and nanoda had two different
+    bugs. OpenAI's repository is the checkable artifact, Apache-2.0, Lean 4.32.0 and mathlib, ten
+    named files including ConnesRigidity.lean. I did not connect the two beyond stating each as
+    fact. Asserting the certificates are affected by the kernel bug would be speculation and I have
+    no evidence for it.
+
+    Two things I could not verify and therefore did not publish. HN 49140869 links a philarchive PDF
+    claiming OpenAI's Connes rigidity disproof is invalid; philarchive returned HTTP 403, so the
+    rebuttal is not in the digest at all. Its absence is why the OpenAI story is `developing` rather
+    than `confirmed`, and it is the single most likely thing to change tomorrow. openai.com also
+    returned 403, so the OpenAI story is sourced from the GitHub repository rather than the
+    announcement post.
+
+    Go 1.27 needed correcting. The HN item is a third-party interactive tour and reads as a release;
+    go.dev/doc/devel/release tops out at go1.26.5 and the draft notes state Go 1.27 is not yet
+    released and is expected in August 2026. Published as `developing` and sourced to the official
+    draft notes first, with the tour second.
+
+    Deliberate omissions. Books is omitted: The Art of 64-bit Assembly took 214 points but I could
+    not establish it as a new release rather than an older title resurfacing, and the Books bar
+    prefers omitting to guessing. New videos is omitted: every watchlist video came back with
+    `discussion: null`, and that section ranks on external discussion signal. Watchlist follow-ups
+    is omitted: nothing today maps to an open followups entry. Outages is genuinely empty. Several
+    items were dropped as already archive rather than as weak, since the 2026-08-01 digest covered
+    the CISA water-sector alert, the npm bypass-2FA token restriction, the Arch Linux resignation,
+    the Cursor cost-field removal, the Rails CVE-2026-66066 forensics, and the EU AI Act date that
+    falls today. Trufflesecurity's 7.6 PB Hugging Face secrets scan and the DeepMind AlphaFold
+    disbandment claim were both dropped unverified, the latter resting on a single low-signal
+    aggregator post.
+
+    Reddit coverage was the real gap: 4 of 28 subreddits against a floor of 14, and top_day reached
+    only 2. Coverage was r/rust-heavy, which is why the only pulse item is a Rust one, and I labeled
+    the chrono entry `discussion` and stated in it that the underlying issue dates from January and
+    nothing changed today. The GitHub stars fetch returned one event for the whole watchlist, the
+    fourth consecutive quiet date noted in recent runs, so repository releases and trending were not
+    checked from that source.
+mechanical:
+  digest:
+    domains:
+    - arxiv.org
+    - blog.netbsd.org
+    - brandur.org
+    - github.com
+    - go.dev
+    - leodemoura.github.io
+    - news.ycombinator.com
+    - reddit.com
+    - rfc-editor.org
+    - seed.bytedance.com
+    - victoriametrics.com
+    hn_ids:
+    - 49132058
+    - 49132083
+    - 49133889
+    - 49135546
+    - 49136736
+    - 49137060
+    - 49138302
+    - 49139711
+    - 49140218
+    sections:
+      AI: 1
+      Engineering posts: 1
+      Languages and runtimes: 1
+      Linux and kernel: 1
+      ML research: 1
+      Outages: 0
+      Reddit and social pulse: 1
+      Security: 1
+      Sources checked: 0
+      Top stories: 4
+    source_count: 23
+    titles:
+    - >-
+      A ripgrep segfault investigation localizes a Linux kernel TLB-shootdown race between the per-VMA-lock
+      anonymous fault path and concurrent munmap
+    - >-
+      Lean publishes a postmortem for kernel soundness bug 14576 after an AI-assisted false disproof of
+      Collatz passed both the official kernel and the main external checker
+    - OpenAI publishes ten claimed advances in mathematics and theoretical computer science with Lean
+      4 certificates under Apache-2.0
+    - >-
+      Go 1.27 draft release notes describe generic methods, encoding/json/v2 backing encoding/json, and
+      a post-quantum crypto/mldsa package
+    - ByteDance releases Seedance 2.5 without published weights
+    - A token-cost-matched study finds no self-inspection method beats repeated sampling in open models
+      from 1.5B to 7B
+    - RFC 10015 makes finite-field Diffie-Hellman and RSA key exchange MUST NOT in TLS 1.2 and DTLS 1.2
+    - Solid Queue 1.6.0 adds fiber-based workers
+    - NetBSD 11.0 ships with three open security pull-ups the project chose to disclose rather than delay
+      the release for
+    - A write-up measures pgtestdb template cloning as a fast path for per-test Postgres databases
+    - The chrono maintainer's plan to wind down chrono and chrono-tz resurfaces on r/rust
+  fetched:
+  - detail: 339481 bytes
+    ok: true
+    url: https://github.com/BurntSushi/ripgrep/issues/3494
+  - detail: 36509 bytes
+    ok: true
+    url: https://discuss.rubyonrails.org/t/cve-2026-66066-possible-arbitrary-file-read-and-remote-code-execution-in-active-storage-variant-processing/91432
+  - detail: 399100 bytes (clipped)
+    ok: true
+    url: https://github.com/dfoxfranke/ripgrep-3494-analysis
+  - detail: 144114 bytes (clipped)
+    ok: true
+    url: https://go.dev/doc/devel/release
+  - detail: 20346 bytes
+    ok: true
+    url: https://blog.netbsd.org/tnf/entry/netbsd_11_0_released
+  - detail: 62682 bytes (clipped)
+    ok: true
+    url: https://go.dev/doc/go1.27
+  - detail: 39441 bytes
+    ok: true
+    url: https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/
+  - detail: 271035 bytes
+    ok: true
+    url: https://github.com/chronotope/chrono/issues/1768
+  - detail: 'failed: fetch failed: https://openai.com/index/ten-advances-in-mathematics/: HTTP Error 403:
+      Forbidden'
+    ok: false
+    url: https://openai.com/index/ten-advances-in-mathematics/
+  - detail: 'failed: fetch failed: https://philarchive.org/archive/NIEWTCv17: HTTP Error 403: Forbidden'
+    ok: false
+    url: https://philarchive.org/archive/NIEWTCv17
+  - detail: 305030 bytes
+    ok: true
+    url: https://github.com/openai/ten-proofs
+  - detail: 157404 bytes (clipped)
+    ok: true
+    url: https://www.rfc-editor.org/rfc/rfc10015.html
+  - detail: 399100 bytes (clipped)
+    ok: true
+    url: https://github.com/dfoxfranke/ripgrep-3494-analysis
+  - detail: 39441 bytes
+    ok: true
+    url: https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/
+  - detail: 232866 bytes (clipped)
+    ok: true
+    url: https://github.blog/ai-and-ml/github-copilot/better-tools-made-copilot-code-review-worse-heres-how-we-actually-improved-it/
+  - detail: 62682 bytes (clipped)
+    ok: true
+    url: https://go.dev/doc/go1.27
+  - detail: 305030 bytes
+    ok: true
+    url: https://github.com/openai/ten-proofs
+  - detail: 20346 bytes
+    ok: true
+    url: https://blog.netbsd.org/tnf/entry/netbsd_11_0_released
+  - detail: 157404 bytes (clipped)
+    ok: true
+    url: https://www.rfc-editor.org/rfc/rfc10015.html
+  - detail: 271036 bytes
+    ok: true
+    url: https://github.com/chronotope/chrono/issues/1768
+  - detail: 43363 bytes
+    ok: true
+    url: https://arxiv.org/abs/2607.28576v1
+  - detail: 39441 bytes
+    ok: true
+    url: https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/
+  - detail: 399102 bytes (clipped)
+    ok: true
+    url: https://github.com/dfoxfranke/ripgrep-3494-analysis
+  generated_at: '2026-08-02T05:53:15+00:00'
+  hn:
+    backends:
+      ask_hn: algolia
+      comments: algolia
+      front_page: algolia
+      show_hn: algolia
+      top_day: algolia
+    degraded: []
+    fetched_at: '2026-08-02T05:29:02+00:00'
+    pooled:
+      added:
+        ask_hn: 0
+        comments: 6
+        front_page: 6
+        queries: 11
+        show_hn: 1
+        top_day: 5
+      snapshot_fetched_at: '2026-08-02T03:53:12+00:00'
+    queries_backend: algolia
+    seen_ids:
+    - 47439821
+    - 47999020
+    - 49008010
+    - 49081851
+    - 49085065
+    - 49110319
+    - 49117303
+    - 49131034
+    - 49131263
+    - 49131367
+    - 49131376
+    - 49131860
+    - 49131920
+    - 49132058
+    - 49132083
+    - 49132130
+    - 49132146
+    - 49132161
+    - 49132289
+    - 49132341
+    - 49132460
+    - 49132701
+    - 49132894
+    - 49132960
+    - 49132998
+    - 49133298
+    - 49133647
+    - 49133719
+    - 49133851
+    - 49133889
+    - 49134004
+    - 49134038
+    - 49134079
+    - 49134292
+    - 49134310
+    - 49134381
+    - 49134502
+    - 49134599
+    - 49134600
+    - 49134694
+    - 49134701
+    - 49135106
+    - 49135174
+    - 49135245
+    - 49135257
+    - 49135326
+    - 49135365
+    - 49135426
+    - 49135507
+    - 49135511
+    - 49135546
+    - 49135609
+    - 49135745
+    - 49135985
+    - 49136063
+    - 49136426
+    - 49136736
+    - 49136789
+    - 49136821
+    - 49136955
+    - 49136990
+    - 49137024
+    - 49137060
+    - 49137228
+    - 49137268
+    - 49137359
+    - 49137410
+    - 49137419
+    - 49137505
+    - 49137528
+    - 49137677
+    - 49137681
+    - 49137713
+    - 49137808
+    - 49137891
+    - 49137904
+    - 49138012
+    - 49138045
+    - 49138177
+    - 49138183
+    - 49138188
+    - 49138302
+    - 49138335
+    - 49138443
+    - 49138466
+    - 49138483
+    - 49138692
+    - 49138808
+    - 49138897
+    - 49138953
+    - 49139102
+    - 49139151
+    - 49139243
+    - 49139252
+    - 49139304
+    - 49139325
+    - 49139370
+    - 49139383
+    - 49139461
+    - 49139602
+    - 49139703
+    - 49139711
+    - 49139796
+    - 49139845
+    - 49139951
+    - 49140202
+    - 49140213
+    - 49140218
+    - 49140340
+    - 49140396
+    - 49140405
+    - 49140487
+    - 49140599
+    - 49140633
+    - 49140696
+    - 49140702
+    - 49140710
+    - 49140737
+    - 49140789
+    - 49141008
+    - 49141045
+    - 49141048
+    - 49141073
+    - 49141174
+    source: cache
+  query_yield:
+    0day:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    AI:
+      matched: 5
+      matched_ids:
+      - 49132130
+      - 49132341
+      - 49134038
+      - 49134079
+      - 49139102
+      published: 0
+      published_ids: []
+      raw: 5
+    AWS:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    AlphaFold:
+      matched: 1
+      matched_ids:
+      - 49140440
+      published: 0
+      published_ids: []
+      raw: 1
+    Anthropic:
+      matched: 3
+      matched_ids:
+      - 49132942
+      - 49135234
+      - 49136168
+      published: 0
+      published_ids: []
+      raw: 5
+    Apple Silicon:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Azure:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    CRDT:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    CUDA:
+      matched: 1
+      matched_ids:
+      - 49140863
+      published: 0
+      published_ids: []
+      raw: 1
+    CVE:
+      matched: 2
+      matched_ids:
+      - 49132941
+      - 49139513
+      published: 0
+      published_ids: []
+      raw: 5
+    Claude:
+      matched: 6
+      matched_ids:
+      - 49134381
+      - 49135973
+      - 49136162
+      - 49137410
+      - 49141107
+      - 49141228
+      published: 0
+      published_ids: []
+      raw: 5
+    Claude Code:
+      matched: 3
+      matched_ids:
+      - 49134381
+      - 49136162
+      - 49137410
+      published: 0
+      published_ids: []
+      raw: 5
+    Cloudflare:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Copilot:
+      matched: 1
+      matched_ids:
+      - 49135881
+      published: 0
+      published_ids: []
+      raw: 1
+    Cursor:
+      matched: 1
+      matched_ids:
+      - 49135257
+      published: 0
+      published_ids: []
+      raw: 1
+    GCP:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    GPU:
+      matched: 3
+      matched_ids:
+      - 49131200
+      - 49133851
+      - 49140197
+      published: 0
+      published_ids: []
+      raw: 5
+    Gemini:
+      matched: 3
+      matched_ids:
+      - 49131620
+      - 49132967
+      - 49140440
+      published: 0
+      published_ids: []
+      raw: 4
+    Ghostty:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 4
+    GitHub:
+      matched: 4
+      matched_ids:
+      - 49132894
+      - 49134381
+      - 49134493
+      - 49135365
+      published: 0
+      published_ids: []
+      raw: 5
+    Go:
+      matched: 1
+      matched_ids:
+      - 49140218
+      published: 1
+      published_ids:
+      - 49140218
+      raw: 5
+    Grafana:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    Homebrew:
+      matched: 1
+      matched_ids:
+      - 49141057
+      published: 0
+      published_ids: []
+      raw: 1
+    IPO:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Java:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Jepsen:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Kafka:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Kagi:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Kleppmann:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Kotlin:
+      matched: 1
+      matched_ids:
+      - 49136137
+      published: 0
+      published_ids: []
+      raw: 1
+    Kubernetes:
+      matched: 1
+      matched_ids:
+      - 49139573
+      published: 0
+      published_ids: []
+      raw: 2
+    LLM:
+      matched: 3
+      matched_ids:
+      - 49133851
+      - 49140080
+      - 49141008
+      published: 0
+      published_ids: []
+      raw: 5
+    LWN:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Linux:
+      matched: 6
+      matched_ids:
+      - 49131353
+      - 49132146
+      - 49133647
+      - 49137713
+      - 49138296
+      - 49140696
+      published: 0
+      published_ids: []
+      raw: 5
+    Llama:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    MCP:
+      matched: 5
+      matched_ids:
+      - 49131438
+      - 49132896
+      - 49136481
+      - 49138916
+      - 49139067
+      published: 0
+      published_ids: []
+      raw: 5
+    Mistral:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Neovim:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Nvidia:
+      matched: 3
+      matched_ids:
+      - 49133705
+      - 49135232
+      - 49138847
+      published: 0
+      published_ids: []
+      raw: 3
+    OpenAI:
+      matched: 5
+      matched_ids:
+      - 49131737
+      - 49133887
+      - 49136212
+      - 49139278
+      - 49140869
+      published: 0
+      published_ids: []
+      raw: 5
+    OpenTelemetry:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Paxos:
+      matched: 1
+      matched_ids:
+      - 49132357
+      published: 0
+      published_ids: []
+      raw: 1
+    Postgres:
+      matched: 4
+      matched_ids:
+      - 49131353
+      - 49133793
+      - 49135109
+      - 49141028
+      published: 0
+      published_ids: []
+      raw: 5
+    Prometheus:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    PyPI:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 2
+    Python:
+      matched: 2
+      matched_ids:
+      - 49133864
+      - 49134469
+      published: 0
+      published_ids: []
+      raw: 2
+    Raft:
+      matched: 1
+      matched_ids:
+      - 49132357
+      published: 0
+      published_ids: []
+      raw: 5
+    Redis:
+      matched: 1
+      matched_ids:
+      - 49131158
+      published: 0
+      published_ids: []
+      raw: 4
+    Rust:
+      matched: 5
+      matched_ids:
+      - 49131615
+      - 49134333
+      - 49136599
+      - 49137410
+      - 49137817
+      published: 0
+      published_ids: []
+      raw: 5
+    S-1:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    SQLite:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Spring Boot:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Swift:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    SwiftUI:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    TypeScript:
+      matched: 1
+      matched_ids:
+      - 49134292
+      published: 0
+      published_ids: []
+      raw: 1
+    Vim:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Wayland:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    Xcode:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Zig:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    acquires:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    acquisition:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    agentic:
+      matched: 5
+      matched_ids:
+      - 49131545
+      - 49134004
+      - 49136426
+      - 49139826
+      - 49140554
+      published: 0
+      published_ids: []
+      raw: 5
+    arXiv:
+      matched: 6
+      matched_ids:
+      - 49135209
+      - 49135739
+      - 49136321
+      - 49137062
+      - 49137897
+      - 49139831
+      published: 0
+      published_ids: []
+      raw: 5
+    breach:
+      matched: 1
+      matched_ids:
+      - 49132101
+      published: 0
+      published_ids: []
+      raw: 2
+    chezmoi:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    coding agent:
+      matched: 1
+      matched_ids:
+      - 49135106
+      published: 0
+      published_ids: []
+      raw: 5
+    distributed systems:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    drug discovery:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    eBPF:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    exploit:
+      matched: 1
+      matched_ids:
+      - 49138553
+      published: 0
+      published_ids: []
+      raw: 5
+    iOS:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    incident:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 3
+    io_uring:
+      matched: 1
+      matched_ids:
+      - 49137062
+      published: 0
+      published_ids: []
+      raw: 2
+    kernel:
+      matched: 3
+      matched_ids:
+      - 49131217
+      - 49137060
+      - 49141057
+      published: 1
+      published_ids:
+      - 49137060
+      raw: 2
+    local-first:
+      matched: 3
+      matched_ids:
+      - 49136373
+      - 49136591
+      - 49140805
+      published: 0
+      published_ids: []
+      raw: 3
+    macOS:
+      matched: 3
+      matched_ids:
+      - 49130958
+      - 49131200
+      - 49131539
+      published: 0
+      published_ids: []
+      raw: 2
+    npm:
+      matched: 3
+      matched_ids:
+      - 49130958
+      - 49132894
+      - 49134148
+      published: 0
+      published_ids: []
+      raw: 5
+    outage:
+      matched: 1
+      matched_ids:
+      - 49134045
+      published: 0
+      published_ids: []
+      raw: 1
+    protein folding:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    terminal:
+      matched: 1
+      matched_ids:
+      - 49131231
+      published: 0
+      published_ids: []
+      raw: 4
+  runs:
+  - at: '2026-08-02T05:53:22+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-02.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-01
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"A ripgrep segfault investigation localizes a Linux kernel TLB-shootdown
+        race between the per-VMA-lock anonymous fault path and concurrent munmap","section":"Top stories","category":"Linux/Kernel","status":"developing","primary_url":"https://github.com/dfoxfranke/ripgrep-349
+      failed_tools:
+        mcp__digest__fetch_url: 2
+      name: select
+      status: ok
+      tokens:
+        in: 55
+        out: 23990
+      tools:
+        Glob: 2
+        Grep: 8
+        Read: 18
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 12
+        mcp__digest__guidance: 2
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 4
+    - detail: |-
+        Gate exits 0. `data/digests/2026-08-02.md` is published.
+
+        **What was written**
+
+        First run of the date, so the file went from empty template to full digest. Nothing displaced (`displace` was empty).
+
+        13 stories across 11 sections, against the caps of 25 non-Security stories and 4 per section.
+
+        - **To
+      name: write
+      status: ok
+      tokens:
+        in: 12
+        out: 7530
+      tools:
+        Edit: 1
+        Read: 1
+        ToolSearch: 1
+        Write: 1
+        mcp__digest__run_gate: 2
+    - detail: >-
+        {"findings":[{"severity":"blocking","where":"Agentic coding: GitHub reports that adding tools
+        made Copilot code review worse and describes what recovered it","detail":"The block misstates
+        its source and hides its age. The post (fetched, datePublished 2026-07-10T15:57:47+00:00, author
+        Napalys Klicius
+      name: review
+      status: ok
+      tokens:
+        in: 38
+        out: 21526
+      tools:
+        Glob: 5
+        Grep: 9
+        Read: 5
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 8
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes with exit code 0 (warnings are pre-existing memory-staleness notices, not blocking).
+
+        **Repairs applied to `data/digests/2026-08-02.md`:**
+
+        Blocking:
+        1. **Copilot code review block — dropped.** The post is dated 2026-07-10 and describes *narrowing* the tool set (agent's own exploration t
+      failed_tools:
+        Read: 1
+        mcp__digest__fetch_url: 2
+      name: write
+      status: ok
+      tokens:
+        in: 24
+        out: 12403
+      tools:
+        Edit: 9
+        Read: 5
+        ToolSearch: 1
+        mcp__digest__fetch_url: 2
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"ML research: A token-cost-matched study
+        finds no self-inspection method beats repeated sampling in open models from 1.5B to 7B","detail":"Internal
+        contradiction and a misread of the source. The summary says the study \"compares seven methods
+      name: review
+      status: ok
+      tokens:
+        in: 13
+        out: 13998
+      tools:
+        Glob: 1
+        Grep: 4
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 3
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 7 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 3 cause(s) corrected in 2026-08-01
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-08-02.yaml
+      name: run_log
+      status: ok
+    - detail: 23 fetch(es), 2 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
