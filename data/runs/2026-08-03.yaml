@@ -60,6 +60,68 @@ judgment:
     Security carries one block rather than the five it carried on 2026-08-02, but two of the three
     Top stories are security items and both watchlist follow-ups are security follow-ups, so the day
     is heavier on security than the section count suggests.
+
+    Later run of 2026-08-03. The page already carried 12 stories from the 05:26 run and the day
+    budget had room, so this run added rather than displaced. Nothing already published was
+    outranked by what the afternoon produced, so `displace` is empty. Three stories added, bringing
+    the day to 15 against the cap of 25, with no section over four.
+
+    Top stories reaches the floor of 3. The morning run closed with 2 and its own review step
+    flagged the gap, because the OpenAI Astra tease was dropped for want of a first-party URL that
+    step could not reach. The gap is closed by a genuinely new item rather than by promoting a
+    weaker one: the JFrog audit surfaced on Hacker News at 11:28 UTC, after the morning run had
+    finished. Ranking is unchanged above it. The AUR campaign stays the lead on active credential
+    theft against developer machines, JFrog goes second, and the Unit 42 DeepSeek block stays third.
+
+    The JFrog post is dated 2026-07-30 and reached the front page today. It was admitted rather than
+    dropped under the resurfacing standard the morning run applied to the EU age-verification story,
+    because the records it audits are live and still moving: the post notes Red Hat scored
+    CVE-2026-51302 at 10.0 Critical and downgraded it to 7.6 High between two days of writing, and
+    JFrog reported the findings to GHSA, Red Hat and NVD after publication. The four-day-old
+    research describes an open state, not a three-week-closed issue. The publication date is stated
+    in the block so a reader is not left to infer freshness.
+
+    Qwen3.8-Max is dropped for the second consecutive run and is now the clearest coverage failure
+    of the day. It ranks second on the front page at 710 points, up from 222 this morning. qwen.ai
+    returned the two-word JavaScript shell again, the same failure recorded against that host on
+    2026-07-21 and this morning, and huggingface.co/Qwen/Qwen3.8-Max returned HTTP 401 Unauthorized,
+    which is a new access failure for that host and worth an access note if it repeats. Combined
+    with this morning's misses on qwenlm.github.io, Alibaba Cloud Model Studio, the Hugging Face
+    Qwen organization and QwenLM/Qwen3, no host has produced a verifiable fact about this model in
+    two runs. The AI section is empty for a fetch reason, not an editorial one, and a model release
+    at this discussion volume going uncovered for a full day is the kind of gap the weekly review
+    should see.
+
+    Calls a reader of the page could not infer. The day's top thread by a wide margin, "Don't be a
+    meat proxy" at 888 points and 382 comments, was read and omitted. It is a roughly 300-word
+    opinion post with no data and no primary claim beyond itself, and the collected comments are
+    opinion volume with no correction, benchmark, maintainer reply or substantiated dissent, so it
+    clears neither a topical inclusion test nor the Hacker News section bar. Its absence is a
+    judgment, not an oversight. Two further items were read in full and left out: the ClickHouse
+    post on strict memory overcommit for Postgres, which has honest methodology and real numbers, a
+    30.2 second outage against 0 and 20 of 20 sessions dropped against 1 query, but is six days old,
+    sits at 1 point, and is vendor content for a managed Postgres product, and the 9front "This Was
+    Supposed to Be Fun" release, which is a real release with a substantial changelog but has no
+    section that fits it and 24 points of signal. Infrastructure and Engineering posts stay as the
+    morning left them.
+
+    Sources. Reddit is degraded for the ninth consecutive date, day coverage 5 of 28 subreddits
+    against a floor of 14 and top_day 1 of 28. That is a marginal improvement on this morning's 3 of
+    28 and still well short, so Reddit and social pulse stays omitted for lack of qualifying
+    material rather than lack of checking. The GitHub watchlist remains partial, with only the stars
+    collection running and repository releases and trending unchecked, now the eighth consecutive
+    run with that gap. Hacker News itself was healthy, all five collections on the Algolia backend
+    with no degradation. The XCSSET block cites the Unit 42 report alone: its Hacker News thread
+    carries 3 points and zero comments, so no discussion link was attached rather than padding the
+    block with a dead thread.
+
+    Backtest. The 2026-08-02 scoring seeded no default causes across its 46 candidates, so there was
+    no seeded cause to correct and `miss_review` is empty. Reviewing the candidate set independently
+    turned up no engineering story a watchlist query should have caught and did not: the high
+    scorers it lists are non-engineering material, and the engineering-adjacent entries are
+    evergreen reference rather than news. The threshold gap the morning run recorded, that the AUR
+    campaign never entered the candidate set because both its threads sat under the 100-point floor,
+    still stands as the more useful finding for the weekly review.
 mechanical:
   digest:
     domains:
@@ -74,6 +136,7 @@ mechanical:
     - news.ycombinator.com
     - phoronix.com
     - reddit.com
+    - research.jfrog.com
     - rfc-editor.org
     - unit42.paloaltonetworks.com
     - ykvm.com
@@ -90,23 +153,28 @@ mechanical:
     - 49150181
     - 49150505
     - 49150773
+    - 49152023
+    - 49154332
     sections:
       Agentic coding: 1
       Apple platforms: 1
       Developer tools: 1
       Engineering posts: 1
       Hacker News: 1
+      Languages and runtimes: 1
       Linux and kernel: 1
       ML research: 1
       Outages: 0
       Security: 1
       Sources checked: 0
-      Top stories: 2
+      Top stories: 3
       Watchlist follow-ups: 2
-    source_count: 28
+    source_count: 32
     titles:
     - Arch Linux disables AUR package adoption and then all pushes after a wave of malicious takeovers
       of orphaned packages
+    - JFrog audits 55 advisories from one GitHub account and finds 54 fabricated, after NVD rated six
+      SQLite CVEs critical or high
     - >-
       Unit 42 recovers a threat actor's environment showing an unattended DeepSeek-driven agent chain
       that compromised no targets, with the three confirmed compromises coming from manual attacks
@@ -121,6 +189,9 @@ mechanical:
     - >-
       Kakehashi loads Darwin Mach-O binaries on Linux aarch64 against a freestanding libSystem, running
       7-Zip about 5.2 times slower than native on a multi-file archive
+    - >-
+      Rust accepts a 2026-2027 project goal for Move and Forget traits, with the stated aim of deprecating
+      Pin rather than extending it
     - >-
       A SwiftUI retrospective points at Apple's own Landmarks tutorial rendering a broken sidebar on current
       Xcode and macOS, unchanged for over two years
@@ -139,133 +210,55 @@ mechanical:
       Aikido names anthropickit as a candidate for the PyPI package Anthropic's evaluation agent published,
       and Ars Technica reads the three intrusions as felonies had a human done them
   fetched:
+  - detail: 51011 bytes
+    ok: true
+    url: https://research.jfrog.com/post/sqlite-critical-cves-or-llm-slops/
+  - detail: 344364 bytes
+    ok: true
+    url: https://github.com/rust-lang/rust-project-goals/blob/main/src/2026/move-trait.md
   - detail: 94358 bytes
     ok: true
     url: https://qwen.ai/blog?id=qwen3.8
-  - detail: 377753 bytes (clipped)
+  - detail: 274229 bytes (clipped)
     ok: true
-    url: https://www.aikido.dev/blog/anthropic-rogue-agents-package-stole-keys
-  - detail: 12145 bytes
+    url: https://unit42.paloaltonetworks.com/xcsset-v40-malware-analysis/
+  - detail: 2505 bytes
     ok: true
-    url: https://lists.archlinux.org/archives/list/aur-general@lists.archlinux.org/message/YPJ3FQYJTJXXY3RUXCYLMHUKHLIUNVFF/
-  - detail: 89456 bytes
+    url: https://gruhn.me/blog/2026-08-03/
+  - detail: 'failed: fetch failed: https://huggingface.co/Qwen/Qwen3.8-Max: HTTP Error 401: Unauthorized'
+    ok: false
+    url: https://huggingface.co/Qwen/Qwen3.8-Max
+  - detail: 201898 bytes
     ok: true
-    url: https://www.bleepingcomputer.com/news/security/arch-linux-disables-aur-package-adoption-to-stop-malware-flood/
+    url: https://clickhouse.com/blog/strict-memory-overcommit-for-postgres
+  - detail: 29771 bytes (clipped)
+    ok: true
+    url: https://9front.org/releases/2026/08/02/0/
+  - detail: 51011 bytes
+    ok: true
+    url: https://research.jfrog.com/post/sqlite-critical-cves-or-llm-slops/
+  - detail: 344354 bytes
+    ok: true
+    url: https://github.com/rust-lang/rust-project-goals/blob/main/src/2026/move-trait.md
+  - detail: 42166 bytes
+    ok: true
+    url: https://arxiv.org/abs/2607.28271
   - detail: 49865 bytes
     ok: true
     url: https://www.rfc-editor.org/rfc/rfc9851.html
-  - detail: 79372 bytes
+  - detail: 51011 bytes
     ok: true
-    url: https://www.phoronix.com/news/Linux-7.2-rc6-Released
-  - detail: 173250 bytes
-    ok: true
-    url: https://linuxiac.com/eu-age-verification-project-mandates-hardware-bound-attestation/
-  - detail: 'failed: fetch failed: https://cacm.acm.org/research/revisiting-cpu-silent-data-corruptions-in-modern-datacenters/:
-      HTTP Error 403: Forbidden'
-    ok: false
-    url: https://cacm.acm.org/research/revisiting-cpu-silent-data-corruptions-in-modern-datacenters/
-  - detail: 92272 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/coldcard-wallet-rng-flaw-likely-linked-to-88-million-bitcoin-theft/
-  - detail: 89759 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/artificial-intelligence/openai-teases-astra-its-next-major-ai-model-after-it-solves-10-long-standing-math-problems/
-  - detail: 276682 bytes
-    ok: true
-    url: https://github.com/eu-digital-identity-wallet/av-app-android-wallet-ui/issues
-  - detail: 494011 bytes
-    ok: true
-    url: https://blog.cloudflare.com/agents-week-welcome/
-  - detail: 322823 bytes
-    ok: true
-    url: https://github.com/eu-digital-identity-wallet/av-app-android-wallet-ui/issues?q=attestation
-  - detail: 'failed: fetch failed: https://qwenlm.github.io/blog/qwen3.8-max/: HTTP Error 404: Not Found'
-    ok: false
-    url: https://qwenlm.github.io/blog/qwen3.8-max/
-  - detail: 62346 bytes (clipped)
-    ok: true
-    url: https://ykvm.com/2026/07/swiftui-a-story-of-mediocrity/
-  - detail: 314682 bytes
-    ok: true
-    url: https://github.com/eu-digital-identity-wallet/av-app-android-wallet-ui/issues/117
+    url: https://research.jfrog.com/post/sqlite-critical-cves-or-llm-slops/
   - detail: 12236 bytes
     ok: true
     url: https://daringfireball.net/linked/2026/08/02/cherny-claude-swift
-  - detail: 595024 bytes (clipped)
+  - detail: 344360 bytes
     ok: true
-    url: https://huggingface.co/Qwen
-  - detail: 18743 bytes
-    ok: true
-    url: https://www.alibabacloud.com/help/en/model-studio/what-is-qwen-llm
-  - detail: 153377 bytes
-    ok: true
-    url: https://arstechnica.com/security/2026/07/likely-illegally-claude-gained-access-to-3-networks-will-anthropic-be-held-to-account/
-  - detail: 42166 bytes
-    ok: true
-    url: https://arxiv.org/abs/2607.28271
-  - detail: 93312 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/hacker-uses-deepseek-ai-to-autonomously-attack-vulnerable-servers/
-  - detail: 513222 bytes (clipped)
-    ok: true
-    url: https://blog.cloudflare.com/cdnjs-dev-platform-migration/
-  - detail: 204262 bytes
-    ok: true
-    url: https://lists.archlinux.org/archives/list/aur-general@lists.archlinux.org/latest
-  - detail: 276519 bytes
-    ok: true
-    url: https://unit42.paloaltonetworks.com/
-  - detail: 'failed: fetch failed: https://www.ft.com/content/8ae9e6e4-a53c-44da-8e7d-c9d81f0df4b9: HTTP
-      Error 403: Forbidden'
-    ok: false
-    url: https://www.ft.com/content/8ae9e6e4-a53c-44da-8e7d-c9d81f0df4b9
-  - detail: 430472 bytes (clipped)
-    ok: true
-    url: https://github.com/QwenLM/Qwen3
-  - detail: 377011 bytes
+    url: https://github.com/rust-lang/rust-project-goals/blob/main/src/2026/move-trait.md
+  - detail: 377024 bytes
     ok: true
     url: https://github.com/wie-project/kakehashi
-  - detail: 'failed: fetch failed: https://unit42.paloaltonetworks.com/chinese-speaking-threat-actor-ai-autonomous-cyberattacks/:
-      HTTP Error 404: Not Found'
-    ok: false
-    url: https://unit42.paloaltonetworks.com/chinese-speaking-threat-actor-ai-autonomous-cyberattacks/
-  - detail: 49865 bytes
-    ok: true
-    url: https://www.rfc-editor.org/rfc/rfc9851.html
-  - detail: 93318 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/hacker-uses-deepseek-ai-to-autonomously-attack-vulnerable-servers/
-  - detail: 42166 bytes
-    ok: true
-    url: https://arxiv.org/abs/2607.28271
-  - detail: 377023 bytes
-    ok: true
-    url: https://github.com/wie-project/kakehashi
-  - detail: 12145 bytes
-    ok: true
-    url: https://lists.archlinux.org/archives/list/aur-general@lists.archlinux.org/message/YPJ3FQYJTJXXY3RUXCYLMHUKHLIUNVFF/
-  - detail: 89759 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/artificial-intelligence/openai-teases-astra-its-next-major-ai-model-after-it-solves-10-long-standing-math-problems/
-  - detail: 513222 bytes (clipped)
-    ok: true
-    url: https://blog.cloudflare.com/cdnjs-dev-platform-migration/
-  - detail: 49865 bytes
-    ok: true
-    url: https://www.rfc-editor.org/rfc/rfc9851.html
-  - detail: 42166 bytes
-    ok: true
-    url: https://arxiv.org/abs/2607.28271
-  - detail: 12236 bytes
-    ok: true
-    url: https://daringfireball.net/linked/2026/08/02/cherny-claude-swift
-  - detail: 513222 bytes (clipped)
-    ok: true
-    url: https://blog.cloudflare.com/cdnjs-dev-platform-migration/
-  - detail: 12145 bytes
-    ok: true
-    url: https://lists.archlinux.org/archives/list/aur-general@lists.archlinux.org/message/YPJ3FQYJTJXXY3RUXCYLMHUKHLIUNVFF/
-  generated_at: '2026-08-03T05:26:18+00:00'
+  generated_at: '2026-08-03T13:06:20+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -274,27 +267,36 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-08-03T04:57:24+00:00'
+    fetched_at: '2026-08-03T12:46:27+00:00'
     pooled:
       added:
-        ask_hn: 2
-        comments: 6
-        front_page: 3
-        queries: 7
-        show_hn: 0
-        top_day: 2
-      snapshot_fetched_at: '2026-08-03T03:54:55+00:00'
+        ask_hn: 13
+        comments: 42
+        front_page: 29
+        queries: 40
+        show_hn: 15
+        top_day: 20
+      snapshot_fetched_at: '2026-08-03T10:05:44+00:00'
     queries_backend: algolia
     seen_ids:
+    - 47320921
+    - 47439821
+    - 47544114
+    - 47613622
+    - 47999020
+    - 48351958
+    - 49076945
     - 49084324
+    - 49092215
     - 49093845
-    - 49094151
     - 49096748
     - 49097961
     - 49113005
+    - 49115935
     - 49119751
     - 49122655
     - 49123003
+    - 49125065
     - 49129676
     - 49140998
     - 49141045
@@ -348,6 +350,7 @@ mechanical:
     - 49145201
     - 49145307
     - 49145548
+    - 49145566
     - 49145590
     - 49145646
     - 49145883
@@ -357,14 +360,17 @@ mechanical:
     - 49146122
     - 49146238
     - 49146267
+    - 49146605
     - 49146623
     - 49146696
+    - 49146818
     - 49146960
     - 49147029
     - 49147209
     - 49147263
     - 49147435
     - 49147450
+    - 49147478
     - 49147606
     - 49147622
     - 49147627
@@ -385,14 +391,17 @@ mechanical:
     - 49149028
     - 49149125
     - 49149188
+    - 49149222
     - 49149322
     - 49149326
     - 49149599
     - 49149746
+    - 49149800
     - 49149805
     - 49149898
     - 49149966
     - 49150181
+    - 49150247
     - 49150324
     - 49150329
     - 49150433
@@ -401,7 +410,45 @@ mechanical:
     - 49150636
     - 49150707
     - 49150738
+    - 49150773
     - 49150911
+    - 49150997
+    - 49151084
+    - 49151121
+    - 49151220
+    - 49151734
+    - 49151751
+    - 49151871
+    - 49151933
+    - 49152023
+    - 49152054
+    - 49152073
+    - 49152112
+    - 49152222
+    - 49152316
+    - 49152599
+    - 49152640
+    - 49152842
+    - 49152871
+    - 49152973
+    - 49152993
+    - 49153029
+    - 49153158
+    - 49153308
+    - 49153361
+    - 49153374
+    - 49153434
+    - 49153734
+    - 49153825
+    - 49153851
+    - 49154127
+    - 49154237
+    - 49154249
+    - 49154332
+    - 49154372
+    - 49154515
+    - 49154601
+    - 49154806
     source: cache
   query_yield:
     0day:
@@ -411,15 +458,18 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49145934
       - 49147606
       - 49147622
       - 49148159
       - 49149188
-      published: 0
-      published_ids: []
+      - 49150561
+      - 49150773
+      published: 1
+      published_ids:
+      - 49150773
       raw: 5
     AWS:
       matched: 0
@@ -469,22 +519,25 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     CVE:
-      matched: 0
-      matched_ids: []
-      published: 0
-      published_ids: []
+      matched: 1
+      matched_ids:
+      - 49154332
+      published: 1
+      published_ids:
+      - 49154332
       raw: 5
     Claude:
-      matched: 6
+      matched: 7
       matched_ids:
-      - 49141736
       - 49141897
       - 49147270
       - 49148070
       - 49149111
       - 49149800
+      - 49150752
+      - 49151751
       published: 3
       published_ids:
       - 49147270
@@ -492,13 +545,15 @@ mechanical:
       - 49149800
       raw: 5
     Claude Code:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49141897
       - 49144843
       - 49146674
       - 49149111
       - 49149800
+      - 49153728
+      - 49154573
       published: 1
       published_ids:
       - 49149800
@@ -526,7 +581,7 @@ mechanical:
       - 49151293
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     GCP:
       matched: 0
       matched_ids: []
@@ -534,11 +589,12 @@ mechanical:
       published_ids: []
       raw: 5
     GPU:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49142538
       - 49145872
       - 49147756
+      - 49154228
       published: 0
       published_ids: []
       raw: 5
@@ -548,19 +604,21 @@ mechanical:
       - 49150752
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     Ghostty:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     GitHub:
-      matched: 3
+      matched: 5
       matched_ids:
       - 49141806
+      - 49146818
       - 49148048
       - 49148163
+      - 49154769
       published: 0
       published_ids: []
       raw: 5
@@ -591,9 +649,10 @@ mechanical:
       published_ids: []
       raw: 5
     Java:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49150773
+      - 49152692
       published: 1
       published_ids:
       - 49150773
@@ -635,18 +694,20 @@ mechanical:
       published_ids: []
       raw: 0
     LLM:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49141008
       - 49141408
       - 49143176
       - 49146214
+      - 49153374
       published: 0
       published_ids: []
       raw: 5
     LWN:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49151906
       published: 0
       published_ids: []
       raw: 5
@@ -672,13 +733,16 @@ mechanical:
       published_ids: []
       raw: 0
     MCP:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49142206
       - 49144582
       - 49145092
       - 49146337
       - 49149580
+      - 49151030
+      - 49152019
+      - 49152128
       published: 0
       published_ids: []
       raw: 5
@@ -695,14 +759,15 @@ mechanical:
       published_ids: []
       raw: 0
     Nvidia:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49142099
       - 49143010
       - 49145652
+      - 49153520
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     OpenAI:
       matched: 5
       matched_ids:
@@ -737,11 +802,12 @@ mechanical:
       published_ids: []
       raw: 4
     Prometheus:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49153196
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     PyPI:
       matched: 0
       matched_ids: []
@@ -749,11 +815,12 @@ mechanical:
       published_ids: []
       raw: 1
     Python:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49143179
       - 49145704
       - 49147917
+      - 49153389
       published: 0
       published_ids: []
       raw: 5
@@ -769,30 +836,36 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 5
     Rust:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49142794
       - 49143096
       - 49143467
+      - 49146759
       - 49146991
       - 49148163
-      published: 0
-      published_ids: []
+      - 49152023
+      - 49152662
+      published: 1
+      published_ids:
+      - 49152023
       raw: 5
     S-1:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     SQLite:
-      matched: 0
-      matched_ids: []
-      published: 0
-      published_ids: []
-      raw: 0
+      matched: 1
+      matched_ids:
+      - 49154332
+      published: 1
+      published_ids:
+      - 49154332
+      raw: 3
     Spring Boot:
       matched: 0
       matched_ids: []
@@ -819,12 +892,13 @@ mechanical:
       - 49147263
       raw: 5
     TypeScript:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49142794
       - 49143304
       - 49146450
       - 49147853
+      - 49152110
       published: 0
       published_ids: []
       raw: 4
@@ -839,7 +913,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     Xcode:
       matched: 1
       matched_ids:
@@ -859,7 +933,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 1
     acquisition:
       matched: 0
       matched_ids: []
@@ -876,12 +950,15 @@ mechanical:
       published_ids: []
       raw: 5
     arXiv:
-      matched: 4
+      matched: 7
       matched_ids:
       - 49143289
       - 49144981
       - 49145872
       - 49150773
+      - 49151984
+      - 49152220
+      - 49153177
       published: 1
       published_ids:
       - 49150773
@@ -898,7 +975,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     coding agent:
       matched: 3
       matched_ids:
@@ -907,7 +984,7 @@ mechanical:
       - 49150231
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     distributed systems:
       matched: 1
       matched_ids:
@@ -922,11 +999,12 @@ mechanical:
       published_ids: []
       raw: 0
     eBPF:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49153196
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     exploit:
       matched: 1
       matched_ids:
@@ -936,10 +1014,11 @@ mechanical:
       - 49147088
       raw: 5
     iOS:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49144249
       - 49145774
+      - 49154043
       published: 0
       published_ids: []
       raw: 5
@@ -963,7 +1042,7 @@ mechanical:
       - 49145061
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     local-first:
       matched: 2
       matched_ids:
@@ -973,18 +1052,22 @@ mechanical:
       published_ids: []
       raw: 2
     macOS:
-      matched: 3
+      matched: 6
       matched_ids:
       - 49142886
       - 49145774
       - 49145937
+      - 49152790
+      - 49153688
+      - 49154689
       published: 1
       published_ids:
       - 49145937
       raw: 5
     npm:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49154571
       published: 0
       published_ids: []
       raw: 5
@@ -1137,6 +1220,147 @@ mechanical:
       name: run_log
       status: ok
     - detail: 41 fetch(es), 4 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-08-03T13:06:27+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-03.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-02
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"JFrog audits 55 advisories from one GitHub account and finds 54 fabricated,
+        after NVD rated six SQLite CVEs critical or high","section":"Top stories","status":"confirmed","category":"Security","primary_url":"https://research.jfrog.com/post/sqlite-critical-cves-or-llm-slops/
+      failed_tools:
+        Bash: 1
+        mcp__digest__fetch_url: 1
+      name: select
+      status: ok
+      tokens:
+        in: 40
+        out: 19225
+      tools:
+        Bash: 2
+        Glob: 2
+        Grep: 3
+        Read: 13
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 8
+        mcp__digest__guidance: 2
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 2
+    - detail: |-
+        Gate passes (exit 0). The write step is complete.
+
+        ## What changed in `data/digests/2026-08-03.md`
+
+        **Added, 2 of the 3 selected stories:**
+
+        - **Top stories, second position:** the JFrog audit of 55 advisories from one GitHub account, 54 fabricated, including six SQLite CVEs NVD had rated critical o
+      name: write
+      status: ok
+      tokens:
+        in: 27
+        out: 9728
+      tools:
+        Edit: 10
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 2
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Sources checked, \"Dropped after review\",
+        OpenAI Astra entry","detail":"The note states \"Top stories therefore carries two items today
+        rather than three, which is below the usual floor, and nothing was promoted to fill the slot.\"
+        The dige
+      name: review
+      status: ok
+      tokens:
+        in: 13
+        out: 11687
+      tools:
+        Glob: 1
+        Grep: 3
+        Read: 2
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 3
+        mcp__digest__memory_query: 1
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes, exit code 0. Three repairs applied, no story dropped.
+
+        **1. Blocking, Astra entry false about its own page.** Cut the clause stating Top stories carries two items rather than three and that nothing was promoted. The page carries three, the JFrog block among them, so the sentence was wro
+      name: write
+      status: ok
+      tokens:
+        in: 10
+        out: 1897
+      tools:
+        Edit: 2
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Hacker News: The Hacker News thread
+        on the Wafer MI355X post disputes its performance-per-dollar claim","detail":"The summary states
+        \"The 2026-08-02 digest carried the throughput figures from that post without the thread.\" That
+        is contradi
+      name: review
+      status: ok
+      tokens:
+        in: 16
+        out: 16892
+      tools:
+        Bash: 1
+        Glob: 1
+        Grep: 2
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 5
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 7 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: skipped (no seeded cause was reported wrong)
+      name: miss_review
+      status: skip
+    - detail: data/runs/2026-08-03.yaml
+      name: run_log
+      status: ok
+    - detail: 16 fetch(es), 1 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
