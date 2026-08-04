@@ -1,0 +1,1167 @@
+date: '2026-08-04'
+judgment:
+  inbox: []
+  miss_review: {}
+  notes: |
+    First run of the day. The digest file was the unedited template, so nothing was displaced and
+    `displace` is empty. The story inbox returned zero issues.
+
+    The day has one dominant theme and it is confirmed from two independent directions. JFrog
+    audited 55 advisories published by a single new GitHub account (programmervuln/cveadvisory-) and
+    found 54 entirely fabricated: cited functions that did not exist in the claimed version, line
+    numbers past EOF of the file, a "fix" that diffs to no change in src/expr.c, and PoCs that fail
+    at the SQL parser. NVD flagged several as critical and CISA's ADP agreed. Separately, the
+    Financial Times reported via the-decoder that Apple has capped bug bounty submissions per
+    researcher with a 30-day cooldown because of AI-generated report volume. I could not reach the
+    FT, so that one is `developing` rather than `confirmed`, and the named details (Bynario, CEO
+    Alfredo Pesoli, the $100k-$200k estimate, Rafe Pilling of Sophos) come from the-decoder's
+    summary of the FT, not from the FT itself. The Register also covered the CVE-pipeline angle; I
+    did not link it because it duplicates JFrog and theregister.com article bodies are unreadable
+    from this environment.
+
+    Access: `openai.com/index/ten-advances-in-mathematics/` returned HTTP 403 on two attempts. This
+    is a new block, not covered by any existing access note, and openai.com is likely to matter
+    again. The story carries 484 points and 753 comments, so I published it in `Hacker News` as
+    `discussion` with the HN thread as the primary link and the unreadable OpenAI URL listed as a
+    source. I did not restate any of OpenAI's claims as fact, and the value I took from the item is
+    the thread's demand for the undisclosed experimental setup. A run on a network that can reach
+    openai.com should revisit this as a real AI story.
+
+    Sections omitted deliberately, where the absence is the finding rather than a quiet day:
+
+    `Books`. The publisher feeds returned only Springer LNCS/CCIS conference proceedings volumes
+    (ICPR, iCETiC, BIOSTEC, KMO) plus one German-language AI monograph. No trade technical book
+    cleared the bar, so the section is omitted rather than padded with proceedings.
+
+    `ML research`. The arXiv pull was healthy and not degraded, roughly the usual daily volume.
+    Several items were adjacent to engineering practice (ACEM cost estimation for agentic software
+    engineering, SWE-Touch, Real-Time Detection and Repair of LLM Agent Failures), but none carried
+    external validation, a discussion thread, or a result I could check beyond the abstract. Omitted
+    on the `Books`/`New videos` standard rather than published as a title list.
+
+    `New videos`. Watchlist channels produced output but every item came back with `discussion:
+    null`, so nothing had a real thread to rank on. The strongest by raw engagement was a Dwarkesh
+    Patel video that is a read-aloud of a post published the previous week. Omitted.
+
+    `Agentic coding`. The day's one strong agentic item, @cloudflare/computer, was good enough for
+    Top stories, which leaves the section with nothing that stands on its own. Everything else in
+    that space today was Show HN self-promotion in the single-digit points range.
+
+    `Outages`. The Norway ID-porten DDoS is the day's outage and it is strong enough to lead
+    position two, so it sits in Top stories and the Outages section has no separate entry. A reader
+    will find the incident, but the anchor section will read as empty; that is a promotion, not an
+    absence of incidents.
+
+    `Reddit and social pulse`. Reddit coverage was degraded to 10 of 28 subreddits against a floor
+    of 14, with the live top_day fetch reaching only 2 before pooling recovered 65 posts from the
+    03:37 snapshot. The one genuinely strong Reddit find, FFmpeg 9.0, was verified against
+    ffmpeg.org and promoted to Top stories, so nothing Reddit-native remains worth a section given
+    the coverage I actually had.
+
+    `Watchlist follow-ups`. 56 entries are open and none received verifiable new facts today. The
+    closest was f-0030 (OpenAI and Anthropic models escaping an eval sandbox): a TechCrunch piece on
+    legal liability surfaced at 6 points and a blog on an unfamiliar domain (blog.neutrontech.ai) at
+    2 points. Neither adds a fact to the record, so I published no follow-up rather than restating
+    the entry.
+
+    Calls a reader could not infer. "Devtools must be open source" is by David Crawshaw, who runs
+    exe.dev, which sells agent sandboxes and VMs, and the post's closing argument is that Claude
+    Code is the wall because it is closed source. I published it because the reasoning about
+    agent-driven personalization changing the ROI on forking is the substance and the HN thread
+    engages it seriously (simonw describes treating "clone and build X" as a zero-cost prompt,
+    kelnos pushes back that this burns electricity re-implementing what a config file does once).
+    The commercial interest is real and the writer should keep it visible. "LLMs reward expertise"
+    is dated 2026-07-24 on the author's site and only resurfaced on HN on 2026-08-03; the digest
+    date is the resurfacing, not publication.
+
+    Not published: Bonsai, Jane Street's OCaml UI library, at 319 points. There is no release or
+    news event behind it, the library predates today, and the thread's technical content is thin
+    (web-only, and a userland trampoline because js_of_ocaml has no tail call optimization). It
+    would have been the weakest thing in `Languages and runtimes` next to the Rust project goal, so
+    it lost on ranking rather than on verification. Same call on C-Kermit (138 points) and the
+    9front release (85 points).
+
+    Also not published: the FFmpeg 9.0 release notes and changelog were linked from the download
+    page but I cited only the download page, which carries the release date (2026-08-04), the
+    codename "Lei", the branch cut date (2026-06-26), and the full set of bumped library versions.
+    That is enough for the claims made and avoids citing a page I did not read.
+
+    Backtest. The 2026-08-03 run seeded no default causes across 60 candidates, so `miss_review`
+    carries only the four I judged wrong. Qwen3.8-Max (997 points) is a major model release with
+    explicit coding claims and there is no Qwen query in the watchlist at all, which is a
+    straightforward gap. "Don't be a meat proxy" (1662 points at scoring time, 1712 now) is the
+    largest thread of the period and is about engineering communication practice; no query touched
+    it, and I am carrying it today. The TP-Link TL-841N rooting and persistent-credentials write-up
+    (114 points) is exactly the security research this digest exists to catch and no query matched
+    it. Against those, the OpenAI super PAC story matched on `entity:OpenAI` but is political
+    funding and media, not engineering context, so it should carry `out_of_scope` rather than
+    counting as a relevance miss. I left the remaining `no_query_match` items alone; most are
+    general-interest front page (German citizenship, Wikimedia union, fish sauce, Hollywood) where
+    the default is correct.
+
+    Watchlist observation for the weekly review, not an action for this run: three separate
+    `watchlist_gap` calls above are model releases and security research from vendors and
+    researchers with no query coverage. The query list is heavy on incumbent names (OpenAI,
+    Anthropic, Claude, Nvidia) and light on Chinese labs; Qwen, MiniMax, Moonshot and Z.ai all
+    produced digest-worthy output in the last two days and only surfaced through the front page.
+mechanical:
+  digest:
+    domains:
+    - ankursethi.com
+    - blog.cloudflare.com
+    - ffmpeg.org
+    - github.com
+    - gruhn.me
+    - lapcatsoftware.com
+    - lwn.net
+    - news.ycombinator.com
+    - openai.com
+    - opensourcemalware.com
+    - pandoc.org
+    - reddit.com
+    - seangoedecke.com
+    - status.digdir.no
+    - the-decoder.com
+    hn_ids:
+    - 49151906
+    - 49151933
+    - 49152790
+    - 49153374
+    - 49154571
+    - 49155598
+    - 49156299
+    - 49156750
+    - 49157930
+    - 49158581
+    - 49160631
+    - 49161518
+    sections:
+      AI: 1
+      Apple platforms: 1
+      Developer tools: 1
+      Engineering posts: 1
+      Hacker News: 3
+      Linux and kernel: 1
+      Outages: 1
+      Security: 1
+      Sources checked: 0
+      Top stories: 3
+    source_count: 27
+    titles:
+    - FFmpeg 9.0 "Lei" released
+    - Apple caps bug bounty submissions as AI-generated reports flood the inbox
+    - Cloudflare ships @cloudflare/computer, an agent runtime spanning isolates and containers
+    - Cloudflare quantizes KV cache and weights to serve Kimi and GLM
+    - DPRK npm packages hide their C2 address in the recipient of an empty Ethereum transfer
+    - DDoS against Norway's ID-porten degrades national login for a second day
+    - Twenty years of Pandoc
+    - macOS Mail contacts iCloud when sending mail from a non-iCloud account
+    - Torvalds attributes part of the 7.2-rc6 networking backlog to conference timing
+    - LLMs reward expertise
+    - OpenAI claims ten advances in mathematics and theoretical computer science
+    - Don't be a meat proxy
+    - Prevent cognitive debt by manually retyping LLM-generated code
+  fetched:
+  - detail: 51011 bytes
+    ok: true
+    url: https://research.jfrog.com/post/sqlite-critical-cves-or-llm-slops/
+  - detail: 'failed: fetch failed: https://openai.com/index/ten-advances-in-mathematics/: HTTP Error 403:
+      Forbidden'
+    ok: false
+    url: https://openai.com/index/ten-advances-in-mathematics/
+  - detail: 242479 bytes
+    ok: true
+    url: https://status.digdir.no/incidents/d7hvqmf2yr3l
+  - detail: 536037 bytes (clipped)
+    ok: true
+    url: https://blog.cloudflare.com/cloudflare-computer/
+  - detail: 175382 bytes
+    ok: true
+    url: https://clickhouse.com/blog/andy-pavlo-joins-clickhouse
+  - detail: 'failed: fetch failed: https://openai.com/index/ten-advances-in-mathematics/: HTTP Error 403:
+      Forbidden'
+    ok: false
+    url: https://openai.com/index/ten-advances-in-mathematics/
+  - detail: 344499 bytes
+    ok: true
+    url: https://github.com/rust-lang/rust-project-goals/blob/main/src/2026/move-trait.md
+  - detail: 25897 bytes
+    ok: true
+    url: https://www.ffmpeg.org/download.html
+  - detail: 188675 bytes
+    ok: true
+    url: https://blog.comfy.org/p/minimax-h3-day-0-support-in-comfyui
+  - detail: 505503 bytes
+    ok: true
+    url: https://blog.cloudflare.com/smaller-faster-safer-models/
+  - detail: 25495 bytes
+    ok: true
+    url: https://blog.exe.dev/devtools-must-be-open-source
+  - detail: 16608 bytes
+    ok: true
+    url: https://opensourcemalware.com/blog/nullreceiver-dprk-c2-technique
+  - detail: 117382 bytes
+    ok: true
+    url: https://the-decoder.com/a-real-macos-flaw-worth-200k-went-unreported-because-apples-bug-bounty-inbox-was-full-of-ai-slop/
+  - detail: 47543 bytes (clipped)
+    ok: true
+    url: https://lwn.net/ml/all/CAHk-=whoz5Uy-kmrdzjrpCJCVWW3fni31c-zsHcH7TkOhRhfOA@mail.gmail.com/
+  - detail: 47071 bytes (clipped)
+    ok: true
+    url: https://pandoc.org/twenty-years-of-pandoc.html
+  - detail: 9268 bytes
+    ok: true
+    url: https://lapcatsoftware.com/articles/2026/8/2.html
+  - detail: 26583 bytes
+    ok: true
+    url: https://www.seangoedecke.com/llms-reward-expertise/
+  - detail: 2505 bytes
+    ok: true
+    url: https://gruhn.me/blog/2026-08-03/
+  - detail: 25897 bytes
+    ok: true
+    url: https://www.ffmpeg.org/download.html
+  - detail: 242479 bytes
+    ok: true
+    url: https://status.digdir.no/incidents/d7hvqmf2yr3l
+  - detail: 505503 bytes
+    ok: true
+    url: https://blog.cloudflare.com/smaller-faster-safer-models/
+  - detail: 47071 bytes (clipped)
+    ok: true
+    url: https://pandoc.org/twenty-years-of-pandoc.html
+  - detail: 16608 bytes
+    ok: true
+    url: https://opensourcemalware.com/blog/nullreceiver-dprk-c2-technique
+  - detail: 47544 bytes (clipped)
+    ok: true
+    url: https://lwn.net/ml/all/CAHk-=whoz5Uy-kmrdzjrpCJCVWW3fni31c-zsHcH7TkOhRhfOA@mail.gmail.com/
+  - detail: 25897 bytes
+    ok: true
+    url: https://www.ffmpeg.org/download.html
+  - detail: 505503 bytes
+    ok: true
+    url: https://blog.cloudflare.com/smaller-faster-safer-models/
+  - detail: 47071 bytes (clipped)
+    ok: true
+    url: https://pandoc.org/twenty-years-of-pandoc.html
+  - detail: 51011 bytes
+    ok: true
+    url: https://research.jfrog.com/post/sqlite-critical-cves-or-llm-slops/
+  - detail: 117382 bytes
+    ok: true
+    url: https://the-decoder.com/a-real-macos-flaw-worth-200k-went-unreported-because-apples-bug-bounty-inbox-was-full-of-ai-slop/
+  - detail: 212283 bytes (clipped)
+    ok: true
+    url: https://changelog.complete.org/archives/44456-celebrating-45-years-of-kermit-with-the-first-new-c-kermit-release-in-15-years-and-working-with-a-decades-old-c-codebase
+  - detail: 26583 bytes
+    ok: true
+    url: https://www.seangoedecke.com/llms-reward-expertise/
+  generated_at: '2026-08-04T05:02:08+00:00'
+  hn:
+    backends:
+      ask_hn: algolia
+      comments: algolia
+      front_page: algolia
+      show_hn: algolia
+      top_day: algolia
+    degraded: []
+    fetched_at: '2026-08-04T04:38:33+00:00'
+    pooled:
+      added:
+        ask_hn: 0
+        comments: 0
+        front_page: 2
+        queries: 5
+        show_hn: 4
+        top_day: 0
+      snapshot_fetched_at: '2026-08-04T03:37:01+00:00'
+    queries_backend: algolia
+    seen_ids:
+    - 49082937
+    - 49095386
+    - 49099336
+    - 49106935
+    - 49124213
+    - 49125168
+    - 49126602
+    - 49131250
+    - 49132992
+    - 49150997
+    - 49151084
+    - 49151121
+    - 49151220
+    - 49151734
+    - 49151751
+    - 49151871
+    - 49151933
+    - 49152023
+    - 49152054
+    - 49152073
+    - 49152112
+    - 49152222
+    - 49152316
+    - 49152599
+    - 49152640
+    - 49152842
+    - 49152871
+    - 49152973
+    - 49152993
+    - 49153158
+    - 49153361
+    - 49153374
+    - 49153434
+    - 49153481
+    - 49153734
+    - 49153825
+    - 49154127
+    - 49154146
+    - 49154228
+    - 49154237
+    - 49154249
+    - 49154304
+    - 49154332
+    - 49154372
+    - 49154441
+    - 49154601
+    - 49154714
+    - 49154806
+    - 49155218
+    - 49155359
+    - 49155492
+    - 49155493
+    - 49155626
+    - 49155629
+    - 49155710
+    - 49155940
+    - 49156011
+    - 49156071
+    - 49156111
+    - 49156299
+    - 49156306
+    - 49156487
+    - 49156650
+    - 49156682
+    - 49156683
+    - 49156750
+    - 49157021
+    - 49157128
+    - 49157786
+    - 49157807
+    - 49157839
+    - 49157930
+    - 49157941
+    - 49157983
+    - 49157992
+    - 49157997
+    - 49158021
+    - 49158141
+    - 49158267
+    - 49158287
+    - 49158317
+    - 49158333
+    - 49158474
+    - 49158557
+    - 49158559
+    - 49158573
+    - 49158580
+    - 49158581
+    - 49158714
+    - 49158734
+    - 49158883
+    - 49159018
+    - 49159074
+    - 49159094
+    - 49159540
+    - 49159657
+    - 49159676
+    - 49159970
+    - 49160266
+    - 49160339
+    - 49160399
+    - 49160437
+    - 49160614
+    - 49160631
+    - 49160674
+    - 49160699
+    - 49160996
+    - 49161336
+    - 49161518
+    - 49161801
+    - 49161808
+    - 49161877
+    - 49161893
+    - 49162086
+    - 49162653
+    - 49162787
+    - 49162887
+    - 49162898
+    - 49163218
+    - 49163280
+    - 49163289
+    - 49163364
+    source: cache
+  query_yield:
+    0day:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    AI:
+      matched: 4
+      matched_ids:
+      - 49152222
+      - 49154127
+      - 49154601
+      - 49160699
+      published: 0
+      published_ids: []
+      raw: 5
+    AWS:
+      matched: 1
+      matched_ids:
+      - 49158364
+      published: 0
+      published_ids: []
+      raw: 5
+    AlphaFold:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Anthropic:
+      matched: 5
+      matched_ids:
+      - 49155322
+      - 49157808
+      - 49158762
+      - 49160609
+      - 49160614
+      published: 0
+      published_ids: []
+      raw: 5
+    Apple Silicon:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Azure:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    CRDT:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    CUDA:
+      matched: 1
+      matched_ids:
+      - 49156653
+      published: 0
+      published_ids: []
+      raw: 2
+    CVE:
+      matched: 1
+      matched_ids:
+      - 49159592
+      published: 0
+      published_ids: []
+      raw: 5
+    Claude:
+      matched: 6
+      matched_ids:
+      - 49151751
+      - 49156779
+      - 49157496
+      - 49158580
+      - 49161394
+      - 49163870
+      published: 0
+      published_ids: []
+      raw: 5
+    Claude Code:
+      matched: 4
+      matched_ids:
+      - 49153728
+      - 49154573
+      - 49156779
+      - 49157496
+      published: 0
+      published_ids: []
+      raw: 5
+    Cloudflare:
+      matched: 5
+      matched_ids:
+      - 49155280
+      - 49155579
+      - 49155598
+      - 49158714
+      - 49162706
+      published: 3
+      published_ids:
+      - 49155280
+      - 49155598
+      - 49162706
+      raw: 5
+    Copilot:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 4
+    Cursor:
+      matched: 1
+      matched_ids:
+      - 49151293
+      published: 0
+      published_ids: []
+      raw: 3
+    GCP:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    GPU:
+      matched: 3
+      matched_ids:
+      - 49154228
+      - 49162055
+      - 49162104
+      published: 0
+      published_ids: []
+      raw: 5
+    Gemini:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    Ghostty:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 3
+    GitHub:
+      matched: 4
+      matched_ids:
+      - 49154769
+      - 49158912
+      - 49159587
+      - 49162830
+      published: 0
+      published_ids: []
+      raw: 5
+    Go:
+      matched: 1
+      matched_ids:
+      - 49156306
+      published: 0
+      published_ids: []
+      raw: 5
+    Grafana:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    Homebrew:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    IPO:
+      matched: 1
+      matched_ids:
+      - 49159017
+      published: 0
+      published_ids: []
+      raw: 5
+    Java:
+      matched: 4
+      matched_ids:
+      - 49152692
+      - 49156245
+      - 49159655
+      - 49164261
+      published: 0
+      published_ids: []
+      raw: 5
+    Jepsen:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    Kafka:
+      matched: 1
+      matched_ids:
+      - 49160523
+      published: 0
+      published_ids: []
+      raw: 1
+    Kagi:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Kleppmann:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Kotlin:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Kubernetes:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    LLM:
+      matched: 3
+      matched_ids:
+      - 49153374
+      - 49154332
+      - 49158479
+      published: 1
+      published_ids:
+      - 49153374
+      raw: 5
+    LWN:
+      matched: 1
+      matched_ids:
+      - 49151906
+      published: 1
+      published_ids:
+      - 49151906
+      raw: 5
+    Linux:
+      matched: 5
+      matched_ids:
+      - 49158019
+      - 49158687
+      - 49160641
+      - 49163111
+      - 49163346
+      published: 0
+      published_ids: []
+      raw: 5
+    Llama:
+      matched: 1
+      matched_ids:
+      - 49156657
+      published: 0
+      published_ids: []
+      raw: 1
+    MCP:
+      matched: 6
+      matched_ids:
+      - 49151030
+      - 49152128
+      - 49156639
+      - 49157807
+      - 49158734
+      - 49158884
+      published: 0
+      published_ids: []
+      raw: 5
+    Mistral:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Neovim:
+      matched: 1
+      matched_ids:
+      - 49162216
+      published: 0
+      published_ids: []
+      raw: 1
+    Nvidia:
+      matched: 5
+      matched_ids:
+      - 49153520
+      - 49156653
+      - 49162261
+      - 49162430
+      - 49163542
+      published: 0
+      published_ids: []
+      raw: 5
+    OpenAI:
+      matched: 5
+      matched_ids:
+      - 49160081
+      - 49160609
+      - 49161834
+      - 49162286
+      - 49163064
+      published: 0
+      published_ids: []
+      raw: 5
+    OpenTelemetry:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Paxos:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Postgres:
+      matched: 1
+      matched_ids:
+      - 49155955
+      published: 0
+      published_ids: []
+      raw: 4
+    Prometheus:
+      matched: 1
+      matched_ids:
+      - 49153196
+      published: 0
+      published_ids: []
+      raw: 1
+    PyPI:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 2
+    Python:
+      matched: 5
+      matched_ids:
+      - 49158004
+      - 49158084
+      - 49161289
+      - 49162261
+      - 49163215
+      published: 0
+      published_ids: []
+      raw: 5
+    Raft:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Redis:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Rust:
+      matched: 5
+      matched_ids:
+      - 49151991
+      - 49152023
+      - 49152662
+      - 49155037
+      - 49158141
+      published: 0
+      published_ids: []
+      raw: 5
+    S-1:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 2
+    SQLite:
+      matched: 2
+      matched_ids:
+      - 49154332
+      - 49159299
+      published: 0
+      published_ids: []
+      raw: 4
+    Spring Boot:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Swift:
+      matched: 3
+      matched_ids:
+      - 49150987
+      - 49154989
+      - 49155630
+      published: 0
+      published_ids: []
+      raw: 5
+    SwiftUI:
+      matched: 1
+      matched_ids:
+      - 49158573
+      published: 0
+      published_ids: []
+      raw: 5
+    TypeScript:
+      matched: 3
+      matched_ids:
+      - 49152110
+      - 49158004
+      - 49159682
+      published: 0
+      published_ids: []
+      raw: 5
+    Vim:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Wayland:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Xcode:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Zig:
+      matched: 1
+      matched_ids:
+      - 49158573
+      published: 0
+      published_ids: []
+      raw: 5
+    acquires:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    acquisition:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    agentic:
+      matched: 5
+      matched_ids:
+      - 49157625
+      - 49158402
+      - 49158734
+      - 49161710
+      - 49162671
+      published: 0
+      published_ids: []
+      raw: 5
+    arXiv:
+      matched: 5
+      matched_ids:
+      - 49152220
+      - 49153177
+      - 49161617
+      - 49162261
+      - 49162551
+      published: 0
+      published_ids: []
+      raw: 5
+    breach:
+      matched: 1
+      matched_ids:
+      - 49161427
+      published: 0
+      published_ids: []
+      raw: 5
+    chezmoi:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    coding agent:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    distributed systems:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    drug discovery:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    eBPF:
+      matched: 4
+      matched_ids:
+      - 49153196
+      - 49157654
+      - 49159481
+      - 49163378
+      published: 0
+      published_ids: []
+      raw: 4
+    exploit:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    iOS:
+      matched: 3
+      matched_ids:
+      - 49154043
+      - 49156050
+      - 49162196
+      published: 0
+      published_ids: []
+      raw: 5
+    incident:
+      matched: 1
+      matched_ids:
+      - 49160446
+      published: 0
+      published_ids: []
+      raw: 5
+    io_uring:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 2
+    kernel:
+      matched: 4
+      matched_ids:
+      - 49157028
+      - 49157654
+      - 49162463
+      - 49163346
+      published: 0
+      published_ids: []
+      raw: 5
+    local-first:
+      matched: 2
+      matched_ids:
+      - 49150966
+      - 49159148
+      published: 0
+      published_ids: []
+      raw: 1
+    macOS:
+      matched: 5
+      matched_ids:
+      - 49152790
+      - 49153688
+      - 49154689
+      - 49158573
+      - 49160934
+      published: 1
+      published_ids:
+      - 49152790
+      raw: 5
+    npm:
+      matched: 2
+      matched_ids:
+      - 49154571
+      - 49158191
+      published: 1
+      published_ids:
+      - 49154571
+      raw: 5
+    outage:
+      matched: 1
+      matched_ids:
+      - 49155218
+      published: 0
+      published_ids: []
+      raw: 1
+    protein folding:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    terminal:
+      matched: 6
+      matched_ids:
+      - 49150987
+      - 49155161
+      - 49156205
+      - 49156583
+      - 49159077
+      - 49164362
+      published: 0
+      published_ids: []
+      raw: 5
+  runs:
+  - at: '2026-08-04T05:02:15+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-04.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-03
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"JFrog finds 54 of 55 CVEs from one account fabricated, including critical-rated
+        SQLite advisories","section":"Top stories","category":"Security","status":"confirmed","primary_url":"https://research.jfrog.com/post/sqlite-critical-cves-or-llm-slops/","sources":["https://resea
+      failed_tools:
+        mcp__digest__fetch_url: 2
+      name: select
+      status: ok
+      tokens:
+        in: 41
+        out: 27712
+      tools:
+        Bash: 1
+        Glob: 1
+        Grep: 2
+        Read: 15
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 18
+        mcp__digest__guidance: 2
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 2
+    - detail: |-
+        Gate passes with exit code 0. The digest is written to `data/digests/2026-08-04.md`, status `published`, `source_count = 27`.
+
+        **What shipped**
+
+        - **Top stories (4):** Norway ID-porten DDoS (lead), FFmpeg 9.0 "Lei", Apple bug bounty submission cap, Cloudflare `@cloudflare/computer`.
+        - **AI:** Cloudf
+      name: write
+      status: ok
+      tokens:
+        in: 21
+        out: 14413
+      tools:
+        Edit: 6
+        Read: 1
+        ToolSearch: 1
+        Write: 1
+        mcp__digest__run_gate: 2
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Sources checked","detail":"Reddit collection
+        reported degraded coverage this run and is listed as a bare \"Reddit\" with no label. .cache/reddit/2026-08-04.json
+        records degraded: [\"top_day (only 2/28 subreddits reached)\", \"day coverage (1
+      failed_tools:
+        mcp__digest__guidance: 1
+      name: review
+      status: ok
+      tokens:
+        in: 30
+        out: 22186
+      tools:
+        Glob: 7
+        Grep: 9
+        Read: 7
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__fetch_url: 6
+        mcp__digest__guidance: 1
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes with exit code 0 (only pre-existing memory re-verify warnings).
+
+        Repairs applied to `data/digests/2026-08-04.md`:
+
+        **Blocking**
+        - **Outages.** Moved the ID-porten block out of Top stories into Outages, so the anchor no longer asserts "No major items found" against a confirmed open outage
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: write
+      status: ok
+      tokens:
+        in: 21
+        out: 11045
+      tools:
+        Edit: 6
+        Read: 4
+        ToolSearch: 1
+        mcp__digest__fetch_url: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Security / Top stories (omission)","detail":"The
+        day's second-largest thread is missing entirely: \"SQLite Critical CVEs or LLM Slop?\" (JFrog
+        Security Research, HN id 49154332, 705 points / 352 comments, id present in .cache/hn/2026-08-04.j
+      name: review
+      status: ok
+      tokens:
+        in: 18
+        out: 12024
+      tools:
+        Glob: 1
+        Grep: 6
+        Read: 2
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 7
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 16 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 4 cause(s) corrected in 2026-08-03
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-08-04.yaml
+      name: run_log
+      status: ok
+    - detail: 31 fetch(es), 2 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
