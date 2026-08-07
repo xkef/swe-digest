@@ -56,13 +56,86 @@ judgment:
     operational change for anyone running on that tier and is still unpublished here, and Branchless
     Rust matched entity Rust with no query. The eight out_of_scope entries are the high-scoring
     non-engineering items that a default would most likely misread as misses.
+
+    Second run of the day. The page arrived carrying 16 stories from the 04:38 run and leaves with
+    19 counted plus one Security item outside the day budget. No section is at its cap.
+
+    The lead changed and that is the substantive call of this run. Metabase published two critical
+    advisories on 2026-08-06, GHSA-vwf4-m7j8-wcjf at CVSS 10.0 unauthenticated with confirmed active
+    exploitation, and GHSA-r8h2-qpfx-mx59 at 9.6 through any publicly shared dashboard carrying a
+    field-filter parameter, with patched versions across six major lines from x.58.24 to x.63.5.
+    Both reach administrator access and the stored credentials for every connected database. It
+    leads over the GitHub Actions outage because the outage is closed with a bounded remedy while
+    this one demands upgrade, session revocation and credential rotation today, and because
+    Framework Computer notified customers of a breach attributed to a Metabase zero-day in the same
+    window. The Framework attribution is worth stating precisely: Framework published no blog post,
+    so the only readable source is customers on Framework's own community forum quoting and
+    discussing the notification email. The advisory and the breach are carried as separate facts and
+    not asserted as the same bug.
+
+    AMD and Taalas moved from Top stories to Markets and companies rather than being dropped. The
+    04:38 run already called it the weakest of its five. It is still a real story and its removal
+    from the digest would be a loss, so displace records a move.
+
+    Not published for want of a primary. Agent Plugins is the strongest thing this run left out. The
+    Next Web reports that Vercel initiated it and that Amazon, Anysphere, GitHub, Microsoft, OpenAI
+    and Vercel shaped a 1.0 specification bundling MCP servers and Agent Skills behind a
+    plugin.json, supported at launch by ChatGPT, Codex, Cursor, GitHub Copilot, Kiro and VS Code. No
+    primary would resolve: agentplugins.org and agentplugins.dev both fail the TLS handshake from
+    this environment, github.com/agent-plugins is an unrelated 2024 organisation,
+    github.com/agent-plugins/spec and vercel.com/blog/agent-plugins are 404,
+    developers.openai.com/blog/agent-plugins is 404, and neither the Cursor changelog (latest entry
+    2026-08-03) nor VS Code 1.132 release notes (2026-08-05) mention it. A cross-vendor standard on
+    one secondary outlet with 23 HN points is not enough, and it is worth picking up as soon as a
+    specification URL resolves.
+
+    Also left out. Qwen3.8 Max topping the Artificial Analysis agentic index was again the day's
+    highest unpublished HN item at 502 points and was again dropped under the rule against benchmark
+    claims without verified method, since the leaderboard is a third-party index and not a release.
+    The OpenAI GPT-5.6 Sol post stays unread behind the standing openai.com 403, now two runs in a
+    row. Anthropic's in-house silicon team was checked and dropped: the only readable primary,
+    Oxide's Project Glasswing post, is dated 2026-07-28 and is about applying Claude Mythos 5 to
+    Oxide's own firmware rather than about chip design, while the Ars Technica and TechCrunch
+    silicon reports are on hosts that block this environment.
+
+    The Safe RET entry is deliberately additive rather than a rewrite of the TONTOU story published
+    this morning. It is the AMD half of the same MIT CSAIL work, discovered by Daniel Trujillo, and
+    it supplies what the TONTOU entry says is missing. AMD's bulletin states the behaviour was
+    demonstrated on Zen 1 and Zen 2 with Zen 3 and Zen 4 suspected but not demonstrated, and
+    assesses the issue as associated with the Linux implementation of Safe RET. The AMD bulletin
+    itself was read only through Phoronix's verbatim quotation, because guessing bulletin URLs on
+    amd.com timed out and no index path resolved.
+
+    The Linux and kernel section fills for the first time today. Note the sourcing constraint:
+    lore.kernel.org sits behind an Anubis proof-of-work gate from this environment, so Johannes
+    Berg's LKML post is carried through Phoronix's quotation of it and not read directly. Phoronix
+    slug guessing is unreliable, three of five attempted article URLs redirected to the front page,
+    so the NetworkManager AI coding policy published today and the 2026-08-04 staging-area rejection
+    are treated as context read from the Phoronix index rather than cited as separate articles.
+
+    Coverage gaps. Reddit degraded further than the morning run, 11 of 28 subreddits against a floor
+    of 14, with the hot collection entirely from the repository snapshot and every live hot feed
+    rejected for carrying a document type declaration. Reddit and social pulse stays omitted on
+    missing data and not on an editorial call. Developer tools, Engineering posts, Books, New videos
+    and Hacker News remain omitted. The absence worth flagging is Engineering posts: the day's best
+    candidates were a 2025 vLLM internals piece resurfacing at 110 points, which is not news, and
+    the Jane Street ASIC recruiting puzzle the morning run already rejected.
+
+    Backtest. The 2026-08-06 causes were seeded by the 04:38 run, so today's rescoring seeded
+    nothing new and miss_review carries only the three the earlier pass got wrong. All three were
+    labelled out_of_scope while sitting squarely on this digest's beat and matching no query, which
+    makes them watchlist_gap: beating GPT-5.6 Sol on retrieval with cheaper open models at 361
+    points, the Prime Agent self-improving RLM agent at 208 points, and the LLMs Can't Jump position
+    paper at 283 points.
 mechanical:
   digest:
     domains:
     - api-docs.deepseek.com
     - arxiv.org
+    - bbc.co.uk
     - bleepingcomputer.com
     - blog.cloudflare.com
+    - community.frame.work
     - github.com
     - githubstatus.com
     - groundlevel-ai.com
@@ -72,6 +145,7 @@ mechanical:
     - matrix.tencent.com
     - modelcontextprotocol.io
     - news.ycombinator.com
+    - phoronix.com
     - politico.com
     - privacyguides.org
     - reddit.com
@@ -80,9 +154,11 @@ mechanical:
     - wired.com
     hn_ids:
     - 49192693
+    - 49193019
     - 49195468
     - 49196184
     - 49196233
+    - 49197017
     - 49197176
     - 49197869
     - 49198063
@@ -93,26 +169,30 @@ mechanical:
     - 49201970
     - 49203184
     - 49203860
+    - 49206130
     sections:
-      AI: 1
+      AI: 2
       Agentic coding: 3
       Apple platforms: 1
       Infrastructure: 1
       Languages and runtimes: 1
+      Linux and kernel: 1
       ML research: 1
+      Markets and companies: 1
       Outages: 0
       Security: 2
       Sources checked: 0
       Top stories: 5
       Watchlist follow-ups: 1
-    source_count: 35
+    source_count: 44
     titles:
+    - Metabase patches an actively exploited unauthenticated SQL injection rated CVSS 10.0
     - GitHub Actions and Pages outage runs about 10 hours 40 minutes and drops workflow-triggering events
     - Claude Code executes .mcp.json commands at session start, and Anthropic calls it working as designed
     - SCTPhantom use-after-free in Linux SCTP yields root and container-to-host escape (CVE-2026-64564)
     - Zapscape KVM guest-to-host escape published with a working proof of concept (CVE-2026-64561)
-    - AMD agrees to acquire AI inference silicon startup Taalas
     - DeepSeek states a significant API price increase is coming
+    - Meta says one of its models reached the internet and hacked another organisation during testing
     - Programmatic tool calling matches or beats JSON tool calling in 11 of 14 models on BFCL v4
     - MCP 2026-07-28 specification removes protocol sessions and makes the protocol stateless
     - Uber open-sources ADR, the agent security monitoring system it runs in production
@@ -121,104 +201,120 @@ mechanical:
     - 77 counterfeit Open VSX extensions harvested developer, Git and CI metadata
     - Zig's Io.Threaded cancels blocking syscalls using signals and a shared-memory handshake
     - Three reported leaks expose the real IP address behind Apple Private Relay
+    - Linux wireless maintainer will ignore syzbot AI patches that fail a three second review
     - Cloudflare ships Kitesurf, an agent-first browser running in V8 isolates on Workers
+    - AMD agrees to acquire AI inference silicon startup Taalas
     - OpenAI gives its first detailed public reconstruction of the Hugging Face incident at Black Hat
   fetched:
-  - detail: 152112 bytes
+  - detail: 63316 bytes
     ok: true
-    url: https://www.githubstatus.com/incidents/qcvjkzcs7j74
-  - detail: 278511 bytes
+    url: https://community.frame.work/t/framework-data-breach-discussion/83939
+  - detail: 103605 bytes
     ok: true
-    url: https://github.com/V4bel/Zapscape
-  - detail: 46534 bytes
+    url: https://oxide.computer/blog/oxide-anthropic-project-glasswing
+  - detail: 114212 bytes
     ok: true
-    url: https://ir.amd.com/news-events/press-releases/detail/1296/amd-acquires-taalas-to-advance-compute-solutions-for-rapidly-growing-ai-inference-market
-  - detail: 304064 bytes
+    url: https://www.metabase.com/security
+  - detail: 212383 bytes
     ok: true
-    url: https://www.immersivelabs.com/resources/blog/claude-code-rce-vulnerability-how-a-malicious-pull-request-executes-code
-  - detail: 564224 bytes (clipped)
+    url: https://github.com/metabase/metabase/security/advisories
+  - detail: 125242 bytes
     ok: true
-    url: https://blog.cloudflare.com/kitesurf/
-  - detail: 'failed: fetch failed: https://platform.deepseek.com/usage: HTTP Error 403: Forbidden'
+    url: https://frame.work/blog
+  - detail: 195846 bytes
+    ok: true
+    url: https://github.com/metabase/metabase/security/advisories/GHSA-vwf4-m7j8-wcjf
+  - detail: 195790 bytes
+    ok: true
+    url: https://github.com/metabase/metabase/security/advisories/GHSA-r8h2-qpfx-mx59
+  - detail: 392377 bytes
+    ok: true
+    url: https://www.bbc.co.uk/news/articles/cx2kgdnyk2po
+  - detail: 82593 bytes
+    ok: true
+    url: https://www.phoronix.com/news/Linux-WiFi-Strict-AI-Slop-Patch
+  - detail: 81277 bytes
+    ok: true
+    url: https://thenextweb.com/news/openai-agent-plugins-open-standard-skills-mcp
+  - detail: 74611 bytes (clipped)
+    ok: true
+    url: https://www.phoronix.com/news/NetworkManager-AI-Policy
+  - detail: 74611 bytes (clipped)
+    ok: true
+    url: https://www.phoronix.com/news/Linux-Safe-RET-Interrupt
+  - detail: >-
+      failed: fetch failed: https://agentplugins.org/: <urlopen error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE]
+      ssl/tls alert handshake failure (_ssl.c:1082)>
     ok: false
-    url: https://platform.deepseek.com/usage
-  - detail: 22223 bytes
+    url: https://agentplugins.org/
+  - detail: 79897 bytes
     ok: true
-    url: https://api-docs.deepseek.com/quick_start/pricing
-  - detail: 'failed: fetch failed: https://openai.com/index/improving-gpt-5-6-sol-in-chatgpt/: HTTP Error
-      403: Forbidden'
+    url: https://www.phoronix.com/news/Linux-Safe-RET-Interrupt-Vuln
+  - detail: 'failed: fetch failed: https://vercel.com/blog/agent-plugins: HTTP Error 404: Not Found'
     ok: false
-    url: https://openai.com/index/improving-gpt-5-6-sol-in-chatgpt/
-  - detail: 21641 bytes
+    url: https://vercel.com/blog/agent-plugins
+  - detail: 'failed: fetch failed: https://github.com/agent-plugins/spec: HTTP Error 404: Not Found'
+    ok: false
+    url: https://github.com/agent-plugins/spec
+  - detail: >-
+      failed: fetch failed: https://agentplugins.dev: <urlopen error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE]
+      ssl/tls alert handshake failure (_ssl.c:1082)>
+    ok: false
+    url: https://agentplugins.dev
+  - detail: 194012 bytes
+    ok: true
+    url: https://github.com/agent-plugins
+  - detail: 178996 bytes
+    ok: true
+    url: https://cursor.com/changelog
+  - detail: 'failed: fetch failed: https://developers.openai.com/blog/agent-plugins: HTTP Error 404: Not
+      Found'
+    ok: false
+    url: https://developers.openai.com/blog/agent-plugins
+  - detail: 56820 bytes
+    ok: true
+    url: https://code.visualstudio.com/updates
+  - detail: 74612 bytes (clipped)
+    ok: true
+    url: https://www.phoronix.com/news/Linux-Staging-No-LLM-Patches
+  - detail: 'failed: fetch failed: https://www.amd.com/en/resources/product-security/bulletin/amd-sb-7055.html:
+      The read operation timed out'
+    ok: false
+    url: https://www.amd.com/en/resources/product-security/bulletin/amd-sb-7055.html
+  - detail: 167131 bytes
+    ok: true
+    url: https://www.theregister.com/ai-and-ml/2026/08/06/humans-in-the-loop-miss_a_third_of_dangerous_ai_coding_agent_requests/5284236
+  - detail: 22656 bytes
     ok: true
     url: https://scalex.dev/blog/ai-agent-permissions-stats/
-  - detail: 288116 bytes
+  - detail: 195795 bytes
     ok: true
-    url: https://github.com/uber/ADR
-  - detail: 729226 bytes
+    url: https://github.com/metabase/metabase/security/advisories/GHSA-r8h2-qpfx-mx59
+  - detail: 392383 bytes
     ok: true
-    url: https://matrix.tencent.com/en/2026/08/06/sctphantom-CVE-2026-64564
-  - detail: 91932 bytes
+    url: https://www.bbc.co.uk/news/articles/cx2kgdnyk2po
+  - detail: 63704 bytes
     ok: true
-    url: https://www.bleepingcomputer.com/news/security/new-tontou-cpu-attack-bypasses-spectre-v2-fixes-leaks-linux-password-hashes/
-  - detail: 38466 bytes
+    url: https://community.frame.work/t/framework-data-breach-discussion/83939
+  - detail: 22656 bytes
     ok: true
-    url: https://www.privacyguides.org/news/2026/08/05/apples-private-relay-leaks-your-real-ip-address-in-safari/
+    url: https://scalex.dev/blog/ai-agent-permissions-stats/
+  - detail: 63704 bytes
+    ok: true
+    url: https://community.frame.work/t/framework-data-breach-discussion/83939
+  - detail: 195846 bytes
+    ok: true
+    url: https://github.com/metabase/metabase/security/advisories/GHSA-vwf4-m7j8-wcjf
   - detail: 90997 bytes
     ok: true
     url: https://www.bleepingcomputer.com/news/security/77-open-vsx-extensions-found-harvesting-developer-info/
-  - detail: 170127 bytes
+  - detail: 392383 bytes
     ok: true
-    url: https://www.groundlevel-ai.com/p/openai-gives-first-detailed-debrief
-  - detail: 13172 bytes
+    url: https://www.bbc.co.uk/news/articles/cx2kgdnyk2po
+  - detail: 195790 bytes
     ok: true
-    url: https://matklad.github.io/2026/08/06/neat-io-threaded.html
-  - detail: 41115 bytes
-    ok: true
-    url: https://arxiv.org/abs/2608.06370v1
-  - detail: 529027 bytes (clipped)
-    ok: true
-    url: https://blog.cloudflare.com/mcp-v2/
-  - detail: 36426 bytes
-    ok: true
-    url: https://blog.janestreet.com/can-you-reverse-engineer-an-asic/
-  - detail: 288114 bytes
-    ok: true
-    url: https://github.com/uber/ADR
-  - detail: 22223 bytes
-    ok: true
-    url: https://api-docs.deepseek.com/quick_start/pricing
-  - detail: 'failed: fetch failed: https://openai.com/news/: HTTP Error 403: Forbidden'
-    ok: false
-    url: https://openai.com/news/
-  - detail: 152112 bytes
-    ok: true
-    url: https://www.githubstatus.com/incidents/qcvjkzcs7j74
-  - detail: 289846 bytes
-    ok: true
-    url: https://modelcontextprotocol.io/specification/2026-07-28/changelog
-  - detail: 21641 bytes
-    ok: true
-    url: https://scalex.dev/blog/ai-agent-permissions-stats/
-  - detail: 152112 bytes
-    ok: true
-    url: https://www.githubstatus.com/incidents/qcvjkzcs7j74
-  - detail: 38466 bytes
-    ok: true
-    url: https://www.privacyguides.org/news/2026/08/05/apples-private-relay-leaks-your-real-ip-address-in-safari/
-  - detail: 278506 bytes
-    ok: true
-    url: https://github.com/V4bel/Zapscape
-  - detail: 22223 bytes
-    ok: true
-    url: https://api-docs.deepseek.com/quick_start/pricing
-  - detail: 288114 bytes
-    ok: true
-    url: https://github.com/uber/ADR
-  - detail: 91932 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/new-tontou-cpu-attack-bypasses-spectre-v2-fixes-leaks-linux-password-hashes/
-  generated_at: '2026-08-07T04:38:12+00:00'
+    url: https://github.com/metabase/metabase/security/advisories/GHSA-r8h2-qpfx-mx59
+  generated_at: '2026-08-07T11:08:16+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -227,29 +323,33 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-08-07T04:07:01+00:00'
+    fetched_at: '2026-08-07T10:44:20+00:00'
     pooled:
       added:
-        ask_hn: 2
-        comments: 12
-        front_page: 7
-        queries: 23
-        show_hn: 4
-        top_day: 5
-      snapshot_fetched_at: '2026-08-07T03:15:06+00:00'
+        ask_hn: 14
+        comments: 36
+        front_page: 16
+        queries: 54
+        show_hn: 10
+        top_day: 15
+      snapshot_fetched_at: '2026-08-07T10:10:29+00:00'
     queries_backend: algolia
     seen_ids:
     - 47439821
     - 47999020
+    - 49095943
     - 49096439
     - 49113256
     - 49116252
     - 49120149
     - 49123247
+    - 49129015
     - 49138446
     - 49143782
     - 49152255
+    - 49159346
     - 49161617
+    - 49162080
     - 49163879
     - 49168622
     - 49184355
@@ -308,6 +408,7 @@ mechanical:
     - 49197137
     - 49197144
     - 49197176
+    - 49197404
     - 49197546
     - 49197665
     - 49197687
@@ -334,6 +435,9 @@ mechanical:
     - 49199357
     - 49199753
     - 49199781
+    - 49199957
+    - 49200004
+    - 49200069
     - 49200118
     - 49200389
     - 49200390
@@ -356,21 +460,45 @@ mechanical:
     - 49202132
     - 49202321
     - 49202586
+    - 49202690
     - 49202716
+    - 49202722
     - 49202740
     - 49202832
     - 49202852
+    - 49203035
     - 49203059
     - 49203105
     - 49203112
     - 49203148
     - 49203184
+    - 49203707
     - 49204040
+    - 49204042
+    - 49204046
     - 49204060
+    - 49204343
     - 49204352
+    - 49204510
     - 49204546
+    - 49204850
     - 49205050
     - 49205192
+    - 49205300
+    - 49205627
+    - 49206096
+    - 49206115
+    - 49206130
+    - 49206984
+    - 49207122
+    - 49207125
+    - 49207146
+    - 49207194
+    - 49207236
+    - 49207397
+    - 49207461
+    - 49207537
+    - 49208209
     source: cache
   query_yield:
     0day:
@@ -380,24 +508,28 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49192160
       - 49193019
       - 49195468
+      - 49198069
       - 49198884
       - 49201342
       - 49204546
-      published: 1
+      published: 2
       published_ids:
+      - 49193019
       - 49195468
       raw: 5
     AWS:
-      matched: 3
+      matched: 5
       matched_ids:
       - 49193121
       - 49195088
       - 49196942
+      - 49203471
+      - 49207973
       published: 0
       published_ids: []
       raw: 5
@@ -408,13 +540,16 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49193124
       - 49194552
       - 49194834
       - 49197627
       - 49202209
+      - 49205962
+      - 49206115
+      - 49208115
       published: 0
       published_ids: []
       raw: 5
@@ -431,13 +566,13 @@ mechanical:
       - 49196389
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     CRDT:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 5
     CUDA:
       matched: 0
       matched_ids: []
@@ -469,7 +604,7 @@ mechanical:
       - 49197869
       raw: 5
     Claude Code:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49192219
       - 49193794
@@ -477,12 +612,13 @@ mechanical:
       - 49197665
       - 49197869
       - 49204099
+      - 49205668
       published: 1
       published_ids:
       - 49197869
       raw: 5
     Cloudflare:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49191152
       - 49193853
@@ -490,6 +626,7 @@ mechanical:
       - 49198913
       - 49199964
       - 49203287
+      - 49206693
       published: 2
       published_ids:
       - 49196184
@@ -504,15 +641,16 @@ mechanical:
       published_ids: []
       raw: 4
     Cursor:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49193083
       - 49197869
       - 49203752
+      - 49207958
       published: 1
       published_ids:
       - 49197869
-      raw: 4
+      raw: 5
     GCP:
       matched: 1
       matched_ids:
@@ -579,11 +717,12 @@ mechanical:
       published_ids: []
       raw: 1
     IPO:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49191809
       - 49195657
       - 49204542
+      - 49208115
       published: 0
       published_ids: []
       raw: 5
@@ -632,18 +771,20 @@ mechanical:
       published_ids: []
       raw: 2
     LLM:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49198469
       - 49202852
+      - 49207146
       published: 0
       published_ids: []
       raw: 5
     LWN:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49193415
       - 49202908
+      - 49206516
       published: 0
       published_ids: []
       raw: 5
@@ -656,8 +797,9 @@ mechanical:
       - 49202832
       - 49203860
       - 49204521
-      published: 1
+      published: 2
       published_ids:
+      - 49197017
       - 49203860
       raw: 5
     Llama:
@@ -700,10 +842,11 @@ mechanical:
       published_ids: []
       raw: 2
     OpenAI:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49193166
       - 49198884
+      - 49201913
       - 49202566
       - 49202980
       - 49203443
@@ -722,7 +865,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 2
     Postgres:
       matched: 3
       matched_ids:
@@ -731,7 +874,7 @@ mechanical:
       - 49199556
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     Prometheus:
       matched: 2
       matched_ids:
@@ -746,15 +889,17 @@ mechanical:
       - 49194634
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     Python:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49191664
       - 49192556
       - 49193782
       - 49197413
       - 49199815
+      - 49207862
+      - 49207894
       published: 0
       published_ids: []
       raw: 5
@@ -772,13 +917,15 @@ mechanical:
       published_ids: []
       raw: 5
     Rust:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49193818
       - 49196581
       - 49197072
       - 49202242
       - 49202597
+      - 49207689
+      - 49208374
       published: 0
       published_ids: []
       raw: 5
@@ -787,13 +934,14 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     SQLite:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49207194
       published: 0
       published_ids: []
-      raw: 0
+      raw: 2
     Spring Boot:
       matched: 0
       matched_ids: []
@@ -883,7 +1031,7 @@ mechanical:
       published_ids: []
       raw: 5
     arXiv:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49193114
       - 49195582
@@ -891,21 +1039,24 @@ mechanical:
       - 49203204
       - 49205075
       - 49205304
+      - 49205829
       published: 0
       published_ids: []
       raw: 5
     breach:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49191717
       - 49192342
       - 49196972
       - 49199475
       - 49205536
-      published: 2
+      - 49206130
+      published: 3
       published_ids:
       - 49191717
       - 49199475
+      - 49206130
       raw: 5
     chezmoi:
       matched: 0
@@ -919,8 +1070,9 @@ mechanical:
       - 49190847
       - 49200925
       - 49205273
-      published: 0
-      published_ids: []
+      published: 1
+      published_ids:
+      - 49200925
       raw: 5
     distributed systems:
       matched: 1
@@ -958,13 +1110,15 @@ mechanical:
       published_ids: []
       raw: 5
     incident:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49190898
       - 49194795
       - 49195804
       - 49197371
       - 49202566
+      - 49206728
+      - 49207585
       published: 2
       published_ids:
       - 49190898
@@ -975,35 +1129,40 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     kernel:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49191854
       - 49196291
       - 49197596
       - 49202908
+      - 49206516
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     local-first:
-      matched: 3
+      matched: 5
       matched_ids:
       - 49194309
       - 49194612
       - 49194730
+      - 49206495
+      - 49207898
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     macOS:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49194123
       - 49194772
       - 49194820
       - 49197968
+      - 49199879
       - 49200315
       - 49205269
+      - 49208117
       published: 0
       published_ids: []
       raw: 5
@@ -1022,7 +1181,7 @@ mechanical:
       published: 1
       published_ids:
       - 49203184
-      raw: 3
+      raw: 4
     protein folding:
       matched: 0
       matched_ids: []
@@ -1030,7 +1189,7 @@ mechanical:
       published_ids: []
       raw: 1
     terminal:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49192219
       - 49194772
@@ -1038,6 +1197,8 @@ mechanical:
       - 49203078
       - 49204099
       - 49204943
+      - 49207212
+      - 49207646
       published: 0
       published_ids: []
       raw: 5
@@ -1170,6 +1331,152 @@ mechanical:
       name: run_log
       status: ok
     - detail: 31 fetch(es), 3 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-08-07T11:08:23+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-07.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-06
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"Metabase patches an actively exploited unauthenticated SQL injection
+        rated CVSS 10.0","section":"Top stories","status":"confirmed","category":"Security","primary_url":"https://github.com/metabase/metabase/security/advisories/GHSA-vwf4-m7j8-wcjf","sources":["https://github.c
+      failed_tools:
+        mcp__digest__fetch_url: 6
+      name: select
+      status: ok
+      tokens:
+        in: 61
+        out: 29199
+      tools:
+        Bash: 1
+        Glob: 2
+        Grep: 10
+        Read: 6
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_hn: 1
+        mcp__digest__fetch_reddit: 1
+        mcp__digest__fetch_url: 23
+        mcp__digest__guidance: 2
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 2
+    - detail: |-
+        The write step is complete. `data/digests/2026-08-07.md` updated in place, gate exit code 0.
+
+        What changed on the page:
+
+        **Top stories** — the lead changed. Added the Metabase advisories block at the head: GHSA-vwf4-m7j8-wcjf, unauthenticated SQL injection at CVSS 10.0 with exploitation confirmed in
+      name: write
+      status: ok
+      tokens:
+        in: 17
+        out: 10608
+      tools:
+        Edit: 9
+        Read: 2
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Outages","detail":"The section states
+        `No major items found.` while the digest's own second top story is a confirmed GitHub Actions
+        and Pages outage of about 10 hours 40 minutes carrying `Category: Outage`. The statement is false
+        as a reader
+      failed_tools:
+        mcp__digest__guidance: 1
+      name: review
+      status: ok
+      tokens:
+        in: 17
+        out: 13174
+      tools:
+        Glob: 1
+        Grep: 4
+        Read: 2
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__fetch_url: 5
+        mcp__digest__guidance: 1
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate exit 0. Repairs applied:
+
+        **Blocking**
+        - **Outages.** Kept the `No major items found.` anchor and added one sentence stating the day's major incident is the GitHub Actions and Pages outage carried in Top stories. No title or URL restated, so no duplicate.
+        - **Sources checked, GitHub.** **Not re
+      failed_tools:
+        mcp__digest__fetch_url: 3
+      name: write
+      status: ok
+      tokens:
+        in: 24
+        out: 9157
+      tools:
+        Edit: 9
+        Read: 2
+        ToolSearch: 1
+        mcp__digest__fetch_url: 3
+        mcp__digest__guidance: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"findings":[{"severity":"blocking","where":"Security: 77 counterfeit Open VSX extensions harvested
+        developer, Git and CI metadata","detail":"The title attributes the developer, Git and CI harvesting
+        to all 77 extensions. The cited BleepingComputer piece states 58 of the extensions sent only hostnam
+      name: review
+      status: ok
+      tokens:
+        in: 17
+        out: 17697
+      tools:
+        Glob: 1
+        Grep: 4
+        Read: 2
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 6
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 9 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 3 cause(s) corrected in 2026-08-06
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-08-07.yaml
+      name: run_log
+      status: ok
+    - detail: 34 fetch(es), 6 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
