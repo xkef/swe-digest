@@ -68,11 +68,78 @@ judgment:
     Nothing in today's selection depends on it, but the store is stale enough that its byte cost is
     being paid on every run for entries no run is maintaining. Watchlist follow-ups is omitted today
     for the same reason: no open entry could be advanced against a source this run verified.
+
+    Four additions, no displacements. The day's digest already carried three Top stories, one
+    Security item, one Outage, and two Infrastructure items when this run started, and nothing found
+    today outranks any of them, so Top stories stays at three rather than being padded to the cap.
+
+    The dominant finding of this run is how much of today's high-signal Hacker News material is
+    already archive. The strongest candidates on the front page and in the query corpus were the
+    crypto-js weak-PRNG advisory (GHSA-rg76-677x-56q9, CVE-2026-71851), the CodeIgniter 4.7.4 pair
+    (GHSA-c9w5-rwh3-7pm9 and GHSA-mmj4-63m4-r6h5), JDK 28 early-access build 10 with JEP 401 Value
+    Objects, Claude Code cross-session messaging, DeepMind open sourcing WeatherNext, and Apple M3
+    device-tree support heading to Linux 7.3. All six were published in the 2026-08-08 digest, and
+    the OpenAI Black Hat reconstruction of the Hugging Face incident was published on 2026-08-07 and
+    explicitly not repeated on 2026-08-08. I re-verified crypto-js, CodeIgniter, JEP 401, and the
+    Claude Code docs against their primaries anyway before finding the prior coverage, so the cost
+    was fetches rather than a duplicate. The practical lesson for the weekly review is that these HN
+    threads peak a day after the primary source lands, so a same-day run and the next day's run see
+    the same list.
+
+    I also re-verified RFC 10023 against rfc-editor.org because the Hacker News submission for that
+    story points at specification.website rather than the RFC, and the RFC link came from a comment.
+    The RFC exists, is Informational, dated July 2026, authored by M. Davids of SIDN Labs, and
+    defines the `_for-sale` underscored leaf node name carrying TXT records with a mandatory
+    `v=FORSALE1;` version tag. The published Infrastructure block is accurate and needs no
+    correction.
+
+    Deliberately not published. Cloudflare's WebMCP developer preview (blog.cloudflare.com/webmcp/,
+    dated 2026-08-06) was fetched and verified: a dashboard toggle makes Cloudflare inject a bridge
+    script tag into every HTML response through HTMLRewriter, and the bridge registers tool packs on
+    document.modelContext. It is a real primary-source platform change with an operational
+    consequence worth knowing, but it is a developer preview three days old that drew almost no
+    discussion, and Kitesurf from the same Agents Week already ran on 2026-08-07, so it did not
+    clear the bar against the day's other material. The ByteDance 10-trillion-parameter pre-training
+    report (FT via Ars Technica, 2026-08-07) was fetched and rejected: it rests on three unnamed
+    people, ByteDance did not comment, and a parameter count with no method is exactly the AI claim
+    the source standards exclude. The Coldcard firmware story had only web3isgoinggreat behind it.
+    Microsoft Edge locking out Manifest V2 extensions and the Gentoo Bugzilla scraper shutdown were
+    both dropped by the 2026-08-08 run on sourcing grounds and nothing new surfaced today to change
+    either. SAP halting travel and hiring over AI cost (404 Media, 24 points) is an
+    engineering-economics datapoint with no primary and no operational detail. The x86
+    hardware-backdoor thread at 355 points is the 2018 rosenbridge repository on decades-old VIA C3
+    parts, which commenters established in the thread itself.
+
+    Security and Outages carry no addition from this run. The GitHub advisories API was swept and
+    returned no GitHub-reviewed critical advisory dated 2026-08-09; the newest are the three from
+    2026-08-07 that the 2026-08-08 digest already carries. Status pages produced nothing new beyond
+    the Cloudflare R2 restoration already published today. Both sections having nothing new is a
+    fact about the day rather than a collection gap.
+
+    Sections omitted for lack of qualifying material, not for lack of looking: Developer tools,
+    Apple platforms, Linux and kernel, Books, New videos, Markets and companies, Reddit and social
+    pulse. Apple platforms was hurt by an access failure, since swift.org's July 2026 release post
+    returned undecodable compressed bytes and I hold no other reader; the Apple
+    minimum-deployment-target change for 2027 had only a Reddit thread behind it and no Apple
+    primary resolved. New videos stays empty on the standing rule that the section ranks on external
+    validation, and no cached video carries a discussion link for the second consecutive day. Reddit
+    has now come back degraded four days running at 10 of 28 subreddits against a floor of 14, which
+    makes it a structural gap rather than a bad day.
+
+    The backtest scored 52 candidate misses against 2026-08-08 but seeded zero causes, so there is
+    nothing for miss_review to correct and the field is empty rather than being used to assign
+    causes the tool did not propose. Two of those candidates do look like genuine engineering misses
+    and are worth a human eye: "A year of fighting scrapers on my 1.5 million-page website" at 397
+    points, which is an operational bot-mitigation write-up that no watchlist query matched, and the
+    Department of Energy Genesis Open Models Initiative at 335 points. Both are yesterday's stories
+    and neither appears in today's cache, so I did not reconstruct their item ids to publish them
+    today.
 mechanical:
   digest:
     domains:
     - bleepingcomputer.com
     - blog.getutm.app
+    - blog.senko.net
     - claude.com
     - cloudflarestatus.com
     - code.claude.com
@@ -80,150 +147,103 @@ mechanical:
     - github.com
     - news.ycombinator.com
     - rfc-editor.org
+    - shopify.engineering
     hn_ids:
     - 49221668
     - 49221711
+    - 49222189
     - 49223082
     - 49224274
     - 49224478
+    - 49226536
     - 49227253
     sections:
+      Engineering posts: 1
+      Hacker News: 1
       Infrastructure: 2
       Outages: 1
       Security: 1
       Sources checked: 0
       Top stories: 3
-    source_count: 15
+    source_count: 19
     titles:
     - Claude Code makes auto mode the default permission mode on 2026-08-14
     - Head Mare exploits unpatched TrueConf servers to ship backdoored client installers
     - UTM publishes Triton, a DirectX 11 user-mode driver for QEMU Windows guests
     - Craft CMS 5.10.5 fixes a passkey login that accepts replayed WebAuthn assertions
-    - Cloudflare restores R2 objects unavailable for about 32 hours after an ENAM write failure
+    - Cloudflare restores R2 objects unavailable for about 36 hours after an ENAM write failure
     - RFC 10023 defines a _for-sale DNS leaf node name
     - Fastmail adds an Amsterdam data region and lists what stays in the United States
+    - Shopify moved checkout inventory reservations from Redis to MySQL with SKIP LOCKED
+    - Hacker News argues over whether writing code was ever the hard part
   fetched:
-  - detail: 528507 bytes
-    ok: true
-    url: https://www.cloudflarestatus.com/history
-  - detail: 113230 bytes (clipped)
-    ok: true
-    url: https://www.rfc-editor.org/rfc/rfc10023.html
-  - detail: 44078 bytes (clipped)
-    ok: true
-    url: https://www.cloudflarestatus.com/history.atom
-  - detail: 89423 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/
-  - detail: 256557 bytes
-    ok: true
-    url: https://shopify.engineering/scaling-inventory-reservations
-  - detail: 90944 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/77-open-vsx-extensions-found-harvesting-developer-info/
-  - detail: 59634 bytes
-    ok: true
-    url: https://www.fastmail.com/blog/fastmail-offers-eu-data-region/
-  - detail: 10792 bytes
-    ok: true
-    url: https://news.ycombinator.com/item?id=49224478
-  - detail: 45728 bytes (clipped)
-    ok: true
-    url: https://www.cloudflarestatus.com/history.rss
-  - detail: 131562 bytes (clipped)
-    ok: true
-    url: https://www.cloudflarestatus.com/api/v2/incidents.json
-  - detail: 'failed: fetch failed: https://code.claude.com/docs/en/auto-mode: HTTP Error 404: Not Found'
-    ok: false
-    url: https://code.claude.com/docs/en/auto-mode
-  - detail: 95795 bytes (clipped)
-    ok: true
-    url: https://blog.getutm.app/2026/introducing-triton-directx-11-driver-for-qemu/
-  - detail: 20240 bytes
-    ok: true
-    url: https://simonwillison.net/2026/Aug/8/auto-mode/
-  - detail: 'failed: fetch failed: https://securelist.com/head-mare-trueconf-attacks/: The read operation
-      timed out'
-    ok: false
-    url: https://securelist.com/head-mare-trueconf-attacks/
-  - detail: 'failed: fetch failed: https://www.anthropic.com/news/claude-code-auto-mode: HTTP Error 404:
-      Not Found'
-    ok: false
-    url: https://www.anthropic.com/news/claude-code-auto-mode
-  - detail: 422302 bytes
-    ok: true
-    url: https://code.claude.com/docs/en/iam
-  - detail: 41527 bytes (clipped)
-    ok: true
-    url: https://code.claude.com/docs/llms.txt
-  - detail: 'failed: fetch failed: https://code.claude.com/docs/en/auto-mode.md: HTTP Error 404: Not Found'
-    ok: false
-    url: https://code.claude.com/docs/en/auto-mode.md
-  - detail: 'failed: fetch failed: https://www.anthropic.com/news/auto-mode: HTTP Error 404: Not Found'
-    ok: false
-    url: https://www.anthropic.com/news/auto-mode
-  - detail: 27905 bytes (clipped)
-    ok: true
-    url: https://code.claude.com/docs/en/auto-mode-config.md
-  - detail: 'failed: fetch failed: https://www.anthropic.com/engineering/auto-mode: HTTP Error 404: Not
-      Found'
-    ok: false
-    url: https://www.anthropic.com/engineering/auto-mode
-  - detail: 559735 bytes (clipped)
-    ok: true
-    url: https://claude.com/blog/auto-mode-default-in-claude-code
-  - detail: 304064 bytes
-    ok: true
-    url: https://www.immersivelabs.com/resources/blog/claude-code-rce-vulnerability-how-a-malicious-pull-request-executes-code
-  - detail: 136129 bytes
-    ok: true
-    url: https://hackaday.com/2026/08/08/want-energy-efficiency-dude-youre-getting-a-dell/
-  - detail: 175248 bytes (clipped)
-    ok: true
-    url: https://api.github.com/advisories?type=reviewed&severity=critical&per_page=15&sort=published
-  - detail: 181750 bytes
-    ok: true
-    url: https://github.com/advisories/GHSA-wg23-69c2-gjc8
-  - detail: 73724 bytes
-    ok: true
-    url: https://www.cloudflarestatus.com/incidents/9fzfjzc5ms0h
-  - detail: 559735 bytes (clipped)
-    ok: true
-    url: https://claude.com/blog/auto-mode-default-in-claude-code
-  - detail: 113230 bytes (clipped)
-    ok: true
-    url: https://www.rfc-editor.org/rfc/rfc10023.html
-  - detail: 89423 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/
-  - detail: 95795 bytes (clipped)
-    ok: true
-    url: https://blog.getutm.app/2026/introducing-triton-directx-11-driver-for-qemu/
-  - detail: 59634 bytes
-    ok: true
-    url: https://www.fastmail.com/blog/fastmail-offers-eu-data-region/
-  - detail: 528594 bytes (clipped)
-    ok: true
-    url: https://code.claude.com/docs/en/auto-mode-config
-  - detail: 73724 bytes
-    ok: true
-    url: https://www.cloudflarestatus.com/incidents/9fzfjzc5ms0h
-  - detail: 113230 bytes (clipped)
-    ok: true
-    url: https://www.rfc-editor.org/rfc/rfc10023.html
-  - detail: 559735 bytes (clipped)
-    ok: true
-    url: https://claude.com/blog/auto-mode-default-in-claude-code
-  - detail: 181748 bytes
-    ok: true
-    url: https://github.com/advisories/GHSA-wg23-69c2-gjc8
   - detail: 22330 bytes
     ok: true
     url: https://simonwillison.net/2026/Aug/7/openai-timeline/
-  - detail: 89429 bytes
+  - detail: 256449 bytes
+    ok: true
+    url: https://shopify.engineering/scaling-inventory-reservations
+  - detail: 159265 bytes
+    ok: true
+    url: https://deepmind.google/blog/weathernext-ai-model-achieves-breakthrough-in-forecasting-cyclones/
+  - detail: 467387 bytes (clipped)
+    ok: true
+    url: https://code.claude.com/docs/en/cross-session-messaging
+  - detail: 8390 bytes
+    ok: true
+    url: https://jdk.java.net/28/
+  - detail: 79684 bytes (clipped)
+    ok: true
+    url: https://openjdk.org/jeps/401
+  - detail: 10727 bytes
+    ok: true
+    url: https://swift.org/blog/whats-new-in-swift-july-2026/
+  - detail: 518100 bytes (clipped)
+    ok: true
+    url: https://blog.cloudflare.com/webmcp/
+  - detail: 175248 bytes (clipped)
+    ok: true
+    url: https://api.github.com/advisories?type=reviewed&severity=critical&per_page=15&sort=published
+  - detail: 41103 bytes
+    ok: true
+    url: https://arxiv.org/abs/2608.06370
+  - detail: 113230 bytes (clipped)
+    ok: true
+    url: https://www.rfc-editor.org/rfc/rfc10023.html
+  - detail: 13173 bytes
+    ok: true
+    url: https://matklad.github.io/2026/08/06/neat-io-threaded.html
+  - detail: 148617 bytes
+    ok: true
+    url: https://arstechnica.com/ai/2026/08/bytedance-trains-massive-ai-model-in-bid-to-rival-anthropic/
+  - detail: 256449 bytes
+    ok: true
+    url: https://shopify.engineering/scaling-inventory-reservations
+  - detail: 73724 bytes
+    ok: true
+    url: https://www.cloudflarestatus.com/incidents/9fzfjzc5ms0h
+  - detail: 559735 bytes (clipped)
+    ok: true
+    url: https://claude.com/blog/auto-mode-default-in-claude-code
+  - detail: 181749 bytes
+    ok: true
+    url: https://github.com/advisories/GHSA-wg23-69c2-gjc8
+  - detail: 89500 bytes
     ok: true
     url: https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/
-  generated_at: '2026-08-09T03:36:29+00:00'
+  - detail: 73724 bytes
+    ok: true
+    url: https://www.cloudflarestatus.com/incidents/9fzfjzc5ms0h
+  - detail: 256449 bytes
+    ok: true
+    url: https://shopify.engineering/scaling-inventory-reservations
+  - detail: 559735 bytes (clipped)
+    ok: true
+    url: https://claude.com/blog/auto-mode-default-in-claude-code
+  - detail: 181749 bytes
+    ok: true
+    url: https://github.com/advisories/GHSA-wg23-69c2-gjc8
+  generated_at: '2026-08-09T10:41:30+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -232,26 +252,31 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-08-09T03:12:11+00:00'
+    fetched_at: '2026-08-09T10:18:11+00:00'
     pooled:
       added:
-        ask_hn: 1
-        comments: 0
-        front_page: 4
-        queries: 2
-        show_hn: 1
-        top_day: 2
-      snapshot_fetched_at: '2026-08-09T02:28:56+00:00'
+        ask_hn: 3
+        comments: 30
+        front_page: 20
+        queries: 40
+        show_hn: 6
+        top_day: 17
+      snapshot_fetched_at: '2026-08-09T09:56:42+00:00'
     queries_backend: algolia
     seen_ids:
     - 47439821
-    - 47613622
     - 47999020
     - 49079995
+    - 49082647
     - 49133850
+    - 49145193
+    - 49149163
     - 49151146
     - 49160383
+    - 49167096
+    - 49168282
     - 49169973
+    - 49178476
     - 49179352
     - 49180649
     - 49215786
@@ -330,12 +355,16 @@ mechanical:
     - 49224884
     - 49225139
     - 49225487
+    - 49225564
     - 49225676
     - 49225764
     - 49225918
     - 49226115
+    - 49226253
     - 49226365
     - 49226441
+    - 49226444
+    - 49226487
     - 49226502
     - 49226503
     - 49226536
@@ -356,14 +385,35 @@ mechanical:
     - 49226923
     - 49227024
     - 49227119
+    - 49227365
+    - 49227505
+    - 49227510
     - 49227511
     - 49227521
+    - 49227566
     - 49227632
     - 49227635
+    - 49227652
     - 49227686
+    - 49227718
     - 49227829
     - 49227843
     - 49227939
+    - 49228086
+    - 49228166
+    - 49228173
+    - 49228251
+    - 49228350
+    - 49228458
+    - 49228663
+    - 49228791
+    - 49228883
+    - 49228902
+    - 49229174
+    - 49229204
+    - 49229230
+    - 49229412
+    - 49229980
     source: cache
   query_yield:
     0day:
@@ -373,12 +423,14 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49220378
       - 49221864
       - 49225764
+      - 49226444
       - 49227521
+      - 49229412
       published: 0
       published_ids: []
       raw: 5
@@ -396,20 +448,21 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49220535
       - 49226008
+      - 49229483
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     Apple Silicon:
       matched: 1
       matched_ids:
       - 49219261
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     Azure:
       matched: 0
       matched_ids: []
@@ -437,13 +490,14 @@ mechanical:
       published_ids: []
       raw: 5
     Claude:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49220827
       - 49222824
       - 49225880
       - 49226627
       - 49227253
+      - 49228655
       published: 1
       published_ids:
       - 49227253
@@ -461,13 +515,14 @@ mechanical:
       - 49227253
       raw: 5
     Cloudflare:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49219922
       - 49220996
       - 49223549
       - 49223598
       - 49224478
+      - 49229893
       published: 1
       published_ids:
       - 49224478
@@ -479,10 +534,11 @@ mechanical:
       published_ids: []
       raw: 0
     Cursor:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49219523
       - 49220546
+      - 49229043
       published: 0
       published_ids: []
       raw: 3
@@ -495,8 +551,9 @@ mechanical:
       published_ids: []
       raw: 5
     GPU:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49228660
       published: 0
       published_ids: []
       raw: 5
@@ -508,7 +565,7 @@ mechanical:
       - 49220635
       published: 0
       published_ids: []
-      raw: 3
+      raw: 1
     Ghostty:
       matched: 0
       matched_ids: []
@@ -546,8 +603,9 @@ mechanical:
       published_ids: []
       raw: 1
     IPO:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49228814
       published: 0
       published_ids: []
       raw: 5
@@ -575,7 +633,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     Kleppmann:
       matched: 0
       matched_ids: []
@@ -596,13 +654,16 @@ mechanical:
       - 49227829
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     LLM:
-      matched: 3
+      matched: 6
       matched_ids:
       - 49218466
       - 49219987
       - 49223208
+      - 49226535
+      - 49227675
+      - 49229175
       published: 0
       published_ids: []
       raw: 5
@@ -613,13 +674,16 @@ mechanical:
       published_ids: []
       raw: 5
     Linux:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49219481
       - 49219626
+      - 49221327
       - 49221343
       - 49225061
       - 49225307
+      - 49229423
+      - 49229840
       published: 0
       published_ids: []
       raw: 5
@@ -630,13 +694,16 @@ mechanical:
       published_ids: []
       raw: 1
     MCP:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49219016
       - 49220546
       - 49221354
       - 49221508
       - 49221584
+      - 49228086
+      - 49228173
+      - 49229296
       published: 0
       published_ids: []
       raw: 5
@@ -659,13 +726,15 @@ mechanical:
       published_ids: []
       raw: 0
     OpenAI:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49218776
       - 49219695
       - 49220609
       - 49222865
+      - 49225107
       - 49225124
+      - 49228332
       published: 0
       published_ids: []
       raw: 5
@@ -689,7 +758,7 @@ mechanical:
       - 49223810
       published: 0
       published_ids: []
-      raw: 4
+      raw: 1
     Prometheus:
       matched: 0
       matched_ids: []
@@ -704,13 +773,15 @@ mechanical:
       published_ids: []
       raw: 2
     Python:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49219370
       - 49221693
       - 49223208
       - 49223730
+      - 49224464
       - 49226286
+      - 49228182
       published: 0
       published_ids: []
       raw: 5
@@ -724,17 +795,19 @@ mechanical:
       matched: 1
       matched_ids:
       - 49226536
-      published: 0
-      published_ids: []
+      published: 1
+      published_ids:
+      - 49226536
       raw: 5
     Rust:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49220498
       - 49221819
       - 49224485
       - 49224657
       - 49227619
+      - 49228656
       published: 0
       published_ids: []
       raw: 5
@@ -771,7 +844,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     TypeScript:
       matched: 0
       matched_ids: []
@@ -791,7 +864,7 @@ mechanical:
       - 49219969
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     Xcode:
       matched: 0
       matched_ids: []
@@ -799,8 +872,9 @@ mechanical:
       published_ids: []
       raw: 5
     Zig:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49228222
       published: 0
       published_ids: []
       raw: 5
@@ -818,11 +892,12 @@ mechanical:
       published_ids: []
       raw: 0
     agentic:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49219637
       - 49223462
       - 49224043
+      - 49229347
       published: 0
       published_ids: []
       raw: 5
@@ -835,7 +910,7 @@ mechanical:
       - 49227083
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     breach:
       matched: 1
       matched_ids:
@@ -851,9 +926,10 @@ mechanical:
       published_ids: []
       raw: 0
     coding agent:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49224657
+      - 49229175
       published: 0
       published_ids: []
       raw: 5
@@ -882,11 +958,12 @@ mechanical:
       published_ids: []
       raw: 5
     iOS:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49218610
       - 49218628
       - 49223335
+      - 49228494
       published: 0
       published_ids: []
       raw: 5
@@ -906,11 +983,12 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     kernel:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49219231
+      - 49229423
       published: 0
       published_ids: []
       raw: 1
@@ -953,13 +1031,15 @@ mechanical:
       published_ids: []
       raw: 0
     terminal:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49220825
       - 49220836
       - 49223119
       - 49223143
       - 49225307
+      - 49228625
+      - 49229621
       published: 0
       published_ids: []
       raw: 5
@@ -1091,6 +1171,143 @@ mechanical:
       name: run_log
       status: ok
     - detail: 39 fetch(es), 6 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-08-09T10:41:37+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-09.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-08
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[],"stories":[{"title":"Shopify moved checkout inventory reservations from Redis
+        to MySQL with SKIP LOCKED","section":"Engineering posts","category":"Engineering post","status":"confirmed","primary_url":"https://shopify.engineering/scaling-inventory-reservations","sources":["[primary]
+      name: select
+      status: ok
+      tokens:
+        in: 63
+        out: 24206
+      tools:
+        Bash: 1
+        Glob: 4
+        Grep: 8
+        Read: 17
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 13
+        mcp__digest__guidance: 2
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 3
+    - detail: |-
+        Gate passes with exit code 0.
+
+        ## What was written to `data/digests/2026-08-09.md`
+
+        Two of the four selected stories were added:
+
+        **Engineering posts** (new section) — Shopify moving checkout inventory reservations from Redis to MySQL with `SKIP LOCKED`, with the non-atomic two-store claim as the co
+      name: write
+      status: ok
+      tokens:
+        in: 23
+        out: 8844
+      tools:
+        Edit: 8
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 2
+    - detail: "{\"findings\":[{\"severity\":\"blocking\",\"where\":\"Outages / Cloudflare restores R2\
+        \ objects unavailable for about 32 hours after an ENAM write failure\",\"detail\":\"The title\
+        \ asserts a duration the source does not support. https://www.cloudflarestatus.com/incidents/9fzfjzc5ms0h\
+        \ states writes to the affected "
+      name: review
+      status: ok
+      tokens:
+        in: 21
+        out: 13940
+      tools:
+        Glob: 1
+        Grep: 5
+        Read: 4
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 5
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate exits 0. All seven findings addressed.
+
+        **Blocking repairs**
+
+        1. **Outages title.** Retitled to "about 36 hours" and rebuilt the summary around the write window: objects uploaded between 14:52 and 17:02 UTC on 2026-08-07, availability fully restored 02:35 UTC 2026-08-09, about 36 hours from the
+      name: write
+      status: ok
+      tokens:
+        in: 21
+        out: 6331
+      tools:
+        Edit: 7
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"findings":[{"severity":"blocking","where":"Outages / Cloudflare restores R2 objects unavailable
+        for about 36 hours after an ENAM write failure","detail":"The summary states the write failure
+        \"left a small number of objects unreadable, specifically ones uploaded through multipart upload
+        between 14
+      name: review
+      status: ok
+      tokens:
+        in: 20
+        out: 13521
+      tools:
+        Glob: 1
+        Grep: 9
+        Read: 4
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 4
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 7 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: skipped (no seeded cause was reported wrong)
+      name: miss_review
+      status: skip
+    - detail: data/runs/2026-08-09.yaml
+      name: run_log
+      status: ok
+    - detail: 22 fetch(es), 0 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
