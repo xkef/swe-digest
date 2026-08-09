@@ -1,0 +1,1110 @@
+date: '2026-08-09'
+judgment:
+  inbox: []
+  miss_review: {}
+  notes: |
+    Today's digest file was an empty scaffold when this run started, so nothing was displaced. Eight
+    stories were selected against a 25-story budget. That is a deliberate reading of a quiet day
+    rather than a collection failure: the 24-hour Hacker News window is dominated by items the
+    2026-08-08 digest already carried (WeatherNext, JDK 28, Apple M3 device trees, the Hugging Face
+    incident cluster) or already reviewed and rejected (x86 hardware backdoors as VIA C3-only
+    research, the Gentoo Bugzilla claim on attribution, Open VSX and Coldcard as prior-day items).
+
+    Two calls a reader of the page cannot infer. First, the auto mode story was dropped by the
+    2026-08-08 run for resting only on a social post. It is published today because the vendor
+    primary at claude.com/blog/auto-mode-default-in-claude-code, dated 2026-08-07, and the docs note
+    at code.claude.com/docs/en/auto-mode-config were both read directly this run. The docs page is
+    what carried the link to the announcement, since anthropic.com/news and
+    anthropic.com/engineering both 404 for it. Second, the two lead stories are both about Claude
+    Code and were ranked as one pair: the default permission change and an unfixed path by which a
+    checked-out branch executes code before the user types anything. Auto mode leads on breadth and
+    a dated, first-party change with published evals. The .mcp.json report ranks second despite
+    being the more immediately exploitable of the two, because its only source is a single vendor
+    blog and Anthropic's reply is quoted by the researcher rather than published by Anthropic.
+
+    The Cloudflare R2 incident is only visible through the status API. Both the HTML incident
+    history page and the Atom and RSS feeds return scheduled maintenance first and truncate before
+    reaching it, so www.cloudflarestatus.com/api/v2/incidents.json is the endpoint that resolves it.
+    The Hacker News thread on it carries a user claiming lost data. That claim is not published
+    here, because Cloudflare's final update states availability was fully restored and the user's
+    own account describes their loss as non-critical backup material.
+
+    Not published, with the absence as the finding. Security carries one item because the GitHub
+    advisories API returned no reviewed critical advisory dated 2026-08-08 at all, so the newest one
+    available was the Craft CMS passkey replay dated 2026-08-07. ML research is omitted because no
+    arXiv entry in the cache was verified against a primary. Reddit and social pulse is omitted
+    because collection came back degraded for the third consecutive day, at 8 of 28 subreddits
+    against a floor of 14. Hacker News is omitted although the day's largest thread by a wide
+    margin, an essay at 603 points and 372 comments arguing against the phrase "code was never the
+    hard part", cleared the discussion threshold. It carries no technical substance to paraphrase
+    and would be volume, not signal.
+
+    Three items were read in full and left out. The Shopify post on replacing Redis with MySQL for
+    inventory reservations is a strong write-up with concrete detail on SKIP LOCKED, composite
+    primary keys and connection attribution, but it is dated 2026-05-12 and only resurfaced on
+    Hacker News, which is three months past news under the standard this digest applied to a
+    two-week-old LWN article on 2026-08-08. The Hackaday report of Jeff Geerling measuring a Dell
+    XPS 13 at 6.21 Gflops per watt against a MacBook Neo at 5.38 on HPL is a genuine data point, but
+    the primary is a video and a benchmark repository that this run did not resolve, so it rests on
+    one secondary source. The Coldcard item at 16 points restates the RNG incident this digest
+    already covered on 2026-08-02, 08-03 and 08-05, and its source is a secondary aggregator rather
+    than Coinkite.
+
+    On miss_review. The backtest for 2026-08-08 reported 52 candidates and explicitly seeded zero
+    causes, so every entry below is an addition rather than a correction of a seeded value. Two of
+    the five are carried in today's digest, which is the point of flagging them: 49221668 is RFC
+    10023, an IETF RFC at 289 points that no watchlist query matched, and that is a query-coverage
+    gap rather than a timing one. 49223082 (Fastmail) and 49221711 (Triton) were both created after
+    the 2026-08-08 publish fetch closed and are timing gaps. 49216946 is the DOE Genesis Open Models
+    Initiative, where genesisopenmodels.anl.gov has now returned HTTP 403 across three consecutive
+    runs, which makes it a durable fetch gap rather than an editorial choice. 49219508 is the x86
+    hardware backdoor item, which was read and correctly dropped on 2026-08-08 as older VIA C3
+    research, so it is a relevance decision and not a miss.
+
+    The memory stores were read but not written to by this step. Worth flagging for the weekly
+    review: the newest last_seen date in the followups store is 2026-07-26, while digests have
+    published every day through 2026-08-08. Fifty-six open follow-up entries have gone untouched for
+    two weeks, which suggests the memory update step has not run or has not been writing since then.
+    Nothing in today's selection depends on it, but the store is stale enough that its byte cost is
+    being paid on every run for entries no run is maintaining. Watchlist follow-ups is omitted today
+    for the same reason: no open entry could be advanced against a source this run verified.
+mechanical:
+  digest:
+    domains:
+    - bleepingcomputer.com
+    - blog.getutm.app
+    - claude.com
+    - cloudflarestatus.com
+    - code.claude.com
+    - fastmail.com
+    - github.com
+    - news.ycombinator.com
+    - rfc-editor.org
+    hn_ids:
+    - 49221668
+    - 49221711
+    - 49223082
+    - 49224274
+    - 49224478
+    - 49227253
+    sections:
+      Infrastructure: 2
+      Outages: 1
+      Security: 1
+      Sources checked: 0
+      Top stories: 3
+    source_count: 15
+    titles:
+    - Claude Code makes auto mode the default permission mode on 2026-08-14
+    - Head Mare exploits unpatched TrueConf servers to ship backdoored client installers
+    - UTM publishes Triton, a DirectX 11 user-mode driver for QEMU Windows guests
+    - Craft CMS 5.10.5 fixes a passkey login that accepts replayed WebAuthn assertions
+    - Cloudflare restores R2 objects unavailable for about 32 hours after an ENAM write failure
+    - RFC 10023 defines a _for-sale DNS leaf node name
+    - Fastmail adds an Amsterdam data region and lists what stays in the United States
+  fetched:
+  - detail: 528507 bytes
+    ok: true
+    url: https://www.cloudflarestatus.com/history
+  - detail: 113230 bytes (clipped)
+    ok: true
+    url: https://www.rfc-editor.org/rfc/rfc10023.html
+  - detail: 44078 bytes (clipped)
+    ok: true
+    url: https://www.cloudflarestatus.com/history.atom
+  - detail: 89423 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/
+  - detail: 256557 bytes
+    ok: true
+    url: https://shopify.engineering/scaling-inventory-reservations
+  - detail: 90944 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/77-open-vsx-extensions-found-harvesting-developer-info/
+  - detail: 59634 bytes
+    ok: true
+    url: https://www.fastmail.com/blog/fastmail-offers-eu-data-region/
+  - detail: 10792 bytes
+    ok: true
+    url: https://news.ycombinator.com/item?id=49224478
+  - detail: 45728 bytes (clipped)
+    ok: true
+    url: https://www.cloudflarestatus.com/history.rss
+  - detail: 131562 bytes (clipped)
+    ok: true
+    url: https://www.cloudflarestatus.com/api/v2/incidents.json
+  - detail: 'failed: fetch failed: https://code.claude.com/docs/en/auto-mode: HTTP Error 404: Not Found'
+    ok: false
+    url: https://code.claude.com/docs/en/auto-mode
+  - detail: 95795 bytes (clipped)
+    ok: true
+    url: https://blog.getutm.app/2026/introducing-triton-directx-11-driver-for-qemu/
+  - detail: 20240 bytes
+    ok: true
+    url: https://simonwillison.net/2026/Aug/8/auto-mode/
+  - detail: 'failed: fetch failed: https://securelist.com/head-mare-trueconf-attacks/: The read operation
+      timed out'
+    ok: false
+    url: https://securelist.com/head-mare-trueconf-attacks/
+  - detail: 'failed: fetch failed: https://www.anthropic.com/news/claude-code-auto-mode: HTTP Error 404:
+      Not Found'
+    ok: false
+    url: https://www.anthropic.com/news/claude-code-auto-mode
+  - detail: 422302 bytes
+    ok: true
+    url: https://code.claude.com/docs/en/iam
+  - detail: 41527 bytes (clipped)
+    ok: true
+    url: https://code.claude.com/docs/llms.txt
+  - detail: 'failed: fetch failed: https://code.claude.com/docs/en/auto-mode.md: HTTP Error 404: Not Found'
+    ok: false
+    url: https://code.claude.com/docs/en/auto-mode.md
+  - detail: 'failed: fetch failed: https://www.anthropic.com/news/auto-mode: HTTP Error 404: Not Found'
+    ok: false
+    url: https://www.anthropic.com/news/auto-mode
+  - detail: 27905 bytes (clipped)
+    ok: true
+    url: https://code.claude.com/docs/en/auto-mode-config.md
+  - detail: 'failed: fetch failed: https://www.anthropic.com/engineering/auto-mode: HTTP Error 404: Not
+      Found'
+    ok: false
+    url: https://www.anthropic.com/engineering/auto-mode
+  - detail: 559735 bytes (clipped)
+    ok: true
+    url: https://claude.com/blog/auto-mode-default-in-claude-code
+  - detail: 304064 bytes
+    ok: true
+    url: https://www.immersivelabs.com/resources/blog/claude-code-rce-vulnerability-how-a-malicious-pull-request-executes-code
+  - detail: 136129 bytes
+    ok: true
+    url: https://hackaday.com/2026/08/08/want-energy-efficiency-dude-youre-getting-a-dell/
+  - detail: 175248 bytes (clipped)
+    ok: true
+    url: https://api.github.com/advisories?type=reviewed&severity=critical&per_page=15&sort=published
+  - detail: 181750 bytes
+    ok: true
+    url: https://github.com/advisories/GHSA-wg23-69c2-gjc8
+  - detail: 73724 bytes
+    ok: true
+    url: https://www.cloudflarestatus.com/incidents/9fzfjzc5ms0h
+  - detail: 559735 bytes (clipped)
+    ok: true
+    url: https://claude.com/blog/auto-mode-default-in-claude-code
+  - detail: 113230 bytes (clipped)
+    ok: true
+    url: https://www.rfc-editor.org/rfc/rfc10023.html
+  - detail: 89423 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/
+  - detail: 95795 bytes (clipped)
+    ok: true
+    url: https://blog.getutm.app/2026/introducing-triton-directx-11-driver-for-qemu/
+  - detail: 59634 bytes
+    ok: true
+    url: https://www.fastmail.com/blog/fastmail-offers-eu-data-region/
+  - detail: 528594 bytes (clipped)
+    ok: true
+    url: https://code.claude.com/docs/en/auto-mode-config
+  - detail: 73724 bytes
+    ok: true
+    url: https://www.cloudflarestatus.com/incidents/9fzfjzc5ms0h
+  - detail: 113230 bytes (clipped)
+    ok: true
+    url: https://www.rfc-editor.org/rfc/rfc10023.html
+  - detail: 559735 bytes (clipped)
+    ok: true
+    url: https://claude.com/blog/auto-mode-default-in-claude-code
+  - detail: 181748 bytes
+    ok: true
+    url: https://github.com/advisories/GHSA-wg23-69c2-gjc8
+  - detail: 22330 bytes
+    ok: true
+    url: https://simonwillison.net/2026/Aug/7/openai-timeline/
+  - detail: 89429 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/
+  generated_at: '2026-08-09T03:36:29+00:00'
+  hn:
+    backends:
+      ask_hn: algolia
+      comments: algolia
+      front_page: algolia
+      show_hn: algolia
+      top_day: algolia
+    degraded: []
+    fetched_at: '2026-08-09T03:12:11+00:00'
+    pooled:
+      added:
+        ask_hn: 1
+        comments: 0
+        front_page: 4
+        queries: 2
+        show_hn: 1
+        top_day: 2
+      snapshot_fetched_at: '2026-08-09T02:28:56+00:00'
+    queries_backend: algolia
+    seen_ids:
+    - 47439821
+    - 47613622
+    - 47999020
+    - 49079995
+    - 49133850
+    - 49151146
+    - 49160383
+    - 49169973
+    - 49179352
+    - 49180649
+    - 49215786
+    - 49218466
+    - 49218628
+    - 49218707
+    - 49218776
+    - 49218817
+    - 49218871
+    - 49219113
+    - 49219231
+    - 49219370
+    - 49219508
+    - 49219653
+    - 49219823
+    - 49219987
+    - 49220126
+    - 49220158
+    - 49220313
+    - 49220339
+    - 49220350
+    - 49220378
+    - 49220390
+    - 49220392
+    - 49220458
+    - 49220465
+    - 49220498
+    - 49220546
+    - 49220609
+    - 49220732
+    - 49220768
+    - 49220827
+    - 49221041
+    - 49221124
+    - 49221197
+    - 49221220
+    - 49221354
+    - 49221476
+    - 49221668
+    - 49221679
+    - 49221711
+    - 49221828
+    - 49221864
+    - 49221939
+    - 49221947
+    - 49222031
+    - 49222189
+    - 49222412
+    - 49222632
+    - 49222691
+    - 49222800
+    - 49222824
+    - 49222826
+    - 49222865
+    - 49222874
+    - 49223036
+    - 49223079
+    - 49223082
+    - 49223105
+    - 49223119
+    - 49223143
+    - 49223383
+    - 49223475
+    - 49223667
+    - 49223750
+    - 49223845
+    - 49223917
+    - 49223981
+    - 49224020
+    - 49224241
+    - 49224294
+    - 49224311
+    - 49224603
+    - 49224621
+    - 49224798
+    - 49224884
+    - 49225139
+    - 49225487
+    - 49225676
+    - 49225764
+    - 49225918
+    - 49226115
+    - 49226365
+    - 49226441
+    - 49226502
+    - 49226503
+    - 49226536
+    - 49226563
+    - 49226623
+    - 49226627
+    - 49226636
+    - 49226638
+    - 49226649
+    - 49226693
+    - 49226707
+    - 49226742
+    - 49226767
+    - 49226789
+    - 49226827
+    - 49226838
+    - 49226913
+    - 49226923
+    - 49227024
+    - 49227119
+    - 49227511
+    - 49227521
+    - 49227632
+    - 49227635
+    - 49227686
+    - 49227829
+    - 49227843
+    - 49227939
+    source: cache
+  query_yield:
+    0day:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    AI:
+      matched: 4
+      matched_ids:
+      - 49220378
+      - 49221864
+      - 49225764
+      - 49227521
+      published: 0
+      published_ids: []
+      raw: 5
+    AWS:
+      matched: 1
+      matched_ids:
+      - 49226314
+      published: 0
+      published_ids: []
+      raw: 5
+    AlphaFold:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Anthropic:
+      matched: 2
+      matched_ids:
+      - 49220535
+      - 49226008
+      published: 0
+      published_ids: []
+      raw: 2
+    Apple Silicon:
+      matched: 1
+      matched_ids:
+      - 49219261
+      published: 0
+      published_ids: []
+      raw: 1
+    Azure:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    CRDT:
+      matched: 2
+      matched_ids:
+      - 49221415
+      - 49222165
+      published: 0
+      published_ids: []
+      raw: 5
+    CUDA:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 2
+    CVE:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Claude:
+      matched: 5
+      matched_ids:
+      - 49220827
+      - 49222824
+      - 49225880
+      - 49226627
+      - 49227253
+      published: 1
+      published_ids:
+      - 49227253
+      raw: 5
+    Claude Code:
+      matched: 5
+      matched_ids:
+      - 49220546
+      - 49220827
+      - 49222824
+      - 49226627
+      - 49227253
+      published: 1
+      published_ids:
+      - 49227253
+      raw: 5
+    Cloudflare:
+      matched: 5
+      matched_ids:
+      - 49219922
+      - 49220996
+      - 49223549
+      - 49223598
+      - 49224478
+      published: 1
+      published_ids:
+      - 49224478
+      raw: 5
+    Copilot:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Cursor:
+      matched: 2
+      matched_ids:
+      - 49219523
+      - 49220546
+      published: 0
+      published_ids: []
+      raw: 3
+    GCP:
+      matched: 2
+      matched_ids:
+      - 49219039
+      - 49226314
+      published: 0
+      published_ids: []
+      raw: 5
+    GPU:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Gemini:
+      matched: 3
+      matched_ids:
+      - 49219039
+      - 49219523
+      - 49220635
+      published: 0
+      published_ids: []
+      raw: 3
+    Ghostty:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    GitHub:
+      matched: 4
+      matched_ids:
+      - 49218638
+      - 49222132
+      - 49222165
+      - 49223383
+      published: 0
+      published_ids: []
+      raw: 5
+    Go:
+      matched: 2
+      matched_ids:
+      - 49223105
+      - 49227024
+      published: 0
+      published_ids: []
+      raw: 5
+    Grafana:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Homebrew:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    IPO:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Java:
+      matched: 1
+      matched_ids:
+      - 49226825
+      published: 0
+      published_ids: []
+      raw: 5
+    Jepsen:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Kafka:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Kagi:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Kleppmann:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Kotlin:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Kubernetes:
+      matched: 3
+      matched_ids:
+      - 49219348
+      - 49225051
+      - 49227829
+      published: 0
+      published_ids: []
+      raw: 3
+    LLM:
+      matched: 3
+      matched_ids:
+      - 49218466
+      - 49219987
+      - 49223208
+      published: 0
+      published_ids: []
+      raw: 5
+    LWN:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Linux:
+      matched: 5
+      matched_ids:
+      - 49219481
+      - 49219626
+      - 49221343
+      - 49225061
+      - 49225307
+      published: 0
+      published_ids: []
+      raw: 5
+    Llama:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    MCP:
+      matched: 5
+      matched_ids:
+      - 49219016
+      - 49220546
+      - 49221354
+      - 49221508
+      - 49221584
+      published: 0
+      published_ids: []
+      raw: 5
+    Mistral:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Neovim:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Nvidia:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    OpenAI:
+      matched: 5
+      matched_ids:
+      - 49218776
+      - 49219695
+      - 49220609
+      - 49222865
+      - 49225124
+      published: 0
+      published_ids: []
+      raw: 5
+    OpenTelemetry:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Paxos:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Postgres:
+      matched: 3
+      matched_ids:
+      - 49219238
+      - 49219244
+      - 49223810
+      published: 0
+      published_ids: []
+      raw: 4
+    Prometheus:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    PyPI:
+      matched: 1
+      matched_ids:
+      - 49221653
+      published: 0
+      published_ids: []
+      raw: 2
+    Python:
+      matched: 5
+      matched_ids:
+      - 49219370
+      - 49221693
+      - 49223208
+      - 49223730
+      - 49226286
+      published: 0
+      published_ids: []
+      raw: 5
+    Raft:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Redis:
+      matched: 1
+      matched_ids:
+      - 49226536
+      published: 0
+      published_ids: []
+      raw: 5
+    Rust:
+      matched: 5
+      matched_ids:
+      - 49220498
+      - 49221819
+      - 49224485
+      - 49224657
+      - 49227619
+      published: 0
+      published_ids: []
+      raw: 5
+    S-1:
+      matched: 1
+      matched_ids:
+      - 49221411
+      published: 0
+      published_ids: []
+      raw: 3
+    SQLite:
+      matched: 1
+      matched_ids:
+      - 49220992
+      published: 0
+      published_ids: []
+      raw: 2
+    Spring Boot:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Swift:
+      matched: 2
+      matched_ids:
+      - 49220171
+      - 49225964
+      published: 0
+      published_ids: []
+      raw: 5
+    SwiftUI:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 2
+    TypeScript:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Vim:
+      matched: 1
+      matched_ids:
+      - 49218415
+      published: 0
+      published_ids: []
+      raw: 5
+    Wayland:
+      matched: 1
+      matched_ids:
+      - 49219969
+      published: 0
+      published_ids: []
+      raw: 3
+    Xcode:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Zig:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    acquires:
+      matched: 1
+      matched_ids:
+      - 49224300
+      published: 0
+      published_ids: []
+      raw: 3
+    acquisition:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    agentic:
+      matched: 3
+      matched_ids:
+      - 49219637
+      - 49223462
+      - 49224043
+      published: 0
+      published_ids: []
+      raw: 5
+    arXiv:
+      matched: 4
+      matched_ids:
+      - 49219278
+      - 49223760
+      - 49224957
+      - 49227083
+      published: 0
+      published_ids: []
+      raw: 4
+    breach:
+      matched: 1
+      matched_ids:
+      - 49224274
+      published: 1
+      published_ids:
+      - 49224274
+      raw: 5
+    chezmoi:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    coding agent:
+      matched: 1
+      matched_ids:
+      - 49224657
+      published: 0
+      published_ids: []
+      raw: 5
+    distributed systems:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    drug discovery:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    eBPF:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    exploit:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    iOS:
+      matched: 3
+      matched_ids:
+      - 49218610
+      - 49218628
+      - 49223335
+      published: 0
+      published_ids: []
+      raw: 5
+    incident:
+      matched: 5
+      matched_ids:
+      - 49219225
+      - 49220183
+      - 49224910
+      - 49225051
+      - 49227829
+      published: 0
+      published_ids: []
+      raw: 5
+    io_uring:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 4
+    kernel:
+      matched: 1
+      matched_ids:
+      - 49219231
+      published: 0
+      published_ids: []
+      raw: 1
+    local-first:
+      matched: 1
+      matched_ids:
+      - 49221819
+      published: 0
+      published_ids: []
+      raw: 1
+    macOS:
+      matched: 5
+      matched_ids:
+      - 49223748
+      - 49223981
+      - 49224782
+      - 49225307
+      - 49225385
+      published: 0
+      published_ids: []
+      raw: 5
+    npm:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    outage:
+      matched: 1
+      matched_ids:
+      - 49224478
+      published: 1
+      published_ids:
+      - 49224478
+      raw: 3
+    protein folding:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    terminal:
+      matched: 5
+      matched_ids:
+      - 49220825
+      - 49220836
+      - 49223119
+      - 49223143
+      - 49225307
+      published: 0
+      published_ids: []
+      raw: 5
+  runs:
+  - at: '2026-08-09T03:36:36+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-09.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-08
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"Claude Code makes auto mode the default permission mode for Pro, Max,
+        and Team plans on 2026-08-14","section":"Top stories","status":"confirmed","category":"Agentic
+        coding","primary_url":"https://claude.com/blog/auto-mode-default-in-claude-code","sources":["https://claude.c
+      failed_tools:
+        Bash: 1
+        Read: 1
+        mcp__digest__fetch_url: 6
+      name: select
+      status: ok
+      tokens:
+        in: 68
+        out: 30333
+      tools:
+        Bash: 4
+        Glob: 3
+        Grep: 13
+        Read: 11
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 25
+        mcp__digest__guidance: 1
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 2
+    - detail: |-
+        Gate exit code 0. `data/digests/2026-08-09.md` is published.
+
+        ## What was written
+
+        **Top stories (3)**
+        1. Claude Code makes auto mode the default permission mode on 2026-08-14 (Agentic coding, confirmed)
+        2. Head Mare exploits unpatched TrueConf servers to ship backdoored client installers (Security,
+      name: write
+      status: ok
+      tokens:
+        in: 17
+        out: 8279
+      tools:
+        Edit: 4
+        Read: 1
+        ToolSearch: 1
+        Write: 1
+        mcp__digest__run_gate: 2
+    - detail: >-
+        {"findings":[{"severity":"blocking","where":"Top stories / Head Mare exploits unpatched TrueConf
+        servers","detail":"Security item states no affected versions, although the cited BleepingComputer
+        article publishes them: TrueConf Server 5.3.x before 5.3.9, 5.4.x before 5.4.9, 5.5.x before 5.5.5,
+        and o
+      name: review
+      status: ok
+      tokens:
+        in: 15
+        out: 12594
+      tools:
+        Glob: 1
+        Grep: 2
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 8
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes with exit code 0. All nine findings repaired, nothing else touched.
+
+        **Blocking, resolved:**
+
+        1. **TrueConf** — summary now carries the affected range from the cited article (5.3.x before 5.3.9, 5.4.x before 5.4.9, 5.5.x before 5.5.5, and older) and the fixed versions released 2026-06-18
+      name: write
+      status: ok
+      tokens:
+        in: 13
+        out: 5566
+      tools:
+        Edit: 9
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: "{\"ready\":false,\"findings\":[{\"severity\":\"blocking\",\"where\":\"Top stories (missing\
+        \ story)\",\"detail\":\"The day's highest-engagement item is absent entirely: \\\"Timeline of\
+        \ the OpenAI accidental attack against Hugging Face\\\" (https://simonwillison.net/2026/Aug/7/openai-timeline/,\
+        \ HN 49220609, 355 points / "
+      name: review
+      status: ok
+      tokens:
+        in: 23
+        out: 14109
+      tools:
+        Glob: 1
+        Grep: 7
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 6
+        mcp__digest__memory_query: 1
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 7 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 3 cause(s) corrected in 2026-08-08
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-08-09.yaml
+      name: run_log
+      status: ok
+    - detail: 39 fetch(es), 6 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
