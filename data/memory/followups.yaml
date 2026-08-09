@@ -842,36 +842,6 @@
     benchmark reproduction; whether the $3.00/$15.00 per 1M pricing holds as third parties serve the open
     weights; whether third-party inference providers absorb the demand behind the subscription pause;
     the full UK AISI/CAISI report and methodology; whether the safeguards finding draws a Moonshot response.
-- category: Security
-  id: f-0038
-  last_seen: '2026-07-16'
-  notes: >-
-    Researcher (cereblab) mitmproxy wire capture of Grok Build CLI grok 0.2.93 reports the CLI uploads
-    the full working repository (every tracked file plus complete git history) to GCS bucket `grok-code-session-traces`
-    via `POST /v1/storage`, independent of what the agent reads. On a 12 GB test repo the storage channel
-    moved 5.10 GiB vs 192 KB on the model-turn channel, and planted never-read files were recovered from
-    the uploaded git bundle; `.env` secrets were unredacted. Disabling "Improve the model" did not stop
-    upload (`/v1/settings` still `trace_upload_enabled: true`). Author states it does not prove xAI trains
-    on the data. HN front page (487 pts), secondary coverage (GIGAZINE, byteiota). 2026-07-13: a separate
-    account (HN 48892468) claimed the entire home directory was uploaded, widening the scope (single account,
-    unverified). 2026-07-14: the author retested and reported the storage channel now uploads nothing,
-    `/v1/settings` flipped to `trace_upload_enabled: false` / `disable_codebase_upload: true` server-side
-    (not a client patch); no xAI statement. Covered 2026-07-14 Top stories (lead, developing). 2026-07-15:
-    xAI open-sourced Grok Build as xai-org/grok-build under Apache-2.0 (~845k-line Rust workspace, external
-    contributions rejected, issues disabled), stated it can now run fully local-first against user inference,
-    reset usage limits for all users, and claims retained user data was deleted and retention disabled
-    by default; Simon Willison notes disabled upload code still present in the tree and tools adapted
-    from Codex/Claude. Covered 2026-07-16 Top stories (confirmed, Agentic coding). Watch for full removal
-    of the upload paths, independent confirmation of the data-deletion claim, and local-inference forks.
-  opened: '2026-07-13'
-  sources:
-  - '[wire-level analysis (gist)](https://gist.github.com/cereblab/dc9a40bc26120f4540e4e09b75ffb547)'
-  - '[GIGAZINE](https://gigazine.net/gsc_news/en/20260713-grok-build-sending-data/)'
-  - '[HN 48877371](https://news.ycombinator.com/item?id=48877371)'
-  subject: xAI Grok Build CLI uploads entire repository and .env secrets by default
-  watch_for: >-
-    An xAI statement or a CLI update that scopes uploads and honors the "Improve the model" opt-out; independent
-    reproduction of the wire capture; whether the uploaded data is used for training; any CVE or advisory.
 - category: Markets
   id: f-0039
   last_seen: '2026-07-17'
@@ -898,48 +868,6 @@
   watch_for: >-
     OpenAI's formal answer and any denial specifics; an injunction or TRO motion; additional named defendants
     beyond Liu and Tan; whether the case affects the io Products device roadmap or timeline; any settlement.
-- category: AI
-  id: f-0040
-  last_seen: '2026-07-11'
-  notes: >-
-    OpenAI published 2026-07-10 a PDF proof of the Cycle Double Cover Conjecture (Szekeres 1973, Seymour
-    1979) attributed to GPT-5.6 Sol Ultra, stating it used 64 subagents in under an hour, one day after
-    Sol Ultra GA. Reportedly reduces the problem via the 8-flow theorem and linear algebra over GF(3).
-    Not peer reviewed. HN flags the released prompt says "assume for purposes of this task that a complete
-    affirmative proof exists" and questions acceptance. Vendor publication, unverified. Covered 2026-07-11
-    Top stories (developing).
-  opened: '2026-07-10'
-  sources:
-  - >-
-    [OpenAI proof PDF](https://cdn.openai.com/pdf/04d1d1e4-bc75-476a-97cf-49055cd98d31/cdc_proof.pdf)
-  - '[HN 48863490](https://news.ycombinator.com/item?id=48863490)'
-  subject: GPT-5.6 Sol Ultra claims a proof of the Cycle Double Cover Conjecture
-  watch_for: >-
-    Independent verification or refutation from graph theorists; whether the argument is accepted as correct;
-    whether the released prompt's "assume a proof exists" instruction undermines the claim; a formal writeup
-    beyond the CDN PDF.
-- category: Security
-  id: f-0041
-  last_seen: '2026-07-10'
-  notes: >-
-    On 2026-07-09 the European Parliament voted under the ordinary legislative procedure second reading
-    on extending the interim derogation (Regulation 2021/1232, "Chat Control 1.0") that permits providers
-    to voluntarily scan for CSAM. Rejecting required an absolute majority of at least 361 MEPs; reporting
-    states 314 voted to reject (276 in favor, 17 abstentions), 47 short, so the derogation proceeds until
-    2028-04-03. Covers voluntary scanning on non-E2E services (reported: Gmail, Messenger, Instagram DMs,
-    Skype, Snapchat, iCloud Mail, Xbox). Does not mandate breaking end-to-end encryption; that is the
-    separate CSAR ("Chat Control 2.0"), still under negotiation. March 2026 vote had rejected an earlier
-    extension by one vote. Covered 2026-07-10 Top stories (lead). Breyer's site is advocacy framing; Euronews
-    used as neutral primary.
-  opened: '2026-07-10'
-  sources:
-  - '[Euronews](https://www.euronews.com/my-europe/2026/07/07/eu-to-extend-temporary-message-scanning-regime-to-detect-child-sexual-abuse-online)'
-  - '[HN 48843923](https://news.ycombinator.com/item?id=48843923)'
-  subject: EU Parliament fails to reject Chat Control 1.0 derogation extension
-  watch_for: >-
-    Council and Parliament progress on the mandatory CSA Regulation ("Chat Control 2.0") that would require
-    client-side scanning; any provider change to scanning or encryption defaults under the extended derogation;
-    the official EP vote record.
 - category: Security
   id: f-0043
   last_seen: '2026-07-08'
@@ -1055,31 +983,6 @@
   watch_for: >-
     Fix backport into stable kernel trees and distribution updates; the cryptsetup warning MR landing
     in a release; whether the fix has its own long-range interactions.
-- category: AI
-  id: f-0049
-  last_seen: '2026-07-11'
-  notes: >-
-    xAI released Grok 4.5 to the public 2026-07-08 (11 days after a SpaceX/Tesla private beta). V9 architecture,
-    reported 1.5T params; xAI says it folded real Cursor developer session data (debug traces, multi-file
-    diffs, corrections) into training. Pricing $2/M in, $6/M out. Beats Opus 4.8 on 2 of 4 published benchmarks
-    (DeepSWE 1.0, Terminal-Bench 2.1), loses on DeepSWE 1.1 (by 6) and SWE-Bench Pro (by 4.5); states
-    4.2x fewer tokens than Opus 4.8 on SWE-Bench Pro, ~80 tok/s. Live in Grok Build, Cursor (all plans),
-    and the SpaceXAI console. Cursor co-trained it and keeps Composer 2.5 as a separate weight class.
-    Covered 2026-07-09 Top stories (lead). r/cursor reports tool-calling friction. Vendor benchmarks,
-    unreproduced. 2026-07-11: r/cursor and the Cursor forum report Grok 4.5 missing from the model picker;
-    SpaceXAI states no initial EU availability (products and API), EU access expected mid-July, the likely
-    cause. Covered 2026-07-11 Reddit and social pulse (discussion).
-  opened: '2026-07-09'
-  sources:
-  - '[xAI announcement](https://x.ai/news/grok-4-5)'
-  - '[Cursor blog](https://cursor.com/blog/grok-4-5)'
-  - '[HN 48835111](https://news.ycombinator.com/item?id=48835111)'
-  subject: xAI releases Grok 4.5
-  watch_for: >-
-    Independent reproduction of the SWE-Bench Pro / DeepSWE / Terminal-Bench figures and the 4.2x token-efficiency
-    claim; whether the reported Cursor tool-calling gaps (Grok 4.5 not calling internal tools, AskQuestion
-    unavailable) get fixed; confirmed EU availability; standalone API availability and context window
-    (unstated in the run).
 - category: Languages
   id: f-0050
   last_seen: '2026-07-09'
@@ -1152,24 +1055,6 @@
   watch_for: >-
     A Cursor patch restricting Git-binary resolution to trusted paths; a CVE assignment; exploitation
     reports; whether the agent auto-clone mass-exploitation path gets demonstrated.
-- category: AI
-  id: f-0055
-  last_seen: '2026-07-15'
-  notes: >-
-    Site by Colin Snyder (advised by Mike Kim) presents proposed solutions to a set of open Erdős problems
-    produced by "Star Fleet", a harness running up to 20 parallel Codex (GPT-5.6) instances that emit
-    Lean 4 proofs. Each entry ships Lean 4 source pinned to a Mathlib version, checkers rejecting `sorry`,
-    and a transitive axiom audit, with downloadable verification packages; one entry states an independent
-    referee reran the verification. Framed as proposed solutions, not peer reviewed. Extends the GPT-5.6
-    Sol Ultra CDC-proof thread (2026-07-10). Machine-checked Lean is a stronger claim than the earlier
-    prose PDF. Covered 2026-07-15 AI (discussion).
-  opened: '2026-07-15'
-  sources:
-  - '[Star Fleet Math](https://www.starfleetmath.com/)'
-  - '[HN 48914646](https://news.ycombinator.com/item?id=48914646)'
-  subject: Star Fleet reports Lean-verified Erdős-problem solutions from parallel Codex agents
-  watch_for: Independent mathematician review of the Lean 4 proofs and whether any are accepted or refuted;
-    whether the problems were genuinely open; a formal writeup beyond the site; reproduction of the harness.
 - category: Markets
   id: f-0056
   last_seen: '2026-07-15'
@@ -1267,27 +1152,6 @@
   watch_for: Mass scanning and ransomware follow-on against the batch endpoint; confirmation forced auto-updates
     reach installs without auto-update enabled; whether the withheld exploit chain is fully published.
 - category: AI
-  id: f-0062
-  last_seen: '2026-07-18'
-  notes: >-
-    r/math thread (HN front page 48957779, 253 pts) claims GPT-5.6, given a ~10-page prompt, closed a
-    long-open derivative-free convex optimization gap: a near-quadratic Omega(d^2) deterministic lower
-    bound for convex Lipschitz functions from exact function values, matching a 30-year-old algorithm.
-    Phillip Kerger (UC Berkeley) published a Lean 4/mathlib formalization plus a manuscript "Closing the
-    Oracle-Complexity Gap in Derivative-Free Convex Optimization"; the manuscript does not attribute the
-    proof to an AI. Machine-checked but not peer reviewed; commenters stress heavy human priming and treat
-    the AI authorship as a community claim. Extends the AI-math-proof theme (CDC proof 2026-07-10, Star
-    Fleet Erdős 2026-07-15). Covered 2026-07-18 AI (discussion).
-  opened: '2026-07-18'
-  sources:
-  - '[Lean repo](https://github.com/PhillipKerger/zero-order-bounds-lean-verification)'
-  - '[HN 48957779](https://news.ycombinator.com/item?id=48957779)'
-  subject: GPT-5.6 credited with a Lean-verified convex optimization lower bound
-  watch_for: >-
-    Peer review of the manuscript; independent confirmation of the AI's role versus human authorship;
-    whether the Lean formalization matches the claimed AI-produced proof; whether it holds up like or
-    unlike the earlier CDC-proof and Star Fleet claims.
-- category: AI
   id: f-0063
   last_seen: '2026-07-21'
   notes: >-
@@ -1336,3 +1200,26 @@
   watch_for: A formal writeup or paper; independent expert confirmation the map is a genuine counterexample;
     clarification of the model's role versus the mathematician; whether the result is accepted by the
     field.
+- category: AI
+  id: f-0060
+  last_seen: '2026-08-09'
+  notes: >-
+    Merged from three follow-ups tracking the same question. 2026-07-10: OpenAI published a PDF proof
+    of the Cycle Double Cover Conjecture attributed to GPT-5.6 Sol Ultra, stated to use 64 subagents in
+    under an hour (cdn.openai.com cdc_proof.pdf, HN 48863490); HN noted the released prompt instructs
+    the model to assume a proof exists. 2026-07-15: Star Fleet (Colin Snyder, starfleetmath.com, HN 48914646)
+    published proposed solutions to open Erdos problems from up to 20 parallel Codex instances emitting
+    Lean 4 proofs, with sorry-checkers, pinned mathlib versions, and transitive axiom audits. 2026-07-18:
+    Phillip Kerger (UC Berkeley) published a Lean 4/mathlib formalization and manuscript closing a derivative-free
+    convex optimization gap, a near-quadratic deterministic lower bound for convex Lipschitz functions
+    from exact function values (github.com/PhillipKerger/zero-order-bounds-lean-verification, HN 48957779);
+    the manuscript does not attribute the proof to an AI, so the GPT-5.6 credit is a community claim.
+    None peer reviewed. Machine-checked Lean is a stronger claim than the prose PDF. Covered 2026-07-11,
+    2026-07-15, and 2026-07-18.
+  opened: '2026-08-09'
+  sources: []
+  subject: AI-credited proofs of open math problems (CDC, Erdos, derivative-free convex bound)
+  watch_for: >-
+    Independent mathematician review accepting or refuting any of the three; peer review of the Kerger
+    manuscript; whether the problems were genuinely open; whether the Lean formalizations match the claimed
+    AI-produced proofs; reproduction of the harnesses.

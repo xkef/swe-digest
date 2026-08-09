@@ -168,55 +168,6 @@
     link to publish; do not try to re-fetch it for verification.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0024
-  kind: fact
-  last_seen: '2026-06-29'
-  note: '`www.zerodayinitiative.com` - returns 403 from datacenter; use as WebSearch snippet source only;
-    confirm from MSRC directly.'
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0025
-  kind: fact
-  last_seen: '2026-06-29'
-  note: '`blog.talosintelligence.com` - returns 403 from datacenter; use as WebSearch snippet source only.'
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0026
-  kind: fact
-  last_seen: '2026-06-29'
-  note: >-
-    `www.cloudflarestatus.com` - returns 403 from datacenter; use WebSearch or check statusgator/isdown
-    aggregators as fallback.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0027
-  kind: fact
-  last_seen: '2026-06-29'
-  note: '`status.cloud.google.com` - returns 403 from datacenter; use WebSearch for incident details with
-    site:cloud.google.com filter.'
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0028
-  kind: fact
-  last_seen: '2026-06-29'
-  note: >-
-    `msrc.microsoft.com` - returns 403 from datacenter; confirm from support.microsoft.com KB pages which
-    are accessible, or via WebSearch.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0029
-  kind: fact
-  last_seen: '2026-06-29'
-  note: '`developer.chrome.com` - returns 403 from datacenter; use WebSearch for announcement details.'
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0030
-  kind: fact
-  last_seen: '2026-06-29'
-  note: '`sec.cloudapps.cisco.com` - Cisco security advisory pages return 403 from datacenter; confirm
-    from WebSearch snippets.'
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
   id: an-0031
   kind: fact
   last_seen: '2026-06-29'
@@ -232,42 +183,6 @@
   note: >-
     `forums.developer.nvidia.com` - NVIDIA developer forum returns 403 from datacenter. Use `developer.nvidia.com/blog`
     and `nvidianews.nvidia.com` for NVIDIA release announcements instead. GitHub issue #9 tracks this.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0033
-  kind: fact
-  last_seen: '2026-07-25'
-  note: >-
-    `www.reddit.com` / `old.reddit.com` - Reddit RSS feeds (`/hot/.rss`, `/top/.rss?t=day`) were host-blocked
-    from the unattended run environment on 2026-06-18 (both hosts, all probed subreddits failed, not a
-    per-feed 403). Access returned (HTTP 200) on 2026-06-20 from the run environment; r/programming hot
-    fetched cleanly, though rapid sequential fetches of many subreddits can be rate-limited (space them
-    out). 2026-07-07: 1s spacing 429s most subreddits even from a residential network, and GitHub Actions
-    runners get 429 on all but the first ~4 subreddits even at 7s spacing, so datacenter budgets are a
-    handful of requests per run. `make reddit` spaces requests 7s apart, rotates the starting subreddit
-    each six-hour window, keeps partial results (marked degraded), and the snapshots workflow accumulates
-    them in snapshots/reddit by post id. When degraded, prefer the committed snapshot and state the coverage
-    in Sources checked; full live coverage usually needs a residential network. Degraded again across
-    most of 2026-06-24..2026-06-30: 2026-06-24 RSS returned "Blocked"; 2026-06-25/26/27 partial (only
-    r/programming returned, most subs empty); 2026-06-28 /hot/.rss and /top/.rss?t=day returned empty;
-    2026-06-30 /top/.rss?t=day returned 0 entries and /hot/.rss returned HTTP 429. A sustained partial
-    block from the datacenter IP, not a one-off rate limit; raised as a plain blocked-source issue in
-    the 2026-06-28 weekly review so the owner can check Reddit access from another network. 2026-07-22:
-    live fetch returned only ~4 of 28 subreddits before HTTP 429 across successive runs; the committed
-    snapshot (snapshots/reddit) accumulated 276 posts over the day and was used instead. 2026-07-23: same
-    pattern, live fetch got 4 of 28 subreddits (cursor, cybersecurity, Kotlin, plus one) before HTTP 429;
-    the early-day snapshot added 7 more (aws, bioinformatics, iOSProgramming, java, netsec, programming,
-    rust) for ~10 subreddits total. 2026-07-23 later run (11:42 UTC): live fetch got 8 subreddits before
-    HTTP 429 and the committed snapshot brought the combined coverage to ~19 of 28. Separately, a 2026-07-21
-    report (cole-k.com, HN 49005747) states Reddit now requires login for the logged-out old.reddit.com
-    browsing experience; the RSS feeds `make reddit` uses still returned data on 2026-07-23, so this has
-    not yet broken the fetcher, but watch whether logged-out `old.reddit.com/{sub}/*.rss` access degrades
-    further. 2026-07-25: live fetch was 429ed on nearly every subreddit in both listings; the committed
-    snapshot carried the day to 14 of 28 subreddits, exactly the day floor. The 10:58 UTC fetch the same
-    day was again 429ed on most subreddits but pooling brought the day to 17 of 28 and the run reported
-    not degraded, so a second fetch several hours later is worth running even when the first was blocked.
-    A third fetch at 16:40 UTC was again 429ed on most subreddits and still lifted the day to 20 of 28,
-    so each additional spaced fetch keeps adding coverage across the UTC day.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
   id: an-0034
@@ -368,4 +283,35 @@
     points, num_comments, created_at), `hacker-news.firebaseio.com`, and `news.ycombinator.com` front
     page and item pages all return 200 locally. Use them directly when local. `hnrss.org` returns 403
     from datacenter IP ranges. Merged from four bullets to keep the store under its entry bound.
+  subject: ''
+- group: Datacenter-IP 403 blocks and fallbacks
+  id: an-0045
+  kind: fact
+  last_seen: '2026-08-09'
+  note: >-
+    `www.reddit.com` / `old.reddit.com` - RSS feeds (`/hot/.rss`, `/top/.rss?t=day`) are heavily rate-limited
+    from datacenter IP ranges. GitHub Actions runners get HTTP 429 after the first few subreddits even
+    at 7s spacing, and sustained host-level blocks occurred on 2026-06-18 and across 2026-06-24..2026-06-30.
+    `make reddit` spaces requests 7s apart, rotates the starting subreddit each six-hour window, keeps
+    partial results marked degraded, and the snapshots workflow accumulates them in snapshots/reddit by
+    post id. Prefer the committed snapshot when live coverage is degraded and state the coverage in Sources
+    checked. Each additional spaced fetch across the UTC day keeps adding coverage: on 2026-07-25 three
+    successive fetches lifted the day from 14 to 20 of 28 subreddits, so run a second and third fetch
+    even when the first was 429ed. Full live coverage usually needs a residential network. A 2026-07-21
+    report (cole-k.com, HN 49005747) states logged-out old.reddit.com browsing now requires login; the
+    RSS feeds still returned data on 2026-07-25, so watch for further degradation. Compacted from a per-day
+    log to keep the store under its byte bound.
+  subject: ''
+- group: Datacenter-IP 403 blocks and fallbacks
+  id: an-0046
+  kind: fact
+  last_seen: '2026-08-09'
+  note: >-
+    Hosts returning 403 to automated fetch from the datacenter IP range, all last confirmed 2026-06-29.
+    Use WebSearch snippets and confirm from a primary advisory: `www.zerodayinitiative.com` (confirm from
+    MSRC), `blog.talosintelligence.com`, `www.cloudflarestatus.com`, `status.cloud.google.com` (WebSearch
+    with a site:cloud.google.com filter), `msrc.microsoft.com` (support.microsoft.com KB pages are accessible
+    instead), `developer.chrome.com`, `sec.cloudapps.cisco.com`. For the two Statuspage-backed hosts prefer
+    the `/api/v2/incidents.json` endpoint recorded in source-reliability, which was verified working for
+    Cloudflare on 2026-07-25. Merged from seven bullets to keep the store under its entry bound.
   subject: ''
