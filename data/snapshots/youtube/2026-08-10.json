@@ -1,0 +1,427 @@
+{
+  "fetched_at": "2026-08-10T19:17:14+00:00",
+  "window_hours": 48,
+  "degraded": [],
+  "pooled": {
+    "snapshot_fetched_at": "2026-08-10T13:44:53+00:00",
+    "added": {
+      "videos": 5
+    }
+  },
+  "collections": {
+    "videos": {
+      "backend": "youtube-rss",
+      "items": [
+        {
+          "id": "maRzp4kImJ4",
+          "title": "Taking Reinforcement Learning Cross Datacenter \u2014 Nan Jiang, Modal",
+          "url": "https://www.youtube.com/watch?v=maRzp4kImJ4",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-10T17:30:30+00:00",
+          "views": 229,
+          "rating": {
+            "average": 5.0,
+            "count": 15
+          },
+          "discussion": null,
+          "description": "A frontier scale checkpoint is around 500 GB, so shipping one to a rollout fleet in another region takes minutes to hours and kills any hope of weight updates landing in seconds. Nan Jiang's claim is that you can send roughly 500 MB instead and have the rollout engine reconstruct a bitwise identical weights version. Fewer than 1% of rollout visible weights actually change between consecutive versions, and the reason is not that gradients are sparse. Gradients are dense, about 99% of parameters get a nonzero gradient and the FP32 master update is dense too. It is just small.\n\nThe mechanism is a small Adam step meeting finite precision. The rollout engine serves a BF16 view whose rounding boundary sits near theta over 256, about 0.0039 for a weight around 1, while a typical Adam step at RL post training learning rates runs around 3 millionths, more than a thousand times too small to cross it. The master weights move and the served value does not, which he calls Adam absorption. Lower precision serving makes it sharper still: an internal run serving GLM 4.7 Air in FP8 saw 0.15% of weights change on the first step and settle near 0.05%. Once a lossless patch is the unit of synchronization instead of a checkpoint, the rollout fleet stops needing to live in the trainer's cluster. Training keeps its all reduce and its fast fabric, rollout islands scatter across whatever regions and providers have GPUs right now, a sidecar makes any engine version aware, and scattered inference capacity becomes one elastic rollout fleet. Modal's implementation is called Stitch.\n\nSpeaker info:\n- https://x.com/nanjiangwill\n- https://www.linkedin.com/in/nanjiangwill/\n- https://www.nanjiangwill.com/\n- https://github.com/nanjiangwill\n\nTimestamps:\n0:00 - Where the GPUs actually are\n1:29 - The standard RL post training loop\n2:06 - The cathedral and the bazaar\n2:43 - RL wants four things at once\n3:22 - What can leave the cluster and what cannot\n3:59 - The rollout serving island as the movable unit\n"
+        },
+        {
+          "id": "sNTj5IvI2LY",
+          "title": "The Secret to Better Tech Hiring \ud83d\udd11\ud83d\udcbb",
+          "url": "https://www.youtube.com/watch?v=sNTj5IvI2LY",
+          "channel": "Modern Software Engineering",
+          "channel_id": "UCCfqyGl3nq_V0bo64CjZh8g",
+          "published_at": "2026-08-10T16:15:01+00:00",
+          "views": 574,
+          "rating": {
+            "average": 5.0,
+            "count": 34
+          },
+          "discussion": null,
+          "description": "Dave Farley critiques the common practice of relying on recruitment consultants and tick lists for shortlisting candidates based on specific tools and technologies. He argues that this method focuses too much on easily checkable but ultimately less important aspects, rather than understanding a candidate's potential and fit for the team. Farley emphasises that interviews should aim to uncover reasons to hire someone rather than reasons to reject them and suggests that organisations should focus on hiring smart people and helping them grow within the company.\n\n-\n\n#dev #cto #engineeringleadership #softwareengineering"
+        },
+        {
+          "id": "iu_ALBDtoHo",
+          "title": "Why Everyone Keeps Switching to Rust",
+          "url": "https://www.youtube.com/watch?v=iu_ALBDtoHo",
+          "channel": "ForrestKnight",
+          "channel_id": "UC2WHjPDvbE6O328n17ZGcfg",
+          "published_at": "2026-08-10T16:05:50+00:00",
+          "views": 4168,
+          "rating": {
+            "average": 5.0,
+            "count": 459
+          },
+          "discussion": null,
+          "description": "Everything is Rust.\n\nTry out Cursor! It's so good. https://jetty.to/cursor\n\nSo Rust is over 10 years old. Nothing about the language fundamentally changed this year. But more companies than ever have been switching to Rust, even those that had a full plan to do so just a few years ago but shelved the idea... until now.\n\nI wanted to really understand why all of this is happening right now, all at the same time. So I dug into every one of these rewrites (not everything is listed here - I went over way more that you'll learn about in the video):\n- Why Meta ported their type checker to Rust when other languages would've been easier.\n- What actually happened with the Bun rewrite (now that Jarred finally released the blog post).\n- How companies like Linear got massive performance boosts without writing a single line of Rust.\n- Why every major AI lab keeps choosing Rust.\n- Updates on last year's stories (including the conclusion to the Linux kernel/Rust drama).\n- And way more so I could find a real pattern.\n\nSo that's what this video's about. And once you see what it is, which is actually two things, and why it's happening... well it kind of changes how you think about potential rewrite decisions moving forward - and with this entire industry shift towards Rust - deciding whether or not to just build your new project in Rust to begin with.\n\nVideos mentioned:\nThe Bun Rewrite (Zig \u2192 Rust): https://youtu.be/2AqwehBu84w\nClaude Fable 5: https://youtu.be/2kObwHxHILQ\nBig Tech AI Layoffs: https://youtu.be/7QKcphdM5Cw\nThe X Algorithm Rewrite: https://youtu.be/-8JOlCvA4Qs\nLast year's Rust video: https://youtu.be/meEXag1XCFw\n\nDon't know why you'd want to follow me on other socials. I don't even post. But here you go.\n\ud83d\udc31\u200d\ud83d\ude80 GitHub: https://github.com/forrestknight\n\ud83d\udc26 Twitter: https://www.twitter.com/forrestpknight\n\ud83d\udcbc LinkedIn: https://www.linkedin.com/in/forrestpknight\n\ud83d\udcf8 Instagram: https://www.instagram.com/forrestpknight"
+        },
+        {
+          "id": "shRR1e2HXMk",
+          "title": "Codex, Behind the Harness \u2014 Dominik Kundel, OpenAI",
+          "url": "https://www.youtube.com/watch?v=shRR1e2HXMk",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-10T16:00:06+00:00",
+          "views": 604,
+          "rating": {
+            "average": 5.0,
+            "count": 28
+          },
+          "discussion": null,
+          "description": "Once GPT 5.3 Codex Spark started serving a thousand tokens per second on Cerebras, inference stopped being the bottleneck and the network became it. The answer was websocket mode: a persistent connection replacing server sent events over HTTP, carrying stateful context so a turn ships back only the tool call result instead of resending every item. The same pressure shapes context construction, which fights size, flexibility and cachability at once. Tools can be marked deferred so they never enter the context window and surface through tool search when the model actually wants them, and the available skills list is capped at 2% of the context window, with descriptions trimmed as it grows past that.\n\nActions are where a harness earns its keep. File edits go through an apply patch tool the models were trained on, everything else through a shell the model instinctively drives with ripgrep, and all of it inside a sandbox: seatbelt on macOS, bubblewrap on Linux, and a custom open source sandbox on Windows the team had to build themselves. Approval fatigue pushes people into full access, which their own security team hates, so an escalation now spins up an auto review subagent with read only permissions and no ability to spawn others, judging the action against the transcript and how explicitly the user authorized it. Deleting a file you asked for reads differently from deleting a .git folder you never mentioned. Long horizon goals run by injecting a continuation prompt until the model calls an update goal tool, which is why concrete verifiable objectives beat essays. Dominik Kundel's closing point is that the harness is Apache 2 and written in Rust, and most of what makes it distinct lives in the responses API, so you can borrow any of it.\n\nSpeaker info:\n- https://x.com/dkundel\n- https://linkedin.com/in/dkundel\n- https://github.com/openai/codex"
+        },
+        {
+          "id": "z63ZRBLsa6Q",
+          "title": "CNCF Ambassador Hrittik Roy on Community and AI Inference",
+          "url": "https://www.youtube.com/watch?v=z63ZRBLsa6Q",
+          "channel": "CNCF [Cloud Native Computing Foundation]",
+          "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
+          "published_at": "2026-08-10T15:11:28+00:00",
+          "views": 88,
+          "rating": {
+            "average": 0.0,
+            "count": 0
+          },
+          "discussion": null,
+          "description": "CNCF Ambassador Hrittik Roy started by building student communities. Now he's helping teams optimize for the AI wave. \n\n#Shorts #CNCFAmbassadors #CloudNative #AI"
+        },
+        {
+          "id": "5RWM8EOAWzI",
+          "title": "Watch the knobs. #springofficehours",
+          "url": "https://www.youtube.com/watch?v=5RWM8EOAWzI",
+          "channel": "SpringDeveloper",
+          "channel_id": "UC7yfnfvEUlXUIfm8rGLwZdA",
+          "published_at": "2026-08-10T15:02:43+00:00",
+          "views": 40,
+          "rating": {
+            "average": 5.0,
+            "count": 1
+          },
+          "discussion": null,
+          "description": "Watch the knobs. #springofficehours \n\nwatch more at https://www.youtube.com/live/MHsJMlq3wSI?si=pm4e1iFRfWGbF1et&amp;t=1518"
+        },
+        {
+          "id": "nEa6uGO9LEk",
+          "title": "Rust is the future of Linux",
+          "url": "https://www.youtube.com/watch?v=nEa6uGO9LEk",
+          "channel": "Let's Get Rusty",
+          "channel_id": "UCSp-OaMpsO8K0KkOqyBl7_w",
+          "published_at": "2026-08-10T14:14:05+00:00",
+          "views": 5588,
+          "rating": {
+            "average": 5.0,
+            "count": 445
+          },
+          "discussion": null,
+          "description": "\ud83d\udc49Join the Rust Live Accelerator waitlist: https://letsgetrusty.com/join/wv-nEa6uGO9LEk\n\nLinux stable kernel maintainer Greg Kroah-Hartman says Rust is becoming a permanent part of Linux kernel development. This video explores how Rust can prevent common C bugs, reduce the burden on kernel reviewers, improve security, and shape which languages future Linux developers should learn.\n\nChapters\n0:00 Introduction\n0:33 Who Is Greg Kroah-Hartman?\n0:58 Rust\u2019s Experiment in the Linux Kernel\n1:35 Why Linux Is Embracing Rust\n2:05 The Kernel\u2019s Code-Review Bottleneck\n3:04 Rust, CVEs, and Memory Safety\n3:19 New Rust Drivers and Existing C Code\n3:51 Should Kernel Developers Learn Rust or C?"
+        },
+        {
+          "id": "6_QXSyIhqB4",
+          "title": "What do we actually think about Hyperscale Silicon?? // The AI Hardware Podcast S2E9",
+          "url": "https://www.youtube.com/watch?v=6_QXSyIhqB4",
+          "channel": "TechTechPotato",
+          "channel_id": "UC1r0DG-KEPyqOeW6o79PByw",
+          "published_at": "2026-08-10T12:58:31+00:00",
+          "views": 1711,
+          "rating": {
+            "average": 5.0,
+            "count": 86
+          },
+          "discussion": null,
+          "description": "There are lots of chips in the market, but it seems that the big CSPs want to create their own CPUs and GPUs. There's something about building a chip for everyone, but at scale and efficiency, these players also want something a bit more optimized, especially for recommendation workloads.\n\n\nFull link to playlist: https://www.youtube.com/playlist?list=PLpZKwgOOdKTp5k4Aeq3bGNUtTbxhHDhdT\n\nWant to see more from Sally? Check out her recent industry coverage on EE Times: https://www.eetimes.com/author/sally-ward-foxton/?utm_source=ian_youtube&amp;utm_medium=social&amp;utm_campaign=aihardwareshow\n\nStay up to date on the latest news in the electronics industry with the EE Times newsletter. Subscribe Now: https://aspencore.dragonforms.com/loading.do?version=0&amp;page=1&amp;omedasite=EET_Subscribe_2025&amp;pk=aihardwareshow\n\n[00:00] Intro\n[01:07] Why hyperscalers build their own silicon\n[05:16] Designing chips for your own workloads\n[06:04] Custom CPUs and the Arm takeover\n[07:27] Semi-custom, design houses and the talent shortage\n[09:45] Nvidia, Broadcom and the cost question\n[13:13] Monolithic vs chiplet designs\n[14:11] Sponsor: Arteris\n[14:48] Amazon, Annapurna and the scale of cloud\n[19:26] Meta, RISC-V and China's hyperscalers\n[25:21] Talent, Korea and Japan\n[28:34] Closing: tell us more!\n\n-----------------------\nNeed POTATO merch? There's a chip for that!\nhttp://merch.techtechpotato.com\n\nhttp://more-moore.com : Sign up to the More Than Moore Newsletter\nhttps://www.patreon.com/TechTechPotato : Patreon gets you access to the TTP Discord server!\n\nFollow Ian on Twitter at http://twitter.com/IanCutress\nFollow TechTechPotato on Twitter at http://twitter.com/TechTechPotato\n\nIf you're in the market for something from Amazon, please use the following links. TTP may receive a commission if you purchase anything through these links.\nAmazon USA : https://geni.us/AmazonUS-TTP\nAmazon UK  : https://geni.us/AmazonUK-TTP\nAmazon CAN : https://geni.us/AmazonCAN-TTP\nAmazon GER : https://g"
+        },
+        {
+          "id": "dh0TKFPHBRU",
+          "title": "\"AI Is a Failed Attempt to Simulate Human Intelligence Using a Turing Machine\"",
+          "url": "https://www.youtube.com/watch?v=dh0TKFPHBRU",
+          "channel": "GOTO Conferences",
+          "channel_id": "UCs_tLP3AiwYKwdUHpltJPuA",
+          "published_at": "2026-08-10T12:00:27+00:00",
+          "views": 1330,
+          "rating": {
+            "average": 5.0,
+            "count": 43
+          },
+          "discussion": null,
+          "description": "Check out the full version on our YouTube channel now! #GOTOcon #GreenAI #Sustainability #GreenSoftware #SustainableAI #SustainableSoftware #AI #ML #LLM #GreenLLM #CharlesHumble #Programming #SoftwareEngineering #TodayInTech #ViralProgrammingShorts #Viral #ViralShorts #TodayInTech #GOTOcon\n\nCharles Humble - Freelance Techie, Podcaster, Editor, Author & Consultant\n\nFull version available here:\nhttps://youtu.be/5rFuv4SK7OY\n\nRECOMMENDED BOOKS\nCharles Humble \u2022 Kubernetes at the Edge \u2022 https://www.conissaunce.com/kubernetes-edge-ebook\nCharles Humble \u2022 Professional Skills for Software Engineers \u2022 https://conissaunce.com/professional-skills-shortcut\nCharles Humble \u2022 The Developer's Guide to Cloud Infrastructure, Efficiency & Sustainability \u2022 https://conissaunce.com/sustainability-ebook\n\nCHANNEL MEMBERSHIP BONUS\nJoin this channel to get early access to videos & other perks:\nhttps://www.youtube.com/channel/UCs_tLP3AiwYKwdUHpltJPuA/join\n\nLooking for a unique learning experience?\nAttend the next GOTO conference near you! Get your ticket at https://gotopia.tech\nSign up for updates and specials at https://gotopia.tech/newsletter\n\nSUBSCRIBE TO OUR CHANNEL - new videos posted almost daily.\nhttps://www.youtube.com/user/GotoConferences/?sub_confirmation=1"
+        },
+        {
+          "id": "cFxwYz5TOk0",
+          "title": "The Threat Hunting Course I Wish I Had",
+          "url": "https://www.youtube.com/watch?v=cFxwYz5TOk0",
+          "channel": "13Cubed",
+          "channel_id": "UCy8ntxFEudOCRZYT1f7ya9Q",
+          "published_at": "2026-08-10T11:52:36+00:00",
+          "views": 791,
+          "rating": {
+            "average": 5.0,
+            "count": 29
+          },
+          "discussion": null,
+          "description": "Introducing Architecting the Hunt. Great threat hunting starts with the right questions. This entry-level mini course teaches you a repeatable framework that turns guesswork into a disciplined cycle. You'll learn how to form a hypothesis, acquire the right data, apply core hunting techniques, counter the biases that derail investigations, and communicate your findings. Then practice what you learned in a hands-on lab. No prior experience needed!\n\n\ud83c\udf89 Enroll today at https://training.13cubed.com/architecting-the-hunt!\n\n#Forensics #DigitalForensics #DFIR #ThreatHunting"
+        },
+        {
+          "id": "dPWbc1uO69c",
+          "title": "Spring tips in under 1-minute: Virtual Threads",
+          "url": "https://www.youtube.com/watch?v=dPWbc1uO69c",
+          "channel": "SpringDeveloper",
+          "channel_id": "UC7yfnfvEUlXUIfm8rGLwZdA",
+          "published_at": "2026-08-10T00:52:16+00:00",
+          "views": 1719,
+          "rating": {
+            "average": 5.0,
+            "count": 27
+          },
+          "discussion": null,
+          "description": "Taking advantage of virtual threads, in Spring Framework, is easy.  The benefits are real.  Rarely, the benefits cause problems downstream. In those cases, its just as easy to disable. #virtualthreads #springframework #springboot #java"
+        },
+        {
+          "id": "8939X_kFwG4",
+          "title": "The Dark Fiber Listening Network",
+          "url": "https://www.youtube.com/watch?v=8939X_kFwG4",
+          "channel": "Asianometry",
+          "channel_id": "UC1LpsuAUaKoMzzJSEt5WImw",
+          "published_at": "2026-08-09T23:00:07+00:00",
+          "views": 64932,
+          "rating": {
+            "average": 5.0,
+            "count": 3315
+          },
+          "discussion": null,
+          "description": "Links:\n- Patreon (Support the channel directly!): https://www.patreon.com/Asianometry\n- X: https://twitter.com/asianometry\n- Newsletter & Podcast (available through Stratechery Plus): https://asianometry.passport.online/\n- LinkedIn (feel free to connect): www.linkedin.com/in/jon-y-asianometry"
+        },
+        {
+          "id": "OL7kfezynJM",
+          "title": "Multiplayer agentic engineering \u2014 Arjun Singh, Superconductor",
+          "url": "https://www.youtube.com/watch?v=OL7kfezynJM",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-09T20:30:34+00:00",
+          "views": 2274,
+          "rating": {
+            "average": 5.0,
+            "count": 51
+          },
+          "discussion": null,
+          "description": "Superconductor left a meeting bot sitting in a Google Meet at their expo booth for four hours, just listening. Someone passing through said they wanted coding agents to have clear acceptance criteria before declaring work finished. Nobody filed a ticket. The bot picked the idea out of the conversation, opened one itself, started working, and added two acceptance criteria fields to the product's own ticket form, then produced a screenshot when asked. Arjun Singh is not pretending that change ships as written. The claim is narrower and more useful: every customer call, onboarding session and team meeting now yields dozens of prototyped ideas and usually a few genuinely shippable pull requests, with nobody hand carrying a request from one system into another.\n\nMost of the talk is what has to be true underneath. One agent session has to be reachable from Slack, the desktop app and GitHub at once, so reviewing a teammate's work means asking the agent inside the thread instead of waiting for the author to wake up. The work runs in an isolated cloud environment, and Singh argues the real reason is not closing your laptop, it is least privilege. An agent told to wipe the staging database, resourceful and eager to comply, can find a token on a developer's machine that happens to point at production. A configurable network sandbox blocks exfiltration and asks before reaching anywhere new, and that same isolation is what lets support and growth people trigger real work without a development environment. Rather than trusting public benchmarks, they replay pull requests that represent good work from their own repository and plot quality against cost and time, because SWE bench is Python and they are Ruby on Rails. Their numbers for one month: 10.5 billion tokens, 3,300 Claude Code runs worth about $10,000 in token value, and Codex running four times as many sessions for less money.\n\nSpeaker info:\n- https://x.com/singharjun51293\n- https://www.linkedin.com/in/arjun-singh-629216105"
+        },
+        {
+          "id": "03l29gJXpCE",
+          "title": "Guide, Verify, Solve \u2014 Anirban Chatterjee, Sonar",
+          "url": "https://www.youtube.com/watch?v=03l29gJXpCE",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-09T17:45:13+00:00",
+          "views": 3254,
+          "rating": {
+            "average": 5.0,
+            "count": 68
+          },
+          "discussion": null,
+          "description": "A Carnegie Mellon study sorted GitHub projects by whether an AI tool wrote the code, and found the productivity gain ran out after about three months while the static analysis warnings and the added complexity stayed. That residue is verification debt, and how much it costs scales with criticality: a short lived internal tool can live with the gap between the quality a model gives you and the quality the application needs, a large codebase with adversarial users cannot. The obvious backstop is human review, and a Wharton study suggests it leaks badly. Participants took the AI's advice 92.7% of the time when it was correct, and still followed it nearly 80% of the time when it had been instructed to lie confidently.\n\nAnirban Chatterjee's argument is that the check has to be zero trust and multi layered. Zero trust means assuming the code could have come from anywhere and verifying it by a different method than the one that wrote it, since a model grading its own output inherits its own blind spots. Multi layered means computational review running alongside reasoning based review, because no single technique catches syntax, data flow, architecture and control flow at once. Sonar's leaderboard makes the blind spots concrete: across their metrics one Claude model rates well on correctness and reliability while the other is the better choice when maintainability, security or lower complexity is what matters. The loop he proposes wraps generation on both sides, handing the agent architectural constraints and coding standards before it starts, running verification inside the inner loop so issues get fixed before they propagate into later loops, and giving the agent the tools to remediate what comes back instead of queueing it for a person who is already rubber stamping too much.\n\nSpeaker info:\n- https://www.linkedin.com/in/anirbanc/\n- https://www.sonarsource.com/the-coding-personalities-of-leading-llms/leaderboard/"
+        },
+        {
+          "id": "KP_Bpsu69NI",
+          "title": "How a Random Lunch Led Physics into the Riemann Hypothesis - Grant Sanderson",
+          "url": "https://www.youtube.com/watch?v=KP_Bpsu69NI",
+          "channel": "Dwarkesh Patel",
+          "channel_id": "UCXl4i9dYBrFOabk0xGmbkRA",
+          "published_at": "2026-08-09T16:30:36+00:00",
+          "views": 28755,
+          "rating": {
+            "average": 5.0,
+            "count": 764
+          },
+          "discussion": null,
+          "description": ""
+        },
+        {
+          "id": "Kz4QJmNrVXU",
+          "title": "Velocity Sickness: What Happens When Your Whole Team Gets 10x Faster \u2014 Matt Dailey, Ref.",
+          "url": "https://www.youtube.com/watch?v=Kz4QJmNrVXU",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-09T16:30:28+00:00",
+          "views": 2716,
+          "rating": {
+            "average": 5.0,
+            "count": 70
+          },
+          "discussion": null,
+          "description": "A newsletter writer walked Matt Dailey through an agentic pipeline good enough to amplify their own voice instead of flattening it, then mentioned they were now effectively writing a book every week. Dailey asked whether the audience was reading a book every week. They were not. Those pages go unread, and that gap is what he calls velocity sickness: the stress of a sudden output increase that delivers output without impact. On engineering teams it arrives as too many pull requests to merge, work sprinting in too many directions at once, and the ritual of declaring agent bankruptcy, walking back to twelve terminals the next morning, recognizing none of it, throwing all of it out and paying for the same work twice.\n\nThe failure that actually worries him is critical decisions getting made by agents, because an engineer who lets that happen has stopped owning the code, and a team doing it at scale no longer owns the product. His fix is to separate the decision layer from the implementation layer and give the decision layer its own primitive: a document rather than a chat. Chats are isolated, ephemeral and built for implementation, so the decisions made inside one evaporate while only the code survives. A durable shared doc holds the state and the agent supplies the action, which keeps agents effectively stateless, lets several start from identical context, and turns rebuilding your own understanding into rereading a file. The tell that it is working, he says, is people writing plans they never implement, which is what prioritizing looks like once idea velocity replaces code velocity. Three things to try immediately: notice which gear you are in, treat the plan as a portal into the system rather than a prompt, and hand a plan to a teammate before you hand it to an agent.\n\nSpeaker info:\n- https://www.linkedin.com/in/matthewjdailey\n- https://ref.tools/"
+        },
+        {
+          "id": "i_bll9BPof0",
+          "title": "Subaru's 3 Cloud Native Wins for Faster AI Development | KubeCon + CloudNativeCon Japan",
+          "url": "https://www.youtube.com/watch?v=i_bll9BPof0",
+          "channel": "CNCF [Cloud Native Computing Foundation]",
+          "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
+          "published_at": "2026-08-09T16:14:35+00:00",
+          "views": 793,
+          "rating": {
+            "average": 5.0,
+            "count": 9
+          },
+          "discussion": null,
+          "description": "Subaru cut container image pull times by 60x, moved deployment onto GitOps, and automated their entire ML pipeline with Argo Workflows. Ryoji Kobayashi shared the results at KubeCon + CloudNativeCon Japan.\n\n#KubeCon #CloudNative"
+        },
+        {
+          "id": "vSx5IULvBns",
+          "title": "Always-on agents run production without the on-call tax \u2014 Justin Smith, Resolve AI",
+          "url": "https://www.youtube.com/watch?v=vSx5IULvBns",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-09T14:45:06+00:00",
+          "views": 1595,
+          "rating": {
+            "average": 5.0,
+            "count": 47
+          },
+          "discussion": null,
+          "description": "Someone drops a GitHub release tag into Slack and the agent decides on its own that this is a deploy worth watching. It reads what actually changed, works out which telemetry would expose trouble for that particular change, and writes a check plan for this release alone: checkout is replacing the currency service, so watch checkout latency and error rates, then follow the causal chain into the Kafka pipeline. None of the timing is hardcoded. It can decide to look again in an hour because this class of failure only surfaces intermittently, or come back in three days to ask whether the deploy is still healthy. Justin Smith is careful to say CI/CD already handles the baseline well. The gap is everything routed around it, the feature flags and infrastructure changes that ship with no monitoring at all and get caught only when an alert wakes somebody up.\n\nThe premise underneath is that around 70% of an engineer's time goes to running code rather than writing it, and coding agents made that worse by raising the volume of change flowing into production. Resolve's background agents are defined by three questions: when they run, on a schedule or an event stream or just a message; how they run, in the cloud inside a sandbox with its own file system, so closing your laptop changes nothing; and how they know what to do. The one Smith clearly enjoys most watches Slack channels and answers engineering questions without being addressed, staying quiet when it lacks confidence, and DMing him to confirm an answer before it replies in public. His sharpest point is that execution is the easy half. Loading a dashboard is execution. Deciding a metric smells wrong is production context, and building the knowledge system that keeps up with an environment changing faster every month is where the real work sits.\n\nSpeaker info:\n- https://www.linkedin.com/in/justin-smith-7b1534a8/\n- https://resolve.ai/events/behind-the-build/agents-for-engineering-workflows"
+        },
+        {
+          "id": "K0X9QDRkIdg",
+          "title": "Evolution of agentic surfaces \u2014 Gagan Bhat & Isabella Kai He, Anthropic",
+          "url": "https://www.youtube.com/watch?v=K0X9QDRkIdg",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-09T09:12:27+00:00",
+          "views": 4,
+          "rating": {
+            "average": 5.0,
+            "count": 4
+          },
+          "discussion": null,
+          "description": "Sonnet 4.5 developed what Anthropic's Applied AI team came to call context anxiety: approaching its context window limit, it would wrap work up early and stop with room to spare. They built context resets into the harness to compensate. Then Opus 4.5 shipped without the behavior, and the fix turned into pure overhead, adding latency and discarding cache it should have kept. That is the principle Gagan Bhat and Isabella Kai He build the whole session on: a harness encodes assumptions about what the model cannot do on its own, and those assumptions go stale as models improve.\n\nThe architectural consequence is decoupling the brain, meaning the agent loop, from the hands, meaning the tool execution environment. Both started in one container, so the model could not begin reasoning until setup finished and either half failing took the whole agent down. Splitting them lets reasoning start while the container builds in parallel, which they measured at 60% faster time to first token at P50 and over 90% at P95. It also changes failure into something recoverable: a dead sandbox is simply retried, and a dead brain resumes from a durable session log. That log ends up doing triple duty, providing observability, letting the harness read context slices back in after Claude discards them mid run, and feeding a periodic batch process they call dreaming that rewrites the agent's memory so the next day's sessions start smarter.\n\nSpeaker info:\nGagan Bhat (Anthropic):\n- https://www.linkedin.com/in/gagan-bhat/\n\nIsabella Kai He (Anthropic):\n- https://x.com/IsabellaKHe\n- https://www.linkedin.com/in/isabella-kai-he/\n\nTimestamps:\n0:00 - Who the Applied AI team is\n1:52 - From simple questions to owning outcomes\n2:45 - The Messages API and the hand rolled agentic loop\n4:29 - Six production infrastructure problems\n5:20 - The Claude Agent SDK\n6:13 - What managed agents takes off your plate\n7:02 - Harnesses encode assumptions that go stale\n7:51 - Context anxiety, and the fix that outlived its need"
+        },
+        {
+          "id": "gVfEtktkvnE",
+          "title": "Did Anthropic finally fix MCP?",
+          "url": "https://www.youtube.com/watch?v=gVfEtktkvnE",
+          "channel": "Theo - t3\u2024gg",
+          "channel_id": "UCbRP3c757lWg9M-U7TyEkXA",
+          "published_at": "2026-08-08T23:19:16+00:00",
+          "views": 81748,
+          "rating": {
+            "average": 5.0,
+            "count": 2200
+          },
+          "discussion": null,
+          "description": "The fifth Model Context Protocol spec release from Anthropic last month changed the game and I want to use them way more now \ud83d\udc40 \"stateless MCP\" is a much better path forward.\n\nThank you Browserbase for sponsoring! Check them out at: https://soydev.link/browserbase\n\nSOURCES:\nhttps://simonwillison.net/2026/Jul/31/stateless-mcp/\nhttps://blog.modelcontextprotocol.io/posts/2026-07-28/\n\nWant to sponsor a video? Learn more here: https://soydev.link/sponsor-me\n\nCheck out my Twitch, Twitter, Discord more at https://t3.gg\n\nS/O @Ph4seon3 for the awesome edit \ud83d\ude4f\n\n#coding #programming #mcp"
+        },
+        {
+          "id": "GyyXaCcCxPs",
+          "title": "LongCat 2.0: The Beginning of the End of NVIDIA MOAT?",
+          "url": "https://www.youtube.com/watch?v=GyyXaCcCxPs",
+          "channel": "bycloud",
+          "channel_id": "UCgfe2ooZD3VJPB6aJAnuQng",
+          "published_at": "2026-08-08T21:40:59+00:00",
+          "views": 41157,
+          "rating": {
+            "average": 5.0,
+            "count": 1660
+          },
+          "discussion": null,
+          "description": "In this video, I'll be covering the Meituan LongCat's latest flagship model: LongCat 2.0. This model release has some pretty interesting architectural improvements, along with a huge twist: everything was fully trained and inferenced on Chinese ASICs.\n\nmy latest project: Intuitive AI Academy\nWe just wrote a new piece on Optimization!!\nhttps://intuitiveai.academy/\nlimited time code \"LOCKIN\" for 35% off yearly plan\n\nMy Newsletter (weekly top research papers)\nhttps://mail.bycloud.ai/\n\nMy Patreon\nhttps://www.patreon.com/c/bycloud\n\n\nLongCat 2.0\n[Blog] https://longcat.ai/blog/longcat-2.0/\n[HuggingFace] https://huggingface.co/meituan-longcat/LongCat-2.0\n\nLongCat Sparse Attention\n[Paper] https://arxiv.org/abs/2608.01662\n\n\nTry out my new fav place to learn how to code https://scrimba.com/?via=bycloudAI\n\nThis video is supported by the kind Patrons & YouTube Members: \n\ud83d\ude4fSpam Maj, Alex, Chris LeDoux, DX Research Group, Poof N' Inu, Deagan, Robert Zawiasa, Ryszard Warzocha, Tobe2d, Louis Muk, Akkusativ, Kevin Tai, Mark Buckler, NO U, Tony Jimenez, \u00c2ngelo Fonseca, jiye, Anushka, Asad Dhamani, Binnie Yiu, Calvin Yan, Clayton Ford, Diego Silva, Etrotta, Gonzalo Fidalgo, Handenon, Hector, Jake Disco very, Michael Brenner, Nilly K, OlegWock, Daddy Wen, Shuhong Chen, Sid_Cipher, Stefan Lorenz, Sup, tantan assawade, Thipok Tham, Thomas Di Martino, Thomas Lin, Rich\u00e1rd Nagyfi, Paperboy, mika, Leo, Berhane-Meskel, Kadhai Pesalam, mayssam, Bill Mangrum, nyaa, Toru Mon, Lame Plane, Matej Macak, Len Mo, saylikhapekar, ZyanSheep, THEVIERAOS, Ricardo Raphael Corona-Moreno, superchordate\n\n\n[Discord] https://discord.gg/NhJZGtH\n[Twitter] https://twitter.com/bycloudai\n[Patreon] https://www.patreon.com/bycloud\n[Business Inquiries] bycloud@smoothmedia.co\n[Other Inquiries] bycloudai@gmail.com\n[Profile & Banner Art] https://twitter.com/pygm7\n[Video Editor] \nManim Animations created by https://x.com/miyashita_03\n[Ko-fi] https://ko-fi.com/bycloudai\n[Bitcoin (BTC)] 3JFMJQVGXNA2HJE5V9qCwLiqy6wHY9Vhdx\n[Ethe"
+        },
+        {
+          "id": "iQ5xldZ9StU",
+          "title": "Realtime multiplayer, automation, and you! \u2014 Idan Gazit, GitHub",
+          "url": "https://www.youtube.com/watch?v=iQ5xldZ9StU",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-08T21:30:06+00:00",
+          "views": 2171,
+          "rating": {
+            "average": 5.0,
+            "count": 42
+          },
+          "discussion": null,
+          "description": "Idan Gazit's personal site runs on Astro, which ships often enough to keep him permanently on the upgrade treadmill, so he wrote an agentic workflow in about three lines of plain English, the kind of message you would send a teammate. Copilot expanded it into a full playbook: check for new releases, read the changelog and upgrade guide, apply the changes, open a pull request. It then carried him from Astro 5 to Astro 7, two major versions at once, found and fixed the code that broke, verified the build, and flagged the manual steps it could not take itself. The workflow is a Markdown document. The YAML actions file is a compiled artifact nobody reads, so changing how the automation behaves means editing the English.\n\nThe guardrails are the part he wants remembered. Prompting an agent to behave is not a guardrail, because anyone who can prompt inject it can undo the instruction, and you have let the fox into the henhouse. Permissions, allowed tools, reachable network destinations and safe outputs get declared deterministically in front matter instead. His upgrade workflow may open exactly one pull request, and is explicitly allowed to do nothing at all, since an automation that cannot stay quiet turns into a denial of service against its own owner. Secrets stay outside the agent's jail entirely, because a secret an agent can see should be treated as already compromised. The second prototype, ACE, runs every session in a cloud microVM and deliberately resembles a chat app, on the theory that what belongs in the shared surface is everything not already in the code: the political constraints, the infrastructure deal that quietly picks your cloud provider, the plan two people edit together before telling the agent to go make the document true. He ends on a study of around a hundred developers over thousands of hours which found that hands on keyboard typing is about 5% of the work, and that is the only 5% the tools have helped with so far.\n\nSpeaker info:\n- https://twitte"
+        },
+        {
+          "id": "7vn4WpqNpck",
+          "title": "Benchmarking Coding Agents on New vs Legacy Codebases \u2014 Denys Linkov, Wisedocs",
+          "url": "https://www.youtube.com/watch?v=7vn4WpqNpck",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-08T19:00:06+00:00",
+          "views": 2365,
+          "rating": {
+            "average": 5.0,
+            "count": 55
+          },
+          "discussion": null,
+          "description": "Wisedocs processes medical claims that arrive as PDFs over 10,000 pages long, some of them larger than video files, through a pipeline of ML models spread across ten repositories nobody enjoyed touching. Denys Linkov's team spent six months collapsing that into a monorepo, and this talk is an honest audit of whether they should have just waited for the models to get good enough to do it for them. The benchmark he keeps coming back to is a single refactor task. With o3 it took three hours of back and forth in Cursor and still shipped ten major mistakes. Rerun on newer models, Sonnet 4.6 needed one extra iteration and Opus 4.8 essentially got it in one pass, at roughly a fifth of the original effort.\n\nThe counterweight is what happens when you hand a current model the whole job. GPT 5.5 extra high declared the refactor done in 10 minutes 22 seconds and wrote 2,000 lines, which turned out to be scaffolding with the actual models missing, something it admitted in its own output by noting it had not added the deployment or bootstrap command yet. That gap is why Linkov reads the METR task length curve at 80% or 90% success instead of the usual 50%. Launching an hour long agent run on coin flip odds mostly buys you a wasted hour and a broken attention span. His verdict is that doing the refactor beat deferring it, and the evidence is as much social as technical: commit velocity rose and never flattened, work that used to take months ships in under a week, and developers across the company now volunteer into the repo even outside their own area, which was never true of the ten it replaced.\n\nSpeaker info:\n- https://x.com/denyslinkov\n- https://www.linkedin.com/in/denyslinkov/"
+        },
+        {
+          "id": "YhX4FF3uuLU",
+          "title": "Audio Programming - ADSR",
+          "url": "https://www.youtube.com/watch?v=YhX4FF3uuLU",
+          "channel": "Tsoding Daily",
+          "channel_id": "UCrqM0Ym_NbK1fqeQG2VIohg",
+          "published_at": "2026-08-08T18:06:09+00:00",
+          "views": 16438,
+          "rating": {
+            "average": 5.0,
+            "count": 716
+          },
+          "discussion": null,
+          "description": "Streamed Offline\n\nRest of the Episodes: https://www.youtube.com/playlist?list=PLX0oFSIlwhPY\n\nChapters:\n- 00:00:00 - Intro\n- 00:02:18 - Inversion of mixing\n- 00:14:06 - Keeping track of when the note has started\n- 00:19:19 - Attack\n- 00:23:24 - Release note\n- 00:31:34 - Synth for release notes\n- 00:36:02 - Evicting released notes\n- 00:43:50 - Mixing issue\n- 00:48:40 - Exploring Source Code of Raylib\n- 01:03:26 - Outro\n\nReferences:\n- https://en.wikipedia.org/wiki/Envelope_(music)#ADSR\n- https://www.raylib.com/\n\nTopic: Second episode of Dimooper II development. Implementing ADSR\n\nTwitch Chat in Subtitles generated by: https://github.com/kam1k4dze/subchat\n\nSupport:\n- https://github.com/tsoding/donate#support-tsoding"
+        },
+        {
+          "id": "Z-c11pV_uvU",
+          "title": "Anthropic's CCA Exam as a Field-Guide for Agentic Engineering \u2014 Frank Coyle, UC Berkeley",
+          "url": "https://www.youtube.com/watch?v=Z-c11pV_uvU",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-08T16:00:06+00:00",
+          "views": 17484,
+          "rating": {
+            "average": 5.0,
+            "count": 604
+          },
+          "discussion": null,
+          "description": "The Claude Certified Architect exam hands you six production scenarios and picks four at random, and Frank Coyle walks through them backwards, leading with the anti pattern in each one. Knowing what not to do is what points you toward what to do, the same way the design patterns movement of the early 1990s came with a catalog of the moves that quietly ruin you. Scenario one is a customer support loop, and the anti pattern is calling the model, taking the response, and using it. What you want instead is to branch on the stop reason, because the model cannot execute a tool at all. It only hands back the parameters your own code runs, and the stop reason is also how you learn you ran out of tokens and the answer in your hands is partial.\n\nThe rest is context discipline. Loading one agent with every tool is the carpenter who turns up with plumbing and electrical gear too, so specialized subagents with one or two tools each win, and every agent should see only its own slice. Coyle gives a critic agent the claim and the evidence but withholds the reasoning that produced them, because agents that watch each other think converge on a single idea the way a group talks itself into pizza. Subtask output gets forked into its own context so only the summary returns to the main thread, with a token count check that triggers compaction past a threshold. He closes on a cheap win most people skip: batch mode runs the same work for half the token cost if you can wait a day for it.\n\nSpeaker info:\n- https://x.com/coyle_frankp\n- https://www.linkedin.com/in/frank-coyle/\n- https://www.frank-coyle.ai/"
+        },
+        {
+          "id": "WW1Xd6OK0O0",
+          "title": "HackTheBox - Helix",
+          "url": "https://www.youtube.com/watch?v=WW1Xd6OK0O0",
+          "channel": "IppSec",
+          "channel_id": "UCa6eh7gCkpPo5XXUDfygQQA",
+          "published_at": "2026-08-08T15:00:21+00:00",
+          "views": 3913,
+          "rating": {
+            "average": 5.0,
+            "count": 155
+          },
+          "discussion": null,
+          "description": "00:00 - Introduction\n00:45 - Start of nmap\n03:20 - Using FFUF to VHOST Bruteforce and finding flow.helix.htb\n05:30 - Looking into H2 Database RCE's, finding the Alias Command allows us the ability to run Java\n07:10 - RCE #1: Using H2 Syntax to create an alias to run a shell command\n15:10 - RCE #2: Adding a Processor to run Groovy\n18:00 - RCE #3: Adding a Command Processor to run a bash command\n19:40 - RCE #4: Is it easier to just use Metasploit?\n26:00 - Shell on the box, using Find to show the types of all the files in our CWD and finding an SSH Key\n30:15 - Shell as Operator, cracking a PDF\n38:00 - Running OPCUA-Client-GUI and editing the registers to put the device in maintenance mode"
+        },
+        {
+          "id": "3XDH-fZKnQk",
+          "title": "Let's build a digital clock!",
+          "url": "https://www.youtube.com/watch?v=3XDH-fZKnQk",
+          "channel": "Ben Eater",
+          "channel_id": "UCS0N5baNlQWJCUrhCEo8WlA",
+          "published_at": "2026-08-08T15:00:10+00:00",
+          "views": 151072,
+          "rating": {
+            "average": 5.0,
+            "count": 10122
+          },
+          "discussion": {
+            "hn_url": "https://news.ycombinator.com/item?id=49231091",
+            "points": 2,
+            "num_comments": 0
+          },
+          "description": "Kits and more: https://eater.net/clock\nSupport these videos on Patreon: https://www.patreon.com/beneater or https://eater.net/support for other ways to support.\n\n------------------\n\nSocial media:\nWebsite: https://www.eater.net\nTwitter: https://x.com/beneater\nPatreon: https://patreon.com/beneater\nReddit: https://www.reddit.com/r/beneater\n\nSpecial thanks to these supporters for making this video possible:\nAdam Bursey, Adrien Friggeri, Aleksey Smolenchuk, aliceitc, Anthony Weems, anula, Ben, Ben Cochran, Ben Kamens, Benjamin Keil, Benji Bromberg, Bill Cooksey, Binh Tran, Borko Rajkovic, Bradley Stach, Brian Haug, Carl Fooks, Carsten Schwender, Chris Anders, Chris Fala, Chris Lajoie, Craig Hawco, Cristi Cobzarenco, Daniel Kouchekinia, Daniel Tang, David Clark, David Cox, David Dawkins, David House, David Sastre Medina, David Turner, Dean Winger, Deep Kalra, DemoniacDeath, Derek Chandler, Dilip Gowda, Dirk Sperling, Dmytro G, Dustin Schoenbrun, Dzevad Trumic, Enrico Gueli, Eric Dynowski, Ethan Sifferman, Eugene Bulkin, Evan Serrano, Eveli L\u00e1szl\u00f3, garmata, George Harris, George Miroshnykov, ghostdunk, Glen Jarvis, Glenn Davidson, Gregory Burns, GusGold, Henry Lerner, Ingo Eble, Isaac Parker, Jack McKinney, James Chacon, Jason DeStefano, Jason Thorpe, JavaXP, Jaxon Ketterman, Jefferson Hunt, jemmons, Jesse Miller, Jim Kelly, Jim Knowler, Jim Rees, Joe Beda, Joel, John Haugabook, John Rivoire, Jon, Jon Dugan, Jonn Miller, Josh Smith, Kai Wells, Kefen, Kennard Smith, Kenneth Christensen, Kolbeinn Einarsson, Kristian H\u00f8y Horsberg, Kyle Kellogg, Lambda AI Cloud, Larry Scherr, L\u00e1szl\u00f3 B\u00e1csi, Lithou, Mark Day, Mark Frankford, Michael A Berry, MICHAEL SLASS, Michael Tedder, Michael Timbrook, Mike G, mikebad, Miles Macchiaroli, Mlok Karel, Nate Welch, Nicholas Counts, Nicholas Moresco, Nick Chapman, Nikki Pearson, NormalLuser, Olivier HUBER, \u00d6rn Arnarson, Pat Nakajima, Paul Heller, Paul Pluzhnikov, petar vucetin, Pete Dietl, Philip Hofstetter, Pierre Moermans, ProgrammerDor, Ralph "
+        }
+      ]
+    }
+  }
+}
