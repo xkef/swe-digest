@@ -1,0 +1,1177 @@
+date: '2026-08-12'
+judgment:
+  inbox: []
+  miss_review: {}
+  notes: |
+    Today's digest file was still the unfilled template, so this run selected the whole day and
+    displaced nothing. Twelve stories across seven sections, well under the 25-story budget and the
+    per-section cap of 4. The day was genuinely security-weighted and three of the four Top stories
+    reflect that rather than a section quota.
+
+    Lead choice. OpenSSH 10.5 leads over the CVE-2026-53361 container escape on breadth and
+    certainty. The kernel exploit is the more severe single item, but its severity claim rests
+    partly on the exploit author's own targeting table, while the OpenSSH release is a confirmed
+    primary artifact on near-universal infrastructure and carries a stated policy change: the
+    project will ship more frequently because AI-found bugs are being independently rediscovered, so
+    it assumes non-reporting adversaries can find them too. That extends the AI-found-vulnerability
+    thread running through the Redis releases, the 432-CVE kernel batch, and Torvalds' remarks, and
+    it is the first case in that thread of a maintainer changing release process rather than
+    commenting on volume.
+
+    Verification and attribution calls a reader could not infer. CVE-2026-53361 is confirmed
+    independently of the exploit repository: NVD published it 2026-07-04 at CVSS 7.1 from the
+    kernel.org CNA, with fixes in 6.6.144, 6.12.95, 6.18.38, and 7.1, and Debian DSA-6381-1 confirms
+    6.12.95-1 for trixie. The exploit repository has zero stars, one fork, and a three-commit
+    history, and its claims that Ubuntu 24.04 HWE 6.17 and RHEL 10 remain unpatched are the author's
+    alone and were not verified this run. The story is written so the confirmed CVE and fixed
+    versions carry the claim and the unpatched assertion stays attributed.
+
+    The CloudSEK item is published as developing, not confirmed. The attack chain is specific and
+    checkable in outline, but CloudSEK states in its own post that the 2,500-organization and
+    434,000-pipeline figures are a reconstructed exposure dataset and not proof that any listed
+    organization was compromised. The post also carries a lead-generation exposure checker and a
+    named victim table, so the numbers are attributed to CloudSEK throughout and no named
+    organization is written as breached. The underlying LiteLLM compromise is from March 2026, which
+    predates this archive; the 2026-06-11 digest covered a different LiteLLM flaw, CVE-2026-42271,
+    so this is not a repeat.
+
+    Checkly's incident report is a primary source from the victim, but the vendor side is not:
+    metabase.com returned a 301 redirect loop on both paths tried, so Metabase's own advisory, the
+    patched version, and whether self-hosted installations are affected could not be established.
+    Self-hosted Metabase operators cannot act on this item yet, and that gap is why it sits in
+    Security rather than Top stories despite an exploited zero-day.
+
+    Reviewed and not published. OpenAI's head of ethics departing was the day's second-largest
+    thread at 318 points, but the FT primary is paywalled, the secondary coverage adds no verifiable
+    detail, and the HN thread carried no technical substance. The Claude Code issue at 37 points
+    claiming a real email address was sent as a User-Agent is a July 17 user report with no logs, no
+    reproduction, and no maintainer response, so it supports no publishable claim. Stratechery's
+    Nvidia piece was rejected on 2026-08-11 as subscription commentary with no primary filing and is
+    rejected again on the same ground. A tweet claiming hidden chain-of-thought leaks from a
+    deep_think tool is a plausible follow-up to yesterday's lead but has no write-up behind it and
+    was dropped rather than attributed from a social post. Nemotron 3.5 Lightning itself was
+    published 2026-08-11, so only NeMo Switchyard, which is new, is carried today.
+
+    Sections omitted for lack of material rather than lack of checking: Agentic coding, Developer
+    tools, Apple platforms, Linux and kernel, Markets and companies, Hacker News, Reddit and social
+    pulse, and Watchlist follow-ups. Books was omitted deliberately: the publisher feed returned
+    only Springer conference proceedings, which are not technical book releases with engineering
+    relevance. New videos was omitted because the two Dwarkesh Patel uploads and the Theo video
+    carry no HN discussion link, and the video bar ranks on external discussion signal rather than
+    view count.
+
+    Backtest. The tool scored 59 candidate misses for 2026-08-11 but seeded zero causes, so that
+    day's run log currently records no cause for any candidate. The dominant pattern is a timing
+    gap, not an editorial one: Mojo 1.0, the Go post, NeMo Switchyard, and the ngrok compression
+    post all reached HN between 16:56 and 19:49 UTC on 2026-08-11, after that day's publish fetch,
+    and all four are published today. They are marked scrape_gap. Jolt, a Clojure compiler on Chez
+    Scheme at 125 points, is marked watchlist_gap: it is a real languages story that no watchlist
+    query matched. Separately, and not entered as a cause because the story was already carried on
+    2026-08-10, no query matched Meta's Muse Glimmer at 1,138 points either, which suggests the
+    query corpus is under-covering model releases by name.
+
+    Memory hygiene, for the weekly review rather than the page. The followups store returned 51
+    records totaling roughly 89,000 characters, large enough that reading it required three chunked
+    passes. Several entries are resolved or stale enough to close: the Azure PIR entry f-0008 was
+    waiting on a final PIR due within 14 days of 2026-07-23, which has passed; f-0028, the approved
+    Anthropic settlement, has no open question left beyond payout mechanics; and f-0016 already
+    carries its own superseding correction inline. Every run of every day pays to re-read these
+    bytes.
+mechanical:
+  digest:
+    domains:
+    - arxiv.org
+    - blog.hartwork.org
+    - blogs.nvidia.com
+    - checklyhq.com
+    - clickhouse.com
+    - cloudsek.com
+    - debian.org
+    - developers.googleblog.com
+    - github.com
+    - modular.com
+    - news.ycombinator.com
+    - ngrok.com
+    - nvd.nist.gov
+    - openssh.org
+    - x.ai
+    hn_ids:
+    - 49253669
+    - 49255598
+    - 49257903
+    - 49261128
+    - 49261133
+    - 49261514
+    - 49261895
+    - 49263340
+    - 49263497
+    - 49265031
+    - 49267550
+    sections:
+      AI: 2
+      Engineering posts: 1
+      Infrastructure: 1
+      Languages and runtimes: 1
+      ML research: 1
+      Outages: 0
+      Security: 2
+      Sources checked: 0
+      Top stories: 4
+    source_count: 25
+    titles:
+    - >-
+      OpenSSH 10.5 ships three security fixes and the project says it will release more often because
+      AI-assisted reports keep finding real bugs
+    - A public exploit lands for CVE-2026-53361, an AF_UNIX garbage collection race the author uses to
+      escape containers
+    - Mojo reaches 1.0 with a primarily-additive change policy, while the compiler stays closed
+    - >-
+      CloudSEK publishes a victim list for the March 2026 LiteLLM supply chain compromise, naming 2,500
+      organizations and 434,000 CI/CD pipelines
+    - NVIDIA releases NeMo Switchyard, an open source model-routing library, with partner cost figures
+    - xAI launches Grok Bot in beta, gated behind SuperGrok Heavy and Cursor paid tiers
+    - A case study reports tightened bounds on the Grothendieck constant reached with an AI research system
+    - Checkly reports an attacker used a Metabase Cloud zero-day to read its analytics warehouse for 26
+      minutes
+    - Expat 2.8.3 fixes CVE-2026-72522, an out-of-bounds read in UTF-16 decoding reachable over the network
+    - A Google post argues language choice now matters for review rather than for writing speed
+    - >-
+      pg_clickhouse v0.10.0 pushes down 16 of 22 TPC-H queries and adds guards for a NULL semantics mismatch
+      that silently inverted NOT IN
+    - Compression is prediction, an explainer connecting entropy coding to language modeling
+  fetched:
+  - detail: 241660 bytes
+    ok: true
+    url: https://www.modular.com/blog/modular-26-5-mojo-1-0-is-here
+  - detail: 758852 bytes (clipped)
+    ok: true
+    url: https://www.openssh.org/releasenotes.html#10.5
+  - detail: 305114 bytes
+    ok: true
+    url: https://github.com/sgkdev/bad_garbage
+  - detail: 106567 bytes
+    ok: true
+    url: https://www.checklyhq.com/blog/metabase-security-incident/
+  - detail: 7134 bytes
+    ok: true
+    url: https://www.debian.org/security/2026/dsa-6381
+  - detail: 82074 bytes
+    ok: true
+    url: https://nvd.nist.gov/vuln/detail/CVE-2026-53361
+  - detail: |-
+      failed: fetch failed: https://www.metabase.com/blog/security-incident-august-2026: HTTP Error 301: The HTTP server returned a redirect error that would lead to an infinite loop.
+      The last 30x error message was:
+      Moved Permanently
+    ok: false
+    url: https://www.metabase.com/blog/security-incident-august-2026
+  - detail: 57371 bytes
+    ok: true
+    url: https://developers.googleblog.com/why-go-is-an-ideal-language-for-ai-assisted-software-engineering/
+  - detail: 274727 bytes
+    ok: true
+    url: https://github.com/anthropics/claude-code/issues/78431
+  - detail: 41677 bytes
+    ok: true
+    url: https://arxiv.org/abs/2608.11195
+  - detail: 276593 bytes (clipped)
+    ok: true
+    url: https://www.cloudsek.com/blog/ai-supply-chain-breach-2500-companies-434000-cicd-pipelines
+  - detail: 123920 bytes
+    ok: true
+    url: https://blogs.nvidia.com/blog/nemotron-lightning-switchyard-rtx-dgx/
+  - detail: 274428 bytes (clipped)
+    ok: true
+    url: https://ngrok.com/blog/compression-is-prediction
+  - detail: 7650 bytes
+    ok: true
+    url: https://blog.hartwork.org/posts/expat-2-8-3-released/
+  - detail: |-
+      failed: fetch failed: https://www.metabase.com/blog/security-advisory-august-2026: HTTP Error 301: The HTTP server returned a redirect error that would lead to an infinite loop.
+      The last 30x error message was:
+      Moved Permanently
+    ok: false
+    url: https://www.metabase.com/blog/security-advisory-august-2026
+  - detail: 235066 bytes (clipped)
+    ok: true
+    url: https://clickhouse.com/blog/pg_clickhouse-whats-new-july-2026
+  - detail: 201578 bytes
+    ok: true
+    url: https://x.ai/news/introducing-grok-bot
+  - detail: 57371 bytes
+    ok: true
+    url: https://developers.googleblog.com/why-go-is-an-ideal-language-for-ai-assisted-software-engineering/
+  - detail: 758852 bytes (clipped)
+    ok: true
+    url: https://www.openssh.org/releasenotes.html#10.5
+  - detail: 123920 bytes
+    ok: true
+    url: https://blogs.nvidia.com/blog/nemotron-lightning-switchyard-rtx-dgx/
+  - detail: 7650 bytes
+    ok: true
+    url: https://blog.hartwork.org/posts/expat-2-8-3-released/
+  - detail: 41677 bytes
+    ok: true
+    url: https://arxiv.org/abs/2608.11195
+  - detail: 274428 bytes (clipped)
+    ok: true
+    url: https://ngrok.com/blog/compression-is-prediction
+  - detail: 241660 bytes
+    ok: true
+    url: https://www.modular.com/blog/modular-26-5-mojo-1-0-is-here
+  - detail: 82065 bytes
+    ok: true
+    url: https://nvd.nist.gov/vuln/detail/CVE-2026-53361
+  - detail: 201578 bytes
+    ok: true
+    url: https://x.ai/news/introducing-grok-bot
+  - detail: 235066 bytes (clipped)
+    ok: true
+    url: https://clickhouse.com/blog/pg_clickhouse-whats-new-july-2026
+  - detail: 106567 bytes
+    ok: true
+    url: https://www.checklyhq.com/blog/metabase-security-incident/
+  - detail: 758852 bytes (clipped)
+    ok: true
+    url: https://www.openssh.org/releasenotes.html#10.5
+  - detail: 201578 bytes
+    ok: true
+    url: https://x.ai/news/introducing-grok-bot
+  - detail: 57371 bytes
+    ok: true
+    url: https://developers.googleblog.com/why-go-is-an-ideal-language-for-ai-assisted-software-engineering/
+  - detail: 41677 bytes
+    ok: true
+    url: https://arxiv.org/abs/2608.11195
+  - detail: 305102 bytes
+    ok: true
+    url: https://github.com/sgkdev/bad_garbage
+  - detail: 241660 bytes
+    ok: true
+    url: https://www.modular.com/blog/modular-26-5-mojo-1-0-is-here
+  generated_at: '2026-08-12T03:57:09+00:00'
+  hn:
+    backends:
+      ask_hn: algolia
+      comments: algolia
+      front_page: algolia
+      show_hn: algolia
+      top_day: algolia
+    degraded: []
+    fetched_at: '2026-08-12T03:33:13+00:00'
+    pooled:
+      added:
+        ask_hn: 0
+        comments: 0
+        front_page: 3
+        queries: 0
+        show_hn: 1
+        top_day: 2
+      snapshot_fetched_at: '2026-08-12T02:44:47+00:00'
+    queries_backend: algolia
+    seen_ids:
+    - 47439821
+    - 47999020
+    - 49191130
+    - 49196657
+    - 49201953
+    - 49210199
+    - 49223965
+    - 49226623
+    - 49252912
+    - 49253141
+    - 49253176
+    - 49253250
+    - 49253259
+    - 49253329
+    - 49253378
+    - 49253577
+    - 49253721
+    - 49253813
+    - 49254304
+    - 49254351
+    - 49254381
+    - 49254880
+    - 49254881
+    - 49254907
+    - 49254919
+    - 49255463
+    - 49255496
+    - 49255672
+    - 49255710
+    - 49255742
+    - 49255935
+    - 49256033
+    - 49256057
+    - 49256400
+    - 49256509
+    - 49256631
+    - 49256765
+    - 49257160
+    - 49257326
+    - 49257377
+    - 49257523
+    - 49257601
+    - 49257687
+    - 49257740
+    - 49257744
+    - 49257824
+    - 49257876
+    - 49257947
+    - 49258000
+    - 49258011
+    - 49258202
+    - 49258328
+    - 49258397
+    - 49258409
+    - 49258581
+    - 49258599
+    - 49258602
+    - 49258687
+    - 49258764
+    - 49258970
+    - 49259043
+    - 49259055
+    - 49259091
+    - 49259339
+    - 49259418
+    - 49259583
+    - 49259602
+    - 49259611
+    - 49259766
+    - 49259794
+    - 49259812
+    - 49260250
+    - 49260805
+    - 49261128
+    - 49261133
+    - 49261192
+    - 49261218
+    - 49261417
+    - 49261514
+    - 49261515
+    - 49261522
+    - 49261532
+    - 49261591
+    - 49261613
+    - 49261634
+    - 49261767
+    - 49261895
+    - 49261987
+    - 49262048
+    - 49262211
+    - 49262312
+    - 49262352
+    - 49262388
+    - 49262475
+    - 49262657
+    - 49262666
+    - 49262726
+    - 49262761
+    - 49262811
+    - 49263068
+    - 49263195
+    - 49263227
+    - 49263340
+    - 49263461
+    - 49263497
+    - 49263602
+    - 49263656
+    - 49263658
+    - 49264157
+    - 49264583
+    - 49264755
+    - 49264777
+    - 49265031
+    - 49265051
+    - 49265124
+    - 49265879
+    - 49266277
+    - 49266455
+    - 49266560
+    - 49266899
+    - 49266921
+    - 49267057
+    - 49267234
+    source: cache
+  query_yield:
+    0day:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    AI:
+      matched: 3
+      matched_ids:
+      - 49254351
+      - 49261133
+      - 49264755
+      published: 1
+      published_ids:
+      - 49261133
+      raw: 5
+    AWS:
+      matched: 3
+      matched_ids:
+      - 49255283
+      - 49256919
+      - 49257927
+      published: 0
+      published_ids: []
+      raw: 5
+    AlphaFold:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Anthropic:
+      matched: 5
+      matched_ids:
+      - 49254919
+      - 49258620
+      - 49261800
+      - 49265135
+      - 49266335
+      published: 0
+      published_ids: []
+      raw: 5
+    Apple Silicon:
+      matched: 1
+      matched_ids:
+      - 49259339
+      published: 0
+      published_ids: []
+      raw: 1
+    Azure:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    CRDT:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    CUDA:
+      matched: 1
+      matched_ids:
+      - 49263176
+      published: 0
+      published_ids: []
+      raw: 4
+    CVE:
+      matched: 3
+      matched_ids:
+      - 49256278
+      - 49257903
+      - 49267550
+      published: 2
+      published_ids:
+      - 49257903
+      - 49267550
+      raw: 5
+    Claude:
+      matched: 5
+      matched_ids:
+      - 49254999
+      - 49255222
+      - 49256258
+      - 49258881
+      - 49262624
+      published: 0
+      published_ids: []
+      raw: 5
+    Claude Code:
+      matched: 5
+      matched_ids:
+      - 49254381
+      - 49254999
+      - 49256258
+      - 49258881
+      - 49261122
+      published: 0
+      published_ids: []
+      raw: 5
+    Cloudflare:
+      matched: 5
+      matched_ids:
+      - 49256985
+      - 49257740
+      - 49261721
+      - 49264728
+      - 49267024
+      published: 0
+      published_ids: []
+      raw: 5
+    Copilot:
+      matched: 1
+      matched_ids:
+      - 49256057
+      published: 0
+      published_ids: []
+      raw: 4
+    Cursor:
+      matched: 4
+      matched_ids:
+      - 49255661
+      - 49255770
+      - 49261449
+      - 49264737
+      published: 0
+      published_ids: []
+      raw: 5
+    GCP:
+      matched: 1
+      matched_ids:
+      - 49263531
+      published: 0
+      published_ids: []
+      raw: 5
+    GPU:
+      matched: 4
+      matched_ids:
+      - 49256977
+      - 49262243
+      - 49266623
+      - 49267466
+      published: 0
+      published_ids: []
+      raw: 5
+    Gemini:
+      matched: 5
+      matched_ids:
+      - 49256377
+      - 49260481
+      - 49263531
+      - 49263923
+      - 49266731
+      published: 0
+      published_ids: []
+      raw: 5
+    Ghostty:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 4
+    GitHub:
+      matched: 5
+      matched_ids:
+      - 49256057
+      - 49256489
+      - 49256658
+      - 49259818
+      - 49266178
+      published: 0
+      published_ids: []
+      raw: 5
+    Go:
+      matched: 1
+      matched_ids:
+      - 49261133
+      published: 1
+      published_ids:
+      - 49261133
+      raw: 5
+    Grafana:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Homebrew:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    IPO:
+      matched: 3
+      matched_ids:
+      - 49253785
+      - 49258608
+      - 49261857
+      published: 0
+      published_ids: []
+      raw: 5
+    Java:
+      matched: 2
+      matched_ids:
+      - 49256484
+      - 49257612
+      published: 0
+      published_ids: []
+      raw: 5
+    Jepsen:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    Kafka:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    Kagi:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Kleppmann:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Kotlin:
+      matched: 1
+      matched_ids:
+      - 49257612
+      published: 0
+      published_ids: []
+      raw: 1
+    Kubernetes:
+      matched: 1
+      matched_ids:
+      - 49255867
+      published: 0
+      published_ids: []
+      raw: 1
+    LLM:
+      matched: 5
+      matched_ids:
+      - 49257876
+      - 49258338
+      - 49259339
+      - 49259799
+      - 49264157
+      published: 0
+      published_ids: []
+      raw: 5
+    LWN:
+      matched: 2
+      matched_ids:
+      - 49253602
+      - 49259177
+      published: 0
+      published_ids: []
+      raw: 5
+    Linux:
+      matched: 5
+      matched_ids:
+      - 49256195
+      - 49262122
+      - 49263739
+      - 49264334
+      - 49267024
+      published: 0
+      published_ids: []
+      raw: 5
+    Llama:
+      matched: 3
+      matched_ids:
+      - 49259339
+      - 49260805
+      - 49261767
+      published: 0
+      published_ids: []
+      raw: 4
+    MCP:
+      matched: 5
+      matched_ids:
+      - 49253721
+      - 49256863
+      - 49256923
+      - 49262624
+      - 49264157
+      published: 0
+      published_ids: []
+      raw: 5
+    Mistral:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Neovim:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Nvidia:
+      matched: 5
+      matched_ids:
+      - 49255710
+      - 49256055
+      - 49257947
+      - 49260058
+      - 49263340
+      published: 1
+      published_ids:
+      - 49263340
+      raw: 5
+    OpenAI:
+      matched: 5
+      matched_ids:
+      - 49253785
+      - 49257160
+      - 49258581
+      - 49264334
+      - 49265135
+      published: 0
+      published_ids: []
+      raw: 5
+    OpenTelemetry:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Paxos:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Postgres:
+      matched: 2
+      matched_ids:
+      - 49260172
+      - 49260893
+      published: 0
+      published_ids: []
+      raw: 5
+    Prometheus:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    PyPI:
+      matched: 1
+      matched_ids:
+      - 49259073
+      published: 0
+      published_ids: []
+      raw: 4
+    Python:
+      matched: 4
+      matched_ids:
+      - 49253763
+      - 49255439
+      - 49259210
+      - 49259734
+      published: 0
+      published_ids: []
+      raw: 5
+    Raft:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Redis:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Rust:
+      matched: 5
+      matched_ids:
+      - 49253264
+      - 49256765
+      - 49260004
+      - 49263176
+      - 49264036
+      published: 0
+      published_ids: []
+      raw: 5
+    S-1:
+      matched: 2
+      matched_ids:
+      - 49262955
+      - 49263482
+      published: 0
+      published_ids: []
+      raw: 3
+    SQLite:
+      matched: 1
+      matched_ids:
+      - 49259323
+      published: 0
+      published_ids: []
+      raw: 2
+    Spring Boot:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    Swift:
+      matched: 4
+      matched_ids:
+      - 49254505
+      - 49255700
+      - 49262465
+      - 49263800
+      published: 0
+      published_ids: []
+      raw: 5
+    SwiftUI:
+      matched: 1
+      matched_ids:
+      - 49260486
+      published: 0
+      published_ids: []
+      raw: 5
+    TypeScript:
+      matched: 1
+      matched_ids:
+      - 49257927
+      published: 0
+      published_ids: []
+      raw: 2
+    Vim:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Wayland:
+      matched: 1
+      matched_ids:
+      - 49260628
+      published: 0
+      published_ids: []
+      raw: 2
+    Xcode:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Zig:
+      matched: 1
+      matched_ids:
+      - 49261391
+      published: 0
+      published_ids: []
+      raw: 5
+    acquires:
+      matched: 1
+      matched_ids:
+      - 49266293
+      published: 0
+      published_ids: []
+      raw: 5
+    acquisition:
+      matched: 2
+      matched_ids:
+      - 49256329
+      - 49263288
+      published: 0
+      published_ids: []
+      raw: 2
+    agentic:
+      matched: 5
+      matched_ids:
+      - 49256539
+      - 49259735
+      - 49261106
+      - 49264728
+      - 49265051
+      published: 0
+      published_ids: []
+      raw: 5
+    arXiv:
+      matched: 5
+      matched_ids:
+      - 49254189
+      - 49254407
+      - 49259799
+      - 49262827
+      - 49264583
+      published: 0
+      published_ids: []
+      raw: 5
+    breach:
+      matched: 1
+      matched_ids:
+      - 49255598
+      published: 1
+      published_ids:
+      - 49255598
+      raw: 5
+    chezmoi:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    coding agent:
+      matched: 2
+      matched_ids:
+      - 49254189
+      - 49257824
+      published: 0
+      published_ids: []
+      raw: 5
+    distributed systems:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    drug discovery:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    eBPF:
+      matched: 2
+      matched_ids:
+      - 49259766
+      - 49265648
+      published: 0
+      published_ids: []
+      raw: 3
+    exploit:
+      matched: 1
+      matched_ids:
+      - 49258531
+      published: 0
+      published_ids: []
+      raw: 5
+    iOS:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    incident:
+      matched: 2
+      matched_ids:
+      - 49253669
+      - 49260457
+      published: 1
+      published_ids:
+      - 49253669
+      raw: 4
+    io_uring:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 2
+    kernel:
+      matched: 2
+      matched_ids:
+      - 49256195
+      - 49261151
+      published: 0
+      published_ids: []
+      raw: 5
+    local-first:
+      matched: 4
+      matched_ids:
+      - 49253653
+      - 49256923
+      - 49258980
+      - 49259021
+      published: 0
+      published_ids: []
+      raw: 5
+    macOS:
+      matched: 5
+      matched_ids:
+      - 49258011
+      - 49259339
+      - 49261613
+      - 49262097
+      - 49265124
+      published: 0
+      published_ids: []
+      raw: 5
+    npm:
+      matched: 1
+      matched_ids:
+      - 49261794
+      published: 0
+      published_ids: []
+      raw: 5
+    outage:
+      matched: 2
+      matched_ids:
+      - 49262369
+      - 49263157
+      published: 0
+      published_ids: []
+      raw: 3
+    protein folding:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    terminal:
+      matched: 5
+      matched_ids:
+      - 49253264
+      - 49254881
+      - 49257861
+      - 49261978
+      - 49264548
+      published: 0
+      published_ids: []
+      raw: 5
+  runs:
+  - at: '2026-08-12T03:57:17+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-12.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-11
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"OpenSSH 10.5 ships three security fixes and the project says it will
+        release more often because AI-assisted reports keep finding real bugs","section":"Top stories","category":"Security","status":"confirmed","primary_url":"https://www.openssh.org/releasenotes.html#10.5","sou
+      failed_tools:
+        Bash: 1
+        mcp__digest__fetch_url: 2
+      name: select
+      status: ok
+      tokens:
+        in: 47
+        out: 27918
+      tools:
+        Bash: 2
+        Glob: 2
+        Grep: 5
+        Read: 19
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 17
+        mcp__digest__guidance: 2
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 1
+    - detail: "Gate passes with exit code 0. The remaining output is memory staleness warnings, which\
+        \ are not this step's concern.\n\n**Written:** `data/digests/2026-08-12.md`, status `published`,\
+        \ `source_count = 25`.\n\nStructure, 12 stories across 8 content sections:\n\n- **Top stories**\
+        \ (4): OpenSSH 10.5 leads, then "
+      name: write
+      status: ok
+      tokens:
+        in: 10
+        out: 8601
+      tools:
+        Read: 2
+        ToolSearch: 1
+        Write: 1
+        mcp__digest__run_gate: 1
+    - detail: "{\"ready\":false,\"findings\":[{\"severity\":\"blocking\",\"where\":\"Sources checked\"\
+        ,\"detail\":\"GitHub coverage is understated. The line reads \\\"GitHub watchlist (degraded: the\
+        \ stars fetch returned a single starred repository, so coverage is thin rather than absent)\\\"\
+        , attributing the degradation only to the "
+      name: review
+      status: ok
+      tokens:
+        in: 22
+        out: 18796
+      tools:
+        Glob: 2
+        Grep: 3
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 11
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes with exit code 0. All nine findings repaired, nothing else touched.
+
+        **Blocking**
+
+        1. **Sources checked, GitHub** — verified `.cache/stars/2026-08-12.json` (`"degraded": []`, one item: `verialabs/ctf-agent`) and confirmed no releases or trending artifact for the date. Restored the 2026-0
+      failed_tools:
+        Bash: 1
+        mcp__digest__fetch_url: 2
+      name: write
+      status: ok
+      tokens:
+        in: 34
+        out: 14110
+      tools:
+        Bash: 1
+        Edit: 10
+        Read: 4
+        ToolSearch: 1
+        mcp__digest__fetch_url: 2
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Top stories — CloudSEK publishes a
+        victim list for the March 2026 LiteLLM supply chain compromise","detail":"Security-category item
+        with no affected versions and no statement that they are not yet known. The summary describes
+        the attack path
+      name: review
+      status: ok
+      tokens:
+        in: 15
+        out: 16620
+      tools:
+        Glob: 1
+        Grep: 3
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 6
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 9 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: skipped (nothing to correct in 2026-08-11 (0 id(s) it never scored))
+      name: miss_review
+      status: skip
+    - detail: data/runs/2026-08-12.yaml
+      name: run_log
+      status: ok
+    - detail: 34 fetch(es), 2 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
