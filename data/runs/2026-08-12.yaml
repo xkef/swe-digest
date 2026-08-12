@@ -77,6 +77,76 @@ judgment:
     Anthropic settlement, has no open question left beyond payout mechanics; and f-0016 already
     carries its own superseding correction inline. Every run of every day pays to re-read these
     bytes.
+
+    Lead change. Today's file already carried a full digest written by the earlier run, with OpenSSH
+    10.5 leading. This run demotes nothing and displaces nothing: Top stories held 4 of 5 slots, so
+    the Stolen Thoughts finding took the free slot and takes the lead. The reasoning is breadth and
+    novelty. OpenSSH 10.5 is a confirmed primary artifact on near-universal infrastructure, but it
+    is a routine release with three fixes plus a stated cadence change. Stolen Thoughts is a
+    cross-vendor architectural finding covering OpenAI, Anthropic, and Google at once, and it
+    converts already-published artifacts into a live exposure rather than describing a patch to
+    apply. CloudSEK stays fifth in Top stories rather than being demoted to Security. It is the
+    weakest of the five and describes a March 2026 incident with vendor-reconstructed numbers, but
+    the earlier run made that placement today with the same evidence, and nothing this run found
+    changes it, so re-sectioning it would be churn rather than a better page.
+
+    Verification calls a reader could not infer. llama.app was published only after confirming
+    provenance: the ggml-org/llama.cpp README names https://llama.app as the first install option
+    and the repository's website field is llama.app, so the site is the project's own and not a
+    look-alike. Without that check a curl-to-shell installer on a fresh domain would not have been
+    linkable. The Copilot traffic capture is one author's mitmproxy session, published under his own
+    byline with request payloads shown. It is carried as confirmed for what the post records and the
+    summary attributes the captures to the author, because nothing here was reproduced and GitHub
+    has not responded. The Cua figures are the vendor's own benchmarks on a single M1 Ultra host,
+    and the post itself states the shim depends on private, version-sensitive guest Metal behavior
+    that Apple may change, which is why the story is scoped to the measurement rather than written
+    as a general macOS VM result. The Manus post is carried in Markets and companies rather than AI
+    because the ownership change is the story and the data deletion is its consequence, and the
+    deletion is explicitly stated by Manus not to be a security incident.
+
+    Content safety. The Stolen Thoughts page embeds decoded model reasoning that contains both
+    credential-shaped strings from a Terminal-Bench sanitization task and passages that read as
+    agent tool instructions. All of it was treated as data. No token, key, or instruction from that
+    page reached the selection, and no credential string is quoted in the story.
+
+    Sources not published. New videos is omitted again. The day's strongest upload is a Dwarkesh
+    Patel interview with Ryan Greenblatt at about 24,600 views, but the cache records no discussion
+    link, and its title makes a claim about a coding agent attacking a repository that could not be
+    verified without watching, so repeating it would have published an unverified assertion. Books
+    is omitted because the publisher feed returned only conference proceedings, the CRYPTO 2026
+    volumes and MESAS 2025, which is the same shape as yesterday. ML research adds nothing today:
+    the arXiv pull was healthy but returned surgical robotics, synthetic dialogue generation, and
+    sparse autoencoder interpretability, none with engineering relevance clearing the bar. Reddit
+    and social pulse and Hacker News are omitted because every item that cleared the bar resolved to
+    a primary source and belongs in a topical section, and the degraded Reddit fetch left no
+    verified social finding standing on its own. Outages stays at no major items found, and no
+    status page in scope reported an incident. Reviewed and not published: the Kalshi CFTC emergency
+    order, which is a real filing but does not change engineering context, the Canario terminal
+    source closing, too small against the Developer tools bar once llama.app was in, and the Bluesky
+    user-base piece, which is secondary reporting without a primary metric.
+
+    Backtest overrides. Three candidates were seeded no_query_match and are recorded here as
+    watchlist_gap instead, because each is squarely in scope and the watchlist simply had no query
+    for it. Muse Glimmer at 1,138 points is the clearest: it is a Meta 30B model release, and its
+    existence is corroborated independently in today's Cua post, which benchmarks Meta's official
+    Muse Glimmer 30B GGUF. A model release that large going uncaught is a gap in the AI query set,
+    not a relevance decision. The tl;dv exposure at 582 points is a meeting-recording service
+    leaving roughly 180,000 meetings reachable, which is core Security scope and matched nothing.
+    LFM2.5 2.6B is a smaller case of the same AI model-release gap. The remaining no_query_match
+    candidates were correctly seeded: France telemarketing, hepatitis C, the Mars bar, the Rubik's
+    cube scroller, and the surveillance and policy items are out of scope, and the Sonic Pi and
+    Squeak releases are in scope but would not have ranked into a published section, so their cause
+    is not a watchlist defect. The not_in_publish_fetch candidates need no override: Mojo 1.0, the
+    Go post, NeMo Switchyard, and Compression is prediction all arrived after yesterday's fetch
+    window and all four are published today, which is the timing artifact working as designed rather
+    than a miss.
+
+    Carried follow-ups. Metabase still owes an advisory, a fixed version, and a statement on
+    self-hosted exposure, unchanged from the earlier run, and metabase.com was not retried this run.
+    The CVE-2026-53361 distribution claims for Ubuntu 24.04 HWE and RHEL 10 remain the exploit
+    author's and unconfirmed. The Stolen Thoughts finding has no vendor response from OpenAI,
+    Anthropic, or Google recorded at this date, which is the first thing to check tomorrow, along
+    with whether any provider stops returning replayable reasoning blocks.
 mechanical:
   digest:
     domains:
@@ -89,11 +159,12 @@ mechanical:
     - debian.org
     - developers.googleblog.com
     - github.com
+    - llama.app
     - modular.com
     - news.ycombinator.com
     - ngrok.com
     - nvd.nist.gov
-    - openssh.org
+    - openssh.com
     - x.ai
     hn_ids:
     - 49253669
@@ -107,8 +178,10 @@ mechanical:
     - 49263497
     - 49265031
     - 49267550
+    - 49267928
     sections:
       AI: 2
+      Developer tools: 1
       Engineering posts: 1
       Infrastructure: 1
       Languages and runtimes: 1
@@ -117,11 +190,11 @@ mechanical:
       Security: 2
       Sources checked: 0
       Top stories: 4
-    source_count: 25
+    source_count: 28
     titles:
     - >-
-      OpenSSH 10.5 ships three security fixes and the project says it will release more often because
-      AI-assisted reports keep finding real bugs
+      OpenSSH 10.5 ships three security fixes and the project will release more often for now, after AI-found
+      bugs were independently rediscovered
     - A public exploit lands for CVE-2026-53361, an AF_UNIX garbage collection race the author uses to
       escape containers
     - Mojo reaches 1.0 with a primarily-additive change policy, while the compiler stays closed
@@ -134,121 +207,80 @@ mechanical:
     - Checkly reports an attacker used a Metabase Cloud zero-day to read its analytics warehouse for 26
       minutes
     - Expat 2.8.3 fixes CVE-2026-72522, an out-of-bounds read in UTF-16 decoding reachable over the network
+    - llama.cpp publishes llama.app as an official install site with a unified llama command
     - A Google post argues language choice now matters for review rather than for writing speed
     - >-
       pg_clickhouse v0.10.0 pushes down 16 of 22 TPC-H queries and adds guards for a NULL semantics mismatch
       that silently inverted NOT IN
     - Compression is prediction, an explainer connecting entropy coding to language modeling
   fetched:
-  - detail: 241660 bytes
+  - detail: 112759 bytes (clipped)
     ok: true
-    url: https://www.modular.com/blog/modular-26-5-mojo-1-0-is-here
+    url: https://stolen-thoughts.com/
+  - detail: 33751 bytes
+    ok: true
+    url: https://llama.app
+  - detail: 420159 bytes
+    ok: true
+    url: https://github.com/ggml-org/llama.cpp
+  - detail: 339043 bytes
+    ok: true
+    url: https://github.com/trycua/cua/blob/main/blog/gpu-passthrough-macos-vms.md
+  - detail: 211318 bytes
+    ok: true
+    url: https://manus.im/blog/a-note-to-our-users
+  - detail: 321417 bytes (clipped)
+    ok: true
+    url: https://www.lighthousenewsletter.com/p/i-put-github-copilot-behind-a-mitm
+  - detail: 94334 bytes (clipped)
+    ok: true
+    url: https://blog.mozilla.org/security/2026/08/10/updated-gpg-key-for-signing-firefox-and-thunderbird-releases/
   - detail: 758852 bytes (clipped)
     ok: true
-    url: https://www.openssh.org/releasenotes.html#10.5
-  - detail: 305114 bytes
-    ok: true
-    url: https://github.com/sgkdev/bad_garbage
-  - detail: 106567 bytes
-    ok: true
-    url: https://www.checklyhq.com/blog/metabase-security-incident/
-  - detail: 7134 bytes
-    ok: true
-    url: https://www.debian.org/security/2026/dsa-6381
-  - detail: 82074 bytes
-    ok: true
-    url: https://nvd.nist.gov/vuln/detail/CVE-2026-53361
-  - detail: |-
-      failed: fetch failed: https://www.metabase.com/blog/security-incident-august-2026: HTTP Error 301: The HTTP server returned a redirect error that would lead to an infinite loop.
-      The last 30x error message was:
-      Moved Permanently
-    ok: false
-    url: https://www.metabase.com/blog/security-incident-august-2026
+    url: https://www.openssh.org/releasenotes.html
   - detail: 57371 bytes
     ok: true
     url: https://developers.googleblog.com/why-go-is-an-ideal-language-for-ai-assisted-software-engineering/
-  - detail: 274727 bytes
+  - detail: 201578 bytes
     ok: true
-    url: https://github.com/anthropics/claude-code/issues/78431
-  - detail: 41677 bytes
+    url: https://x.ai/news/introducing-grok-bot
+  - detail: 33751 bytes
+    ok: true
+    url: https://llama.app
+  - detail: 420158 bytes
+    ok: true
+    url: https://github.com/ggml-org/llama.cpp
+  - detail: 420158 bytes
+    ok: true
+    url: https://github.com/ggml-org/llama.cpp
+  - detail: 201578 bytes
+    ok: true
+    url: https://x.ai/news/introducing-grok-bot
+  - detail: 33751 bytes
+    ok: true
+    url: https://llama.app
+  - detail: 41655 bytes
     ok: true
     url: https://arxiv.org/abs/2608.11195
-  - detail: 276593 bytes (clipped)
+  - detail: 758852 bytes (clipped)
+    ok: true
+    url: https://www.openssh.com/releasenotes.html
+  - detail: 276590 bytes (clipped)
     ok: true
     url: https://www.cloudsek.com/blog/ai-supply-chain-breach-2500-companies-434000-cicd-pipelines
-  - detail: 123920 bytes
+  - detail: 212150 bytes
     ok: true
-    url: https://blogs.nvidia.com/blog/nemotron-lightning-switchyard-rtx-dgx/
-  - detail: 274428 bytes (clipped)
-    ok: true
-    url: https://ngrok.com/blog/compression-is-prediction
-  - detail: 7650 bytes
-    ok: true
-    url: https://blog.hartwork.org/posts/expat-2-8-3-released/
-  - detail: |-
-      failed: fetch failed: https://www.metabase.com/blog/security-advisory-august-2026: HTTP Error 301: The HTTP server returned a redirect error that would lead to an infinite loop.
-      The last 30x error message was:
-      Moved Permanently
-    ok: false
-    url: https://www.metabase.com/blog/security-advisory-august-2026
-  - detail: 235066 bytes (clipped)
-    ok: true
-    url: https://clickhouse.com/blog/pg_clickhouse-whats-new-july-2026
-  - detail: 201578 bytes
-    ok: true
-    url: https://x.ai/news/introducing-grok-bot
-  - detail: 57371 bytes
-    ok: true
-    url: https://developers.googleblog.com/why-go-is-an-ideal-language-for-ai-assisted-software-engineering/
-  - detail: 758852 bytes (clipped)
-    ok: true
-    url: https://www.openssh.org/releasenotes.html#10.5
-  - detail: 123920 bytes
-    ok: true
-    url: https://blogs.nvidia.com/blog/nemotron-lightning-switchyard-rtx-dgx/
-  - detail: 7650 bytes
-    ok: true
-    url: https://blog.hartwork.org/posts/expat-2-8-3-released/
-  - detail: 41677 bytes
-    ok: true
-    url: https://arxiv.org/abs/2608.11195
-  - detail: 274428 bytes (clipped)
-    ok: true
-    url: https://ngrok.com/blog/compression-is-prediction
-  - detail: 241660 bytes
-    ok: true
-    url: https://www.modular.com/blog/modular-26-5-mojo-1-0-is-here
-  - detail: 82065 bytes
-    ok: true
-    url: https://nvd.nist.gov/vuln/detail/CVE-2026-53361
-  - detail: 201578 bytes
-    ok: true
-    url: https://x.ai/news/introducing-grok-bot
-  - detail: 235066 bytes (clipped)
-    ok: true
-    url: https://clickhouse.com/blog/pg_clickhouse-whats-new-july-2026
+    url: https://github.com/metabase/metabase/security/advisories
   - detail: 106567 bytes
     ok: true
     url: https://www.checklyhq.com/blog/metabase-security-incident/
-  - detail: 758852 bytes (clipped)
+  - detail: 191703 bytes
     ok: true
-    url: https://www.openssh.org/releasenotes.html#10.5
-  - detail: 201578 bytes
+    url: https://github.com/metabase/metabase/security/advisories/GHSA-r495-55cx-fjh7
+  - detail: 195587 bytes
     ok: true
-    url: https://x.ai/news/introducing-grok-bot
-  - detail: 57371 bytes
-    ok: true
-    url: https://developers.googleblog.com/why-go-is-an-ideal-language-for-ai-assisted-software-engineering/
-  - detail: 41677 bytes
-    ok: true
-    url: https://arxiv.org/abs/2608.11195
-  - detail: 305102 bytes
-    ok: true
-    url: https://github.com/sgkdev/bad_garbage
-  - detail: 241660 bytes
-    ok: true
-    url: https://www.modular.com/blog/modular-26-5-mojo-1-0-is-here
-  generated_at: '2026-08-12T03:57:09+00:00'
+    url: https://github.com/metabase/metabase/security/advisories/GHSA-vwf4-m7j8-wcjf
+  generated_at: '2026-08-12T11:05:34+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -257,28 +289,32 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-08-12T03:33:13+00:00'
+    fetched_at: '2026-08-12T10:45:51+00:00'
     pooled:
       added:
-        ask_hn: 0
-        comments: 0
-        front_page: 3
-        queries: 0
-        show_hn: 1
-        top_day: 2
-      snapshot_fetched_at: '2026-08-12T02:44:47+00:00'
+        ask_hn: 12
+        comments: 24
+        front_page: 21
+        queries: 42
+        show_hn: 6
+        top_day: 15
+      snapshot_fetched_at: '2026-08-12T10:19:50+00:00'
     queries_backend: algolia
     seen_ids:
     - 47439821
+    - 47613622
     - 47999020
     - 49191130
     - 49196657
+    - 49197565
     - 49201953
+    - 49208693
     - 49210199
     - 49223965
     - 49226623
+    - 49235530
+    - 49243270
     - 49252912
-    - 49253141
     - 49253176
     - 49253250
     - 49253259
@@ -315,10 +351,12 @@ mechanical:
     - 49257740
     - 49257744
     - 49257824
+    - 49257853
     - 49257876
     - 49257947
     - 49258000
     - 49258011
+    - 49258085
     - 49258202
     - 49258328
     - 49258397
@@ -332,6 +370,7 @@ mechanical:
     - 49259043
     - 49259055
     - 49259091
+    - 49259309
     - 49259339
     - 49259418
     - 49259583
@@ -358,6 +397,7 @@ mechanical:
     - 49261895
     - 49261987
     - 49262048
+    - 49262172
     - 49262211
     - 49262312
     - 49262352
@@ -372,8 +412,10 @@ mechanical:
     - 49263195
     - 49263227
     - 49263340
+    - 49263417
     - 49263461
     - 49263497
+    - 49263574
     - 49263602
     - 49263656
     - 49263658
@@ -383,7 +425,11 @@ mechanical:
     - 49264777
     - 49265031
     - 49265051
+    - 49265119
     - 49265124
+    - 49265135
+    - 49265167
+    - 49265322
     - 49265879
     - 49266277
     - 49266455
@@ -391,7 +437,29 @@ mechanical:
     - 49266899
     - 49266921
     - 49267057
+    - 49267108
     - 49267234
+    - 49267527
+    - 49267818
+    - 49267833
+    - 49267848
+    - 49267851
+    - 49267867
+    - 49267928
+    - 49268218
+    - 49268396
+    - 49268564
+    - 49268702
+    - 49268808
+    - 49268880
+    - 49268922
+    - 49269090
+    - 49269641
+    - 49269789
+    - 49269818
+    - 49269959
+    - 49270022
+    - 49270040
     source: cache
   query_yield:
     0day:
@@ -401,11 +469,14 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 3
+      matched: 6
       matched_ids:
       - 49254351
+      - 49255069
       - 49261133
       - 49264755
+      - 49267057
+      - 49268697
       published: 1
       published_ids:
       - 49261133
@@ -426,12 +497,14 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49254919
       - 49258620
       - 49261800
+      - 49262981
       - 49265135
+      - 49265378
       - 49266335
       published: 0
       published_ids: []
@@ -474,22 +547,25 @@ mechanical:
       - 49267550
       raw: 5
     Claude:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49254999
       - 49255222
       - 49256258
+      - 49258493
       - 49258881
+      - 49261122
       - 49262624
       published: 0
       published_ids: []
       raw: 5
     Claude Code:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49254381
       - 49254999
       - 49256258
+      - 49258409
       - 49258881
       - 49261122
       published: 0
@@ -512,14 +588,16 @@ mechanical:
       - 49256057
       published: 0
       published_ids: []
-      raw: 4
+      raw: 1
     Cursor:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49255661
       - 49255770
       - 49261449
       - 49264737
+      - 49268187
+      - 49268975
       published: 0
       published_ids: []
       raw: 5
@@ -556,15 +634,16 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 1
     GitHub:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49256057
       - 49256489
       - 49256658
       - 49259818
       - 49266178
+      - 49267943
       published: 0
       published_ids: []
       raw: 5
@@ -589,19 +668,22 @@ mechanical:
       published_ids: []
       raw: 0
     IPO:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49253785
       - 49258608
       - 49261857
+      - 49267922
       published: 0
       published_ids: []
       raw: 5
     Java:
-      matched: 2
+      matched: 4
       matched_ids:
       - 49256484
       - 49257612
+      - 49267670
+      - 49268365
       published: 0
       published_ids: []
       raw: 5
@@ -610,7 +692,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     Kafka:
       matched: 0
       matched_ids: []
@@ -642,7 +724,7 @@ mechanical:
       - 49255867
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     LLM:
       matched: 5
       matched_ids:
@@ -663,10 +745,11 @@ mechanical:
       published_ids: []
       raw: 5
     Linux:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49256195
       - 49262122
+      - 49262757
       - 49263739
       - 49264334
       - 49267024
@@ -674,31 +757,36 @@ mechanical:
       published_ids: []
       raw: 5
     Llama:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49259339
       - 49260805
       - 49261767
-      published: 0
-      published_ids: []
-      raw: 4
+      - 49267928
+      published: 1
+      published_ids:
+      - 49267928
+      raw: 5
     MCP:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49253721
       - 49256863
       - 49256923
       - 49262624
       - 49264157
+      - 49265568
+      - 49268975
       published: 0
       published_ids: []
       raw: 5
     Mistral:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49268944
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     Neovim:
       matched: 0
       matched_ids: []
@@ -706,23 +794,28 @@ mechanical:
       published_ids: []
       raw: 0
     Nvidia:
-      matched: 5
+      matched: 8
       matched_ids:
+      - 49254204
       - 49255710
       - 49256055
+      - 49256500
       - 49257947
       - 49260058
       - 49263340
+      - 49266875
       published: 1
       published_ids:
       - 49263340
       raw: 5
     OpenAI:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49253785
+      - 49254788
       - 49257160
       - 49258581
+      - 49264189
       - 49264334
       - 49265135
       published: 0
@@ -741,10 +834,11 @@ mechanical:
       published_ids: []
       raw: 0
     Postgres:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49260172
       - 49260893
+      - 49269697
       published: 0
       published_ids: []
       raw: 5
@@ -760,14 +854,15 @@ mechanical:
       - 49259073
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     Python:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49253763
       - 49255439
       - 49259210
       - 49259734
+      - 49269451
       published: 0
       published_ids: []
       raw: 5
@@ -784,10 +879,11 @@ mechanical:
       published_ids: []
       raw: 5
     Rust:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49253264
       - 49256765
+      - 49257662
       - 49260004
       - 49263176
       - 49264036
@@ -795,13 +891,14 @@ mechanical:
       published_ids: []
       raw: 5
     S-1:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49262955
       - 49263482
+      - 49267818
       published: 0
       published_ids: []
-      raw: 3
+      raw: 5
     SQLite:
       matched: 1
       matched_ids:
@@ -814,7 +911,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     Swift:
       matched: 4
       matched_ids:
@@ -831,14 +928,14 @@ mechanical:
       - 49260486
       published: 0
       published_ids: []
-      raw: 5
+      raw: 1
     TypeScript:
       matched: 1
       matched_ids:
       - 49257927
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     Vim:
       matched: 0
       matched_ids: []
@@ -851,7 +948,7 @@ mechanical:
       - 49260628
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     Xcode:
       matched: 0
       matched_ids: []
@@ -871,7 +968,7 @@ mechanical:
       - 49266293
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     acquisition:
       matched: 2
       matched_ids:
@@ -881,24 +978,27 @@ mechanical:
       published_ids: []
       raw: 2
     agentic:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49256539
       - 49259735
       - 49261106
       - 49264728
       - 49265051
+      - 49268790
       published: 0
       published_ids: []
       raw: 5
     arXiv:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49254189
       - 49254407
       - 49259799
       - 49262827
       - 49264583
+      - 49265190
+      - 49268790
       published: 0
       published_ids: []
       raw: 5
@@ -915,7 +1015,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 3
     coding agent:
       matched: 2
       matched_ids:
@@ -937,10 +1037,11 @@ mechanical:
       published_ids: []
       raw: 0
     eBPF:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49259766
       - 49265648
+      - 49269314
       published: 0
       published_ids: []
       raw: 3
@@ -958,20 +1059,21 @@ mechanical:
       published_ids: []
       raw: 5
     incident:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49253669
       - 49260457
+      - 49268969
       published: 1
       published_ids:
       - 49253669
-      raw: 4
+      raw: 3
     io_uring:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     kernel:
       matched: 2
       matched_ids:
@@ -1021,13 +1123,15 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     terminal:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49253264
       - 49254881
       - 49257861
+      - 49260924
+      - 49261744
       - 49261978
       - 49264548
       published: 0
@@ -1158,6 +1262,139 @@ mechanical:
       name: run_log
       status: ok
     - detail: 34 fetch(es), 2 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-08-12T11:05:42+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-12.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-11
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"Researchers replay encrypted chain-of-thought blocks into weaker sibling
+        models to recover hidden reasoning from OpenAI, Anthropic, and Google APIs","section":"Top stories","category":"Security","status":"confirmed","primary_url":"https://stolen-thoughts.com/","sources":["h
+      name: select
+      status: ok
+      tokens:
+        in: 25
+        out: 23142
+      tools:
+        Glob: 3
+        Read: 12
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 7
+        mcp__digest__guidance: 1
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 3
+    - detail: "Gate passes, exit code 0. The remaining output is memory staleness warnings, not digest\
+        \ failures.\n\n## Write step complete: `data/digests/2026-08-12.md`\n\n**Net change: one story\
+        \ added.** The selection carried six additions. Five were withdrawn after the gate identified\
+        \ them as archive duplicates:\n\n| "
+      name: write
+      status: ok
+      tokens:
+        in: 34
+        out: 15616
+      tools:
+        Edit: 15
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 2
+    - detail: >-
+        {"findings":[{"severity":"blocking","where":"Top stories - OpenSSH 10.5 ships three security fixes
+        and the project says it will release more often because AI-assisted reports keep finding real
+        bugs","detail":"The lead headline and summary attribute a reason to the project that the release
+        notes do n
+      name: review
+      status: ok
+      tokens:
+        in: 11
+        out: 12585
+      tools:
+        Glob: 1
+        Grep: 2
+        Read: 2
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 5
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes, exit code 0. All six findings repaired, nothing else touched.
+
+        **Blocking:**
+
+        1. **OpenSSH lead reason.** Headline and summary rewrote the attributed reason. The digest had claimed the project releases more often "because AI-assisted reports keep finding real bugs", which inverts the no
+      name: write
+      status: ok
+      tokens:
+        in: 19
+        out: 3992
+      tools:
+        Edit: 6
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Security — Checkly reports an attacker
+        used a Metabase Cloud zero-day to read its analytics warehouse for 26 minutes","detail":"The summary
+        states \"Metabase's own advisory could not be resolved for this digest, so the fixed version and
+        whet
+      name: review
+      status: ok
+      tokens:
+        in: 22
+        out: 20803
+      tools:
+        Glob: 2
+        Grep: 3
+        Read: 2
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 10
+        mcp__digest__memory_query: 1
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 6 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 3 cause(s) corrected in 2026-08-11
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-08-12.yaml
+      name: run_log
+      status: ok
+    - detail: 22 fetch(es), 0 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
