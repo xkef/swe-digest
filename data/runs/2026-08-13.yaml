@@ -89,6 +89,78 @@ judgment:
     compiler, each a real engineering item that no watchlist query matched. The ClaudeBot spoofing
     report and the AI middle class thread are marked relevance_skip because both were seen and
     rejected on their merits rather than missed.
+
+    Degraded coverage this run. Reddit `top_day` reached 2 of 28 subreddits, so 56 top_day items
+    came from the 10:28 UTC committed snapshot rather than a live fetch, and the `hot` collection
+    returned zero items and contributed nothing. The existing Sources checked line on today's page
+    records "1 of 28" from an earlier run and is now understated: the day's final cache records 2 of
+    28. The GitHub stars fetch returned an empty items array with no snapshot fallback, and no
+    releases or trending artifact exists for this date, so GitHub watchlist coverage is uncovered
+    rather than thin, for the third consecutive day. Hacker News, papers, books, YouTube, and events
+    all reported no degradation.
+
+    Nothing was displaced. Top stories stood at four and the SharePoint item fills the fifth slot,
+    so the day now carries five there and 17 stories outside Security, against a budget of 25.
+    SharePoint takes the lead over the DeepSeek alias repoint on active exploitation and on
+    actionability: it is the only item on the page with public exploit code, an unauthenticated
+    network vector, and named fixed build numbers a reader can compare against tonight. celld was
+    weighed for Top stories against Metals v2 and Zed Delta and placed in Infrastructure instead,
+    because Top stories was already at its cap once SharePoint was added and celld is a project
+    release rather than a dated obligation. Security carried "No major items found." from the
+    earlier runs and now carries the Polish breach, which is an addition rather than a displacement.
+
+    Reviewed and not published, each because the primary would not resolve. Anthropic watermarking
+    of Claude text output was the strongest candidate dropped. TechCrunch states as fact that
+    Anthropic watermarks Claude's editorial text to satisfy the EU AI Act Transparency Code, and
+    links its own earlier report headlined as an Anthropic statement, but `anthropic.com/news`
+    carries nothing on watermarking through 2026-08-07 and the Transparency Hub, last updated
+    2026-07-23, does not mention it either. A watermark on model text output is a material fact for
+    anyone shipping generated content, so its absence from this digest is a failed verification and
+    not a judgment that it did not happen. It is the item to retry first tomorrow. The claim that
+    the Gemini API removed postpay billing rests on a 5-point Hacker News self-post with no external
+    link, and the Gemini API release notes carry nothing after 2026-07-30 and last touched billing
+    plans on 2026-03-23, so nothing supports it. The Codex and ChatGPT desktop app for Linux drew
+    166 points but could not be sourced: `openai.com/codex/` returns HTTP 403 to automated fetch,
+    the ChatGPT and Codex changelog lists Daybreak tiers on 2026-08-10 and Codex CLI 0.147.0 on
+    2026-08-07 with no Linux desktop entry, and a guessed documentation path returned 404. The
+    congressional oversight letter to OpenAI over the Hugging Face incident, which would have been a
+    Watchlist follow-up on `[[followups]]` f-0030, fetched as a PDF whose text could not be
+    extracted, so its contents are unverified and it is not published. The Rapid7 analysis of
+    CVE-2026-55040 is confirmed to exist from the Rapid7 blog index, which was read directly, but no
+    post URL resolved across two attempted slugs, so the writeup is described and not linked, and
+    the MSRC advisory page rendered empty to automated fetch and is cited alongside the NVD REST
+    record that was actually read.
+
+    Also reviewed and not published on the merits. The doubling of the RTX PRO 6000 Blackwell MSRP
+    to 16,000 dollars appeared on both Reddit and Hacker News but only through Tom's Hardware and
+    wccftech, with no NVIDIA page or listing to confirm it. Anthropic in talks to buy Decart for 6
+    billion dollars is a Bloomberg report from people familiar with the matter and changes no
+    engineering context today. The claim that Mistral obtained a US patent on tool calls in 118 days
+    rests on a single unfamiliar domain with no USPTO record cited. The Reddit-sourced complaints
+    about watermarking were not carried in Reddit and social pulse, because publishing the reaction
+    would assert the underlying fact this run could not verify.
+
+    Sections omitted for lack of qualifying material rather than for lack of checking. Books is
+    omitted for the fourth consecutive day: the publisher feed returned CRYPTO 2026 proceedings and
+    generic introductory machine learning titles. New videos is omitted because the YouTube cache
+    records no discussion link on any upload and the two Grafana community calls sit at zero views.
+    ML research adds nothing, because the arXiv pull returned aerial navigation, medical imaging,
+    and volatility forecasting, and the nearest engineering-relevant items, a role-coordination case
+    study of agentic IDE tools and a dataset of agent skills on GitHub, are weaker than the
+    instruction-file study already published in Agentic coding today. Outages was checked and adds
+    nothing: a Hacker News post at 02:27 UTC claimed Claude was down, and `status.anthropic.com`
+    records no incident for 2026-08-13, so the page's existing entry for the 2026-08-12 incident
+    stands unchanged and unextended.
+
+    On the backtest. It returned 59 candidate misses for 2026-08-12 and seeded zero default causes,
+    so there is no seeded cause to correct and `miss_review` is empty rather than blank by
+    oversight. The diagnostic labels it does carry are pipeline states, not the cause vocabulary.
+    Two entries are worth recording anyway without asserting a cause the tool did not assign.
+    "Stealing Reasoning Traces from Proprietary LLM APIs" at 657 points reads as a large miss but is
+    not one, because the same primary was published on 2026-08-11 and the 2026-08-12 run withdrew it
+    on the archive duplicate check. "uBlock Origin Is Giving Up the Fight to Keep Ads Off Facebook"
+    at 527 points is the entry most likely to be a genuine watchlist gap: it concerns a maintainer's
+    decision on a widely deployed extension and no query matched it on either day.
 mechanical:
   digest:
     domains:
@@ -96,14 +168,19 @@ mechanical:
     - api-docs.deepseek.com
     - artificialanalysis.ai
     - arxiv.org
+    - bleepingcomputer.com
     - blog.florianherrengt.com
+    - celld.dev
     - databricks.com
     - flutter.dev
     - fory.apache.org
+    - github.com
     - guillaumetech.github.io
+    - msrc.microsoft.com
     - news.ycombinator.com
+    - pap.pl
     - reddit.com
-    - status.anthropic.com
+    - services.nvd.nist.gov
     - vitaut.net
     - woxi.ad-si.com
     - zed.dev
@@ -120,192 +197,153 @@ mechanical:
     - 49276574
     - 49276578
     - 49277799
+    - 49279223
     - 49280061
     - 49281360
+    - 49281839
+    - 49283401
     sections:
       AI: 1
-      Agentic coding: 1
+      Agentic coding: 2
       Apple platforms: 1
       Engineering posts: 3
       Hacker News: 2
+      Infrastructure: 1
       Languages and runtimes: 1
-      Outages: 1
-      Security: 0
+      Outages: 0
+      Security: 1
       Sources checked: 0
       Top stories: 4
-    source_count: 30
+    source_count: 39
     titles:
     - >-
-      DeepSeek repoints the deepseek-v4-pro alias to DeepSeek-V4-Pro-0813 and publishes rates, with the
-      announced price rise still pending
+      Rapid7 publishes a proof-of-concept for critical SharePoint auth bypass CVE-2026-55040, and a threat
+      intelligence firm reports it used against honeypots
+    - >-
+      DeepSeek schedules peak and off-peak billing for 2026-08-16, raising cache-hit rates six to twelve
+      times, and repoints the deepseek-v4-pro alias
     - >-
       Flutter 3.47 makes the standalone Material and Cupertino 1.0 packages opt-in, with in-SDK deprecation
       scheduled for November
     - >-
       Databricks open-sources Metals v2, a Java and Scala language server built to index a 26M-line Bazel
       monorepo before build sync
-    - >-
-      Zed introduces Delta, a separate application built on a database that replicates the agent conversation
-      and the worktree together
     - Artificial Analysis measures Grok 4.6 at 61 on its Intelligence Index and records a cache-read price
       rise
     - >-
+      Zed introduces Delta, a separate application built on a database that replicates the agent conversation
+      and the worktree together
+    - >-
       A study of 1,867 repositories reports agent instruction files more than triple over their lifetime
       and older instructions are less likely to be deleted
-    - Anthropic records four hours of elevated errors across Claude models on 2026-08-12, primarily affecting
-      Fable 5
+    - Poland's digitisation minister says 19 million medical records were stolen from electronic records
+      provider MyDr
     - Apache Fory JSON 1.6.0 publishes JMH figures putting it at 3.5x to 10.9x Jackson throughput on Java
     - SLAC, a CPU-to-GPU side-channel attack on the Apple Silicon system-level cache, is accepted to ACM
       CCS 2026
+    - >-
+      Deno Land open-sources celld, which runs Cloudflare Workers and Durable Objects on your own nodes
+      with a bucket as the only coordinator
     - Antithesis reports reproducing the SQLite WAL-Reset bug in 15 minutes and says 3.51.3 closes it
     - Chrome's partial IDCT scaling explains why small JPEGs render differently than in Firefox
     - A tour of yy, the unnamed double-to-string algorithm living inside yyjson
     - A post arguing AI is hollowing out mid-level software engineering draws more than 700 comments
     - 'Show HN: Woxi, a Wolfram Language interpreter written in Rust'
   fetched:
-  - detail: 253606 bytes (clipped)
-    ok: true
-    url: https://tailscale.com/blog/sqlite-wal-reset-bug
-  - detail: 41826 bytes (clipped)
-    ok: true
-    url: https://sqlite.org/wal.html
-  - detail: 45137 bytes
-    ok: true
-    url: https://api-docs.deepseek.com/
-  - detail: 225300 bytes
-    ok: true
-    url: https://x.ai/news/grok-4-6
-  - detail: 342903 bytes (clipped)
-    ok: true
-    url: https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B
-  - detail: 132512 bytes
-    ok: true
-    url: https://www.githubstatus.com/incidents/76t89hbfb09h
-  - detail: 305152 bytes
-    ok: true
-    url: https://github.com/sgkdev/bad_garbage
-  - detail: 53109 bytes
-    ok: true
-    url: https://hellorecon.com/blog/cve-2026-18690-mongodb-symbol-type-authz-bypass
-  - detail: 484158 bytes (clipped)
-    ok: true
-    url: https://knownagents.com/insights
-  - detail: 162167 bytes
-    ok: true
-    url: https://www.theregister.com/security/2026/08/11/mozilla-revokes-firefox-signing-key-after-unencrypted-copy-lands-in-github/5285908
-  - detail: 439299 bytes
-    ok: true
-    url: https://zed.dev/blog/introducing-delta
-  - detail: 106369 bytes
-    ok: true
-    url: https://flutter.dev/blog/whats-new-in-flutter-3-47
-  - detail: 43457 bytes
-    ok: true
-    url: https://arxiv.org/abs/2608.09075
-  - detail: 33751 bytes
-    ok: true
-    url: https://llama.app
-  - detail: 729172 bytes (clipped)
-    ok: true
-    url: https://www.databricks.com/blog/open-sourcing-metals-v2-databricks-java-and-scala-language-server-multi-million-line-codebases
-  - detail: 167944 bytes
-    ok: true
-    url: https://www.theregister.com/devops/2026/08/12/nodejs-creator-liberates-durable-objects-from-cloudflare-with-celld/5286954
-  - detail: 9747 bytes
-    ok: true
-    url: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d82ba05263c6
-  - detail: 93540 bytes
-    ok: true
-    url: https://antithesis.com/blog/2026/wal-reset-bug/
-  - detail: 174322 bytes
-    ok: true
-    url: https://cursor.com/blog/design-mode
-  - detail: 486579 bytes (clipped)
-    ok: true
-    url: https://kubernetes.io/blog/2026/08/11/how-to-pretty-print-kubernetes-yaml-as-kyaml/
-  - detail: 41485 bytes
-    ok: true
-    url: https://arxiv.org/abs/2608.11095
-  - detail: 'failed: fetch failed: https://zerolabs.rubrik.com/blog/breaking-m365-copilot-sandbox-chatmate:
-      HTTP Error 403: Forbidden'
+  - detail: 'failed: fetch failed: https://openai.com/codex/: HTTP Error 403: Forbidden'
     ok: false
-    url: https://zerolabs.rubrik.com/blog/breaking-m365-copilot-sandbox-chatmate
-  - detail: 14486 bytes
+    url: https://openai.com/codex/
+  - detail: 37446 bytes
     ok: true
-    url: https://guillaumetech.github.io/posts/jpg-scaling-chrome/
-  - detail: 28185 bytes
+    url: https://celld.dev/
+  - detail: 284901 bytes
     ok: true
-    url: https://vitaut.net/posts/2026/yy-dtoa/
-  - detail: 102166 bytes
+    url: https://github.com/denoland/celld
+  - detail: 413484 bytes
     ok: true
-    url: https://fory.apache.org/blog/fory_json_fastest_java_json_framework/
-  - detail: 130504 bytes
+    url: https://www.anthropic.com/news
+  - detail: 236193 bytes
     ok: true
-    url: https://lovable.dev/blog/series-c
-  - detail: 8081 bytes
+    url: https://techcrunch.com/2026/08/12/some-claude-users-are-mad-that-anthropics-new-watermarks-will-catch-them-cheating-at-their-jobs-classes/
+  - detail: 158114 bytes (clipped)
     ok: true
-    url: https://woxi.ad-si.com
+    url: https://ai.google.dev/gemini-api/docs/changelog
+  - detail: 90739 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/microsoft/hackers-leverage-new-microsoft-sharepoint-exploit-in-attacks/
+  - detail: 71092 bytes
+    ok: true
+    url: https://www.pap.pl/en/news/medical-data-19-million-poles-stolen-major-breach-minister-says
+  - detail: 2717 bytes
+    ok: true
+    url: https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-55040
+  - detail: 742267 bytes
+    ok: true
+    url: https://www.rapid7.com/blog/
+  - detail: 2808 bytes
+    ok: true
+    url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-55040
+  - detail: 'failed: fetch failed: https://www.rapid7.com/blog/post/rapid7-analysis-microsoft-sharepoint-jwt-token-authentication-bypass-cve-2026-55040/:
+      HTTP Error 404: Not Found'
+    ok: false
+    url: https://www.rapid7.com/blog/post/rapid7-analysis-microsoft-sharepoint-jwt-token-authentication-bypass-cve-2026-55040/
+  - detail: 750546 bytes (clipped)
+    ok: true
+    url: https://www.anthropic.com/transparency
+  - detail: 1576907 bytes (clipped)
+    ok: true
+    url: https://developers.openai.com/codex/changelog
+  - detail: 'failed: fetch failed: https://developers.openai.com/codex/linux/desktop-app: HTTP Error 404:
+      Not Found'
+    ok: false
+    url: https://developers.openai.com/codex/linux/desktop-app
+  - detail: 1369168 bytes (clipped)
+    ok: true
+    url: https://casar.house.gov/sites/evo-subsites/casar.house.gov/files/evo-media-document/oversight-letter-to-openai-openai-hugging-face-incident-1.pdf
   - detail: 293322 bytes
     ok: true
     url: https://status.anthropic.com/
-  - detail: 56433 bytes
+  - detail: 'failed: fetch failed: https://www.rapid7.com/blog/post/rapid7-analysis-microsoft-sharepoint-jwt-token-authentication-bypass-cve-2026-55040:
+      HTTP Error 404: Not Found'
+    ok: false
+    url: https://www.rapid7.com/blog/post/rapid7-analysis-microsoft-sharepoint-jwt-token-authentication-bypass-cve-2026-55040
+  - detail: 2808 bytes
     ok: true
-    url: https://blog.mozilla.org/security/
-  - detail: 21969 bytes
+    url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-55040
+  - detail: 37446 bytes
+    ok: true
+    url: https://celld.dev/
+  - detail: 71091 bytes
+    ok: true
+    url: https://www.pap.pl/en/news/medical-data-19-million-poles-stolen-major-breach-minister-says
+  - detail: 90739 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/microsoft/hackers-leverage-new-microsoft-sharepoint-exploit-in-attacks/
+  - detail: 284902 bytes
+    ok: true
+    url: https://github.com/denoland/celld
+  - detail: 22565 bytes
     ok: true
     url: https://api-docs.deepseek.com/quick_start/pricing/
   - detail: 304401 bytes
     ok: true
     url: https://artificialanalysis.ai/articles/grok-4-6-benchmarks-and-analysis
-  - detail: 43457 bytes
+  - detail: 22565 bytes
     ok: true
-    url: https://arxiv.org/abs/2608.09075
+    url: https://api-docs.deepseek.com/quick_start/pricing/
+  - detail: 2808 bytes
+    ok: true
+    url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-55040
+  - detail: 70958 bytes
+    ok: true
+    url: https://www.pap.pl/en/news/medical-data-19-million-poles-stolen-major-breach-minister-says
+  - detail: 90739 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/microsoft/hackers-leverage-new-microsoft-sharepoint-exploit-in-attacks/
   - detail: 106369 bytes
     ok: true
     url: https://flutter.dev/blog/whats-new-in-flutter-3-47
-  - detail: 21969 bytes
-    ok: true
-    url: https://api-docs.deepseek.com/quick_start/pricing/
-  - detail: 729172 bytes (clipped)
-    ok: true
-    url: https://www.databricks.com/blog/open-sourcing-metals-v2-databricks-java-and-scala-language-server-multi-million-line-codebases
-  - detail: 21969 bytes
-    ok: true
-    url: https://api-docs.deepseek.com/quick_start/pricing/
-  - detail: 106369 bytes
-    ok: true
-    url: https://flutter.dev/blog/whats-new-in-flutter-3-47
-  - detail: 43457 bytes
-    ok: true
-    url: https://arxiv.org/abs/2608.09075
-  - detail: 41485 bytes
-    ok: true
-    url: https://arxiv.org/abs/2608.11095
-  - detail: 293322 bytes
-    ok: true
-    url: https://status.anthropic.com/
-  - detail: 304401 bytes
-    ok: true
-    url: https://artificialanalysis.ai/articles/grok-4-6-benchmarks-and-analysis
-  - detail: 484158 bytes (clipped)
-    ok: true
-    url: https://knownagents.com/insights
-  - detail: 439299 bytes
-    ok: true
-    url: https://zed.dev/blog/introducing-delta
-  - detail: 162167 bytes
-    ok: true
-    url: https://www.theregister.com/security/2026/08/11/mozilla-revokes-firefox-signing-key-after-unencrypted-copy-lands-in-github/5285908
-  - detail: 56433 bytes
-    ok: true
-    url: https://blog.mozilla.org/security/
-  - detail: 14486 bytes
-    ok: true
-    url: https://guillaumetech.github.io/posts/jpg-scaling-chrome/
-  - detail: 729172 bytes (clipped)
-    ok: true
-    url: https://www.databricks.com/blog/open-sourcing-metals-v2-databricks-java-and-scala-language-server-multi-million-line-codebases
-  generated_at: '2026-08-13T04:08:14+00:00'
+  generated_at: '2026-08-13T11:09:27+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -314,23 +352,29 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-08-13T03:36:31+00:00'
+    fetched_at: '2026-08-13T10:46:56+00:00'
     pooled:
       added:
-        ask_hn: 0
-        comments: 6
-        front_page: 1
-        queries: 5
-        show_hn: 1
-        top_day: 1
-      snapshot_fetched_at: '2026-08-13T02:47:22+00:00'
+        ask_hn: 7
+        comments: 24
+        front_page: 11
+        queries: 44
+        show_hn: 7
+        top_day: 11
+      snapshot_fetched_at: '2026-08-13T10:28:05+00:00'
     queries_backend: algolia
     seen_ids:
     - 47439821
     - 47999020
+    - 49193533
+    - 49211530
+    - 49218040
     - 49224802
     - 49231315
     - 49232312
+    - 49238831
+    - 49242698
+    - 49243687
     - 49267527
     - 49267818
     - 49267848
@@ -364,6 +408,7 @@ mechanical:
     - 49271070
     - 49271116
     - 49271126
+    - 49271409
     - 49271576
     - 49271578
     - 49271757
@@ -376,6 +421,7 @@ mechanical:
     - 49272264
     - 49272282
     - 49272286
+    - 49272326
     - 49272353
     - 49272484
     - 49272514
@@ -383,16 +429,19 @@ mechanical:
     - 49272569
     - 49272620
     - 49272655
+    - 49272661
     - 49272832
     - 49272914
     - 49273075
     - 49273165
     - 49273175
+    - 49273187
     - 49273269
     - 49273308
     - 49273330
-    - 49273346
     - 49273478
+    - 49273656
+    - 49273667
     - 49273695
     - 49273774
     - 49273922
@@ -405,12 +454,14 @@ mechanical:
     - 49274511
     - 49274600
     - 49274601
+    - 49274672
     - 49274680
     - 49274757
     - 49274854
     - 49274858
     - 49274894
     - 49274950
+    - 49274960
     - 49275020
     - 49275114
     - 49275132
@@ -421,6 +472,7 @@ mechanical:
     - 49275608
     - 49276138
     - 49276245
+    - 49276368
     - 49276529
     - 49276534
     - 49276574
@@ -438,12 +490,25 @@ mechanical:
     - 49279790
     - 49279804
     - 49279928
+    - 49279951
     - 49280047
     - 49280061
     - 49280079
     - 49280103
     - 49280184
+    - 49280468
+    - 49280486
     - 49281152
+    - 49281618
+    - 49281675
+    - 49281755
+    - 49281807
+    - 49281839
+    - 49281916
+    - 49282392
+    - 49282963
+    - 49283011
+    - 49283563
     source: cache
   query_yield:
     0day:
@@ -453,13 +518,16 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49268697
       - 49269090
       - 49271994
       - 49272569
       - 49272620
+      - 49276344
+      - 49280926
+      - 49280945
       published: 1
       published_ids:
       - 49271994
@@ -478,13 +546,14 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49270681
       - 49271860
       - 49272678
       - 49275179
       - 49280945
+      - 49283891
       published: 0
       published_ids: []
       raw: 5
@@ -513,7 +582,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     CVE:
       matched: 2
       matched_ids:
@@ -523,20 +592,26 @@ mechanical:
       published_ids: []
       raw: 5
     Claude:
-      matched: 5
+      matched: 9
       matched_ids:
+      - 49268790
       - 49273683
       - 49275088
       - 49276728
       - 49278068
       - 49281152
-      published: 0
-      published_ids: []
+      - 49281618
+      - 49283563
+      - 49283891
+      published: 1
+      published_ids:
+      - 49268790
       raw: 5
     Claude Code:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49271123
+      - 49272636
       - 49273683
       - 49275088
       - 49275395
@@ -544,13 +619,15 @@ mechanical:
       published_ids: []
       raw: 5
     Cloudflare:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49271647
       - 49279223
-      published: 0
-      published_ids: []
-      raw: 4
+      - 49282333
+      published: 1
+      published_ids:
+      - 49279223
+      raw: 5
     Copilot:
       matched: 1
       matched_ids:
@@ -559,11 +636,12 @@ mechanical:
       published_ids: []
       raw: 2
     Cursor:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49268187
       - 49268975
       - 49273884
+      - 49274374
       - 49279949
       published: 0
       published_ids: []
@@ -575,22 +653,25 @@ mechanical:
       published_ids: []
       raw: 5
     GPU:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49267466
       - 49270736
       - 49272536
       - 49281360
+      - 49283137
       published: 1
       published_ids:
       - 49281360
       raw: 5
     Gemini:
-      matched: 3
+      matched: 5
       matched_ids:
       - 49269561
       - 49269970
       - 49279379
+      - 49282182
+      - 49283011
       published: 0
       published_ids: []
       raw: 5
@@ -601,13 +682,15 @@ mechanical:
       published_ids: []
       raw: 2
     GitHub:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49267943
       - 49270205
       - 49270921
       - 49273196
+      - 49273627
       - 49277590
+      - 49283466
       published: 0
       published_ids: []
       raw: 5
@@ -656,7 +739,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     Kafka:
       matched: 0
       matched_ids: []
@@ -668,7 +751,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     Kleppmann:
       matched: 0
       matched_ids: []
@@ -692,28 +775,31 @@ mechanical:
       published_ids: []
       raw: 4
     LLM:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49271070
       - 49272758
+      - 49273905
       - 49279815
       published: 0
       published_ids: []
       raw: 5
     LWN:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49282221
       published: 0
       published_ids: []
       raw: 5
     Linux:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49268218
       - 49270764
       - 49271647
       - 49272986
       - 49273916
+      - 49281916
       published: 0
       published_ids: []
       raw: 5
@@ -724,22 +810,25 @@ mechanical:
       - 49279500
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     MCP:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49268975
       - 49270938
       - 49271313
+      - 49273472
       - 49275395
       - 49276368
+      - 49281842
       published: 0
       published_ids: []
       raw: 5
     Mistral:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49268944
+      - 49283341
       published: 0
       published_ids: []
       raw: 5
@@ -750,21 +839,23 @@ mechanical:
       published_ids: []
       raw: 0
     Nvidia:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49271787
       - 49271985
       - 49272514
       - 49272536
       - 49276945
+      - 49282762
       published: 0
       published_ids: []
       raw: 5
     OpenAI:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49267783
       - 49272678
+      - 49276238
       - 49279029
       - 49281006
       published: 0
@@ -802,15 +893,17 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     Python:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49269451
       - 49271462
       - 49272098
       - 49272175
       - 49277389
+      - 49282111
+      - 49283768
       published: 0
       published_ids: []
       raw: 5
@@ -827,9 +920,10 @@ mechanical:
       published_ids: []
       raw: 5
     Rust:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49270304
+      - 49272485
       - 49274892
       - 49275458
       - 49276913
@@ -838,19 +932,21 @@ mechanical:
       published_ids: []
       raw: 5
     S-1:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49267818
       - 49280537
+      - 49281710
       published: 0
       published_ids: []
       raw: 5
     SQLite:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49272832
       - 49275134
       - 49281262
+      - 49283317
       published: 0
       published_ids: []
       raw: 5
@@ -859,7 +955,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     Swift:
       matched: 1
       matched_ids:
@@ -916,57 +1012,65 @@ mechanical:
       published_ids: []
       raw: 4
     acquisition:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49282122
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     agentic:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49268790
       - 49272531
       - 49273979
       - 49279593
       - 49280968
+      - 49282624
       published: 1
       published_ids:
       - 49268790
       raw: 5
     arXiv:
-      matched: 7
+      matched: 10
       matched_ids:
       - 49268565
       - 49268790
       - 49272472
       - 49272758
       - 49274594
+      - 49276717
       - 49277180
       - 49281360
+      - 49283295
+      - 49283466
       published: 2
       published_ids:
       - 49268790
       - 49281360
       raw: 5
     breach:
-      matched: 0
-      matched_ids: []
-      published: 0
-      published_ids: []
+      matched: 1
+      matched_ids:
+      - 49283401
+      published: 1
+      published_ids:
+      - 49283401
       raw: 5
     chezmoi:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 1
     coding agent:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49271116
       - 49273175
       - 49273308
       - 49279500
+      - 49283063
       published: 0
       published_ids: []
       raw: 5
@@ -978,11 +1082,12 @@ mechanical:
       published_ids: []
       raw: 1
     drug discovery:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49282242
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     eBPF:
       matched: 2
       matched_ids:
@@ -990,7 +1095,7 @@ mechanical:
       - 49278090
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     exploit:
       matched: 1
       matched_ids:
@@ -1011,7 +1116,7 @@ mechanical:
       - 49274894
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     io_uring:
       matched: 0
       matched_ids: []
@@ -1023,21 +1128,23 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     local-first:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     macOS:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49269052
+      - 49269651
       - 49271289
       - 49272715
       - 49279064
       - 49280400
+      - 49281213
       published: 0
       published_ids: []
       raw: 5
@@ -1049,12 +1156,13 @@ mechanical:
       published_ids: []
       raw: 5
     outage:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49278706
+      - 49282499
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     protein folding:
       matched: 0
       matched_ids: []
@@ -1198,6 +1306,149 @@ mechanical:
       name: run_log
       status: ok
     - detail: 47 fetch(es), 1 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-08-13T11:09:35+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-13.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-12
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"Rapid7 publishes a proof-of-concept for critical SharePoint auth bypass
+        CVE-2026-55040, and a threat intelligence firm reports it used against honeypots","section":"Top
+        stories","status":"confirmed","category":"Security","primary_url":"https://services.nvd.nist.gov/rest/jso
+      failed_tools:
+        Read: 1
+        mcp__digest__fetch_url: 4
+      name: select
+      status: ok
+      tokens:
+        in: 55
+        out: 24545
+      tools:
+        Bash: 1
+        Glob: 3
+        Grep: 7
+        Read: 14
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 18
+        mcp__digest__guidance: 3
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 1
+    - detail: |-
+        Gate passes (exit 0). The digest for 2026-08-13 is updated.
+
+        Added:
+
+        - **Top stories, lead position:** CVE-2026-55040 SharePoint auth bypass, with the NVD record read through the 2.0 REST API and the empty-rendering MSRC advisory cited alongside it, the Rapid7 proof-of-concept and the Defused honeyp
+      name: write
+      status: ok
+      tokens:
+        in: 19
+        out: 9128
+      tools:
+        Edit: 7
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Top stories, story 2: DeepSeek repoints
+        the deepseek-v4-pro alias","detail":"The Summary and Comments are contradicted by the primary
+        source. The digest states the pricing page \"still carries the unquantified future-increase notice
+        that thi
+      name: review
+      status: ok
+      tokens:
+        in: 14
+        out: 18374
+      tools:
+        Glob: 1
+        Grep: 3
+        Read: 5
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 7
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes at exit 0. All six findings repaired in `data/digests/2026-08-13.md`, nothing else touched.
+
+        **Blocking, DeepSeek.** Rewrote the block against the pricing page as the review quotes it. The Summary now carries the dated, quantified notice: peak and off-peak billing at 16:00 UTC on 2026-08
+      failed_tools:
+        Read: 2
+        mcp__digest__fetch_url: 2
+      name: write
+      status: ok
+      tokens:
+        in: 37
+        out: 11957
+      tools:
+        Edit: 9
+        Read: 5
+        ToolSearch: 2
+        mcp__digest__fetch_url: 2
+        mcp__digest__memory_query: 3
+        mcp__digest__run_gate: 3
+    - detail: >-
+        {"ready":true,"findings":[{"severity":"minor","where":"Sources checked, Reddit degraded note","detail":"The
+        note states \"the hot collection returned zero items and contributed nothing\". The first half
+        is wrong. In `.cache/reddit/2026-08-13.json` the `hot` collection is populated (items begin at
+        li
+      name: review
+      status: ok
+      tokens:
+        in: 16
+        out: 19660
+      tools:
+        Glob: 1
+        Grep: 4
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 5
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 6 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: skipped (no seeded cause was reported wrong)
+      name: miss_review
+      status: skip
+    - detail: data/runs/2026-08-13.yaml
+      name: run_log
+      status: ok
+    - detail: 30 fetch(es), 4 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
