@@ -63,40 +63,110 @@ judgment:
     or hardware research. The uBlock Origin item is marked relevance_skip rather than a gap, because
     the 2026-08-13 digest records dropping it explicitly for want of a maintainer statement or
     repository commit.
+
+    Ranking. This selection adds nine stories and removes none, so the day stands at eighteen, well
+    under the cap. Two of the nine go to Top stories, filling it to five. The intended order is
+    Citrix NetScaler first, GLM-5.3 second, then the three already published in the order they hold
+    now: Gemini 3.7 Flash, Spaghettifying DRAM, Cerebras GPT-5.6 Sol Ultrafast. The lead changes
+    because a pre-auth RCE write-up against a gateway appliance that fronts enterprise remote access
+    outranks a model price change on operational urgency. No block was displaced, so the earlier
+    three keep their slots below the two new items.
+
+    Cerebras Ultrafast was the closest call for demotion. It is a limited preview for selected
+    customers with no published price, which is weaker than GLM-5.3 or the Anthropic watermarking
+    rollout on concrete reader impact. It survives only because Top stories had room for five and
+    nothing had to be cut.
+
+    Verification. Nine of nine new stories were read against their primary source this run. Two
+    hedges carry into the copy. watchTowr states it believes but cannot confirm the vulnerability it
+    analyzes is CVE-2026-8452, because Citrix does not correlate CVEs with credited researchers, so
+    the CVE identifier is watchTowr's inference and the writer should not assert it. Every GLM-5.3
+    number is vendor-reported on Z.ai's own documentation page with no independent reproduction, and
+    the page also states the API has not shipped, which belongs in the summary.
+
+    Absences that are findings, not quiet sections. Security carries one item rather than four
+    despite three further candidates, all dropped for sourcing. The Zoom "Zoomsday" takeover claim
+    has only a Tom's Hardware secondary and no vendor advisory. The Trezor breach affecting 14,000
+    holders is behind the FT paywall. The theft of medical data on 19 million Poles is real but is
+    not developer infrastructure. The Citrix advisory itself, CTX694938, would not render through
+    fetch_url, so the affected build numbers in the story come from watchTowr quoting the bulletin
+    rather than from Citrix directly.
+
+    Markets and companies is omitted rather than empty of candidates. Anthropic reportedly planning
+    a 2 trillion dollar IPO in October appeared across FT, Fortune and a Reuters report of talks to
+    buy Decart, all paywalled or secondary, and none verifiable this run. The CME Group press
+    release on compute futures listing 2026-10-05 is the one primary source that would have carried
+    the section, and cmegroup.com timed out.
+
+    Two further drops. The z.ai blog post at z.ai/blog/glm-5.3 returns an empty body, so the GLM-5.3
+    story cites the developer documentation page instead, which is primary and carries the same
+    claims. The 0.mk link-rot study, 188 points and a genuine measurement of 657,607 links with
+    published method, was dropped on link hygiene: the primary URL sits on a URL-shortener domain
+    and the gate may not distinguish an article path from a shortened link. Solid 2.0 RC returned an
+    empty body and was not published.
+
+    ML research and Books are omitted on the bar, not on collection. The papers fetch was healthy
+    and nothing in it drew ecosystem attention. The books feed returned only Springer conference
+    proceedings, with no trade title of engineering relevance.
+
+    Reddit was the worst-degraded source, reaching 2 of 28 subreddits on top_day, and nothing in the
+    pooled result cleared the bar, so Reddit and social pulse is omitted. The events watchlist
+    returned empty upcoming and active partitions for this date, which is why no Category: Event
+    story appears anywhere.
+
+    Backtest. The tool scored 61 candidates for 2026-08-13 and seeded no default causes, so the four
+    entries in miss_review are additive rather than overrides. Three are genuine engineering misses
+    no query caught: Qwen3.8-2.4T at 681 points is a major open-weights release with no watchlist
+    term for Qwen, Spaghettifying DRAM at 436 points had no query for memory-controller or hardware
+    attack work and was only picked up a day late by this archive, and HTML over WebSockets at 227
+    points had no frontend or WebSocket query. The fourth, the German criminal complaint over Meta
+    AI glasses, matched on entity:Meta AI but is a privacy and legal story with no engineering
+    content, so the entity match is a false positive and the right cause is out_of_scope. Grok 4.6
+    at 596 points was visible through entity:Grok and skipped anyway, which is a real editorial miss
+    but correctly categorized as seen and skipped, so it is not listed here.
 mechanical:
   digest:
     domains:
     - atproto.com
     - blog.google
     - cerebras.ai
+    - docs.z.ai
+    - elttam.com
     - github.com
+    - labs.watchtowr.com
     - lwn.net
-    - mcfunley.com
     - news.ycombinator.com
     - semgrep.dev
     - support.claude.com
+    - tschatzl.github.io
     hn_ids:
     - 49283563
     - 49286341
+    - 49289101
     - 49289112
-    - 49289512
     - 49289844
     - 49290215
     - 49291030
     - 49293324
-    - 49293745
+    - 49294997
+    - 49295238
     sections:
       AI: 1
       Engineering posts: 1
-      Hacker News: 1
       Infrastructure: 1
+      Languages and runtimes: 1
       Linux and kernel: 2
       Outages: 0
-      Security: 0
+      Security: 1
       Sources checked: 0
-      Top stories: 3
-    source_count: 18
+      Top stories: 5
+    source_count: 22
     titles:
+    - watchTowr publishes a pre-auth RCE chain against NetScaler ADC and Gateway built on a SAML canonicalization
+      heap overflow
+    - >-
+      Z.ai documents GLM-5.3 as a post-training-only upgrade over GLM-5.2 and reports 84.5 percent on
+      CyberGym, with the API not yet available
     - Google ships Gemini 3.7 Flash three weeks after 3.6 at an introductory price that doubles on 2027-01-01
     - >-
       Christopher Domas releases a technique that flips one DRAM controller bit to reach PSP memory, SMRAM,
@@ -107,6 +177,10 @@ mechanical:
     - >-
       Anthropic's policy page permits training classifiers on Claude outputs and prohibits training competing
       general-purpose models
+    - elttam publishes a universal Ruby deserialization gadget chain that reaches command execution from
+      one Marshal.load
+    - JDK 27 makes G1 the default garbage collector in all environments and stops resizing the heap on
+      the free-ratio flags
     - LWN covers a proposed Linux process-builder API that assembles a process from an empty pidfd instead
       of forking
     - An open systemd issue reports journald doing about 50 IOPS to write two log lines per second
@@ -114,95 +188,84 @@ mechanical:
       token for archive reads
     - Semgrep describes enforcing SHA-pinned GitHub Actions across about 350 repositories and what the
       setting actually requires
-    - Choose Boring Technology returns to the front page and the thread argues innovation tokens now belong
-      to agents
   fetched:
-  - detail: 448615 bytes (clipped)
+  - detail: 598 bytes
     ok: true
-    url: https://github.com/xoreaxeaxeax/skitter-creek-bath-salts
-  - detail: 403375 bytes
+    url: https://z.ai/blog/glm-5.3
+  - detail: 96944 bytes
     ok: true
-    url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-3-7-flash/
-  - detail: 357408 bytes
+    url: https://deepseek.com/harness/en/
+  - detail: 65601 bytes (clipped)
     ok: true
-    url: https://github.com/systemd/systemd/issues/40262
-  - detail: 'failed: fetch failed: https://openai.com/index/previewing-ultrafast/: HTTP Error 403: Forbidden'
+    url: https://labs.watchtowr.com/youre-back-in-the-room-citrix-netscaler-pre-auth-rce-cve-2026-8452/
+  - detail: 52245 bytes
+    ok: true
+    url: https://www.namecheap.com/status-updates/
+  - detail: 115651 bytes (clipped)
+    ok: true
+    url: https://www.elttam.com/blog/ruby-4-0-universal-rce-deserialization-gadget-chain
+  - detail: 8383 bytes
+    ok: true
+    url: https://support.citrix.com/support-home/kbsearch/article?articleNumber=CTX694938
+  - detail: 598 bytes
+    ok: true
+    url: https://z.ai/blog/glm-5.3
+  - detail: 81256 bytes (clipped)
+    ok: true
+    url: https://community.openai.com/t/codex-in-chatgpt-desktop-app-for-linux-is-now-in-preview/1390027
+  - detail: 'failed: fetch failed: https://huggingface.co/zai-org/GLM-5.3: HTTP Error 401: Unauthorized'
     ok: false
-    url: https://openai.com/index/previewing-ultrafast/
+    url: https://huggingface.co/zai-org/GLM-5.3
+  - detail: 282063 bytes
+    ok: true
+    url: https://docs.z.ai/guides/llm/glm-5.3
+  - detail: 336891 bytes (clipped)
+    ok: true
+    url: https://support.claude.com/en/articles/16266773-how-claude-marks-ai-generated-content
   - detail: 3643 bytes
     ok: true
     url: https://www.solidjs.com/blog/solid-2-0-rc-the-big-reveal
-  - detail: 106437 bytes
+  - detail: 177314 bytes
     ok: true
-    url: https://atproto.com/blog/introducing-bluesky-protocol-services
-  - detail: 236520 bytes
-    ok: true
-    url: https://www.cerebras.ai/blog/accelerating-gpt-5-6-sol-ultrafast-with-openai
-  - detail: 52376 bytes
-    ok: true
-    url: https://www.namecheap.com/status-updates/
-  - detail: 1120063 bytes
-    ok: true
-    url: https://docs.mistral.ai/models/ocr-4-1
-  - detail: 3643 bytes
-    ok: true
-    url: https://www.solidjs.com/blog
+    url: https://oxide.computer/blog/kubernetes-on-oxide
   - detail: 'failed: fetch failed: https://www.cmegroup.com/media-room/press-releases/2026/8/11/cme_group_and_silicondatatolaunchcomputefuturesonoctober5tounloc.html:
       The read operation timed out'
     ok: false
     url: https://www.cmegroup.com/media-room/press-releases/2026/8/11/cme_group_and_silicondatatolaunchcomputefuturesonoctober5tounloc.html
-  - detail: 52940 bytes (clipped)
+  - detail: 95566 bytes
     ok: true
-    url: https://lwn.net/Articles/1086330/
-  - detail: 309711 bytes
+    url: https://0.mk/blog/link-rot
+  - detail: 11474 bytes
     ok: true
-    url: https://blog.google/security/the-evolving-role-of-the-red-team-in-the-era-of-agentic-security/
-  - detail: 100931 bytes (clipped)
+    url: https://tschatzl.github.io/2026/08/10/jdk27-g1-serial-parallel-gc-changes.html
+  - detail: 65601 bytes (clipped)
     ok: true
-    url: https://semgrep.dev/blog/2026/sha-pinning-for-github-actions-org-wide/
-  - detail: 320829 bytes (clipped)
+    url: https://labs.watchtowr.com/youre-back-in-the-room-citrix-netscaler-pre-auth-rce-cve-2026-8452/
+  - detail: 282063 bytes
     ok: true
-    url: https://support.claude.com/en/articles/12326764-can-i-use-my-outputs-to-train-an-ai-model
+    url: https://docs.z.ai/guides/llm/glm-5.3
+  - detail: 115651 bytes (clipped)
+    ok: true
+    url: https://www.elttam.com/blog/ruby-4-0-universal-rce-deserialization-gadget-chain
   - detail: 403375 bytes
     ok: true
     url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-3-7-flash/
-  - detail: 236477 bytes
+  - detail: 282063 bytes
     ok: true
-    url: https://www.cerebras.ai/blog/accelerating-gpt-5-6-sol-ultrafast-with-openai
-  - detail: 52749 bytes (clipped)
+    url: https://docs.z.ai/guides/llm/glm-5.3
+  - detail: 65601 bytes (clipped)
     ok: true
-    url: https://lwn.net/Articles/1086330/
-  - detail: 106437 bytes
+    url: https://labs.watchtowr.com/youre-back-in-the-room-citrix-netscaler-pre-auth-rce-cve-2026-8452/
+  - detail: 11474 bytes
     ok: true
-    url: https://atproto.com/blog/introducing-bluesky-protocol-services
-  - detail: 357407 bytes
+    url: https://tschatzl.github.io/2026/08/10/jdk27-g1-serial-parallel-gc-changes.html
+  - detail: 115651 bytes (clipped)
     ok: true
-    url: https://github.com/systemd/systemd/issues/40262
-  - detail: 100931 bytes (clipped)
+    url: https://www.elttam.com/blog/ruby-4-0-universal-rce-deserialization-gadget-chain
+  - detail: 336891 bytes (clipped)
     ok: true
-    url: https://semgrep.dev/blog/2026/sha-pinning-for-github-actions-org-wide/
-  - detail: 403375 bytes
-    ok: true
-    url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-3-7-flash/
-  - detail: 357408 bytes
-    ok: true
-    url: https://github.com/systemd/systemd/issues/40262
-  - detail: 236520 bytes
-    ok: true
-    url: https://www.cerebras.ai/blog/accelerating-gpt-5-6-sol-ultrafast-with-openai
-  - detail: 52860 bytes (clipped)
-    ok: true
-    url: https://lwn.net/Articles/1086330/
-  - detail: 106437 bytes
-    ok: true
-    url: https://atproto.com/blog/introducing-bluesky-protocol-services
-  - detail: 100931 bytes (clipped)
-    ok: true
-    url: https://semgrep.dev/blog/2026/sha-pinning-for-github-actions-org-wide/
-  - detail: 320829 bytes (clipped)
-    ok: true
-    url: https://support.claude.com/en/articles/12326764-can-i-use-my-outputs-to-train-an-ai-model
-  generated_at: '2026-08-14T03:57:41+00:00'
+    url: https://support.claude.com/en/articles/16266773-how-claude-marks-ai-generated-content
+  generated_at: '2026-08-14T11:05:55+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -211,24 +274,32 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-08-14T03:34:02+00:00'
+    fetched_at: '2026-08-14T10:44:01+00:00'
     pooled:
       added:
-        ask_hn: 1
-        comments: 0
-        front_page: 2
-        queries: 5
-        show_hn: 1
-        top_day: 1
-      snapshot_fetched_at: '2026-08-14T02:46:05+00:00'
+        ask_hn: 13
+        comments: 12
+        front_page: 16
+        queries: 35
+        show_hn: 5
+        top_day: 8
+      snapshot_fetched_at: '2026-08-14T10:16:23+00:00'
     queries_backend: algolia
     seen_ids:
+    - 47439821
+    - 47999020
+    - 49204232
     - 49210740
+    - 49221431
     - 49223964
+    - 49231490
     - 49232753
     - 49236811
     - 49240615
+    - 49242287
     - 49244696
+    - 49248769
+    - 49258085
     - 49281618
     - 49281675
     - 49281755
@@ -301,6 +372,7 @@ mechanical:
     - 49288389
     - 49288889
     - 49289026
+    - 49289101
     - 49289112
     - 49289260
     - 49289341
@@ -332,6 +404,7 @@ mechanical:
     - 49292498
     - 49292567
     - 49292584
+    - 49292676
     - 49292843
     - 49292932
     - 49293087
@@ -339,10 +412,31 @@ mechanical:
     - 49293294
     - 49293324
     - 49293500
+    - 49293523
     - 49293894
     - 49293943
+    - 49293980
+    - 49294025
     - 49294199
     - 49294288
+    - 49294513
+    - 49294529
+    - 49294887
+    - 49294997
+    - 49295148
+    - 49295238
+    - 49295396
+    - 49295515
+    - 49295533
+    - 49295620
+    - 49295839
+    - 49295962
+    - 49296015
+    - 49296388
+    - 49296627
+    - 49296669
+    - 49296706
+    - 49296740
     source: cache
   query_yield:
     0day:
@@ -375,23 +469,25 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49283891
       - 49284856
       - 49288124
       - 49289000
       - 49290093
+      - 49294619
       published: 0
       published_ids: []
       raw: 5
     Apple Silicon:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49281360
+      - 49295247
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     Azure:
       matched: 0
       matched_ids: []
@@ -413,29 +509,34 @@ mechanical:
       published_ids: []
       raw: 5
     CVE:
-      matched: 0
-      matched_ids: []
-      published: 0
-      published_ids: []
+      matched: 1
+      matched_ids:
+      - 49295904
+      published: 1
+      published_ids:
+      - 49295904
       raw: 5
     Claude:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49281618
       - 49283891
       - 49284329
       - 49286056
       - 49288051
+      - 49294362
+      - 49295148
       published: 0
       published_ids: []
       raw: 5
     Claude Code:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49286056
       - 49286929
       - 49288724
       - 49291723
+      - 49294922
       published: 0
       published_ids: []
       raw: 5
@@ -449,21 +550,24 @@ mechanical:
       - 49288664
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     Copilot:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49293280
+      - 49295041
       published: 0
       published_ids: []
       raw: 2
     Cursor:
-      matched: 1
+      matched: 3
       matched_ids:
       - 49290791
+      - 49294780
+      - 49296729
       published: 0
       published_ids: []
-      raw: 2
+      raw: 4
     GCP:
       matched: 0
       matched_ids: []
@@ -482,13 +586,14 @@ mechanical:
       published_ids: []
       raw: 5
     Gemini:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49283011
       - 49288847
       - 49289112
       - 49289500
       - 49291935
+      - 49294922
       published: 2
       published_ids:
       - 49288847
@@ -501,10 +606,11 @@ mechanical:
       published_ids: []
       raw: 2
     GitHub:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49283466
       - 49284927
+      - 49288857
       - 49291030
       - 49293252
       - 49293280
@@ -570,7 +676,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 5
+      raw: 1
     Kleppmann:
       matched: 0
       matched_ids: []
@@ -584,13 +690,14 @@ mechanical:
       published_ids: []
       raw: 1
     Kubernetes:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49284256
       - 49286485
+      - 49296939
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     LLM:
       matched: 3
       matched_ids:
@@ -601,22 +708,24 @@ mechanical:
       published_ids: []
       raw: 5
     LWN:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49282221
       - 49284132
       - 49293745
+      - 49294645
       published: 2
       published_ids:
       - 49282221
       - 49293745
       raw: 5
     Linux:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49281916
       - 49285560
       - 49288464
+      - 49290235
       - 49290992
       - 49292931
       published: 0
@@ -627,35 +736,41 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     MCP:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49281842
+      - 49283991
       - 49284218
       - 49285743
       - 49286073
+      - 49288880
+      - 49292070
       - 49292584
       published: 0
       published_ids: []
       raw: 5
     Mistral:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49283341
       - 49288643
       - 49288889
       - 49288928
       - 49291987
+      - 49295419
+      - 49296390
       published: 0
       published_ids: []
       raw: 5
     Neovim:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49295694
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     Nvidia:
       matched: 3
       matched_ids:
@@ -664,7 +779,7 @@ mechanical:
       - 49289603
       published: 0
       published_ids: []
-      raw: 5
+      raw: 3
     OpenAI:
       matched: 5
       matched_ids:
@@ -711,13 +826,14 @@ mechanical:
       published_ids: []
       raw: 3
     Python:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49282111
       - 49284392
       - 49289358
       - 49290632
       - 49290661
+      - 49294671
       published: 0
       published_ids: []
       raw: 5
@@ -746,11 +862,12 @@ mechanical:
       published_ids: []
       raw: 5
     S-1:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49281710
       - 49289436
       - 49294214
+      - 49294619
       published: 0
       published_ids: []
       raw: 4
@@ -762,17 +879,18 @@ mechanical:
       - 49286073
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     Spring Boot:
       matched: 1
       matched_ids:
       - 49286747
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     Swift:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49296083
       published: 0
       published_ids: []
       raw: 5
@@ -781,14 +899,14 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     TypeScript:
       matched: 1
       matched_ids:
       - 49288863
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     Vim:
       matched: 0
       matched_ids: []
@@ -819,41 +937,46 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 5
+      raw: 1
     acquisition:
       matched: 1
       matched_ids:
       - 49282122
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     agentic:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49282624
       - 49285774
       - 49286039
       - 49292383
       - 49292773
+      - 49294386
+      - 49296797
       published: 0
       published_ids: []
       raw: 5
     arXiv:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49281360
       - 49283295
       - 49283466
+      - 49286020
       - 49286030
+      - 49288136
       - 49288480
       published: 0
       published_ids: []
       raw: 5
     breach:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49283401
       - 49292638
+      - 49295917
       published: 0
       published_ids: []
       raw: 5
@@ -864,11 +987,12 @@ mechanical:
       published_ids: []
       raw: 0
     coding agent:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49283063
       - 49287905
       - 49288948
+      - 49290984
       published: 0
       published_ids: []
       raw: 5
@@ -884,7 +1008,7 @@ mechanical:
       - 49282242
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     eBPF:
       matched: 0
       matched_ids: []
@@ -908,10 +1032,12 @@ mechanical:
       published_ids: []
       raw: 5
     incident:
-      matched: 2
+      matched: 4
       matched_ids:
       - 49285325
       - 49286299
+      - 49295360
+      - 49295443
       published: 0
       published_ids: []
       raw: 5
@@ -922,14 +1048,15 @@ mechanical:
       published_ids: []
       raw: 1
     kernel:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49287081
       - 49287701
       - 49289603
+      - 49296767
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     local-first:
       matched: 2
       matched_ids:
@@ -950,8 +1077,10 @@ mechanical:
       published_ids: []
       raw: 5
     npm:
-      matched: 0
-      matched_ids: []
+      matched: 2
+      matched_ids:
+      - 49294648
+      - 49295443
       published: 0
       published_ids: []
       raw: 5
@@ -1116,6 +1245,149 @@ mechanical:
       name: run_log
       status: ok
     - detail: 28 fetch(es), 2 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-08-14T11:06:04+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-14.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-13
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"watchTowr publishes a pre-auth RCE chain against NetScaler ADC and Gateway
+        built on a SAML canonicalization heap overflow","section":"Top stories","category":"Security","status":"confirmed","primary_url":"https://labs.watchtowr.com/youre-back-in-the-room-citrix-netscaler-pr
+      failed_tools:
+        mcp__digest__fetch_url: 2
+      name: select
+      status: ok
+      tokens:
+        in: 58
+        out: 26033
+      tools:
+        Bash: 2
+        Glob: 4
+        Grep: 2
+        Read: 16
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 16
+        mcp__digest__guidance: 2
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 2
+    - detail: |-
+        Gate passes (exit 0). The write step is done.
+
+        **What was published to `data/digests/2026-08-14.md`:**
+
+        Four of the selection's nine stories were added. The digest now holds 13 stories with `source_count = 26`.
+
+        - **Top stories** gained two, placed above the three already published, in the selection
+      name: write
+      status: ok
+      tokens:
+        in: 30
+        out: 11723
+      tools:
+        Edit: 12
+        Read: 2
+        ToolSearch: 1
+        mcp__digest__run_gate: 3
+    - detail: >-
+        {"findings":[{"severity":"blocking","where":"Top stories — watchTowr NetScaler pre-auth RCE","detail":"No
+        affected versions are stated, and the gate requires every security item to give affected versions
+        or say they are not yet known. The summary only says the affected build numbers \"are quoted fro
+      name: review
+      status: ok
+      tokens:
+        in: 15
+        out: 14541
+      tools:
+        Glob: 1
+        Grep: 3
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 4
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes, exit code 0. The warnings are memory staleness notices, not content failures, and memory is outside this step's write scope.
+
+        ## Repairs applied
+
+        **Blocking**
+
+        1. **watchTowr NetScaler, affected versions.** Added both ranges to the summary, attributed to the post: NetScaler ADC and NetS
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: write
+      status: ok
+      tokens:
+        in: 21
+        out: 7451
+      tools:
+        Edit: 7
+        Read: 2
+        ToolSearch: 1
+        mcp__digest__fetch_url: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":true,"findings":[{"severity":"minor","where":"Sources checked — YouTube channels","detail":"\"18
+        videos collected\" contradicts the collection record and is stale from an earlier run of the day.
+        `.cache/youtube/2026-08-14.json` (fetched_at 2026-08-14T10:44:29Z) holds 49 items under collecti
+      name: review
+      status: ok
+      tokens:
+        in: 33
+        out: 19765
+      tools:
+        Glob: 1
+        Grep: 17
+        Read: 6
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 5
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 9 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 2 cause(s) corrected in 2026-08-13
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-08-14.yaml
+      name: run_log
+      status: ok
+    - detail: 25 fetch(es), 2 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
