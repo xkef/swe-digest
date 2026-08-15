@@ -183,9 +183,10 @@ recurring_min_days = 3
 [memory]
 # Structure and growth bounds for memory/*.md, enforced by the content gate.
 # Staleness past entity_stale_days is a warning (a nudge to compact), never a
-# gate failure. A followups.md entry older than followup_max_age_days fails
-# the gate: re-date it after re-verifying, or delete it, so the file prunes
-# itself instead of drifting into the byte bound below.
+# gate failure. A followups.md entry whose opened date is older than
+# followup_max_age_days fails the gate: delete it, or re-open it as a new
+# entry, so the file prunes itself instead of drifting into the byte bound
+# below. Re-dating does not clear it, because the bound is on opened.
 max_line_chars = 2000
 # Bytes are what every run pays to re-read, and the line bound never
 # constrained them: followups.md reached 110 KB inside 792 lines, half the

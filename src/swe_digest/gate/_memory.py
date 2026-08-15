@@ -12,7 +12,8 @@ Two rules survive from the markdown era, for the same reasons they existed:
 - A **fact** must carry an ISO ``last_seen`` date. Guidance must not, because
   guidance is standing policy with no freshness to record.
 - A follow-up older than the age bound is a **hard failure**, which forces the
-  run to re-verify and re-date it or to close it. Nothing else expires: an
+  run to close it or to re-open it as a new follow-up. The bound is on
+  ``opened``, so re-dating does not clear it. Nothing else expires: an
   entity or access note that goes stale is a **warning only**, because time
   passing alone must never block publishing.
 """
@@ -54,8 +55,9 @@ def check_dates(name: str, records: list, today: date) -> tuple[list[str], list[
             elif (today - opened).days > settings.MEMORY_FOLLOWUP_MAX_AGE_DAYS:
                 errors.append(
                     f"{where}: opened {record.opened}, older than "
-                    f"{settings.MEMORY_FOLLOWUP_MAX_AGE_DAYS} days. Re-verify and re-date it, "
-                    "or close it."
+                    f"{settings.MEMORY_FOLLOWUP_MAX_AGE_DAYS} days. Close it, or re-open it as a "
+                    "new follow-up if the thread is still live. Re-dating does not clear this: "
+                    "the bound is on opened, and touch sets last_seen."
                 )
         elif stale_days and age > stale_days:
             warnings.append(f"{where}: last seen {record.last_seen} ({age} days). Re-verify.")

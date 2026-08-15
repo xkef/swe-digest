@@ -78,13 +78,37 @@ def test_guidance_without_a_date_passes(tmp_path: Path) -> None:
 def test_an_over_age_followup_is_a_hard_failure(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Not a warning: an unreviewed thread has to be re-dated or closed."""
+    """Not a warning: an unreviewed thread has to be closed or re-opened."""
     stale = date.fromordinal(TODAY.toordinal() - settings.MEMORY_FOLLOWUP_MAX_AGE_DAYS - 1)
     at(stale.isoformat(), monkeypatch, "followups", tmp_path, subject="Forgotten")
 
     errors = check_memory(tmp_path, TODAY)
 
     assert errors and "older than" in errors[0]
+
+
+def test_touching_an_over_age_followup_does_not_clear_it(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The bound is on ``opened`` and ``touch`` sets ``last_seen``, so re-dating
+    reports work done without moving the record out of the failure. Only closing
+    it or re-opening it as a new follow-up clears the gate, and on 2026-08-15 a
+    daily run read the old message as an instruction it could not carry out."""
+    stale = date.fromordinal(TODAY.toordinal() - settings.MEMORY_FOLLOWUP_MAX_AGE_DAYS - 1)
+    at(stale.isoformat(), monkeypatch, "followups", tmp_path, subject="Forgotten")
+    record = memory_store.load("followups", tmp_path)[0]
+
+    monkeypatch.setattr(memory_store, "today", lambda: TODAY.isoformat())
+    touched = memory_store.touch("followups", record.id, tmp_path)
+    monkeypatch.undo()
+
+    assert touched.last_seen == TODAY.isoformat()
+    assert touched.opened == stale.isoformat()
+    assert check_memory(tmp_path, TODAY)
+
+    memory_store.close("followups", record.id, tmp_path)
+
+    assert check_memory(tmp_path, TODAY) == []
 
 
 def test_a_followup_at_the_age_limit_passes(

@@ -42,6 +42,12 @@ type Step = Code | specs.StageSpec
 
 
 DAILY: tuple[Step, ...] = (
+    # First, as in IMPROVE, and for the reason the step states: the gate
+    # hard-fails on an over-age follow-up, and no daily stage holds the grant to
+    # clear one. Before the model stages rather than before the gate, so the
+    # write step is not handed a gate failure it cannot act on, which is what
+    # spent the run's one repair pass on 2026-08-15.
+    Code("prune_memory", steps.prune_memory),
     Code("collect", steps.collect),
     Code("skeleton", steps.skeleton),
     Code("backtest", steps.backtest),

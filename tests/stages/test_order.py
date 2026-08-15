@@ -48,6 +48,19 @@ def test_the_improvement_run_publishes_nothing_and_collects_nothing() -> None:
     assert "gate" in names, "it still validates what it wrote to memory"
 
 
+def test_both_modes_prune_the_age_bound_before_a_model_reads_memory() -> None:
+    """The gate hard-fails on an over-age follow-up and no daily stage holds the
+    grant to clear one, so the daily run has to prune it too. Before the model
+    stages, not merely before the gate: a write step handed a gate failure it
+    cannot act on spends the run's one repair pass on it."""
+    for mode, ordered in pipeline.PIPELINES.items():
+        names = [step.name for step in ordered]
+        assert "prune_memory" in names, mode
+        assert names.index("prune_memory") < names.index("gate"), mode
+        for stage in (step.name for step in ordered if isinstance(step, specs.StageSpec)):
+            assert names.index("prune_memory") < names.index(stage), f"{mode}:{stage}"
+
+
 def test_the_daily_run_gates_before_it_commits() -> None:
     """Order is the whole safety property here, and it is now readable as one
     list rather than assembled from a before/after pair."""

@@ -496,12 +496,16 @@ def prune_memory(run: Run) -> str:
 
     Age is arithmetic, not judgment, and the content gate hard-fails on an
     over-age follow-up, so leaving this to the model blocks a publish on a
-    decision nobody made. The memory step receives what was dropped and can
-    re-open anything still live.
+    decision nobody made. In the improvement run the memory step receives what
+    was dropped and can re-open anything still live. The daily run has no such
+    step, so it names the subjects in its result instead: a drop nobody can
+    reverse is at least a drop the run log records.
     """
     dropped = memory_store.prune("followups", settings.MEMORY_FOLLOWUP_MAX_AGE_DAYS)
     run.pruned = [getattr(record, "subject", record.id) for record in dropped]
-    return f"{len(dropped)} follow-up(s) past the age bound"
+    if not dropped:
+        return "no follow-up past the age bound"
+    return f"{len(dropped)} past the age bound: {'; '.join(run.pruned)}"
 
 
 def weekly_stats(run: Run) -> str:
