@@ -16,6 +16,7 @@ from pathlib import Path
 import pytest
 
 from swe_digest import serial, settings
+from swe_digest.domain.records import Followup
 from swe_digest.gate._memory import check_memory
 from swe_digest.store import memory as memory_store
 
@@ -102,6 +103,7 @@ def test_touching_an_over_age_followup_does_not_clear_it(
     touched = memory_store.touch("followups", record.id, tmp_path)
     monkeypatch.undo()
 
+    assert isinstance(touched, Followup)
     assert touched.last_seen == TODAY.isoformat()
     assert touched.opened == stale.isoformat()
     assert check_memory(tmp_path, TODAY)
