@@ -499,32 +499,6 @@
   watch_for: >-
     The confirmed target JDK release; whether the incubator module graduates or changes package/shape;
     adoption relative to Jackson/Gson.
-- category: Security
-  id: f-0022
-  last_seen: '2026-07-23'
-  notes: >-
-    Two local-privilege-escalation flaws with public exploits reached root on 2026-07-22. Qualys disclosed
-    RefluXFS (CVE-2026-64600), a race in the XFS copy-on-write path where concurrent O_DIRECT writes to
-    a reflinked file overwrite a shared page never made private; unprivileged user to root on volumes
-    with reflink=1 (default on RHEL, Oracle Linux, Amazon Linux), kernels v4.11 to unpatched current,
-    passwordless-root PoC on RHEL 10.2. pedit-COW (CVE-2026-46331, NVD-published 2026-06-16, PoC resurfaced
-    HN 2026-07-22) uses a tc act_pedit partial copy-on-write (tcf_pedit_act computes the COW range before
-    typed keys add a runtime offset) to poison the cached /bin/su binary and get root on kernels up to
-    6.12.9 where unprivileged user namespaces are available. Both landed as the kernel CVE team published
-    432 CVEs in two days (batch stable-fix assignment amid AI-assisted bug-hunt volume; Akamai's Jan Schaumann:
-    automated frequent updates are the only workable defense). Covered 2026-07-23 Top stories (lead, Security).
-    Continues the Linux LPE run (GhostLock, Bad Epoll, Januscape, snap-confine).
-  opened: '2026-07-23'
-  sources:
-  - >-
-    [Qualys RefluXFS writeup](https://blog.qualys.com/vulnerabilities-threat-research/2026/07/22/refluxfs-a-linux-kernel-local-privilege-escalation-to-root-in-xfs-cve-2026-64600)
-  - '[oss-security](https://www.openwall.com/lists/oss-security/2026/07/22/14)'
-  - '[CVE-2026-46331 (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2026-46331)'
-  - '[HN 49014458](https://news.ycombinator.com/item?id=49014458)'
-  subject: RefluXFS and pedit-COW Linux kernel local-root exploits
-  watch_for: >-
-    Named fixed stable kernel versions and distribution backports for both; any CISA KEV addition; in-the-wild
-    use beyond the public PoCs; whether the 432-CVE two-day flood repeats and how distros triage it.
 - category: Markets
   id: f-0023
   last_seen: '2026-07-25'
@@ -584,52 +558,6 @@
     Codex and Gemini CLI mitigations (both declined at disclosure); whether other agents that can read
     the Docker socket are affected; any CVE assignment beyond the Cursor GHSA; real-world exploitation
     via prompt injection.
-- category: Dev tools
-  id: f-0025
-  last_seen: '2026-07-23'
-  notes: >-
-    Codeberg (nonprofit Gitea-based forge) amended its Terms of Use in July 2026 after a membership vote
-    to prohibit projects that "mostly consist of code written by 'generative AI'-tools", naming Claude
-    and OpenAI Codex. Stated rationale is copyright ambiguity and the nonprofit's inability to defend
-    against future IP claims; targets whole repositories, not individual AI-assisted commits. Different
-    rationale from Godot's reviewer-capacity ban but same AI-authorship governance theme (Godot, curl
-    report-handling pause, FFmpeg AI bug reports). Covered 2026-07-22 Developer tools (confirmed). 2026-07-23
-    Codeberg published the promised enforcement blog post ("Protecting our FLOSS commons from LLMs", blog.codeberg.org,
-    HN 49015635): reactive case-by-case moderation on community reports, no automated scanning and no
-    mass deletion; weighs active community involvement, significant pre-LLM history, and resource use
-    out of proportion to the people involved; targets autonomous LLM-generated projects and LLM-focused
-    tools. Covered 2026-07-23 Watchlist follow-ups (confirmed). See [[entities]] Codeberg.
-  opened: '2026-07-22'
-  sources:
-  - '[Codeberg ToU pull request](https://codeberg.org/Codeberg/org/pulls/1253)'
-  - '[HN 49003386](https://news.ycombinator.com/item?id=49003386)'
-  subject: Codeberg bans mostly-AI-generated projects
-  watch_for: >-
-    How "mostly" is defined in practice through case decisions; whether the policy affects legitimate
-    AI-assisted contributions; whether other forges (GitHub, GitLab, Tangled, self-hosting) adopt similar
-    bans; any measurable effect on project migrations; enforcement of the separate 2026-07-22 cryptocurrency/blockchain
-    project ban (pull 1254).
-- category: Security
-  id: f-0026
-  last_seen: '2026-07-22'
-  notes: >-
-    Qualys disclosed CVE-2026-8933 on 2026-07-21, a local privilege escalation to root in snap-confine
-    on Ubuntu Desktop 24.04/25.10/26.04. Chains two race conditions during sandbox setup: a temporary
-    directory owned by the calling user before ownership transfers to root, plus symlink manipulation
-    redirecting a privileged write to an arbitrary target. Attributed to a hardening shift from set-uid-root
-    to set-capabilities that leaves snap-confine running with the caller's effective UID while keeping
-    near-root capabilities. Canonical released fixed snapd packages via the Ubuntu Security Team; PoC
-    accompanies the advisory, no active exploitation reported. Distinct from CVE-2026-3888 (March 2026,
-    systemd-tmpfiles timing). Surfaced via r/linux 2026-07-22 (no HN thread found). Covered 2026-07-22
-    Security (confirmed). Continues the Linux LPE run (GhostLock, Bad Epoll, Januscape).
-  opened: '2026-07-21'
-  sources:
-  - >-
-    [Qualys writeup](https://blog.qualys.com/vulnerabilities-threat-research/2026/07/21/cve-2026-8933-snap-confine-local-privilege-escalation)
-  - '[r/linux](https://www.reddit.com/r/linux/comments/1v34he9/ubuntu_snapconfine_flaw_could_grant_unprivileged/)'
-  subject: snap-confine CVE-2026-8933 local root on Ubuntu desktops
-  watch_for: A weaponized exploit beyond the PoC in the advisory; backports across supported Ubuntu releases
-    and the exact fixed snapd versions; any CISA KEV addition; whether it chains with other snapd flaws.
 - category: Security
   id: f-0027
   last_seen: '2026-07-22'
@@ -1142,55 +1070,51 @@
     the architecture and size; independent benchmark or blind-arena results; whether it is API-only at
     launch.
 - category: AI
-  id: f-0064
-  last_seen: '2026-07-23'
+  id: f-0046
+  last_seen: '2026-08-16'
   notes: >-
-    Mathematician Levent Alpoge posted 2026-07-19 a concrete counterexample to the Jacobian Conjecture
-    (open since 1939, Smale problem #16): a polynomial map C^3 to C^3 with constant nonzero Jacobian determinant
-    -2 that is not injective (three distinct points map to one output), contradicting the conjecture that
-    such a map must be invertible. Credited Anthropic's Claude, discussed on HN as the Fable 5 model.
-    Unlike the earlier prose proof claims, the map is short and machine-checkable; HN commenters report
-    verifying it in Sage and SymPy (determinant constant -2, the three listed points collide). Wikipedia
-    updated to note the conjecture disproven. Not yet in a peer-reviewed paper. Strongest AI-math-proof-theme
-    datapoint yet (CDC proof 2026-07-10, Star Fleet Erdős 2026-07-15, convex-optimization bound 2026-07-18)
-    because it is verifiable. Covered 2026-07-20 Top stories (lead, developing). 2026-07-21: Terence Tao
-    published a geometric "digestion" (terrytao.wordpress.com) reconstructing the degree-seven map via
-    symmetric powers of homogeneous polynomials plus a resultant normalization, presenting it as established
-    mathematics (no doubt expressed) and disclosing he used an AI chatbot to discuss the problem and confirm
-    several calculations. Independent Fields-medalist reconstruction is the strongest validation yet.
-    Covered 2026-07-22 Top stories (confirmed). 2026-07-22: Tao shared the actual ChatGPT conversation
-    he used to discuss the problem and check calculations (chatgpt.com share, HN 49010345, 705 pts), a
-    concrete record of a working mathematician using a chatbot as a reasoning/calculation aid. Covered
-    2026-07-23 Watchlist follow-ups (confirmed).
-  opened: '2026-07-20'
-  sources:
-  - '[Levent Alpoge (@__alpoge__)](https://x.com/__alpoge__/status/2079028340955197566)'
-  - '[Jacobian conjecture (Wikipedia)](https://en.wikipedia.org/wiki/Jacobian_conjecture)'
-  - '[HN 48973869](https://news.ycombinator.com/item?id=48973869)'
-  subject: Counterexample to the Jacobian Conjecture posted with help from Claude
-  watch_for: A formal writeup or paper; independent expert confirmation the map is a genuine counterexample;
-    clarification of the model's role versus the mathematician; whether the result is accepted by the
-    field.
-- category: AI
-  id: f-0060
-  last_seen: '2026-08-09'
-  notes: >-
-    Merged from three follow-ups tracking the same question. 2026-07-10: OpenAI published a PDF proof
-    of the Cycle Double Cover Conjecture attributed to GPT-5.6 Sol Ultra, stated to use 64 subagents in
-    under an hour (cdn.openai.com cdc_proof.pdf, HN 48863490); HN noted the released prompt instructs
-    the model to assume a proof exists. 2026-07-15: Star Fleet (Colin Snyder, starfleetmath.com, HN 48914646)
-    published proposed solutions to open Erdos problems from up to 20 parallel Codex instances emitting
-    Lean 4 proofs, with sorry-checkers, pinned mathlib versions, and transitive axiom audits. 2026-07-18:
-    Phillip Kerger (UC Berkeley) published a Lean 4/mathlib formalization and manuscript closing a derivative-free
-    convex optimization gap, a near-quadratic deterministic lower bound for convex Lipschitz functions
-    from exact function values (github.com/PhillipKerger/zero-order-bounds-lean-verification, HN 48957779);
-    the manuscript does not attribute the proof to an AI, so the GPT-5.6 credit is a community claim.
-    None peer reviewed. Machine-checked Lean is a stronger claim than the prose PDF. Covered 2026-07-11,
-    2026-07-15, and 2026-07-18.
-  opened: '2026-08-09'
+    Merged from two follow-ups tracking one thread. Strongest datapoint is machine-checkable: 2026-07-19
+    Levent Alpoge posted a counterexample to the Jacobian Conjecture (open since 1939, Smale #16), a polynomial
+    map C^3 to C^3 with constant Jacobian determinant -2 that is not injective, credited to Anthropic's
+    Claude; HN commenters verified it in Sage and SymPy, and 2026-07-21 Terence Tao published an independent
+    geometric reconstruction via symmetric powers plus resultant normalization, presenting it as established
+    mathematics and disclosing he used a chatbot to check calculations (2026-07-22 he shared the transcript,
+    HN 49010345). Weaker prose claims from the same run: 2026-07-10 OpenAI PDF proof of the Cycle Double
+    Cover Conjecture credited to GPT-5.6 Sol Ultra (HN 48863490, released prompt instructs the model to
+    assume a proof exists); 2026-07-15 Star Fleet proposed solutions to open Erdos problems from parallel
+    Codex instances emitting Lean 4 (starfleetmath.com, HN 48914646); 2026-07-18 Phillip Kerger's Lean
+    4 formalization of a derivative-free convex optimization lower bound, which does not itself attribute
+    the proof to an AI (HN 48957779). None peer reviewed. Machine-checked Lean and the verifiable counterexample
+    are stronger claims than the prose PDFs. Covered 2026-07-11, 07-15, 07-18, 07-20, 07-22, 07-23.
+  opened: '2026-08-16'
   sources: []
-  subject: AI-credited proofs of open math problems (CDC, Erdos, derivative-free convex bound)
+  subject: AI-credited proofs and counterexamples to open math problems
   watch_for: >-
-    Independent mathematician review accepting or refuting any of the three; peer review of the Kerger
-    manuscript; whether the problems were genuinely open; whether the Lean formalizations match the claimed
-    AI-produced proofs; reproduction of the harnesses.
+    A formal writeup or peer-reviewed paper for the Jacobian counterexample and whether the field accepts
+    it; independent mathematician review accepting or refuting the CDC, Erdos, and Kerger claims; whether
+    the Lean formalizations match the claimed AI-produced proofs; clarification of the model's role versus
+    the mathematician in each case.
+- category: Security
+  id: f-0048
+  last_seen: '2026-08-16'
+  notes: >-
+    Merged from two follow-ups sharing one watch signal. RefluXFS (CVE-2026-64600, Qualys, disclosed 2026-07-22):
+    race in the XFS copy-on-write path where concurrent O_DIRECT writes to a reflinked file overwrite
+    a shared page never made private; unprivileged user to root on reflink=1 volumes, default on RHEL,
+    Oracle Linux, and Amazon Linux, kernels v4.11 to unpatched current, passwordless-root PoC on RHEL
+    10.2. pedit-COW (CVE-2026-46331, NVD-published 2026-06-16, PoC resurfaced HN 2026-07-22): tc act_pedit
+    partial copy-on-write poisons the cached /bin/su binary, kernels to 6.12.9 where unprivileged user
+    namespaces are available; reused in the SharedRoot Claude Cowork sandbox escape. snap-confine (CVE-2026-8933,
+    Qualys, disclosed 2026-07-21): two races during sandbox setup on Ubuntu Desktop 24.04/25.10/26.04,
+    a caller-owned temporary directory plus symlink redirection of a privileged write, from a hardening
+    shift from set-uid-root to set-capabilities; Canonical shipped fixed snapd, PoC in the advisory, distinct
+    from CVE-2026-3888. All three landed as the kernel CVE team published 432 CVEs in two days (batch
+    stable-fix assignment amid AI-assisted bug-hunt volume). Continues the Linux LPE run (GhostLock, Bad
+    Epoll, Januscape). Covered 2026-07-22 and 2026-07-23 Top stories.
+  opened: '2026-08-16'
+  sources: []
+  subject: Linux local-root exploits with public PoCs (RefluXFS, pedit-COW, snap-confine)
+  watch_for: >-
+    Named fixed stable kernel versions and distribution backports for all three; any CISA KEV addition;
+    in-the-wild use beyond the public PoCs; whether snap-confine chains with other snapd flaws; whether
+    the 432-CVE two-day flood repeats and how distros triage it.
