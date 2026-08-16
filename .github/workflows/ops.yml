@@ -243,3 +243,35 @@ jobs:
             gh run rerun "$id" --failed --repo "$REPO" ||
               echo "rerun of $id failed; the next sweep retries"
           fi
+      - name: Close alerts whose workflow has recovered
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          # The alert step above only opens. Without this, an ops issue outlives
+          # the failure that caused it: on 2026-08-16 thirteen were open, and
+          # every one named a workflow that had since gone green — the oldest
+          # from 2026-08-01. Recovery is what closes an alert, so the issue list
+          # reads as "what is broken now" rather than "what has ever broken".
+          #
+          # The signal is the newest run of the same workflow on main, not the
+          # reported run: a rerun of the reported run leaves it failed forever
+          # even when the next one passes. A workflow with no run on main is
+          # skipped rather than closed, which is what a one-off Dependabot
+          # update job named after its own job id looks like — nothing later
+          # carries that name, so it can never be shown to have recovered.
+          gh issue list --repo "$REPO" --state open --limit 100 \
+            --json number,title \
+            --jq '.[] | select(.title | test("^ops: .+ workflow failing$"))
+                  | [.number, (.title | sub("^ops: "; "") | sub(" workflow failing$"; ""))]
+                  | @tsv' |
+          while IFS=$'\t' read -r number name; do
+            run=$(gh run list --repo "$REPO" --workflow "$name" --branch main \
+              --limit 1 --json conclusion,url 2>/dev/null) || continue
+            conclusion=$(jq -r '.[0].conclusion // empty' <<<"$run")
+            url=$(jq -r '.[0].url // empty' <<<"$run")
+            if [ "$conclusion" = "success" ]; then
+              gh issue close "$number" --repo "$REPO" --reason completed \
+                --comment "The newest \`$name\` run on \`main\` succeeded: $url. Closing; a later failure opens a new alert."
+            fi
+          done
