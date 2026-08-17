@@ -55,16 +55,67 @@ judgment:
     which is the likelier structural cause of the second. Two are false entity matches that scored
     only because they contain a tracked company name, the Anthropic CEO Epstein story and the
     secondhand book sales piece, and neither is an engineering story.
+
+    rsync 3.5.0 is the finding of this run and it is a four-day miss. It was released 2026-08-13 and
+    no digest from 2026-08-13 through 2026-08-17 carried it. It surfaced here only through the LWN
+    front page, not through any watchlist query, so the watchlist has no rsync or Samba release
+    coverage. The release warrants a followups entry: watch for distribution backports, whether the
+    residual path-based ACL and xattr apply on the BSDs, macOS, Solaris and proc-less containers
+    draws its own advisory, and whether any of the daemon memory-corruption CVEs sees exploitation.
+    I ranked it above Linux 7.2 for the lead on operational and security impact rather than on
+    recency, so the archive headline for this date is a release dated four days earlier. That is
+    deliberate and the block states the release date.
+
+    Sources with incomplete coverage. Reddit top_day reached 2 of 28 subreddits live and the
+    committed snapshot pooled 79 further items, so Reddit was used for discovery only and the
+    r/cybersecurity and r/netsec leads were all re-verified against their own sources before use.
+    The GitHub stars accumulator returned zero items with no snapshot fallback, so GitHub starring
+    activity is uncovered for this run. Hacker News, papers, books, youtube and events all reported
+    clean.
+
+    Pages that would not load. The Mozilla support page for the Firefox for iOS adblocker still
+    returns a client challenge, repeating the previous run's finding. I also checked the Firefox for
+    iOS release notes, which top out at 153.0 dated 2026-07-21 and do not mention an adblocker. So
+    the day's highest-scoring HN item at 659 points has no primary this run could resolve and stays
+    unpublished. This is now two runs against the same host and is worth an access-notes entry.
+    Reuters remains unreachable for the report that Nvidia is reducing the OpenAI datacenter
+    financing it may guarantee, so that item is still unpublished despite bearing directly on the
+    tracked AI-infrastructure financing thread.
+
+    Calls a reader could not infer. The AMD memory-controller bank swizzle bypass, published by
+    Christopher Domas and summarised by LWN on 2026-08-13, is not published. It lets kernel-level
+    code rewrite microcode definitions and reach platform security processor memory, bypassing
+    memory encryption and VM isolation, but it requires kernel privilege as a precondition and I
+    could not resolve the proof-of-concept primary, only the LWN summary. PEP 836, the path to a
+    supported CPython JIT, surfaced on HN today and is substantive, but it is dated 2026-07-02 with
+    no event on this date, so it is not a story for today. ML research is omitted: the papers fetch
+    was healthy and returned the usual flood of agent, position, and benchmark preprints with
+    nothing clearing the bar, so the absence is a fact about the field today rather than a
+    collection failure. The reported massive Azure exfiltration campaign is sourced only to
+    infostealers.com with no vendor or victim confirmation, so it is not published. CVE-2026-54316,
+    the Claude Code WebFetch allowlist exfiltration channel behind a Black Hat and DEF CON talk
+    being discussed on r/cybersecurity, was published 2026-06-23 and fixed in 2.1.163, so it is old
+    and not a today item.
+
+    Backtest. The 2026-08-16 candidates labelled not_in_publish_fetch that mattered were both caught
+    a day late and are in today's published digest already, so that label is accurate rather than a
+    gap. The two I moved to watchlist_gap are the Unicode item and the Postgres connection-pooling
+    thread, both genuinely engineering-relevant with no query covering them. The bulk of the
+    high-scoring misses are health, science, and general-interest stories that are correctly out of
+    scope, and I marked them so the weekly review does not read no_query_match as a coverage
+    failure.
 mechanical:
   digest:
     domains:
     - anthropic.com
     - arstechnica.com
     - blog.racket-lang.org
+    - cnbc.com
+    - download.samba.org
+    - github.com
     - lwn.net
     - news.ycombinator.com
     - nvd.nist.gov
-    - platform.claude.com
     - reddit.com
     - rvembedded.com
     - simonwillison.net
@@ -72,6 +123,7 @@ mechanical:
     - techcrunch.com
     hn_ids:
     - 49319556
+    - 49320144
     - 49321717
     - 49322107
     - 49323381
@@ -80,135 +132,124 @@ mechanical:
     - 49325384
     sections:
       Engineering posts: 1
-      Hacker News: 1
+      Hacker News: 2
       Languages and runtimes: 1
+      Markets and companies: 1
       Outages: 1
       Security: 1
       Sources checked: 0
       Top stories: 3
       Watchlist follow-ups: 1
-    source_count: 20
+    source_count: 23
     titles:
+    - rsync 3.5.0 fixes 33 security issues including a critical daemon access-control bypass
     - Linux 7.2 released with cache-aware scheduler balancing and Btrfs large folios
     - Qwen 3.8 27B ships under Apache 2 with over-thinking and throughput caveats
-    - HN thread reports some Claude Fable 5 requests answered by Opus 5
-    - Catalogs disagree on severity for the exploited macOS Screen Sharing bypass
+    - CISA-ADP score and press coverage disagree on severity for the exploited macOS Screen Sharing bypass
     - Anthropic authentication issue took Claude services down for about 36 minutes
     - Rhombus 1.1 adds annotation definition forms and an as binding form
     - Embedded engineer argues RISC-V wins on availability rather than ISA design
+    - Anthropic reported to have passed $11.5B in preliminary second-quarter revenue
+    - HN thread reports some Claude Fable 5 requests answered by Opus 5
     - Tell HN reports Cloudflare Web Analytics script appearing after a nameserver switch
     - Stripe reported to have finalized an OpenRouter acquisition above $7B
   fetched:
-  - detail: 1509845 bytes
+  - detail: 145060 bytes
     ok: true
-    url: https://platform.claude.com/docs/en/release-notes/system-prompts
-  - detail: 41367 bytes
+    url: https://arstechnica.com/security/2026/08/vulnerability-giving-attackers-full-control-of-macs-is-under-active-exploitation/
+  - detail: 29664 bytes
     ok: true
-    url: https://buf.build/blog/protobuf-lsp
-  - detail: 181760 bytes (clipped)
-    ok: true
-    url: https://www.anthropic.com/research/multiagent-systems
-  - detail: 296993 bytes
-    ok: true
-    url: https://www.anthropic.com/status
+    url: https://lwn.net/Articles/
   - detail: 37316 bytes
     ok: true
     url: https://simonwillison.net/2026/Aug/16/qwen-38-27b/
-  - detail: 6269 bytes
+  - detail: 296993 bytes
     ok: true
-    url: https://blog.racket-lang.org/2026/08/rhombus-v1.1.html
-  - detail: 7028 bytes
+    url: https://status.anthropic.com/
+  - detail: 214986 bytes
     ok: true
-    url: https://lwn.net/Articles/1088991/
-  - detail: 144958 bytes
+    url: https://github.com/RsyncProject/rsync/releases/tag/v3.5.0
+  - detail: 72684 bytes
     ok: true
-    url: https://arstechnica.com/security/2026/08/vulnerability-giving-attackers-full-control-of-macs-is-under-active-exploitation/
-  - detail: 1294102 bytes (clipped)
-    ok: true
-    url: https://support.apple.com/en-us/100100
-  - detail: 85021 bytes
-    ok: true
-    url: https://nvd.nist.gov/vuln/detail/CVE-2026-65400
-  - detail: 209981 bytes
-    ok: true
-    url: https://techcrunch.com/2026/08/16/stripe-will-reportedly-acquire-ai-gateway-startup-openrouter-for-7b/
-  - detail: 'failed: fetch failed: https://www.anthropic.com/news/claude-watermarks: HTTP Error 404: Not
-      Found'
-    ok: false
-    url: https://www.anthropic.com/news/claude-watermarks
-  - detail: 92354 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/new-amnesiastealer-macos-malware-hijacks-browser-sessions-via-remote-control/
-  - detail: 101192 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/artificial-intelligence/how-anthropic-plans-to-watermark-claudes-ai-generated-text/
-  - detail: 'failed: fetch failed: https://www.anthropic.com/news/watermarking: HTTP Error 404: Not Found'
-    ok: false
-    url: https://www.anthropic.com/news/watermarking
-  - detail: 414726 bytes
-    ok: true
-    url: https://www.anthropic.com/news
-  - detail: 'failed: fetch failed: https://www.anthropic.com/news/how-claude-s-text-watermark-works: HTTP
-      Error 404: Not Found'
-    ok: false
-    url: https://www.anthropic.com/news/how-claude-s-text-watermark-works
-  - detail: 'failed: fetch failed: https://www.anthropic.com/news/how-claudes-text-watermark-works: HTTP
-      Error 404: Not Found'
-    ok: false
-    url: https://www.anthropic.com/news/how-claudes-text-watermark-works
-  - detail: 55247 bytes
-    ok: true
-    url: https://rvembedded.com/blog_post/12/
-  - detail: 'failed: fetch failed: https://www.reuters.com/business/nvidia-scales-back-250-billion-openai-data-center-guarantee-wsj-reports-2026-08-14/:
-      HTTP Error 401: HTTP Forbidden'
-    ok: false
-    url: https://www.reuters.com/business/nvidia-scales-back-250-billion-openai-data-center-guarantee-wsj-reports-2026-08-14/
+    url: https://nvd.nist.gov/vuln/detail/CVE-2026-54316
   - detail: 3038 bytes
     ok: true
     url: https://support.mozilla.org/en-US/kb/block-ads-firefox-ios
+  - detail: 258554 bytes (clipped)
+    ok: true
+    url: https://download.samba.org/pub/rsync/NEWS
+  - detail: 49111 bytes
+    ok: true
+    url: https://www.mozilla.org/en-US/firefox/ios/notes/
+  - detail: 28698 bytes (clipped)
+    ok: true
+    url: https://lwn.net/Articles/1088801/
+  - detail: 75989 bytes (clipped)
+    ok: true
+    url: https://peps.python.org/pep-0836/
+  - detail: 746590 bytes
+    ok: true
+    url: https://www.cnbc.com/2026/08/15/anthropic-revenue-jumps-to-over-11point5-billion-in-q2-report.html
+  - detail: 'failed: fetch failed: https://www.reuters.com/business/anthropic-ipo-valuation-hinges-190-200-billion-2028-revenue-forecast-sources-say-2026-08-15/:
+      HTTP Error 401: HTTP Forbidden'
+    ok: false
+    url: https://www.reuters.com/business/anthropic-ipo-valuation-hinges-190-200-billion-2028-revenue-forecast-sources-say-2026-08-15/
+  - detail: 746590 bytes
+    ok: true
+    url: https://www.cnbc.com/2026/08/15/anthropic-revenue-jumps-to-over-11point5-billion-in-q2-report.html
+  - detail: 258554 bytes (clipped)
+    ok: true
+    url: https://download.samba.org/pub/rsync/NEWS
   - detail: 296993 bytes
     ok: true
     url: https://www.anthropic.com/status
-  - detail: 84791 bytes
+  - detail: 1509845 bytes
+    ok: true
+    url: https://platform.claude.com/docs/en/release-notes/system-prompts
+  - detail: 37316 bytes
+    ok: true
+    url: https://simonwillison.net/2026/Aug/16/qwen-38-27b/
+  - detail: 84795 bytes
     ok: true
     url: https://nvd.nist.gov/vuln/detail/CVE-2026-65400
-  - detail: 145199 bytes
+  - detail: 209982 bytes
+    ok: true
+    url: https://techcrunch.com/2026/08/16/stripe-will-reportedly-acquire-ai-gateway-startup-openrouter-for-7b/
+  - detail: 145032 bytes
     ok: true
     url: https://arstechnica.com/security/2026/08/vulnerability-giving-attackers-full-control-of-macs-is-under-active-exploitation/
-  - detail: 1509845 bytes
+  - detail: 109594 bytes
     ok: true
-    url: https://platform.claude.com/docs/en/release-notes/system-prompts
+    url: https://developers.cloudflare.com/web-analytics/
+  - detail: 258554 bytes (clipped)
+    ok: true
+    url: https://download.samba.org/pub/rsync/NEWS
   - detail: 37316 bytes
     ok: true
     url: https://simonwillison.net/2026/Aug/16/qwen-38-27b/
-  - detail: 7028 bytes
+  - detail: 746590 bytes
     ok: true
-    url: https://lwn.net/Articles/1088991/
-  - detail: 6269 bytes
+    url: https://www.cnbc.com/2026/08/15/anthropic-revenue-jumps-to-over-11point5-billion-in-q2-report.html
+  - detail: 1135515 bytes
     ok: true
-    url: https://blog.racket-lang.org/2026/08/rhombus-v1.1.html
-  - detail: 296993 bytes
+    url: https://support.apple.com/en-us/148170
+  - detail: 214978 bytes
     ok: true
-    url: https://www.anthropic.com/status
-  - detail: 435728 bytes
+    url: https://github.com/RsyncProject/rsync/releases/tag/v3.5.0
+  - detail: 84558 bytes
     ok: true
-    url: https://github.com/mozilla-mobile/firefox-ios/releases
-  - detail: 37316 bytes
-    ok: true
-    url: https://simonwillison.net/2026/Aug/16/qwen-38-27b/
-  - detail: 46562 bytes
-    ok: true
-    url: https://www.mozilla.org/en-US/firefox/ios/154.0/releasenotes/
+    url: https://nvd.nist.gov/vuln/detail/CVE-2026-65400
   - detail: 1509845 bytes
     ok: true
     url: https://platform.claude.com/docs/en/release-notes/system-prompts
-  - detail: 7162 bytes
+  - detail: 'failed: fetch failed: https://platform.claude.com/docs/en/about-claude/models/fable-mythos-5:
+      HTTP Error 404: Not Found'
+    ok: false
+    url: https://platform.claude.com/docs/en/about-claude/models/fable-mythos-5
+  - detail: 118906 bytes
     ok: true
-    url: https://lwn.net/Articles/1088991/
-  - detail: 72067 bytes
-    ok: true
-    url: https://w4g1.dev/blog/models-are-getting-dumber-on-purpose
-  generated_at: '2026-08-17T07:10:59+00:00'
+    url: https://www.anthropic.com/news/fable-mythos-access
+  generated_at: '2026-08-17T10:42:33+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -217,30 +258,32 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-08-17T06:46:47+00:00'
+    fetched_at: '2026-08-17T10:17:14+00:00'
     pooled:
       added:
-        ask_hn: 3
-        comments: 18
-        front_page: 8
-        queries: 19
-        show_hn: 3
-        top_day: 8
-      snapshot_fetched_at: '2026-08-17T04:02:21+00:00'
+        ask_hn: 4
+        comments: 24
+        front_page: 15
+        queries: 35
+        show_hn: 7
+        top_day: 14
+      snapshot_fetched_at: '2026-08-17T09:57:24+00:00'
     queries_backend: algolia
     seen_ids:
     - 47439821
-    - 47613622
     - 47999020
     - 49231418
     - 49245021
+    - 49251775
     - 49257362
     - 49259980
     - 49260268
     - 49268565
     - 49281352
     - 49285096
+    - 49288449
     - 49290545
+    - 49298932
     - 49303776
     - 49306021
     - 49313920
@@ -290,6 +333,7 @@ mechanical:
     - 49320056
     - 49320114
     - 49320144
+    - 49320174
     - 49320375
     - 49320396
     - 49320611
@@ -339,7 +383,7 @@ mechanical:
     - 49324068
     - 49324078
     - 49324087
-    - 49324572
+    - 49324263
     - 49324985
     - 49325061
     - 49325092
@@ -351,13 +395,25 @@ mechanical:
     - 49325458
     - 49325617
     - 49325714
+    - 49325789
+    - 49325937
     - 49325946
     - 49326106
+    - 49326156
     - 49326229
     - 49326276
     - 49326422
+    - 49326816
     - 49326825
     - 49326904
+    - 49327220
+    - 49327308
+    - 49327446
+    - 49327468
+    - 49327490
+    - 49327917
+    - 49328016
+    - 49328247
     source: cache
   query_yield:
     0day:
@@ -400,8 +456,9 @@ mechanical:
       - 49323620
       - 49324087
       - 49324572
-      published: 0
-      published_ids: []
+      published: 1
+      published_ids:
+      - 49320144
       raw: 5
     Apple Silicon:
       matched: 1
@@ -465,13 +522,14 @@ mechanical:
       - 49322107
       raw: 2
     Copilot:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49316964
       - 49322258
+      - 49327429
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     Cursor:
       matched: 2
       matched_ids:
@@ -487,20 +545,22 @@ mechanical:
       published_ids: []
       raw: 5
     GPU:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49320595
       - 49323745
+      - 49327627
       published: 0
       published_ids: []
       raw: 5
     Gemini:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49319257
+      - 49327446
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     Ghostty:
       matched: 0
       matched_ids: []
@@ -508,20 +568,22 @@ mechanical:
       published_ids: []
       raw: 4
     GitHub:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49317473
       - 49320034
       - 49323677
       - 49323756
       - 49324201
+      - 49328143
       published: 0
       published_ids: []
       raw: 5
     Go:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49322860
+      - 49323530
       published: 0
       published_ids: []
       raw: 5
@@ -531,7 +593,7 @@ mechanical:
       - 49318128
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     Homebrew:
       matched: 0
       matched_ids: []
@@ -587,12 +649,12 @@ mechanical:
     Kubernetes:
       matched: 1
       matched_ids:
-      - 49327204
+      - 49327257
       published: 0
       published_ids: []
       raw: 1
     LLM:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49316394
       - 49317760
@@ -600,34 +662,40 @@ mechanical:
       - 49321017
       - 49322689
       - 49323369
+      - 49327121
+      - 49327792
       published: 0
       published_ids: []
       raw: 5
     LWN:
-      matched: 0
-      matched_ids: []
-      published: 0
-      published_ids: []
+      matched: 1
+      matched_ids:
+      - 49328140
+      published: 1
+      published_ids:
+      - 49328140
       raw: 5
     Linux:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49317484
       - 49317569
       - 49320141
       - 49322157
       - 49323007
+      - 49328206
       published: 0
       published_ids: []
       raw: 5
     Llama:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49328008
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     MCP:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49317274
       - 49317799
@@ -635,6 +703,7 @@ mechanical:
       - 49321810
       - 49322982
       - 49326992
+      - 49328008
       published: 0
       published_ids: []
       raw: 5
@@ -643,7 +712,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     Neovim:
       matched: 2
       matched_ids:
@@ -665,13 +734,15 @@ mechanical:
       published_ids: []
       raw: 5
     OpenAI:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49317082
       - 49318857
       - 49321279
       - 49323686
       - 49327240
+      - 49327276
+      - 49327446
       published: 0
       published_ids: []
       raw: 5
@@ -709,14 +780,16 @@ mechanical:
       published_ids: []
       raw: 1
     Python:
-      matched: 3
+      matched: 5
       matched_ids:
       - 49318360
       - 49325782
       - 49327240
+      - 49328061
+      - 49328156
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     Raft:
       matched: 0
       matched_ids: []
@@ -731,13 +804,14 @@ mechanical:
       published_ids: []
       raw: 5
     Rust:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49318113
       - 49318858
       - 49321810
       - 49322980
       - 49326638
+      - 49327662
       published: 0
       published_ids: []
       raw: 5
@@ -747,7 +821,7 @@ mechanical:
       - 49323937
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     SQLite:
       matched: 4
       matched_ids:
@@ -766,9 +840,10 @@ mechanical:
       published_ids: []
       raw: 2
     Swift:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49323724
+      - 49328234
       published: 0
       published_ids: []
       raw: 5
@@ -777,7 +852,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     TypeScript:
       matched: 1
       matched_ids:
@@ -798,7 +873,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     Xcode:
       matched: 0
       matched_ids: []
@@ -813,8 +888,9 @@ mechanical:
       published_ids: []
       raw: 5
     acquires:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49327895
       published: 0
       published_ids: []
       raw: 5
@@ -826,23 +902,27 @@ mechanical:
       published_ids: []
       raw: 2
     agentic:
-      matched: 2
+      matched: 4
       matched_ids:
       - 49317473
       - 49318900
+      - 49327800
+      - 49328008
       published: 0
       published_ids: []
       raw: 5
     arXiv:
-      matched: 7
+      matched: 9
       matched_ids:
       - 49316242
       - 49317589
       - 49317814
+      - 49318583
       - 49318896
       - 49319047
       - 49319908
       - 49326475
+      - 49327011
       published: 0
       published_ids: []
       raw: 5
@@ -851,7 +931,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     chezmoi:
       matched: 0
       matched_ids: []
@@ -859,11 +939,12 @@ mechanical:
       published_ids: []
       raw: 1
     coding agent:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49320073
       - 49322330
       - 49322630
+      - 49328206
       published: 0
       published_ids: []
       raw: 5
@@ -908,7 +989,7 @@ mechanical:
       - 49325948
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     io_uring:
       matched: 0
       matched_ids: []
@@ -916,13 +997,17 @@ mechanical:
       published_ids: []
       raw: 2
     kernel:
-      matched: 2
+      matched: 5
       matched_ids:
       - 49317448
       - 49320900
-      published: 0
-      published_ids: []
-      raw: 2
+      - 49327834
+      - 49328140
+      - 49328238
+      published: 1
+      published_ids:
+      - 49328140
+      raw: 5
     local-first:
       matched: 5
       matched_ids:
@@ -933,14 +1018,16 @@ mechanical:
       - 49323975
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     macOS:
-      matched: 1
+      matched: 3
       matched_ids:
       - 49323996
+      - 49328008
+      - 49328238
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     npm:
       matched: 0
       matched_ids: []
@@ -948,12 +1035,13 @@ mechanical:
       published_ids: []
       raw: 5
     outage:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49326768
+      - 49327268
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     protein folding:
       matched: 0
       matched_ids: []
@@ -961,15 +1049,16 @@ mechanical:
       published_ids: []
       raw: 0
     terminal:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49321115
       - 49321319
       - 49324201
       - 49325623
+      - 49328175
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
   runs:
   - at: '2026-08-17T07:11:08+00:00'
     mode: daily
@@ -1105,6 +1194,149 @@ mechanical:
       name: run_log
       status: ok
     - detail: 35 fetch(es), 5 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-08-17T10:42:42+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-17.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-16
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"rsync 3.5.0 fixes 33 security issues including a critical daemon access-control
+        bypass","section":"Top stories","category":"Security","status":"confirmed","primary_url":"https://download.samba.org/pub/rsync/NEWS","sources":["https://download.samba.org/pub/rsync/NEWS","https
+      name: select
+      status: ok
+      tokens:
+        in: 52
+        out: 27828
+      tools:
+        Bash: 1
+        Glob: 5
+        Grep: 10
+        Read: 11
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 12
+        mcp__digest__guidance: 3
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 2
+    - detail: |-
+        Gate passes (exit code 0). The digest for 2026-08-17 is updated.
+
+        **Added:**
+        - **Top stories lead:** rsync 3.5.0 (33 security issues, CVE-2026-53791 daemon PROXY-header access-control bypass, five wire-reachable daemon memory-corruption flaws, rrsync escape, argument injection, `hosts deny` fail-ope
+      name: write
+      status: ok
+      tokens:
+        in: 10
+        out: 5903
+      tools:
+        Edit: 4
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"findings":[{"severity":"blocking","where":"Markets and companies — Anthropic reported to have
+        passed $11.5B in preliminary second-quarter revenue","detail":"The Reuters source link is unresolvable
+        and unsupporting. Fetching https://www.reuters.com/business/anthropic-ipo-valuation-hinges-190-200-bi
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: review
+      status: ok
+      tokens:
+        in: 24
+        out: 17195
+      tools:
+        Glob: 3
+        Grep: 4
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 10
+        mcp__digest__memory_query: 1
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes with exit code 0 (remaining output is memory staleness warnings, not digest findings).
+
+        ## Repairs applied
+
+        **Blocking**
+
+        1. **Anthropic revenue (Markets)** — removed the Reuters link. It returned HTTP 401 and its headline covered a valuation range and 2028 forecast the entry never claim
+      name: write
+      status: ok
+      tokens:
+        in: 20
+        out: 7357
+      tools:
+        Edit: 13
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Sources checked - GitHub watchlist","detail":"The
+        digest states that releases for the [github] watchlist repositories and github.com/trending \"were
+        not checked at all, so GitHub is uncovered rather than thin\". The quality gate requires tha
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: review
+      status: ok
+      tokens:
+        in: 28
+        out: 23530
+      tools:
+        Glob: 1
+        Grep: 6
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 9
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 5 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 2 cause(s) corrected in 2026-08-16
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-08-17.yaml
+      name: run_log
+      status: ok
+    - detail: 31 fetch(es), 2 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
