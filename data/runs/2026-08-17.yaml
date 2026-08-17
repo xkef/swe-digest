@@ -104,15 +104,91 @@ judgment:
     high-scoring misses are health, science, and general-interest stories that are correctly out of
     scope, and I marked them so the weekly review does not read no_query_match as a coverage
     failure.
+
+    Run context. A digest for this date already existed when this run started, carrying 11 stories,
+    and the run that produced it predates the GitHub incident. This selection adds seven stories and
+    removes one, leaving the day at 17 against the 25 cap. No section reaches the per-section cap.
+
+    Verified facts for the lead, which the write step will need. GitHub opened the incident at 13:40
+    UTC on 2026-08-17 and it was still open at 15:42 UTC, the last update this run read. GitHub
+    reports about 20 percent error rates for web experiences and API traffic, and about 50 percent
+    for archive downloads and raw repository content downloads. SAML and OIDC authentication, SCIM,
+    and Team Sync are named as impacted. Affected components listed are Git Operations, Webhooks,
+    API Requests, Issues, Pull Requests, Actions, Pages, and Copilot. GitHub states it is performing
+    mitigations and has published no root cause. It is marked developing for that reason. If it
+    resolves before publication, the status and the impact window need rechecking against the status
+    page.
+
+    Lead change. The GitHub outage is taken as the lead over the rsync 3.5.0 release that previously
+    led. rsync was ranked on operational and security impact rather than recency, which was the
+    right call for a quiet morning, but a live global outage of the dominant code host is the item
+    that defines the working day.
+
+    Displacement. The Tell HN Cloudflare entry was removed rather than kept alongside the new one.
+    Its own summary says HN commenters split on whether the beacon is default-on and that the
+    question is unsettled. Cloudflare's own post settles it: Web Analytics has been enabled by
+    default for free domains since 2025-10-15, delivered as a JavaScript beacon, and not applied to
+    traffic originating from the EU or UK. Publishing both would leave the page asking a question it
+    also answers. The Cloudflare post is dated 2025-09-17 and last modified 2026-07-15, so the news
+    is the thread surfacing a documented default, not a change made today, and the entry should say
+    so.
+
+    Absences that are findings. The RIPE Labs measurement of email consolidation in the Tranco top
+    1M was fetched and verified, then dropped. It is a good engineering post with real data, but it
+    is dated 2026-07-30 and only resurfaced on Hacker News today, which is the same ground on which
+    this day already dropped the Protobuf LSP post and PEP 836. Applying that standard
+    inconsistently would be worse than losing the item. The daringfireball critique of Claude text
+    watermarking, at 576 points the day's second-strongest thread by discussion, was skipped because
+    the 2026-08-15 digest carried the subject from Anthropic's own post and this adds commentary
+    rather than fact. The Roboflow claim that GPT-5.6 Sol is the best vision model OpenAI has
+    released was skipped for want of a published method.
+
+    Sources that would not load or came back thin. Reddit was degraded for the second consecutive
+    day in the same way, one of 28 subreddits reached live for both collections, with the pooled
+    snapshot carrying the rest. GitHub starring activity returned zero repositories for the second
+    consecutive day with no snapshot fallback, and watchlist releases and github.com/trending were
+    not collected at all, so GitHub remains uncovered rather than thin. Books returned Springer
+    conference proceedings only, and no collected video carried a discussion link, so both sections
+    stay omitted. The events watchlist has no upcoming or active entry for this date.
+
+    Calls a reader could not infer. The LWN comment thread on the 7.2 release contains a claim that
+    another 800 or more kernel CVEs were published on the Saturday. That is untrusted comment text,
+    it is not in LWN's own article, and it is not carried anywhere in this selection despite fitting
+    the CVE-flood thread that follow-up f-0048 tracks. The Wiz item is vendor research from a
+    company selling the product, so only the disclosed chain and Snowflake's own confirming
+    statement are carried, and the blast radius is read access to Snowflake's internal Jira, patched
+    on 2026-06-23 and credential rotated on 2026-06-24. The DuckDB entry is deliberately framed on
+    the server mode, parser, storage format, and C API rather than on asynchronous I/O, because the
+    2026-08-16 digest already carried the asynchronous I/O post under its own primary source and
+    repeating its benchmarks would duplicate that entry.
+
+    Backtest. Two candidates are reclassified as watchlist_gap. Item 49310926, a Unicode post at 258
+    points, and item 49277952, a Postgres and PgBouncer thread at 110 points, are both squarely
+    engineering and both scored no_query_match. The query corpus carries PyPI, npm, Kubernetes,
+    Grafana, and OpenTelemetry but no Postgres, no database, and no Unicode term, and the digest
+    runs an Infrastructure section that covers databases. That is a gap in the watchlist rather than
+    a judgement the ranking made. The remaining no_query_match candidates are health, climate, and
+    general-interest items where the seeded cause is right.
+
+    Memory hygiene. The followups store holds 46 entries and only two carry a last_seen later than
+    2026-07-26, so most of the store is about three weeks stale and every run of the day pays to
+    re-read it. Several entries look closeable on their own terms. This step holds no memory write
+    capability, so it is recorded here for the weekly review rather than acted on.
 mechanical:
   digest:
     domains:
     - anthropic.com
     - arstechnica.com
+    - arxiv.org
+    - blog.cloudflare.com
     - blog.racket-lang.org
+    - bundeskartellamt.de
     - cnbc.com
+    - dash0.com
     - download.samba.org
+    - duckdb.org
     - github.com
+    - githubstatus.com
     - lwn.net
     - news.ycombinator.com
     - nvd.nist.gov
@@ -121,6 +197,7 @@ mechanical:
     - simonwillison.net
     - support.apple.com
     - techcrunch.com
+    - wiz.io
     hn_ids:
     - 49319556
     - 49320144
@@ -130,126 +207,122 @@ mechanical:
     - 49324078
     - 49324985
     - 49325384
+    - 49327895
+    - 49330684
+    - 49330781
+    - 49331033
+    - 49331222
+    - 49331423
     sections:
+      Apple platforms: 1
       Engineering posts: 1
-      Hacker News: 2
+      Hacker News: 1
+      Infrastructure: 2
       Languages and runtimes: 1
-      Markets and companies: 1
+      ML research: 1
+      Markets and companies: 2
       Outages: 1
-      Security: 1
+      Security: 2
       Sources checked: 0
-      Top stories: 3
+      Top stories: 4
       Watchlist follow-ups: 1
-    source_count: 23
+    source_count: 36
     titles:
+    - GitHub degraded worldwide with about 20 percent error rates across web, API, Actions, and authentication
     - rsync 3.5.0 fixes 33 security issues including a critical daemon access-control bypass
     - Linux 7.2 released with cache-aware scheduler balancing and Btrfs large folios
     - Qwen 3.8 27B ships under Apache 2 with over-thinking and throughput caveats
+    - Vero reports the strongest coding agent fully solves 27 of 43 repository-level verification tasks
     - CISA-ADP score and press coverage disagree on severity for the exploited macOS Screen Sharing bypass
+    - A Copilot Autofix commit introduced the GitHub Actions injection that an autonomous agent used to
+      reach Snowflake's Jira
     - Anthropic authentication issue took Claude services down for about 36 minutes
     - Rhombus 1.1 adds annotation definition forms and an as binding form
+    - Apple accepts binding commitments to align App Tracking Transparency prompts for third-party apps
+    - DuckDB previews v2.0 with a client/server mode, a new SQL parser, and a new storage format
+    - Cloudflare announced Web Analytics on by default for free domains from 2025-10-15
     - Embedded engineer argues RISC-V wins on availability rather than ISA design
     - Anthropic reported to have passed $11.5B in preliminary second-quarter revenue
+    - Dash0 acquires Polar Signals, the company behind the open-source Parca profiler
     - HN thread reports some Claude Fable 5 requests answered by Opus 5
-    - Tell HN reports Cloudflare Web Analytics script appearing after a nameserver switch
     - Stripe reported to have finalized an OpenRouter acquisition above $7B
   fetched:
-  - detail: 145060 bytes
+  - detail: 144211 bytes
     ok: true
-    url: https://arstechnica.com/security/2026/08/vulnerability-giving-attackers-full-control-of-macs-is-under-active-exploitation/
-  - detail: 29664 bytes
+    url: https://www.githubstatus.com/incidents/zkxwbgr0cnmx
+  - detail: 8293 bytes
     ok: true
-    url: https://lwn.net/Articles/
-  - detail: 37316 bytes
+    url: https://lwn.net/Articles/1088991/
+  - detail: 558737 bytes (clipped)
+    ok: true
+    url: https://duckdb.org/2026/08/17/duckdb-20-highlights
+  - detail: 351387 bytes
+    ok: true
+    url: https://www.wiz.io/blog/red-agent-snowflake-copilot-cicd-bug
+  - detail: 120580 bytes
+    ok: true
+    url: https://www.bundeskartellamt.de/SharedDocs/Meldung/EN/Pressemitteilungen/2026/08_17_2026_Apple_ATTF.html
+  - detail: 539472 bytes (clipped)
+    ok: true
+    url: https://blog.cloudflare.com/the-rum-diaries-enabling-web-analytics-by-default/
+  - detail: 88339 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/hackers-exploit-macos-screen-sharing-flaw-to-deploy-monero-miner/
+  - detail: 165361 bytes
+    ok: true
+    url: https://www.dash0.com/blog/dash0-acquires-polar-signals
+  - detail: 45750 bytes
+    ok: true
+    url: https://arxiv.org/abs/2608.13522
+  - detail: 72372 bytes
+    ok: true
+    url: https://labs.ripe.net/author/artem-berezin/two-providers-a-stubborn-plateau-and-a-very-long-tail-email-in-the-tranco-top-1m/
+  - detail: 258554 bytes (clipped)
+    ok: true
+    url: https://download.samba.org/pub/rsync/NEWS
+  - detail: 539472 bytes (clipped)
+    ok: true
+    url: https://blog.cloudflare.com/the-rum-diaries-enabling-web-analytics-by-default/
+  - detail: 37323 bytes
     ok: true
     url: https://simonwillison.net/2026/Aug/16/qwen-38-27b/
-  - detail: 296993 bytes
+  - detail: 45750 bytes
     ok: true
-    url: https://status.anthropic.com/
-  - detail: 214986 bytes
+    url: https://arxiv.org/abs/2608.13522
+  - detail: 87829 bytes
     ok: true
-    url: https://github.com/RsyncProject/rsync/releases/tag/v3.5.0
-  - detail: 72684 bytes
+    url: https://nvd.nist.gov/vuln/detail/CVE-2026-65400
+  - detail: 145295 bytes
     ok: true
-    url: https://nvd.nist.gov/vuln/detail/CVE-2026-54316
-  - detail: 3038 bytes
+    url: https://arstechnica.com/security/2026/08/vulnerability-giving-attackers-full-control-of-macs-is-under-active-exploitation/
+  - detail: 145196 bytes
     ok: true
-    url: https://support.mozilla.org/en-US/kb/block-ads-firefox-ios
+    url: https://www.githubstatus.com/incidents/zkxwbgr0cnmx
+  - detail: 37323 bytes
+    ok: true
+    url: https://simonwillison.net/2026/Aug/16/qwen-38-27b/
   - detail: 258554 bytes (clipped)
     ok: true
     url: https://download.samba.org/pub/rsync/NEWS
-  - detail: 49111 bytes
+  - detail: 539472 bytes (clipped)
     ok: true
-    url: https://www.mozilla.org/en-US/firefox/ios/notes/
-  - detail: 28698 bytes (clipped)
+    url: https://blog.cloudflare.com/the-rum-diaries-enabling-web-analytics-by-default/
+  - detail: 45750 bytes
     ok: true
-    url: https://lwn.net/Articles/1088801/
-  - detail: 75989 bytes (clipped)
+    url: https://arxiv.org/abs/2608.13522
+  - detail: 145196 bytes
     ok: true
-    url: https://peps.python.org/pep-0836/
-  - detail: 746590 bytes
-    ok: true
-    url: https://www.cnbc.com/2026/08/15/anthropic-revenue-jumps-to-over-11point5-billion-in-q2-report.html
-  - detail: 'failed: fetch failed: https://www.reuters.com/business/anthropic-ipo-valuation-hinges-190-200-billion-2028-revenue-forecast-sources-say-2026-08-15/:
-      HTTP Error 401: HTTP Forbidden'
-    ok: false
-    url: https://www.reuters.com/business/anthropic-ipo-valuation-hinges-190-200-billion-2028-revenue-forecast-sources-say-2026-08-15/
-  - detail: 746590 bytes
-    ok: true
-    url: https://www.cnbc.com/2026/08/15/anthropic-revenue-jumps-to-over-11point5-billion-in-q2-report.html
-  - detail: 258554 bytes (clipped)
-    ok: true
-    url: https://download.samba.org/pub/rsync/NEWS
-  - detail: 296993 bytes
+    url: https://www.githubstatus.com/incidents/zkxwbgr0cnmx
+  - detail: 299018 bytes
     ok: true
     url: https://www.anthropic.com/status
-  - detail: 1509845 bytes
+  - detail: 351357 bytes
     ok: true
-    url: https://platform.claude.com/docs/en/release-notes/system-prompts
-  - detail: 37316 bytes
-    ok: true
-    url: https://simonwillison.net/2026/Aug/16/qwen-38-27b/
-  - detail: 84795 bytes
+    url: https://www.wiz.io/blog/red-agent-snowflake-copilot-cicd-bug
+  - detail: 87411 bytes
     ok: true
     url: https://nvd.nist.gov/vuln/detail/CVE-2026-65400
-  - detail: 209982 bytes
-    ok: true
-    url: https://techcrunch.com/2026/08/16/stripe-will-reportedly-acquire-ai-gateway-startup-openrouter-for-7b/
-  - detail: 145032 bytes
-    ok: true
-    url: https://arstechnica.com/security/2026/08/vulnerability-giving-attackers-full-control-of-macs-is-under-active-exploitation/
-  - detail: 109594 bytes
-    ok: true
-    url: https://developers.cloudflare.com/web-analytics/
-  - detail: 258554 bytes (clipped)
-    ok: true
-    url: https://download.samba.org/pub/rsync/NEWS
-  - detail: 37316 bytes
-    ok: true
-    url: https://simonwillison.net/2026/Aug/16/qwen-38-27b/
-  - detail: 746590 bytes
-    ok: true
-    url: https://www.cnbc.com/2026/08/15/anthropic-revenue-jumps-to-over-11point5-billion-in-q2-report.html
-  - detail: 1135515 bytes
-    ok: true
-    url: https://support.apple.com/en-us/148170
-  - detail: 214978 bytes
-    ok: true
-    url: https://github.com/RsyncProject/rsync/releases/tag/v3.5.0
-  - detail: 84558 bytes
-    ok: true
-    url: https://nvd.nist.gov/vuln/detail/CVE-2026-65400
-  - detail: 1509845 bytes
-    ok: true
-    url: https://platform.claude.com/docs/en/release-notes/system-prompts
-  - detail: 'failed: fetch failed: https://platform.claude.com/docs/en/about-claude/models/fable-mythos-5:
-      HTTP Error 404: Not Found'
-    ok: false
-    url: https://platform.claude.com/docs/en/about-claude/models/fable-mythos-5
-  - detail: 118906 bytes
-    ok: true
-    url: https://www.anthropic.com/news/fable-mythos-access
-  generated_at: '2026-08-17T10:42:33+00:00'
+  generated_at: '2026-08-17T16:26:11+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -258,19 +331,21 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-08-17T10:17:14+00:00'
+    fetched_at: '2026-08-17T16:05:41+00:00'
     pooled:
       added:
-        ask_hn: 4
-        comments: 24
-        front_page: 15
-        queries: 35
-        show_hn: 7
-        top_day: 14
-      snapshot_fetched_at: '2026-08-17T09:57:24+00:00'
+        ask_hn: 17
+        comments: 42
+        front_page: 43
+        queries: 85
+        show_hn: 28
+        top_day: 35
+      snapshot_fetched_at: '2026-08-17T13:05:28+00:00'
     queries_backend: algolia
     seen_ids:
+    - 47320921
     - 47439821
+    - 47613622
     - 47999020
     - 49231418
     - 49245021
@@ -279,11 +354,16 @@ mechanical:
     - 49259980
     - 49260268
     - 49268565
+    - 49270194
+    - 49281175
     - 49281352
+    - 49284983
     - 49285096
+    - 49286211
     - 49288449
     - 49290545
     - 49298932
+    - 49303380
     - 49303776
     - 49306021
     - 49313920
@@ -367,12 +447,16 @@ mechanical:
     - 49322695
     - 49322979
     - 49322982
+    - 49323094
     - 49323136
+    - 49323151
     - 49323157
     - 49323165
     - 49323298
+    - 49323316
     - 49323381
     - 49323459
+    - 49323474
     - 49323514
     - 49323620
     - 49323677
@@ -384,11 +468,14 @@ mechanical:
     - 49324078
     - 49324087
     - 49324263
+    - 49324572
     - 49324985
+    - 49325004
     - 49325061
     - 49325092
     - 49325159
     - 49325185
+    - 49325283
     - 49325304
     - 49325384
     - 49325445
@@ -411,9 +498,60 @@ mechanical:
     - 49327446
     - 49327468
     - 49327490
+    - 49327643
     - 49327917
     - 49328016
     - 49328247
+    - 49328404
+    - 49328818
+    - 49328821
+    - 49328890
+    - 49328911
+    - 49328982
+    - 49329068
+    - 49329074
+    - 49329291
+    - 49329347
+    - 49329569
+    - 49329575
+    - 49329583
+    - 49329660
+    - 49329844
+    - 49330052
+    - 49330139
+    - 49330174
+    - 49330215
+    - 49330285
+    - 49330384
+    - 49330386
+    - 49330456
+    - 49330503
+    - 49330597
+    - 49330604
+    - 49330632
+    - 49330684
+    - 49330742
+    - 49330781
+    - 49330900
+    - 49330978
+    - 49331033
+    - 49331220
+    - 49331222
+    - 49331243
+    - 49331288
+    - 49331423
+    - 49331474
+    - 49331512
+    - 49331551
+    - 49331555
+    - 49331599
+    - 49331607
+    - 49331625
+    - 49332387
+    - 49332495
+    - 49332548
+    - 49333136
+    - 49333167
     source: cache
   query_yield:
     0day:
@@ -423,7 +561,7 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 6
+      matched: 10
       matched_ids:
       - 49318735
       - 49319814
@@ -431,9 +569,14 @@ mechanical:
       - 49323136
       - 49323381
       - 49323932
-      published: 1
+      - 49327490
+      - 49330742
+      - 49331220
+      - 49331423
+      published: 2
       published_ids:
       - 49323381
+      - 49331423
       raw: 5
     AWS:
       matched: 1
@@ -449,13 +592,14 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49320144
       - 49323245
       - 49323620
       - 49324087
       - 49324572
+      - 49329003
       published: 1
       published_ids:
       - 49320144
@@ -484,7 +628,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     CVE:
       matched: 0
       matched_ids: []
@@ -492,49 +636,58 @@ mechanical:
       published_ids: []
       raw: 5
     Claude:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49319556
       - 49319610
       - 49324068
       - 49324078
       - 49324087
+      - 49324945
+      - 49325617
+      - 49331004
       published: 2
       published_ids:
       - 49319556
       - 49324078
       raw: 5
     Claude Code:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49319610
       - 49320976
       - 49326393
+      - 49330285
       published: 0
       published_ids: []
       raw: 5
     Cloudflare:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49322107
-      published: 1
+      - 49332547
+      published: 2
       published_ids:
       - 49322107
-      raw: 2
+      - 49332547
+      raw: 3
     Copilot:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49316964
       - 49322258
       - 49327429
-      published: 0
-      published_ids: []
-      raw: 3
+      - 49331423
+      published: 1
+      published_ids:
+      - 49331423
+      raw: 5
     Cursor:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49320576
       - 49326334
+      - 49328890
       published: 0
       published_ids: []
       raw: 2
@@ -545,30 +698,33 @@ mechanical:
       published_ids: []
       raw: 5
     GPU:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49320595
       - 49323745
       - 49327627
+      - 49331607
       published: 0
       published_ids: []
       raw: 5
     Gemini:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49319257
       - 49327446
+      - 49331161
       published: 0
       published_ids: []
       raw: 2
     Ghostty:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49332669
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     GitHub:
-      matched: 6
+      matched: 11
       matched_ids:
       - 49317473
       - 49320034
@@ -576,8 +732,15 @@ mechanical:
       - 49323756
       - 49324201
       - 49328143
-      published: 0
-      published_ids: []
+      - 49330597
+      - 49330632
+      - 49330684
+      - 49331033
+      - 49332495
+      published: 2
+      published_ids:
+      - 49330684
+      - 49331033
       raw: 5
     Go:
       matched: 2
@@ -599,7 +762,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     IPO:
       matched: 2
       matched_ids:
@@ -620,7 +783,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     Kafka:
       matched: 0
       matched_ids: []
@@ -647,14 +810,15 @@ mechanical:
       published_ids: []
       raw: 0
     Kubernetes:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49327257
+      - 49330052
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     LLM:
-      matched: 8
+      matched: 10
       matched_ids:
       - 49316394
       - 49317760
@@ -663,7 +827,9 @@ mechanical:
       - 49322689
       - 49323369
       - 49327121
+      - 49327308
       - 49327792
+      - 49328122
       published: 0
       published_ids: []
       raw: 5
@@ -676,7 +842,7 @@ mechanical:
       - 49328140
       raw: 5
     Linux:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49317484
       - 49317569
@@ -684,6 +850,8 @@ mechanical:
       - 49322157
       - 49323007
       - 49328206
+      - 49331776
+      - 49333013
       published: 0
       published_ids: []
       raw: 5
@@ -693,9 +861,9 @@ mechanical:
       - 49328008
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     MCP:
-      matched: 7
+      matched: 9
       matched_ids:
       - 49317274
       - 49317799
@@ -704,6 +872,8 @@ mechanical:
       - 49322982
       - 49326992
       - 49328008
+      - 49328791
+      - 49329849
       published: 0
       published_ids: []
       raw: 5
@@ -712,7 +882,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     Neovim:
       matched: 2
       matched_ids:
@@ -722,7 +892,7 @@ mechanical:
       published_ids: []
       raw: 2
     Nvidia:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49319126
       - 49321617
@@ -730,11 +900,12 @@ mechanical:
       - 49323686
       - 49324442
       - 49325834
+      - 49332269
       published: 0
       published_ids: []
       raw: 5
     OpenAI:
-      matched: 7
+      matched: 11
       matched_ids:
       - 49317082
       - 49318857
@@ -743,15 +914,20 @@ mechanical:
       - 49327240
       - 49327276
       - 49327446
+      - 49329083
+      - 49329575
+      - 49331025
+      - 49331116
       published: 0
       published_ids: []
       raw: 5
     OpenTelemetry:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49328918
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     Paxos:
       matched: 0
       matched_ids: []
@@ -759,13 +935,14 @@ mechanical:
       published_ids: []
       raw: 0
     Postgres:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49316394
       - 49317713
+      - 49332842
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     Prometheus:
       matched: 0
       matched_ids: []
@@ -778,15 +955,17 @@ mechanical:
       - 49317246
       published: 0
       published_ids: []
-      raw: 1
+      raw: 3
     Python:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49318360
       - 49325782
       - 49327240
       - 49328061
       - 49328156
+      - 49328901
+      - 49330892
       published: 0
       published_ids: []
       raw: 5
@@ -804,14 +983,18 @@ mechanical:
       published_ids: []
       raw: 5
     Rust:
-      matched: 6
+      matched: 10
       matched_ids:
       - 49318113
       - 49318858
       - 49321810
       - 49322980
       - 49326638
+      - 49327209
       - 49327662
+      - 49327953
+      - 49330318
+      - 49332486
       published: 0
       published_ids: []
       raw: 5
@@ -838,7 +1021,7 @@ mechanical:
       - 49322570
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     Swift:
       matched: 2
       matched_ids:
@@ -852,14 +1035,14 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     TypeScript:
       matched: 1
       matched_ids:
       - 49320671
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     Vim:
       matched: 2
       matched_ids:
@@ -891,28 +1074,32 @@ mechanical:
       matched: 1
       matched_ids:
       - 49327895
-      published: 0
-      published_ids: []
+      published: 1
+      published_ids:
+      - 49327895
       raw: 5
     acquisition:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49320576
+      - 49329233
       published: 0
       published_ids: []
       raw: 2
     agentic:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49317473
       - 49318900
       - 49327800
       - 49328008
+      - 49329066
+      - 49332442
       published: 0
       published_ids: []
       raw: 5
     arXiv:
-      matched: 9
+      matched: 13
       matched_ids:
       - 49316242
       - 49317589
@@ -923,12 +1110,18 @@ mechanical:
       - 49319908
       - 49326475
       - 49327011
-      published: 0
-      published_ids: []
+      - 49329066
+      - 49330030
+      - 49331025
+      - 49331886
+      published: 1
+      published_ids:
+      - 49318896
       raw: 5
     breach:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49329424
       published: 0
       published_ids: []
       raw: 5
@@ -937,7 +1130,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     coding agent:
       matched: 4
       matched_ids:
@@ -949,18 +1142,19 @@ mechanical:
       published_ids: []
       raw: 5
     distributed systems:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49332154
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     drug discovery:
       matched: 1
       matched_ids:
       - 49320793
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     eBPF:
       matched: 0
       matched_ids: []
@@ -968,34 +1162,39 @@ mechanical:
       published_ids: []
       raw: 2
     exploit:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49330710
       published: 0
       published_ids: []
       raw: 5
     iOS:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49318634
       - 49319402
       - 49319633
       - 49320375
+      - 49329462
+      - 49332344
       published: 0
       published_ids: []
       raw: 5
     incident:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49325948
-      published: 0
-      published_ids: []
+      - 49330684
+      published: 1
+      published_ids:
+      - 49330684
       raw: 5
     io_uring:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     kernel:
       matched: 5
       matched_ids:
@@ -1007,24 +1206,26 @@ mechanical:
       published: 1
       published_ids:
       - 49328140
-      raw: 5
+      raw: 4
     local-first:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49318130
       - 49321965
       - 49322163
       - 49323710
       - 49323975
+      - 49329959
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     macOS:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49323996
       - 49328008
       - 49328238
+      - 49330710
       published: 0
       published_ids: []
       raw: 5
@@ -1041,7 +1242,7 @@ mechanical:
       - 49327268
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     protein folding:
       matched: 0
       matched_ids: []
@@ -1049,13 +1250,15 @@ mechanical:
       published_ids: []
       raw: 0
     terminal:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49321115
       - 49321319
       - 49324201
       - 49325623
       - 49328175
+      - 49330604
+      - 49331551
       published: 0
       published_ids: []
       raw: 5
@@ -1337,6 +1540,146 @@ mechanical:
       name: run_log
       status: ok
     - detail: 31 fetch(es), 2 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-08-17T16:26:19+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-17.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-16
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"GitHub degraded worldwide with about 20 percent error rates across web,
+        API, Actions, and authentication","section":"Top stories","category":"Outage","status":"developing","primary_url":"https://www.githubstatus.com/incidents/zkxwbgr0cnmx","sources":["[GitHub
+        Status inciden
+      failed_tools:
+        StructuredOutput: 1
+      name: select
+      status: ok
+      tokens:
+        in: 118
+        out: 33341
+      tools:
+        Bash: 1
+        Glob: 4
+        Grep: 6
+        Read: 18
+        StructuredOutput: 2
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 10
+        mcp__digest__guidance: 2
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 2
+    - detail: |-
+        Gate passes (exit 0, warnings are memory staleness only, which this step cannot write).
+
+        `data/digests/2026-08-17.md` updated in place, not rewritten:
+
+        - **Top stories** now leads with the GitHub global degradation (`developing`, incident open 13:40 to at least 15:42 UTC, about 20 percent web and AP
+      name: write
+      status: ok
+      tokens:
+        in: 22
+        out: 11137
+      tools:
+        Edit: 11
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"findings":[{"severity":"blocking","where":"Infrastructure / Cloudflare documents Web Analytics
+        enabled by default on free domains since 2025-10-15","detail":"The entry asserts as documented
+        fact something the cited source only announces as a plan. The Cloudflare post is dated 2025-09-17
+        and is wri
+      name: review
+      status: ok
+      tokens:
+        in: 22
+        out: 16782
+      tools:
+        Glob: 1
+        Grep: 4
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 7
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate exits 0. All five findings repaired in `data/digests/2026-08-17.md`, nothing else touched.
+
+        **Blocking, Cloudflare entry.** Rewrote the claim to what the source supports. Title is now "Cloudflare announced Web Analytics on by default for free domains from 2025-10-15". The summary states the pos
+      name: write
+      status: ok
+      tokens:
+        in: 10
+        out: 5020
+      tools:
+        Edit: 7
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Infrastructure / \"Cloudflare announced
+        Web Analytics on by default for free domains from 2025-10-15\"","detail":"The primary source is
+        dated 2025-09-17 (schema.org datePublished 2025-09-17, dateModified 2026-07-15) and announces
+        a default t
+      name: review
+      status: ok
+      tokens:
+        in: 22
+        out: 16038
+      tools:
+        Glob: 3
+        Grep: 4
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 8
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 9 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: skipped (nothing to correct in 2026-08-16 (0 id(s) it never scored))
+      name: miss_review
+      status: skip
+    - detail: data/runs/2026-08-17.yaml
+      name: run_log
+      status: ok
+    - detail: 25 fetch(es), 0 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
