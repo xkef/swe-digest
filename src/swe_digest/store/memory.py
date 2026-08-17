@@ -194,6 +194,17 @@ def query(
     return sorted(records, key=lambda record: record.last_seen, reverse=True)
 
 
+def _age_date(record: Record) -> str:
+    """Returns the date an age bound measures a record from.
+
+    A follow-up ages from ``opened``, which is the date the memory gate bounds;
+    everything else ages from ``last_seen``. Pruning read ``last_seen`` for both,
+    so a thread a run kept touching never reached the prune bound and then
+    hard-failed the gate on a record no daily step holds the grant to close.
+    """
+    return getattr(record, "opened", "") or record.last_seen
+
+
 def prune(name: str, max_age_days: int, root: Path | None = None) -> list[Record]:
     """Drops records older than a given age and returns the dropped records.
 
@@ -201,10 +212,17 @@ def prune(name: str, max_age_days: int, root: Path | None = None) -> list[Record
     model whether a date is old. The model only decides whether a still-open
     thread is genuinely resolved.
     """
-    stale = {record.id for record in query(name, root, older_than_days=max_age_days)}
+    cutoff = parse_iso(today())
+    assert cutoff is not None
+    records = load(name, root)
+    stale = {
+        record.id
+        for record in records
+        if (dated := parse_iso(_age_date(record))) is not None
+        and (cutoff - dated).days > max_age_days
+    }
     if not stale:
         return []
-    records = load(name, root)
     save(name, [record for record in records if record.id not in stale], root)
     return [record for record in records if record.id in stale]
 

@@ -163,6 +163,25 @@ def test_prune_drops_only_what_is_older_than_the_age(
     assert [r.id for r in memory_store.load("entities", tmp_path)] == ["e-0001"]
 
 
+def test_prune_ages_a_followup_from_opened(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The bound the memory gate hard-fails on is the bound pruning must apply.
+
+    A thread each run touches keeps a fresh ``last_seen`` forever. Pruning from
+    that date left it in the store past the age bound, and the gate then
+    rejected the publish on a record no daily step can close.
+    """
+    monkeypatch.setattr(memory_store, "today", lambda: "2026-07-02")
+    memory_store.add("followups", tmp_path, subject="Fable 5 access", watch_for="restoration")
+    monkeypatch.setattr(memory_store, "today", lambda: "2026-07-20")
+    memory_store.touch("followups", "f-0001", tmp_path)
+    monkeypatch.setattr(memory_store, "today", lambda: "2026-08-17")
+
+    dropped = memory_store.prune("followups", 45, tmp_path)
+
+    assert [r.id for r in dropped] == ["f-0001"]
+    assert memory_store.load("followups", tmp_path) == []
+
+
 def test_query_filters_by_age_and_text(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     memory_store.add("entities", tmp_path, subject="Neovim", note="editor")
     aged(tmp_path, monkeypatch, "2020-01-01", subject="Zig", note="language")
