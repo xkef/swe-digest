@@ -1,11 +1,11 @@
 {
-  "fetched_at": "2026-08-18T13:07:43+00:00",
+  "fetched_at": "2026-08-18T18:57:08+00:00",
   "window_hours": 48,
   "degraded": [],
   "pooled": {
-    "snapshot_fetched_at": "2026-08-18T07:04:27+00:00",
+    "snapshot_fetched_at": "2026-08-18T13:07:43+00:00",
     "added": {
-      "videos": 0
+      "videos": 4
     }
   },
   "collections": {
@@ -13,16 +13,211 @@
       "backend": "youtube-rss",
       "items": [
         {
+          "id": "bPCM5Pp16SU",
+          "title": "CNCF TOC Public meeting 18 Aug 2026",
+          "url": "https://www.youtube.com/watch?v=bPCM5Pp16SU",
+          "channel": "CNCF [Cloud Native Computing Foundation]",
+          "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
+          "published_at": "2026-08-18T18:22:43+00:00",
+          "views": 16,
+          "rating": {
+            "average": 0.0,
+            "count": 0
+          },
+          "discussion": null,
+          "description": ""
+        },
+        {
+          "id": "5dCAmSDOAjI",
+          "title": "The Next Medium: Why Real-Time Interactive Video Changes Everything \u2014 Ahmed Ahres, Reactor",
+          "url": "https://www.youtube.com/watch?v=5dCAmSDOAjI",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-18T17:30:18+00:00",
+          "views": 94,
+          "rating": {
+            "average": 5.0,
+            "count": 4
+          },
+          "discussion": null,
+          "description": "Uber could not exist without GPS. Ahmed Ahres uses that to argue real time is a change of medium rather than a speedup: before GPS you consulted a map somebody else had already made, and afterwards your own position became something you could act on continuously. He runs the same argument through film. Once a viewfinder showed you what you were shooting, you could adjust while shooting, and that is the reason Instagram and TikTok were possible at all.\n\nGenerated video today sits on the wrong side of that line. You prompt, you wait, you get a file back, and there is nothing further to do with it. His definition of world models is not Gaussian splatting and not a longer clip, but video that is interactive, effectively infinite, and generated fast enough to steer, which he demonstrates by prompting a cat into a scene while that scene is still generating. What it unlocks divides three ways: control, which he sums up as instant feedback being the ultimate form of it; character driven worlds that reach past games into robotics training data and into education; and live avatars, which he is refreshingly candid are still not working properly. The engineering consequence is that none of the batch playbook carries over. You are streaming pixels rather than returning files, every session is stateful and has to remember what happened when a character looked away, and sub 100 millisecond latency means putting GPUs near users rather than in one region.\n\nSpeaker info:\n- https://x.com/Boudatw\n- https://www.linkedin.com/in/ahmedahres/\n- https://www.ahmedahres.com\n\nTimestamps:\n0:00 - World models, defined as real time interactive video\n1:44 - What happens when video becomes programmable\n3:25 - Maps to GPS, and film to viewfinder\n5:04 - Model one: infinite, interactive, real time\n5:52 - Control, advertising, and instant feedback\n7:32 - Model two: controllable worlds, robotics, education\n9:13 - Model three: live avatars, not cracked yet\n10:06 - What people are actually building on it\n1"
+        },
+        {
+          "id": "3uBiTsj8YSo",
+          "title": "I don't work in my Terminal anymore",
+          "url": "https://www.youtube.com/watch?v=3uBiTsj8YSo",
+          "channel": "Theo - t3\u2024gg",
+          "channel_id": "UCbRP3c757lWg9M-U7TyEkXA",
+          "published_at": "2026-08-18T17:00:33+00:00",
+          "views": 805,
+          "rating": {
+            "average": 5.0,
+            "count": 11
+          },
+          "discussion": null,
+          "description": "I didn't use my Terminal for 8 plus hours and that's when it hit me \n\nWant to sponsor a video? Learn more here: https://soydev.link/sponsor-me\n\nCheck out my Twitch, Twitter, Discord more at https://t3.gg\n\n#coding #programming #terminal"
+        },
+        {
+          "id": "byn9PURoBNY",
+          "title": "Infra behind Krea 2: How to train and serve at scale \u2014 Gabriel Jorge Menezes, Krea.ai",
+          "url": "https://www.youtube.com/watch?v=byn9PURoBNY",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-18T17:00:05+00:00",
+          "views": 135,
+          "rating": {
+            "average": 5.0,
+            "count": 6
+          },
+          "discussion": null,
+          "description": "GPU utilization is a lie. It read 100% straight through pretraining while the cluster was nowhere near well used, so Gabriel Jorge Menezes tracks tensor core utilization instead, and watched it climb as training resolution stepped from 128 pixels up to 1024. That is one of several numbers he argues you cannot train at this scale without. InfiniBand counters are exported by nothing off the shelf, and most of their failures turned out to be cross node communication, so they built that collection themselves. Any GPU running hotter than 78 degrees gets pulled rather than debugged, because one warm card throttles and destabilizes the entire run.\n\nThis is the infrastructure half of Krea 2, the model trained from scratch on thousands of GPUs. Crashes scaled with the cluster and often failed silently, with communication timing out while every dashboard stayed green, and the practical answer was to stop treating each one as a mystery. Let it crash, and the same nodes running the same code will frequently go 24 hours on the next attempt. What made that survivable was checkpointing aggressively against a filesystem quick enough to write a terabyte in under 30 seconds. Production and training then share one cluster, with training holding priority and inference evicted to outside providers through a fake Kubernetes node, migrated back gradually rather than all at once so the site never drops.\n\nSpeaker info:\n- https://www.linkedin.com/in/gabriel-jorge-menezes/\n- https://gab-menezes.github.io/\n\nTimestamps:\n0:00 - Krea 2, trained from scratch, and two open checkpoints\n3:26 - Crashes at scale, and the silent ones\n4:18 - Metrics are everything, starting with temperature\n5:58 - GPU utilization is a lie, use tensor cores\n6:48 - InfiniBand and NVLink metrics you have to build yourself\n8:29 - Checkpointing hard against a fast filesystem\n9:21 - Gang scheduling, and training outranking production\n11:01 - Flipping inference out through a fake node\n14:23 - Taints that stop you wasting GPUs\n1"
+        },
+        {
+          "id": "Xln-On3syJk",
+          "title": "Generative Video at the Speed of Light \u2014 Keegan McCallum, uRun",
+          "url": "https://www.youtube.com/watch?v=Xln-On3syJk",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-18T16:30:29+00:00",
+          "views": 238,
+          "rating": {
+            "average": 5.0,
+            "count": 8
+          },
+          "discussion": null,
+          "description": "Ten dollars now buys roughly three hours of continuously generated video, and fifty buys fifteen. Keegan McCallum sets that against the room's own habits, since plenty of hands went up for burning that much on coding tokens inside a single hour. His argument is that the interesting axis in generative video stopped being quality a while ago. Put a real time generation next to one that took minutes and the slower clip still has better motion, but it cost on the order of a hundred times more to produce.\n\nHelios, the model he serves, is a distillation of a 14 billion parameter open model, and it is one of at least forty released this year carrying real time or long horizon capability. What that unlocks has less to do with better clips than with a different interaction shape. A webcam that shows you the haircut you are considering. A visual medium for people who do not think in text, which is most of what working with AI currently demands. Content creation that stops being a slot machine where you spend ten dollars a minute on a prompt and some keyframes and hope for the shot. Steering a generation in under a second is a different job entirely. What is left is the serving problem: GPUs positioned globally, WebRTC with ICE and TURN, and several models wired into one continuous streaming pipeline that stays synchronized with user controls frame by frame.\n\nSpeaker info:\n- https://x.com/keeganmccallum3\n- https://linkedin.com/in/keeganmccallum3\n- https://urun.sh\n\nTimestamps:\n0:00 - Generative video along the quality axis\n1:24 - The other axis: efficiency and long horizons\n3:23 - What ten dollars of generation buys now\n4:38 - Magic mirrors, accessibility, and steering shots live\n6:33 - The hard part is serving it"
+        },
+        {
+          "id": "z1dqv74SpUs",
+          "title": "Voice agents with Realtime Video \u2014 Sidney Primas, LemonSlice",
+          "url": "https://www.youtube.com/watch?v=z1dqv74SpUs",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-18T16:00:06+00:00",
+          "views": 352,
+          "rating": {
+            "average": 5.0,
+            "count": 29
+          },
+          "discussion": null,
+          "description": "An avatar of Teddy Roosevelt holds court in a replica Oval Office, generating video continuously for eight hours with no reset, and a second deployment is being built to run for sixteen. That duration is the hard part. Sidney Primas explains that a real time avatar can only look backward, because the future frames do not exist yet, so every block it generates inherits the errors of the blocks before it and compounds them. LemonSlice trains with an attention mask that enforces this during training rather than discovering it at inference, and collapses roughly 30 denoising steps down to a single step to hit real time.\n\nThe less obvious bottleneck is audio. Emotion and facial expression turn out to depend on the audio embedding, and most audio encoders are trained on audiobooks, which are monotone by construction, so an expressive model needs its own. The wider bet is to take a world model and point it at humans, paying a harder training and deployment cost up front in exchange for full body movement, object interaction, and physics arriving closer to free. Two things surprised him. Serving this costs about what serving a voice model costs, despite the difference in pixels. And the model harness, meaning the orchestration of threads and queues across GPU and CPU so that video never stutters through an interrupt, is where he now thinks much of the durable value will sit.\n\nSpeaker info:\n- https://www.linkedin.com/in/sidneyprimas/\n\nTimestamps:\n0:00 - Breaking the avatar Turing test\n2:26 - Teddy Roosevelt in a replica Oval Office\n4:40 - Why the visual layer matters\n5:46 - Pointing a world model at humans\n6:58 - One image in, any style out, and being the API layer\n9:12 - Audio is what makes it expressive\n10:15 - Making a video model interactive, then real time\n12:22 - Error accumulation over hours of generation\n14:34 - Cost parity with a voice model\n15:36 - The model harness nobody talks about\n16:38 - An emotion engine for the next model\n19:55 - A single end to end EQ layer"
+        },
+        {
+          "id": "Jb5VHUkowTk",
+          "title": "It\u2019s disrespectful to send AI slop",
+          "url": "https://www.youtube.com/watch?v=Jb5VHUkowTk",
+          "channel": "The Pragmatic Engineer",
+          "channel_id": "UCPbwhExawYrn9xxI21TFfyw",
+          "published_at": "2026-08-18T16:00:00+00:00",
+          "views": 397,
+          "rating": {
+            "average": 5.0,
+            "count": 13
+          },
+          "discussion": null,
+          "description": "with Charity Majors, Cofounder and CTO, Honeycomb.\n\nSee the full episode on The Pragmatic Engineer Podcast"
+        },
+        {
+          "id": "E_Txocq-Lrw",
+          "title": "While my guitar gently speaks \u2014 Todd Fisher, Philo Ventures",
+          "url": "https://www.youtube.com/watch?v=E_Txocq-Lrw",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-18T15:30:23+00:00",
+          "views": 201,
+          "rating": {
+            "average": 5.0,
+            "count": 7
+          },
+          "discussion": null,
+          "description": "Someone in the audience asked the guitar what reality is, and the guitar answered. Todd Fisher's build routes a microphone through speech recognition into a local model and pushes the reply back out through the strings, which is the most recent step in a project that began with a much simpler question: how hard could it be to make a guitar speak?\n\nThe lineage he draws runs from a pickup and an amplifier, through stomp boxes, to Peter Frampton sending guitar sound down a physical hose into his mouth. His own version is a plugin built with JUCE that drops into a DAW like any other effect. Getting it to say one word was straightforward. Getting it to say several meant slicing synthesized speech into words automatically, and that turned out to be the hard part. Energy gap segmentation cuts wherever the signal falls toward silence, which fails because running speech often has no silence between words at all. A sonority peak syllabifier looks for vowels instead. Combining the two got close enough that he finished by dragging segment boundaries by hand. Singing needed a different stack again: the YIN algorithm to pull a fundamental frequency off each fretted note, a synthesized tone shaped by an envelope, then a vocoder, with pitch shifted samples from an open singing dataset baked ahead of time because the processing is far too heavy to run live. He also declines to play the song his title alludes to, on the grounds that this recording was going online.\n\nSpeaker info:\n- https://www.linkedin.com/in/todd-b-fisher\n\nTimestamps:\n0:00 - Live performances that stayed with him\n2:44 - The guitar's evolution, up to the talk box\n4:24 - A Halloween project on a garage door\n6:06 - Building it as a JUCE plugin, and saying one word\n7:50 - Slicing speech into words, and why that is hard\n10:23 - Pitch detection with the YIN algorithm\n11:15 - Synthesis, vocoder, and jamming with it\n13:28 - A guitar that answers questions from the room\n16:01 - Pitch shifted samples, and getting closer to si"
+        },
+        {
+          "id": "VBCDhRrvlYo",
+          "title": "The Next Game Engine Won't Have a Manual \u2014 Arturo Nunez, Nereu",
+          "url": "https://www.youtube.com/watch?v=VBCDhRrvlYo",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-18T15:00:29+00:00",
+          "views": 258,
+          "rating": {
+            "average": 5.0,
+            "count": 10
+          },
+          "discussion": null,
+          "description": "Ask a coding agent for a camera that follows your character and it will reinvent that camera from scratch, every time, slightly differently. Arturo Nunez's diagnosis is that the context sits on the game engine's vocabulary rather than the game's. Controlling a character in a conventional engine means a mesh, a renderer, an animator, a rigid body, a collider, an audio source, and only then your actual movement logic, nearly all of which is boilerplate that every character in every game already carries.\n\nNereu inverts that. Everything is an asset, and you attach tags describing intent instead of implementation: character, animated, double jump. Systems then query by tag and move everything marked vehicle and drivable, which is Entity Component System thinking lifted from data oriented design. The pleasant consequence is that nothing stops you tagging a building as drivable and dropping it into a Mario Kart style race. The assistant is there to get you unstuck rather than to one shot a finished game, and the vocabulary it expects is the one tutorials already use: press A to jump, press A again in the air.\n\nThe engineering detail worth stealing is how context gets assembled. Rather than feed the whole scene to a model, he borrows level of detail from rendering. Assets near whatever you are editing arrive with their full tag values, distant ones collapse to a position and a type, and the hundred pieces of grass are simply left out.\n\nSpeaker info:\n- https://x.com/arturonereu\n- https://www.linkedin.com/in/arturonereu/\n- https://www.arturonereu.com/\n\nTimestamps:\n0:00 - Building a game live by describing it\n2:45 - Why making games is hard\n4:27 - Ten years at Unity watching the same struggles repeat\n6:59 - Powerful engines and LLMs that still do not compose\n7:49 - The boilerplate behind controlling a character\n8:45 - Everything is an asset, and tags describe intent\n9:37 - The asset tag system, and tagging a building as drivable\n11:21 - How the prompt gets its context\n14:52 - "
+        },
+        {
+          "id": "gYU9-dVdgkA",
+          "title": "Cloudflare built a browser for AI agents in Rust",
+          "url": "https://www.youtube.com/watch?v=gYU9-dVdgkA",
+          "channel": "Let's Get Rusty",
+          "channel_id": "UCSp-OaMpsO8K0KkOqyBl7_w",
+          "published_at": "2026-08-18T15:00:14+00:00",
+          "views": 2631,
+          "rating": {
+            "average": 5.0,
+            "count": 171
+          },
+          "discussion": null,
+          "description": "\ud83d\udc49Join the Rust Live Accelerator waitlist: https://letsgetrusty.com/join/wv-gYU9-dVdgkA\n\nCloudflare built Kitesurf, a new browser designed specifically for AI agents, using Rust and WebAssembly on Cloudflare Workers. This video breaks down why traditional browsers like Chromium are inefficient for agents, Kitesurf\u2019s architecture and performance results, and what the project says about the growing role of Rust and AI-assisted software development.\n\nChapter\n0:00 Introduction\n0:22 Why Cloudflare Built an AI-First Browser\n1:29 What AI Agents Need From a Browser\n2:01 How Kitesurf Started\n2:44 Testing, Rust, and WebAssembly\n3:32 Security and Isolation\n3:55 Kitesurf Performance vs. Chromium\n5:06 Open Source Plans and the Rise of Rust\n5:36 AI-Assisted Rewrites and Rust"
+        },
+        {
+          "id": "rYyJm1tD3d0",
+          "title": "The jumping pegs puzzle",
+          "url": "https://www.youtube.com/watch?v=rYyJm1tD3d0",
+          "channel": "3Blue1Brown",
+          "channel_id": "UCYO_jab_esuFRV4b17AJtAw",
+          "published_at": "2026-08-18T14:54:17+00:00",
+          "views": 47696,
+          "rating": {
+            "average": 5.0,
+            "count": 1815
+          },
+          "discussion": null,
+          "description": "Part of a series of monthly puzzles with MoMath."
+        },
+        {
+          "id": "pPj_tjlvYjA",
+          "title": "Building an Agentic Video Editor for Mass Consumer \u2014 Ekaterina Deyneka, Reelful",
+          "url": "https://www.youtube.com/watch?v=pPj_tjlvYjA",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-18T14:30:38+00:00",
+          "views": 363,
+          "rating": {
+            "average": 5.0,
+            "count": 13
+          },
+          "discussion": null,
+          "description": "Nearly every hand in the room went up when she asked who had recorded video at the conference. Almost none stayed up for who had actually posted any of it. Ekaterina Deyneka counts herself in that gap, and Reelful is her answer to it: drop in raw footage with a line of direction, and an agent finds the usable moments, cuts them together, and generates captions, music, voiceover, and b roll around them.\n\nHer framing for an AI engineering audience is that an agentic video editor is structurally the same thing as an agentic app builder. A prompt goes in, a sandbox spins up, an agent works inside it with tools and skills, and something renders out the other end. The difference that matters is editing rather than generating. A blank canvas lets an agent do anything it likes, while real footage forces it to judge which take is best and what to drop, and to produce something polished from material that is often messy or incomplete. The composition layer is Remotion, which expresses video as React code, chosen precisely because agents write code well. Skills carry the taste: cut rules, font pairings, when a cutaway actually helps. A verification pass catches compositions that will not render and sends the agent back around. All of it hides behind mobile templates, since the point is that a consumer never sees the pipeline at all.\n\nSpeaker info:\n- https://x.com/katedeyneka\n- https://www.linkedin.com/in/katedeyneka\n- https://www.katedeyneka.com\n\nTimestamps:\n0:00 - Who recorded video here, and who actually posted it\n1:29 - What agentic video editing means\n3:33 - The same shape as an agentic app builder\n4:10 - Editing real footage is harder than generating\n5:30 - The pipeline, from media understanding to a creative plan\n6:50 - Remotion, video as React code, and the verification layer\n8:49 - Hiding all of it behind mobile templates"
+        },
+        {
+          "id": "-tviRdpmHvs",
+          "title": "Training Krea 2: What matters in generative model training \u2014 Sangwu Lee, Krea.ai",
+          "url": "https://www.youtube.com/watch?v=-tviRdpmHvs",
+          "channel": "AI Engineer",
+          "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
+          "published_at": "2026-08-18T14:00:06+00:00",
+          "views": 301,
+          "rating": {
+            "average": 5.0,
+            "count": 14
+          },
+          "discussion": null,
+          "description": "The most reliable way to render a person is to render the most boring average person and put them in the center of the frame. Sangwu Lee offers that as the price the big image models pay for consistency: ask a production model for a burning skull and every output comes back clean, competent, and nearly identical. Krea 2, whose medium variant is now open source, trades the other way, optimizing for fast generation and stylistic range so that a studio that does not yet know what it wants can actually explore.\n\nMost of the talk is about data, which he says twice over is basically everything once the architecture is locked. The examples are specific. A painting photographed on a wall is perfectly good training data except that captioners consistently omit the frame and the white wall behind it, so the model learns to hang every painting it generates. They refuse to train on AI generated images at all, because the aesthetic is sticky and you inherit somebody else's model. Deduplication runs on hashes first across two to ten billion images, then on embeddings for near duplicates. A large vision language model's judgment gets distilled down into a classifier cheap enough to sweep a billion images. Sparse autoencoders double as an unsupervised tagging system for catching watermarks and border artifacts. World knowledge coverage is checked against Wikipedia concepts ranked by PageRank. Thirty to forty in house filters in total.\n\nSpeaker info:\n- https://github.com/RE-N-Y\n- https://re-n-y.github.io/devlog/\n- https://github.com/krea-ai/krea-2\n\nTimestamps:\n0:00 - Open sourcing Krea 2 medium\n1:40 - Consistency versus diversity in production models\n3:23 - How diffusion models train, and why latent space\n5:59 - Data is basically everything\n6:53 - Bad data, and why they refuse AI images\n8:34 - The captioning pipeline, and the painting on a white wall\n10:15 - Deduplication and cheap classifiers at billion image scale\n11:56 - Sparse autoencoders as an unsupervised tagging system\n13:39"
+        },
+        {
           "id": "fuJq99juh0Q",
           "title": "AI Agents Gone Rogue? Build, Defend & Attack AI-Enabled Apps \u2022 Katie Paxton-Fear \u2022 YOW! 2025",
           "url": "https://www.youtube.com/watch?v=fuJq99juh0Q",
           "channel": "GOTO Conferences",
           "channel_id": "UCs_tLP3AiwYKwdUHpltJPuA",
           "published_at": "2026-08-18T12:00:27+00:00",
-          "views": 40,
+          "views": 142,
           "rating": {
             "average": 5.0,
-            "count": 1
+            "count": 2
           },
           "discussion": null,
           "description": "This presentation was recorded at YOW! 2025. #GOTOcon #YOW\nhttps://yowcon.com\n\nKatie Paxton-Fear - Occasional Bug Bounty Hunter and Educational YouTuber @InsiderPhD \n\nORIGINAL TALK TITLE\nAI Agents Gone Rogue? Building, Defending & Attacking AI-Enabled Apps \u2022 Katie Paxton-Fear\n\nRESOURCES\nhttps://bsky.app/profile/insider.phd\nhttps://twitter.com/InsiderPhD\nhttps://github.com/InsiderPhD\nhttps://www.linkedin.com/in/katiepf\nhttps://insider.phd\n\nLinks\nhttps://xbow.com/blog/xbow-akamai-cloudtest-xxe\n\nABSTRACT\nThe rise of AI agents promises a new era of automation and intelligence, but what happens when these powerful entities are weaponised?\n\nThis talk dives into the chilling reality of \"hackbots\", the sinking of vibe coded apps and ship-it mentality and the iceberg that is the emerging AI attack surface, that we are only just seeing the tip of. If you feel overwhelmed about AI security and you\u2019re not sure where to even begin with AI agents, this talk will cover everything you need to know about how AI agents are being employed, hacked and exploited with real examples of real attacks, vulnerabilities and issues. [...]\n\nTIMECODES\n00:00 Intro\n02:54 What are Al agents?\n04:51 How do AI agents work?\n06:56 Making agentic Al work\n07:40 Agenda: What happens when AI agents don't follow the script?\n08:19 1. Socially engineering agents\n13:47 2. Hacking agentic frameworks\n16:49 3. Malicious agents in the loop\n20:53 4. Al as the accidental insider\n24:57 5. Hackbots\n28:58 6. The future?\n30:47 Outro\n\nRead the full abstract here:\nhttps://yowcon.com/brisbane-2025/sessions/3910\n\nRECOMMENDED BOOKS\nKatharine Jarmul \u2022 Practical Data Privacy \u2022 https://amzn.to/3OafC3m\nAdib Saikali & Laurentiu Spilca \u2022 Software Security for Developers \u2022 https://amzn.to/4aPhqu0\nLiz Rice \u2022 Container Security \u2022 https://amzn.to/3oU4iJe\nAaron Parecki \u2022 OAuth 2.0 Simplified \u2022 https://amzn.to/2A3IMOf\n\nhttps://bsky.app/profile/gotocon.com\nhttps://www.linkedin.com/company/goto-\nhttps://www.instagram.com/goto_con\nhttps://ww"
@@ -34,10 +229,10 @@
           "channel": "SpringDeveloper",
           "channel_id": "UC7yfnfvEUlXUIfm8rGLwZdA",
           "published_at": "2026-08-18T11:32:42+00:00",
-          "views": 62,
+          "views": 102,
           "rating": {
             "average": 5.0,
-            "count": 2
+            "count": 3
           },
           "discussion": null,
           "description": ""
@@ -49,10 +244,10 @@
           "channel": "SpringDeveloper",
           "channel_id": "UC7yfnfvEUlXUIfm8rGLwZdA",
           "published_at": "2026-08-18T06:10:20+00:00",
-          "views": 510,
+          "views": 571,
           "rating": {
             "average": 5.0,
-            "count": 20
+            "count": 21
           },
           "discussion": null,
           "description": "Join Dan Vega and DaShaun Carter for the latest updates from the Spring Ecosystem. In this episode, Dan and DaShaun are joined by Danny Thompson, Senior Developer Advocate at Atlassian, co-host of The Programming Podcast, and founder of The Commit Your Code Conference. Danny is also a co-author of the new No Starch Press book \"The Developer's Guide to AI: A Field Guide for the Working Developer.\" We will talk about his path from a decade in gas stations to a career in software, what it takes to run a conference that donates 100% of ticket revenue to charity, and how working developers can build real AI systems without a data science degree. You can participate in our live stream to ask questions or catch the replay on your preferred podcast platform."
@@ -64,10 +259,10 @@
           "channel": "bycloud",
           "channel_id": "UCgfe2ooZD3VJPB6aJAnuQng",
           "published_at": "2026-08-18T06:08:25+00:00",
-          "views": 10442,
+          "views": 19427,
           "rating": {
             "average": 5.0,
-            "count": 878
+            "count": 1238
           },
           "discussion": null,
           "description": "Need high quality cloud GPUs? Check out Verda now, and use the code BYCLOUD-50 to get $50 of compute credits for just $5! \nhttps://verda.com/?utm_source=bycloud&amp;utm_medium=referral&amp;utm_campaign=sponsorship&amp;utm_content=diffusion_blocks\n\nA great news for us gpu poors? This research DiffusionBlocks shows that you can train LLMs with 2-3x less memory with minimal performance loss. If crazier, you could even go up to 4x or 6x! \n\n\nmy latest project: Intuitive AI Academy\nWe just wrote a new piece on Optimization!!\nhttps://intuitiveai.academy/\nlimited time code \"LOCKIN\" for 35% off yearly plan\n\nMy Newsletter (weekly top research papers)\nhttps://mail.bycloud.ai/\n\nMy Patreon\nhttps://www.patreon.com/c/bycloud\n\n\nDiffusionBlocks\n[Paper] https://arxiv.org/abs/2506.14202\n[Project Page] https://pub.sakana.ai/diffusionblocks/\n[Code] https://github.com/SakanaAI/DiffusionBlocks\n\n\n\nTry out my new fav place to learn how to code https://scrimba.com/?via=bycloudAI\n\nThis video is supported by the kind Patrons & YouTube Members: \n\ud83d\ude4fSpam Maj, Alex, Chris LeDoux, DX Research Group, Poof N' Inu, Deagan, Robert Zawiasa, Ryszard Warzocha, Tobe2d, Louis Muk, Akkusativ, Kevin Tai, Mark Buckler, NO U, Tony Jimenez, \u00c2ngelo Fonseca, jiye, Anushka, Asad Dhamani, Binnie Yiu, Calvin Yan, Clayton Ford, Diego Silva, Etrotta, Gonzalo Fidalgo, Handenon, Hector, Jake Disco very, Michael Brenner, Nilly K, OlegWock, Daddy Wen, Shuhong Chen, Sid_Cipher, Stefan Lorenz, Sup, tantan assawade, Thipok Tham, Thomas Di Martino, Thomas Lin, Rich\u00e1rd Nagyfi, Paperboy, mika, Leo, Berhane-Meskel, Kadhai Pesalam, mayssam, Bill Mangrum, nyaa, Toru Mon, Lame Plane, Matej Macak, Len Mo, saylikhapekar, ZyanSheep, THEVIERAOS, Ricardo Raphael Corona-Moreno, superchordate\n\n\n[Discord] https://discord.gg/NhJZGtH\n[Twitter] https://twitter.com/bycloudai\n[Patreon] https://www.patreon.com/bycloud\n[Business Inquiries] bycloud@smoothmedia.co\n[Other Inquiries] bycloudai@gmail.com\n[Profile & Banner Art] https://twitter.com/pygm7\n"
@@ -79,10 +274,10 @@
           "channel": "Umar Jamil",
           "channel_id": "UCtAcpQcYerN8xxZJYTfWBMw",
           "published_at": "2026-08-18T04:19:10+00:00",
-          "views": 5866,
+          "views": 8704,
           "rating": {
             "average": 5.0,
-            "count": 644
+            "count": 831
           },
           "discussion": {
             "hn_url": "https://news.ycombinator.com/item?id=49341655",
@@ -98,10 +293,10 @@
           "channel": "SpringDeveloper",
           "channel_id": "UC7yfnfvEUlXUIfm8rGLwZdA",
           "published_at": "2026-08-17T23:50:47+00:00",
-          "views": 509,
+          "views": 836,
           "rating": {
             "average": 5.0,
-            "count": 15
+            "count": 24
           },
           "discussion": null,
           "description": "Run AI models locally with Spring AI and Ollama\u2014no cloud API key required.\n\nIn under one minute, see how to:\n\nConfigure Ollama with Docker Compose\n\nInject Spring AI\u2019s ChatClient\n\nCall a local model from a Spring Boot application\n\nKeep prompts and responses on your machine\n\nComplete Java 25 and Spring Boot 4.1 project:\n\nhttps://github.com/short-spring-tips/spring-ai-ollama\n\n#SpringBoot #SpringAI #Ollama #Java #LocalAI #SpringTips #Shorts"
@@ -113,10 +308,10 @@
           "channel": "Apple Developer",
           "channel_id": "UCwrVwiJllwhJUKXKmjLcckQ",
           "published_at": "2026-08-17T23:47:34+00:00",
-          "views": 4999,
+          "views": 7009,
           "rating": {
             "average": 5.0,
-            "count": 300
+            "count": 372
           },
           "discussion": null,
           "description": "Core AI is a new framework for deploying powerful generative models directly on device \u2014 from compact vision models for real-time camera queries on iPhone to multi-billion-parameter LLMs powering agentic assistants on Mac.\n\nWatch the full WWDC26 Platforms State of the Union to learn more.\n\n#WWDC26 #CoreAI #MachineLearning"
@@ -128,10 +323,10 @@
           "channel": "Theo - t3\u2024gg",
           "channel_id": "UCbRP3c757lWg9M-U7TyEkXA",
           "published_at": "2026-08-17T22:08:40+00:00",
-          "views": 62273,
+          "views": 79800,
           "rating": {
             "average": 5.0,
-            "count": 2071
+            "count": 2505
           },
           "discussion": null,
           "description": "I've lived in terminals since I was 13, so this breaks my heart, but the Terminal experience isn't good for coding with agents so we need to find another solution \n\nThank you Blacksmith for sponsoring! Check them out at: https://soydev.link/blacksmith\n\nWant to sponsor a video? Learn more here: https://soydev.link/sponsor-me\n\nCheck out my Twitch, Twitter, Discord more at https://t3.gg\n\nS/O @Ph4seon3 for the awesome edit \ud83d\ude4f\n\n#programming #coding #software"
@@ -143,10 +338,10 @@
           "channel": "Dwarkesh Patel",
           "channel_id": "UCXl4i9dYBrFOabk0xGmbkRA",
           "published_at": "2026-08-17T21:58:24+00:00",
-          "views": 17916,
+          "views": 21794,
           "rating": {
             "average": 5.0,
-            "count": 381
+            "count": 425
           },
           "discussion": null,
           "description": ""
@@ -158,10 +353,10 @@
           "channel": "Grafana",
           "channel_id": "UCYCwgQAMm9sTJv0rgwQLCxw",
           "published_at": "2026-08-17T20:25:36+00:00",
-          "views": 110,
+          "views": 170,
           "rating": {
             "average": 5.0,
-            "count": 5
+            "count": 7
           },
           "discussion": null,
           "description": "Within Grafana's AI offerings, there are three areas that can be a bit confusing. Assistant, MCP, and gcx. In this series, Nicole from the DevRel team talks about which one to use for which use case. \n\nThis first video starts with Assistant. \n\nLinks/resources: \nLearn more about Grafana Assistant: https://grafana.com/products/cloud/ai-assistant/?src=yt\nSee the Grafana Assistant documentation: https://grafana.com/docs/grafana-cloud/platform/grafana-assistant/\nGet started with the Grafana Cloud forever-free tier: https://grafana.com/g/cloud\nHave a question? Ask Grot, your AI helper: https://grafana.com/grot/\nReach out in our community forums: https://gra.fan/communityyf\n\n---\nThanks for watching! \n\n\ud83d\udc4d Was this video helpful? Like and subscribe to our channel for more videos.\n\nConnect with Grafana Labs: \nX: (https://www.twitter.com/grafana)   \nLinkedIn: (https://www.linkedin.com/company/grafana-labs/)\nFacebook: (https://www.facebook.com/grafana)\n\n#Grafana #Observability #GrafanaAssistant #AI #Agent #GrafanaMCP #gcx"
@@ -173,10 +368,10 @@
           "channel": "AI Engineer",
           "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
           "published_at": "2026-08-17T20:00:08+00:00",
-          "views": 2580,
+          "views": 3333,
           "rating": {
             "average": 5.0,
-            "count": 63
+            "count": 76
           },
           "discussion": null,
           "description": "Over 30% of changes now merge with no review at all, and the wait on the ones that do get reviewed is four times what it used to be. Ankit Jain's read is that the debate about when we stop reading code line by line is already over, because we stopped. His sharper point is what replaced it: an AI writes the code, an AI reviews the code, the two go back and forth in a web UI, and a human skims the thread and merges. When AI reviews and nobody reads, he says, we have configured the wrong thing.\n\nHe is also here to correct his own five layer trust model from a few months earlier, which missed that review was never only about correctness. It also carries knowledge sharing, mentorship, architectural feedback, and onboarding, and that half has to survive. Spec driven development does not rescue it, because a spec written up front with no feedback loop is the 1970 waterfall model, and the decisions that actually matter end up in the prompts, which teams throw away the moment the pull request opens. His proposal keeps them: capture the session, turn those decisions into acceptance criteria, pair that with a registry built from your own recurring review comments, and generate a test plan that a verification system runs against a live preview. The review surface becomes intent and evidence instead of the diff.\n\nSpeaker info:\n- https://x.com/ankitxg\n- https://www.linkedin.com/in/ankitjaindce/\n- https://www.latent.space/p/reviews-dead\n\nTimestamps:\n0:00 - The five layer trust model, and what it got wrong\n1:17 - We already stopped reviewing, and AI reviews nobody reads\n3:05 - What code review was actually for\n4:21 - Spec driven development is waterfall again\n5:53 - Intent lives in the prompts, which we throw away\n6:42 - The AI slop registry\n7:58 - Session to acceptance criteria to test plan\n11:51 - Deterministic where you can, and reviewing intent not the diff\n14:12 - Homework: mine your last 1,000 review comments"
@@ -188,10 +383,10 @@
           "channel": "ForrestKnight",
           "channel_id": "UC2WHjPDvbE6O328n17ZGcfg",
           "published_at": "2026-08-17T19:03:13+00:00",
-          "views": 23671,
+          "views": 28720,
           "rating": {
             "average": 5.0,
-            "count": 1055
+            "count": 1218
           },
           "discussion": null,
           "description": "Open source has never been better... and worse, at the same time.\n\nCheck out WorkOS, it's really good: https://jetty.to/workos\n\nOpen source is going through it right now. Projects aren't taking any more contributions. Entire platforms are banning mostly AI-written projects. Companies are completely leaving open source and going closed source. And these are the people who love open source the most.\n\nSo I went through everything that's happened just this year \u2014 what's actually going on, why it's happening, and where I've landed on all of it.\n\nSources:\n\n\nA portion of this video is sponsored by WorkOS.\n\nIf you're a developer, sign up to my free newsletter Dev Notes \ud83d\udc49 https://www.devnotesdaily.com/\n\nIf you're a student, checkout my Notion template Studious: https://notionstudent.com\n\nDon't know why you'd want to follow me on other socials. I don't even post. But here you go.\n\ud83d\udc31\u200d\ud83d\ude80 GitHub: https://github.com/forrestknight\n\ud83d\udc26 Twitter: https://www.twitter.com/forrestpknight\n\ud83d\udcbc LinkedIn: https://www.linkedin.com/in/forrestpknight\n\ud83d\udcf8 Instagram: https://www.instagram.com/forrestpknight"
@@ -203,10 +398,10 @@
           "channel": "AI Engineer",
           "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
           "published_at": "2026-08-17T18:30:06+00:00",
-          "views": 1085,
+          "views": 1332,
           "rating": {
             "average": 5.0,
-            "count": 44
+            "count": 47
           },
           "discussion": null,
           "description": "Deno gives its incident response agents read and write access to production Postgres, Kubernetes, ClickHouse, AWS, GitHub, and Slack, and it works. Agents now close incidents that used to wake a human up. Ryan Dahl's problem is what happens when one of those agents gets prompt injected through the support system it is wired into. He grants that Opus refuses to drop the users table no matter how hard you push it, then says the part that matters out loud: security cannot be wishful thinking that a model stays obedient. The agent is untrusted software, so the guard cannot live inside it.\n\nClaw Patrol is their answer, an MIT licensed proxy that sits in front of the agent and parses every byte leaving it, below the HTTP layer, because the dangerous path frequently is not HTTP. An agent can spawn psql as a subprocess and tunnel to a production database through an EKS endpoint, and no MCP tool definition or HTTP rule will see it. Rules live in HCL, the Terraform configuration language, checked into git and unit tested against fixture requests, with Deno's own file running about a thousand lines. The proxy holds credentials so the agent never sees them, covering cookies, OAuth, and AWS SigV4, and can route an action to an LLM judge, a human in Slack, or both before it is allowed. The demo is Codex in yolo mode cheerfully obeying an order to delete the users table, and the proxy killing it at the Postgres wire protocol.\n\nSpeaker info:\n- https://x.com/rough__sea\n- https://github.com/ry\n- https://tinyclouds.org/\n- https://deno.com\n\nTimestamps:\n0:00 - Deno Deploy, incidents, and the pager\n1:28 - Giving agents write access to production\n2:47 - Opus refuses, and why that is not enough\n3:28 - Prompt injection through the support system\n4:05 - Every action is bytes on the wire\n5:24 - The hard case: psql through an EKS endpoint\n6:47 - Why credentials and ACLs are not sufficient\n7:26 - Where MCP tool permissions break down\n8:48 - The existing landscape of proxies and sandboxes\n10:09 "
@@ -218,10 +413,10 @@
           "channel": "CNCF [Cloud Native Computing Foundation]",
           "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
           "published_at": "2026-08-17T18:22:54+00:00",
-          "views": 220,
+          "views": 271,
           "rating": {
             "average": 5.0,
-            "count": 7
+            "count": 8
           },
           "discussion": null,
           "description": "Don't miss out! Join us at our next KubeCon + CloudNativeCon events in Shanghai, China (8-9 September, 2026) and Salt Lake City, United States (Nov 9\u201312, 2026). Connect with our current graduated, incubating, and sandbox projects as the community gathers to further the education and advancement of cloud native computing. Learn more at https://kubecon.io\n\nLightning Talk: Using Keycloak Authorization Service for Kubernetes Service-to-Service Authorization - Halil \u00d6zkan, Keymate\n\nModern Kubernetes environments often centralize identity but still leave service-to-service authorization spread across\napplication code, gateway rules, and proxy-specific configuration. This session presents a practical pattern for using\nKeycloak Authorization Services as a centralized authorization control plane while enforcing decisions at the platform\nlayer instead of inside each application.\n\nThe talk shows how Kubernetes workloads can remain unchanged while a mesh-level Policy Enforcement Point evaluates HTTP\nrequests using workload identity, request metadata, and centrally managed policy. The architecture uses Istio Ambient\nmode, waypoint proxies, a WebAssembly-based enforcement extension, and a Keycloak-backed decision flow.\n\nThe session also covers allow and deny behavior, fail-closed handling, bypass-prevention requirements, observability\nwith OpenTelemetry, and the latency and reliability trade-offs that appear when Keycloak participates in the live\nauthorization path. A live demo shows both the enforcement path and the operational signals it produces."
@@ -233,7 +428,7 @@
           "channel": "CNCF [Cloud Native Computing Foundation]",
           "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
           "published_at": "2026-08-17T18:22:51+00:00",
-          "views": 27,
+          "views": 35,
           "rating": {
             "average": 0.0,
             "count": 0
@@ -248,7 +443,7 @@
           "channel": "CNCF [Cloud Native Computing Foundation]",
           "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
           "published_at": "2026-08-17T18:22:51+00:00",
-          "views": 74,
+          "views": 83,
           "rating": {
             "average": 0.0,
             "count": 0
@@ -263,7 +458,7 @@
           "channel": "CNCF [Cloud Native Computing Foundation]",
           "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
           "published_at": "2026-08-17T18:22:50+00:00",
-          "views": 43,
+          "views": 55,
           "rating": {
             "average": 5.0,
             "count": 1
@@ -278,10 +473,10 @@
           "channel": "CNCF [Cloud Native Computing Foundation]",
           "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
           "published_at": "2026-08-17T18:22:50+00:00",
-          "views": 129,
+          "views": 145,
           "rating": {
             "average": 5.0,
-            "count": 3
+            "count": 4
           },
           "discussion": null,
           "description": "Don't miss out! Join us at our next KubeCon + CloudNativeCon events in Shanghai, China (8-9 September, 2026) and Salt Lake City, United States (Nov 9\u201312, 2026). Connect with our current graduated, incubating, and sandbox projects as the community gathers to further the education and advancement of cloud native computing. Learn more at https://kubecon.io\n\nMCPIdentity: Keyless MCP Agent Authentication Patterns on Kubernetes With Keycloak 26.6 - Mustafa Day\u0131o\u011flu, TUBITAK\n\nMCP agents on Kubernetes authenticate with static credentials \u2014 client secrets as files, API keys in environment variables, ServiceAccount tokens on disk. Every pod carries extractable key material that survives restarts and requires manual rotation.\n\nMCPIdentity eliminates static keys in two layers. Layer 1 (runtime identity): SPIRE attests each pod and issues short-lived JWT-SVIDs in memory \u2014 ServiceAccount token mount disabled, no key touches disk. DPoP binds every token to the pod's in-memory keypair, blocking replay. Layer 2 (agent registration): agents publish CIMD documents so Keycloak registers them by URL \u2014 no admin creates a client, no secret is provisioned. OPA enforces a trust matrix per tool call. Standard Keycloak and SPIRE extension points \u2014 no core modifications.\n\nTwo agents, two servers, four namespaces \u2014 zero credential files, zero human-created Keycloak clients. Two CIMD gaps filed upstream with reproducer scripts and a three-tier threat model.\n\nThis is not a generic agent security talk \u2014 it is an upstream-compatible Keycloak 26.6 pattern for MCP workload identity, validated on Kubernetes, with two concrete CIMD feedback items for the Keycloak community."
@@ -293,7 +488,7 @@
           "channel": "CNCF [Cloud Native Computing Foundation]",
           "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
           "published_at": "2026-08-17T18:22:50+00:00",
-          "views": 36,
+          "views": 45,
           "rating": {
             "average": 5.0,
             "count": 1
@@ -308,7 +503,7 @@
           "channel": "CNCF [Cloud Native Computing Foundation]",
           "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
           "published_at": "2026-08-17T18:22:50+00:00",
-          "views": 22,
+          "views": 28,
           "rating": {
             "average": 5.0,
             "count": 1
@@ -323,10 +518,10 @@
           "channel": "CNCF [Cloud Native Computing Foundation]",
           "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
           "published_at": "2026-08-17T18:22:50+00:00",
-          "views": 23,
+          "views": 24,
           "rating": {
-            "average": 0.0,
-            "count": 0
+            "average": 5.0,
+            "count": 1
           },
           "discussion": null,
           "description": "Don't miss out! Join us at our next KubeCon + CloudNativeCon events in Shanghai, China (8-9 September, 2026) and Salt Lake City, United States (Nov 9\u201312, 2026). Connect with our current graduated, incubating, and sandbox projects as the community gathers to further the education and advancement of cloud native computing. Learn more at https://kubecon.io\n\nKeycloak + Sigstore: Binding Human Identity To Artifact Signatures - Oshi Gupta, Improving Pune (Infracloud Technologies) & Sagar Utekar, Crowdstrike\n\nMost teams treat signing and identity as two separate problems. Sigstore handles your artifact signatures. Keycloak handles your users. Nobody asks whether the person who triggered that signed build is actually who the signature claims they are.\n\nThat gap matters more than people realize.\n\nIn this talk we will  walk through how we wired Keycloak directly into Sigstore's keyless signing flow as the OIDC provider \u2014 so every artifact signature is cryptographically bound to a verified human or service identity that lives in your own identity infrastructure, not GitHub's, not Google's. Your keys, your trust root, your audit trail.\n\nWe'll cover the exact Fulcio configuration that makes this work, how Keycloak realm and client setup maps to Sigstore's identity claims, and the operational realities nobody documents \u2014 token expiry during long builds, claim mapping mismatches that silently break verification, and how to handle service identities for automated pipelines alongside human developer identities in the same trust domain.\n\nIf you care about knowing not just what was signed but who actually signed it and whether that person had the right to \u2014 this talk is for you."
@@ -338,10 +533,10 @@
           "channel": "CNCF [Cloud Native Computing Foundation]",
           "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
           "published_at": "2026-08-17T18:22:50+00:00",
-          "views": 81,
+          "views": 87,
           "rating": {
             "average": 5.0,
-            "count": 2
+            "count": 3
           },
           "discussion": null,
           "description": "Don't miss out! Join us at our next KubeCon + CloudNativeCon events in Shanghai, China (8-9 September, 2026) and Salt Lake City, United States (Nov 9\u201312, 2026). Connect with our current graduated, incubating, and sandbox projects as the community gathers to further the education and advancement of cloud native computing. Learn more at https://kubecon.io\n\nSecuring Non-Human Identities: A Defense-in-Depth Blueprint for AI Agents - Tatsuya Yano, LY Corporation\n\nThe rise of AI agents and the MCP is revolutionizing autonomous system interactions. However, it introduces a severe security flaw: the \"Confused Deputy\" problem. When an AI agent executes tasks on behalf of a human, traditional service-to-service authentication often drops the original user's context, potentially granting the agent excessive permissions to access unauthorized data.\n\nThis session, will demystify \"Identity Chaining\" - a robust architectural pattern designed to solve this critical flaw, and will explore how to seamlessly propagate user intent across microservices and agents using the emerging \"ID-JAG\" (Identity Assertion JWT Authorization Grant) standard alongside \"RFC 8693 Token Exchange.\"\n\nDrawing from massive-scale web service implementations powering LINE and Yahoo! JAPAN, we showcase a Single Source of Truth (SSoT) design. While IdP-agnostic, we demonstrate unifying CNCF Keycloak (User) with CNCF Athenz (Workload) to build a zero-trust AI architecture."
@@ -353,7 +548,7 @@
           "channel": "CNCF [Cloud Native Computing Foundation]",
           "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
           "published_at": "2026-08-17T18:22:50+00:00",
-          "views": 39,
+          "views": 42,
           "rating": {
             "average": 0.0,
             "count": 0
@@ -368,7 +563,7 @@
           "channel": "CNCF [Cloud Native Computing Foundation]",
           "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
           "published_at": "2026-08-17T18:22:50+00:00",
-          "views": 25,
+          "views": 31,
           "rating": {
             "average": 0.0,
             "count": 0
@@ -383,7 +578,7 @@
           "channel": "CNCF [Cloud Native Computing Foundation]",
           "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
           "published_at": "2026-08-17T18:22:17+00:00",
-          "views": 64,
+          "views": 73,
           "rating": {
             "average": 0.0,
             "count": 0
@@ -398,7 +593,7 @@
           "channel": "CNCF [Cloud Native Computing Foundation]",
           "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
           "published_at": "2026-08-17T18:22:17+00:00",
-          "views": 48,
+          "views": 60,
           "rating": {
             "average": 0.0,
             "count": 0
@@ -413,7 +608,7 @@
           "channel": "CNCF [Cloud Native Computing Foundation]",
           "channel_id": "UCvqbFHwN-nwalWPjPUKpvTA",
           "published_at": "2026-08-17T18:22:17+00:00",
-          "views": 22,
+          "views": 24,
           "rating": {
             "average": 0.0,
             "count": 0
@@ -443,10 +638,10 @@
           "channel": "AI Engineer",
           "channel_id": "UCLKPca3kwwd-B59HNr-_lvA",
           "published_at": "2026-08-17T16:26:35+00:00",
-          "views": 2419,
+          "views": 2915,
           "rating": {
             "average": 5.0,
-            "count": 80
+            "count": 87
           },
           "discussion": null,
           "description": "The cheapest configuration they tested was the one sending the most tokens. Across 11 presets run against their open source AI tutor, doing nothing at all to the context beat every compaction technique on recall, cost, and latency at once, and their own production defaults scored worse than leaving the history alone. Prompt caching is why. With 97% of tokens served from cache, and cached tokens up to 50 times cheaper on some APIs, compaction has to shrink a context by more than 50 times before it pays for itself, because rewriting the context invalidates the cache. Louis-Fran\u00e7ois Bouchard's framing is that summarization is potentially a trap.\n\nOmar Solano walks through the architecture and the first run, including a knowledge base browsing tool they built, measured, and found returned identical recall while running 50% slower. Samridhi Vaid extends it: keeping the full history recovered specific details 95% of the time against 32% after summarizing, and distinctive facts survived to 800,000 tokens without visible rot. Hardware changes the answer, though. Capped locally at a 32k window, keeping everything stops being possible, and a larger parameter count does not buy a larger context window. Dense retrieval fell to 0% recall on facts buried at 400k tokens where BM25 still found them every time. The rule they land on is to name the constraint you actually have before reaching for compaction, rather than compacting by default.\n\nSpeaker info:\nLouis-Fran\u00e7ois Bouchard (Towards AI):\n- https://x.com/Whats_AI\n- https://www.linkedin.com/in/whats-ai/\n- https://www.louisbouchard.ai\n\nOmar Solano (Towards AI):\n- https://x.com/omar_solano1\n- https://www.linkedin.com/in/omar-solano1\n\nSamridhi Vaid (Towards AI):\n- https://x.com/samridhivaid\n- https://www.linkedin.com/in/samridhivaid/\n\nProject:\n- https://github.com/towardsai/ai-tutor-app\n\nTimestamps:\n0:00 - The problem is the context, not the model\n1:30 - The AI tutor, and its five requirements\n5:21 - Two root problems: a finite win"
@@ -458,10 +653,10 @@
           "channel": "Modern Software Engineering",
           "channel_id": "UCCfqyGl3nq_V0bo64CjZh8g",
           "published_at": "2026-08-17T16:15:11+00:00",
-          "views": 1397,
+          "views": 1490,
           "rating": {
             "average": 5.0,
-            "count": 56
+            "count": 57
           },
           "discussion": null,
           "description": "Understand the Agile Manifesto and how to apply its core principles to your daily engineering practices. Learn to prioritise effective communication over rigid processes.\n\nMany teams struggle to implement the Agile Manifesto correctly because they focus too heavily on tools rather than people. This discussion clarifies why valuing individuals and interactions remains the foundation of successful software engineering practices. If you are looking to refine your approach to development, this breakdown offers a clear perspective on how to interpret these core concepts.\n\nBy keeping Agile principles concise, you can move away from bureaucratic overhead and focus on what actually delivers value. This video explains how to shift your mindset back to the basics of the original framework, ensuring that your team maintains agility without losing sight of quality engineering practices.\n\nSubscribe for weekly software engineering breakdowns, and comment below on which Agile methodology topic you want to see explained next.\n\n-\n\n#agile #softwareengineering #softwaredevelopment #programming"
@@ -473,10 +668,10 @@
           "channel": "DevOps Toolbox",
           "channel_id": "UCYeiozh-4QwuC1sjgCmB92w",
           "published_at": "2026-08-17T15:48:15+00:00",
-          "views": 717,
+          "views": 772,
           "rating": {
             "average": 5.0,
-            "count": 12
+            "count": 14
           },
           "discussion": null,
           "description": "re:Invent registration: \ufeff\ufeffhttps://bit.ly/4fDEP2q"
@@ -488,10 +683,10 @@
           "channel": "Computerphile",
           "channel_id": "UC9-y-6csu5WGm29I7JiwpnA",
           "published_at": "2026-08-17T15:18:03+00:00",
-          "views": 10044,
+          "views": 11118,
           "rating": {
             "average": 5.0,
-            "count": 378
+            "count": 417
           },
           "discussion": null,
           "description": "Learn more about the Jane Street internship at: https://jane-st.co/internships2027-Computerphile\n\nSimulations of nature and physics are a potential application of quantum computing. Ella and Alex take us through how using quantum techniques could supersede classical options. \n\nDr Eleanor Crane is a Lecturer (Assistant Professor) in Quantum Computing in the Department of Physics at King\u2019s College London. Alexander Schuckert is an Associate Professor at the \u00c9cole Normale Superieure in Paris.\n\nComputerphile is supported by Jane Street. Learn more about them (and exciting career opportunities) at: https://jane-st.co/computerphile\n\nThis video was filmed and edited by Sean Riley.\n\nComputerphile is a sister project to Brady Haran's Numberphile. More at https://www.bradyharanblog.com"
@@ -503,10 +698,10 @@
           "channel": "John Hammond",
           "channel_id": "UCVeW9qkBjo3zosnqUbG7CFw",
           "published_at": "2026-08-17T12:02:35+00:00",
-          "views": 2631,
+          "views": 3250,
           "rating": {
             "average": 5.0,
-            "count": 42
+            "count": 56
           },
           "discussion": null,
           "description": "Okay, this one is interesting.\n\nI came across a post claiming to describe a cross-platform exploit kit with persistence and stealth techniques like registry run keys, scheduled tasks, and runtime AMSI patching. There are also some pretty obvious signs that the post itself was AI-generated.\n\nWatch the full video here: https://youtu.be/XZ4E2sHtNuw?si=pgOl5MYfpjqveG4C"
@@ -518,7 +713,7 @@
           "channel": "GOTO Conferences",
           "channel_id": "UCs_tLP3AiwYKwdUHpltJPuA",
           "published_at": "2026-08-17T12:00:10+00:00",
-          "views": 1192,
+          "views": 1249,
           "rating": {
             "average": 5.0,
             "count": 17
@@ -533,7 +728,7 @@
           "channel": "InfoQ",
           "channel_id": "UCkQX1tChV7Z7l1LFF4L9j_g",
           "published_at": "2026-08-17T10:34:53+00:00",
-          "views": 167,
+          "views": 182,
           "rating": {
             "average": 5.0,
             "count": 2
@@ -548,10 +743,10 @@
           "channel": "Grafana",
           "channel_id": "UCYCwgQAMm9sTJv0rgwQLCxw",
           "published_at": "2026-08-17T09:31:41+00:00",
-          "views": 160,
+          "views": 182,
           "rating": {
             "average": 5.0,
-            "count": 3
+            "count": 4
           },
           "discussion": null,
           "description": "Grafana Digital Experience Monitoring (DEM) brings Frontend Observability and Synthetic Monitoring together, so teams can go from symptom to root cause without bouncing between tools. In this video, Bukola, Senior Developer Advocate at Grafana Labs, demos two of the newest DEM features. Session Replay and the integration between Synthetic Monitoring and Frontend Observability. \n\nTimestamps: \n0:00 - Introduction to Digital Experience Monitoring\n1:05 - What is Session Replay \n1:23 - Session Replay Demo\n3:42 - Synthetic Monitoring and Frontend Observability integration \n5:10 - Integration Demo \n5:54 - Wrap up and next steps\n\nLinks/resources: \nLearn about Digital Experience Monitoring: https://grafana.com/solutions/digital-experience-monitoring/ \nLearn about Frontend Observability docs: https://grafana.com/docs/grafana-cloud/monitor-applications/frontend-observability/\nLearn about Session Replay works: https://grafana.com/docs/grafana-cloud/observe-and-act/monitor-applications/frontend-observability/session-replay/how-it-works/\nLearn about Synthetic Monitoring: https://grafana.com/docs/grafana-cloud/testing/synthetic-monitoring/\nRead this blog post for more info:\nGet started with the Grafana Cloud forever-free tier: https://grafana.com/g/cloud\nHave a question? Ask Grot, your AI helper: https://grafana.com/grot/\nReach out in our community forums: https://gra.fan/communityyf\n\n---\nThanks for watching! \n\n\ud83d\udc4d Was this video helpful? Like and subscribe to our channel for more videos.\n\nConnect with Grafana Labs: \nX: (https://www.twitter.com/grafana)   \nLinkedIn: (https://www.linkedin.com/company/grafana-labs/)\nFacebook: (https://www.facebook.com/grafana)\n\n#Grafana #Observability"
@@ -563,10 +758,10 @@
           "channel": "Asianometry",
           "channel_id": "UC1LpsuAUaKoMzzJSEt5WImw",
           "published_at": "2026-08-16T23:00:31+00:00",
-          "views": 80682,
+          "views": 84944,
           "rating": {
             "average": 5.0,
-            "count": 3928
+            "count": 4090
           },
           "discussion": {
             "hn_url": "https://news.ycombinator.com/item?id=49325115",
