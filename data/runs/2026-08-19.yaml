@@ -82,21 +82,93 @@ judgment:
     meaning they arrived after the previous day's cutoff rather than being missed on merit: the
     Claude model degradation incident and the Claude Code weekly limit extension. turbovec is in the
     same category. That is the collector working as intended and needs no cause correction.
+
+    Collection did not re-run for this pass. Every cache carries the same fetched_at as the
+    already-published run, 10:13 to 10:18 UTC, and the newest Hacker News item in the pool is 10:03
+    UTC at 2 points. This run is therefore a re-ranking and deeper-verification pass over the same
+    material rather than a new collection, and the four additions come from candidates the earlier
+    run did not check against their primary sources.
+
+    The GitLab critical patch is the significant find and it is a two-day-late catch rather than
+    today's news. GitLab released 19.2.4, 19.1.6, 19.0.8, and 18.11.11 on 2026-08-17 as an ad-hoc
+    critical patch. CVE-2026-19478 is rated critical at CVSS 9.4 and GitLab describes it as allowing
+    an unauthenticated user to remotely modify or delete public projects and user data through a
+    GraphQL directive, affecting all versions from 18.2 before 18.11.11, 19.0 before 19.0.8, 19.1
+    before 19.1.6, and 19.2 before 19.2.4. The same release carries CVE-2026-19650, a GraphQL
+    multiplex CSRF at CVSS 7.1. Neither appears in any digest, so the 2026-08-17 and 2026-08-18 runs
+    both missed a critical advisory in widely deployed developer infrastructure. It surfaced on
+    Hacker News only through techupdate24.com, an aggregator I did not use and did not cite. The
+    claim was verified from GitLab's own patch release feed. I placed it in Security rather than Top
+    stories because it dates to 2026-08-17 and does not define 2026-08-19, which matches how the
+    2026-06-11 run handled a GitLab security release. A real case existed for promoting it: it is
+    the most operationally actionable item on the page, and it outranks CoSnitch on required reader
+    action, since Copilot was fixed server side and this needs an operator to upgrade. It is ranked
+    first within Security.
+
+    No story was displaced. Nothing found this run outranked a published block, and all four
+    additions fit inside their section caps, so the day moves from 11 stories to 15 against a budget
+    of 25. Agentic coding reaches the per-section cap of 4 with A2A. Top stories is unchanged at
+    three items, so top_stories is submitted empty to mean no additions to that section, not an
+    instruction to clear it.
+
+    Two candidates were checked and dropped. The LWN piece on modernizing kernel cryptography
+    reached Hacker News today and is substantive, but it is dated 2026-07-08 and is a stale
+    resurface, the same call the earlier run made on the 2026-07-21 LWN piece about large language
+    models in the kernel community. Linux and kernel stays omitted for that reason rather than for
+    lack of material, which a reader of the page cannot infer. OpenLogi was verified only against
+    its own site. I did not fetch the GitHub repository, so the Rust implementation, the MIT and
+    Apache-2.0 dual license, and the supported device list rest on the project's own page, and the
+    page itself states the project is not yet stable. It is a stretch against the Developer tools
+    description, which names terminals, editors, shells, and build tooling, and I carried it on 678
+    points of practitioner signal and concrete protocol detail rather than on fit.
+
+    Two sourcing cautions worth recording. The A2A page carries embedded ld+json metadata
+    inconsistent with the page: the visible byline reads 2026-08-17 while the metadata gives
+    datePublished 2026-08-14 under the headline "A2A at AAIF: Launch Plan" and points at a different
+    URL. I used the visible byline. The deployment claims in that post about Huawei, Tencent, and
+    the three cloud platforms are AAIF's own assertions and were not independently verified, so the
+    block does not state them as fact. For Bun, I verified the load-bearing facts directly against
+    GitHub rather than trusting the commentary post: the latest release is still v1.3.14 dated 13
+    May 2026, with 4.9 thousand open pull requests and 3.2 thousand open issues. The post's other
+    figures, the commit-authorship split and the claim about unsafe block counts, were not verified
+    and are not published. This updates followup f-0050, whose watch_for names Bun 1.4.0 stable past
+    the canary.
+
+    Backtest re-ran for 2026-08-18 and reported 66 candidates with 0 default causes seeded. The
+    earlier run today already filed miss_review against that same scoring, so miss_review is left
+    empty rather than duplicating four entries. Nothing in the candidate list needs a correction
+    that is not already recorded. Worth flagging for the weekly review even though it is not a
+    miss_review item: the Copilot autofix and Snowflake Jira compromise at 395 points scored as
+    seen_and_matched, meaning a watchlist query did reach it and a run declined it, and on a day
+    when the digest carried two other agentic-coding stories that call deserves a second look.
+
+    Degraded coverage is unchanged from the published run and is listed separately. The Reddit
+    collector has now failed the same way across four runs spanning 2026-08-18 and 2026-08-19, which
+    is a collector defect rather than a quiet weekend, and Reddit and social pulse is omitted for
+    that reason. The GitHub watchlist gap matters more than it reads: there is no cached evidence
+    that configured repository releases were checked, so a release-shaped story could have been
+    missed today the way the GitLab advisory was missed on 2026-08-17.
 mechanical:
   digest:
     domains:
+    - a2a-protocol.org
+    - aaif.io
     - apple.com
     - arstechnica.com
     - cerebras.ai
+    - cve.org
+    - docs.gitlab.com
     - fx.sh
     - github.com
     - githubstatus.com
     - linear.app
     - modular.com
     - news.ycombinator.com
+    - openlogi.org
     - quantum5.ca
     - status.claude.com
     - support.claude.com
+    - tipiirai.com
     - varonis.com
     hn_ids:
     - 49345220
@@ -110,19 +182,26 @@ mechanical:
     - 49353339
     - 49353432
     - 49354949
+    - 49355606
+    - 49356130
+    - 49357401
+    - 49358155
     sections:
       AI: 1
-      Agentic coding: 3
+      Agentic coding: 4
+      Developer tools: 1
       Engineering posts: 1
       Infrastructure: 1
       Outages: 1
       Security: 1
       Sources checked: 0
-      Top stories: 3
-    source_count: 25
+      Top stories: 4
+      Watchlist follow-ups: 1
+    source_count: 37
     titles:
     - Apple moves EU app distribution to one set of terms and replaces the Core Technology Fee with a
       5 percent commission
+    - GitLab ships a critical patch for an unauthenticated GraphQL code injection rated CVSS 9.4
     - >-
       GitHub publishes the root cause for its 7 hour 47 minute outage: an Istio sidecar scaling gap, HAProxy
       flow exhaustion, and a VS Code retry storm
@@ -131,118 +210,75 @@ mechanical:
     - Linear reports coding-agent teams roughly tripled weekly pull requests over two years
     - Anthropic extends the 50 percent Claude Code weekly limit increase through 2026-08-31
     - Vercel Labs publishes fx, a Zig coding agent that embeds through WebAssembly and ACP
+    - Agent2Agent joins the Agentic AI Foundation alongside MCP under Linux Foundation governance
     - Microsoft patches CoSnitch, a one-click Copilot exfiltration chain that Copilot itself disclosed
     - Anthropic reports 2 hours 12 minutes of degraded performance across Claude models
+    - OpenLogi publishes a local-first Rust configurator that drives Logitech devices over HID++
     - turbovec publishes a Rust TurboQuant vector index with reproducible benchmarks against FAISS
     - A failed Framework BIOS update leaves no recovery path short of external SPI flashing
+    - Bun 1.4 remains unreleased three months after the last stable tag, with 4.9 thousand open pull requests
   fetched:
-  - detail: 'failed: fetch failed: https://openai.com/index/pacing-model-development-cyber-capabilities/:
-      HTTP Error 403: Forbidden'
-    ok: false
-    url: https://openai.com/index/pacing-model-development-cyber-capabilities/
-  - detail: 240145 bytes
+  - detail: 86451 bytes
     ok: true
-    url: https://www.modular.com/blog/mojo-open-source
+    url: https://openlogi.org/en
+  - detail: 24590 bytes
+    ok: true
+    url: https://lwn.net/Articles/1077427/
+  - detail: 9517 bytes
+    ok: true
+    url: https://tipiirai.com/writing/bun-rust-rewrite-worries
+  - detail: 145767 bytes
+    ok: true
+    url: https://aaif.io/blog/a2a-joins-aaif
+  - detail: 26919 bytes
+    ok: true
+    url: https://about.gitlab.com/releases/
+  - detail: 572085 bytes (clipped)
+    ok: true
+    url: https://github.com/oven-sh/bun/releases
+  - detail: 3035488 bytes (clipped)
+    ok: true
+    url: https://docs.gitlab.com/releases/patch-releases.xml
+  - detail: 425538 bytes (clipped)
+    ok: true
+    url: https://github.com/RyanCodrai/turbovec
+  - detail: 795939 bytes (clipped)
+    ok: true
+    url: https://linear.app/data
   - detail: 152451 bytes
     ok: true
     url: https://www.apple.com/newsroom/2026/08/apple-announces-changes-for-apps-in-the-european-union/
-  - detail: 73098 bytes
+  - detail: 572091 bytes (clipped)
     ok: true
-    url: https://status.claude.com/incidents/q7txxvbsftgq
-  - detail: 159214 bytes
+    url: https://github.com/oven-sh/bun/releases
+  - detail: 240145 bytes
     ok: true
-    url: https://arstechnica.com/security/2026/08/microsoft-copilot-reveals-secret-input-that-allowed-it-to-be-hacked/
-  - detail: 83160 bytes
-    ok: true
-    url: https://support.claude.com/en/articles/15910845-claude-code-may-august-2026-weekly-limits-promotion
+    url: https://www.modular.com/blog/mojo-open-source
   - detail: 265192 bytes (clipped)
     ok: true
     url: https://www.varonis.com/blog/cosnitch
-  - detail: 392777 bytes
+  - detail: 86451 bytes
     ok: true
-    url: https://www.cerebras.ai/cs4
-  - detail: 227582 bytes (clipped)
-    ok: true
-    url: https://lwn.net/Articles/1083275/
-  - detail: 296912 bytes
-    ok: true
-    url: https://github.com/vercel-labs/fx
-  - detail: 20830 bytes
-    ok: true
-    url: https://installsafe.io/blog/the-keyv-worm-ate-400-npm-packages-in-90-minutes-check-if-youre-exposed/
-  - detail: 178005 bytes (clipped)
-    ok: true
-    url: https://ssd-disclosure.com/linux-bridge-stp-timer-use-after-free/
-  - detail: 425491 bytes (clipped)
-    ok: true
-    url: https://github.com/RyanCodrai/turbovec
-  - detail: 187765 bytes
-    ok: true
-    url: https://newsletter.kentbeck.com/p/composable-tests
-  - detail: 296473 bytes (clipped)
-    ok: true
-    url: https://www.githubstatus.com/api/v2/incidents.json
-  - detail: 105349 bytes (clipped)
-    ok: true
-    url: https://quantum5.ca/2026/08/16/fixing-bricked-amd-7040-series-framework-13-laptop-with-20-tools/
-  - detail: 2148496 bytes (clipped)
-    ok: true
-    url: https://www.tomshardware.com/pc-components/ram/memory-prices-climb-500-percent-in-12-months-up-to-10x-the-lowest-ever-tracked-prices-128gb-of-ddr5-now-usd3-399
-  - detail: 795995 bytes (clipped)
-    ok: true
-    url: https://linear.app/data
-  - detail: 425491 bytes (clipped)
-    ok: true
-    url: https://github.com/RyanCodrai/turbovec
-  - detail: 795995 bytes (clipped)
-    ok: true
-    url: https://linear.app/data
-  - detail: 152451 bytes
-    ok: true
-    url: https://www.apple.com/newsroom/2026/08/apple-announces-changes-for-apps-in-the-european-union/
-  - detail: 39387 bytes
-    ok: true
-    url: https://fx.sh
-  - detail: 296912 bytes
-    ok: true
-    url: https://github.com/vercel-labs/fx
-  - detail: 158415 bytes
-    ok: true
-    url: https://www.githubstatus.com/incidents/zkxwbgr0cnmx
-  - detail: 795995 bytes (clipped)
-    ok: true
-    url: https://linear.app/data
-  - detail: 425491 bytes (clipped)
-    ok: true
-    url: https://github.com/RyanCodrai/turbovec
-  - detail: 152451 bytes
-    ok: true
-    url: https://www.apple.com/newsroom/2026/08/apple-announces-changes-for-apps-in-the-european-union/
-  - detail: 240145 bytes
-    ok: true
-    url: https://www.modular.com/blog/mojo-open-source
+    url: https://openlogi.org/en
   - detail: 392691 bytes
     ok: true
     url: https://www.cerebras.ai/cs4
-  - detail: 265192 bytes (clipped)
+  - detail: 425538 bytes (clipped)
     ok: true
-    url: https://www.varonis.com/blog/cosnitch
-  - detail: 158415 bytes
+    url: https://github.com/RyanCodrai/turbovec
+  - detail: 152451 bytes
     ok: true
-    url: https://www.githubstatus.com/incidents/zkxwbgr0cnmx
-  - detail: 159214 bytes
+    url: https://www.apple.com/newsroom/2026/08/apple-announces-changes-for-apps-in-the-european-union/
+  - detail: 572091 bytes (clipped)
     ok: true
-    url: https://arstechnica.com/security/2026/08/microsoft-copilot-reveals-secret-input-that-allowed-it-to-be-hacked/
-  - detail: 73098 bytes
+    url: https://github.com/oven-sh/bun/releases
+  - detail: 392691 bytes
     ok: true
-    url: https://status.claude.com/incidents/q7txxvbsftgq
-  - detail: 296912 bytes
+    url: https://www.cerebras.ai/cs4
+  - detail: 41021 bytes
     ok: true
-    url: https://github.com/vercel-labs/fx
-  - detail: 39387 bytes
-    ok: true
-    url: https://fx.sh
-  generated_at: '2026-08-19T02:59:25+00:00'
+    url: https://docs.gitlab.com/releases/patches/patch-release-gitlab-19-2-4-released/
+  generated_at: '2026-08-19T10:33:35+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -251,23 +287,28 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-08-19T02:35:21+00:00'
+    fetched_at: '2026-08-19T10:13:09+00:00'
     pooled:
       added:
-        ask_hn: 1
-        comments: 0
-        front_page: 3
-        queries: 3
-        show_hn: 1
-        top_day: 3
-      snapshot_fetched_at: '2026-08-19T01:53:01+00:00'
+        ask_hn: 3
+        comments: 24
+        front_page: 20
+        queries: 30
+        show_hn: 10
+        top_day: 10
+      snapshot_fetched_at: '2026-08-19T09:49:05+00:00'
     queries_backend: algolia
     seen_ids:
     - 47439821
     - 47999020
+    - 49285325
+    - 49286291
     - 49287463
+    - 49295071
     - 49295369
+    - 49306207
     - 49311814
+    - 49318311
     - 49321298
     - 49332981
     - 49334209
@@ -288,6 +329,7 @@ mechanical:
     - 49342530
     - 49342719
     - 49343029
+    - 49343148
     - 49343323
     - 49343400
     - 49343559
@@ -352,7 +394,6 @@ mechanical:
     - 49349898
     - 49349984
     - 49350031
-    - 49350362
     - 49350637
     - 49350828
     - 49350955
@@ -361,10 +402,12 @@ mechanical:
     - 49351324
     - 49351330
     - 49351430
+    - 49351598
     - 49352245
     - 49352330
     - 49352394
     - 49352687
+    - 49352776
     - 49352794
     - 49352806
     - 49352915
@@ -375,6 +418,8 @@ mechanical:
     - 49353407
     - 49353432
     - 49353513
+    - 49353515
+    - 49353724
     - 49353854
     - 49353865
     - 49353921
@@ -384,13 +429,29 @@ mechanical:
     - 49354613
     - 49354664
     - 49354741
-    - 49354778
+    - 49354833
     - 49354949
     - 49355105
     - 49355142
     - 49355232
     - 49355352
+    - 49355360
     - 49355368
+    - 49355451
+    - 49355606
+    - 49355607
+    - 49355825
+    - 49355968
+    - 49356310
+    - 49356609
+    - 49357401
+    - 49357501
+    - 49357715
+    - 49357853
+    - 49357881
+    - 49358220
+    - 49358259
+    - 49358327
     source: cache
   query_yield:
     0day:
@@ -462,41 +523,47 @@ mechanical:
       published_ids: []
       raw: 5
     CVE:
-      matched: 0
-      matched_ids: []
-      published: 0
-      published_ids: []
+      matched: 1
+      matched_ids:
+      - 49358155
+      published: 1
+      published_ids:
+      - 49358155
       raw: 5
     Claude:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49342012
       - 49344643
       - 49348751
       - 49351995
       - 49352806
+      - 49354929
+      - 49356105
       published: 1
       published_ids:
       - 49348751
       raw: 5
     Claude Code:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49342012
       - 49348751
       - 49351995
       - 49352511
       - 49352806
+      - 49356290
       published: 1
       published_ids:
       - 49348751
       raw: 5
     Cloudflare:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49342509
       - 49350859
       - 49351598
+      - 49357166
       published: 0
       published_ids: []
       raw: 3
@@ -513,12 +580,13 @@ mechanical:
       - 49351878
       raw: 5
     Cursor:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49345150
       - 49349232
       - 49354330
       - 49355246
+      - 49357452
       published: 0
       published_ids: []
       raw: 5
@@ -544,7 +612,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     Ghostty:
       matched: 0
       matched_ids: []
@@ -552,12 +620,13 @@ mechanical:
       published_ids: []
       raw: 1
     GitHub:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49341226
       - 49345035
       - 49346356
       - 49346871
+      - 49347614
       - 49354330
       published: 0
       published_ids: []
@@ -637,29 +706,32 @@ mechanical:
       published_ids: []
       raw: 2
     LLM:
-      matched: 2
+      matched: 3
       matched_ids:
+      - 49344407
       - 49345132
       - 49346452
       published: 0
       published_ids: []
       raw: 5
     LWN:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49342593
       - 49343778
+      - 49356824
       published: 0
       published_ids: []
       raw: 5
     Linux:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49342719
       - 49345212
       - 49346855
       - 49353849
       - 49354613
+      - 49356532
       published: 0
       published_ids: []
       raw: 5
@@ -671,12 +743,13 @@ mechanical:
       published_ids: []
       raw: 3
     MCP:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49341873
       - 49343705
       - 49345320
       - 49346900
+      - 49347380
       - 49352299
       published: 0
       published_ids: []
@@ -694,10 +767,11 @@ mechanical:
       published_ids: []
       raw: 0
     Nvidia:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49342314
       - 49342894
+      - 49343849
       - 49343974
       - 49344157
       - 49350557
@@ -705,11 +779,12 @@ mechanical:
       published_ids: []
       raw: 5
     OpenAI:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49342823
       - 49347207
       - 49351330
+      - 49351580
       - 49352930
       - 49353874
       published: 0
@@ -771,16 +846,18 @@ mechanical:
       published_ids: []
       raw: 5
     Rust:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49345132
       - 49345146
       - 49345849
       - 49349785
       - 49349898
-      published: 1
+      - 49357401
+      published: 2
       published_ids:
       - 49349898
+      - 49357401
       raw: 5
     S-1:
       matched: 2
@@ -826,9 +903,10 @@ mechanical:
       published_ids: []
       raw: 5
     Vim:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49352354
+      - 49356485
       published: 0
       published_ids: []
       raw: 5
@@ -864,18 +942,21 @@ mechanical:
       published_ids: []
       raw: 1
     agentic:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49341573
       - 49350045
       - 49350508
       - 49351020
       - 49353146
-      published: 0
-      published_ids: []
+      - 49356130
+      - 49359341
+      published: 1
+      published_ids:
+      - 49356130
       raw: 5
     arXiv:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49340201
       - 49341131
@@ -883,6 +964,8 @@ mechanical:
       - 49346538
       - 49347135
       - 49352033
+      - 49356591
+      - 49357141
       published: 0
       published_ids: []
       raw: 5
@@ -897,7 +980,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     coding agent:
       matched: 3
       matched_ids:
@@ -935,9 +1018,10 @@ mechanical:
       published_ids: []
       raw: 5
     iOS:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49345398
+      - 49357844
       published: 0
       published_ids: []
       raw: 5
@@ -952,24 +1036,27 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     kernel:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49342593
       - 49345849
       - 49353646
       - 49354321
       - 49354512
+      - 49356532
+      - 49356824
       published: 0
       published_ids: []
       raw: 5
     local-first:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49341502
       - 49345617
       - 49353724
+      - 49358242
       published: 0
       published_ids: []
       raw: 4
@@ -995,13 +1082,14 @@ mechanical:
       published_ids: []
       raw: 5
     outage:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49344547
       - 49344732
       - 49346871
       - 49347595
       - 49352598
+      - 49356995
       published: 0
       published_ids: []
       raw: 5
@@ -1012,7 +1100,7 @@ mechanical:
       published_ids: []
       raw: 1
     terminal:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49340284
       - 49345146
@@ -1020,6 +1108,7 @@ mechanical:
       - 49348022
       - 49348195
       - 49350201
+      - 49357544
       published: 0
       published_ids: []
       raw: 5
@@ -1150,6 +1239,142 @@ mechanical:
       name: run_log
       status: ok
     - detail: 35 fetch(es), 1 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-08-19T10:33:44+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-19.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-18
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[],"stories":[{"title":"GitLab ships a critical patch for an unauthenticated GraphQL
+        code injection rated CVSS 9.4","section":"Security","category":"Security","status":"confirmed","primary_url":"https://docs.gitlab.com/releases/patches/patch-release-gitlab-19-2-4-released/","sources":
+      name: select
+      status: ok
+      tokens:
+        in: 563
+        out: 21173
+      tools:
+        Bash: 1
+        Glob: 4
+        Grep: 3
+        Read: 5
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 7
+        mcp__digest__guidance: 2
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 3
+    - detail: |-
+        Gate passes (exit 0). The digest at `data/digests/2026-08-19.md` now carries 15 stories, up from 11.
+
+        Added, in rank order within their sections:
+
+        - **Security:** GitLab critical patch (19.2.4, 19.1.6, 19.0.8, 18.11.11), CVE-2026-19478 at CVSS 9.4 plus CVE-2026-19650 at 7.1. Placed first in Security
+      name: write
+      status: ok
+      tokens:
+        in: 20
+        out: 8678
+      tools:
+        Edit: 7
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Placement notes / Top stories","detail":"The
+        note justifying three top stories is stale and contradicted by the page itself. It reads: \"Security
+        carried a single block through the first pass of the day... CoSnitch was kept in Security rathe
+      name: review
+      status: ok
+      tokens:
+        in: 18
+        out: 17316
+      tools:
+        Glob: 3
+        Grep: 2
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 8
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes with exit code 0. All five findings repaired, nothing else touched.
+
+        **1. Blocking, Top stories rationale (resolved by promotion).** Moved the GitLab critical patch block whole out of `Security` into `Top stories`, taking that section from three items to four against the cap of five. Sec
+      name: write
+      status: ok
+      tokens:
+        in: 20
+        out: 7250
+      tools:
+        Edit: 7
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":true,"findings":[{"severity":"minor","where":"Top stories / Modular open sources the
+        Mojo compiler and toolchain under Apache 2.0 with LLVM exceptions","detail":"The claim \"Modular
+        was acquired by Qualcomm, with the acquisition completed 2026-07-29 per the company's own blog
+        index\" is att
+      name: review
+      status: ok
+      tokens:
+        in: 14
+        out: 11204
+      tools:
+        Glob: 1
+        Grep: 2
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 5
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 7 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: skipped (no seeded cause was reported wrong)
+      name: miss_review
+      status: skip
+    - detail: data/runs/2026-08-19.yaml
+      name: run_log
+      status: ok
+    - detail: 20 fetch(es), 0 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
