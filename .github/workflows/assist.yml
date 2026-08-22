@@ -50,7 +50,7 @@ jobs:
       actions: read # so Claude can read CI results on PRs
     steps:
       # Egress monitor in audit mode: records outbound connections per run.
-      - uses: step-security/harden-runner@b09bb98e06d4d774595224525879c09bc6e98c40 # v2.20.1
+      - uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
         with:
           egress-policy: audit
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -58,7 +58,7 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
       # No prompt: Claude follows the instruction in the comment that tagged it.
-      - uses: anthropics/claude-code-action@e63208cb983318a44e3f945e959ef894b707dcfa # v1.0.192
+      - uses: anthropics/claude-code-action@e2a4b761cd77a1138a5b41410eda9b28581f9bcd # v1.0.196
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           additional_permissions: |
@@ -76,14 +76,14 @@ jobs:
       issues: read
       id-token: write
     steps:
-      - uses: step-security/harden-runner@b09bb98e06d4d774595224525879c09bc6e98c40 # v2.20.1
+      - uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
         with:
           egress-policy: audit
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 1
           persist-credentials: false
-      - uses: anthropics/claude-code-action@e63208cb983318a44e3f945e959ef894b707dcfa # v1.0.192
+      - uses: anthropics/claude-code-action@e2a4b761cd77a1138a5b41410eda9b28581f9bcd # v1.0.196
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           plugin_marketplaces: "https://github.com/anthropics/claude-code.git"
