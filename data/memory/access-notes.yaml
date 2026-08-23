@@ -26,27 +26,6 @@
     (cloud datacenter IP ranges).
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0008
-  kind: fact
-  last_seen: '2026-06-29'
-  note: >-
-    HN via WebSearch alone is not acceptable coverage. The 2026-06-11 run used the WebSearch fallback
-    and missed Homebrew 6.0.0, a 600+ point front page release announcement. Use `make hn`, which walks
-    Algolia, Firebase, front page HTML, community mirrors, and hnrss in order and exits nonzero on degraded
-    coverage.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0009
-  kind: fact
-  last_seen: '2026-06-29'
-  note: >-
-    the community mirrors `api.hackerwebapp.com` and `api.hnpwa.com` also returned 403 from the unattended
-    harness, so all six fetcher backends are blocked there. An hn-probe workflow run (2026-06-12 08:30
-    UTC) got 200 from all five probed HN endpoints on GitHub Actions runners, so the block does not cover
-    Actions egress. Fallback order for unattended runs: committed HN snapshot from the scheduled Actions
-    fetch, then WebSearch supplementation with the degradation stated in Sources checked.
-  subject: '2026-06-12'
-- group: Datacenter-IP 403 blocks and fallbacks
   id: an-0010
   kind: fact
   last_seen: '2026-07-26'
@@ -56,36 +35,6 @@
     every post embeds the site's full tag cloud inside the `<article>` element, so naive text extraction
     returns thousands of tag names before any prose; search the stripped text for a section heading instead
     of slicing from the start.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0011
-  kind: fact
-  last_seen: '2026-06-29'
-  note: '`www.cloudflare.com` - path pages like /agents-week/updates/.'
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0012
-  kind: fact
-  last_seen: '2026-06-29'
-  note: '`techcrunch.com` - cross-reference with primary sources when remote.'
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0013
-  kind: fact
-  last_seen: '2026-06-29'
-  note: '`www.securityweek.com` - discovery only when remote; confirm from advisories.'
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0014
-  kind: fact
-  last_seen: '2026-06-29'
-  note: '`blog.rust-lang.org` - remote fallback releases.rs and WebSearch.'
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0015
-  kind: fact
-  last_seen: '2026-06-29'
-  note: '`blog.checkpoint.com` - use support.checkpoint.com sk advisory pages as primary.'
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
   id: an-0016
@@ -212,16 +161,6 @@
     Used 2026-07-11 for the Apple v. OpenAI trade-secret suit (complaint on courtlistener.com).
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0037
-  kind: fact
-  last_seen: '2026-07-25'
-  note: >-
-    `www.theguardian.com` and `www.phoronix.com` - both refuse the harness WebFetch tool (Guardian returns
-    an unable-to-fetch error, Phoronix returns 403), but both return 200 to a plain urllib request with
-    a browser User-Agent from the same run environment. Use a direct HTTP fetch rather than WebSearch
-    snippets. Phoronix also serves a full `rss.php` feed. Verified 2026-07-25.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
   id: an-0038
   kind: fact
   last_seen: '2026-07-25'
@@ -314,4 +253,42 @@
     instead), `developer.chrome.com`, `sec.cloudapps.cisco.com`. For the two Statuspage-backed hosts prefer
     the `/api/v2/incidents.json` endpoint recorded in source-reliability, which was verified working for
     Cloudflare on 2026-07-25. Merged from seven bullets to keep the store under its entry bound.
+  subject: ''
+- group: Datacenter-IP 403 blocks and fallbacks
+  id: an-0047
+  kind: fact
+  last_seen: '2026-08-23'
+  note: >-
+    Hosts returning 403 or needing a fallback from the datacenter IP range, all last confirmed 2026-06-29.
+    `www.cloudflare.com` path pages such as /agents-week/updates/ 403; `blog.cloudflare.com` is a separate
+    host and returned 200 on 2026-07-26. `techcrunch.com` needs cross-referencing against a primary source
+    when remote. `www.securityweek.com` is discovery only when remote, confirm from vendor advisories.
+    `blog.rust-lang.org` is 403/404 early after a release, so prefer the rust-lang/rust GitHub release
+    object, then releases.rs and WebSearch. `blog.checkpoint.com` 403, use support.checkpoint.com sk advisory
+    pages as primary. Merged from five bullets to keep the store under its entry bound.
+  subject: ''
+- group: Datacenter-IP 403 blocks and fallbacks
+  id: an-0048
+  kind: fact
+  last_seen: '2026-08-23'
+  note: >-
+    `www.theguardian.com` - refuses the harness WebFetch tool with an unable-to-fetch error, but returns
+    200 to a plain urllib request with a browser User-Agent from the same run environment. Verified 2026-07-25.
+    Split out of a combined Guardian/Phoronix bullet; the Phoronix route is recorded separately and in
+    more detail.
+  subject: ''
+- group: Datacenter-IP 403 blocks and fallbacks
+  id: an-0049
+  kind: fact
+  last_seen: '2026-08-23'
+  note: >-
+    HN coverage from the unattended harness, confirmed 2026-06-29. All six fetcher backends 403 there,
+    including the community mirrors `api.hackerwebapp.com` and `api.hnpwa.com`. An hn-probe run on 2026-06-12
+    got 200 from all five probed endpoints on GitHub Actions runners, so the block does not cover Actions
+    egress. Use `make hn`, which walks Algolia, Firebase, front page HTML, community mirrors, and hnrss
+    in order and exits nonzero on degraded coverage. Fallback order for unattended runs: the committed
+    HN snapshot from the scheduled Actions fetch, then WebSearch supplementation with the degradation
+    stated in Sources checked. WebSearch alone is not acceptable coverage: the 2026-06-11 run used it
+    and missed Homebrew 6.0.0, a 600+ point front page release announcement. Merged from two bullets to
+    keep the store under its entry bound.
   subject: ''
