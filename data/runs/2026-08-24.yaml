@@ -105,6 +105,60 @@ judgment:
     are unchanged: the LWN access note recording 403 since 2026-08-18 should be closed, since LWN
     served both the headline page and the RSS feed in full this run; access note an-0020 on Reuters
     should be touched.
+
+    One addition today, and the reason is a collection failure rather than a quiet news day. The
+    Hacker News cache was refetched at 10:23 UTC but its newest item is dated 2026-08-23T15:09, with
+    zero items dated 2026-08-24 and only three after 15:00 on 2026-08-23. The corpus did not move in
+    the eight hours since the 02:41 run, and the fetcher reported an empty degraded list, so it
+    self-reports healthy while contributing nothing new. Everything above the fold is already
+    published across the 2026-08-20 to 2026-08-23 pages. Treat the HN backend as suspect until a
+    later run sees same-day items.
+
+    Two candidates looked like the day's strongest finds and both turned out to be archive. Rust
+    issue 161441, the P-critical vacant-vtable miscompilation in 1.98.0, is already the primary URL
+    of the 2026-08-23 entry, and the arrayref crates.io compromise is on 2026-08-20. I verified the
+    Rust item anyway against the issue page and the Rust blog index: the issue is still open with
+    labels I-miscompile, P-critical, and regression-from-stable-to-stable, and the blog index still
+    shows 1.98.0 of 2026-08-20 as the newest release with no 1.98.1. That answers the 2026-08-23
+    follow-up but only as a negative result, so it is no state change and no follow-up block was
+    written. If a 1.98.1 ships it is worth a block on its own sources.
+
+    Security produced nothing new. The CISA KEV feed is still at catalog version 2026.08.21 with no
+    addition after the Zimbra entry already on the page, whose federal remediation date is today.
+    GitHub, OpenAI, and Anthropic status pages are all clean with no open or recent incidents.
+
+    Cloudflare had two incidents today and only one is published. The Chicago 5xx incident ran 05:47
+    to 06:53 UTC, one colo, CDN/Cache only, 66 minutes, minor, no root cause, and it is weaker than
+    the APAC one on every axis, so it was dropped rather than given its own block. The published
+    block covers the D1, Durable Objects, and R2 degradation in Hong Kong and Singapore, 03:53 to
+    08:28 UTC, with a fix implemented at 06:42. The recurrence claim in it is checkable from the
+    same incidents feed: Hong Kong Durable Objects and R2 on 2026-08-21 14:59 to 15:19, Dubai R2 on
+    2026-08-22, then Hong Kong and Singapore today. Cloudflare rates all of them minor and has
+    published no root cause for any, so the block does not assert a common cause.
+
+    Declined as routine: the 2026-08-23 kernel stable batch across seven trees (7.1.10, 6.18.46,
+    6.12.105, 6.6.153, 6.1.184, 5.15.217, 5.10.266). No named regression or security driver, and the
+    page already carries a Linux and kernel item. The GitHub changelog feed is stale at 2026-08-21
+    and carried nothing dated today.
+
+    No section was displaced and nothing was removed. Top stories stays at three because nothing
+    found today outranks what is published, and padding it from a stalled corpus would mean
+    promoting archive material. The day sits at seven stories against a budget of 25, which is an
+    accurate reading of what the sources produced, not restraint.
+
+    On miss_review: the backtest seeded no_query_match for the Codex-versus-Claude write-up and for
+    Rust Glancer, but the 2026-08-23 digest notes record both as seen and deliberately declined, the
+    first for having no measurement and the second as already published on 2026-08-22, so both are
+    relevance_skip rather than query gaps. Munder Difflin at 290 points and Autolith at 121 points
+    are agent harnesses that map directly onto the existing Agentic coding section and no query
+    caught either, so both are watchlist_gap. The query set appears to cover MCP but not agent
+    harnesses or Codex. Hister at 423 points is the other high-signal no-match, left unflagged
+    because I could not settle whether a personal search index clears the Developer tools bar.
+
+    Operational note for the review: the followups store now holds 41 records at roughly 71,000
+    characters, which exceeded the tool output limit on a plain memory_query and had to be read from
+    a spilled file. Most records date from July and several describe threads that have resolved.
+    Since every run of the day pays to re-read those bytes, the store is worth pruning.
 mechanical:
   digest:
     domains:
@@ -112,6 +166,7 @@ mechanical:
     - blog.zimbra.com
     - cisa.gov
     - clickhouse.com
+    - cloudflarestatus.com
     - lwn.net
     - mozilla.org
     - phoronix.com
@@ -121,11 +176,11 @@ mechanical:
     sections:
       Developer tools: 1
       Linux and kernel: 1
-      Outages: 0
+      Outages: 1
       Security: 1
       Sources checked: 0
       Top stories: 3
-    source_count: 10
+    source_count: 12
     titles:
     - A paid YouTube ad delivered a fake TradingView installer that roots macOS and intercepts every HTTPS
       session
@@ -138,101 +193,96 @@ mechanical:
     - >-
       Zimbra's own patch post places the exploited command injection in the SNMP component, and the CISA
       remediation date is 2026-08-24
+    - Cloudflare degraded D1, Durable Objects, and R2 in Hong Kong and Singapore for four and a half hours
     - Firefox 155 beta adds QUIC version 2 and two WebAssembly proposals, and moves the captive-portal
       check to a new domain
     - Steve French, longtime Linux SMB and CIFS maintainer, has died
   fetched:
-  - detail: 302551 bytes (clipped)
-    ok: true
-    url: https://www.githubstatus.com/api/v2/incidents.json
-  - detail: 3038 bytes
-    ok: true
-    url: https://support.mozilla.org/en-US/kb/firefox-enterprise-154-release-notes
-  - detail: 142346 bytes (clipped)
-    ok: true
-    url: https://www.cloudflarestatus.com/api/v2/incidents.json
-  - detail: 3038 bytes
-    ok: true
-    url: https://wiki.mozilla.org/Release_Management/Calendar
   - detail: 1598304 bytes (clipped)
     ok: true
     url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
-  - detail: 24397 bytes
+  - detail: 4310 bytes
     ok: true
-    url: https://aengelke.net/llvm23-ct.html
-  - detail: 212329 bytes
+    url: https://www.githubstatus.com/api/v2/summary.json
+  - detail: 143725 bytes (clipped)
     ok: true
-    url: https://clickhouse.com/blog/postgres-19-monitoring-whats-new
-  - detail: 131189 bytes (clipped)
+    url: https://www.cloudflarestatus.com/api/v2/incidents.json
+  - detail: 5290 bytes
     ok: true
-    url: https://www.postgresql.org/docs/19/release-19.html
-  - detail: 145855 bytes (clipped)
+    url: https://status.openai.com/api/v2/summary.json
+  - detail: 7574 bytes
     ok: true
-    url: https://safedep.io/youtube-ad-fake-tradingview-macos-stealer/
-  - detail: 110976 bytes
+    url: https://www.kernel.org/releases.json
+  - detail: 2154 bytes
     ok: true
-    url: https://blog.zimbra.com/2026/07/patch-release-update-zimbra-10-1-20/
-  - detail: 25122 bytes
+    url: https://status.anthropic.com/api/v2/summary.json
+  - detail: 495018 bytes (clipped)
     ok: true
-    url: https://lwn.net/Articles/
-  - detail: 22824 bytes
+    url: https://github.com/rust-lang/rust/issues/161441
+  - detail: 'failed: fetch failed: https://blog.rust-lang.org/releases.html: HTTP Error 404: Not Found'
+    ok: false
+    url: https://blog.rust-lang.org/releases.html
+  - detail: 95557 bytes
     ok: true
-    url: https://earendil.com/posts/what-is-a-harness/
-  - detail: 61673 bytes (clipped)
+    url: https://blog.rust-lang.org/
+  - detail: 26001 bytes
     ok: true
-    url: https://www.debian.org/vote/2026/vote_002
+    url: https://www.cloudflarestatus.com/incidents/ksy4vxmbkfdk
+  - detail: 42243 bytes (clipped)
+    ok: true
+    url: https://github.blog/changelog/feed/
   - detail: 110251 bytes
     ok: true
     url: https://www.mozilla.org/en-US/firefox/155.0/releasenotes/
-  - detail: 18408 bytes
+  - detail: 26001 bytes
     ok: true
-    url: https://lwn.net/headlines/newrss
+    url: https://www.cloudflarestatus.com/incidents/ksy4vxmbkfdk
   - detail: 24397 bytes
     ok: true
     url: https://aengelke.net/llvm23-ct.html
-  - detail: 145855 bytes (clipped)
-    ok: true
-    url: https://safedep.io/youtube-ad-fake-tradingview-macos-stealer/
-  - detail: 61673 bytes (clipped)
-    ok: true
-    url: https://www.debian.org/vote/2026/vote_002
-  - detail: 110251 bytes
-    ok: true
-    url: https://www.mozilla.org/en-US/firefox/155.0/releasenotes/
-  - detail: 9980 bytes
+  - detail: 11299 bytes
     ok: true
     url: https://lwn.net/Articles/1090098/
-  - detail: 110976 bytes
-    ok: true
-    url: https://blog.zimbra.com/2026/07/patch-release-update-zimbra-10-1-20/
-  - detail: 131189 bytes (clipped)
-    ok: true
-    url: https://www.postgresql.org/docs/19/release-19.html
-  - detail: 110251 bytes
-    ok: true
-    url: https://www.mozilla.org/en-US/firefox/155.0/releasenotes/
-  - detail: 24397 bytes
-    ok: true
-    url: https://aengelke.net/llvm23-ct.html
-  - detail: 110976 bytes
-    ok: true
-    url: https://blog.zimbra.com/2026/07/patch-release-update-zimbra-10-1-20/
-  - detail: 9980 bytes
-    ok: true
-    url: https://lwn.net/Articles/1090098/
-  - detail: 145855 bytes (clipped)
-    ok: true
-    url: https://safedep.io/youtube-ad-fake-tradingview-macos-stealer/
-  - detail: 131189 bytes (clipped)
-    ok: true
-    url: https://www.postgresql.org/docs/19/release-19.html
-  - detail: 78846 bytes
+  - detail: 78804 bytes
     ok: true
     url: https://www.phoronix.com/news/SMB3-CIFS-Maintainer-Change
-  - detail: 212329 bytes
+  - detail: 110976 bytes
     ok: true
-    url: https://clickhouse.com/blog/postgres-19-monitoring-whats-new
-  generated_at: '2026-08-24T03:08:36+00:00'
+    url: https://blog.zimbra.com/2026/07/patch-release-update-zimbra-10-1-20/
+  - detail: 143725 bytes (clipped)
+    ok: true
+    url: https://www.cloudflarestatus.com/api/v2/incidents.json
+  - detail: 145855 bytes (clipped)
+    ok: true
+    url: https://safedep.io/youtube-ad-fake-tradingview-macos-stealer/
+  - detail: 110251 bytes
+    ok: true
+    url: https://www.mozilla.org/en-US/firefox/155.0/releasenotes/
+  - detail: 24397 bytes
+    ok: true
+    url: https://aengelke.net/llvm23-ct.html
+  - detail: 145855 bytes (clipped)
+    ok: true
+    url: https://safedep.io/youtube-ad-fake-tradingview-macos-stealer/
+  - detail: 110976 bytes
+    ok: true
+    url: https://blog.zimbra.com/2026/07/patch-release-update-zimbra-10-1-20/
+  - detail: 11164 bytes
+    ok: true
+    url: https://lwn.net/Articles/1090098/
+  - detail: 78804 bytes
+    ok: true
+    url: https://www.phoronix.com/news/SMB3-CIFS-Maintainer-Change
+  - detail: 131189 bytes (clipped)
+    ok: true
+    url: https://www.postgresql.org/docs/19/release-19.html
+  - detail: 26001 bytes
+    ok: true
+    url: https://www.cloudflarestatus.com/incidents/ksy4vxmbkfdk
+  - detail: 266730 bytes (clipped)
+    ok: true
+    url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+  generated_at: '2026-08-24T10:44:35+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -241,16 +291,16 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-08-24T02:41:25+00:00'
+    fetched_at: '2026-08-24T10:23:53+00:00'
     pooled:
       added:
-        ask_hn: 1
+        ask_hn: 5
         comments: 0
         front_page: 0
-        queries: 2
-        show_hn: 1
-        top_day: 4
-      snapshot_fetched_at: '2026-08-24T01:57:44+00:00'
+        queries: 36
+        show_hn: 14
+        top_day: 48
+      snapshot_fetched_at: '2026-08-24T10:03:56+00:00'
     queries_backend: algolia
     seen_ids:
     - 49346854
@@ -284,6 +334,7 @@ mechanical:
     - 49406021
     - 49406069
     - 49406138
+    - 49406229
     - 49406239
     - 49406285
     - 49406289
@@ -293,7 +344,9 @@ mechanical:
     - 49406398
     - 49406426
     - 49406483
+    - 49406493
     - 49406523
+    - 49406530
     - 49406539
     - 49406563
     - 49406576
@@ -303,40 +356,70 @@ mechanical:
     - 49406757
     - 49406784
     - 49406926
+    - 49406975
     - 49407052
     - 49407060
     - 49407100
     - 49407143
+    - 49407189
     - 49407193
     - 49407237
+    - 49407279
     - 49407305
     - 49407309
+    - 49407337
     - 49407341
     - 49407394
     - 49407450
     - 49407477
+    - 49407485
     - 49407507
     - 49407509
+    - 49407526
+    - 49407527
+    - 49407545
     - 49407576
+    - 49407586
+    - 49407619
     - 49407625
     - 49407627
     - 49407693
     - 49407713
+    - 49407721
     - 49407785
+    - 49407858
+    - 49407866
     - 49407898
     - 49407944
+    - 49407961
     - 49407968
+    - 49407975
+    - 49407979
     - 49407998
+    - 49408015
     - 49408038
     - 49408048
     - 49408078
     - 49408089
     - 49408093
+    - 49408106
+    - 49408116
+    - 49408179
+    - 49408210
     - 49408304
+    - 49408310
+    - 49408381
+    - 49408388
+    - 49408393
+    - 49408415
     - 49408427
     - 49408449
     - 49408476
+    - 49408488
+    - 49408493
     - 49408520
+    - 49408530
+    - 49408537
     - 49408550
     - 49408581
     - 49408614
@@ -345,13 +428,16 @@ mechanical:
     - 49408691
     - 49408724
     - 49408732
+    - 49408747
     - 49408858
     - 49408889
     - 49408898
     - 49408900
     - 49408925
     - 49408931
+    - 49409030
     - 49409070
+    - 49409073
     - 49409084
     - 49409092
     - 49409147
@@ -363,6 +449,7 @@ mechanical:
     - 49409229
     - 49409274
     - 49409285
+    - 49409329
     - 49409378
     - 49409438
     source: cache
@@ -372,15 +459,18 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     AI:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49405904
       - 49405966
       - 49407060
+      - 49407625
       - 49407785
       - 49407944
+      - 49408038
+      - 49409073
       published: 0
       published_ids: []
       raw: 5
@@ -405,7 +495,7 @@ mechanical:
       - 49407279
       published: 0
       published_ids: []
-      raw: 3
+      raw: 0
     Apple Silicon:
       matched: 0
       matched_ids: []
@@ -423,7 +513,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     CUDA:
       matched: 0
       matched_ids: []
@@ -446,7 +536,7 @@ mechanical:
       - 49409040
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     Claude Code:
       matched: 1
       matched_ids:
@@ -459,7 +549,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     Copilot:
       matched: 0
       matched_ids: []
@@ -477,7 +567,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 5
+      raw: 3
     GPU:
       matched: 0
       matched_ids: []
@@ -498,11 +588,13 @@ mechanical:
       published_ids: []
       raw: 0
     GitHub:
-      matched: 3
+      matched: 5
       matched_ids:
       - 49406993
       - 49407485
+      - 49408038
       - 49408520
+      - 49409073
       published: 0
       published_ids: []
       raw: 5
@@ -537,7 +629,7 @@ mechanical:
       - 49405920
       published: 0
       published_ids: []
-      raw: 5
+      raw: 3
     Jepsen:
       matched: 0
       matched_ids: []
@@ -555,7 +647,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 1
     Kleppmann:
       matched: 0
       matched_ids: []
@@ -575,13 +667,14 @@ mechanical:
       published_ids: []
       raw: 1
     LLM:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49405591
       - 49405912
       - 49406975
       - 49408266
       - 49408697
+      - 49409029
       - 49409282
       published: 0
       published_ids: []
@@ -604,7 +697,7 @@ mechanical:
       published: 1
       published_ids:
       - 49406751
-      raw: 5
+      raw: 2
     Llama:
       matched: 0
       matched_ids: []
@@ -626,7 +719,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 1
     Neovim:
       matched: 0
       matched_ids: []
@@ -645,7 +738,7 @@ mechanical:
       - 49409030
       published: 0
       published_ids: []
-      raw: 3
+      raw: 1
     OpenTelemetry:
       matched: 0
       matched_ids: []
@@ -665,7 +758,7 @@ mechanical:
       published: 1
       published_ids:
       - 49406562
-      raw: 1
+      raw: 0
     Prometheus:
       matched: 0
       matched_ids: []
@@ -685,7 +778,7 @@ mechanical:
       - 49407961
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     Raft:
       matched: 0
       matched_ids: []
@@ -698,14 +791,16 @@ mechanical:
       - 49407303
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     Rust:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49405728
       - 49405816
       - 49407119
       - 49407237
+      - 49408649
+      - 49408915
       - 49409239
       published: 0
       published_ids: []
@@ -715,7 +810,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     SQLite:
       matched: 1
       matched_ids:
@@ -802,7 +897,7 @@ mechanical:
       - 49406257
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     breach:
       matched: 0
       matched_ids: []
@@ -820,7 +915,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 2
     distributed systems:
       matched: 0
       matched_ids: []
@@ -839,7 +934,7 @@ mechanical:
       - 49409378
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     exploit:
       matched: 0
       matched_ids: []
@@ -857,14 +952,14 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     io_uring:
       matched: 1
       matched_ids:
       - 49408649
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     kernel:
       matched: 1
       matched_ids:
@@ -872,7 +967,7 @@ mechanical:
       published: 1
       published_ids:
       - 49406751
-      raw: 1
+      raw: 0
     local-first:
       matched: 0
       matched_ids: []
@@ -889,7 +984,7 @@ mechanical:
       published: 1
       published_ids:
       - 49409178
-      raw: 5
+      raw: 2
     npm:
       matched: 0
       matched_ids: []
@@ -916,7 +1011,7 @@ mechanical:
       - 49408089
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
   runs:
   - at: '2026-08-24T03:08:44+00:00'
     mode: daily
@@ -1047,6 +1142,144 @@ mechanical:
       name: run_log
       status: ok
     - detail: 30 fetch(es), 0 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-08-24T10:44:44+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-24.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-23
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[],"stories":[{"title":"Cloudflare degraded D1, Durable Objects, and R2 in Hong
+        Kong and Singapore for four and a half hours","section":"Outages","category":"Outage","status":"confirmed","primary_url":"https://www.cloudflarestatus.com/incidents/ksy4vxmbkfdk","sources":["https://www.cl
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: select
+      status: ok
+      tokens:
+        in: 54
+        out: 20889
+      tools:
+        Bash: 1
+        Glob: 2
+        Grep: 8
+        Read: 10
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 11
+        mcp__digest__guidance: 2
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 1
+    - detail: "Gate passes with exit code 0.\n\n**Written to `data/digests/2026-08-24.md`:**\n\n- Added\
+        \ one story to `Outages`, replacing the `No major items found.` placeholder: the Cloudflare D1,\
+        \ Durable Objects, and R2 degradation in Hong Kong and Singapore, 03:53 to 08:28 UTC, `confirmed`,\
+        \ sourced to the incident "
+      name: write
+      status: ok
+      tokens:
+        in: 18
+        out: 6778
+      tools:
+        Edit: 8
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Top stories / A paid YouTube ad delivered
+        a fake TradingView installer that roots macOS and intercepts every HTTPS session","detail":"Internal
+        contradiction in the artifact count, carried over unfixed from the previous review round. The
+        summ
+      name: review
+      status: ok
+      tokens:
+        in: 20
+        out: 15637
+      tools:
+        Glob: 1
+        Grep: 3
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 8
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Repairs applied to `data/digests/2026-08-24.md`. Gate exit code 0.
+
+        **Blocking**
+
+        1. macOS stealer artifact count: the summary now names four host artifacts, adding the payload directory `~/Library/Application Support/.com.microsoft.service.systemhelperwatcher.v8mgfk/`, so it agrees with the "four n
+      name: write
+      status: ok
+      tokens:
+        in: 16
+        out: 4049
+      tools:
+        Edit: 4
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Top stories / PostgreSQL 19 turns lock-wait
+        logging on by default","detail":"The entry describes the autovacuum logging change as a pure removal
+        and omits the replacement variable. Release notes section E.1.3.1.4 reads: \"Add server variable
+      name: review
+      status: ok
+      tokens:
+        in: 16
+        out: 15655
+      tools:
+        Glob: 1
+        Grep: 1
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 9
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 8 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 2 cause(s) corrected in 2026-08-23
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-08-24.yaml
+      name: run_log
+      status: ok
+    - detail: 28 fetch(es), 1 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
