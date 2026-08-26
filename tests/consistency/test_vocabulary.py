@@ -58,6 +58,10 @@ def test_the_rendered_prompt_carries_the_real_vocabulary() -> None:
     assert " | ".join(document.CATEGORIES) in text
     assert " | ".join(document.STORY_STATUSES) in text
     assert f"3 to {document.MAX_TOP_STORIES} items" in text
+    # The whole story shape, so a field the gate requires cannot go missing
+    # from the instructions: the write step would then produce a digest the
+    # gate rejects on every run.
+    assert document.story_shape() in text
     assert f"{document.MAX_STORIES} stories" in text
     assert f"{document.MAX_SECTION_STORIES} in any section" in text
     assert "{{" not in text

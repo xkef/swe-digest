@@ -7,6 +7,7 @@ the standard library, so the gate stays runnable with bare python3.
 """
 
 import re
+import tomllib
 import urllib.parse
 from dataclasses import dataclass
 from functools import cached_property
@@ -71,6 +72,16 @@ FOLLOWUP_SECTIONS = {"Watchlist follow-ups"}
 # in these four words.
 STORY_STATUSES = ("confirmed", "developing", "rumor", "discussion")
 
+# The card band. Every story carries a blurb inside it, and the blurb is what a
+# card on the day page, the home page, and the archive row shows. It stays in
+# code beside the statuses because it is the site's row geometry rather than an
+# editorial preference: the two lines a card allots hold about this much, and
+# the archive row's second line ends near the upper bound. The long ``Summary``
+# field held the job before and could not do it, running 70 to 2046 characters
+# across the archive, so every card was a clamp that ended mid-word.
+BLURB_MIN_CHARS = 100
+BLURB_MAX_CHARS = 145
+
 CATEGORIES: tuple[str, ...] = tuple(settings.DIGEST_CATEGORIES)
 SOURCES_CHECKED: tuple[str, ...] = tuple(settings.DIGEST_SOURCES_CHECKED)
 MAX_TOP_STORIES: int = settings.DIGEST_MAX_TOP_STORIES
@@ -97,6 +108,11 @@ STORY_FIELDS: tuple[tuple[str, str], ...] = (
     (
         "Sources",
         "[primary](https://example.com), [discussion](https://news.ycombinator.com/item?id=0)",
+    ),
+    (
+        "Blurb",
+        f"One sentence of {BLURB_MIN_CHARS} to {BLURB_MAX_CHARS} characters"
+        " that carries the story on its own. The site shows this, not the summary.",
     ),
     ("Summary", "One to three factual sentences."),
     (
@@ -204,6 +220,22 @@ class Digest:
     @cached_property
     def titles(self) -> list[str]:
         return [story.title for _, stories in self.sections for story in stories]
+
+    @cached_property
+    def lede(self) -> str:
+        """The one line that characterizes the day, or empty when it has none.
+
+        Optional by design. Most days are a list of unrelated items, and a
+        sentence forced onto one of those says less than the lead story does.
+        The archive row falls back to the lead story's blurb, so a day without
+        a lede still reads as a sentence rather than as a cut-off title.
+        """
+        try:
+            front = tomllib.loads(self.front)
+        except tomllib.TOMLDecodeError:
+            return ""
+        value = (front.get("extra") or {}).get("lede", "")
+        return value.strip() if isinstance(value, str) else ""
 
     @cached_property
     def source_count(self) -> int | None:

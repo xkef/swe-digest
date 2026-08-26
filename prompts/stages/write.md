@@ -41,6 +41,14 @@ Bold each field label as shown. The site styles the bold label as the row
 header. `Category` and `Status` take one of the listed values and nothing else,
 because the gate rejects a one-off and the site groups on the category.
 
+`Blurb` is what a reader sees. A card on the day page and a row in the archive
+carry the blurb and nothing else, so it has to state the story on its own: who
+did what, and the one fact that earns the row. Write one sentence inside the
+band the shape names. It is not the title restated and not the summary's first
+sentence copied down. The gate rejects a blurb outside the band, because rows
+of one length are the whole reason the field exists, and the long `Summary`
+could not do the job.
+
 Copy every source URL, never retype one. An HN item URL comes verbatim from the
 selection's `sources`. If a story needs one the selection does not carry, `Read`
 the id out of `.cache/hn/YYYY-MM-DD.json` rather than writing it from memory. A
@@ -90,6 +98,7 @@ every upload. Use this block shape:
 - **Status:** discussion
 - **Sources:** [watch](https://www.youtube.com/watch?v=ID), [HN discussion](https://news.ycombinator.com/item?id=NN)
 - **Channel:** Channel name (YYYY-MM-DD, 142k views, 4.9 over 1.2k ratings)
+- **Blurb:** One sentence in the band, on what the video shows.
 - **Summary:** One to three factual sentences paraphrasing what the video covers.
 - **Why it matters:** One sentence on engineering relevance.
 ```
@@ -113,7 +122,14 @@ Set front matter at publish time:
 [extra]
 status = "published"
 source_count = 0
+lede = "The one line the archive shows for this day."
 ```
 
 Replace `source_count` with the number of distinct source links used in the
 digest body.
+
+`lede` is optional and written to the same band as a blurb. It belongs to a day
+that has a through-line: one event the day is about, or two that share a cause.
+Most days are a list of unrelated items, and on those the archive falls back to
+the lead story's blurb, which states the day more honestly than a theme
+invented to fill the row. Omit the key on such a day rather than write one.

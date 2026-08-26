@@ -20,6 +20,8 @@ from swe_digest.domain import canonical
 from swe_digest.domain import sources as registry
 from swe_digest.domain.document import (
     ANCHOR_SECTIONS,
+    BLURB_MAX_CHARS,
+    BLURB_MIN_CHARS,
     CATEGORIES,
     FOLLOWUP_SECTIONS,
     HN_ITEM,
@@ -209,7 +211,28 @@ def check_story_shape(
             f"{path}: story '{story.title}' in '{section}' has category"
             f" {category or '(missing)'!r}; use one of {', '.join(CATEGORIES)}"
         )
+    subject = f"story '{story.title}' in '{section}'"
+    errors.extend(check_blurb(path, subject, story.fields.get("blurb", "")))
     return errors
+
+
+def check_blurb(path: Path, subject: str, blurb: str) -> list[str]:
+    """Holds the card text to one band, for a story blurb and for a day lede alike.
+
+    The site shows this text and nothing else on a card and in an archive row,
+    so its length is layout: below the band a row reads as a fragment, above it
+    the second line ends mid-word. A ceiling alone would not do, because a
+    uniform row is the whole point of the field.
+    """
+    blurb = blurb.strip()
+    if not blurb:
+        return [f"{path}: {subject} has no blurb; the site shows it on every card"]
+    if not BLURB_MIN_CHARS <= len(blurb) <= BLURB_MAX_CHARS:
+        return [
+            f"{path}: {subject} has a {len(blurb)}-character blurb;"
+            f" the band is {BLURB_MIN_CHARS} to {BLURB_MAX_CHARS}"
+        ]
+    return []
 
 
 def check_budget(path: Path, digest: Digest) -> list[str]:
@@ -260,6 +283,10 @@ def check_stories(path: Path, text: str) -> list[str]:
     if top_count > top_cap:
         errors.append(f"{path}: Top stories has {top_count} items; the cap is {top_cap}")
     errors.extend(check_budget(path, digest))
+    # The lede is optional: a day with no through-line falls back to the lead
+    # story's blurb. A lede that exists is card text and is held to the band.
+    if digest.lede:
+        errors.extend(check_blurb(path, "the day lede", digest.lede))
     declared = digest.source_count
     actual = len(digest.urls)
     if declared is not None and declared != actual and path.stem >= SOURCE_COUNT_SINCE:

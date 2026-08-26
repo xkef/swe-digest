@@ -28,10 +28,12 @@ from swe_digest.store.runs import runs_dir
 
 SKIP_SECTIONS = {"Watchlist follow-ups", "Sources checked"}
 
-# Category and status are one word each and already appear in the story page's
-# header, so a bullet would spend a full field row restating them. They stay in
-# the day JSON and the front matter, and only the page body drops them.
-HEADER_FIELDS = {"category", "status"}
+# Fields the story page shows outside its body. Category and status are one
+# word each and already appear in the page header, so a bullet would spend a
+# full field row restating them. The blurb is the card text and becomes the
+# page description, and beside the summary it would read as the same paragraph
+# twice. All three stay in the day JSON and the front matter.
+HEADER_FIELDS = {"category", "status", "blurb"}
 
 
 def day_pages_dir() -> Path:
@@ -112,14 +114,15 @@ def run_meta(run: dict | None) -> dict | None:
     return {"hn_degraded": sorted(hn.get("degraded") or [])}
 
 
-def parse_digest(path: Path) -> tuple[str, list[dict]]:
+def parse_digest(path: Path) -> tuple[str, str, list[dict]]:
     text = path.read_text(encoding="utf-8")
     # The content gate enforces that the file name matches the front-matter
     # date, so the stem is the date.
     date = path.stem
+    digest = document.parse(text)
 
     stories: list[dict] = []
-    for section, entries in document.parse(text).sections:
+    for section, entries in digest.sections:
         if section in SKIP_SECTIONS:
             continue
         for story in entries:
@@ -137,11 +140,14 @@ def parse_digest(path: Path) -> tuple[str, list[dict]]:
                     # heading that does not name its own topic.
                     "show_category": bool(category) and section == document.LEAD_SECTION,
                     "status": strip_markdown(story.fields.get("status", "")),
+                    # The card text. The summary stays in the JSON for search
+                    # and for anything reading the day file directly.
+                    "blurb": strip_markdown(story.fields.get("blurb", "")),
                     "summary": strip_markdown(story.fields.get("summary", "")),
                     "lines": list(story.lines),
                 }
             )
-    return date, stories
+    return date, digest.lede, stories
 
 
 def page_body(lines: list[str]) -> list[str]:
@@ -169,8 +175,12 @@ def write_story_page(story: dict) -> None:
         f"path = {toml_str('digests/' + story['date'] + '/' + story['slug'])}",
         'template = "story.html"',
     ]
-    if story["summary"]:
-        fm.append(f"description = {toml_str(story['summary'])}")
+    # The blurb is one sentence written to stand alone, which is what a search
+    # result and a link preview show. The summary is the fallback for a digest
+    # written before the field existed.
+    description = story["blurb"] or story["summary"]
+    if description:
+        fm.append(f"description = {toml_str(description)}")
     fm += [
         "",
         "[extra]",
@@ -194,6 +204,16 @@ def group_sections(stories: list[dict]) -> list[dict]:
             sections.append({"name": story["section"], "stories": []})
         sections[-1]["stories"].append(story)
     return sections
+
+
+def day_lede(lede: str, stories: list[dict]) -> str:
+    """Returns the line the archive row shows for a day.
+
+    The day's own lede when it has one, and the lead story's blurb when it does
+    not. Most days are a list of unrelated items with no through-line, and the
+    lead story is what those days are about.
+    """
+    return lede or (stories[0]["blurb"] if stories else "")
 
 
 def public(story: dict) -> dict:
@@ -228,7 +248,7 @@ def main() -> int:
     days = 0
     total_stories = 0
     for path in sorted(paths.DIGEST.glob(), reverse=True):
-        date, stories = parse_digest(path)
+        date, lede, stories = parse_digest(path)
         # Zola routes a section page by its directory, so the flat
         # data/digests/DATE.md becomes digests/DATE/index.md and the published
         # URL is unchanged.
@@ -243,6 +263,7 @@ def main() -> int:
             {
                 "date": date,
                 "count": len(pub),
+                "lede": day_lede(lede, pub),
                 "updated": updated,
                 "updated_at": updated_at,
                 "sections": group_sections(pub),

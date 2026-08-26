@@ -10,8 +10,10 @@
               href="{{ config.base_url | safe }}{{ story.url | safe }}"
             >
               <span class="story-title">{{ story.title }}</span>
-              {% if story.summary %}
-                <span class="story-summary">{{ story.summary }}</span>
+              {# The blurb, not the summary: the card is two lines, and the
+                 gate holds every story to a blurb that fits them. #}
+              {% if story.blurb %}
+                <span class="story-summary">{{ story.blurb }}</span>
               {% endif %}
               <span class="story-meta">
                 {% if story.status %}

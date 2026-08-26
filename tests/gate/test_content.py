@@ -17,7 +17,14 @@ from swe_digest.domain import sources as registry
 from swe_digest.domain.canonical import canonicalize
 from swe_digest.gate.content import HN_ID_WINDOW_DAYS, SCANNED_SNAPSHOTS, main
 
-from ..conftest import DIGEST_DATE, STORY, digest_text, with_source_count, write_run_log
+from ..conftest import (
+    BLURB,
+    DIGEST_DATE,
+    STORY,
+    digest_text,
+    with_source_count,
+    write_run_log,
+)
 
 
 def filled_judgment(notes: str | None = "Nothing unusual.") -> dict[str, object]:
@@ -81,11 +88,12 @@ def test_top_stories_must_lead(repo_tree: Path) -> None:
     assert main(root=repo_tree) == 1
 
 
-SECOND_STORY = """### Another take entirely
+SECOND_STORY = f"""### Another take entirely
 
 - **Category:** Infrastructure
 - **Status:** confirmed
 - **Sources:** [primary](https://example.com/post)
+- **Blurb:** {BLURB}
 - **Summary:** Restates the Top stories item.
 """
 
@@ -98,12 +106,50 @@ def later_digest(repo_tree: Path, text: str, date: str = "2026-07-06") -> Path:
     return path
 
 
+def test_a_blurb_below_the_band_fails(repo_tree: Path) -> None:
+    # The band is what makes a page of cards one shape. A story that states
+    # itself in five words still owes the row its full line.
+    text = digest_path(repo_tree).read_text().replace(BLURB, "Something happened today.")
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 1
+
+
+def test_a_blurb_above_the_band_fails(repo_tree: Path) -> None:
+    text = digest_path(repo_tree).read_text().replace(BLURB, f"{BLURB} {BLURB}")
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 1
+
+
+def test_a_missing_blurb_fails(repo_tree: Path) -> None:
+    text = digest_path(repo_tree).read_text().replace(f"- **Blurb:** {BLURB}\n", "")
+    digest_path(repo_tree).write_text(text)
+    assert main(root=repo_tree) == 1
+
+
+def with_lede(root: Path, lede: str) -> None:
+    front, body = digest_path(root).read_text().split("+++\n", 1)[1].split("+++\n", 1)
+    digest_path(root).write_text(f'+++\n{front}[extra]\nlede = "{lede}"\n+++\n{body}')
+
+
+def test_a_day_lede_inside_the_band_passes(repo_tree: Path) -> None:
+    with_lede(repo_tree, BLURB)
+    assert main(root=repo_tree) == 0
+
+
+def test_a_day_lede_outside_the_band_fails(repo_tree: Path) -> None:
+    # A lede is optional, and the fixture without one passes everywhere else
+    # here. One that exists is card text and is held to the same band.
+    with_lede(repo_tree, "A quiet day.")
+    assert main(root=repo_tree) == 1
+
+
 def test_duplicate_story_title_fails(repo_tree: Path) -> None:
     text = digest_path(repo_tree).read_text()
     text = text.replace(
         "## Security\n\nNo major items found.\n",
         "## Security\n\n### Example story\n\n- **Category:** Security\n"
-        "- **Status:** confirmed\n- **Sources:** [advisory](https://example.com/other)\n",
+        "- **Status:** confirmed\n- **Sources:** [advisory](https://example.com/other)\n"
+        f"- **Blurb:** {BLURB}\n",
     )
     digest_path(repo_tree).write_text(text)
     assert main(root=repo_tree) == 1
@@ -127,11 +173,12 @@ def test_duplicate_primary_url_grandfathered_before_cutoff(repo_tree: Path) -> N
     assert main(root=repo_tree) == 0
 
 
-VIDEO_STORIES = """### First video
+VIDEO_STORIES = f"""### First video
 
 - **Category:** Video
 - **Status:** discussion
 - **Sources:** [watch](https://www.youtube.com/watch?v=AAA)
+- **Blurb:** {BLURB}
 - **Summary:** One.
 
 ### Second video
@@ -139,6 +186,7 @@ VIDEO_STORIES = """### First video
 - **Category:** Video
 - **Status:** discussion
 - **Sources:** [watch](https://www.youtube.com/watch?v=BBB)
+- **Blurb:** {BLURB}
 - **Summary:** Two.
 """
 
@@ -231,6 +279,7 @@ def stories(count: int, start: int = 0) -> str:
     return "".join(
         f"\n### Filler story {n}\n\n- **Category:** AI\n- **Status:** confirmed\n"
         f"- **Sources:** [primary](https://example.com/filler-{n})\n"
+        f"- **Blurb:** {BLURB}\n"
         f"- **Summary:** One factual sentence.\n"
         f"- **Why it matters:** One sentence about engineering impact.\n"
         for n in range(start, start + count)

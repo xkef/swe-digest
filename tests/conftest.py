@@ -13,11 +13,18 @@ from swe_digest.store import runs
 
 DIGEST_DATE = "2026-07-02"
 
-STORY = """### Example story
+# One card blurb inside the band the gate holds every story to.
+BLURB = (
+    "An example story that states its one fact on its own and sits "
+    "inside the band the gate holds every card to."
+)
+
+STORY = f"""### Example story
 
 - **Category:** AI
 - **Status:** confirmed
 - **Sources:** [primary](https://example.com/post), [discussion](https://news.ycombinator.com/item?id=1)
+- **Blurb:** {BLURB}
 - **Summary:** One factual sentence.
 - **Why it matters:** One sentence about engineering impact.
 """

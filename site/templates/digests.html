@@ -24,13 +24,13 @@
         <li class="digest-row">
           <time datetime="{{ day }}"><a href="{{ day_page.permalink | safe }}"
           >{{ day_page.date | date(format='%a %Y-%m-%d') | lower }}</a></time>
-          {# The lead placeholder keeps the count in its own column on a day
-             whose digest carried no sections. #}
-          {% set lead = day_data.sections | first %}
-          {% if lead and lead.stories %}
-            {% set top = lead.stories | first %}
+          {# The day's lede, which build-stories resolves to the lead story's
+             blurb on a day that carries none. The placeholder keeps the count
+             in its own column on a day whose digest carried no sections. #}
+          {% set lede = day_data.lede | default(value="") %}
+          {% if lede %}
             <a class="digest-lead" href="{{ day_page.permalink | safe }}"
-            >{{ top.title }}</a>
+            >{{ lede }}</a>
           {% else %}
             <span></span>
           {% endif %}
