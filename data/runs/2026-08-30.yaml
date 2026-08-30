@@ -70,124 +70,174 @@ judgment:
     flagging: the Anthropic, Rust, GitHub and Stripe matches in the candidate list are all real. The
     large remainder of the list is genuinely out of scope, mostly US politics, climate, food recalls
     and general-interest science, and does not indicate a gap.
+
+    This pass added 4 blocks and displaced nothing, taking the page from 6 to 10. `Top stories` goes
+    from 3 to its cap of 5 and `Security` from 3 to 5, and `Security` sits outside both the
+    per-section cap and the day budget. Nothing was removed because `Top stories` had two free
+    slots, so the two new leads did not have to beat a published block.
+
+    The lead changed. AB 1856 leads over Tencent Hy4, and the reason is evidence rather than
+    subject. The bill text was read in full from the legislature's own site, and the Hy4 block rests
+    on a vendor announcement whose headline score the published block already declines to carry. The
+    kernel.org post takes second on the same basis, a primary record read in full carrying measured
+    numbers.
+
+    The AB 1856 finding a reader could not otherwise get. Every secondary headline on this story,
+    including the Tom's Hardware one carrying the Hacker News thread at 477 points, says software
+    under the GPL, MIT, BSD and Apache licenses is exempt. The bill names no license. Section
+    1798.500(g)(2) excludes anyone distributing under license terms that permit a recipient to copy,
+    redistribute, and modify, which is a functional test that a reader has to apply to their own
+    license rather than look up in a list. Status is `developing` and not `confirmed` on purpose:
+    the version read is "Amended IN Senate August 21, 2026", the page shows no enrolled or chaptered
+    version, and this run did not read the vote record. The passage claim rests on the Tom's
+    Hardware headline alone, because that article's body truncated before the text on the fetch size
+    bound. The Digital Age Assurance Act it amends begins 2027-01-01, with a 2027-07-01 deadline for
+    devices set up earlier.
+
+    A collection gap this pass closed, and it is worth the weekly review's attention. The published
+    `Security` section was built from the GitHub advisories API, and it missed both Qubes Security
+    Bulletins. QSB-118 was on the Hacker News front page at 116 points and 47 comments when the
+    earlier pass ran, and QSB-117 had been published the day before. Neither is in the advisories
+    API because project-issued bulletins are not GitHub advisories. The security bar names vendor
+    advisories and project release notes as primary sources, so the collector is narrower than the
+    bar it serves, and an advisory-API-only security pass will keep missing signed vendor bulletins.
+    QSB-117 is published despite Qubes saying it cannot assess the impact, because that statement is
+    itself the finding, and because Intel withdrawing the Meteor Lake microcode leaves a class of
+    machines with no fix.
+
+    The weakest published item is the Sony Music and Warner Chappell suit. The earlier pass promoted
+    it out of `Markets and companies` only to meet the floor of three in `Top stories`. That floor
+    is now met twice over without it, and it is a filed complaint carried by two secondary reports.
+    It keeps the fifth slot because two slots were genuinely free and demoting it would be churn
+    rather than an improvement. A later pass with a stronger candidate should displace it rather
+    than any other lead.
+
+    Considered and left out. The Hacker News item titled "Claude Session URL appended to commit
+    messages and PR descriptions by default" reached 84 points and 95 comments, and it is not news.
+    The GitHub issue behind it was opened 2026-06-09, is a feature request, and is closed. An old
+    closed issue resurfacing is not a change to the product, and the framing in the submitted title
+    implies one. "Tether: iMessage, SMS, etc. on Linux" at 495 points was again not fetched, the
+    second consecutive run to record that, and its Hacker News id is from 2026-08-24, so it is an
+    older submission resurfacing. Zod v4.5 schema compilation is carried only by a link to a social
+    post with no primary read. The Rust function overloading call for experimentation is a real
+    primary on blog.rust-lang.org but is dated 2026-08-19 and drew 2 points, so it was not fetched.
+    EVE Online's Python 3 migration, CPython adding RISC-V at tier 3, htmx 4.0 and GLM-5.3 are all
+    archive, confirmed against `data/digests` this run rather than asserted.
+
+    Backtest. The tool scored 56 candidates for 2026-08-29 and seeded zero causes, so there is no
+    seeded default to override and `miss_review` is empty on purpose. The earlier pass today
+    submitted five entries against the same zero-seeded run and all five were false positives
+    resolving to published archive. Repeating that shape would add noise, not signal. The standing
+    problem is unchanged and worth the review: the backtest scores against its own candidate list
+    rather than against the published archive, so archive coverage reads as a miss.
+
+    Degraded sources moved within the day and got worse. The published `Sources checked` line
+    records Reddit at 7 of 28 subreddits from the earlier pass. The 14:32 UTC cache reports
+    top-of-day reaching 2 of 28 and day coverage 9 of 28 against a floor of 14, a fifth consecutive
+    degraded day. Reddit contributed nothing to this pass. The GitHub watchlist again returned a
+    stars collection only, 2 items and neither a story, with no releases and no trending collection
+    present, and the collector reports no degradation, so that gap is visible only as absent
+    collections. Events returned empty for both upcoming and active. Books returned Springer
+    conference proceedings and medical imaging volumes, so that section correctly stays down. Hacker
+    News was not degraded on this pass.
 mechanical:
   digest:
     domains:
-    - danluu.com
     - github.com
-    - go.dev
     - jira.mariadb.org
+    - leginfo.legislature.ca.gov
     - news.ycombinator.com
     - nvd.nist.gov
+    - people.kernel.org
+    - qubes-os.org
     - reuters.com
     - techcrunch.com
     - tencent.com
     - theverge.com
+    - tomshardware.com
     hn_ids:
+    - 49491791
     - 49492067
     - 49492119
     - 49492632
-    - 49494520
+    - 49495372
+    - 49496918
     sections:
-      Engineering posts: 1
-      Languages and runtimes: 1
       Outages: 0
-      Security: 3
+      Security: 5
       Sources checked: 0
-      Top stories: 3
-    source_count: 19
+      Top stories: 5
+    source_count: 24
     titles:
+    - >-
+      California AB 1856 carves open-source distributors out of the Digital Age Assurance Act by license
+      terms rather than by named license
+    - kernel.org reports 20 percent of its serving capacity rendering git commits for AI scrapers
     - Tencent open-sources Hy4 preview at 770B parameters with 49B active
     - vLLM v0.28.0 raises the default batched token budget and moves bitsandbytes out of tree
-    - Sony Music and Warner Chappell sue Anthropic over training data
+    - Sony Music Publishing and Warner Chappell sue Anthropic over training data
     - RestrictedPython guard hooks can be shadowed through positional-only arguments
     - MariaDB Connector/Node.js allows SQL injection in Buffer parameters on five character sets
     - MariaDB Connector/R2DBC 1.4.1 fixes cleartext password disclosure and charset confusion
-    - The Go blog explains generic methods in Go 1.27
-    - Dan Luu argues developers stop noticing the bugs they hit every day
+    - Qubes OS bulletin QSB-118 reports dom0 arbitrary code execution through the qvm-copy-to-vm error
+      path
+    - Qubes OS bulletin QSB-117 covers five Intel microcode advisories it cannot assess
   fetched:
-  - detail: 41231 bytes
+  - detail: 50435 bytes (clipped)
     ok: true
-    url: https://lwn.net/Articles/1091231/
-  - detail: 33540 bytes
-    ok: true
-    url: https://blog.python.org/2026/08/riscv-now-officially-supported/
-  - detail: 353836 bytes
-    ok: true
-    url: https://proton.me/blog/august-27-outage-incident-report
-  - detail: 507354 bytes (clipped)
-    ok: true
-    url: https://github.com/vllm-project/vllm/releases/tag/v0.28.0
-  - detail: 15725 bytes
-    ok: true
-    url: https://bsky.app/profile/grapheneos.org/post/3mua32q4ds22e
+    url: https://www.qubes-os.org/news/2026/08/29/qsb-118/
   - detail: 165430 bytes
     ok: true
     url: https://www.tencent.com/tencent-releases-and-open-sources-tencent-hy4-preview/
-  - detail: 42321 bytes
+  - detail: 2126644 bytes (clipped)
     ok: true
-    url: https://go.dev/blog/generic-methods
-  - detail: 37556 bytes
+    url: https://www.tomshardware.com/software/linux/california-lawmakers-unanimously-pass-linux-exemption-from-age-verification-law-software-distributed-under-the-gpl-mit-bsd-and-apache-licenses-are-exempt
+  - detail: 98807 bytes
     ok: true
-    url: https://go.dev/blog/go1.27
-  - detail: 387943 bytes
+    url: https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202520260AB1856
+  - detail: 290450 bytes
     ok: true
-    url: https://www.theverge.com/ai-artificial-intelligence/986438/sony-music-warner-chappell-anthropic-lawsuit-copyright
-  - detail: 38657 bytes (clipped)
-    ok: true
-    url: https://danluu.com/bug-blind/
-  - detail: 525401 bytes
-    ok: true
-    url: https://www.reuters.com/business/media-telecom/openai-end-partnership-with-spacexs-cursor-2026-08-29/
-  - detail: 202974 bytes (clipped)
-    ok: true
-    url: https://api.github.com/advisories?per_page=25&sort=published
-  - detail: 'failed: fetch failed: https://openai.com/index/openai-and-cursor/: HTTP Error 403: Forbidden'
-    ok: false
-    url: https://openai.com/index/openai-and-cursor/
-  - detail: 342684 bytes
-    ok: true
-    url: https://chipsandcheese.com/p/hot-chips-2026-samsungs-processing
-  - detail: 348627 bytes
-    ok: true
-    url: https://github.com/Lakr233/vphone-cli
-  - detail: 186083 bytes
-    ok: true
-    url: https://github.com/advisories/GHSA-g5xc-5w98-jfvm
-  - detail: 525401 bytes
-    ok: true
-    url: https://www.reuters.com/business/media-telecom/openai-end-partnership-with-spacexs-cursor-2026-08-29/
-  - detail: 41231 bytes
-    ok: true
-    url: https://lwn.net/Articles/1091231/
-  - detail: 191046 bytes
-    ok: true
-    url: https://github.com/advisories/GHSA-c857-9x2m-cvh2
-  - detail: 186083 bytes
-    ok: true
-    url: https://github.com/advisories/GHSA-g5xc-5w98-jfvm
+    url: https://github.com/anthropics/claude-code/issues/66504
   - detail: 507359 bytes (clipped)
     ok: true
     url: https://github.com/vllm-project/vllm/releases/tag/v0.28.0
-  - detail: 42321 bytes
+  - detail: 47687 bytes
     ok: true
-    url: https://go.dev/blog/generic-methods
-  - detail: 165430 bytes
+    url: https://www.qubes-os.org/news/2026/08/28/qsb-117/
+  - detail: 16662 bytes
     ok: true
-    url: https://www.tencent.com/tencent-releases-and-open-sources-tencent-hy4-preview/
-  - detail: 408421 bytes
-    ok: true
-    url: https://github.com/mariadb-corporation/mariadb-connector-nodejs/releases
-  - detail: 191264 bytes
-    ok: true
-    url: https://github.com/advisories/GHSA-5rqc-86vf-g8r2
-  - detail: 387943 bytes
-    ok: true
-    url: https://www.theverge.com/ai-artificial-intelligence/986438/sony-music-warner-chappell-anthropic-lawsuit-copyright
+    url: https://people.kernel.org/monsieuricon/creepy-crawlies
   - detail: 38657 bytes (clipped)
     ok: true
     url: https://danluu.com/bug-blind/
-  generated_at: '2026-08-30T07:22:51+00:00'
+  - detail: 90321 bytes
+    ok: true
+    url: https://leginfo.legislature.ca.gov/faces/billStatusClient.xhtml?bill_id=202520260AB1856
+  - detail: 191041 bytes
+    ok: true
+    url: https://github.com/advisories/GHSA-c857-9x2m-cvh2
+  - detail: 389015 bytes
+    ok: true
+    url: https://www.theverge.com/ai-artificial-intelligence/986438/sony-music-warner-chappell-anthropic-lawsuit-copyright
+  - detail: 16654 bytes
+    ok: true
+    url: https://people.kernel.org/monsieuricon/creepy-crawlies
+  - detail: 507359 bytes (clipped)
+    ok: true
+    url: https://github.com/vllm-project/vllm/releases/tag/v0.28.0
+  - detail: 90489 bytes
+    ok: true
+    url: https://leginfo.legislature.ca.gov/faces/billStatusClient.xhtml?bill_id=202520260AB1856
+  - detail: 389017 bytes
+    ok: true
+    url: https://www.theverge.com/ai-artificial-intelligence/986438/sony-music-warner-chappell-anthropic-lawsuit-copyright
+  - detail: 165430 bytes
+    ok: true
+    url: https://www.tencent.com/tencent-releases-and-open-sources-tencent-hy4-preview/
+  - detail: 50435 bytes (clipped)
+    ok: true
+    url: https://www.qubes-os.org/news/2026/08/29/qsb-118/
+  generated_at: '2026-08-30T14:54:27+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -196,32 +246,35 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-08-30T06:56:15+00:00'
+    fetched_at: '2026-08-30T14:31:51+00:00'
     pooled:
       added:
-        ask_hn: 0
-        comments: 0
-        front_page: 3
-        queries: 5
-        show_hn: 3
-        top_day: 3
-      snapshot_fetched_at: '2026-08-30T05:24:48+00:00'
+        ask_hn: 9
+        comments: 36
+        front_page: 22
+        queries: 37
+        show_hn: 17
+        top_day: 17
+      snapshot_fetched_at: '2026-08-30T11:55:04+00:00'
     queries_backend: algolia
     seen_ids:
     - 49415386
+    - 49419381
     - 49424320
     - 49425252
     - 49426995
     - 49428756
+    - 49430745
     - 49433328
     - 49433554
+    - 49437117
     - 49438865
     - 49447178
     - 49448583
     - 49450248
+    - 49453232
+    - 49463888
     - 49469786
-    - 49477697
-    - 49484520
     - 49485267
     - 49487177
     - 49487243
@@ -232,7 +285,6 @@ mechanical:
     - 49487838
     - 49487976
     - 49488282
-    - 49488310
     - 49488654
     - 49488850
     - 49488865
@@ -244,6 +296,7 @@ mechanical:
     - 49489006
     - 49489057
     - 49489192
+    - 49489274
     - 49489306
     - 49489355
     - 49489376
@@ -265,9 +318,11 @@ mechanical:
     - 49490826
     - 49490832
     - 49490870
+    - 49490881
     - 49490919
     - 49491064
     - 49491113
+    - 49491156
     - 49491175
     - 49491282
     - 49491422
@@ -282,12 +337,14 @@ mechanical:
     - 49491714
     - 49491745
     - 49491755
+    - 49491791
     - 49491794
     - 49491918
     - 49491968
     - 49491979
     - 49492040
     - 49492067
+    - 49492155
     - 49492184
     - 49492193
     - 49492219
@@ -326,9 +383,47 @@ mechanical:
     - 49495392
     - 49495398
     - 49495736
+    - 49495751
     - 49495947
     - 49496067
     - 49496248
+    - 49496390
+    - 49496543
+    - 49496707
+    - 49496782
+    - 49496918
+    - 49497063
+    - 49497200
+    - 49497227
+    - 49497235
+    - 49497265
+    - 49497269
+    - 49497282
+    - 49497357
+    - 49497500
+    - 49497509
+    - 49497538
+    - 49497592
+    - 49497665
+    - 49497712
+    - 49497779
+    - 49497791
+    - 49497810
+    - 49497819
+    - 49497854
+    - 49497870
+    - 49497922
+    - 49497928
+    - 49497992
+    - 49498013
+    - 49498077
+    - 49498095
+    - 49498145
+    - 49498201
+    - 49498323
+    - 49498450
+    - 49498581
+    - 49498927
     source: cache
   query_yield:
     0day:
@@ -338,18 +433,21 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49489982
       - 49491113
       - 49491568
       - 49495009
+      - 49497357
+      - 49498095
       published: 0
       published_ids: []
       raw: 5
     AWS:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49498123
       published: 0
       published_ids: []
       raw: 5
@@ -379,17 +477,19 @@ mechanical:
       published_ids: []
       raw: 0
     Azure:
-      matched: 0
-      matched_ids: []
+      matched: 2
+      matched_ids:
+      - 49497440
+      - 49498717
       published: 0
       published_ids: []
-      raw: 1
+      raw: 3
     CRDT:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     CUDA:
       matched: 0
       matched_ids: []
@@ -403,21 +503,25 @@ mechanical:
       published_ids: []
       raw: 5
     Claude:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49488021
       - 49491282
       - 49491631
       - 49491745
       - 49492432
+      - 49495858
+      - 49498201
       published: 0
       published_ids: []
       raw: 5
     Claude Code:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49487838
       - 49489082
+      - 49489819
+      - 49490770
       - 49491631
       - 49491745
       - 49495858
@@ -438,7 +542,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     Cursor:
       matched: 3
       matched_ids:
@@ -448,7 +552,7 @@ mechanical:
       published: 1
       published_ids:
       - 49487134
-      raw: 3
+      raw: 2
     GCP:
       matched: 0
       matched_ids: []
@@ -456,23 +560,25 @@ mechanical:
       published_ids: []
       raw: 5
     GPU:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49492103
       - 49492798
       - 49495819
+      - 49497235
       published: 0
       published_ids: []
       raw: 5
     Gemini:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49489767
       - 49490087
       - 49490315
+      - 49498450
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     Ghostty:
       matched: 0
       matched_ids: []
@@ -480,19 +586,23 @@ mechanical:
       published_ids: []
       raw: 0
     GitHub:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49487904
       - 49490245
       - 49492040
+      - 49492393
       - 49493659
       - 49494256
+      - 49494693
+      - 49498867
       published: 0
       published_ids: []
       raw: 5
     Go:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49497928
       published: 0
       published_ids: []
       raw: 5
@@ -515,8 +625,10 @@ mechanical:
       published_ids: []
       raw: 5
     Java:
-      matched: 0
-      matched_ids: []
+      matched: 2
+      matched_ids:
+      - 49496554
+      - 49497240
       published: 0
       published_ids: []
       raw: 5
@@ -549,7 +661,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     Kubernetes:
       matched: 1
       matched_ids:
@@ -558,44 +670,52 @@ mechanical:
       published_ids: []
       raw: 1
     LLM:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49487500
       - 49489618
       - 49490461
       - 49491541
+      - 49497883
       published: 0
       published_ids: []
       raw: 5
     LWN:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49489982
+      - 49496476
       published: 0
       published_ids: []
       raw: 5
     Linux:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49490824
       - 49491603
       - 49495372
       - 49496181
-      published: 0
-      published_ids: []
+      - 49498717
+      published: 2
+      published_ids:
+      - 49491603
+      - 49495372
       raw: 5
     Llama:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49498677
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     MCP:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49488654
+      - 49491804
       - 49492712
       - 49494219
+      - 49494676
       - 49495457
       published: 0
       published_ids: []
@@ -613,19 +733,21 @@ mechanical:
       - 49492298
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     Nvidia:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49492798
+      - 49497235
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     OpenAI:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49487134
       - 49492798
+      - 49493237
       - 49493319
       - 49494257
       - 49495761
@@ -670,11 +792,13 @@ mechanical:
       published_ids: []
       raw: 5
     Python:
-      matched: 3
+      matched: 5
       matched_ids:
       - 49490213
       - 49490758
       - 49491990
+      - 49496912
+      - 49497928
       published: 0
       published_ids: []
       raw: 5
@@ -693,12 +817,14 @@ mechanical:
       published_ids: []
       raw: 5
     Rust:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49488930
       - 49489697
       - 49491404
       - 49492368
+      - 49497298
+      - 49498434
       published: 0
       published_ids: []
       raw: 5
@@ -707,7 +833,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     SQLite:
       matched: 1
       matched_ids:
@@ -726,7 +852,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 4
     SwiftUI:
       matched: 0
       matched_ids: []
@@ -740,7 +866,7 @@ mechanical:
       - 49495930
       published: 0
       published_ids: []
-      raw: 3
+      raw: 1
     Vim:
       matched: 0
       matched_ids: []
@@ -778,22 +904,26 @@ mechanical:
       published_ids: []
       raw: 1
     agentic:
-      matched: 2
+      matched: 4
       matched_ids:
       - 49489697
       - 49489910
+      - 49497440
+      - 49498634
       published: 0
       published_ids: []
       raw: 5
     arXiv:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49487342
       - 49489813
       - 49490461
       - 49492497
       - 49495870
-      - 49496289
+      - 49496782
+      - 49498484
+      - 49498677
       published: 0
       published_ids: []
       raw: 5
@@ -803,7 +933,7 @@ mechanical:
       - 49490806
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     chezmoi:
       matched: 0
       matched_ids: []
@@ -811,9 +941,10 @@ mechanical:
       published_ids: []
       raw: 1
     coding agent:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49488865
+      - 49496852
       published: 0
       published_ids: []
       raw: 5
@@ -823,7 +954,7 @@ mechanical:
       - 49488177
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     drug discovery:
       matched: 0
       matched_ids: []
@@ -843,16 +974,18 @@ mechanical:
       published_ids: []
       raw: 5
     iOS:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49498013
       published: 0
       published_ids: []
       raw: 5
     incident:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49492554
       - 49493920
+      - 49496545
       published: 0
       published_ids: []
       raw: 5
@@ -861,16 +994,20 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 0
     kernel:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49488311
       - 49489746
       - 49491791
-      published: 0
-      published_ids: []
-      raw: 3
+      - 49496842
+      published: 3
+      published_ids:
+      - 49488311
+      - 49491791
+      - 49496842
+      raw: 2
     local-first:
       matched: 3
       matched_ids:
@@ -879,13 +1016,14 @@ mechanical:
       - 49495797
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     macOS:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49491456
       - 49492914
       - 49495797
+      - 49497232
       published: 0
       published_ids: []
       raw: 5
@@ -909,13 +1047,15 @@ mechanical:
       published_ids: []
       raw: 0
     terminal:
-      matched: 2
+      matched: 4
       matched_ids:
       - 49489525
       - 49492384
+      - 49496357
+      - 49497472
       published: 0
       published_ids: []
-      raw: 3
+      raw: 4
   runs:
   - at: '2026-08-30T07:23:02+00:00'
     mode: daily
@@ -1058,6 +1198,142 @@ mechanical:
       name: run_log
       status: ok
     - detail: 27 fetch(es), 1 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-08-30T14:54:35+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-30.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-29
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"California AB 1856 carves open-source distributors out of the Digital
+        Age Assurance Act by license terms rather than by named license","section":"Top stories","category":"Languages","status":"developing","primary_url":"https://leginfo.legislature.ca.gov/faces/billTextClient
+      name: select
+      status: ok
+      tokens:
+        in: 30
+        out: 24412
+      tools:
+        Glob: 6
+        Grep: 5
+        Read: 10
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 9
+        mcp__digest__guidance: 1
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 2
+    - detail: |-
+        Gate passes (exit 0; warnings are memory staleness from other stores, not the digest).
+
+        **Written to `data/digests/2026-08-30.md`** — second pass, 4 blocks added, nothing displaced, page 6 → 10.
+
+        **Top stories** (3 → 5, at cap), reordered so the two new leads sit first:
+        1. California AB 1856 — `deve
+      name: write
+      status: ok
+      tokens:
+        in: 16
+        out: 10617
+      tools:
+        Edit: 5
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: "{\"findings\":[{\"severity\":\"blocking\",\"where\":\"Top stories: Sony Music and Warner\
+        \ Chappell sue Anthropic over training data\",\"detail\":\"Wrong plaintiff named. The Verge article\
+        \ carries an update dated 2026-08-30: \\\"Clarification has been added that Sony Music Publishing\
+        \ specifically filed suit, not to "
+      name: review
+      status: ok
+      tokens:
+        in: 12
+        out: 16893
+      tools:
+        Glob: 1
+        Grep: 2
+        Read: 2
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 3
+        mcp__digest__run_gate: 1
+    - detail: "Repairs are in and `run_gate` returns 0. The page is now Top stories (5), Security (5),\
+        \ Outages, Sources checked: 10 blocks, `source_count` 24.\n\n**Blocking findings, all fixed**\n\
+        \n- **Sony plaintiff.** Title, blurb, and summary now read Sony Music Publishing, per The Verge's\
+        \ 2026-08-30 clarification "
+      name: write
+      status: ok
+      tokens:
+        in: 32
+        out: 16771
+      tools:
+        Edit: 11
+        Read: 3
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"findings":[{"severity":"blocking","where":"Top stories / vLLM v0.28.0 raises the default batched
+        token budget and moves bitsandbytes out of tree","detail":"The claim \"Four features are removed
+        or relocated in this release\" is contradicted by the cited primary, and it is repeated in Why
+        it matter
+      name: review
+      status: ok
+      tokens:
+        in: 16
+        out: 20685
+      tools:
+        Glob: 1
+        Grep: 2
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 6
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 8 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: skipped (no seeded cause was reported wrong)
+      name: miss_review
+      status: skip
+    - detail: data/runs/2026-08-30.yaml
+      name: run_log
+      status: ok
+    - detail: 18 fetch(es), 0 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
