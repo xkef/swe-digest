@@ -186,27 +186,6 @@
     The final PIR, due within 14 days of 2026-07-23; what changes Microsoft commits to for the safety
     checks and the automated maintenance request conversion; whether the same conversion bug is implicated
     in any later incident.
-- category: Security
-  id: f-0009
-  last_seen: '2026-07-25'
-  notes: >-
-    Researcher BobDaHacker disclosed 2026-07-24 an insecure direct object reference in the Click to Pray
-    API: an unauthenticated `GET /user/users/{id}` returned a full user record for any numeric id, so
-    incrementing ids enumerated about 719,517 accounts and returned email, first and last name, country,
-    date of birth, account role, and deletion state in plaintext. Researcher reports mailing nine addresses
-    at the operator and developer on 2026-01-03 with no reply over six months, and states the endpoint
-    was narrowed to the requesting user's own email only after Dark Reading published. Confirmed independently
-    by Dark Reading and The Register. Covered 2026-07-25 Security (confirmed).
-  opened: '2026-07-25'
-  sources:
-  - '[researcher writeup](https://bobdahacker.com/blog/click-to-pray)'
-  - >-
-    [Dark Reading](https://www.darkreading.com/vulnerabilities-threats/vatican-official-prayer-app-leaks-700k-pii)
-  - >-
-    [The Register](https://www.theregister.com/security/2026/07/24/popes-official-prayer-app-commits-cardinal-sin-leaks-700k-users-info/5278603)
-  subject: Click to Pray IDOR exposed about 719,000 accounts for six months
-  watch_for: A statement from the Pope's Worldwide Prayer Network or the developer La Machi; confirmation
-    of how long the endpoint was open and whether the data was harvested; any regulator action under GDPR.
 - category: Dev tools
   id: f-0010
   last_seen: '2026-07-25'
@@ -229,46 +208,6 @@
     A Google decision on the feature request; any AOSP change binding adbd to a single interface; whether
     an interface allowlist preserves loopback; whether Shizuku and libadb-android publish a mitigation
     path.
-- category: Infrastructure
-  id: f-0011
-  last_seen: '2026-07-25'
-  notes: >-
-    Write-up published 2026-07-24 reports Hetzner running an experimental inference service on its experiments
-    platform: OpenAI-compatible API serving Qwen 3.6 35B free, no SLA, no production guarantee. Evidence
-    is dashboard screenshots, a working code sample, and a measured 153 ms median time to first token
-    (tested 2026-07-23). Author states they have no insider information. No Hetzner announcement, and
-    this run could not resolve a public Hetzner page for the service (hetzner.com/experiments/ returned
-    404). Covered 2026-07-25 Infrastructure (developing).
-  opened: '2026-07-25'
-  sources:
-  - '[write-up](https://sliplane.io/blog/hetzner-inference)'
-  - '[HN 49033087](https://news.ycombinator.com/item?id=49033087)'
-  subject: Hetzner serves free LLM inference from an unannounced experiments page
-  watch_for: >-
-    A Hetzner announcement or public product page; pricing when it leaves the experiment; whether the
-    endpoint persists; which models are served.
-- category: AI
-  id: f-0012
-  last_seen: '2026-07-25'
-  notes: >-
-    AMD's Instella-MoE-16B-A3B repositories were created on Hugging Face 2026-07-23 (Base, Pretrain, Midtrain,
-    SFT, DPO, Think). Card describes 16B total / 2.8B active MoE, 64 routed + 2 shared experts with 6
-    active per token, 27 decoder layers, gated multi-head latent attention, 128,896-token vocabulary,
-    trained end to end on AMD Instinct MI300X and MI325X with AMD's Primus framework; training frameworks,
-    data mixtures, intermediate checkpoints, and inference code stated as released. License is ResearchRAIL
-    (academic and research use only), so not open-weight in the commercial sense. Card cites arXiv 2511.10628
-    (November 2025), so the checkpoints post-date the paper. Relevance is as public evidence of a non-CUDA
-    training stack end to end. Covered 2026-07-25 AI (developing).
-  opened: '2026-07-25'
-  sources:
-  - >-
-    [Instella-MoE-16B-A3B-Think on Hugging Face](https://huggingface.co/amd/Instella-MoE-16B-A3B-Think)
-  - '[r/LocalLLaMA](https://www.reddit.com/r/LocalLLaMA/comments/1v5sb5b/amd_instellamoe16ba3b/)'
-  subject: AMD publishes Instella-MoE-16B-A3B under a research-only license
-  watch_for: >-
-    A permissive license replacing ResearchRAIL; a technical report tied to the checkpoint release rather
-    than the November 2025 paper; independent reproduction of the recipe on MI300X; whether AMD ships
-    a commercially usable successor.
 - category: Security
   id: f-0013
   last_seen: '2026-07-25'
@@ -295,33 +234,6 @@
     CVE assignments for both flaw classes; distribution and managed-service (ElastiCache, MemoryStore,
     Valkey) backports; whether the remaining reported findings produce further releases; any CISA KEV
     addition or in-the-wild exploitation.
-- category: Security
-  id: f-0014
-  last_seen: '2026-07-25'
-  notes: >-
-    Accomplish AI published 2026-07-23 a six-step escape from the Linux VM that Claude Cowork uses to
-    sandbox agents on macOS. Chain: agent opens an unprivileged user namespace for in-namespace capabilities,
-    uses `CAP_NET_ADMIN` to configure a traffic-control action referencing `act_pedit`, exploits CVE-2026-46331
-    (pedit-COW, published June 2026) to poison the page cache of a root-owned helper binary, gains guest
-    root when the `coworkd` daemon re-executes it, reaches `/mnt/.virtiofs-root` (the host filesystem
-    mounted read-write into the VM), and reads and writes host files outside the connected folder, including
-    SSH keys and cloud credentials. Anthropic closed the report as informative because the CVE was already
-    public; the researchers state Cowork now defaults to cloud execution where the local path does not
-    appear to apply. Proposed mitigations are design-level (disable unprivileged userns, harden seccomp,
-    block autoloading unused modules, narrow the host share). Covered 2026-07-25 Top stories (Agentic
-    coding, confirmed). Reuses CVE-2026-46331 from the 2026-07-23 RefluXFS/pedit-COW entry. See [[entities]]
-    Claude Code.
-  opened: '2026-07-25'
-  sources:
-  - >-
-    [Accomplish AI writeup](https://www.accomplish.ai/blog/sharedroot-escaping-claude-cowork-sandbox/)
-  - '[CVE-2026-46331 (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2026-46331)'
-  - '[r/netsec](https://www.reddit.com/r/netsec/comments/1v52lix/escaping_claude_coworks_local_vm_sandbox_via/)'
-  subject: SharedRoot escapes the Claude Cowork local VM sandbox
-  watch_for: >-
-    A Cowork change that removes the read-write host mount or blocks unprivileged user namespaces in the
-    guest; whether local execution stays available; the same chain against other VM-based agent sandboxes;
-    any CVE or advisory for the Cowork side.
 - category: Dev tools
   id: f-0015
   last_seen: '2026-07-25'
@@ -349,59 +261,6 @@
     Further amendments or added ballot options; the close of the discussion period and the vote result;
     whether other distributions or forges follow the adopted position; how a disclosure requirement would
     be enforced in practice.
-- category: Outage
-  id: f-0016
-  last_seen: '2026-07-25'
-  notes: >-
-    2026-07-25 correction from the AWS Health Dashboard event JSON: the me-south-1 event log opens 2026-03-02
-    05:56 UTC with a power issue in mes1-az2 and the 2026-03-03 update attributes both me-south-1 and
-    me-central-1 (UAE) damage to drone strikes, with a 2026-04-30 update stating the region is unavailable
-    and billing suspended. So the region has been down since March 2026, not since 2026-07-21, and the
-    July HN wave was renewed attention plus the IRGC claim rather than the start of the outage. Treat
-    the "started ~2026-07-21" framing below as superseded. AWS Middle East (Bahrain) region me-south-1
-    (opened July 2019, AWS's first Middle East region) is listed unavailable on the AWS Health Dashboard.
-    AWS newsroom (aboutamazon.com) states the region was disrupted by the ongoing regional conflict, it
-    is working with local authorities, many customers have relocated, and advises migrating workloads
-    to alternate regions, recovering from remote backups in other regions, and enacting DR plans. Reporting
-    on the Health Dashboard states in-region billing is suspended and restoration is expected to take
-    months. Iran's IRGC claimed via state media a 2026-07-21 cruise-missile strike destroyed the infrastructure
-    in response to alleged US strikes on a nuclear site; the destruction claim is not independently verified
-    (Tom's Hardware, The Register, Betanews). Started ~2026-07-21, missed by the 2026-07-21..07-23 digests;
-    surfaced HN 2026-07-24 (49033240). Covered 2026-07-24 Top stories (lead, Outage, confirmed outage
-    / attributed cause). See [[entities]] AWS.
-  opened: '2026-07-24'
-  sources:
-  - '[AWS newsroom](https://www.aboutamazon.com/news/aws-bahrain-region-middle-east-conflict)'
-  - '[AWS Health Dashboard](https://health.aws.amazon.com/health/status)'
-  - >-
-    [The Register](https://www.theregister.com/off-prem/2026/07/21/iran-says-its-struck-offline-aws-facility-in-bahrain-again/5275762)
-  - '[HN 49033240](https://news.ycombinator.com/item?id=49033240)'
-  subject: AWS Bahrain me-south-1 region unavailable after conflict damage
-  watch_for: >-
-    A restoration timeline and confirmation of any data-loss scope; whether AWS publishes a post-incident
-    summary; independent verification of the cause; whether other providers' Middle East regions are affected;
-    whether billing-suspension and migration guidance change.
-- category: Markets
-  id: f-0017
-  last_seen: '2026-07-24'
-  notes: >-
-    WSJ reported 2026-07-24 Stripe is in talks to acquire OpenRouter (model-access marketplace, 5M+ developers,
-    400+ models from OpenAI/Anthropic/open-weight providers via one API with comparison/routing) at a
-    valuation near $10B, up from $1.3B in a May 2026 round. Stripe already handles OpenRouter payments/invoicing/tax/fraud;
-    an acquisition would extend it from processing AI revenue into model-access infrastructure. Agreement
-    could come soon but may fall apart or draw another buyer. Covered 2026-07-24 Markets and companies
-    (developing).
-  opened: '2026-07-24'
-  sources:
-  - '[WSJ](https://www.wsj.com/tech/ai/stripe-in-talks-to-buy-buzzy-ai-model-marketplace-openrouter-decc6a74)'
-  - >-
-    [The Next Web](https://thenextweb.com/news/stripe-openrouter-10-billion-ai-model-marketplace-acquisition)
-  - '[HN 49027985](https://news.ycombinator.com/item?id=49027985)'
-  subject: Stripe in talks to acquire OpenRouter for about $10B
-  watch_for: >-
-    A confirmed agreement or the talks collapsing; whether another buyer emerges; any pricing, routing,
-    or data-handling change to OpenRouter; antitrust posture given Stripe already processes OpenRouter
-    payments.
 - category: AI
   id: f-0018
   last_seen: '2026-07-24'
@@ -462,26 +321,6 @@
     A Bitchat entry appearing in github/gov-takedowns; any legal challenge; whether the project confirms
     the Radicle identifier from a source it controls; whether other governments issue similar orders over
     P2P/mesh messengers.
-- category: AI
-  id: f-0020
-  last_seen: '2026-07-24'
-  notes: >-
-    Black Forest Labs announced FLUX 3 on 2026-07-23 as an early-access release, extending the FLUX visual-generation
-    line from images to a unified image/video/audio model on multimodal flow matching ("Self-Flow"). Generates
-    video up to 20 seconds with native audio; text-to-video, image-to-video, video-to-video, image editing,
-    plus an action-prediction variant for robotics (FLUX-mimic). Weights not released; post plans API
-    and private open-weight access (FLUX 3 Dev) over "the next few weeks and months", no date. Vendor
-    preference benchmarks only (video preferred 52-93% vs competitors), stated preliminary. HN 49031796
-    (337 pts) read the announcement as marketing-heavy, noted the demo shows jumpcuts not continuous 20s
-    video, and flagged the open-weight plans at the bottom with no date. Covered 2026-07-24 AI (developing).
-    See [[entities]] Black Forest Labs.
-  opened: '2026-07-24'
-  sources:
-  - '[Black Forest Labs blog](https://bfl.ai/blog/flux-3)'
-  - '[HN 49031796](https://news.ycombinator.com/item?id=49031796)'
-  subject: Black Forest Labs releases FLUX 3 in early access
-  watch_for: The FLUX 3 Dev weight release and its license; API pricing; independent quality comparisons
-    against other image/video models; whether the promised open-weight access ships or stays API-only.
 - category: Languages
   id: f-0021
   last_seen: '2026-07-24'
@@ -499,65 +338,6 @@
   watch_for: >-
     The confirmed target JDK release; whether the incubator module graduates or changes package/shape;
     adoption relative to Jackson/Gson.
-- category: Markets
-  id: f-0023
-  last_seen: '2026-07-25'
-  notes: >-
-    White House OSTP director Michael Kratsios publicly accused Moonshot AI on 2026-07-22 of covertly
-    distilling Anthropic's Fable to build Kimi K3, stating his office has information that Moonshot ran
-    the copying through a purpose-built internal system and rotated access routes to stay hidden, and
-    separately alleged access to export-restricted Nvidia chips. The accusation is of covert industrial-scale
-    copying, not ordinary distillation. Anthropic said in February it traced 3.4M Claude exchanges to
-    the startup. No penalties announced, Moonshot silent. Covered 2026-07-23 Top stories (AI, developing).
-    2026-07-23: the newly formed Little Tech Association (~200 startups incl. Y Combinator and Proton)
-    sent letters to Trump and Commerce Secretary Lutnick urging no restriction on Chinese open-weight
-    models, arguing startups depend on them as a low-cost alternative to OpenAI/Anthropic (Politico, HN
-    49023016). Covered 2026-07-23 AI (developing). 2026-07-24: a coalition of 20+ companies incl. Nvidia,
-    Meta, Microsoft, and Palantir published a joint letter urging no premature restrictions on open-weight
-    models, with OpenAI and Anthropic reported absent (CNBC, HN 49035303). Covered 2026-07-24 Top stories
-    (developing). 2026-07-25: the signatory list hosted at microsoft.com/en-us/corporate-responsibility/topics/open-weight/
-    now names OpenAI and has grown from 25 to 35 companies (added incl. Cisco, Cohere, CrowdStrike, GitHub,
-    Palo Alto Networks, ServiceNow, Box, Black Forest Labs, Nous Research, Prime Intellect, Fireworks
-    AI, Arcee AI); Anthropic, Google, and Amazon still absent, no OpenAI statement. The letter calls distillation
-    a widely used technique for model improvement, evaluation, and validation, to be handled by targeted
-    legal frameworks. Covered 2026-07-25 Watchlist follow-ups (confirmed). Re-read the signatory list
-    rather than launch-day coverage. See [[entities]] Moonshot AI, Anthropic, Alibaba Qwen.
-  opened: '2026-07-23'
-  sources:
-  - '[France24](https://www.france24.com/en/live-news/20260722-white-house-accuses-china-s-moonshot-of-stealing-anthropic-ai)'
-  - >-
-    [The Hill](https://thehill.com/policy/technology/5984510-white-house-moonshot-ai-anthropic-nvidia/)
-  - '[HN 49007610](https://news.ycombinator.com/item?id=49007610)'
-  subject: White House accuses Moonshot of distilling Fable for Kimi K3
-  watch_for: >-
-    Any Treasury sanction or export action; a Moonshot response; whether the full Kimi K3 weight release
-    (due 2026-07-27) proceeds; independent evidence beyond the accusation; whether other Chinese labs
-    get similar accusations; any executive order or Commerce rule restricting US access to Chinese open-weight
-    models.
-- category: Security
-  id: f-0024
-  last_seen: '2026-07-23'
-  notes: >-
-    Pillar Security published 2026-07-20 a sandbox-escape technique against agent CLIs (Cursor, Codex,
-    Gemini CLI, Antigravity). Deny-default sandbox profiles block file writes outside the workspace but
-    still allow process execution and reading the Docker Desktop socket, so an agent (or injected instruction)
-    can curl an Alpine rootfs into the workspace, docker import it to bypass registry restrictions, run
-    a --privileged container, mount the host filesystem over VirtioFS, and write to files like .zshrc,
-    reaching SSH keys and credentials. Cursor fixed it (GHSA-v4xv-rqh3-w9mc, restricted Docker-socket
-    and Launch Services access); Codex marked it informational/configuration-dependent, Gemini CLI declined
-    citing documentation. Covered 2026-07-23 Top stories (Agentic coding, confirmed). See [[entities]]
-    Cursor and GitHub Copilot.
-  opened: '2026-07-23'
-  sources:
-  - >-
-    [Pillar Security writeup](https://www.pillar.security/blog/one-docker-socket-to-rule-them-all-escaping-codex-cursor-and-gemini-clis-sandboxes)
-  - '[Cursor advisory GHSA-v4xv-rqh3-w9mc](https://github.com/advisories/GHSA-v4xv-rqh3-w9mc)'
-  - '[HN 49003857](https://news.ycombinator.com/item?id=49003857)'
-  subject: Coding-agent CLI sandboxes escaped via the Docker socket
-  watch_for: >-
-    Codex and Gemini CLI mitigations (both declined at disclosure); whether other agents that can read
-    the Docker socket are affected; any CVE assignment beyond the Cursor GHSA; real-world exploitation
-    via prompt injection.
 - category: Markets
   id: f-0028
   last_seen: '2026-07-22'
@@ -631,25 +411,6 @@
     the closed dataset code-execution paths hold; Hugging Face's completed assessment of customer-data
     exposure; whether the "trusted access" reduced-guardrail model tier for defenders becomes a broader
     program.
-- category: Dev tools
-  id: f-0031
-  last_seen: '2026-07-21'
-  notes: >-
-    Announced 2026-07-20. Several long-time Jellyfin leaders, including a co-founder, are stepping back
-    from the free self-hosted media server after ~7.5 years. Outgoing project leader cited burnout and
-    inability to meet the role's demands; another core member cited life changes. Post frames the handoff
-    as amicable with open communication and little to no risk of a hostile fork; remaining team assumes
-    leadership, no stated change to governance or direction. Continues the open-source maintainer-capacity
-    theme (Godot contribution policy, curl report-handling pause, FFmpeg AI bug reports). Covered 2026-07-21
-    Developer tools (confirmed).
-  opened: '2026-07-21'
-  sources:
-  - '[Jellyfin forum announcement](https://forum.jellyfin.org/t-project-leadership-changes)'
-  - '[HN 48986091](https://news.ycombinator.com/item?id=48986091)'
-  subject: Jellyfin announces an amicable leadership handoff
-  watch_for: >-
-    Whether the handoff holds without a hostile fork; release-cadence continuity under the remaining team;
-    any later governance or funding change.
 - category: Languages
   id: f-0032
   last_seen: '2026-07-21'
@@ -718,39 +479,6 @@
     the registry without data loss; scope of the citizen-data and source-code sale; whether the notified-but-unpatched
     vulnerability is identified; any indictment of the ByteToBreach actor.
 - category: AI
-  id: f-0037
-  last_seen: '2026-07-25'
-  notes: >-
-    Moonshot published the Kimi K3 announcement 2026-07-16, adding detail missing at go-live: 2.8T-param
-    MoE (Stable LatentMoE, 16 of 896 experts active/token), Kimi Delta Attention, 1M context, native multimodal.
-    API model id `kimi-k3`, $0.30 cache-hit / $3.00 cache-miss per 1M input, $15.00 per 1M output. Full
-    weights promised by 2026-07-27, technical report to follow. Vendor figures rank overall intelligence
-    behind Fable 5 and GPT-5.6 Sol; HN notes the pricing is high for a Chinese open-weight model. Simon
-    Willison calls it the first "open 3T-class model". Covered 2026-07-17 Top stories. Supersedes the
-    2026-07-16 "Kimi K3 live without a model card" note. 2026-07-18: K3 reached #1 in the Frontend Code
-    Arena. 2026-07-19: Moonshot (@kimi_moonshot) announced it is suspending new subscriptions on K3 demand,
-    existing subscribers keep access; HN reports K3 strong for code/PR review but slow under load. Covered
-    2026-07-20 Top stories (confirmed). 2026-07-23: UK AI Security Institute and US CAISI published a
-    joint preliminary cyber-capability assessment via NIST (nist.gov, HN 49044492): ExploitBench 32% over
-    41 post-2023 V8 CVEs (GLM 5.2 24%, below recent frontier models), arbitrary code execution on 0 of
-    41 tasks against a leading-model average of 20 of 41; The Last Ones 32-step simulated network intrusion
-    reached step 17 on average against 28.5 for US frontier models tested with safeguards disabled, full
-    completion 1 of 10 attempts; K3 safeguards did not prevent exploit-development attempts. Stated preliminary
-    over a small benchmark set; the network scenario has no active defenders and an intentional attack
-    path. A government measurement bounding the capability behind the Redis zero-day claims. Covered 2026-07-25
-    Top stories (Security, confirmed).
-  opened: '2026-07-16'
-  sources:
-  - '[Moonshot blog](https://www.kimi.com/blog/kimi-k3)'
-  - '[Kimi K3 API pricing](https://platform.kimi.ai/docs/pricing/chat-k3)'
-  - '[HN 48935342](https://news.ycombinator.com/item?id=48935342)'
-  subject: Kimi K3 announcement adds specs, pricing, and a weight-release date
-  watch_for: >-
-    The 2026-07-27 weight release and license (K2 was modified-MIT); the technical report; independent
-    benchmark reproduction; whether the $3.00/$15.00 per 1M pricing holds as third parties serve the open
-    weights; whether third-party inference providers absorb the demand behind the subscription pause;
-    the full UK AISI/CAISI report and methodology; whether the safeguards finding draws a Moonshot response.
-- category: AI
   id: f-0057
   last_seen: '2026-07-16'
   notes: >-
@@ -773,27 +501,6 @@
     Independent benchmark reproduction of the vendor and blinded-eval figures (Terminal-Bench 2.1 63.8%,
     AIME 2026 97.1%, HLE-with-tools 46.0%); the full Inkling-Small release past preview; real-world coding
     and long-context evaluation; adoption vs GLM 5.2 and other open weights.
-- category: Markets
-  id: f-0058
-  last_seen: '2026-07-20'
-  notes: >-
-    Reuters and others reported 2026-07-15 that Stripe and PE firm Advent International made a joint offer
-    for PayPal at ~$60.50/share (>$53B, ~28% premium, ~$50B committed bank financing), equal Stripe/Advent
-    ownership with no stated breakup. PayPal (advised by Goldman Sachs and Evercore on alternatives) had
-    not responded; companies had not confirmed. HN flags antitrust concentration and timing. Covered 2026-07-16
-    Top stories (developing). 2026-07-20: PayPal's board reported to meet around this date to weigh the
-    offer; no formal response, confirmation, or rejection reported. Covered 2026-07-20 Watchlist follow-ups
-    (developing).
-  opened: '2026-07-16'
-  sources:
-  - '[TechCrunch](https://techcrunch.com/2026/07/15/stripe-and-advent-reportedly-offered-to-buy-paypal-for-around-53-4b/)'
-  - '[CNBC](https://www.cnbc.com/2026/07/15/stripe-advent-offer-to-buy-paypal-for-more-than-53-billion-reuters.html)'
-  - '[HN 48915953](https://news.ycombinator.com/item?id=48915953)'
-  subject: Stripe and Advent make a reported $53.4B joint offer for PayPal
-  watch_for: >-
-    The PayPal board response (reported to meet ~2026-07-20); any formal confirmation or rejection; antitrust
-    signals given Stripe + PayPal + Venmo + Braintree concentration; payments-infrastructure and pricing
-    impact if it closes.
 - category: Security
   id: f-0059
   last_seen: '2026-07-21'
@@ -817,25 +524,6 @@
   subject: wp2shell WordPress Core pre-auth RCE (CVE-2026-63030 + CVE-2026-60137)
   watch_for: Mass scanning and ransomware follow-on against the batch endpoint; confirmation forced auto-updates
     reach installs without auto-update enabled; whether the withheld exploit chain is fully published.
-- category: AI
-  id: f-0063
-  last_seen: '2026-07-21'
-  notes: >-
-    Alibaba's Qwen team announced Qwen-Image-3.0 2026-07-21, third generation of the Qwen-Image text-to-image
-    foundation model, emphasizing photorealism, text rendering, and precise image editing. Primary qwen.ai
-    blog is JS-heavy and did not render for automated fetch; the QwenLM/Qwen-Image GitHub README still
-    tops out at Qwen-Image-2.0/2512 (no 3.0 model card confirmed at publish time), so weight/benchmark
-    specifics are unverified. Prior generations shipped Apache-2.0 open weights. HN 48989701 (448 pts).
-    Reinforces the Chinese open-weights theme leading 2026-07-21. Covered 2026-07-21 AI (discussion).
-  opened: '2026-07-21'
-  sources:
-  - '[Qwen blog](https://qwen.ai/blog?id=qwen-image-3.0)'
-  - '[HN 48989701](https://news.ycombinator.com/item?id=48989701)'
-  subject: Alibaba announces Qwen-Image-3.0
-  watch_for: >-
-    Whether the 3.0 weights ship under Apache-2.0 on Hugging Face/ModelScope like prior Qwen-Image generations;
-    the architecture and size; independent benchmark or blind-arena results; whether it is API-only at
-    launch.
 - category: AI
   id: f-0046
   last_seen: '2026-08-16'
@@ -885,3 +573,149 @@
     Named fixed stable kernel versions and distribution backports for all three; any CISA KEV addition;
     in-the-wild use beyond the public PoCs; whether snap-confine chains with other snapd flaws; whether
     the 432-CVE two-day flood repeats and how distros triage it.
+- category: AI
+  id: f-0035
+  last_seen: '2026-08-30'
+  notes: >-
+    Merged from two follow-ups tracking one thread. Kimi K3 announced 2026-07-16 (kimi.com/blog/kimi-k3):
+    2.8T-param MoE (Stable LatentMoE, 16 of 896 experts active per token), Kimi Delta Attention, 1M context,
+    native multimodal, API id `kimi-k3` at $0.30 cache-hit / $3.00 cache-miss per 1M input and $15.00
+    per 1M output. Full weights promised by 2026-07-27, technical report to follow. 2026-07-18 reached
+    #1 in the Frontend Code Arena. 2026-07-19 Moonshot suspended new subscriptions citing demand, existing
+    subscribers kept access. 2026-07-22 White House OSTP director Michael Kratsios accused Moonshot of
+    covertly distilling Anthropic's Fable to build K3 through a purpose-built internal system with rotated
+    access routes, and separately alleged access to export-restricted Nvidia chips; no penalties announced,
+    Moonshot silent. Anthropic said in February it traced 3.4M Claude exchanges to the startup. 2026-07-23
+    UK AI Security Institute and US CAISI published a joint preliminary cyber-capability assessment via
+    nist.gov: ExploitBench 32% over 41 post-2023 V8 CVEs (GLM 5.2 24%), arbitrary code execution on 0
+    of 41 tasks against a leading-model average of 20 of 41, and The Last Ones 32-step simulated intrusion
+    reached step 17 on average against 28.5 for US frontier models with safeguards disabled; K3 safeguards
+    did not prevent exploit-development attempts. Stated preliminary over a small benchmark set, and it
+    bounds the capability behind the Redis zero-day claims. 2026-07-23 the Little Tech Association (~200
+    startups incl. Y Combinator and Proton) urged Trump and Commerce not to restrict Chinese open-weight
+    models. 2026-07-25 the joint open-weight letter hosted at microsoft.com/en-us/corporate-responsibility/topics/open-weight/
+    had grown from 25 to 35 signatories and now names OpenAI, with Anthropic, Google, and Amazon still
+    absent; re-read that list rather than launch-day coverage. Vendor figures unreproduced. Covered 2026-07-17,
+    07-20, 07-23, 07-24, 07-25.
+  opened: '2026-08-30'
+  sources: []
+  subject: Moonshot Kimi K3 and the US open-weight policy fight
+  watch_for: >-
+    Whether the 2026-07-27 weight release landed and under what license (K2 was modified-MIT); the technical
+    report; independent benchmark reproduction; any Treasury sanction, export action, or Commerce rule
+    restricting US access to Chinese open-weight models; a Moonshot response to the distillation accusation
+    and to the safeguards finding; the full UK AISI/CAISI report and methodology.
+- category: Security
+  id: f-0036
+  last_seen: '2026-08-30'
+  notes: >-
+    Merged from two follow-ups sharing one watch signal. Pillar Security disclosed 2026-07-20 a sandbox
+    escape against agent CLIs (Cursor, Codex, Gemini CLI, Antigravity): deny-default profiles block file
+    writes outside the workspace but still allow process execution and reading the Docker Desktop socket,
+    so an agent or an injected instruction can curl an Alpine rootfs into the workspace, `docker import`
+    it to bypass registry restrictions, run a privileged container, mount the host filesystem over VirtioFS,
+    and write to files such as `.zshrc` to reach SSH keys and credentials. Cursor fixed it (GHSA-v4xv-rqh3-w9mc,
+    restricted Docker-socket and Launch Services access); Codex marked it informational and configuration-dependent,
+    Gemini CLI declined citing documentation. Accomplish AI published 2026-07-23 SharedRoot, a six-step
+    escape from the Linux VM that Claude Cowork uses to sandbox agents on macOS: the agent opens an unprivileged
+    user namespace for in-namespace capabilities, uses `CAP_NET_ADMIN` to configure a traffic-control
+    action referencing `act_pedit`, exploits CVE-2026-46331 (pedit-COW) to poison the page cache of a
+    root-owned helper binary, gains guest root when the `coworkd` daemon re-executes it, then reaches
+    `/mnt/.virtiofs-root`, the host filesystem mounted read-write into the VM, to read and write host
+    files including SSH keys and cloud credentials. Anthropic closed that report as informative because
+    the CVE was already public; the researchers state Cowork now defaults to cloud execution, where the
+    local path does not appear to apply. Proposed mitigations are design-level: disable unprivileged user
+    namespaces, harden seccomp, block autoloading unused modules, narrow the host share. CVE-2026-46331
+    is also tracked in the Linux local-root follow-up. Covered 2026-07-23 and 2026-07-25 Top stories (Agentic
+    coding, confirmed).
+  opened: '2026-08-30'
+  sources: []
+  subject: Coding-agent sandbox escapes (Docker socket, Claude Cowork VM)
+  watch_for: >-
+    Codex and Gemini CLI mitigations, both declined at disclosure; a Cowork change removing the read-write
+    host mount or blocking unprivileged user namespaces in the guest, and whether local execution stays
+    available; any CVE assignment beyond the Cursor GHSA; the same chains against other agents that can
+    read the Docker socket or other VM-based agent sandboxes; real-world exploitation via prompt injection.
+- category: Markets
+  id: f-0037
+  last_seen: '2026-08-30'
+  notes: >-
+    Merged from two follow-ups sharing one watch signal. Neither deal is confirmed by the principals.
+    2026-07-15 Reuters and others reported Stripe and PE firm Advent International made a joint offer
+    for PayPal at about $60.50 per share (over $53B, ~28% premium, ~$50B committed bank financing), equal
+    Stripe/Advent ownership with no stated breakup; PayPal, advised by Goldman Sachs and Evercore on alternatives,
+    had not responded, and its board was reported to meet around 2026-07-20 with no formal response, confirmation,
+    or rejection reported. HN flagged antitrust concentration and timing. 2026-07-24 WSJ reported Stripe
+    in talks to acquire OpenRouter (model-access marketplace, 5M+ developers, 400+ models from OpenAI,
+    Anthropic, and open-weight providers behind one API with comparison and routing) at a valuation near
+    $10B, up from $1.3B in a May 2026 round; Stripe already handles OpenRouter payments, invoicing, tax,
+    and fraud, so an acquisition would extend it from processing AI revenue into model-access infrastructure.
+    Both were reported as possibly falling apart or drawing another buyer. Covered 2026-07-16, 07-20,
+    and 07-24 (developing).
+  opened: '2026-08-30'
+  sources: []
+  subject: 'Stripe acquisition talks: PayPal and OpenRouter'
+  watch_for: >-
+    A confirmed agreement or collapse for either deal; the PayPal board response; whether another buyer
+    emerges for either target; antitrust posture given Stripe plus PayPal, Venmo, and Braintree concentration,
+    and given Stripe already processes OpenRouter payments; any pricing, routing, or data-handling change
+    at OpenRouter; payments-infrastructure and pricing impact if the PayPal deal closes.
+- category: AI
+  id: f-0038
+  last_seen: '2026-08-30'
+  notes: >-
+    Merged from three follow-ups sharing one watch signal: announced but not usable as open weights. AMD
+    created the Instella-MoE-16B-A3B repositories on Hugging Face 2026-07-23 (Base, Pretrain, Midtrain,
+    SFT, DPO, Think): 16B total / 2.8B active MoE, 64 routed plus 2 shared experts with 6 active per token,
+    27 decoder layers, gated multi-head latent attention, 128,896-token vocabulary, trained end to end
+    on AMD Instinct MI300X and MI325X with AMD's Primus framework, with training frameworks, data mixtures,
+    intermediate checkpoints, and inference code stated as released. License is ResearchRAIL (academic
+    and research use only), so not open-weight in the commercial sense, and the card cites arXiv 2511.10628
+    from November 2025, so the checkpoints post-date the paper. Relevance is public evidence of a non-CUDA
+    training stack end to end. Black Forest Labs announced FLUX 3 on 2026-07-23 as early access, extending
+    the FLUX line from images to a unified image/video/audio model on multimodal flow matching ("Self-Flow"):
+    video up to 20 seconds with native audio, text-to-video, image-to-video, video-to-video, image editing,
+    plus an action-prediction variant for robotics (FLUX-mimic). Weights not released; the post plans
+    API and private open-weight access (FLUX 3 Dev) over "the next few weeks and months" with no date.
+    Benchmarks are vendor preference figures only, stated preliminary, and HN read the announcement as
+    marketing-heavy and noted the demo shows jumpcuts rather than continuous 20s video. Alibaba's Qwen
+    team announced Qwen-Image-3.0 on 2026-07-21, emphasizing photorealism, text rendering, and precise
+    image editing; the qwen.ai blog is JS-heavy and did not render for automated fetch, and the QwenLM/Qwen-Image
+    README still topped out at Qwen-Image-2.0/2512, so size, architecture, benchmarks, and weights were
+    unverified at publish time. Prior Qwen-Image generations shipped Apache-2.0 open weights. Covered
+    2026-07-21 (discussion), 07-24, and 07-25 (developing).
+  opened: '2026-08-30'
+  sources: []
+  subject: Announced models with weights or license pending (Instella-MoE, FLUX 3, Qwen-Image-3.0)
+  watch_for: >-
+    Whether each ships usable weights and under what license: a permissive license replacing ResearchRAIL
+    for Instella-MoE, the FLUX 3 Dev release, and Apache-2.0 Qwen-Image-3.0 weights on Hugging Face or
+    ModelScope; independent benchmark, blind-arena, or reproduction results for each; an Instella technical
+    report tied to the checkpoint release rather than the 2025 paper; whether FLUX 3 stays API-only; API
+    pricing for FLUX 3.
+- category: Outage
+  id: f-0031
+  last_seen: '2026-08-30'
+  notes: >-
+    Compacted from a longer entry that carried its own superseded framing. AWS Middle East (Bahrain) region
+    me-south-1, opened July 2019 as AWS's first Middle East region, is listed unavailable on the AWS Health
+    Dashboard. Per the Health Dashboard event JSON, the event log opens 2026-03-02 05:56 UTC with a power
+    issue in mes1-az2, the 2026-03-03 update attributes damage in both me-south-1 and me-central-1 (UAE)
+    to drone strikes, and a 2026-04-30 update states the region is unavailable and billing suspended.
+    The region has therefore been down since March 2026. An earlier "started ~2026-07-21" framing was
+    corrected on 2026-07-25: the July HN wave was renewed attention plus the IRGC claim, not the start
+    of the outage. The AWS newsroom states the region was disrupted by the ongoing regional conflict,
+    that AWS is working with local authorities, that many customers have relocated, and advises migrating
+    workloads to alternate regions, recovering from remote backups in other regions, and enacting DR plans.
+    Reporting on the Health Dashboard states in-region billing is suspended and restoration is expected
+    to take months. Iran's IRGC claimed via state media that a 2026-07-21 cruise-missile strike destroyed
+    the infrastructure in response to alleged US strikes on a nuclear site; that destruction claim is
+    not independently verified (Tom's Hardware, The Register, Betanews). Covered 2026-07-24 Top stories
+    (lead, Outage, confirmed outage with attributed cause) and corrected 2026-07-25.
+  opened: '2026-08-30'
+  sources: []
+  subject: AWS Bahrain me-south-1 region unavailable after conflict damage
+  watch_for: >-
+    A restoration timeline and confirmation of any data-loss scope; whether AWS publishes a post-incident
+    summary; independent verification of the cause; whether other providers' Middle East regions are affected;
+    whether the billing-suspension and migration guidance change.
