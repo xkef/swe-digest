@@ -1,0 +1,1077 @@
+date: '2026-08-30'
+judgment:
+  inbox: []
+  miss_review: {}
+  notes: |
+    Coverage. Hacker News, papers, books, YouTube, stars and events all came back clean. Reddit was
+    the one degraded source: 7 of 28 subreddits against a floor of 14, with live top_day and hot
+    each reaching only 1 of 28 and the committed snapshot supplying the rest. Only the rust, golang,
+    Kotlin and OpenAI subreddits are represented, so the Reddit and social pulse section was omitted
+    rather than written from a quarter of the watchlist. The one item that did come out of Reddit is
+    the Go generic methods post, which reached the digest through its go.dev primary source instead.
+
+    Sections omitted and why. ML research was dropped deliberately. The arXiv pull is large but
+    every candidate is an unreviewed preprint with no discussion signal, and the closest
+    engineering-relevant items (SWE-Prime, MCR-Bench) carry benchmark claims I could not check
+    against a reproducible setup. Books was dropped because the entire publisher feed this run is
+    Springer conference proceedings and clinical or medical imaging volumes, with nothing that meets
+    the technical-book bar. New videos was dropped because not one video in the YouTube pull carried
+    an attached HN discussion object, and the guidance makes discussion the ranking signal. The bulk
+    of the feed is an AI Engineer conference upload dump, which is roster material rather than
+    curated selection. Hacker News was dropped because every high-point thread today resolves to a
+    primary source already covered in a topical section, and what remained was off-topic or
+    low-signal Ask HN. Developer tools, Infrastructure, Agentic coding and Linux and kernel were all
+    left empty for lack of anything that outranked what is already published. Watchlist follow-ups
+    had no updates: the only open followup is f-0024 on coding-agent sandbox escapes, and nothing
+    today advanced it.
+
+    Access notes that need correcting. Two entries in access-notes are now wrong for this
+    environment. an-0020 says reuters.com article bodies return 401 and are unreachable; today
+    www.reuters.com returned the full article body including OpenAI's quoted statement and the
+    November 12 shutoff date, so the Reuters route is currently readable and the note should be
+    re-dated or closed. Separately, openai.com returned HTTP 403 on /index/openai-and-cursor/, so
+    OpenAI's own blog post announcing the Cursor cutoff could not be read directly. The lead story
+    therefore rests on Reuters quoting that post rather than on the post itself, which is why it is
+    linked as primary. That 403 is not recorded in access-notes and should be added.
+
+    Calls a reader could not infer. The Debian result is the winning option of a ranked vote, not a
+    unanimous position: the LWN thread notes both anti-AI options finished below "None of the above"
+    while roughly 30 percent of voters still preferred them. The GrapheneOS item is marked
+    developing rather than confirmed on purpose. The partial port and the absence of memory tagging
+    come from the project's own verified Bluesky account and are treated as fact, but the attributed
+    motive, that Google cut the feature to save money, is the project's inference and Google has not
+    responded. The Tencent Hy4 blurb deliberately omits the headline benchmark numbers: the 2.99 out
+    of 4.00 score against GLM-5.3 and Kimi K3 comes from an evaluation Tencent ran internally with
+    its own experts, which is a disclosed method but not a reproducible one, so the story rests on
+    the architecture, context length and published pricing instead. The Proton report is dated
+    2026-08-28 for an incident on 2026-08-27, so it is three days old, but it is a primary
+    postmortem with a full timeline and root cause and it anchors Outages, which no other candidate
+    did.
+
+    Security was built from the GitHub advisories API rather than from any configured watchlist
+    query. The three published stories are the qualifying advisories from the 2026-08-28 batch. The
+    Manchester Airports breach claim of 8.7M records was left out: the only source in the pull is
+    forgeeks.net at 2 points, with no vendor or regulator statement behind it.
+
+    A real coverage gap. Go 1.27 was released on 2026-08-19 and appears in no digest in
+    data/digests. That is a major language release with generic methods, encoding/json/v2,
+    crypto/mldsa and experimental SIMD, and it was missed entirely at the time. Today's entry covers
+    the follow-up Generic Methods post from 2026-08-26, which is the current item, and cites the
+    release post alongside it. Publishing the eleven-day-old release as today's news would have been
+    wrong, but the gap itself is worth the weekly review's attention.
+
+    Backtest. The tool scored 56 candidates for 2026-08-29 but seeded zero causes, so there were no
+    defaults to override and the miss_review entries are assertions rather than corrections. The
+    five flagged as watchlist_gap are genuine engineering misses no query caught: htmx 4.0 at 788
+    points, GLM-5.3 going open-weight at 696, the Sovereign Tech Agency Flatpak investment at 249,
+    the HTTPX2 Python HTTP client at 120 with its migration writeup at 186, and EVE Online's Python
+    3 migration at 280. The GLM-5.3 miss is the most consequential, since an open-weight release of
+    that class is the same category as today's Hy4 lead. I found no false entity matches worth
+    flagging: the Anthropic, Rust, GitHub and Stripe matches in the candidate list are all real. The
+    large remainder of the list is genuinely out of scope, mostly US politics, climate, food recalls
+    and general-interest science, and does not indicate a gap.
+mechanical:
+  digest:
+    domains:
+    - danluu.com
+    - github.com
+    - go.dev
+    - jira.mariadb.org
+    - news.ycombinator.com
+    - nvd.nist.gov
+    - reuters.com
+    - techcrunch.com
+    - tencent.com
+    - theverge.com
+    hn_ids:
+    - 49492067
+    - 49492119
+    - 49492632
+    - 49494520
+    sections:
+      Engineering posts: 1
+      Languages and runtimes: 1
+      Outages: 0
+      Security: 3
+      Sources checked: 0
+      Top stories: 3
+    source_count: 19
+    titles:
+    - Tencent open-sources Hy4 preview at 770B parameters with 49B active
+    - vLLM v0.28.0 raises the default batched token budget and moves bitsandbytes out of tree
+    - Sony Music and Warner Chappell sue Anthropic over training data
+    - RestrictedPython guard hooks can be shadowed through positional-only arguments
+    - MariaDB Connector/Node.js allows SQL injection in Buffer parameters on five character sets
+    - MariaDB Connector/R2DBC 1.4.1 fixes cleartext password disclosure and charset confusion
+    - The Go blog explains generic methods in Go 1.27
+    - Dan Luu argues developers stop noticing the bugs they hit every day
+  fetched:
+  - detail: 41231 bytes
+    ok: true
+    url: https://lwn.net/Articles/1091231/
+  - detail: 33540 bytes
+    ok: true
+    url: https://blog.python.org/2026/08/riscv-now-officially-supported/
+  - detail: 353836 bytes
+    ok: true
+    url: https://proton.me/blog/august-27-outage-incident-report
+  - detail: 507354 bytes (clipped)
+    ok: true
+    url: https://github.com/vllm-project/vllm/releases/tag/v0.28.0
+  - detail: 15725 bytes
+    ok: true
+    url: https://bsky.app/profile/grapheneos.org/post/3mua32q4ds22e
+  - detail: 165430 bytes
+    ok: true
+    url: https://www.tencent.com/tencent-releases-and-open-sources-tencent-hy4-preview/
+  - detail: 42321 bytes
+    ok: true
+    url: https://go.dev/blog/generic-methods
+  - detail: 37556 bytes
+    ok: true
+    url: https://go.dev/blog/go1.27
+  - detail: 387943 bytes
+    ok: true
+    url: https://www.theverge.com/ai-artificial-intelligence/986438/sony-music-warner-chappell-anthropic-lawsuit-copyright
+  - detail: 38657 bytes (clipped)
+    ok: true
+    url: https://danluu.com/bug-blind/
+  - detail: 525401 bytes
+    ok: true
+    url: https://www.reuters.com/business/media-telecom/openai-end-partnership-with-spacexs-cursor-2026-08-29/
+  - detail: 202974 bytes (clipped)
+    ok: true
+    url: https://api.github.com/advisories?per_page=25&sort=published
+  - detail: 'failed: fetch failed: https://openai.com/index/openai-and-cursor/: HTTP Error 403: Forbidden'
+    ok: false
+    url: https://openai.com/index/openai-and-cursor/
+  - detail: 342684 bytes
+    ok: true
+    url: https://chipsandcheese.com/p/hot-chips-2026-samsungs-processing
+  - detail: 348627 bytes
+    ok: true
+    url: https://github.com/Lakr233/vphone-cli
+  - detail: 186083 bytes
+    ok: true
+    url: https://github.com/advisories/GHSA-g5xc-5w98-jfvm
+  - detail: 525401 bytes
+    ok: true
+    url: https://www.reuters.com/business/media-telecom/openai-end-partnership-with-spacexs-cursor-2026-08-29/
+  - detail: 41231 bytes
+    ok: true
+    url: https://lwn.net/Articles/1091231/
+  - detail: 191046 bytes
+    ok: true
+    url: https://github.com/advisories/GHSA-c857-9x2m-cvh2
+  - detail: 186083 bytes
+    ok: true
+    url: https://github.com/advisories/GHSA-g5xc-5w98-jfvm
+  - detail: 507359 bytes (clipped)
+    ok: true
+    url: https://github.com/vllm-project/vllm/releases/tag/v0.28.0
+  - detail: 42321 bytes
+    ok: true
+    url: https://go.dev/blog/generic-methods
+  - detail: 165430 bytes
+    ok: true
+    url: https://www.tencent.com/tencent-releases-and-open-sources-tencent-hy4-preview/
+  - detail: 408421 bytes
+    ok: true
+    url: https://github.com/mariadb-corporation/mariadb-connector-nodejs/releases
+  - detail: 191264 bytes
+    ok: true
+    url: https://github.com/advisories/GHSA-5rqc-86vf-g8r2
+  - detail: 387943 bytes
+    ok: true
+    url: https://www.theverge.com/ai-artificial-intelligence/986438/sony-music-warner-chappell-anthropic-lawsuit-copyright
+  - detail: 38657 bytes (clipped)
+    ok: true
+    url: https://danluu.com/bug-blind/
+  generated_at: '2026-08-30T07:22:51+00:00'
+  hn:
+    backends:
+      ask_hn: algolia
+      comments: algolia
+      front_page: algolia
+      show_hn: algolia
+      top_day: algolia
+    degraded: []
+    fetched_at: '2026-08-30T06:56:15+00:00'
+    pooled:
+      added:
+        ask_hn: 0
+        comments: 0
+        front_page: 3
+        queries: 5
+        show_hn: 3
+        top_day: 3
+      snapshot_fetched_at: '2026-08-30T05:24:48+00:00'
+    queries_backend: algolia
+    seen_ids:
+    - 49415386
+    - 49424320
+    - 49425252
+    - 49426995
+    - 49428756
+    - 49433328
+    - 49433554
+    - 49438865
+    - 49447178
+    - 49448583
+    - 49450248
+    - 49469786
+    - 49477697
+    - 49484520
+    - 49485267
+    - 49487177
+    - 49487243
+    - 49487341
+    - 49487500
+    - 49487506
+    - 49487786
+    - 49487838
+    - 49487976
+    - 49488282
+    - 49488310
+    - 49488654
+    - 49488850
+    - 49488865
+    - 49488905
+    - 49488930
+    - 49488952
+    - 49488963
+    - 49488996
+    - 49489006
+    - 49489057
+    - 49489192
+    - 49489306
+    - 49489355
+    - 49489376
+    - 49489464
+    - 49489682
+    - 49489788
+    - 49489854
+    - 49489963
+    - 49489968
+    - 49489982
+    - 49489987
+    - 49490076
+    - 49490138
+    - 49490148
+    - 49490478
+    - 49490605
+    - 49490702
+    - 49490770
+    - 49490826
+    - 49490832
+    - 49490870
+    - 49490919
+    - 49491064
+    - 49491113
+    - 49491175
+    - 49491282
+    - 49491422
+    - 49491468
+    - 49491512
+    - 49491526
+    - 49491544
+    - 49491568
+    - 49491631
+    - 49491641
+    - 49491687
+    - 49491714
+    - 49491745
+    - 49491755
+    - 49491794
+    - 49491918
+    - 49491968
+    - 49491979
+    - 49492040
+    - 49492067
+    - 49492184
+    - 49492193
+    - 49492219
+    - 49492368
+    - 49492432
+    - 49492488
+    - 49492554
+    - 49492584
+    - 49492632
+    - 49492705
+    - 49493018
+    - 49493225
+    - 49493244
+    - 49493250
+    - 49493563
+    - 49493576
+    - 49493659
+    - 49493881
+    - 49494036
+    - 49494151
+    - 49494182
+    - 49494212
+    - 49494231
+    - 49494291
+    - 49494301
+    - 49494520
+    - 49494568
+    - 49494571
+    - 49494751
+    - 49494856
+    - 49495127
+    - 49495171
+    - 49495324
+    - 49495350
+    - 49495372
+    - 49495392
+    - 49495398
+    - 49495736
+    - 49495947
+    - 49496067
+    - 49496248
+    source: cache
+  query_yield:
+    0day:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    AI:
+      matched: 4
+      matched_ids:
+      - 49489982
+      - 49491113
+      - 49491568
+      - 49495009
+      published: 0
+      published_ids: []
+      raw: 5
+    AWS:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    AlphaFold:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Anthropic:
+      matched: 5
+      matched_ids:
+      - 49491641
+      - 49492119
+      - 49493735
+      - 49494740
+      - 49494744
+      published: 2
+      published_ids:
+      - 49492119
+      - 49493735
+      raw: 5
+    Apple Silicon:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Azure:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    CRDT:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 4
+    CUDA:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    CVE:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Claude:
+      matched: 5
+      matched_ids:
+      - 49488021
+      - 49491282
+      - 49491631
+      - 49491745
+      - 49492432
+      published: 0
+      published_ids: []
+      raw: 5
+    Claude Code:
+      matched: 5
+      matched_ids:
+      - 49487838
+      - 49489082
+      - 49491631
+      - 49491745
+      - 49495858
+      published: 0
+      published_ids: []
+      raw: 5
+    Cloudflare:
+      matched: 3
+      matched_ids:
+      - 49490372
+      - 49494543
+      - 49494997
+      published: 0
+      published_ids: []
+      raw: 3
+    Copilot:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 2
+    Cursor:
+      matched: 3
+      matched_ids:
+      - 49487134
+      - 49487838
+      - 49493319
+      published: 1
+      published_ids:
+      - 49487134
+      raw: 3
+    GCP:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    GPU:
+      matched: 3
+      matched_ids:
+      - 49492103
+      - 49492798
+      - 49495819
+      published: 0
+      published_ids: []
+      raw: 5
+    Gemini:
+      matched: 3
+      matched_ids:
+      - 49489767
+      - 49490087
+      - 49490315
+      published: 0
+      published_ids: []
+      raw: 4
+    Ghostty:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    GitHub:
+      matched: 5
+      matched_ids:
+      - 49487904
+      - 49490245
+      - 49492040
+      - 49493659
+      - 49494256
+      published: 0
+      published_ids: []
+      raw: 5
+    Go:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Grafana:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Homebrew:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 2
+    IPO:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Java:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Jepsen:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Kafka:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Kagi:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Kleppmann:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Kotlin:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Kubernetes:
+      matched: 1
+      matched_ids:
+      - 49493944
+      published: 0
+      published_ids: []
+      raw: 1
+    LLM:
+      matched: 4
+      matched_ids:
+      - 49487500
+      - 49489618
+      - 49490461
+      - 49491541
+      published: 0
+      published_ids: []
+      raw: 5
+    LWN:
+      matched: 1
+      matched_ids:
+      - 49489982
+      published: 0
+      published_ids: []
+      raw: 5
+    Linux:
+      matched: 4
+      matched_ids:
+      - 49490824
+      - 49491603
+      - 49495372
+      - 49496181
+      published: 0
+      published_ids: []
+      raw: 5
+    Llama:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    MCP:
+      matched: 4
+      matched_ids:
+      - 49488654
+      - 49492712
+      - 49494219
+      - 49495457
+      published: 0
+      published_ids: []
+      raw: 5
+    Mistral:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Neovim:
+      matched: 2
+      matched_ids:
+      - 49488905
+      - 49492298
+      published: 0
+      published_ids: []
+      raw: 2
+    Nvidia:
+      matched: 1
+      matched_ids:
+      - 49492798
+      published: 0
+      published_ids: []
+      raw: 1
+    OpenAI:
+      matched: 5
+      matched_ids:
+      - 49487134
+      - 49492798
+      - 49493319
+      - 49494257
+      - 49495761
+      published: 1
+      published_ids:
+      - 49487134
+      raw: 5
+    OpenTelemetry:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Paxos:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Postgres:
+      matched: 2
+      matched_ids:
+      - 49492384
+      - 49494944
+      published: 0
+      published_ids: []
+      raw: 2
+    Prometheus:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    PyPI:
+      matched: 4
+      matched_ids:
+      - 49492153
+      - 49493608
+      - 49495457
+      - 49495806
+      published: 0
+      published_ids: []
+      raw: 5
+    Python:
+      matched: 3
+      matched_ids:
+      - 49490213
+      - 49490758
+      - 49491990
+      published: 0
+      published_ids: []
+      raw: 5
+    Raft:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Redis:
+      matched: 2
+      matched_ids:
+      - 49491990
+      - 49493133
+      published: 0
+      published_ids: []
+      raw: 5
+    Rust:
+      matched: 4
+      matched_ids:
+      - 49488930
+      - 49489697
+      - 49491404
+      - 49492368
+      published: 0
+      published_ids: []
+      raw: 5
+    S-1:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 2
+    SQLite:
+      matched: 1
+      matched_ids:
+      - 49495067
+      published: 0
+      published_ids: []
+      raw: 2
+    Spring Boot:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Swift:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 2
+    SwiftUI:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    TypeScript:
+      matched: 2
+      matched_ids:
+      - 49487952
+      - 49495930
+      published: 0
+      published_ids: []
+      raw: 3
+    Vim:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Wayland:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    Xcode:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    Zig:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    acquires:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    acquisition:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    agentic:
+      matched: 2
+      matched_ids:
+      - 49489697
+      - 49489910
+      published: 0
+      published_ids: []
+      raw: 5
+    arXiv:
+      matched: 6
+      matched_ids:
+      - 49487342
+      - 49489813
+      - 49490461
+      - 49492497
+      - 49495870
+      - 49496289
+      published: 0
+      published_ids: []
+      raw: 5
+    breach:
+      matched: 1
+      matched_ids:
+      - 49490806
+      published: 0
+      published_ids: []
+      raw: 4
+    chezmoi:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 1
+    coding agent:
+      matched: 1
+      matched_ids:
+      - 49488865
+      published: 0
+      published_ids: []
+      raw: 5
+    distributed systems:
+      matched: 1
+      matched_ids:
+      - 49488177
+      published: 0
+      published_ids: []
+      raw: 1
+    drug discovery:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    eBPF:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    exploit:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    iOS:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    incident:
+      matched: 2
+      matched_ids:
+      - 49492554
+      - 49493920
+      published: 0
+      published_ids: []
+      raw: 5
+    io_uring:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 2
+    kernel:
+      matched: 3
+      matched_ids:
+      - 49488311
+      - 49489746
+      - 49491791
+      published: 0
+      published_ids: []
+      raw: 3
+    local-first:
+      matched: 3
+      matched_ids:
+      - 49490148
+      - 49495320
+      - 49495797
+      published: 0
+      published_ids: []
+      raw: 4
+    macOS:
+      matched: 3
+      matched_ids:
+      - 49491456
+      - 49492914
+      - 49495797
+      published: 0
+      published_ids: []
+      raw: 5
+    npm:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 5
+    outage:
+      matched: 1
+      matched_ids:
+      - 49493920
+      published: 0
+      published_ids: []
+      raw: 1
+    protein folding:
+      matched: 0
+      matched_ids: []
+      published: 0
+      published_ids: []
+      raw: 0
+    terminal:
+      matched: 2
+      matched_ids:
+      - 49489525
+      - 49492384
+      published: 0
+      published_ids: []
+      raw: 3
+  runs:
+  - at: '2026-08-30T07:23:02+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: '1 past the age bound: Cursor runs a repository git.exe on Windows without confirmation
+        (unpatched)'
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-30.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-29
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"OpenAI says it will stop serving its models to SpaceX-owned Cursor,
+        proposing a 2026-11-12 shutoff","section":"Top stories","category":"Agentic coding","status":"confirmed","primary_url":"https://www.reuters.com/business/media-telecom/openai-end-partnership-with-spacexs-cur
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: select
+      status: ok
+      tokens:
+        in: 44
+        out: 24858
+      tools:
+        Bash: 1
+        Glob: 1
+        Grep: 10
+        Read: 6
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 15
+        mcp__digest__guidance: 3
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 3
+    - detail: |-
+        Gate passes (exit 0, `check-content ok`). The remaining output is memory staleness warnings, which are not this step's writes.
+
+        ## Written: `data/digests/2026-08-30.md`
+
+        **6 stories, 20 sources, first pass for the date.**
+
+        - **Top stories (3):** Tencent Hy4 preview open-sourced (770B/49B active, >1M
+      failed_tools:
+        Read: 1
+      name: write
+      status: ok
+      tokens:
+        in: 14
+        out: 26192
+      tools:
+        Read: 2
+        ToolSearch: 1
+        Write: 2
+        mcp__digest__run_gate: 2
+    - detail: >-
+        {"findings":[{"severity":"blocking","where":"Top stories, story 2: \"Debian's general resolution
+        adopts Responsible Use of Generative AI\"","detail":"Archive duplicate of the previous day's lead
+        story. The 2026-08-29 page leads with \"Debian's LLM general resolution ends with Responsible
+        Use of Gene
+      name: review
+      status: ok
+      tokens:
+        in: 20
+        out: 18022
+      tools:
+        Bash: 1
+        Glob: 2
+        Grep: 5
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 3
+        mcp__digest__run_gate: 1
+    - detail: |-
+        All eight findings repaired. `run_gate` exits 0 (only memory staleness warnings, which this step does not own).
+
+        What changed in `data/digests/2026-08-30.md`:
+
+        **Dropped**
+        - The Debian general resolution block, whole. It duplicates the 2026-08-29 lead, which covers the same vote from `vote.debian.or
+      failed_tools:
+        Bash: 2
+        mcp__digest__fetch_url: 2
+      name: write
+      status: ok
+      tokens:
+        in: 36
+        out: 12511
+      tools:
+        Agent: 2
+        Bash: 8
+        Edit: 10
+        Read: 9
+        ToolSearch: 1
+        mcp__digest__fetch_url: 2
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Top stories / vLLM v0.28.0 raises the
+        default batched token budget and moves bitsandbytes out of tree","detail":"The claim \"Four features
+        are removed or relocated in this release\" is contradicted by the cited primary, and it is repeated
+        in
+      failed_tools:
+        Bash: 1
+      name: review
+      status: ok
+      tokens:
+        in: 30
+        out: 20580
+      tools:
+        Bash: 2
+        Glob: 1
+        Grep: 9
+        Read: 2
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 9
+        mcp__digest__memory_query: 1
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 7 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 5 cause(s) corrected in 2026-08-29
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-08-30.yaml
+      name: run_log
+      status: ok
+    - detail: 27 fetch(es), 1 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
