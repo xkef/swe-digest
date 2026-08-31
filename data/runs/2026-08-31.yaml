@@ -3,244 +3,230 @@ judgment:
   inbox: []
   miss_review: {}
   notes: |
-    First run of 2026-08-31. No digest existed for the date, so nothing could be displaced and
-    `displace` is empty. The story inbox is empty.
+    Quiet day, and the page should read that way. Five stories selected against a budget of 25.
 
-    Eight stories selected against a budget of 25, which is the honest read of a quiet day rather
-    than a collection failure. Hacker News was the only clean source and its top of day was
-    dominated by items already published or out of scope.
+    This is the first run of 2026-08-31, so there is no digest to displace from and `displace` is
+    empty.
 
-    The lead is a security item and `Security` therefore carries nothing else. The 2026-08-28 GitHub
-    advisories batch that would normally fill it is already published on the 2026-08-30 page in
-    full, and the advisories API returns nothing published after 2026-08-28. The JFrog Artifactory
-    advisory is the one qualifying item from that window not yet carried, and it is more severe than
-    any of them, so it leads rather than sitting in a section that costs nothing against the caps. A
-    reader should know that the GitHub advisory for CVE-2026-82329 is type `unreviewed` and lists no
-    affected package ranges at all, so the version table in the entry comes from JFrog's own
-    advisory page and not from the advisories API. The same JFrog page shows large batches of
-    Artifactory CVEs published on 2026-07-27, 2026-08-12 and 2026-08-25, which is context for the
-    reader but not today's news.
+    The dominant fact of this run is archive collision, not a thin front page. Hacker News was clean
+    and the front page was strong, but most of the strongest items are already published. Creepy
+    Crawlies, QSB-118 and the Omarchy docker-group root escalation are all on the 2026-08-30 page.
+    Kubernetes v1.37 is on 2026-08-27, UniBLEed on 2026-08-28, OpenAI ending the Cursor partnership
+    on 2026-08-29, and the METR and Redwood Hugging Face investigation on 2026-08-27, which makes
+    the 244-point Zvi post secondary commentary on published work. The Debian general resolution
+    itself is the 2026-08-29 lead. Every one of these was checked against `data/digests` rather than
+    assumed.
 
-    `Outages` is empty on evidence rather than for lack of looking. Two candidates surfaced and both
-    fail. The Cloudflare Workers Builds incident submitted to Hacker News at 03:16 on 2026-08-31
-    resolved on 2026-08-27 at 22:58 UTC, so it is a four-day-old resolved incident resurfacing as a
-    submission, which is the same shape the 2026-08-30 page recorded. A VentureBeat headline asserts
-    a GitHub outage, and an Ask HN titled "Is GitHub Down?" was posted 2026-08-30 19:53, but
-    GitHub's own incidents API shows no incident created after 2026-08-27 and a page timestamp of
-    2026-08-31 06:28 UTC, so the outage premise is not corroborated by the vendor. The VentureBeat
-    page returned a rate-limit error and could not be read, so the Cursor Origin launch it reports
-    is not published at all: primary unread and the framing contradicts the status page.
+    `Security` and `Outages` both stand down to the anchor line, and in both cases the absence is
+    the finding rather than a quiet day. On security, the one new candidate was CVE-2026-82329,
+    submitted as a critical JFrog Artifactory authentication bypass. Both cve.org and nvd.nist.gov
+    returned JavaScript shells with no record text, the Hacker News submission carried it at 4
+    points with no vendor advisory linked, and no JFrog advisory was locatable. An unverified
+    critical CVE against widely deployed artifact infrastructure is exactly the shape that should
+    not be published on a submission title alone, so it is left out and flagged here for a later
+    pass. On outages, both candidates that surfaced are stale rather than current. The Cloudflare
+    Workers Builds incident that reached Hacker News today is yj2zk6n6rz1c, started 2026-08-27 21:19
+    UTC and resolved 22:58 UTC with minor impact. The GitHub Actions and Pull Requests incidents
+    behind the Reddit thread and the Cursor Origin framing resolved on 2026-08-26 and 2026-08-27.
+    The githubstatus.com history page renders client-side and returned no incidents, so the RSS feed
+    was used instead, and it shows nothing after 2026-08-27.
 
-    Three sources would not load and cost real candidates.
-    `bughunters.google.com/blog/scaling-memory-safety`, on AI-assisted rewrites of C and C++
-    dependencies to Rust, returned its title only with no body, so a Google primary with obvious
-    engineering relevance could not be written up. `cve.org` and `nvd.nist.gov` both returned empty
-    shells for CVE-2026-82329; the advisory was recovered through the GitHub advisories API and the
-    vendor page instead. This is worth a source-reliability note: for CVE lookups the advisories API
-    and the vendor advisory work where cve.org and NVD do not.
+    Calls a reader of the finished page could not infer. The Asahi block is `developing` on purpose:
+    this is a v1 series posted for review that depends on five other in-flight series, and the
+    author states it should probably go through the thunderbolt tree once reviewed. The limitations
+    in that block are the maintainer's own words, not inference. The Debian block deliberately
+    paraphrases rather than quotes. The retirement message carries profanity and a political
+    characterisation of the technology, and neither is a fact the digest can assert, so the block
+    states what he cited as his reason and leaves the rhetoric in the source. His status as a
+    seconder of Proposals A and C is taken from the ballot page, not from the message, and it is
+    what makes the departure more than one anonymous complaint. The Hacker News thread title on that
+    item, "Debian developer resigns after corporate LLM use without disclosure wins vote",
+    misdescribes the outcome, since the winning option was Haber's Responsible Use of Generative AI,
+    so the thread is linked as discussion only and its framing is not adopted.
 
-    `miss_review` is empty on purpose and this time it was tested rather than assumed. The backtest
-    scored 46 candidates for 2026-08-30 and again seeded zero causes, so there is no seeded cause to
-    override. Rather than repeat that observation, I picked the single strongest apparent
-    `watchlist_gap` from the candidate list, "Boot a Virtual iPhone via Apple's
-    Virtualization.framework" at 394 points and marked `no_query_match`, and checked it against the
-    archive before submitting. It is published on the 2026-08-29 page as "vphone-cli boots a virtual
-    iPhone on Apple Silicon through Virtualization.framework", citing the same Hacker News id
-    49485267. So the one entry I was prepared to assert resolved to archive, which is direct
-    confirmation of the standing defect the 2026-08-30 page described: the backtest scores against
-    its own candidate list rather than against the published archive, so covered stories read as
-    misses. Spot checks put GrapheneOS Pixel 11 MTE, Samsung processing-in-memory, CPython on RISC-V
-    and the METR postmortem in the same category.
+    Considered and left out. "P99 0 ms autocomplete for 240M domain names" reached 75 points and is
+    a genuinely good implementation write-up, with a trie head over the Tranco million, a
+    memory-mapped delta-compressed block index over 240M CZDS names in 2.5 GB, and honest load-test
+    numbers. It is dated 2026-06-22, so it is a ten-week-old post resurfacing, and the 2026-08-30
+    page already took a demerit for publishing a seven-day-old item as current. The Zig ArrayList
+    pointer-stability devlog entry is blocked again for the reason the 2026-08-30 notes recorded:
+    the gate normalizes the fragment away and treats all of ziglang.org/devlog/2026/ as one source
+    already used on 2026-06-26 and 2026-07-05, and no per-entry primary exists. `Languages and
+    runtimes` is omitted as a result, for the second consecutive day, and this is a structural
+    defect in the archive check rather than an editorial call. The EU AI Act enforcement item
+    reached 37 points and 77 comments but rests entirely on tokenstead.ai, an aggregator with no
+    Commission primary located, so it is not publishable as fact. Two contradictory Claude Code
+    weekly-limit claims appeared again, one on a Twitter account and one from the backtest, with no
+    primary, and both are dropped for the second day running.
 
-    Calls a reader of the finished page could not infer. The METR and Redwood investigation of the
-    OpenAI agents that attacked Hugging Face was the strongest-looking candidate of the run, carried
-    at 243 points through a Zvi secondary and seeded by the backtest at 210, and it is not published
-    because the 2026-08-27 page already carries it under the identical primary URL with the same
-    1,200 and 700 agent counts. The Codex Memories entry is deliberately narrowed: the publishable
-    finding is the provider-crossover code path and the maintainer `bug` label, while the reporter's
-    belief that OpenAI used the transferred content for account moderation is inference by a single
-    unverified reporter and is marked as such in the entry rather than carried as fact. The day's
-    highest-scoring thread by a wide margin, "I just chose words carefully" at 611 points, is left
-    out entirely: it is a well-made curiosity about a 1990s Super Metroid guide whose author
-    hand-picked words so monospace text justified without double spaces, and it carries no
-    engineering consequence, so including it would be ranking on popularity.
+    `miss_review` departs from the last three runs, and the reason should be recorded. The backtest
+    scored 46 candidates for 2026-08-30 and seeded zero causes, as it has all week. Previous runs
+    read that as leaving nothing to override and submitted nothing, which is defensible but has
+    meant a real recurring gap never got written down. Haiku R1/beta6 is the proof: it scored 230
+    points on 2026-08-30 as `no_query_match`, the 2026-08-30 page explicitly considered and dropped
+    it for want of a second fetch, and one fetch of the release notes today produced this run's
+    lead. That is a watchlist gap, not a relevance skip. EVE Online's Python 3 migration at 371
+    points and the Casey Muratori BSC 2026 talk at 292 points are the same shape, the latter being a
+    conference talk the video watchlist should have surfaced. These three are submitted as additions
+    against a zero-seeded run rather than as overrides of a seeded cause, which is a weaker claim
+    than the field normally carries, and the standing defect is unchanged: the backtest scores
+    against its own candidate list rather than against the published archive, so genuine archive
+    coverage keeps reading as a miss.
 
-    Also considered and left out. The European Commission encryption-backdoor item reached 401
-    points but is carried only by reclaimthenet.org with no Commission primary locatable without a
-    search tool, which is the same wall the 2026-08-30 page hit. An EU AI Act enforcement item at 37
-    points sits on tokenstead.ai, an unknown domain, with no Commission primary. The Zig ArrayList
-    pointer-stability devlog entry at 103 points is still blocked by the archive check normalizing
-    `ziglang.org/devlog/2026/#2026-08-27` to the whole 2026 devlog page, which was used as a primary
-    on 2026-06-26, and no per-entry URL exists, so `Languages and runtimes` stays omitted for a
-    second day for a structural reason rather than an editorial one. The Rust function-overloading
-    call for experimentation is a genuine blog.rust-lang.org primary but is dated 2026-08-19 and
-    drew 3 points. The Claude Code website-summarization research is archive from 2026-08-29 and The
-    Register piece is secondary to it.
+    `Watchlist follow-ups` is omitted even though follow-up f-0015 on the Debian general resolution
+    was advanced today. The advance is the retirement, and publishing it twice would be padding, so
+    it sits in `Top stories` and f-0015 should be updated with it. Its `watch_for` already names the
+    vote result and downstream consequences, and this is the first of the latter.
 
-    `New videos` is omitted and the reason is mechanical. The YouTube pull is not flagged degraded
-    and carries 27 items, but every one has `discussion` set to null, and the guidance names that
-    object as both the filter and the ranker for the section. The one item that would otherwise
-    merit a look is a Seattle Rust User Group talk on a draft RFC adding `poll_progress` to fix
-    AsyncIterator deadlocks, posted to the official Rust channel with the RFC linked; without
-    discussion signal it sits below the bar, and the rest of the pull is conference shorts and
-    opinion uploads.
+    Sections with no qualifying candidate: `AI`, `Agentic coding`, `Security`, `Outages`, `Languages
+    and runtimes`, `Apple platforms`, `Linux and kernel`, `Infrastructure`, `Engineering posts`,
+    `Books`, `New videos`, `Markets and companies`, `Hacker News`, `Reddit and social pulse`,
+    `Watchlist follow-ups`. Asahi is Apple-adjacent and kernel-adjacent but sits in `Top stories`,
+    so neither section is written twice.
 
-    Sections omitted for want of a qualifying candidate: `ML research`, `Developer tools`,
-    `Languages and runtimes`, `Apple platforms`, `Linux and kernel`, `Infrastructure`, `Books`, `New
-    videos`, `Markets and companies`, `Hacker News`, `Reddit and social pulse`. `Reddit and social
-    pulse` stands down rather than being written from 8 of 28 subreddits of help-desk questions. The
-    arXiv pull is large and remains unreviewed preprints with no discussion signal.
-
-    Memory worth updating on a later step: follow-up f-0015 on the Debian LLM general resolution
-    should advance to record the resolution outcome plus the first public retirement attached to it,
-    since the vote it was opened to track has now closed.
+    Reddit improved slightly on yesterday, reaching 8 of 28 subreddits against 2, but is still below
+    the floor of 14 and still degraded for a seventh day. It did surface Kubernetes v1.37 and the
+    GitHub Actions outage thread, both already archive, so it again contributed nothing publishable.
+    The GitHub stars collection returned an empty item list without reporting itself degraded, which
+    is the same silent-gap shape the last three days recorded.
 mechanical:
   digest:
     domains:
     - debian.org
-    - docs.jfrog.com
-    - github.com
+    - fzakaria.com
     - haiku-os.org
     - lists.debian.org
     - lore.kernel.org
     - news.ycombinator.com
-    - openclaw.ai
-    - ruurtjan.com
-    - simonwillison.net
+    - omniflake.com
+    - sander.ai
     - social.treehouse.systems
     hn_ids:
+    - 49497712
     - 49499867
-    - 49501565
-    - 49502508
     - 49502515
+    - 49502611
     - 49504083
-    - 49504625
-    - 49505219
-    - 49505310
     sections:
-      AI: 1
-      Agentic coding: 1
-      Engineering posts: 1
+      Developer tools: 1
+      ML research: 1
       Outages: 0
       Security: 0
       Sources checked: 0
-      Top stories: 4
-      Watchlist follow-ups: 1
-    source_count: 20
+      Top stories: 3
+    source_count: 14
     titles:
+    - Haiku R1/beta6 ships after two years with a new userland malloc and halved WebKit build time
+    - Asahi Linux posts initial USB4 and Thunderbolt support for Apple M1, M2 and M3 to the kernel list
+    - A Debian developer retires from the project over the outcome of the LLM general resolution
+    - Sander Dieleman surveys the return of continuous diffusion language models
     - >-
-      JFrog Artifactory authentication bypass gives unauthenticated network attackers administrative access
-      under default configuration
-    - Asahi Linux posts initial USB4 and Thunderbolt support for Apple M1, M2 and M3 to the kernel lists
-    - Haiku R1/beta6 ships after two years with a new userland allocator and halved HaikuWebKit build
-      time
-    - OpenClaw 2.0 lands roughly half of the project's lifetime merged pull requests in a single release
-    - Independent testing maps what ChatGPT Work does that ChatGPT Chat cannot
-    - Open Codex issue reports the Memories feature sending local-provider conversations to OpenAI
-    - Domain autocomplete over 240 million names pairs an in-memory trie with a memory-mapped block index
-    - A Debian developer retires citing the outcome of the general resolution on LLM use
+      omniflake puts about twelve thousand Nix flakes behind one input, and its author submits a quadratic
+      lock-naming fix upstream
   fetched:
-  - detail: 430959 bytes (clipped)
+  - detail: 50435 bytes (clipped)
     ok: true
-    url: https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/
+    url: https://www.qubes-os.org/news/2026/08/29/qsb-118/
+  - detail: 10630 bytes
+    ok: true
+    url: https://0xcc.io/posts/omarchy-root-creds/
+  - detail: 560149 bytes (clipped)
+    ok: true
+    url: https://kubernetes.io/blog/2026/08/26/kubernetes-v1-37-release/
+  - detail: 73377 bytes (clipped)
+    ok: true
+    url: https://www.debian.org/vote/2026/vote_002
+  - detail: 227196 bytes (clipped)
+    ok: true
+    url: https://lwn.net/Articles/1087134/
   - detail: 206167 bytes
     ok: true
     url: https://www.githubstatus.com/history
+  - detail: 104372 bytes (clipped)
+    ok: true
+    url: https://www.githubstatus.com/history.rss
   - detail: 23693 bytes
     ok: true
     url: https://www.cloudflarestatus.com/incidents/yj2zk6n6rz1c
-  - detail: 310925 bytes (clipped)
-    ok: true
-    url: https://www.githubstatus.com/api/v2/incidents.json
   - detail: 880 bytes
     ok: true
     url: https://www.cve.org/CVERecord?id=CVE-2026-82329
-  - detail: 3769 bytes
-    ok: true
-    url: https://bughunters.google.com/blog/scaling-memory-safety
   - detail: 7613 bytes
     ok: true
     url: https://www.haiku-os.org/news/2026-08-26_haiku_r1_beta6
-  - detail: 2445 bytes
-    ok: true
-    url: https://nvd.nist.gov/vuln/detail/CVE-2026-82329
   - detail: 5667 bytes
     ok: true
     url: https://lists.debian.org/debian-devel/2026/08/msg00318.html
   - detail: 64259 bytes
     ok: true
     url: https://social.treehouse.systems/@sven/117186314116319619
-  - detail: 38551 bytes (clipped)
-    ok: true
-    url: https://www.haiku-os.org/get-haiku/r1beta6/release-notes/
   - detail: 16073 bytes
     ok: true
     url: https://lore.kernel.org/asahi/20260830-b4-apple-soc-tbt-v1-0-44bc9348683c@kernel.org/
-  - detail: 1496 bytes
+  - detail: 38551 bytes (clipped)
     ok: true
-    url: https://api.github.com/advisories?cve_id=CVE-2026-82329
-  - detail: 30269 bytes
+    url: https://www.haiku-os.org/get-haiku/r1beta6/release-notes/
+  - detail: 2445 bytes
     ok: true
-    url: https://openclaw.ai/blog/openclaw-2-accidentally
-  - detail: 2776078 bytes (clipped)
+    url: https://nvd.nist.gov/vuln/detail/CVE-2026-82329
+  - detail: 111961 bytes (clipped)
     ok: true
-    url: https://docs.jfrog.com/releases/docs/jfrog-security-advisories
-  - detail: 9763 bytes
-    ok: true
-    url: https://unsung.aresluna.org/i-just-chose-words-carefully/
+    url: https://sander.ai/2026/08/24/continuous-dlms.html
   - detail: 99668 bytes
     ok: true
     url: https://ruurtjan.com/articles/p99-0ms-autocomplete-for-240-million-domain-names
-  - detail: 320804 bytes (clipped)
+  - detail: 77454 bytes
     ok: true
-    url: https://api.github.com/advisories?per_page=40&sort=published&direction=desc
-  - detail: 348305 bytes (clipped)
-    ok: true
-    url: https://github.com/openai/codex/issues/41711
-  - detail: >-
-      failed: rate limited: https://venturebeat.com/infrastructure/cursor-launches-origin-code-hosting-platform-as-github-outage-exposes-opening-in-ai-coding-race
-    ok: false
-    url: https://venturebeat.com/infrastructure/cursor-launches-origin-code-hosting-platform-as-github-outage-exposes-opening-in-ai-coding-race
-  - detail: 33885 bytes
-    ok: true
-    url: https://simonwillison.net/2026/Aug/30/understanding-chatgpt-work/
-  - detail: 2776078 bytes (clipped)
-    ok: true
-    url: https://docs.jfrog.com/releases/docs/jfrog-security-advisories
-  - detail: 33885 bytes
-    ok: true
-    url: https://simonwillison.net/2026/Aug/30/understanding-chatgpt-work/
-  - detail: 30269 bytes
-    ok: true
-    url: https://openclaw.ai/blog/openclaw-2-accidentally
-  - detail: 16073 bytes
-    ok: true
-    url: https://lore.kernel.org/asahi/20260830-b4-apple-soc-tbt-v1-0-44bc9348683c@kernel.org/
-  - detail: 38551 bytes (clipped)
-    ok: true
-    url: https://www.haiku-os.org/get-haiku/r1beta6/release-notes/
+    url: https://fzakaria.com/2026/08/28/one-flake-to-rule-them-all
   - detail: 73377 bytes (clipped)
     ok: true
     url: https://www.debian.org/vote/2026/vote_002
-  - detail: 176210 bytes
-    ok: true
-    url: https://github.com/advisories/GHSA-c5pf-6p5j-gj87
-  - detail: 5667 bytes
-    ok: true
-    url: https://lists.debian.org/debian-devel/2026/08/msg00318.html
   - detail: 4664 bytes
     ok: true
     url: https://www.debian.org/vote/2026/vote_002_results
-  - detail: 2776078 bytes (clipped)
+  - detail: 5667 bytes
     ok: true
-    url: https://docs.jfrog.com/releases/docs/jfrog-security-advisories
+    url: https://lists.debian.org/debian-devel/2026/08/msg00318.html
+  - detail: 38551 bytes (clipped)
+    ok: true
+    url: https://www.haiku-os.org/get-haiku/r1beta6/release-notes/
+  - detail: 59406 bytes (clipped)
+    ok: true
+    url: https://lists.debian.org/debian-vote/2026/08/
+  - detail: 16073 bytes
+    ok: true
+    url: https://lore.kernel.org/asahi/20260830-b4-apple-soc-tbt-v1-0-44bc9348683c@kernel.org/
+  - detail: 84483 bytes (clipped)
+    ok: true
+    url: https://lwn.net/Articles/1091231/
+  - detail: 77454 bytes
+    ok: true
+    url: https://fzakaria.com/2026/08/28/one-flake-to-rule-them-all
+  - detail: 16073 bytes
+    ok: true
+    url: https://lore.kernel.org/asahi/20260830-b4-apple-soc-tbt-v1-0-44bc9348683c@kernel.org/
+  - detail: 73377 bytes (clipped)
+    ok: true
+    url: https://www.debian.org/vote/2026/vote_002
+  - detail: 4664 bytes
+    ok: true
+    url: https://www.debian.org/vote/2026/vote_002_results
+  - detail: 38551 bytes (clipped)
+    ok: true
+    url: https://www.haiku-os.org/get-haiku/r1beta6/release-notes/
+  - detail: 293747 bytes
+    ok: true
+    url: https://github.com/anthropics/claude-code/issues/66504
+  - detail: 5667 bytes
+    ok: true
+    url: https://lists.debian.org/debian-devel/2026/08/msg00318.html
+  - detail: 77454 bytes
+    ok: true
+    url: https://fzakaria.com/2026/08/28/one-flake-to-rule-them-all
   - detail: 33885 bytes
     ok: true
     url: https://simonwillison.net/2026/Aug/30/understanding-chatgpt-work/
-  - detail: 348305 bytes (clipped)
-    ok: true
-    url: https://github.com/openai/codex/issues/41711
-  generated_at: '2026-08-31T07:34:03+00:00'
+  generated_at: '2026-08-31T07:56:36+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -249,13 +235,13 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-08-31T07:09:50+00:00'
+    fetched_at: '2026-08-31T07:35:31+00:00'
     pooled:
       added:
-        ask_hn: 2
+        ask_hn: 3
         comments: 0
-        front_page: 5
-        queries: 4
+        front_page: 4
+        queries: 7
         show_hn: 1
         top_day: 3
       snapshot_fetched_at: '2026-08-31T05:35:37+00:00'
@@ -264,7 +250,6 @@ mechanical:
     - 49435285
     - 49446705
     - 49450461
-    - 49461462
     - 49464287
     - 49468126
     - 49478426
@@ -284,6 +269,7 @@ mechanical:
     - 49497200
     - 49497227
     - 49497265
+    - 49497282
     - 49497334
     - 49497357
     - 49497404
@@ -463,27 +449,28 @@ mechanical:
       matched: 1
       matched_ids:
       - 49502508
-      published: 1
-      published_ids:
-      - 49502508
+      published: 0
+      published_ids: []
       raw: 5
     Claude:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49498201
       - 49499265
       - 49500429
       - 49501930
       - 49502101
+      - 49506519
       published: 0
       published_ids: []
       raw: 5
     Claude Code:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49498441
       - 49501930
       - 49502101
+      - 49506519
       published: 0
       published_ids: []
       raw: 5
@@ -614,14 +601,15 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     Kubernetes:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49501147
+      - 49506588
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     LLM:
       matched: 3
       matched_ids:
@@ -699,9 +687,8 @@ mechanical:
       - 49501565
       - 49503193
       - 49503609
-      published: 1
-      published_ids:
-      - 49501565
+      published: 0
+      published_ids: []
       raw: 5
     OpenTelemetry:
       matched: 0
@@ -989,7 +976,7 @@ mechanical:
       published_ids: []
       raw: 5
   runs:
-  - at: '2026-08-31T07:34:14+00:00'
+  - at: '2026-08-31T07:56:48+00:00'
     mode: daily
     model: claude-opus-5
     outcome: ok
@@ -1011,110 +998,107 @@ mechanical:
       name: feedback
       status: ok
     - detail: >-
-        {"top_stories":[{"title":"JFrog Artifactory authentication bypass gives unauthenticated network
-        attackers administrative access under default configuration","section":"Top stories","category":"Security","status":"confirmed","primary_url":"https://docs.jfrog.com/releases/docs/jfrog-security-advisorie
-      failed_tools:
-        mcp__digest__fetch_url: 1
+        {"top_stories":[{"title":"Haiku R1/beta6 ships after two years with a new userland malloc and
+        halved WebKit build time","section":"Top stories","category":"Dev tools","status":"confirmed","primary_url":"https://www.haiku-os.org/get-haiku/r1beta6/release-notes/","sources":["https://www.haiku-os.org/g
       name: select
       status: ok
       tokens:
-        in: 58
-        out: 37456
+        in: 52
+        out: 25950
       tools:
         Bash: 1
-        Glob: 5
-        Grep: 9
-        Read: 12
+        Glob: 4
+        Grep: 11
+        Read: 9
         StructuredOutput: 1
-        ToolSearch: 1
+        ToolSearch: 2
         mcp__digest__backtest: 1
-        mcp__digest__fetch_url: 21
+        mcp__digest__fetch_url: 18
         mcp__digest__guidance: 2
         mcp__digest__issue_inbox: 1
         mcp__digest__memory_query: 3
-    - detail: "The write step is complete. `data/digests/2026-08-31.md` is published and `run_gate` returns\
-        \ exit code 0.\n\n**Page as written**\n\n- **Top stories (4):** JFrog Artifactory authentication\
-        \ bypass (CVE-2026-82329, CVSS 9.8, admin under default configuration) leads on severity, followed\
-        \ by the Asahi Linux "
-      failed_tools:
-        Read: 1
+    - detail: |-
+        The gate passes with exit code 0. Digest written to `data/digests/2026-08-31.md`.
+
+        **Published:** 5 stories, 14 distinct sources, `status = "published"`, no `lede` (no through-line on the day).
+
+        - **Top stories** (3): Haiku R1/beta6 leads on measured before-and-after numbers with named causes, Asahi
       name: write
       status: ok
       tokens:
         in: 10
-        out: 13256
+        out: 9198
       tools:
-        Read: 3
+        Read: 2
         ToolSearch: 1
         Write: 1
         mcp__digest__run_gate: 1
     - detail: >-
-        {"ready":false,"findings":[{"severity":"blocking","where":"End of file (after the last \"Notes
-        on the page\" bullet)","detail":"data/digests/2026-08-31.md ends with two literal lines of leaked
-        tool-call scaffolding: `</content>` and `</invoke>`. This is agent framing that escaped into a
-        file destine
+        {"ready":false,"findings":[{"severity":"blocking","where":"Developer tools: omniflake puts about
+        twelve thousand Nix flakes behind one input, and fixes a quadratic lock-naming bug upstream","detail":"The
+        title and blurb assert the upstream fix has landed. Title: \"and fixes a quadratic lock-naming
+        b
       name: review
-      status: ok
-      tokens:
-        in: 16
-        out: 12953
-      tools:
-        Bash: 1
-        Glob: 1
-        Grep: 2
-        Read: 1
-        StructuredOutput: 1
-        ToolSearch: 1
-        mcp__digest__fetch_url: 5
-        mcp__digest__run_gate: 1
-    - detail: |-
-        All five findings are repaired and `run_gate` returns exit 0. The file now ends at the last notes bullet.
-
-        **What changed:**
-
-        1. **Leaked scaffolding (blocking)** — deleted the two literal `</content>` and `</invoke>` lines from the end of the file. The file now ends on the `lede` note.
-
-        2. **Follow
-      name: write
       status: ok
       tokens:
         in: 28
-        out: 6050
+        out: 18847
       tools:
-        Edit: 9
+        Glob: 1
+        Grep: 7
         Read: 2
+        StructuredOutput: 1
         ToolSearch: 1
+        mcp__digest__fetch_url: 8
+        mcp__digest__memory_query: 1
         mcp__digest__run_gate: 1
-    - detail: >-
-        {"findings":[{"severity":"blocking","where":"Watchlist follow-ups: A Debian developer retires
-        citing the outcome of the general resolution on LLM use","detail":"The summary states the resolution
-        \"neither endorses nor prohibits LLM use.\" The results page at www.debian.org/vote/2026/vote_002_results
-      name: review
+    - detail: |-
+        Gate passes (exit 0). All five findings repaired, no story dropped.
+
+        **Repairs made:**
+
+        1. **omniflake title and blurb (blocking)** — title now reads "and its author submits a quadratic lock-naming fix upstream", blurb now "its author submitted a lock-naming fix to Nix". Both now match the source, w
+      name: write
       status: ok
       tokens:
         in: 18
-        out: 14466
+        out: 5035
+      tools:
+        Edit: 6
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Sections with no qualifying candidate
+        / AI","detail":"The notes declare `AI` a section with no qualifying candidate, but the day's pull
+        contains a qualifying AI story that the page never mentions: Simon Willison, \"Understanding ChatGPT
+        Work
+      name: review
+      status: ok
+      tokens:
+        in: 32
+        out: 20013
       tools:
         Glob: 1
-        Grep: 4
-        Read: 1
+        Grep: 9
+        Read: 4
         StructuredOutput: 1
         ToolSearch: 1
-        mcp__digest__fetch_url: 7
+        mcp__digest__fetch_url: 8
         mcp__digest__run_gate: 1
     - detail: skipped (no story republishes the archive)
       name: dedup
       status: skip
-    - detail: 11 paragraph(s) of notes
+    - detail: 10 paragraph(s) of notes
       name: judgment
       status: ok
-    - detail: skipped (no seeded cause was reported wrong)
+    - detail: 3 cause(s) corrected in 2026-08-30
       name: miss_review
-      status: skip
+      status: ok
     - detail: data/runs/2026-08-31.yaml
       name: run_log
       status: ok
-    - detail: 33 fetch(es), 1 refused
+    - detail: 34 fetch(es), 0 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
