@@ -174,9 +174,87 @@ judgment:
     empty upcoming and active lists without declaring itself degraded, so no conference or talk
     material was available this pass. Every page cited here was fetched and read this run except the
     three retained first-pass blocks, which are unchanged.
+
+    Third pass of 2026-08-31. The page carried nine stories from the first two passes. This pass
+    adds four and replaces one, taking the day to twelve against a budget of twenty-five. No section
+    reaches its cap.
+
+    Top stories is unchanged at four and the ranking was re-checked rather than assumed. The LWN
+    summary of the rest of the Linux 7.3 merge window remains the lead. The largest new item on the
+    front page today is the kernel.org scraper report at 1,268 points, and it is published on the
+    2026-08-30 page, which I verified against the archive rather than taking from the prior pass's
+    notes. The Claude Code auto-mode code-execution chain, now at 315 points, is likewise already
+    published, but on 2026-08-29 and not 2026-08-30 as the second pass's notes state. That is a
+    small factual error in the notes already on this page. Nothing found today outranks the current
+    lead, so Top stories was left alone and no fifth slot was filled for the sake of filling it.
+
+    The Outages replacement is a status change, not a new story. The OpenAI incident block was
+    published while the incident was open and read as unmitigated since 15:04. The status page now
+    shows Resolved with all impacted services recovered, after a Monitoring update roughly half an
+    hour earlier. The page renders a twelve-hour clock with no explicit zone, so I did not assert a
+    resolution time in UTC. The first pass read the same page's start marker as 15:04 UTC, and the
+    elapsed time between the two markers is about five hours and twenty-four minutes regardless of
+    which zone the page is rendering, which is why the block leads on duration rather than on a
+    closing timestamp. No root cause is published.
+
+    Security stands down to the anchor line for the third time today, and this time the absence is a
+    deliberate call rather than an empty field. A Hacker News submission at 20:20 reports a Dropbox
+    security notice describing unauthorized access to one account between 2026-08-04 and 2026-08-21,
+    with files believed viewed or downloaded, and attributes the path to Lenovo's email verification
+    allowing an attacker to register a Lenovo ID against the victim's address and then use it to log
+    into the linked Dropbox account. If accurate that is a real identity-provider trust failure in
+    widely used consumer infrastructure. It is not publishable. The only source is one user's
+    account of a private email, the submitter states he could find no public disclosure from either
+    vendor, no advisory is locatable, and there is no affected scope, no patched version and no
+    exploitation status. Naming two companies in a breach story on that basis is exactly what the
+    source standards forbid, and the thread at 6 points with 1 comment does not carry the Hacker
+    News section either. It is worth a follow-up on whether either vendor discloses.
+
+    Bug blindness is published off the backtest rather than off today's collection. It does not
+    appear anywhere in today's Hacker News cache. It was scored as a 2026-08-30 candidate at 339
+    points, seeded out_of_scope, and it is a Dan Luu essay now at 396 points and 274 comments that
+    belongs in Engineering posts. The submitted link had the wrong slug for the site, so the post
+    was located from the danluu.com index and read at its real URL. The site dates it only to a
+    month, August 2026, and the block does not claim a day. One claim in it is attributed rather
+    than asserted: Luu states that Discourse carried code that slowed real page loads to improve web
+    performance metrics, and that rests on his own earlier post, not on a Discourse source.
+
+    Collection. Hacker News was clean and pooled a full day. Papers came back clean and large, and
+    the normal outcome held, which is that no arXiv entry cleared the ML research bar without
+    discussion signal, so the Kuleshov Group guide is the ML research addition instead. Reddit is
+    degraded for a ninth day and contributed nothing publishable, being almost entirely
+    subscription-limit and workflow chatter from two subreddits. The stars and events collections
+    both returned empty item lists while declaring themselves clean, which is a silent gap rather
+    than a declared one and is now at six days for stars. The books feed declared itself clean and
+    was not re-read this pass, since no book candidate was being ranked. Every page cited by this
+    pass was fetched and read this run.
+
+    Considered and dropped. The 984-point "I just chose words carefully" is the day's strongest
+    non-engineering front-page item, a typography note about a 1990s ASCII game guide justified by
+    word choice, and it has no section here. The swift.org post on Embedded Swift improvements in
+    6.4 would have opened Apple platforms and Languages and runtimes, both empty for days, but the
+    fetch returned undecoded gzip bytes rather than text and a swift.org release claim is not
+    publishable on a two-point submission title. Broadcom on locking down open source Python and
+    Java libraries is a Register piece at 3 points with no located vendor primary. The GitHub
+    Copilot billing changelog is a real primary but dated 2026-08-28 and at 3 points. ravynOS and
+    ReactOS 0.4.16 are project pages with thin external validation. The C++26 standard library
+    hardening post remains the weakest thing that would go in its section, and an empty section is
+    not a reason to lower the bar, so Languages and runtimes is omitted for a fourth day.
+
+    Backtest. The 2026-08-30 run log already carries a cause for all 46 candidates, so I read it
+    before submitting rather than asserting overrides blind. The five entries the earlier passes
+    flagged, including Haiku R1/beta6, the EVE Online Python 3 migration and the Casey Muratori
+    conference talk, already carry watchlist_gap, so re-submitting them would be noise. One genuine
+    exception remains and is submitted: item 49494520, Bug blindness, is seeded out_of_scope and is
+    squarely Engineering posts with no query catching it. The defect the last four days recorded is
+    unchanged. Item 49490702, the GrapheneOS memory-tagging story, is seeded out_of_scope but was
+    published on the 2026-08-29 page, and because no cause means already covered, an accurate
+    archive hit is still forced to read as a scope judgment.
 mechanical:
   digest:
     domains:
+    - calpaterson.com
+    - danluu.com
     - debian.org
     - fzakaria.com
     - github.com
@@ -198,18 +276,21 @@ mechanical:
     - 49504083
     - 49504625
     - 49506142
+    - 49508317
     - 49510000
     - 49511356
     - 49511809
     sections:
       AI: 1
+      Agentic coding: 1
       Developer tools: 2
+      Engineering posts: 1
       ML research: 1
       Outages: 1
       Security: 0
       Sources checked: 0
       Top stories: 4
-    source_count: 23
+    source_count: 26
     titles:
     - The rest of the Linux 7.3 merge window lands 15,267 changesets in -rc1
     - Haiku R1/beta6 ships after two years with a new userland malloc and halved WebKit build time
@@ -217,67 +298,90 @@ mechanical:
     - A Debian developer retires from the project over the outcome of the LLM general resolution
     - Simon Willison maps what ChatGPT Work actually does, including 223 tools and 44 skills
     - Sander Dieleman surveys the return of continuous diffusion language models
-    - OpenAI reports elevated errors and latency in ChatGPT Work
+    - Cal Paterson proposes agent memory as a file format of Markdown pages and a SQLite vector index
+    - OpenAI resolves the ChatGPT Work incident after about five and a half hours with no published cause
     - >-
       omniflake puts about twelve thousand Nix flakes behind one input, and its author submits a quadratic
       lock-naming fix upstream
     - uv merges file-level deduplication of the wheel cache, saving about 10 percent of cache size
+    - Dan Luu argues that engineers stop seeing the bugs they have learned to work around
   fetched:
-  - detail: 32750 bytes
-    ok: true
-    url: https://embracethered.com/blog/posts/2026/breaking-claude-code-opus-5-and-automode/
-  - detail: 142948 bytes
+  - detail: 129215 bytes
     ok: true
     url: https://status.openai.com/incidents/01M1C5M4K0WC8PPT0Z175RJA1E
-  - detail: 34225 bytes
+  - detail: 10027 bytes
     ok: true
-    url: https://simonwillison.net/2026/Aug/30/understanding-chatgpt-work/
-  - detail: 529694 bytes (clipped)
+    url: https://unsung.aresluna.org/i-just-chose-words-carefully/
+  - detail: 11576 bytes
+    ok: true
+    url: https://www.swift.org/blog/embedded-swift-improvements-coming-in-swift-6.4/
+  - detail: 22116 bytes
+    ok: true
+    url: https://calpaterson.com/memoryfields.html
+  - detail: 6806 bytes
+    ok: true
+    url: https://news.ycombinator.com/item?id=49514427
+  - detail: 63781 bytes (clipped)
+    ok: true
+    url: https://kuleshov-group.github.io/blog/blog/2026/how-to-build-a-diffusion-language-model/
+  - detail: 453537 bytes (clipped)
+    ok: true
+    url: https://news.ycombinator.com/item?id=49494520
+  - detail: 'failed: fetch failed: https://danluu.com/bug-blindness/: HTTP Error 404: Not Found'
+    ok: false
+    url: https://danluu.com/bug-blindness/
+  - detail: 22337 bytes (clipped)
+    ok: true
+    url: https://danluu.com/
+  - detail: 41963 bytes (clipped)
+    ok: true
+    url: https://danluu.com/bug-blind/
+  - detail: 529703 bytes (clipped)
     ok: true
     url: https://github.com/astral-sh/uv/pull/21327
-  - detail: 64428 bytes
-    ok: true
-    url: https://iggy.apache.org/blogs/2026/08/24/apache-iggy-top-level-project-tlp-graduation/
-  - detail: 56453 bytes
-    ok: true
-    url: https://discuss.python.org/t/pep-805-safe-parallel-python/108670?page=4
-  - detail: 22046 bytes
+  - detail: 22192 bytes
     ok: true
     url: https://lwn.net/SubscriberLink/1089791/94dc9b4ae3998556/
-  - detail: 101925 bytes (clipped)
-    ok: true
-    url: https://peps.python.org/pep-0805/
-  - detail: 252771 bytes
-    ok: true
-    url: https://www.cnet.com/tech/services-and-software/anthropic-sued-alleged-false-advertising-claude-max-subscription-usage-limits/
-  - detail: 34225 bytes
-    ok: true
-    url: https://simonwillison.net/2026/Aug/30/understanding-chatgpt-work/
-  - detail: 73377 bytes (clipped)
-    ok: true
-    url: https://www.debian.org/vote/2026/vote_002
-  - detail: 529694 bytes (clipped)
+  - detail: 529703 bytes (clipped)
     ok: true
     url: https://github.com/astral-sh/uv/pull/21327
-  - detail: 35301 bytes (clipped)
+  - detail: 129217 bytes
     ok: true
-    url: https://www.debian.org/vote/2026/vote_002_tally.txt
+    url: https://status.openai.com/incidents/01M1C5M4K0WC8PPT0Z175RJA1E
   - detail: 22218 bytes
     ok: true
     url: https://lwn.net/SubscriberLink/1089791/94dc9b4ae3998556/
+  - detail: 5667 bytes
+    ok: true
+    url: https://lists.debian.org/debian-devel/2026/08/msg00318.html
+  - detail: 73377 bytes (clipped)
+    ok: true
+    url: https://www.debian.org/vote/2026/vote_002
   - detail: 38551 bytes (clipped)
     ok: true
     url: https://www.haiku-os.org/get-haiku/r1beta6/release-notes/
-  - detail: 16073 bytes
+  - detail: 4664 bytes
+    ok: true
+    url: https://www.debian.org/vote/2026/vote_002_results
+  - detail: 16234 bytes
     ok: true
     url: https://lore.kernel.org/asahi/20260830-b4-apple-soc-tbt-v1-0-44bc9348683c@kernel.org/
-  - detail: 142945 bytes
+  - detail: 22116 bytes
     ok: true
-    url: https://status.openai.com/incidents/01M1C5M4K0WC8PPT0Z175RJA1E
+    url: https://calpaterson.com/memoryfields.html
+  - detail: 34225 bytes
+    ok: true
+    url: https://simonwillison.net/2026/Aug/30/understanding-chatgpt-work/
+  - detail: 41963 bytes (clipped)
+    ok: true
+    url: https://danluu.com/bug-blind/
   - detail: 111961 bytes (clipped)
     ok: true
     url: https://sander.ai/2026/08/24/continuous-dlms.html
-  generated_at: '2026-08-31T17:32:49+00:00'
+  - detail: 77454 bytes
+    ok: true
+    url: https://fzakaria.com/2026/08/28/one-flake-to-rule-them-all
+  generated_at: '2026-08-31T21:28:27+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -286,38 +390,46 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-08-31T17:15:07+00:00'
+    fetched_at: '2026-08-31T21:07:46+00:00'
     pooled:
       added:
-        ask_hn: 15
-        comments: 72
-        front_page: 39
-        queries: 73
-        show_hn: 24
-        top_day: 34
-      snapshot_fetched_at: '2026-08-31T13:51:23+00:00'
+        ask_hn: 24
+        comments: 78
+        front_page: 49
+        queries: 94
+        show_hn: 29
+        top_day: 43
+      snapshot_fetched_at: '2026-08-31T20:50:01+00:00'
     queries_backend: algolia
     seen_ids:
     - 49418694
+    - 49433481
     - 49435285
     - 49446705
     - 49450382
     - 49450461
+    - 49455557
     - 49463231
     - 49464287
-    - 49465672
-    - 49467016
     - 49467053
+    - 49467203
+    - 49467636
+    - 49467700
     - 49468126
     - 49475568
+    - 49476239
     - 49478426
     - 49480091
     - 49481141
+    - 49481918
     - 49483622
     - 49485020
+    - 49487099
+    - 49489376
     - 49491791
     - 49496067
     - 49496248
+    - 49496292
     - 49496390
     - 49496543
     - 49496707
@@ -405,8 +517,10 @@ mechanical:
     - 49503134
     - 49503285
     - 49503421
+    - 49503521
     - 49503587
     - 49503601
+    - 49503672
     - 49503934
     - 49503956
     - 49504150
@@ -470,9 +584,9 @@ mechanical:
     - 49508506
     - 49508552
     - 49508590
+    - 49508614
     - 49508629
     - 49508664
-    - 49508715
     - 49508721
     - 49508735
     - 49508763
@@ -482,6 +596,8 @@ mechanical:
     - 49508982
     - 49509142
     - 49509410
+    - 49509437
+    - 49509474
     - 49509649
     - 49509679
     - 49509733
@@ -490,6 +606,7 @@ mechanical:
     - 49510000
     - 49510066
     - 49510102
+    - 49510169
     - 49510283
     - 49510297
     - 49510302
@@ -500,13 +617,32 @@ mechanical:
     - 49510532
     - 49510540
     - 49510547
-    - 49510612
     - 49510632
+    - 49510831
+    - 49510844
     - 49511007
+    - 49511400
     - 49511534
+    - 49511720
     - 49511750
     - 49511856
     - 49511917
+    - 49511992
+    - 49512311
+    - 49512574
+    - 49512618
+    - 49512789
+    - 49512856
+    - 49512895
+    - 49512975
+    - 49513028
+    - 49513287
+    - 49513792
+    - 49513980
+    - 49514280
+    - 49514427
+    - 49514454
+    - 49514781
     source: cache
   query_yield:
     0day:
@@ -532,12 +668,13 @@ mechanical:
       published_ids: []
       raw: 5
     AWS:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49498123
       - 49502793
       - 49507929
       - 49509598
+      - 49513111
       published: 0
       published_ids: []
       raw: 5
@@ -560,7 +697,7 @@ mechanical:
       - 49509291
       - 49509591
       - 49510223
-      - 49510609
+      - 49511912
       published: 0
       published_ids: []
       raw: 5
@@ -577,7 +714,7 @@ mechanical:
       - 49498717
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     CRDT:
       matched: 0
       matched_ids: []
@@ -589,7 +726,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     CVE:
       matched: 2
       matched_ids:
@@ -599,7 +736,7 @@ mechanical:
       published_ids: []
       raw: 5
     Claude:
-      matched: 9
+      matched: 10
       matched_ids:
       - 49498201
       - 49499265
@@ -610,11 +747,12 @@ mechanical:
       - 49506819
       - 49506856
       - 49509882
+      - 49510223
       published: 0
       published_ids: []
       raw: 5
     Claude Code:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49498441
       - 49501930
@@ -622,16 +760,19 @@ mechanical:
       - 49506519
       - 49506819
       - 49507813
+      - 49512406
+      - 49513804
       published: 0
       published_ids: []
       raw: 5
     Cloudflare:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49504246
       - 49505202
       - 49506293
       - 49509922
+      - 49513758
       published: 0
       published_ids: []
       raw: 5
@@ -642,7 +783,7 @@ mechanical:
       - 49507148
       published: 0
       published_ids: []
-      raw: 3
+      raw: 4
     Cursor:
       matched: 5
       matched_ids:
@@ -661,7 +802,7 @@ mechanical:
       published_ids: []
       raw: 5
     GPU:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49497235
       - 49501611
@@ -669,6 +810,7 @@ mechanical:
       - 49507210
       - 49508179
       - 49511882
+      - 49512169
       published: 0
       published_ids: []
       raw: 5
@@ -684,16 +826,18 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     GitHub:
-      matched: 7
+      matched: 9
       matched_ids:
       - 49498867
       - 49499007
       - 49501172
       - 49502139
       - 49504482
+      - 49506058
       - 49507148
+      - 49507218
       - 49508482
       published: 0
       published_ids: []
@@ -712,22 +856,25 @@ mechanical:
       published_ids: []
       raw: 1
     Homebrew:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49513206
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     IPO:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49512558
       published: 0
       published_ids: []
       raw: 5
     Java:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49496554
       - 49497240
+      - 49513791
       published: 0
       published_ids: []
       raw: 5
@@ -738,12 +885,13 @@ mechanical:
       published_ids: []
       raw: 0
     Kafka:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49502549
+      - 49513161
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     Kagi:
       matched: 1
       matched_ids:
@@ -772,7 +920,7 @@ mechanical:
       - 49507190
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     LLM:
       matched: 4
       matched_ids:
@@ -795,7 +943,7 @@ mechanical:
       - 49511809
       raw: 5
     Linux:
-      matched: 8
+      matched: 9
       matched_ids:
       - 49498717
       - 49500985
@@ -805,6 +953,7 @@ mechanical:
       - 49507184
       - 49507363
       - 49509679
+      - 49513768
       published: 1
       published_ids:
       - 49502515
@@ -818,15 +967,16 @@ mechanical:
       published_ids: []
       raw: 2
     MCP:
-      matched: 7
+      matched: 8
       matched_ids:
       - 49499026
       - 49499629
       - 49500475
       - 49501178
       - 49507198
-      - 49511022
       - 49512072
+      - 49512825
+      - 49513386
       published: 0
       published_ids: []
       raw: 5
@@ -844,17 +994,18 @@ mechanical:
       published_ids: []
       raw: 1
     Nvidia:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49497235
       - 49500489
       - 49504347
       - 49506490
       - 49509043
-      - 49509884
+      - 49514285
+      - 49514523
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     OpenAI:
       matched: 8
       matched_ids:
@@ -882,12 +1033,13 @@ mechanical:
       published_ids: []
       raw: 0
     Postgres:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49504386
       - 49505764
       - 49510746
       - 49511414
+      - 49513867
       published: 0
       published_ids: []
       raw: 5
@@ -906,7 +1058,7 @@ mechanical:
       published_ids: []
       raw: 4
     Python:
-      matched: 8
+      matched: 10
       matched_ids:
       - 49496912
       - 49497928
@@ -916,6 +1068,8 @@ mechanical:
       - 49509463
       - 49510523
       - 49511026
+      - 49513528
+      - 49513791
       published: 0
       published_ids: []
       raw: 5
@@ -962,7 +1116,7 @@ mechanical:
       - 49508276
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     Spring Boot:
       matched: 0
       matched_ids: []
@@ -970,8 +1124,9 @@ mechanical:
       published_ids: []
       raw: 0
     Swift:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49513779
       published: 0
       published_ids: []
       raw: 5
@@ -980,7 +1135,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     TypeScript:
       matched: 2
       matched_ids:
@@ -1022,7 +1177,7 @@ mechanical:
       - 49503193
       published: 0
       published_ids: []
-      raw: 2
+      raw: 4
     acquisition:
       matched: 0
       matched_ids: []
@@ -1030,7 +1185,7 @@ mechanical:
       published_ids: []
       raw: 0
     agentic:
-      matched: 10
+      matched: 13
       matched_ids:
       - 49497440
       - 49498634
@@ -1042,6 +1197,9 @@ mechanical:
       - 49509877
       - 49510267
       - 49510612
+      - 49512825
+      - 49513028
+      - 49514820
       published: 0
       published_ids: []
       raw: 5
@@ -1055,14 +1213,15 @@ mechanical:
       - 49504287
       - 49506927
       - 49506932
-      - 49507248
+      - 49513989
       published: 0
       published_ids: []
       raw: 5
     breach:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49502298
+      - 49514427
       published: 0
       published_ids: []
       raw: 5
@@ -1087,7 +1246,7 @@ mechanical:
       - 49508054
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     drug discovery:
       matched: 0
       matched_ids: []
@@ -1108,7 +1267,7 @@ mechanical:
       published_ids: []
       raw: 5
     iOS:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49498013
       - 49499789
@@ -1116,6 +1275,7 @@ mechanical:
       - 49509167
       - 49509776
       - 49510239
+      - 49514329
       published: 0
       published_ids: []
       raw: 5
@@ -1170,15 +1330,16 @@ mechanical:
       published_ids: []
       raw: 5
     outage:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49503270
       - 49504482
       - 49511356
+      - 49513274
       published: 1
       published_ids:
       - 49511356
-      raw: 3
+      raw: 4
     protein folding:
       matched: 0
       matched_ids: []
@@ -1186,12 +1347,14 @@ mechanical:
       published_ids: []
       raw: 0
     terminal:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49496357
       - 49497472
       - 49510102
       - 49511126
+      - 49514393
+      - 49514420
       published: 0
       published_ids: []
       raw: 5
@@ -1426,6 +1589,156 @@ mechanical:
       name: run_log
       status: ok
     - detail: 18 fetch(es), 0 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-08-31T21:28:35+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-08-31.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-30
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[],"stories":[{"title":"OpenAI resolves the ChatGPT Work incident after about five
+        and a half hours with no published cause","section":"Outages","category":"Outage","status":"confirmed","primary_url":"https://status.openai.com/incidents/01M1C5M4K0WC8PPT0Z175RJA1E","sources":["https://
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: select
+      status: ok
+      tokens:
+        in: 50
+        out: 21398
+      tools:
+        Bash: 3
+        Glob: 3
+        Grep: 9
+        Read: 5
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 10
+        mcp__digest__guidance: 3
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 2
+    - detail: |-
+        Gate passes (exit 0). The warnings are memory staleness notices, not digest errors.
+
+        ## Third pass written to `data/digests/2026-08-31.md`
+
+        **Displaced (1, as named):**
+        - "OpenAI reports elevated errors and latency in ChatGPT Work" — removed whole, superseded by the resolved version.
+
+        **Added (4):**
+      name: write
+      status: ok
+      tokens:
+        in: 18
+        out: 9863
+      tools:
+        Edit: 7
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"findings":[{"severity":"blocking","where":"Security","detail":"The section states the code-execution
+        chain against the coding agent's auto mode \"is already the Security lead of the 2026-08-30 page
+        under the title ... with the same primary source.\" The wrong date is published. Verified: that
+        stor
+      failed_tools:
+        Grep: 1
+      name: review
+      status: ok
+      tokens:
+        in: 26
+        out: 15404
+      tools:
+        Bash: 1
+        Glob: 1
+        Grep: 14
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 2
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes (exit 0). All six findings repaired.
+
+        **Blocking**
+        - **Security date.** The auto-mode code-execution chain is the Security lead of the **2026-08-29** page, not 2026-08-30. Corrected in the section body and in the second-pass note. The third-pass note that flagged the error now records th
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: write
+      status: ok
+      tokens:
+        in: 28
+        out: 6768
+      tools:
+        Edit: 9
+        Read: 1
+        ToolSearch: 2
+        mcp__digest__fetch_url: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":true,"findings":[{"severity":"minor","where":"Top stories (Linux 7.3), Top stories (Asahi
+        USB4), Outages (ChatGPT Work)","detail":"Three blocks carry a link labeled [discussion] that points
+        to a Hacker News submission with zero comments: item 49511809 at 2 points / 0 comments on the
+        lead, i
+      name: review
+      status: ok
+      tokens:
+        in: 46
+        out: 24379
+      tools:
+        Bash: 1
+        Glob: 5
+        Grep: 8
+        Read: 9
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 13
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 8 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 1 cause(s) corrected in 2026-08-30
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-08-31.yaml
+      name: run_log
+      status: ok
+    - detail: 25 fetch(es), 1 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
