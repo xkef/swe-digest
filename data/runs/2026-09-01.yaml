@@ -127,21 +127,122 @@ judgment:
     threads now are whether OpenAI responds on the third agent group, which the METR and Redwood
     scope explicitly excluded, and whether other labs disclose comparable eval-environment escapes.
     The AnkiDroid removal deadline of 2026-09-11 is a dated check worth carrying.
+
+    Third pass of 2026-09-01. The page carried 13 stories from the first two passes. This pass adds
+    five and displaces nothing, taking the day to 18 against a budget of 25. `Top stories` goes to
+    five of five, `Outages` to two, `Developer tools` to two, and `Apple platforms` and `Linux and
+    kernel` open at one each. No section exceeds its cap and `displace` is empty.
+
+    Ranking, and the one change to settled order. `top_stories` is submitted as the full ranked list
+    of five, not as the single addition, because the insertion changes the lead and the ordering has
+    to be explicit. Claude Fable 5.1 takes the lead ahead of Chrome Manifest V2. The four previously
+    published Top stories are carried unchanged in their existing relative order, with their
+    existing titles and primary URLs, and only Fable 5.1 is new. That is deliberate: one justified
+    insertion at the top rather than a reshuffle of ranks two previous passes already settled. The
+    nine published non-Top blocks are unchanged and retained, and their absence from `stories` is
+    not a request to remove them.
+
+    Why the lead moved. Fable 5.1 is a frontier model release confirmed from Anthropic's own
+    announcement page, published 17:53 UTC, well after the second pass closed. It clears the Chrome
+    MV2 milestone on operational impact for two reasons that are cost and policy rather than
+    benchmark position: a stated 25 percent reduction for typical token-billed workloads and up to
+    approximately 45 percent for highly agentic work, delivered entirely through cache-read pricing,
+    and a stated safeguard change permitting vulnerability discovery while still refusing exploit
+    development. Both are things a working engineer acts on. The benchmark table is reported as
+    Anthropic's own, and the block carries Anthropic's own stated limitation that Fable 5.1 was
+    evaluated with production safeguards enabled and scored zero on tasks where those safeguards
+    intervened. That caveat is the reason the numbers are attributed rather than asserted.
+
+    The Google Cloud incident is the first outage this day that carries a stated cause from the
+    operator. Google's incident text names routine network fabric path maintenance in two clusters
+    in us-central1-b, and states maintenance in the region has been halted for proactive audits. It
+    is filed `developing` because the incident was still Active at fetch time with Cloud Run and App
+    Engine listed as impacted and no post-incident report published. The incident permalink resolves
+    and is cited rather than the rolling status page, and both are recorded. Worth carrying forward:
+    this is the second Google Cloud incident in under two weeks whose stated cause is planned
+    maintenance removing network capacity, after the 2026-08-20 us-west1 report attributing that
+    outage to scheduled fiber optic maintenance plus automated rerouting that failed to redistribute
+    traffic. Two incidents is a pattern worth naming and not yet a trend worth asserting, so the
+    block states both and draws no further conclusion.
+
+    Rejected on a source that does not support its own headline. The HN submission at 49523754,
+    "Play Store blocks AuroraStore, hurting GrapheneOS users", took 291 points and links to GitLab
+    issue AuroraOSS/AuroraStore#1566. I fetched that issue. It is a single user bug report that
+    Aurora Store returns "Server busy, please try again later" when installing via an anonymous
+    account on a Fairphone 5 running CalyxOS, and the reporter explicitly states he does not know
+    whether the issue is specific to anonymous accounts. Nothing in the primary attributes the
+    failure to Google, to a Play Store block, or to GrapheneOS. The submitted title asserts a cause
+    the linked source does not establish. It is not published in any form, including as
+    `developing`, because the gap here is not uncertainty about a real event but a claim invented in
+    the title. This would have converged neatly with the AnkiDroid Play removal already leading this
+    page, which is exactly why it deserved the check rather than the pairing.
+
+    Not published, judged rather than blocked. The transformer-on-ARC post at 49519939 took 385
+    points and is a benchmark claim by an individual author against unnamed LLMs. The second pass
+    declined it, nothing about it changed, and the standing rule against publishing AI benchmark
+    claims without method or primary source applies. Atlas from World Labs at 49525160 is new but
+    arrived at 37 points with zero comments and no external validation, so it fails the
+    ecosystem-attention bar rather than a sourcing one, and `AI` stays empty of anything but the Top
+    story. The Ubisoft SteamOS block at 49523033 rests on GamingOnLinux secondary reporting with no
+    Ubisoft primary located. The two EFF policy posts and the Dwarf Fortress creator interview are
+    commentary without an engineering decision behind them.
+
+    Sections still omitted with nothing verified to report: `ML research`, `Engineering posts`,
+    `Books`, `Markets and companies`, `Reddit and social pulse`, `Watchlist follow-ups`. Reasons
+    from the earlier passes are unchanged. The io_uring measurement post could have gone to
+    `Engineering posts` and is filed under `Linux and kernel` instead, because its findings are
+    about kernel behaviour, block-layer request merging, sqpoll thread cost, and the O_DIRECT
+    page-cache path, and `Linux and kernel` names io_uring explicitly. A reader could not infer that
+    call from the page, so it is recorded here.
+
+    Degraded and unverified collection. Reddit improved from 9 of 28 subreddits to 12 of 28 but is
+    still under the floor of 14, with top-of-day at 2 of 28, so `Reddit and social pulse` stays
+    omitted on coverage grounds for the third consecutive pass rather than because the subreddits
+    were quiet. The events cache is identical to the stub the second pass flagged: fetched_at at
+    midnight, window_hours 0, both collections empty, and an empty degraded list, so it reports
+    healthy while having collected nothing. That is now three passes in one day with the same defect
+    and it should be read as a collector fault, not as an absence of conference material. The stars
+    cache again returned zero items from the gh-events backend with no degradation flag. HN itself
+    was clean and fresh at 18:53 UTC.
+
+    Backtest. The tool again reported 49 candidates for 2026-08-31 and seeded zero default causes,
+    as it has all week, so every submitted cause is a judgment rather than a correction to a
+    default. This is the third pass scoring the same day, and passes one and two already recorded
+    ten causes for it. To avoid re-recording the same calls as churn, `miss_review` carries only two
+    candidates neither earlier pass addressed, both engineering-relevant and both unmatched by any
+    watchlist query: 49507822, the OpenShot 4.0 release at 484 points, and 49499891, the
+    Coordination Headwind organizational-engineering essay at 142 points. The recurring finding
+    across all three passes is that the backtest seeds nothing, which makes the seeded-cause
+    exception mechanism inert and pushes the whole judgment onto the select step every day. That is
+    worth the weekly review's attention as a tool defect rather than a selection one.
+
+    Tooling note for the weekly review, repeating a fault the first pass also recorded. The first
+    tool call of this run used Bash to list the cache directory and check whether a digest already
+    existed for the day, before I had re-read the granted tool list. Bash is not in the granted set
+    for this step. No further call used it, nothing was written, and the same listing is obtainable
+    through Glob. The first pass of this day logged the identical mistake, so it is a repeat rather
+    than a one-off, and the step prompt's tool list is worth reading before the first call rather
+    than after it.
 mechanical:
   digest:
     domains:
     - aboutamazon.com
+    - anthropic.com
     - antigravity.google
     - aws.amazon.com
+    - blog.mozilla.org
     - blog.pypi.org
     - cnet.com
     - developer.chrome.com
     - discuss.python.org
     - dwarkesh.com
+    - ersc.io
+    - frn.sh
     - github.com
     - metr.org
     - news.ycombinator.com
     - reactos.org
+    - status.cloud.google.com
     - tailscale.com
     - webiterate.dev
     - youtube.com
@@ -158,19 +259,27 @@ mechanical:
     - 49517420
     - 49517537
     - 49520022
+    - 49521623
+    - 49521973
+    - 49523466
+    - 49525297
+    - 49525378
     sections:
       Agentic coding: 1
-      Developer tools: 1
+      Apple platforms: 1
+      Developer tools: 2
       Hacker News: 1
       Infrastructure: 2
       Languages and runtimes: 1
+      Linux and kernel: 1
       New videos: 1
-      Outages: 1
+      Outages: 2
       Security: 1
       Sources checked: 0
-      Top stories: 4
-    source_count: 26
+      Top stories: 5
+    source_count: 37
     titles:
+    - Anthropic releases Claude Fable 5.1 and Claude Mythos 5.1
     - Chrome Web Store removes all remaining Manifest V2 extensions, including uBlock Origin
     - AWS signs an agreement to acquire DuckLabs, the company behind DuckDB
     - PyPI stops counting metadata requests as package downloads
@@ -178,136 +287,88 @@ mechanical:
     - Google Antigravity adds a /boost multi-agent reasoning mode
     - METR discloses two security incidents affecting its own infrastructure
     - Microsoft Exchange Online outage leaves Outlook users without mail access
+    - Google Cloud reports network degradation in us-central1-b after routine fabric maintenance
     - ReactOS 0.4.16 ships after 18 months of development
+    - Jujutsu creator Martin von Zweigbergk becomes CTO of East River Source Control
     - PEP 805 proposes thread-scoped object sharing, and Guido van Rossum says he wishes Python had stuck
       with the GIL
+    - Firefox for iOS ships a built-in ad blocker because iOS has no extension path
+    - 'Measuring io_uring without readahead: one in-flight request gives the block layer nothing to merge'
     - Tailscale releases tailcat, its data plane without its control plane
     - EC2 R9g and R9gd instances on AWS Graviton5 reach general availability
     - A walkthrough of the OpenAI agent attack on Hugging Face
     - An HN thread reports old.reddit.com no longer serves logged-out users
   fetched:
-  - detail: 560768 bytes (clipped)
+  - detail: 447090 bytes (clipped)
     ok: true
-    url: https://kubernetes.io/blog/2026/08/26/kubernetes-v1-37-release/
-  - detail: 174857 bytes
+    url: https://www.anthropic.com/claude-fable-and-mythos-5-1
+  - detail: 518159 bytes
     ok: true
-    url: https://www.aboutamazon.com/news/company-news/aws-ducklabs
-  - detail: 177477 bytes
+    url: https://status.cloud.google.com/
+  - detail: 43522 bytes
     ok: true
-    url: https://www.githubstatus.com/history
-  - detail: 99185 bytes
+    url: https://gitlab.com/AuroraOSS/AuroraStore/-/work_items/1566
+  - detail: 149339 bytes (clipped)
     ok: true
-    url: https://webiterate.dev/google-removed-extensions-ublock-origin-108/
-  - detail: 317085 bytes (clipped)
+    url: https://status.cloud.google.com/incidents.json
+  - detail: 67798 bytes
     ok: true
-    url: https://boschko.ca/g1-ble-rce/
-  - detail: 133150 bytes
+    url: https://blog.mozilla.org/en/firefox/ad-blocker-on-ios/
+  - detail: 28157 bytes
+    ok: true
+    url: https://ersc.io/blog/martin-joins-ersc
+  - detail: 16420 bytes
+    ok: true
+    url: https://frn.sh/io-uring/
+  - detail: 447479 bytes (clipped)
+    ok: true
+    url: https://www.anthropic.com/claude-fable-and-mythos-5-1
+  - detail: 64923 bytes
+    ok: true
+    url: https://metr.org/blog/2026-08-31-security-update/
+  - detail: 447479 bytes (clipped)
+    ok: true
+    url: https://www.anthropic.com/claude-fable-and-mythos-5-1
+  - detail: 134385 bytes
     ok: true
     url: https://developer.chrome.com/docs/extensions/develop/migrate/mv2-deprecation-timeline
-  - detail: 309205 bytes (clipped)
+  - detail: 99184 bytes
     ok: true
-    url: https://www.githubstatus.com/api/v2/incidents.json
-  - detail: 'failed: fetch failed: https://www.reuters.com/business/media-telecom/openai-end-partnership-with-spacexs-cursor-2026-08-29/:
-      HTTP Error 401: HTTP Forbidden'
-    ok: false
-    url: https://www.reuters.com/business/media-telecom/openai-end-partnership-with-spacexs-cursor-2026-08-29/
-  - detail: 511198 bytes (clipped)
+    url: https://webiterate.dev/google-removed-extensions-ublock-origin-108/
+  - detail: 28157 bytes
     ok: true
-    url: https://github.com/ankidroid/Anki-Android/issues/21656
-  - detail: 'failed: fetch failed: https://windowsreport.com/microsoft-365-outage-knocks-down-outlook-teams-store-and-azure-for-many/:
-      HTTP Error 403: Forbidden'
-    ok: false
-    url: https://windowsreport.com/microsoft-365-outage-knocks-down-outlook-teams-store-and-azure-for-many/
-  - detail: 65412 bytes
+    url: https://ersc.io/blog/martin-joins-ersc
+  - detail: 64923 bytes
     ok: true
-    url: https://iggy.apache.org/blogs/2026/08/24/apache-iggy-top-level-project-tlp-graduation/
-  - detail: 220454 bytes (clipped)
-    ok: true
-    url: https://www.dwarkesh.com/p/openai-huggingface
-  - detail: 98559 bytes
-    ok: true
-    url: https://metr.org/blog/
-  - detail: 404424 bytes (clipped)
-    ok: true
-    url: https://news.ycombinator.com/item?id=49498787
-  - detail: 132490 bytes
-    ok: true
-    url: https://metr.org/research
-  - detail: 'failed: fetch failed: https://www.planned-obsolescence.org/p/the-hugging-face-attack: HTTP
-      Error 404: Not Found'
-    ok: false
-    url: https://www.planned-obsolescence.org/p/the-hugging-face-attack
-  - detail: 540639 bytes (clipped)
-    ok: true
-    url: https://github.com/astral-sh/uv/pull/21327
-  - detail: 32750 bytes
-    ok: true
-    url: https://embracethered.com/blog/posts/2026/breaking-claude-code-opus-5-and-automode/
-  - detail: 145626 bytes
-    ok: true
-    url: https://tailscale.com/blog/tailcat
-  - detail: 92484 bytes
-    ok: true
-    url: https://antigravity.google/docs/boost/
+    url: https://metr.org/blog/2026-08-31-security-update/
   - detail: 47248 bytes
     ok: true
     url: https://blog.pypi.org/posts/2026-08-31-download-counts/
-  - detail: 11576 bytes
+  - detail: 514140 bytes (clipped)
     ok: true
-    url: https://www.swift.org/blog/embedded-swift-improvements-coming-in-swift-6.4/
-  - detail: 29991 bytes
+    url: https://github.com/ankidroid/Anki-Android/issues/21656
+  - detail: 25419 bytes
     ok: true
-    url: https://reactos.org/project-news/reactos-0416-released/
-  - detail: 98559 bytes
+    url: https://status.cloud.google.com/incidents/J5ia5t9p3g9Q5Wi7r8Ev
+  - detail: 38433 bytes
     ok: true
-    url: https://metr.org/blog/
-  - detail: 133150 bytes
+    url: https://status.cloud.google.com/incidents/utF3FMFdQfwBzJcGG6vf
+  - detail: 16420 bytes
     ok: true
-    url: https://developer.chrome.com/docs/extensions/develop/migrate/mv2-deprecation-timeline
-  - detail: 220454 bytes (clipped)
+    url: https://frn.sh/io-uring/
+  - detail: 220471 bytes (clipped)
     ok: true
     url: https://www.dwarkesh.com/p/openai-huggingface
-  - detail: 'failed: fetch failed: https://metr.org/blog/2026-08-31-update-on-security-at-metr/: HTTP
-      Error 404: Not Found'
-    ok: false
-    url: https://metr.org/blog/2026-08-31-update-on-security-at-metr/
-  - detail: 64923 bytes
-    ok: true
-    url: https://metr.org/blog/2026-08-31-security-update/
-  - detail: 145626 bytes
-    ok: true
-    url: https://tailscale.com/blog/tailcat
-  - detail: 64923 bytes
-    ok: true
-    url: https://metr.org/blog/2026-08-31-security-update/
   - detail: 174943 bytes
     ok: true
     url: https://www.aboutamazon.com/news/company-news/aws-ducklabs
-  - detail: 133154 bytes
+  - detail: 145626 bytes
     ok: true
-    url: https://developer.chrome.com/docs/extensions/develop/migrate/mv2-deprecation-timeline
-  - detail: 99059 bytes
-    ok: true
-    url: https://webiterate.dev/google-removed-extensions-ublock-origin-108/
-  - detail: 220454 bytes (clipped)
-    ok: true
-    url: https://www.dwarkesh.com/p/openai-huggingface
-  - detail: 511196 bytes (clipped)
-    ok: true
-    url: https://github.com/ankidroid/Anki-Android/issues/21656
+    url: https://tailscale.com/blog/tailcat
   - detail: 18649 bytes
     ok: true
     url: https://antigravity.google/docs/boost/
-  - detail: 29991 bytes
-    ok: true
-    url: https://reactos.org/project-news/reactos-0416-released/
-  - detail: 92484 bytes
-    ok: true
-    url: https://antigravity.google/docs/boost
-  - detail: 66120 bytes
-    ok: true
-    url: https://discuss.python.org/t/pep-805-safe-parallel-python/108670?page=4
-  generated_at: '2026-09-01T14:48:53+00:00'
+  generated_at: '2026-09-01T19:17:36+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -316,20 +377,19 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-09-01T14:20:04+00:00'
+    fetched_at: '2026-09-01T18:53:07+00:00'
     pooled:
       added:
-        ask_hn: 22
-        comments: 48
-        front_page: 24
-        queries: 86
-        show_hn: 18
-        top_day: 33
-      snapshot_fetched_at: '2026-09-01T14:09:02+00:00'
+        ask_hn: 32
+        comments: 78
+        front_page: 43
+        queries: 139
+        show_hn: 28
+        top_day: 61
+      snapshot_fetched_at: '2026-09-01T18:30:52+00:00'
     queries_backend: algolia
     seen_ids:
     - 49424322
-    - 49434518
     - 49441609
     - 49446091
     - 49455557
@@ -337,17 +397,19 @@ mechanical:
     - 49467203
     - 49467636
     - 49467700
-    - 49475924
     - 49476239
     - 49477925
     - 49484004
     - 49486951
     - 49489376
+    - 49490498
+    - 49491398
     - 49492094
     - 49493468
     - 49494181
     - 49495171
     - 49496292
+    - 49497741
     - 49500504
     - 49503521
     - 49504352
@@ -415,6 +477,7 @@ mechanical:
     - 49509410
     - 49509437
     - 49509649
+    - 49509655
     - 49509679
     - 49509876
     - 49509882
@@ -462,11 +525,13 @@ mechanical:
     - 49514013
     - 49514083
     - 49514209
+    - 49514224
     - 49514280
     - 49514362
     - 49514420
     - 49514427
     - 49514447
+    - 49514471
     - 49514472
     - 49514729
     - 49514781
@@ -478,6 +543,8 @@ mechanical:
     - 49515051
     - 49515138
     - 49515320
+    - 49515499
+    - 49515558
     - 49515662
     - 49515667
     - 49515830
@@ -498,9 +565,12 @@ mechanical:
     - 49517377
     - 49517420
     - 49517448
+    - 49517472
+    - 49517492
     - 49517537
     - 49517584
     - 49517624
+    - 49517740
     - 49517768
     - 49517916
     - 49518062
@@ -531,10 +601,50 @@ mechanical:
     - 49521169
     - 49521315
     - 49521409
+    - 49521456
+    - 49521623
     - 49521882
+    - 49521905
     - 49521942
-    - 49522064
+    - 49521973
     - 49522373
+    - 49522374
+    - 49522503
+    - 49522541
+    - 49522719
+    - 49522896
+    - 49522897
+    - 49522905
+    - 49522954
+    - 49522967
+    - 49523033
+    - 49523361
+    - 49523387
+    - 49523466
+    - 49523473
+    - 49523682
+    - 49523720
+    - 49523754
+    - 49523765
+    - 49524199
+    - 49524246
+    - 49524320
+    - 49524381
+    - 49524447
+    - 49524564
+    - 49524608
+    - 49524704
+    - 49524789
+    - 49524885
+    - 49525153
+    - 49525160
+    - 49525184
+    - 49525297
+    - 49525378
+    - 49525420
+    - 49525496
+    - 49525527
+    - 49525814
     source: cache
   query_yield:
     0day:
@@ -544,7 +654,7 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 8
+      matched: 10
       matched_ids:
       - 49506655
       - 49508664
@@ -552,19 +662,22 @@ mechanical:
       - 49510302
       - 49511007
       - 49512856
+      - 49517928
       - 49518316
       - 49521315
+      - 49523720
       published: 0
       published_ids: []
       raw: 5
     AWS:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49507929
       - 49509598
       - 49513111
       - 49515659
       - 49516696
+      - 49526126
       published: 2
       published_ids:
       - 49513111
@@ -577,7 +690,7 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 8
+      matched: 11
       matched_ids:
       - 49507682
       - 49508330
@@ -587,15 +700,19 @@ mechanical:
       - 49511912
       - 49514093
       - 49516154
+      - 49518488
+      - 49519469
+      - 49524078
       published: 0
       published_ids: []
       raw: 5
     Apple Silicon:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49525967
       published: 0
       published_ids: []
-      raw: 0
+      raw: 2
     Azure:
       matched: 1
       matched_ids:
@@ -615,7 +732,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     CVE:
       matched: 1
       matched_ids:
@@ -624,7 +741,7 @@ mechanical:
       published_ids: []
       raw: 5
     Claude:
-      matched: 8
+      matched: 11
       matched_ids:
       - 49506519
       - 49506819
@@ -634,11 +751,16 @@ mechanical:
       - 49516904
       - 49518488
       - 49519639
-      published: 0
-      published_ids: []
+      - 49525378
+      - 49525473
+      - 49525496
+      published: 2
+      published_ids:
+      - 49525378
+      - 49525496
       raw: 5
     Claude Code:
-      matched: 8
+      matched: 9
       matched_ids:
       - 49506519
       - 49506819
@@ -648,11 +770,12 @@ mechanical:
       - 49515667
       - 49516318
       - 49520778
+      - 49524766
       published: 0
       published_ids: []
       raw: 5
     Cloudflare:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49505202
       - 49506293
@@ -660,6 +783,7 @@ mechanical:
       - 49511393
       - 49513758
       - 49521909
+      - 49524759
       published: 0
       published_ids: []
       raw: 3
@@ -670,9 +794,9 @@ mechanical:
       - 49507148
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     Cursor:
-      matched: 6
+      matched: 9
       matched_ids:
       - 49504482
       - 49508447
@@ -680,17 +804,22 @@ mechanical:
       - 49516583
       - 49520816
       - 49521111
+      - 49524480
+      - 49524658
+      - 49524784
       published: 0
       published_ids: []
       raw: 5
     GCP:
-      matched: 0
-      matched_ids: []
-      published: 0
-      published_ids: []
+      matched: 1
+      matched_ids:
+      - 49524005
+      published: 1
+      published_ids:
+      - 49524005
       raw: 5
     GPU:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49507210
       - 49508179
@@ -698,15 +827,18 @@ mechanical:
       - 49512169
       - 49514996
       - 49517584
+      - 49523381
       published: 0
       published_ids: []
       raw: 5
     Gemini:
-      matched: 0
-      matched_ids: []
+      matched: 2
+      matched_ids:
+      - 49525043
+      - 49526312
       published: 0
       published_ids: []
-      raw: 3
+      raw: 5
     Ghostty:
       matched: 0
       matched_ids: []
@@ -714,7 +846,7 @@ mechanical:
       published_ids: []
       raw: 2
     GitHub:
-      matched: 10
+      matched: 11
       matched_ids:
       - 49504482
       - 49506058
@@ -726,6 +858,7 @@ mechanical:
       - 49511028
       - 49518708
       - 49520322
+      - 49524928
       published: 0
       published_ids: []
       raw: 5
@@ -747,7 +880,7 @@ mechanical:
       - 49513206
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     IPO:
       matched: 1
       matched_ids:
@@ -756,11 +889,12 @@ mechanical:
       published_ids: []
       raw: 5
     Java:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49513791
       - 49519660
       - 49520795
+      - 49522611
       published: 0
       published_ids: []
       raw: 5
@@ -808,13 +942,14 @@ mechanical:
       published_ids: []
       raw: 2
     LLM:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49508764
       - 49513542
       - 49514445
       - 49519588
       - 49522064
+      - 49525220
       published: 0
       published_ids: []
       raw: 5
@@ -826,7 +961,7 @@ mechanical:
       published_ids: []
       raw: 5
     Linux:
-      matched: 10
+      matched: 11
       matched_ids:
       - 49504757
       - 49507184
@@ -838,6 +973,7 @@ mechanical:
       - 49517745
       - 49520983
       - 49521449
+      - 49523033
       published: 0
       published_ids: []
       raw: 5
@@ -847,9 +983,9 @@ mechanical:
       - 49511882
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     MCP:
-      matched: 8
+      matched: 9
       matched_ids:
       - 49507198
       - 49512072
@@ -859,6 +995,7 @@ mechanical:
       - 49518309
       - 49520552
       - 49520627
+      - 49523284
       published: 0
       published_ids: []
       raw: 5
@@ -869,12 +1006,13 @@ mechanical:
       published_ids: []
       raw: 5
     Neovim:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49521521
+      - 49524817
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     Nvidia:
       matched: 10
       matched_ids:
@@ -892,15 +1030,17 @@ mechanical:
       published_ids: []
       raw: 5
     OpenAI:
-      matched: 7
+      matched: 9
       matched_ids:
       - 49509291
       - 49509602
       - 49511084
       - 49511824
+      - 49513840
       - 49515738
       - 49516354
       - 49516583
+      - 49524784
       published: 0
       published_ids: []
       raw: 5
@@ -926,7 +1066,7 @@ mechanical:
       - 49513867
       published: 0
       published_ids: []
-      raw: 5
+      raw: 3
     Prometheus:
       matched: 0
       matched_ids: []
@@ -941,16 +1081,19 @@ mechanical:
       published: 1
       published_ids:
       - 49515412
-      raw: 2
+      raw: 3
     Python:
-      matched: 6
+      matched: 9
       matched_ids:
       - 49508906
       - 49510523
       - 49511026
       - 49513528
       - 49513791
+      - 49519751
       - 49521517
+      - 49523988
+      - 49526210
       published: 1
       published_ids:
       - 49508906
@@ -968,7 +1111,7 @@ mechanical:
       published_ids: []
       raw: 5
     Rust:
-      matched: 11
+      matched: 13
       matched_ids:
       - 49506050
       - 49506685
@@ -981,6 +1124,8 @@ mechanical:
       - 49520228
       - 49521725
       - 49522064
+      - 49523192
+      - 49526131
       published: 0
       published_ids: []
       raw: 5
@@ -989,7 +1134,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 4
     SQLite:
       matched: 3
       matched_ids:
@@ -1018,7 +1163,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     TypeScript:
       matched: 1
       matched_ids:
@@ -1054,20 +1199,22 @@ mechanical:
       published_ids: []
       raw: 5
     acquires:
-      matched: 0
-      matched_ids: []
-      published: 0
-      published_ids: []
-      raw: 4
-    acquisition:
       matched: 1
       matched_ids:
-      - 49521111
+      - 49522973
       published: 0
       published_ids: []
-      raw: 1
+      raw: 5
+    acquisition:
+      matched: 2
+      matched_ids:
+      - 49521111
+      - 49524784
+      published: 0
+      published_ids: []
+      raw: 3
     agentic:
-      matched: 7
+      matched: 11
       matched_ids:
       - 49510612
       - 49512825
@@ -1076,6 +1223,10 @@ mechanical:
       - 49516465
       - 49518246
       - 49519477
+      - 49522967
+      - 49523168
+      - 49524016
+      - 49525043
       published: 0
       published_ids: []
       raw: 5
@@ -1096,10 +1247,11 @@ mechanical:
       published_ids: []
       raw: 5
     breach:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49514427
       - 49522254
+      - 49525438
       published: 0
       published_ids: []
       raw: 5
@@ -1110,9 +1262,10 @@ mechanical:
       published_ids: []
       raw: 0
     coding agent:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49511424
+      - 49522679
       published: 0
       published_ids: []
       raw: 5
@@ -1123,7 +1276,7 @@ mechanical:
       - 49521893
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     drug discovery:
       matched: 0
       matched_ids: []
@@ -1131,11 +1284,12 @@ mechanical:
       published_ids: []
       raw: 0
     eBPF:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49522676
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     exploit:
       matched: 1
       matched_ids:
@@ -1144,7 +1298,7 @@ mechanical:
       published_ids: []
       raw: 5
     iOS:
-      matched: 8
+      matched: 10
       matched_ids:
       - 49507234
       - 49509167
@@ -1154,8 +1308,11 @@ mechanical:
       - 49521885
       - 49521897
       - 49521973
-      published: 0
-      published_ids: []
+      - 49522487
+      - 49524861
+      published: 1
+      published_ids:
+      - 49521973
       raw: 5
     incident:
       matched: 3
@@ -1171,11 +1328,13 @@ mechanical:
       matched_ids:
       - 49517662
       - 49521623
-      published: 0
-      published_ids: []
+      published: 2
+      published_ids:
+      - 49517662
+      - 49521623
       raw: 5
     kernel:
-      matched: 7
+      matched: 8
       matched_ids:
       - 49506529
       - 49507184
@@ -1184,6 +1343,7 @@ mechanical:
       - 49520191
       - 49521376
       - 49521449
+      - 49523053
       published: 0
       published_ids: []
       raw: 5
@@ -1196,7 +1356,7 @@ mechanical:
       - 49519473
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     macOS:
       matched: 8
       matched_ids:
@@ -1218,32 +1378,37 @@ mechanical:
       published_ids: []
       raw: 5
     outage:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49504482
       - 49511356
       - 49513274
       - 49514947
       - 49522158
-      published: 2
+      - 49523466
+      published: 3
       published_ids:
       - 49513274
       - 49514947
-      raw: 4
+      - 49523466
+      raw: 3
     protein folding:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     terminal:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49510102
       - 49511126
       - 49514393
       - 49514420
       - 49516460
+      - 49523609
+      - 49524367
+      - 49526071
       published: 0
       published_ids: []
       raw: 5
@@ -1520,6 +1685,154 @@ mechanical:
       name: run_log
       status: ok
     - detail: 39 fetch(es), 4 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-09-01T19:17:43+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-09-01.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-08-31
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"Anthropic releases Claude Fable 5.1 and Claude Mythos 5.1","section":"Top
+        stories","category":"AI","status":"confirmed","primary_url":"https://www.anthropic.com/claude-fable-and-mythos-5-1","sources":["https://www.anthropic.com/claude-fable-and-mythos-5-1","https://news.yco
+      failed_tools:
+        Read: 1
+      name: select
+      status: ok
+      tokens:
+        in: 26
+        out: 20332
+      tools:
+        Bash: 1
+        Glob: 1
+        Grep: 8
+        Read: 5
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 7
+        mcp__digest__guidance: 1
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 1
+    - detail: |-
+        Gate passes (exit 0). The write step for 2026-09-01 is complete.
+
+        **Added five stories, displaced nothing. Day goes from 13 to 18 against a budget of 25.**
+
+        - **Top stories** (now 5 of 5): Claude Fable 5.1 and Mythos 5.1 inserted as the new lead, ahead of Chrome Manifest V2. The four previously publ
+      failed_tools:
+        Read: 1
+      name: write
+      status: ok
+      tokens:
+        in: 24
+        out: 13054
+      tools:
+        Edit: 8
+        Read: 2
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"New videos: A walkthrough of the OpenAI
+        agent attack on Hugging Face","detail":"The Channel line publishes \"170,943 views\". That figure
+        appears in neither of the day's records: .cache/youtube/2026-09-01.json gives views 190355 and
+        data/sna
+      name: review
+      status: ok
+      tokens:
+        in: 16
+        out: 11478
+      tools:
+        Glob: 1
+        Grep: 6
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 2
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes with exit code 0. The warnings are pre-existing memory-staleness notices, unrelated to this step.
+
+        Repairs made to `data/digests/2026-09-01.md`, exactly the four findings and nothing else:
+
+        **Blocking, New videos.** The Dwarkesh Patel walkthrough block published 170,943 views. I read `da
+      failed_tools:
+        Read: 1
+      name: write
+      status: ok
+      tokens:
+        in: 22
+        out: 7618
+      tools:
+        Edit: 6
+        Read: 3
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Top stories: AWS signs an agreement
+        to acquire DuckLabs, the company behind DuckDB","detail":"Duplicate of an already-published story.
+        The 2026-08-26 page carries this as its lead Top story (\"DuckLabs will join AWS in early September,
+        and D
+      failed_tools:
+        Read: 1
+      name: review
+      status: ok
+      tokens:
+        in: 58
+        out: 32633
+      tools:
+        Glob: 1
+        Grep: 19
+        Read: 7
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 14
+        mcp__digest__memory_query: 1
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 10 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 2 cause(s) corrected in 2026-08-31
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-09-01.yaml
+      name: run_log
+      status: ok
+    - detail: 23 fetch(es), 0 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
