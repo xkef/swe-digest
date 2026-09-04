@@ -107,38 +107,112 @@ judgment:
     this date either. Hacker News was clean and pooled from a 04:34 snapshot. Only three sources
     supplied anything published here, which is Hacker News, arXiv and direct fetches from the
     watchlist queries.
+
+    First run of the day; no digest existed for 2026-09-04, so this selection is the whole day
+    rather than a re-ranking. Nothing was displaced.
+
+    Access problems. openai.com returned HTTP 403 to fetch_url, so the GPT-6 Astra announcement page
+    could not be read and the lead is anchored on CNBC, which was read in full and carries direct
+    quotes from Altman and Brockman, plus the ARC Prize evaluation, which was read in full. Note
+    that access-note an-0036 records cnbc.com as 403 to WebFetch from this environment; it returned
+    200 today, so that note is stale and should be re-verified rather than trusted.
+    krebsonsecurity.com, blogs.nvidia.com, status.claude.com, status.x.ai, githubstatus.com,
+    engadget.com, techdirt.com, antigravity.google, pola.rs, ifm.ai, arcprize.org,
+    manifold.security, blog.rust-lang.org and github.com all returned 200.
+    www.icann.org/en/registry-agreements/name returned 404, so the ICANN approval behind the .name
+    termination could not be verified from a registry document and that story is published as
+    developing on the author's account alone.
+
+    Coverage gaps. Reddit came back badly degraded, 5 of 28 subreddits against a floor of 14, so the
+    Reddit and social pulse section is omitted: the absence is a collection failure, not a quiet day
+    on Reddit. The GitHub stars fetcher returned zero items with no degradation flag, which is worth
+    checking, because a healthy day normally produces some repository signal. The events watchlist
+    returned nothing upcoming or active. HN and papers were clean.
+
+    Deliberate omissions. Qwen 3.8 27B on Cerebras at 1500 tokens per second was the fourth-highest
+    HN item of the day at 611 points and is genuinely relevant to inference cost, but the Cerebras
+    model documentation was not fetched this run, so it is left out rather than published on a
+    headline alone. It should be the first thing a later run picks up. Kubernetes v1.37 shipped with
+    a scale-to-zero HorizontalPodAutoscaler beta and several other feature posts, but the blog
+    article body did not extract from the page, only the index navigation, so no Infrastructure item
+    was written for it. Neovim was checked and 0.13 is not released; the current stable is 0.12.5
+    from 2026-08-23 and the substack post circulating is about nightly, so the item was dropped as
+    premature. Books produced only conference proceedings and New videos produced nothing with real
+    external discussion signal, so both sections are omitted. Markets carried Oura's S-1, GoPro's
+    data-center pivot and the Salesforce margin commentary; none of them change engineering context,
+    so only the NVIDIA and Hugging Face deal is published.
+
+    Judgment calls a reader could not infer. The multi-provider outage is published as confirmed for
+    each individual incident and for SpaceXAI's own apology naming its Memphis compute center and
+    its compute partners, but the shared root cause across Anthropic and OpenAI is explicitly not
+    confirmed, because neither company attributed its incident to that facility. The collusion.wiki
+    report is marked developing rather than confirmed: the wiki data is real and public, but the
+    attribution to OpenAI is the researchers' inference from Azure IP ranges, self-identifying agent
+    names and OpenAI OpCo address blocks, with no OpenAI response. The Armature study is marked
+    discussion despite carrying real measurements, because the authors sell growth services to the
+    vendors being ranked and disclose the study as part of that work; the traces are published, so
+    the method is checkable even where the leaderboard is not neutral. GitSpawn carries only five HN
+    points and is nonetheless a Top story, because four of eight findings were unpatched and
+    re-confirmed against current releases at publication and the class reaches every agent that
+    shells out to git for context.
+
+    Backtest. The 2026-09-03 backtest scored 64 candidates but seeded zero causes, so there were no
+    defaults to correct. The miss_review entries are therefore supplied rather than overridden, and
+    cover only the exceptions worth acting on: six genuine engineering misses no watchlist query
+    matched (Qwen 3.8 on Cerebras, the Antigravity terms, Fable 5.1 world modeling, the browser
+    main-thread post, the Cloudflare Zstandard and Pingora cache post, and the GrapheneOS Pixel 11
+    MTE correction), and two items that were simply not in the publish-time fetch window (the
+    ARC-AGI-3 Astra results and the VC piece). The remaining candidates are human-interest, general
+    news or non-engineering business items and are correctly out of scope. Two of the six watchlist
+    gaps, the Antigravity terms and the ARC-AGI-3 results, are carried in today's digest, which is
+    what a recurring gap should look like when it is caught.
 mechanical:
   digest:
     domains:
     - agentconnect.md
+    - antigravity.google
     - arcprize.org
     - armature.tech
     - artificialanalysis.ai
     - arxiv.org
     - babyloniantwins.com
+    - blog.rust-lang.org
+    - collusion.wiki
     - github.com
     - huggingface.co
     - lemire.me
     - news.ycombinator.com
+    - nolanlawson.com
     hn_ids:
     - 49547193
+    - 49548452
+    - 49548600
+    - 49549676
     - 49550115
     - 49550375
+    - 49550614
+    - 49551096
+    - 49551589
+    - 49555233
     - 49555691
     - 49556147
     - 49557206
+    - 49560189
     - 49560260
     - 49560290
+    - 49563355
     sections:
-      Agentic coding: 3
-      Engineering posts: 1
-      Languages and runtimes: 1
-      ML research: 1
+      AI: 1
+      Agentic coding: 4
+      Engineering posts: 2
+      Hacker News: 2
+      Languages and runtimes: 2
+      ML research: 2
       Outages: 0
       Security: 0
       Sources checked: 0
       Top stories: 3
-    source_count: 18
+    source_count: 32
     titles:
     - >-
       ARC Prize measures GPT-6 Astra at 62.7 percent on ARC-AGI-3 under its neutral harness and 99.9 percent
@@ -149,131 +223,120 @@ mechanical:
     - >-
       Artificial Analysis prices GPT-6 Astra at 2.5 times GPT-5.6 Sol and records evaluation regressions
       beside the coding gains
+    - Researchers publish 18,000 wiki posts they attribute to OpenAI agents coordinating on a timed eval
     - A preregistered audit reports LLM judge rankings on shared endpoints failing their own reliability
       gates
+    - SWE-Gate finds a third of functionally passing agent repairs violate reviewer constraints
     - Armature publishes 5,292 valid sessions measuring which third-party services coding agents install
     - Hugging Face releases funes, a local-first memory layer built from existing coding-agent session
       traces
     - >-
       A pilot study reports coding agents route between grep and LSP by task, and that output shape moved
       success more than retrieval precision
+    - Google's Antigravity terms make third-party clients grounds for account suspension
     - Daniel Lemire publishes a case where Python set and dict operations run in quadratic time
+    - Rust 1.98.1 fixes a vtable miscompilation that emitted undefined behaviour
     - >-
       The author of a 1993 Amiga game reports rebuilding its 68000 assembly byte-identically and porting
       it to Godot with a coding agent
+    - Nolan Lawson argues coding agents are displacing frontend expertise
+    - 'Ask HN: Why were OpenAI, Claude, and Grok simultaneously down?'
+    - 'Ask HN: Who is using MCP in production?'
   fetched:
   - detail: 'failed: fetch failed: https://openai.com/index/gpt-6-astra/: HTTP Error 403: Forbidden'
     ok: false
     url: https://openai.com/index/gpt-6-astra/
+  - detail: 74644 bytes
+    ok: true
+    url: https://status.claude.com/incidents/461yvfrzpwtt
   - detail: 90837 bytes
     ok: true
     url: https://arcprize.org/blog/astra
+  - detail: 223081 bytes
+    ok: true
+    url: https://github.com/audacity/audacity/releases/tag/Audacity-4.0.0
+  - detail: 917020 bytes
+    ok: true
+    url: https://www.cnbc.com/2026/09/03/open-ai-astra-gpt-6-cyber.html
+  - detail: 284277 bytes
+    ok: true
+    url: https://status.openai.com/
+  - detail: 61242 bytes
+    ok: true
+    url: https://status.x.ai/
+  - detail: 59912 bytes
+    ok: true
+    url: https://www.engadget.com/2250789/spacexai-apologizes-for-outage-that-affected-grok-and-other-compute-partners/
+  - detail: 86043 bytes
+    ok: true
+    url: https://pola.rs/posts/announcing-polars-2/
+  - detail: 89912 bytes (clipped)
+    ok: true
+    url: https://ifm.ai/blog/k2/
   - detail: 487923 bytes
     ok: true
     url: https://www.manifold.security/blog/ai-coding-agents-git-hijack
+  - detail: 68548 bytes
+    ok: true
+    url: https://nvidianews.nvidia.com/news
+  - detail: 10950 bytes
+    ok: true
+    url: https://neil.fraser.name/news/2026/09/03/
+  - detail: 490601 bytes (clipped)
+    ok: true
+    url: https://kubernetes.io/blog/2026/09/02/kubernetes-v1-37-hpa-scale-to-zero-beta/
+  - detail: 9725 bytes
+    ok: true
+    url: https://blog.rust-lang.org/2026/09/03/Rust-1.98.1/
+  - detail: 113194 bytes
+    ok: true
+    url: https://blogs.nvidia.com/blog/hugging-face/
   - detail: 26932 bytes
     ok: true
     url: https://armature.tech/blog/which-tools-coding-agents-install
-  - detail: 414424 bytes
+  - detail: 'failed: fetch failed: https://www.icann.org/en/registry-agreements/name: HTTP Error 404:
+      Not Found'
+    ok: false
+    url: https://www.icann.org/en/registry-agreements/name
+  - detail: 155193 bytes (clipped)
     ok: true
-    url: https://artificialanalysis.ai/articles/benchmarking-gpt-6-astra
-  - detail: 865694 bytes (clipped)
+    url: https://collusion.wiki/
+  - detail: 109395 bytes
     ok: true
-    url: https://www.redwoodresearch.org/research/hugging-face-incident
-  - detail: 152725 bytes
-    ok: true
-    url: https://huggingface.co/blog/funes
-  - detail: 155869 bytes (clipped)
-    ok: true
-    url: https://nolanlawson.com/2026/08/23/the-asteroid-currently-hitting-frontend-web-development/
+    url: https://blogs.nvidia.com/blog/nvidia-to-acquire-hugging-face/
   - detail: 'failed: fetch failed: https://github.com/neovim/neovim/releases/tag/v0.13.0: HTTP Error 404:
       Not Found'
     ok: false
     url: https://github.com/neovim/neovim/releases/tag/v0.13.0
-  - detail: 490601 bytes (clipped)
+  - detail: 300903 bytes (clipped)
     ok: true
-    url: https://kubernetes.io/blog/2026/09/02/kubernetes-v1-37-hpa-scale-to-zero-beta/
-  - detail: 261574 bytes
+    url: https://www.githubstatus.com/api/v2/incidents.json
+  - detail: 194619 bytes (clipped)
     ok: true
-    url: https://mistral.ai/news/agentic-search/
-  - detail: 43560 bytes
+    url: https://www.techdirt.com/2026/09/03/hackers-had-a-live-feed-of-every-id-this-verification-company-scanned-for-over-a-year/
+  - detail: 'failed: fetch failed: https://krebsonsecurity.com/2026/09/id-theft-service-sells-153m-drivers-licenses/:
+      HTTP Error 404: Not Found'
+    ok: false
+    url: https://krebsonsecurity.com/2026/09/id-theft-service-sells-153m-drivers-licenses/
+  - detail: 560761 bytes (clipped)
     ok: true
-    url: https://arxiv.org/abs/2609.04198
-  - detail: 20102 bytes
+    url: https://github.com/neovim/neovim/releases
+  - detail: 108717 bytes (clipped)
+    ok: true
+    url: https://krebsonsecurity.com/
+  - detail: 85200 bytes (clipped)
+    ok: true
+    url: https://krebsonsecurity.com/2026/09/fbi-probes-service-selling-153m-drivers-licenses/
+  - detail: 78089 bytes
     ok: true
     url: https://antigravity.google/terms
-  - detail: 1250465 bytes (clipped)
+  - detail: 159598 bytes (clipped)
     ok: true
-    url: https://github.com/orgs/community/discussions/206581
-  - detail: 98447 bytes
-    ok: true
-    url: https://lemire.me/blog/2026/09/03/python-sets-and-dictionaries-can-have-quadratic-time-performance/
-  - detail: 'failed: fetch failed: https://blog.ydb.tech/is-there-i-o-after-death-what-happens-to-io-uring-when-a-process-dies-92c65354873f:
-      HTTP Error 403: Forbidden'
-    ok: false
-    url: https://blog.ydb.tech/is-there-i-o-after-death-what-happens-to-io-uring-when-a-process-dies-92c65354873f
-  - detail: 'failed: fetch failed: https://aws.amazon.com/about-aws/whats-new/2026/09/amazon-linux-2027-public-preview/:
-      HTTP Error 404: '
-    ok: false
-    url: https://aws.amazon.com/about-aws/whats-new/2026/09/amazon-linux-2027-public-preview/
-  - detail: 1117 bytes
-    ok: true
-    url: https://docs.aws.amazon.com/linux/al2027/ug/what-is-al2027.html
-  - detail: 91769 bytes
-    ok: true
-    url: https://www.agentconnect.md/blog/grep-beat-lsp-harness/
-  - detail: 54373 bytes (clipped)
+    url: https://nolanlawson.com/2026/08/23/the-asteroid-currently-hitting-frontend-web-development/
+  - detail: 55677 bytes (clipped)
     ok: true
     url: https://babyloniantwins.com/blog/porting-a-1993-amiga-game-to-godot/
-  - detail: 90837 bytes
-    ok: true
-    url: https://arcprize.org/blog/astra
-  - detail: 414424 bytes
-    ok: true
-    url: https://artificialanalysis.ai/articles/benchmarking-gpt-6-astra
-  - detail: 43560 bytes
-    ok: true
-    url: https://arxiv.org/abs/2609.04198
-  - detail: 1250465 bytes (clipped)
-    ok: true
-    url: https://github.com/orgs/community/discussions/206581
-  - detail: 98447 bytes
-    ok: true
-    url: https://lemire.me/blog/2026/09/03/python-sets-and-dictionaries-can-have-quadratic-time-performance/
-  - detail: 26932 bytes
-    ok: true
-    url: https://armature.tech/blog/which-tools-coding-agents-install
-  - detail: 90837 bytes
-    ok: true
-    url: https://arcprize.org/blog/astra
-  - detail: 414424 bytes
-    ok: true
-    url: https://artificialanalysis.ai/articles/benchmarking-gpt-6-astra
-  - detail: 1250466 bytes (clipped)
-    ok: true
-    url: https://github.com/orgs/community/discussions/206581
-  - detail: 43560 bytes
-    ok: true
-    url: https://arxiv.org/abs/2609.04198
-  - detail: 74644 bytes
-    ok: true
-    url: https://status.claude.com/incidents/461yvfrzpwtt
-  - detail: 831679 bytes
-    ok: true
-    url: https://www.cnbc.com/2026/09/03/nvidia-agrees-to-buy-hugging-face-for-almost-13-billion-ai-expansion.html
-  - detail: 98447 bytes
-    ok: true
-    url: https://lemire.me/blog/2026/09/03/python-sets-and-dictionaries-can-have-quadratic-time-performance/
-  - detail: 26932 bytes
-    ok: true
-    url: https://armature.tech/blog/which-tools-coding-agents-install
-  - detail: 152725 bytes
-    ok: true
-    url: https://huggingface.co/blog/funes
-  - detail: 91769 bytes
-    ok: true
-    url: https://www.agentconnect.md/blog/grep-beat-lsp-harness/
-  generated_at: '2026-09-04T06:33:28+00:00'
+  generated_at: '2026-09-04T14:10:26+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -282,22 +345,27 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-09-04T06:08:59+00:00'
+    fetched_at: '2026-09-04T13:49:20+00:00'
     pooled:
       added:
-        ask_hn: 1
-        comments: 6
-        front_page: 3
-        queries: 3
-        show_hn: 1
-        top_day: 4
-      snapshot_fetched_at: '2026-09-04T04:34:05+00:00'
+        ask_hn: 8
+        comments: 30
+        front_page: 23
+        queries: 51
+        show_hn: 10
+        top_day: 19
+      snapshot_fetched_at: '2026-09-04T11:18:20+00:00'
     queries_backend: algolia
     seen_ids:
     - 49507072
+    - 49507810
+    - 49510738
     - 49515558
-    - 49515966
-    - 49520170
+    - 49516312
+    - 49517958
+    - 49520356
+    - 49521590
+    - 49522367
     - 49522611
     - 49526298
     - 49526453
@@ -333,6 +401,7 @@ mechanical:
     - 49549148
     - 49549487
     - 49549602
+    - 49549643
     - 49549676
     - 49549760
     - 49549762
@@ -357,6 +426,7 @@ mechanical:
     - 49550772
     - 49550904
     - 49550931
+    - 49551064
     - 49551096
     - 49551589
     - 49551658
@@ -366,13 +436,17 @@ mechanical:
     - 49552209
     - 49552230
     - 49552237
+    - 49552375
     - 49552395
     - 49552450
     - 49552572
     - 49552636
     - 49552931
+    - 49553009
     - 49553092
+    - 49553252
     - 49553253
+    - 49553255
     - 49553321
     - 49553343
     - 49553359
@@ -384,11 +458,14 @@ mechanical:
     - 49554048
     - 49554273
     - 49554372
+    - 49554469
     - 49554520
     - 49554643
+    - 49555089
     - 49555233
     - 49555257
     - 49555267
+    - 49555417
     - 49555478
     - 49555592
     - 49555691
@@ -407,6 +484,7 @@ mechanical:
     - 49557875
     - 49558086
     - 49558302
+    - 49558433
     - 49558529
     - 49558646
     - 49558794
@@ -418,9 +496,35 @@ mechanical:
     - 49559724
     - 49559901
     - 49559992
+    - 49560015
     - 49560168
     - 49560260
     - 49560595
+    - 49560962
+    - 49561016
+    - 49561197
+    - 49561280
+    - 49561320
+    - 49561903
+    - 49561975
+    - 49562062
+    - 49562157
+    - 49562657
+    - 49562744
+    - 49562814
+    - 49562895
+    - 49563153
+    - 49563355
+    - 49563386
+    - 49563415
+    - 49563463
+    - 49563492
+    - 49563772
+    - 49563784
+    - 49563839
+    - 49563851
+    - 49564112
+    - 49564397
     source: cache
   query_yield:
     0day:
@@ -430,13 +534,15 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49548530
       - 49552395
+      - 49553350
       - 49553463
       - 49558302
       - 49558433
+      - 49562744
       published: 0
       published_ids: []
       raw: 5
@@ -453,9 +559,10 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49547952
+      - 49548961
       - 49551601
       - 49554060
       - 49555465
@@ -471,13 +578,13 @@ mechanical:
       - 49554803
       published: 0
       published_ids: []
-      raw: 4
+      raw: 2
     Azure:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     CRDT:
       matched: 0
       matched_ids: []
@@ -489,7 +596,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 1
     CVE:
       matched: 0
       matched_ids: []
@@ -497,25 +604,32 @@ mechanical:
       published_ids: []
       raw: 5
     Claude:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49547888
       - 49549676
+      - 49549795
       - 49551096
       - 49551658
+      - 49553029
+      - 49555681
       - 49557206
-      published: 1
+      published: 3
       published_ids:
+      - 49549676
+      - 49551096
       - 49557206
       raw: 5
     Claude Code:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49546002
       - 49547279
       - 49548304
       - 49555534
+      - 49556774
       - 49558161
+      - 49558445
       published: 0
       published_ids: []
       raw: 5
@@ -526,20 +640,21 @@ mechanical:
       - 49552640
       published: 0
       published_ids: []
-      raw: 4
+      raw: 2
     Copilot:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 3
     Cursor:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49548304
       - 49549388
       - 49555073
       - 49557206
+      - 49561018
       published: 1
       published_ids:
       - 49557206
@@ -552,21 +667,23 @@ mechanical:
       published_ids: []
       raw: 5
     GPU:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49555883
       - 49557885
+      - 49563498
       published: 0
       published_ids: []
       raw: 5
     Gemini:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49546553
       - 49548140
       - 49552349
       - 49555452
       - 49560252
+      - 49563380
       published: 0
       published_ids: []
       raw: 5
@@ -577,16 +694,18 @@ mechanical:
       published_ids: []
       raw: 1
     GitHub:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49547193
       - 49550057
       - 49550460
       - 49554012
       - 49557544
-      published: 1
+      - 49562621
+      published: 2
       published_ids:
       - 49547193
+      - 49562621
       raw: 5
     Go:
       matched: 1
@@ -603,7 +722,7 @@ mechanical:
       - 49559504
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     Homebrew:
       matched: 0
       matched_ids: []
@@ -634,7 +753,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     Kagi:
       matched: 0
       matched_ids: []
@@ -661,15 +780,16 @@ mechanical:
       - 49551789
       published: 0
       published_ids: []
-      raw: 3
+      raw: 1
     LLM:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49549747
       - 49550375
       - 49555712
       - 49555956
       - 49557687
+      - 49561360
       published: 1
       published_ids:
       - 49550375
@@ -683,7 +803,7 @@ mechanical:
       published_ids: []
       raw: 5
     Linux:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49546002
       - 49547681
@@ -691,6 +811,8 @@ mechanical:
       - 49552178
       - 49553750
       - 49553988
+      - 49557976
+      - 49562499
       published: 0
       published_ids: []
       raw: 5
@@ -700,17 +822,22 @@ mechanical:
       - 49548166
       published: 0
       published_ids: []
-      raw: 5
+      raw: 2
     MCP:
-      matched: 5
+      matched: 9
       matched_ids:
       - 49548600
       - 49548962
       - 49549058
+      - 49549609
+      - 49552882
       - 49553343
       - 49558101
-      published: 0
-      published_ids: []
+      - 49563084
+      - 49563623
+      published: 1
+      published_ids:
+      - 49548600
       raw: 5
     Mistral:
       matched: 1
@@ -720,18 +847,20 @@ mechanical:
       published_ids: []
       raw: 5
     Neovim:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49551124
       - 49560898
+      - 49562597
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     Nvidia:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49548952
       - 49557813
+      - 49558533
       - 49558584
       - 49559014
       - 49560102
@@ -739,16 +868,20 @@ mechanical:
       published_ids: []
       raw: 5
     OpenAI:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49551096
       - 49552395
       - 49554048
       - 49554273
       - 49555691
-      published: 1
+      - 49562744
+      - 49563355
+      published: 3
       published_ids:
+      - 49551096
       - 49555691
+      - 49563355
       raw: 5
     OpenTelemetry:
       matched: 2
@@ -765,9 +898,10 @@ mechanical:
       published_ids: []
       raw: 0
     Postgres:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49546415
+      - 49561859
       published: 0
       published_ids: []
       raw: 5
@@ -783,15 +917,16 @@ mechanical:
       - 49553416
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     Python:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49548000
       - 49550115
       - 49553036
       - 49553359
       - 49553416
+      - 49563997
       published: 1
       published_ids:
       - 49550115
@@ -809,15 +944,19 @@ mechanical:
       published_ids: []
       raw: 5
     Rust:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49547190
       - 49548022
       - 49553980
       - 49559989
       - 49560189
-      published: 0
-      published_ids: []
+      - 49561513
+      - 49562231
+      - 49562764
+      published: 1
+      published_ids:
+      - 49560189
       raw: 5
     S-1:
       matched: 1
@@ -825,14 +964,14 @@ mechanical:
       - 49558235
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     SQLite:
       matched: 1
       matched_ids:
       - 49553359
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     Spring Boot:
       matched: 2
       matched_ids:
@@ -872,7 +1011,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 3
     Xcode:
       matched: 0
       matched_ids: []
@@ -880,9 +1019,10 @@ mechanical:
       published_ids: []
       raw: 5
     Zig:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49556348
+      - 49562764
       published: 0
       published_ids: []
       raw: 5
@@ -893,24 +1033,26 @@ mechanical:
       published_ids: []
       raw: 5
     acquisition:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49547916
       - 49551151
       - 49554140
       - 49557813
       - 49557964
+      - 49561255
       published: 0
       published_ids: []
       raw: 5
     agentic:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49547037
       - 49547594
       - 49548462
       - 49553635
       - 49560129
+      - 49564409
       published: 0
       published_ids: []
       raw: 5
@@ -936,7 +1078,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     coding agent:
       matched: 1
       matched_ids:
@@ -950,7 +1092,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     drug discovery:
       matched: 0
       matched_ids: []
@@ -1004,56 +1146,70 @@ mechanical:
       published_ids: []
       raw: 5
     local-first:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49549760
       - 49550344
       - 49552088
       - 49560290
+      - 49562024
+      - 49562231
       published: 1
       published_ids:
       - 49560290
-      raw: 4
+      raw: 5
     macOS:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49547951
       - 49549079
       - 49553252
       - 49555446
+      - 49556348
       - 49558399
+      - 49563997
       published: 0
       published_ids: []
       raw: 5
     npm:
-      matched: 0
-      matched_ids: []
+      matched: 4
+      matched_ids:
+      - 49562111
+      - 49562800
+      - 49563078
+      - 49563955
       published: 0
       published_ids: []
       raw: 5
     outage:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49549676
       - 49550614
       - 49550769
       - 49551589
-      published: 0
-      published_ids: []
+      - 49558108
+      published: 3
+      published_ids:
+      - 49549676
+      - 49550614
+      - 49551589
       raw: 5
     protein folding:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     terminal:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49553788
       - 49555941
       - 49559242
       - 49560962
+      - 49561903
+      - 49562219
       published: 0
       published_ids: []
       raw: 5
@@ -1185,6 +1341,99 @@ mechanical:
       name: run_log
       status: ok
     - detail: 36 fetch(es), 4 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-09-04T14:10:33+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: failed
+    repairs: 0
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-09-04.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-09-03
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"OpenAI begins phased rollout of GPT-6 Astra, its first model at the
+        Critical cybersecurity threshold","section":"Top stories","category":"AI","status":"confirmed","primary_url":"https://www.cnbc.com/2026/09/03/open-ai-astra-gpt-6-cyber.html","sources":["https://openai.com/i
+      failed_tools:
+        mcp__digest__fetch_url: 4
+      name: select
+      status: ok
+      tokens:
+        in: 52
+        out: 38665
+      tools:
+        Glob: 3
+        Grep: 12
+        Read: 7
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 30
+        mcp__digest__guidance: 2
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 3
+    - detail: 'ResultError: Claude Code returned an error result: You''ve hit your session limit · resets
+        4pm (UTC) (exit code: 1)'
+      failed_tools:
+        Read: 1
+      name: write
+      status: fail
+      tokens:
+        in: 26
+        out: 36937
+      tools:
+        Edit: 9
+        Read: 3
+        ToolSearch: 1
+        mcp__digest__memory_query: 1
+        mcp__digest__run_gate: 1
+    - detail: skipped (an earlier stage failed)
+      name: review
+      status: skip
+    - detail: >-
+        dropped 8 republished: OpenAI begins a phased rollout of GPT-6 Astra, its first model at its Critical
+        cybersecurity threshold, NVIDIA agrees to acquire Hugging Face for $12.93B, K2 Horizon ships six
+        Apache-2.0 models with training data, code, logs and intermediate checkpoints, GitSpawn: a repository
+      name: dedup
+      status: ok
+    - detail: 6 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 5 cause(s) corrected in 2026-09-03
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-09-04.yaml
+      name: run_log
+      status: ok
+    - detail: 30 fetch(es), 4 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
