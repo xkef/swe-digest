@@ -97,20 +97,98 @@ judgment:
     to the linux-crypto lore archive, recorded in access-notes. Asahi Linux on M3 (49586698, 510
     points) was matched by the existing Asahi Linux entity and simply not selected, so it is a
     relevance_skip and not a gap.
+
+    Lead change. The day's digest already carried 12 stories with CERN as the lead. Both items I
+    added to Top stories outrank it, and Top stories now sits at exactly the cap of 5, so nothing
+    was displaced. The OpenAI Navier-Stokes item should carry the day's headline, with the
+    Alpoge/Buckmaster result immediately after it. The two are one event and read wrong in the other
+    order: the second is the verified result, the first is the contested claim that arrived on top
+    of it.
+
+    Verification route for the lead, and what I could not read. openai.com returned HTTP 403 to
+    every form of the URL I tried, so I never read OpenAI's own post and did not cite it as the
+    primary. This is a new access-note host worth recording. Buckmaster's statement PDF at
+    cims.nyu.edu/~tristanb/statement.pdf fetched successfully but came back as raw PDF bytes with no
+    text extraction, so the document at the center of the dispute is also unread here. I therefore
+    built the story on Scientific American, which I read in full: it is dated 2026-09-08, carries a
+    named reporter, states OpenAI's claim, states Buckmaster's allegation, and carries OpenAI
+    mathematician Sebastien Bubeck's on-record denial from a Tuesday press briefing, including that
+    the Navier-Stokes solution did follow a similar method to the two mathematicians' while the
+    Euler result did not, and that the proof was developed over the weekend. That is enough to
+    publish as developing and not enough to publish as fact in either direction. Status stays
+    developing and the article itself is flagged by its editor as breaking and subject to update.
+
+    What I deliberately did not publish. HN carried a submission titled to the effect that OpenAI
+    took mathematicians' private research from their Codex chats. Nothing I could verify supports
+    that specific mechanism, Bubeck denies using their prompts or proofs, and the claim is
+    defamatory if wrong, so it is out. The HN comment quoting 4.9 million agent messages and about
+    300 billion output tokens is also out, because its only source is the OpenAI post I could not
+    load.
+
+    The second Top story is the solid one. Buckmaster's own Mastodon account announced three results
+    and links only to his own cims.nyu.edu domain and his own GitHub repository, so attribution is
+    clean. Terence Tao posted an independent assessment the same day naming the Cordoba and
+    Martinez-Zoroa approach, confirming 3D incompressible Euler with a smooth forcing term,
+    confirming the Lean formalization, and confirming that the authors released far earlier than
+    planned because of external events. The repository github.com/tristanbuckmaster/fluid_lean
+    resolves with affinecore, boussinesq-blowup and euler-blowup directories. Note the scope
+    carefully: this result is blowup with forcing for Euler and two related systems, which is not
+    the unforced Navier-Stokes Millennium problem itself.
+
+    Calls a reader cannot infer. FreeBSD 14.5 and the CipherCue analysis of European CDN
+    concentration both wanted the last Infrastructure slot and only one fits under the cap of 4. I
+    took FreeBSD. CipherCue had far more HN attention, 369 points against 66, and an unusually
+    honest method note, but its headline figure of 89.6 percent Cloudflare across 44,143 companies
+    is its own tracked dataset, is explicitly not a representative sample, skews to small and
+    mid-sized companies where Cloudflare's free tier is strongest, and lands close to the W3Techs
+    figure of 84.1 percent it cites. It is also published by a vendor selling a
+    European-alternatives directory. FreeBSD 14.5 is a thin release by its own announcement, which
+    says the focus is maintenance and there are few new features, but the end-of-life dates are
+    concrete and actionable for anyone running 14.x. Popularity lost to actionability.
+
+    Sections left empty on purpose. Reddit and social pulse is omitted again: coverage reached 12 of
+    28 subreddits against a floor of 14, and both top_day and hot reached only 1 of 28. ML research
+    is omitted because the day's genuine paper is the Alpoge and Buckmaster work, which sits in Top
+    stories, and nothing else in the arXiv pull cleared the bar. New videos is omitted: the
+    strongest video of the day is the Gamers Nexus LG investigation, and that is already carried as
+    the LG story through The Verge, which is the readable route since youtube.com/watch cannot be
+    verified by fetch from here. Agentic coding is empty because the only candidate was a small
+    prompt-skill repository. Markets and companies stays empty beyond the Mistral raise already in
+    Top stories, because two candidates I would have wanted, a reported OpenAI 2025 loss figure
+    ahead of an IPO and a new class action against Anthropic over its treatment of power users, both
+    needed a fetch I did not have a resolvable URL for. Both are worth a query next run.
+
+    Missed on purpose but flagged. Today was Microsoft Patch Tuesday and The Verge's index line
+    describes it as another record month. I could not verify a patch count: msrc.microsoft.com is a
+    known 403 from this environment and I declined to guess article URLs after one 404. Security
+    therefore does not carry Patch Tuesday, which is a gap rather than a quiet month.
+
+    Backtest. The tool seeded zero default causes for 2026-09-07, so miss_review carries my own
+    reading rather than corrections. I mapped not_in_publish_fetch on genuine engineering items to
+    scrape_gap, no_query_match on genuine engineering items to watchlist_gap, and the one
+    seen-and-matched real story, Asahi Linux on M3, to relevance_skip. Two of the flagged misses
+    recur today: the trusting-trust paper is published in this run, and bzip3 was picked up by the
+    earlier run, which suggests the gap is in the fetch and query coverage rather than in ranking.
 mechanical:
   digest:
     domains:
+    - cims.nyu.edu
     - d2lang.com
     - danluu.com
     - developer.nvidia.com
+    - freebsd.org
     - git.postgresql.org
     - github.com
     - jellyfin.org
     - jyn.dev
     - lwn.net
+    - mastodon.social
+    - mathstodon.xyz
     - mcpherrin.ca
     - mistral.ai
     - news.ycombinator.com
+    - quesma.com
+    - scientificamerican.com
     - virtualizationhowto.com
     - weirdgloop.org
     hn_ids:
@@ -124,121 +202,124 @@ mechanical:
     - 49605246
     - 49605691
     - 49605767
+    - 49605915
     - 49608213
+    - 49609174
     - 49609377
+    - 49611128
+    - 49613262
     sections:
+      AI: 1
       Developer tools: 1
       Engineering posts: 2
       Hacker News: 1
-      Infrastructure: 3
+      Infrastructure: 4
       Languages and runtimes: 1
       Outages: 0
       Security: 1
       Sources checked: 0
-      Top stories: 3
-    source_count: 24
+      Top stories: 5
+    source_count: 35
     titles:
+    - OpenAI says an internal model proved finite-time blowup for Navier-Stokes, and mathematicians dispute
+      the provenance
+    - Alpoge and Buckmaster publish finite-time blowup with smooth forcing for 3D Euler, Boussinesq and
+      incompressible porous media
     - CERN moves 2,200 accelerator control computers from CentOS to Debian over the x86-64-v2 baseline
     - Mistral raises 3 billion euros at more than 21 billion euros post-money, led by Samsung Electronics
     - Naming a test or verification technique to a coding agent does not beat giving it no instruction
+    - A Qwen3.8 27B quantization benchmark puts 4-bit at parity with BF16 and 1-bit at random chance
     - A researcher factored two 512-bit certificate authority root keys shipped in Netscape 4.51
     - TALA, the D2 orthogonal layout engine, is open-sourced under MPL-2.0
     - NVIDIA publishes CUDA Rust with two tracks for writing GPU kernels
     - Broadcom removed the public VMware VDDK downloads that migration tooling depends on
     - Jellyfin 12.0 rewrites the library database on first boot and drops the legacy client routes
     - PostgreSQL reverts SQL/PGQ property graph queries out of version 19
+    - FreeBSD 14.5-RELEASE ships as a maintenance release and sets the 14.4 end-of-life date
     - An argument that cheap open-weight models put exploit discovery within reach of anyone with a workstation
     - An independent wiki host reports Google indexes only the main page of brand-new domains
     - The bzip3 thread turns into a dispute over compression benchmark window sizes
   fetched:
-  - detail: 113291 bytes
+  - detail: 'failed: fetch failed: https://openai.com/index/navier-stokes-solution/: HTTP Error 403: Forbidden'
+    ok: false
+    url: https://openai.com/index/navier-stokes-solution/
+  - detail: 53497 bytes (clipped)
     ok: true
-    url: https://www.notebookcheck.net/LG-smart-TVs-caught-logging-audio-with-screen-off-and-snooping-on-local-devices.1391214.0.html
-  - detail: 233637 bytes
+    url: https://cims.nyu.edu/~tristanb/statement.pdf
+  - detail: 61641 bytes
     ok: true
-    url: https://www.nature.com/articles/d41586-026-02822-9
-  - detail: 1250204 bytes (clipped)
+    url: https://mathstodon.xyz/@tao/117233527638291447
+  - detail: 71083 bytes
     ok: true
-    url: https://github.com/orgs/community/discussions/206581
-  - detail: 116738 bytes
+    url: https://mastodon.social/@tristanbuckmaster/117233413705701198
+  - detail: 24806 bytes
     ok: true
-    url: https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=b1f106c80cbeb18d3a0219994d98a51a6eca8ede
-  - detail: 251575 bytes (clipped)
+    url: https://mathstodon.xyz/@tao/117233527638291447/embed
+  - detail: 224770 bytes
     ok: true
-    url: https://developer.nvidia.com/blog/introducing-cuda-rust-two-tracks-for-writing-gpu-kernels/
-  - detail: 14634 bytes
+    url: https://github.com/tristanbuckmaster/fluid_lean
+  - detail: 'failed: fetch failed: https://openai.com/index/navier-stokes-solution: HTTP Error 403: Forbidden'
+    ok: false
+    url: https://openai.com/index/navier-stokes-solution
+  - detail: 391244 bytes
     ok: true
-    url: https://weirdgloop.org/blog/google-jail
+    url: https://www.theverge.com/tech/991190/lg-tv-spying-standby-recording-wi-fi-scanning-gamers-nexus
+  - detail: 82686 bytes (clipped)
+    ok: true
+    url: https://www.freebsd.org/releases/14.5R/announce/
+  - detail: 155462 bytes
+    ok: true
+    url: https://quesma.com/blog/qwen38-27b-quantizations-benchmarked/
   - detail: 43266 bytes
     ok: true
     url: https://ciphercue.com/blog/european-cdn-concentration-cloudflare-nine-in-ten
-  - detail: 39791 bytes (clipped)
+  - detail: 40844 bytes
     ok: true
-    url: https://lwn.net/SubscriberLink/1092512/45bba78661c89e5a/
-  - detail: 12010 bytes
-    ok: true
-    url: https://mcpherrin.ca/2026/09/07/rsa.html
-  - detail: 251577 bytes (clipped)
-    ok: true
-    url: https://developer.nvidia.com/blog/introducing-cuda-rust-two-tracks-for-writing-gpu-kernels/
-  - detail: 84450 bytes (clipped)
-    ok: true
-    url: https://danluu.com/agentic-testing/
-  - detail: 538210 bytes (clipped)
-    ok: true
-    url: https://www.virtualizationhowto.com/2026/09/leaving-vmware-just-got-harder-after-broadcom-pulled-vddk-downloads/
-  - detail: 53119 bytes
-    ok: true
-    url: https://jyn.dev/a-year-to-fix-security/
-  - detail: 116738 bytes
-    ok: true
-    url: https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=b1f106c80cbeb18d3a0219994d98a51a6eca8ede
-  - detail: 45655 bytes (clipped)
-    ok: true
-    url: https://jellyfin.org/posts/jellyfin-release-12.0/
-  - detail: 52357 bytes
-    ok: true
-    url: https://d2lang.com/blog/tala-is-open-source/
-  - detail: 273701 bytes
-    ok: true
-    url: https://mistral.ai/news/mistral-makes-sovereign-open-weight-ai-to-frontier/
-  - detail: 14634 bytes
-    ok: true
-    url: https://weirdgloop.org/blog/google-jail
-  - detail: 'failed: fetch failed: https://www.postgresql.org/about/news/: HTTP Error 404: Not Found'
+    url: https://arxiv.org/abs/2607.24888
+  - detail: 'failed: fetch failed: https://www.theverge.com/news/991425/microsoft-patch-tuesday-september-2026-record:
+      HTTP Error 404: Not Found'
     ok: false
-    url: https://www.postgresql.org/about/news/
-  - detail: 8200 bytes
+    url: https://www.theverge.com/news/991425/microsoft-patch-tuesday-september-2026-record
+  - detail: 132044 bytes
     ok: true
-    url: https://www.postgresql.org/developer/beta/
-  - detail: 251575 bytes (clipped)
+    url: https://www.scientificamerican.com/article/openai-claims-blockbuster-math-breakthrough-amid-swirl-of-controversy/
+  - detail: 132044 bytes
     ok: true
-    url: https://developer.nvidia.com/blog/introducing-cuda-rust-two-tracks-for-writing-gpu-kernels/
-  - detail: 39561 bytes (clipped)
+    url: https://www.scientificamerican.com/article/openai-claims-blockbuster-math-breakthrough-amid-swirl-of-controversy/
+  - detail: 71083 bytes
     ok: true
-    url: https://lwn.net/SubscriberLink/1092512/45bba78661c89e5a/
-  - detail: 84450 bytes (clipped)
+    url: https://mastodon.social/@tristanbuckmaster/117233413705701198
+  - detail: 'failed: fetch failed: https://openai.com/index/navier-stokes-solution/: HTTP Error 403: Forbidden'
+    ok: false
+    url: https://openai.com/index/navier-stokes-solution/
+  - detail: 61641 bytes
     ok: true
-    url: https://danluu.com/agentic-testing/
-  - detail: 12010 bytes
+    url: https://mathstodon.xyz/@tao/117233527638291447
+  - detail: 155462 bytes
     ok: true
-    url: https://mcpherrin.ca/2026/09/07/rsa.html
-  - detail: 273701 bytes
+    url: https://quesma.com/blog/qwen38-27b-quantizations-benchmarked/
+  - detail: 82686 bytes (clipped)
     ok: true
-    url: https://mistral.ai/news/mistral-makes-sovereign-open-weight-ai-to-frontier/
-  - detail: 116738 bytes
+    url: https://www.freebsd.org/releases/14.5R/announce/
+  - detail: 53497 bytes (clipped)
     ok: true
-    url: https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=b1f106c80cbeb18d3a0219994d98a51a6eca8ede
-  - detail: 8200 bytes
+    url: https://cims.nyu.edu/~tristanb/statement.pdf
+  - detail: 71083 bytes
     ok: true
-    url: https://www.postgresql.org/developer/beta/
-  - detail: 21182 bytes
+    url: https://mastodon.social/@tristanbuckmaster/117233413705701198
+  - detail: 132044 bytes
     ok: true
-    url: https://git.postgresql.org/gitweb/?p=postgresql.git;a=heads
-  - detail: 71151 bytes
+    url: https://www.scientificamerican.com/article/openai-claims-blockbuster-math-breakthrough-amid-swirl-of-controversy/
+  - detail: 61641 bytes
     ok: true
-    url: https://git.postgresql.org/gitweb/?p=postgresql.git;a=shortlog;h=refs/heads/REL_19_STABLE
-  generated_at: '2026-09-08T14:19:59+00:00'
+    url: https://mathstodon.xyz/@tao/117233527638291447
+  - detail: 346372 bytes
+    ok: true
+    url: https://github.com/iczelia/bzip3
+  - detail: 224770 bytes
+    ok: true
+    url: https://github.com/tristanbuckmaster/fluid_lean
+  generated_at: '2026-09-08T19:24:00+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -247,16 +328,16 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-09-08T13:55:25+00:00'
+    fetched_at: '2026-09-08T19:00:02+00:00'
     pooled:
       added:
-        ask_hn: 18
-        comments: 51
-        front_page: 18
-        queries: 55
-        show_hn: 10
-        top_day: 24
-      snapshot_fetched_at: '2026-09-08T04:36:55+00:00'
+        ask_hn: 26
+        comments: 75
+        front_page: 40
+        queries: 98
+        show_hn: 22
+        top_day: 36
+      snapshot_fetched_at: '2026-09-08T16:39:24+00:00'
     queries_backend: algolia
     seen_ids:
     - 49552299
@@ -273,12 +354,13 @@ mechanical:
     - 49571096
     - 49574941
     - 49575515
-    - 49579443
+    - 49575766
+    - 49575914
     - 49580260
-    - 49583684
     - 49584053
     - 49586207
     - 49586667
+    - 49591563
     - 49592375
     - 49593563
     - 49593959
@@ -333,7 +415,6 @@ mechanical:
     - 49598532
     - 49598847
     - 49599058
-    - 49599224
     - 49599481
     - 49599559
     - 49599609
@@ -353,6 +434,7 @@ mechanical:
     - 49600527
     - 49600530
     - 49600646
+    - 49600901
     - 49600997
     - 49601208
     - 49601265
@@ -375,14 +457,11 @@ mechanical:
     - 49603092
     - 49603546
     - 49603561
-    - 49603968
     - 49604127
     - 49604139
     - 49604150
     - 49604157
-    - 49604227
     - 49604261
-    - 49604405
     - 49604537
     - 49604630
     - 49604637
@@ -409,17 +488,14 @@ mechanical:
     - 49605767
     - 49605782
     - 49605822
-    - 49605874
     - 49605915
     - 49606689
     - 49606814
     - 49607094
-    - 49607196
     - 49607443
     - 49607483
     - 49607487
     - 49607844
-    - 49607890
     - 49607991
     - 49608008
     - 49608023
@@ -428,18 +504,63 @@ mechanical:
     - 49608697
     - 49608799
     - 49608984
+    - 49609060
+    - 49609174
     - 49609175
     - 49609218
     - 49609389
+    - 49609509
     - 49609784
     - 49609821
-    - 49609824
     - 49609884
     - 49610006
     - 49610059
     - 49610069
     - 49610181
     - 49610221
+    - 49610229
+    - 49610525
+    - 49610538
+    - 49610631
+    - 49610641
+    - 49610888
+    - 49610900
+    - 49610949
+    - 49610978
+    - 49610980
+    - 49610988
+    - 49611000
+    - 49611051
+    - 49611128
+    - 49611132
+    - 49611204
+    - 49611230
+    - 49611251
+    - 49611329
+    - 49611395
+    - 49611549
+    - 49611946
+    - 49612123
+    - 49612191
+    - 49612277
+    - 49612327
+    - 49612329
+    - 49612430
+    - 49612459
+    - 49612635
+    - 49612676
+    - 49612818
+    - 49613026
+    - 49613068
+    - 49613145
+    - 49613262
+    - 49613427
+    - 49613606
+    - 49613990
+    - 49614056
+    - 49614557
+    - 49614720
+    - 49614941
     source: cache
   query_yield:
     0day:
@@ -450,22 +571,25 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 8
+      matched: 9
       matched_ids:
       - 49593959
       - 49594008
       - 49596610
       - 49601338
       - 49601810
-      - 49603011
       - 49605511
-      - 49606339
+      - 49610229
+      - 49610528
+      - 49610538
       published: 0
       published_ids: []
       raw: 5
     AWS:
-      matched: 0
-      matched_ids: []
+      matched: 2
+      matched_ids:
+      - 49611641
+      - 49614728
       published: 0
       published_ids: []
       raw: 5
@@ -476,12 +600,15 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 4
+      matched: 7
       matched_ids:
       - 49601049
       - 49604319
       - 49604811
       - 49608679
+      - 49610976
+      - 49613331
+      - 49613652
       published: 0
       published_ids: []
       raw: 5
@@ -498,7 +625,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     CRDT:
       matched: 0
       matched_ids: []
@@ -513,16 +640,17 @@ mechanical:
       published: 1
       published_ids:
       - 49609377
-      raw: 4
+      raw: 5
     CVE:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49599434
+      - 49614972
       published: 0
       published_ids: []
       raw: 5
     Claude:
-      matched: 7
+      matched: 9
       matched_ids:
       - 49596536
       - 49596553
@@ -531,23 +659,27 @@ mechanical:
       - 49603520
       - 49604261
       - 49605644
+      - 49610525
+      - 49613348
       published: 0
       published_ids: []
       raw: 5
     Claude Code:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49595570
       - 49596035
       - 49598706
       - 49603520
       - 49605644
+      - 49607937
       - 49609627
+      - 49613348
       published: 0
       published_ids: []
       raw: 5
     Cloudflare:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49603903
       - 49604360
@@ -555,6 +687,7 @@ mechanical:
       - 49608012
       - 49608533
       - 49609064
+      - 49611233
       published: 0
       published_ids: []
       raw: 5
@@ -580,11 +713,12 @@ mechanical:
       published_ids: []
       raw: 5
     GPU:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49596778
       - 49600969
       - 49605511
+      - 49606541
       - 49608430
       - 49609377
       published: 1
@@ -606,9 +740,9 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 4
     GitHub:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49595229
       - 49596625
@@ -616,6 +750,7 @@ mechanical:
       - 49605072
       - 49605110
       - 49609568
+      - 49612772
       published: 0
       published_ids: []
       raw: 5
@@ -637,7 +772,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     IPO:
       matched: 4
       matched_ids:
@@ -688,20 +823,22 @@ mechanical:
       published_ids: []
       raw: 0
     Kubernetes:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49599254
       - 49600216
       - 49609173
+      - 49611098
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     LLM:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49597350
       - 49602258
       - 49605822
+      - 49613068
       published: 0
       published_ids: []
       raw: 5
@@ -716,14 +853,15 @@ mechanical:
       - 49604026
       raw: 5
     Linux:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49598249
-      - 49599538
       - 49600243
       - 49603344
       - 49603397
       - 49604026
+      - 49604329
+      - 49608850
       published: 1
       published_ids:
       - 49604026
@@ -735,7 +873,7 @@ mechanical:
       published_ids: []
       raw: 2
     MCP:
-      matched: 9
+      matched: 10
       matched_ids:
       - 49598681
       - 49598774
@@ -745,7 +883,8 @@ mechanical:
       - 49606981
       - 49609175
       - 49609589
-      - 49610143
+      - 49612673
+      - 49614974
       published: 0
       published_ids: []
       raw: 5
@@ -776,9 +915,9 @@ mechanical:
       published: 1
       published_ids:
       - 49609377
-      raw: 4
+      raw: 3
     OpenAI:
-      matched: 8
+      matched: 12
       matched_ids:
       - 49594189
       - 49594296
@@ -787,9 +926,14 @@ mechanical:
       - 49600457
       - 49608567
       - 49609621
-      - 49609686
-      published: 0
-      published_ids: []
+      - 49610921
+      - 49611362
+      - 49613033
+      - 49613247
+      - 49613427
+      published: 1
+      published_ids:
+      - 49613033
       raw: 5
     OpenTelemetry:
       matched: 0
@@ -804,12 +948,14 @@ mechanical:
       published_ids: []
       raw: 1
     Postgres:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49598865
       - 49600432
       - 49608213
       - 49609589
+      - 49612223
+      - 49614167
       published: 1
       published_ids:
       - 49608213
@@ -820,26 +966,28 @@ mechanical:
       - 49598842
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     PyPI:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49596333
       - 49606267
+      - 49610925
       published: 0
       published_ids: []
       raw: 5
     Python:
-      matched: 8
+      matched: 9
       matched_ids:
       - 49593963
       - 49596409
       - 49597318
       - 49600353
       - 49602769
-      - 49607115
       - 49609240
       - 49609849
+      - 49612470
+      - 49613846
       published: 0
       published_ids: []
       raw: 5
@@ -857,15 +1005,19 @@ mechanical:
       published_ids: []
       raw: 5
     Rust:
-      matched: 7
+      matched: 11
       matched_ids:
       - 49596663
       - 49596778
       - 49598780
       - 49599445
       - 49600585
+      - 49605229
       - 49609377
       - 49609589
+      - 49610687
+      - 49613459
+      - 49613846
       published: 1
       published_ids:
       - 49609377
@@ -875,7 +1027,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 4
     SQLite:
       matched: 3
       matched_ids:
@@ -893,10 +1045,11 @@ mechanical:
       published_ids: []
       raw: 1
     Swift:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49595802
       - 49602816
+      - 49612859
       published: 0
       published_ids: []
       raw: 5
@@ -905,23 +1058,25 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     TypeScript:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49594617
       - 49600585
       - 49601376
       - 49610312
+      - 49613846
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     Vim:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49610795
       published: 0
       published_ids: []
-      raw: 5
+      raw: 1
     Wayland:
       matched: 1
       matched_ids:
@@ -936,8 +1091,9 @@ mechanical:
       published_ids: []
       raw: 5
     Zig:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49613846
       published: 0
       published_ids: []
       raw: 5
@@ -948,14 +1104,15 @@ mechanical:
       published_ids: []
       raw: 4
     acquisition:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49604811
+      - 49613150
       published: 0
       published_ids: []
       raw: 2
     agentic:
-      matched: 7
+      matched: 9
       matched_ids:
       - 49594694
       - 49599835
@@ -964,13 +1121,15 @@ mechanical:
       - 49606635
       - 49609401
       - 49609821
+      - 49613543
+      - 49614770
       published: 2
       published_ids:
       - 49599835
       - 49605246
       raw: 5
     arXiv:
-      matched: 7
+      matched: 9
       matched_ids:
       - 49595563
       - 49597747
@@ -979,6 +1138,8 @@ mechanical:
       - 49605190
       - 49605517
       - 49606031
+      - 49611573
+      - 49612191
       published: 0
       published_ids: []
       raw: 5
@@ -996,9 +1157,11 @@ mechanical:
       published_ids: []
       raw: 1
     coding agent:
-      matched: 1
+      matched: 3
       matched_ids:
       - 49596568
+      - 49610631
+      - 49612123
       published: 0
       published_ids: []
       raw: 5
@@ -1008,7 +1171,7 @@ mechanical:
       - 49610115
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     drug discovery:
       matched: 0
       matched_ids: []
@@ -1022,28 +1185,31 @@ mechanical:
       published_ids: []
       raw: 0
     exploit:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49614972
       published: 0
       published_ids: []
       raw: 5
     iOS:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49597570
       - 49608750
       - 49609648
       - 49609900
       - 49610274
+      - 49615025
       published: 0
       published_ids: []
       raw: 5
     incident:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49594897
       - 49599731
       - 49604807
+      - 49610925
       published: 0
       published_ids: []
       raw: 5
@@ -1052,15 +1218,16 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     kernel:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49598249
       - 49598992
+      - 49615025
       published: 0
       published_ids: []
-      raw: 5
+      raw: 2
     local-first:
       matched: 4
       matched_ids:
@@ -1072,7 +1239,7 @@ mechanical:
       published_ids: []
       raw: 2
     macOS:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49594050
       - 49595797
@@ -1080,9 +1247,10 @@ mechanical:
       - 49601371
       - 49606541
       - 49607578
+      - 49614142
       published: 0
       published_ids: []
-      raw: 5
+      raw: 3
     npm:
       matched: 1
       matched_ids:
@@ -1096,15 +1264,15 @@ mechanical:
       - 49604827
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     protein folding:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     terminal:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49596568
       - 49598010
@@ -1112,6 +1280,8 @@ mechanical:
       - 49604795
       - 49608465
       - 49609923
+      - 49610806
+      - 49613846
       published: 0
       published_ids: []
       raw: 5
@@ -1389,6 +1559,147 @@ mechanical:
       name: run_log
       status: ok
     - detail: 29 fetch(es), 1 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-09-08T19:24:12+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-09-08.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-09-07
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"OpenAI says an internal model proved finite-time blowup for Navier-Stokes,
+        and mathematicians dispute the provenance","section":"Top stories","category":"AI","status":"developing","primary_url":"https://www.scientificamerican.com/article/openai-claims-blockbuster-math-break
+      failed_tools:
+        Bash: 1
+        mcp__digest__fetch_url: 3
+      name: select
+      status: ok
+      tokens:
+        in: 54
+        out: 28521
+      tools:
+        Bash: 5
+        Glob: 1
+        Grep: 10
+        Read: 7
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 14
+        mcp__digest__guidance: 2
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 2
+    - detail: |-
+        Gate passes (exit 0). `data/digests/2026-09-08.md` updated in place.
+
+        **Added**
+
+        - Top stories, inserted ahead of the existing three so the lead changed: the OpenAI Navier-Stokes claim (`developing`, built on the Scientific American report, since openai.com returned 403 and is cited only as a second
+      name: write
+      status: ok
+      tokens:
+        in: 28
+        out: 16588
+      tools:
+        Edit: 10
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 2
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Top stories / OpenAI says an internal
+        model proved finite-time blowup for Navier-Stokes; and Top stories / Alpoge and Buckmaster publish
+        finite-time blowup","detail":"The mathematician's given name is wrong. The digest writes \"Levi
+        Alpoge\"
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: review
+      status: ok
+      tokens:
+        in: 28
+        out: 22838
+      tools:
+        Glob: 1
+        Grep: 9
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 7
+        mcp__digest__run_gate: 1
+    - detail: "Gate passes with exit code 0. Repairs applied to `data/digests/2026-09-08.md`, and nothing\
+        \ else was changed.\n\nBlocking findings:\n\n1. **Name correction.** \"Levi Alpoge\" is now \"\
+        Levent Alpoge\" in both Top stories summaries, matching Buckmaster's own post, Scientific American,\
+        \ and Tao's assessment.\n2. "
+      name: write
+      status: ok
+      tokens:
+        in: 18
+        out: 7469
+      tools:
+        Edit: 7
+        Read: 2
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Top stories / OpenAI says an internal
+        model proved finite-time blowup for Navier-Stokes, and mathematicians dispute the provenance","detail":"The
+        summary reports the Scientific American framing (\"the second solution ever of one of the seven
+      name: review
+      status: ok
+      tokens:
+        in: 16
+        out: 14247
+      tools:
+        Glob: 1
+        Grep: 4
+        Read: 2
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 5
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 8 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 3 cause(s) corrected in 2026-09-07
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-09-08.yaml
+      name: run_log
+      status: ok
+    - detail: 26 fetch(es), 4 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
