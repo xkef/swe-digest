@@ -60,14 +60,71 @@ judgment:
     with it and yesterday's run recorded dropping the follow-on coverage for carrying no new
     development. Today's LG items are again only new outlets on the same Gamers Nexus report, so
     they were skipped a second time.
+
+    Ranking. This is a later run of 2026-09-09 against a digest that already carried 16 stories. I
+    kept the WeWorm zero-click WeChat worm as the day's lead: it is confirmed, patched, and the most
+    operationally concrete item. The Navier-Stokes priority dispute is the day's largest thread by a
+    wide margin (1829 points on Buckmaster's statement, 1272 on the OpenAI post, plus TechCrunch and
+    Science coverage) and I ranked it directly under the lead rather than at it, because it rests on
+    allegations from one party that OpenAI only partly corroborates. It replaces the earlier
+    token-count block rather than sitting beside it, since the same 300 billion output token figure
+    and the same "cannot rule out de-identified data" line appear inside the dispute story. The
+    earlier run had explicitly dropped the dispute as unsourced. It is now sourced.
+
+    Sourcing gaps in that story. cims.nyu.edu returned Buckmaster's statement PDF at HTTP 200, but
+    text extraction produced no usable prose (searches for "Navier", "OpenAI", "Millennium" and
+    "Codex" all returned nothing, so the extractor likely emitted glyph data for a math-heavy
+    document). I link it as the primary document but every quoted claim in the block comes from
+    TechCrunch quoting it, and the block should say so. science.org returned HTTP 403, so the
+    Science article is cited only as an HN discussion link. openai.com returned 403 to the earlier
+    run and still is not linked directly.
+
+    Not published. DeepSeek v4.1 Flash drew 167 points but the HN submission has no primary link,
+    and api-docs.deepseek.com still lists only deepseek-v4-flash (V4-Flash-0731) and deepseek-v4-pro
+    (V4-Pro-0813) with no 4.1 entry. Unverified, so it is out rather than filed as rumor. Meta's
+    Muse took 565 points but ai.meta.com/muse returned only page metadata and no feature text, so
+    there was nothing to state as fact about a major product launch. That absence is the finding,
+    not a quiet Meta day.
+
+    Outages. The section carries only the PyPI incident report because that is all there was. I
+    checked githubstatus.com (all systems operational, no incidents 2026-09-05 through 2026-09-09)
+    and status.npmjs.org (all operational, the npm publish failures resolved 2026-09-03). The HN
+    items about npm publish failures and GitHub EU 401 errors do not correspond to any open
+    incident.
+
+    Security. Still no qualifying advisory beyond WeWorm, which sits in Top stories, so the anchor
+    line stands. The Google Ads post at 146 points (an indie developer's account suspended for
+    "Malicious software" over a Rust terminal multiplexer, reinstated after the HN thread) is
+    platform enforcement rather than a vulnerability. I considered it for Engineering posts and
+    dropped it as the weakest thing that would have been in the digest.
+
+    Also considered and left out: iTerm2 3.7.0, the Postgres 19 property-graph revert, Apple's
+    Sonera acquisition, Anthropic walking away from Decart, and the opusfived agent-constraint
+    challenge. None outranked what is above, and the day sits at 23 of 25 with no section over cap.
+
+    Coverage. Reddit came back degraded again: top-of-day reached 2 of 28 subreddits and day
+    coverage 8 of 28 against a floor of 14. That is a small improvement on the earlier run's 6 of 28
+    and still short. The GitHub stars fetcher reported no degradation but returned a single starred
+    repository for the whole window, which is thin enough to be worth watching. Hacker News, papers,
+    books, events and YouTube were clean.
+
+    Memory. The followups store is stale relative to this run: the newest entries are dated
+    2026-08-30 and the bulk 2026-07-26, so nothing in it bore on today's ranking except DeepSeek,
+    whose tracked funding pause did not connect to the unverified v4.1 report. Worth a pass in a
+    later step.
 mechanical:
   digest:
     domains:
     - arxiv.org
+    - bbc.co.uk
     - blog.pypi.org
     - calif.io
+    - cims.nyu.edu
     - copperhead.sh
     - deepmind.google
+    - derflounder.wordpress.com
+    - desertant.com
+    - ebpf.io
     - github.com
     - inceptionlabs.ai
     - manualdousuario.net
@@ -77,147 +134,146 @@ mechanical:
     - pointersgonewild.com
     - reddit.com
     - simonwillison.net
+    - tailwindcss.com
+    - techcrunch.com
     - yuvalino.com
     hn_ids:
     - 49575914
+    - 49605915
     - 49609900
     - 49610059
     - 49610538
     - 49610631
     - 49610925
     - 49611251
-    - 49613262
-    - 49615926
     - 49616257
     - 49616354
     - 49616968
     - 49617860
+    - 49619227
     - 49619470
+    - 49623881
+    - 49624163
+    - 49624823
+    - 49626020
+    - 49626190
     sections:
-      AI: 2
+      AI: 4
       Agentic coding: 2
-      Apple platforms: 1
-      Developer tools: 2
+      Apple platforms: 2
+      Developer tools: 1
+      Infrastructure: 1
       Languages and runtimes: 1
       Linux and kernel: 1
       ML research: 2
       Outages: 1
+      Reddit and social pulse: 1
       Security: 0
       Sources checked: 0
-      Top stories: 4
-    source_count: 31
+      Top stories: 5
+    source_count: 43
     titles:
     - 'WeWorm: a zero-click worm that spreads through WeChat calls across iOS and Android'
-    - OpenAI's Navier-Stokes writeup puts 300 billion output tokens behind the run
+    - Buckmaster says OpenAI moved on his Navier-Stokes approach after learning of it
+    - Tailwind Labs joins Shopify and closes new commercial signups
     - An LLM-assisted patch series speeds Linux kernel builds by 36 to 90 percent
-    - Terence Tao says good open mathematical problems are being mined non-renewably
+    - systemd 262-rc2 adds a canary to its AGENTS.md to catch unreviewed AI contributions
     - Inception releases Mercury 2.5, a diffusion LLM at 1,107 tokens per second
     - Kimi K3's full 2.8T weights run on one MacBook Pro with experts streamed from four SSDs
+    - Desert Ant Labs launches 18 on-device models behind one Swift, Kotlin and JavaScript SDK
+    - >-
+      FT says Anthropic withheld a model from the UK AI Safety Institute, as a researcher puts extinction
+      risk above 10 percent within the next decade
     - A study of the June 2026 agent wiki finds copying alone explains most collective behavior
     - DeepMind publishes AlphaGenome Atlas, a 1-petabyte precomputed map of 9 billion DNA variants
-    - An HN thread on a coding-agent brevity skill finds 8.7k lines wrapping a 140-line prompt
+    - An HN thread on a coding-agent brevity skill finds a 59-file repository wrapping a 140-line prompt
     - Copperhead is an Apache-2.0 agent that edits real KiCad files behind ERC and DRC gates
     - PyPI publishes an incident report on two weeks of intermittent file-hosting failures
-    - systemd 262-rc2 adds a canary to its AGENTS.md to catch unreviewed AI contributions
     - The Document Foundation sets six conditions before LibreOffice ships AI by default
     - Replacing a 16-byte Rust enum with a 64-bit tagged word made every interpreter benchmark faster
+    - Copying a login keychain between Macs stops working on Secure Enclave Macs running macOS Tahoe
     - A 40-year-old off-by-one in XNU gives the first UNIX-domain socket a changing inode
     - Linux kernel patches would delete about 55,000 lines of deprecated 32-bit ARM platform code
+    - Cloudflare documents eleven Linux networking gaps it closed with eBPF
+    - Terence Tao says good open mathematical problems are being mined non-renewably
   fetched:
-  - detail: 'failed: fetch failed: https://openai.com/index/navier-stokes-solution/: HTTP Error 403: Forbidden'
+  - detail: 73566 bytes
+    ok: true
+    url: https://tailwindcss.com/blog/tailwind-is-joining-shopify
+  - detail: 274723 bytes
+    ok: true
+    url: https://ai.meta.com/muse/
+  - detail: 'failed: fetch failed: https://www.science.org/content/article/how-ai-math-breakthrough-ignited-controversy:
+      HTTP Error 403: Forbidden'
     ok: false
-    url: https://openai.com/index/navier-stokes-solution/
+    url: https://www.science.org/content/article/how-ai-math-breakthrough-ignited-controversy
+  - detail: 13740 bytes
+    ok: true
+    url: https://xlii.space/eng/malicious-software-on-google-ads/
+  - detail: 46100 bytes
+    ok: true
+    url: https://api-docs.deepseek.com/news/news20260909
+  - detail: 4516 bytes
+    ok: true
+    url: https://opusfived.dev/
+  - detail: 29652 bytes
+    ok: true
+    url: https://desertant.com/blog/introducing-desert-ant-labs/
   - detail: 53497 bytes (clipped)
     ok: true
     url: https://cims.nyu.edu/~tristanb/statement.pdf
-  - detail: 59032 bytes
+  - detail: 238210 bytes
     ok: true
-    url: https://mathstodon.xyz/@tao/117237320796901560
-  - detail: 21234 bytes
-    ok: true
-    url: https://simonwillison.net/2026/Sep/8/on-navier-stokes/
-  - detail: 273701 bytes
-    ok: true
-    url: https://mistral.ai/news/mistral-makes-sovereign-open-weight-ai-to-frontier/
-  - detail: 53482 bytes
-    ok: true
-    url: https://blog.pypi.org/posts/2026-09-08-file-hosting-errors/
-  - detail: 30775 bytes
-    ok: true
-    url: https://calif.io/research/weworm
+    url: https://techcrunch.com/2026/09/08/openai-fought-dirty-on-career-making-math-problem-says-nyu-mathematician/
   - detail: 251579 bytes (clipped)
     ok: true
     url: https://developer.nvidia.com/blog/introducing-cuda-rust-two-tracks-for-writing-gpu-kernels/
-  - detail: 72172 bytes
+  - detail: 419718 bytes (clipped)
     ok: true
-    url: https://status.npmjs.org/incidents/b6958bgj1sm3
-  - detail: 392360 bytes
+    url: https://www.githubstatus.com/
+  - detail: 273701 bytes
     ok: true
-    url: https://www.theverge.com/tech/991190/lg-tv-spying-standby-recording-wi-fi-scanning-gamers-nexus
-  - detail: 116750 bytes
+    url: https://mistral.ai/news/mistral-makes-sovereign-open-weight-ai-to-frontier/
+  - detail: 401971 bytes
     ok: true
-    url: https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=b1f106c80cbeb18d3a0219994d98a51a6eca8ede
-  - detail: 272841 bytes
+    url: https://www.bbc.co.uk/news/articles/ckgwy1k42w4o
+  - detail: 237051 bytes
     ok: true
-    url: https://ai.meta.com/muse/
-  - detail: 42440 bytes
+    url: https://status.npmjs.org/
+  - detail: 277521 bytes
     ok: true
-    url: https://arxiv.org/abs/2609.09150
-  - detail: 79209 bytes
+    url: https://ebpf.io/blog/cloudflare-replatforming-2/
+  - detail: 158723 bytes
     ok: true
-    url: https://www.phoronix.com/news/Linux-Dropping-Old-ARM-Ahead
-  - detail: 80188 bytes
+    url: https://derflounder.wordpress.com/2026/09/08/manually-copying-login-keychain-files-from-one-mac-to-another-no-longer-works-on-secure-enclave-equipped-macs-running-macos-tahoe/
+  - detail: 73566 bytes
     ok: true
-    url: https://www.phoronix.com/news/AI-To-Faster-Linux-Kernel-Comp
-  - detail: 79628 bytes
+    url: https://tailwindcss.com/blog/tailwind-is-joining-shopify
+  - detail: 29652 bytes
     ok: true
-    url: https://www.phoronix.com/news/systemd-262-rc2
-  - detail: 278604 bytes
+    url: https://desertant.com/blog/introducing-desert-ant-labs/
+  - detail: 401973 bytes
     ok: true
-    url: https://www.inceptionlabs.ai/blog/introducing-mercury-2-5
-  - detail: 353955 bytes
+    url: https://www.bbc.co.uk/news/articles/ckgwy1k42w4o
+  - detail: 277521 bytes
     ok: true
-    url: https://github.com/argonautlabsai/deltafin
-  - detail: 160821 bytes
-    ok: true
-    url: https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/
-  - detail: 17852 bytes
-    ok: true
-    url: https://yuvalino.com/how-can-you-not-be-romantic-about-unix-domain-sockets
-  - detail: 38949 bytes (clipped)
-    ok: true
-    url: https://pointersgonewild.com/2026-08-25-replacing-a-rust-enum-with-a-64-bit-word/
-  - detail: 17136 bytes
-    ok: true
-    url: https://manualdousuario.net/en/libreoffice-download-record-no-ai/
-  - detail: 168005 bytes
-    ok: true
-    url: https://copperhead.sh/
+    url: https://ebpf.io/blog/cloudflare-replatforming-2/
   - detail: 30775 bytes
     ok: true
     url: https://calif.io/research/weworm
-  - detail: 353956 bytes
+  - detail: 401973 bytes
     ok: true
-    url: https://github.com/argonautlabsai/deltafin
+    url: https://www.bbc.co.uk/news/articles/ckgwy1k42w4o
   - detail: 21234 bytes
     ok: true
     url: https://simonwillison.net/2026/Sep/8/on-navier-stokes/
   - detail: 30775 bytes
     ok: true
     url: https://calif.io/research/weworm
-  - detail: 21234 bytes
+  - detail: 73566 bytes
     ok: true
-    url: https://simonwillison.net/2026/Sep/8/on-navier-stokes/
-  - detail: 17136 bytes
-    ok: true
-    url: https://manualdousuario.net/en/libreoffice-download-record-no-ai/
-  - detail: 59032 bytes
-    ok: true
-    url: https://mathstodon.xyz/@tao/117237320796901560
-  - detail: 353956 bytes
-    ok: true
-    url: https://github.com/argonautlabsai/deltafin
-  generated_at: '2026-09-09T06:37:56+00:00'
+    url: https://tailwindcss.com/blog/tailwind-is-joining-shopify
+  generated_at: '2026-09-09T14:26:00+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -226,31 +282,34 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-09-09T06:11:53+00:00'
+    fetched_at: '2026-09-09T13:58:09+00:00'
     pooled:
       added:
-        ask_hn: 1
-        comments: 6
-        front_page: 6
-        queries: 7
-        show_hn: 4
-        top_day: 5
-      snapshot_fetched_at: '2026-09-09T04:42:41+00:00'
+        ask_hn: 13
+        comments: 24
+        front_page: 25
+        queries: 67
+        show_hn: 16
+        top_day: 18
+      snapshot_fetched_at: '2026-09-09T11:23:34+00:00'
     queries_backend: algolia
     seen_ids:
     - 49546964
     - 49562430
+    - 49562915
     - 49575766
     - 49575914
     - 49579443
     - 49579482
+    - 49580389
     - 49580761
-    - 49589130
+    - 49586494
     - 49591112
     - 49597806
     - 49598009
     - 49598921
     - 49600901
+    - 49604165
     - 49605691
     - 49605756
     - 49605767
@@ -262,6 +321,7 @@ mechanical:
     - 49607094
     - 49607443
     - 49607487
+    - 49607858
     - 49607991
     - 49608008
     - 49608023
@@ -275,7 +335,6 @@ mechanical:
     - 49609389
     - 49609784
     - 49609821
-    - 49609884
     - 49610059
     - 49610069
     - 49610181
@@ -287,7 +346,6 @@ mechanical:
     - 49610631
     - 49610641
     - 49610888
-    - 49610890
     - 49610900
     - 49610949
     - 49610978
@@ -295,7 +353,6 @@ mechanical:
     - 49610988
     - 49611051
     - 49611128
-    - 49611132
     - 49611204
     - 49611230
     - 49611251
@@ -314,7 +371,6 @@ mechanical:
     - 49612676
     - 49612818
     - 49612826
-    - 49612981
     - 49613026
     - 49613068
     - 49613152
@@ -329,6 +385,8 @@ mechanical:
     - 49615631
     - 49615925
     - 49615926
+    - 49615951
+    - 49616059
     - 49616089
     - 49616239
     - 49616257
@@ -336,6 +394,7 @@ mechanical:
     - 49616278
     - 49616335
     - 49616354
+    - 49616564
     - 49616632
     - 49616696
     - 49616876
@@ -368,12 +427,50 @@ mechanical:
     - 49619639
     - 49619906
     - 49620394
-    - 49620451
+    - 49620813
     - 49620825
-    - 49620942
-    - 49621074
     - 49621102
+    - 49621246
+    - 49621425
     - 49621697
+    - 49621751
+    - 49621886
+    - 49621917
+    - 49622042
+    - 49622075
+    - 49622305
+    - 49622554
+    - 49622561
+    - 49622704
+    - 49623306
+    - 49623551
+    - 49623754
+    - 49623768
+    - 49623800
+    - 49623937
+    - 49623938
+    - 49623989
+    - 49624163
+    - 49624208
+    - 49624255
+    - 49624394
+    - 49624603
+    - 49624756
+    - 49624779
+    - 49624823
+    - 49624856
+    - 49625110
+    - 49625363
+    - 49625547
+    - 49625553
+    - 49625627
+    - 49625975
+    - 49626052
+    - 49626148
+    - 49626190
+    - 49626247
+    - 49626372
+    - 49626431
     source: cache
   query_yield:
     0day:
@@ -383,16 +480,18 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49610229
       - 49610538
       - 49615537
       - 49616968
-      published: 2
+      - 49624163
+      published: 3
       published_ids:
       - 49610538
       - 49616968
+      - 49624163
       raw: 5
     AWS:
       matched: 5
@@ -412,15 +511,20 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49608679
       - 49613331
       - 49619227
       - 49619639
       - 49619672
-      published: 0
-      published_ids: []
+      - 49623306
+      - 49624157
+      - 49624255
+      published: 2
+      published_ids:
+      - 49619227
+      - 49624255
       raw: 5
     Apple Silicon:
       matched: 2
@@ -429,7 +533,7 @@ mechanical:
       - 49609486
       published: 0
       published_ids: []
-      raw: 3
+      raw: 0
     Azure:
       matched: 0
       matched_ids: []
@@ -443,11 +547,12 @@ mechanical:
       published_ids: []
       raw: 5
     CUDA:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49609377
       - 49609389
       - 49618642
+      - 49626073
       published: 0
       published_ids: []
       raw: 5
@@ -459,27 +564,35 @@ mechanical:
       published_ids: []
       raw: 5
     Claude:
-      matched: 5
+      matched: 9
       matched_ids:
       - 49610525
       - 49612514
       - 49613348
       - 49616089
       - 49618387
+      - 49623754
+      - 49623768
+      - 49625722
+      - 49626148
       published: 0
       published_ids: []
       raw: 5
     Claude Code:
-      matched: 3
+      matched: 7
       matched_ids:
       - 49607937
       - 49609627
       - 49613348
+      - 49623687
+      - 49623768
+      - 49625722
+      - 49626148
       published: 0
       published_ids: []
       raw: 5
     Cloudflare:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49607443
       - 49608533
@@ -487,24 +600,29 @@ mechanical:
       - 49611233
       - 49618904
       - 49621102
-      published: 0
-      published_ids: []
+      - 49623881
+      - 49626237
+      published: 1
+      published_ids:
+      - 49623881
       raw: 5
     Copilot:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49606742
+      - 49624468
       published: 0
       published_ids: []
       raw: 3
     Cursor:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49610059
+      - 49624468
       published: 1
       published_ids:
       - 49610059
-      raw: 3
+      raw: 2
     GCP:
       matched: 0
       matched_ids: []
@@ -512,20 +630,25 @@ mechanical:
       published_ids: []
       raw: 5
     GPU:
-      matched: 4
+      matched: 7
       matched_ids:
       - 49608430
       - 49609377
+      - 49613220
       - 49615922
       - 49618642
+      - 49619464
+      - 49626073
       published: 0
       published_ids: []
       raw: 5
     Gemini:
-      matched: 2
+      matched: 4
       matched_ids:
       - 49606635
       - 49608283
+      - 49624779
+      - 49626524
       published: 0
       published_ids: []
       raw: 4
@@ -534,14 +657,16 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     GitHub:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49609568
       - 49612772
       - 49615821
       - 49620825
+      - 49622914
+      - 49625025
       published: 0
       published_ids: []
       raw: 5
@@ -586,11 +711,13 @@ mechanical:
       published_ids: []
       raw: 0
     Kafka:
-      matched: 0
-      matched_ids: []
+      matched: 2
+      matched_ids:
+      - 49623332
+      - 49625995
       published: 0
       published_ids: []
-      raw: 0
+      raw: 2
     Kagi:
       matched: 0
       matched_ids: []
@@ -610,10 +737,11 @@ mechanical:
       published_ids: []
       raw: 0
     Kubernetes:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49609173
       - 49611098
+      - 49625407
       published: 0
       published_ids: []
       raw: 2
@@ -627,14 +755,15 @@ mechanical:
       published_ids: []
       raw: 5
     LWN:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49619865
+      - 49625056
       published: 0
       published_ids: []
       raw: 5
     Linux:
-      matched: 6
+      matched: 9
       matched_ids:
       - 49607194
       - 49608850
@@ -642,23 +771,31 @@ mechanical:
       - 49618626
       - 49619865
       - 49621097
-      published: 0
-      published_ids: []
+      - 49623052
+      - 49623677
+      - 49623881
+      published: 1
+      published_ids:
+      - 49623881
       raw: 5
     Llama:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     MCP:
-      matched: 5
+      matched: 9
       matched_ids:
       - 49606981
       - 49609175
       - 49609589
       - 49619059
       - 49619578
+      - 49623790
+      - 49623986
+      - 49624070
+      - 49625809
       published: 0
       published_ids: []
       raw: 5
@@ -678,16 +815,17 @@ mechanical:
       published_ids: []
       raw: 0
     Nvidia:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49608911
       - 49609377
       - 49609389
       - 49615920
       - 49618642
+      - 49626073
       published: 0
       published_ids: []
-      raw: 5
+      raw: 3
     OpenAI:
       matched: 5
       matched_ids:
@@ -713,13 +851,14 @@ mechanical:
       published_ids: []
       raw: 0
     Postgres:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49608213
       - 49609589
       - 49612223
       - 49614167
       - 49616278
+      - 49623701
       published: 0
       published_ids: []
       raw: 5
@@ -739,11 +878,12 @@ mechanical:
       - 49610925
       raw: 5
     Python:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49609240
       - 49612470
       - 49613846
+      - 49614806
       - 49616744
       - 49617861
       published: 0
@@ -762,13 +902,15 @@ mechanical:
       published_ids: []
       raw: 5
     Rust:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49609377
       - 49609589
       - 49613846
       - 49617861
       - 49618642
+      - 49622308
+      - 49624145
       published: 0
       published_ids: []
       raw: 5
@@ -777,11 +919,12 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     SQLite:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49607418
+      - 49625022
       published: 0
       published_ids: []
       raw: 2
@@ -812,7 +955,7 @@ mechanical:
       - 49619354
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     Vim:
       matched: 1
       matched_ids:
@@ -848,32 +991,37 @@ mechanical:
       published_ids: []
       raw: 5
     acquisition:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49613150
+      - 49625804
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     agentic:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49609401
       - 49609821
       - 49613543
+      - 49614770
       - 49620450
       - 49620942
+      - 49622684
       published: 0
       published_ids: []
       raw: 5
     arXiv:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49606031
       - 49611573
       - 49612191
       - 49620127
       - 49620279
-      - 49620810
+      - 49622405
+      - 49622828
+      - 49625993
       published: 0
       published_ids: []
       raw: 5
@@ -890,9 +1038,10 @@ mechanical:
       published_ids: []
       raw: 1
     coding agent:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49612123
+      - 49625363
       published: 0
       published_ids: []
       raw: 5
@@ -902,7 +1051,7 @@ mechanical:
       - 49610115
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     drug discovery:
       matched: 0
       matched_ids: []
@@ -910,11 +1059,13 @@ mechanical:
       published_ids: []
       raw: 1
     eBPF:
-      matched: 0
-      matched_ids: []
-      published: 0
-      published_ids: []
-      raw: 0
+      matched: 1
+      matched_ids:
+      - 49623881
+      published: 1
+      published_ids:
+      - 49623881
+      raw: 1
     exploit:
       matched: 1
       matched_ids:
@@ -923,22 +1074,26 @@ mechanical:
       published_ids: []
       raw: 5
     iOS:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49609648
       - 49609900
       - 49610274
+      - 49614424
+      - 49615025
       - 49617860
       - 49618946
+      - 49619209
       published: 2
       published_ids:
       - 49609900
       - 49617860
       raw: 5
     incident:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49610925
+      - 49625820
       published: 1
       published_ids:
       - 49610925
@@ -950,11 +1105,12 @@ mechanical:
       published_ids: []
       raw: 1
     kernel:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49615025
       - 49617860
       - 49619470
+      - 49626144
       published: 2
       published_ids:
       - 49617860
@@ -967,7 +1123,7 @@ mechanical:
       published_ids: []
       raw: 1
     macOS:
-      matched: 6
+      matched: 9
       matched_ids:
       - 49607578
       - 49617072
@@ -975,9 +1131,13 @@ mechanical:
       - 49618387
       - 49620377
       - 49621365
-      published: 1
+      - 49623741
+      - 49623901
+      - 49626020
+      published: 2
       published_ids:
       - 49617860
+      - 49626020
       raw: 5
     npm:
       matched: 1
@@ -991,7 +1151,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     protein folding:
       matched: 0
       matched_ids: []
@@ -1142,6 +1302,152 @@ mechanical:
       name: run_log
       status: ok
     - detail: 31 fetch(es), 1 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-09-09T14:26:12+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-09-09.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-09-08
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"Buckmaster says OpenAI moved on his Navier-Stokes approach after learning
+        of it","section":"Top stories","category":"AI","status":"developing","primary_url":"https://cims.nyu.edu/~tristanb/statement.pdf","sources":["https://cims.nyu.edu/~tristanb/statement.pdf","https://tec
+      failed_tools:
+        Bash: 1
+        mcp__digest__fetch_url: 1
+      name: select
+      status: ok
+      tokens:
+        in: 50
+        out: 29776
+      tools:
+        Bash: 2
+        Glob: 1
+        Grep: 13
+        Read: 7
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 16
+        mcp__digest__guidance: 1
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 1
+    - detail: |-
+        Gate passes with exit code 0.
+
+        **What the run wrote to `data/digests/2026-09-09.md`:**
+
+        Removed the one block the selection named to displace (`OpenAI's Navier-Stokes writeup puts 300 billion output tokens behind the run`).
+
+        Added six stories:
+        - **Top stories:** the Buckmaster priority dispute, rank
+      failed_tools:
+        Read: 2
+      name: write
+      status: ok
+      tokens:
+        in: 54
+        out: 26567
+      tools:
+        Edit: 13
+        Read: 10
+        ToolSearch: 1
+        mcp__digest__run_gate: 2
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Top stories / WeWorm: a zero-click
+        worm that spreads through WeChat calls across iOS and Android","detail":"The story omits a material
+        precondition its own primary source states. Calif.io: \"This exploit requires the attacker to
+        be on the vi
+      name: review
+      status: ok
+      tokens:
+        in: 18
+        out: 11335
+      tools:
+        Glob: 1
+        Grep: 5
+        Read: 2
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 5
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes with exit code 0. The remaining output is memory staleness warnings, which belong to a later step.
+
+        Repairs made, and nothing else:
+
+        1. **WeWorm (blocking).** Summary now states the exploit requires the attacker to be on the victim's friend list, that the barrier is low because each comp
+      name: write
+      status: ok
+      tokens:
+        in: 22
+        out: 11460
+      tools:
+        Edit: 7
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: "{\"ready\":false,\"findings\":[{\"severity\":\"blocking\",\"where\":\"Top stories / Buckmaster\
+        \ says OpenAI moved on his Navier-Stokes approach after learning of it\",\"detail\":\"The block\
+        \ never states what was actually achieved. Per the cited Willison source, OpenAI used an unreleased\
+        \ internal model to produce a "
+      name: review
+      status: ok
+      tokens:
+        in: 26
+        out: 18045
+      tools:
+        Glob: 2
+        Grep: 7
+        Read: 4
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 4
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 8 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 3 cause(s) corrected in 2026-09-08
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-09-09.yaml
+      name: run_log
+      status: ok
+    - detail: 25 fetch(es), 1 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
