@@ -46,14 +46,6 @@
     Prefer the direct fetch over WebSearch snippets; still confirm CVE details from vendor advisories.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0017
-  kind: fact
-  last_seen: '2026-07-25'
-  note: >-
-    `www.wired.com` - WebFetch is refused outright from the run environment ("unable to fetch"); use WebSearch
-    summaries and corroborate with another outlet before citing.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
   id: an-0018
   kind: fact
   last_seen: '2026-07-25'
@@ -77,25 +69,6 @@
     fetch gets the challenge page and no message text. A kernel-list thread therefore cannot be cited
     directly from this environment; take the quoted content from a secondary write-up (Phoronix, LWN)
     and say so. Verified 2026-07-26.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0020
-  kind: fact
-  last_seen: '2026-07-26'
-  note: >-
-    `www.reuters.com` - article bodies return HTTP 401 to a plain fetch and WebFetch is refused outright
-    from the run environment. Reuters exclusives reach the digest through outlets that cite them (Engadget,
-    Fortune, AP); link the canonical Reuters URL alongside the corroborating outlet and state which one
-    was actually read. Verified 2026-07-26.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0021
-  kind: fact
-  last_seen: '2026-07-26'
-  note: >-
-    `www.bloomberg.com` - article bodies return HTTP 403 from the run environment. Fortune reliably carries
-    Bloomberg wire stories in full and fetched 200 on 2026-07-26 (used for the DeepSeek funding pause);
-    use it as the readable route.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
   id: an-0022
@@ -134,16 +107,6 @@
     and `nvidianews.nvidia.com` for NVIDIA release announcements instead. GitHub issue #9 tracks this.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0034
-  kind: fact
-  last_seen: '2026-06-29'
-  note: >-
-    `www.theregister.com` - reputable secondary tech outlet; article bodies return 403/404 from the datacenter
-    IP, but WebSearch summaries carry named officials and figures. Used 2026-06-20 to upgrade the GitHub-availability/AWS
-    story from a single-source rumor (RuntimeWire) to developing. Link the canonical `/software/YYYY/MM/DD/...`
-    URL; confirm specifics against a primary statement when one exists.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
   id: an-0035
   kind: fact
   last_seen: '2026-06-29'
@@ -152,29 +115,12 @@
     for OpenAI incident timelines (verified 2026-06-18).
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0036
-  kind: fact
-  last_seen: '2026-07-11'
-  note: >-
-    `www.cnbc.com` - article bodies return HTTP 403 to WebFetch from the run environment; use WebSearch
-    summaries and corroborate with another outlet (Bloomberg, TechCrunch, Reuters) or the primary filing.
-    Used 2026-07-11 for the Apple v. OpenAI trade-secret suit (complaint on courtlistener.com).
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
   id: an-0038
   kind: fact
   last_seen: '2026-07-25'
   note: >-
     `openjdk.org/jeps/` - JEP pages return 403 to the harness WebFetch tool but 200 to a plain urllib
     request with a browser User-Agent (verified 2026-07-25 for JEP 541).
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0039
-  kind: fact
-  last_seen: '2026-06-29'
-  note: >-
-    `arstechnica.com` - article bodies block automated WebFetch; use WebSearch snippets plus a corroborating
-    outlet (The Register, Fortune, FT) and confirm the canonical URL before citing.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
   id: an-0040
@@ -203,15 +149,6 @@
     `issuetracker.google.com/issues/{id}` - Google issue tracker pages return 200 to a plain urllib request
     with a browser User-Agent, but the body is JS-rendered so the thread text is not extractable; treat
     it as a link that resolves and take the thread content from a secondary write-up. Verified 2026-07-25.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0043
-  kind: fact
-  last_seen: '2026-07-22'
-  note: >-
-    `apnews.com` - WebFetch returned "unable to fetch" from the run environment on 2026-07-22; use WebSearch
-    summaries and corroborate with another reputable outlet (Washington Post, TechCrunch, Reuters) before
-    citing.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
   id: an-0044
@@ -292,3 +229,20 @@
     and missed Homebrew 6.0.0, a 600+ point front page release announcement. Merged from two bullets to
     keep the store under its entry bound.
   subject: ''
+- group: Datacenter-IP 403 blocks and fallbacks
+  id: an-0030
+  kind: fact
+  last_seen: '2026-09-13'
+  note: >-
+    Outlets that block automated fetch from the run environment, each with its route. `www.reuters.com`
+    returns 401 and WebFetch is refused, so link the canonical Reuters URL alongside an outlet that cites
+    it (Engadget, Fortune, AP) and state which was actually read (confirmed 2026-07-26). `www.bloomberg.com`
+    403; Fortune carries the wire story in full and is the readable route (2026-07-26). `www.wired.com`,
+    `apnews.com`, and `arstechnica.com` refuse WebFetch, so use WebSearch summaries plus a corroborating
+    outlet and confirm the canonical URL (2026-07-22 to 2026-07-25). `www.cnbc.com` 403 on article bodies;
+    corroborate with another outlet or the primary filing (2026-07-11). `www.theregister.com` 403/404
+    on article bodies, but WebSearch summaries carry named officials and figures; link the canonical `/software/YYYY/MM/DD/`
+    URL (2026-06-29). `thehackernews.com` 403; WebSearch snippets only, confirm CVEs from vendor advisories
+    (2026-06-11). Merged from seven bullets plus the access half of a source-reliability bullet to keep
+    the store under its entry bound.
+  subject: News and security outlets that refuse automated fetch
