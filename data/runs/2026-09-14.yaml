@@ -127,17 +127,101 @@ judgment:
     makes it a watchlist_gap. Two other high-scoring candidates look like misses and are not: the
     Apple Neural Engine reverse-engineering post overlaps a 2026-09-13 Top story, and Julia 1.13 was
     correctly labelled not_in_publish_fetch and is now published.
+
+    Third pass on 2026-09-14. The page already held 16 blocks. Six were added and nothing was
+    displaced, so the day stands at 21 against a budget of 25, with Top stories at the cap of 5 and
+    no other section above 2.
+
+    The one Top story added is Apple's general release of iOS 27, iPadOS 27, macOS 27, watchOS 27,
+    visionOS 27 and tvOS 27. The second pass could not write it: the developer releases page still
+    listed only the 2026-09-09 release candidates at fetch time, so that pass wrote the Siri
+    private-framework item as developing instead and promoted it to Top stories in place of a
+    shipped-today block. Apple's newsroom post resolved at 17:11 UTC today and confirms the release,
+    so the block now rests on Apple's own page.
+
+    Intended rank, stated because the page cannot show it. The Apple release belongs second, behind
+    the Artifactory item and ahead of Julia 1.13. The lead does not change. Wiz's Artifactory
+    finding is active exploitation with a majority of the affected population still unpatched by the
+    vendor's own measurement and a federal due date, which is new today and urgent now. A general OS
+    release was announced at WWDC and staged through release candidates, so what is new today is
+    that it shipped and what the availability terms are, not that it exists.
+
+    I considered demoting the Siri private-framework block out of Top stories now that a shipped
+    Apple release is available, and chose not to. Two Apple items in a five-slot Top stories is
+    heavy, and the framework block is derivative reporting on code that is not usable today. Against
+    that, moving it would mean removing and re-authoring a block that says something the release
+    post does not, and the Digital Markets Act lever it describes reads differently now that the EU
+    carve-out is confirmed in Apple's own availability section: Siri AI does not ship in the EU on
+    iPhone at all. The two blocks now sit next to each other and a reader can hold them together. If
+    a fourth pass runs and a stronger candidate arrives, the framework block is the weakest thing in
+    Top stories and should go first.
+
+    Sourcing compromises worth recording. The Xcode 27 block rests on Apple's what's-new page, which
+    carries no version-specific release date and no build number, so the block states the feature
+    set from Apple and takes shipment from the platform release rather than from that page. A Reddit
+    post in r/iOSProgramming claims the Xcode release candidate and Xcode 27 share build 27A266a,
+    which would confirm it directly. That is an unverified user claim on an aggregator and is not
+    published. The Cloudflare post is dated 2026-09-08 and surfaced on Hacker News today, which the
+    block states. The Anthropic CI post is on claude.com under the company's own product categories,
+    and every figure in it is self-reported and unaudited, which the block states rather than
+    smoothing over. The Tokio post's author builds dial9, the tracing tool named throughout it, and
+    the block says so.
+
+    Calls made against candidates that cleared their source bar. The Register's report that CPython
+    has dropped the mandate to make Rust a required build dependency, with a Rust API targeted at
+    Python 3.16 in October 2027 and the Rust zlib crate as the test case, is a real ecosystem item
+    and Languages and runtimes was empty. It was not published because the whole of it is secondary
+    reporting on a RustConf talk about a decision taken in May, no primary proposal or PEP was
+    linked or located this run, and the section is better filled by the Tokio write-up, which is
+    primary and current. Greg Kroah-Hartman's note on 9,057 patches across seven stable kernels
+    carried 2 points and no comments and adds nothing to the Linux and kernel block already on the
+    page. The Register's report that a Microsoft patch round broke audio, remote access and paste is
+    operationally real for Windows administrators but is secondary only, with no Microsoft
+    release-health primary read this run, so it was held.
+
+    Outages stays at no major items for a second day. The two Hacker News items pointing at
+    githubstatus.com incident 0rn90wk115q9 are both dated 2026-09-13 and are the replication-delay
+    event already carried on yesterday's page, not a new incident. The events watchlist returned no
+    active and no upcoming entry again, so no Event story was possible.
+
+    Access and fetcher failures. The GitHub stars fetcher returned an empty item list while
+    reporting no degradation for a fourth consecutive day, so watchlist starring, releases and
+    trending are unverified again. That is a fetcher defect with a clean exit code, not a quiet day,
+    and it is the one thing on this list that will not fix itself. Reddit remains degraded, with 2
+    of 28 subreddits on top-of-day and 9 of 28 for the day against a floor of 14, and the reachable
+    sample was again dominated by r/cursor and r/iOSProgramming with nothing clearing the bar, so
+    Reddit and social pulse stays omitted for a third day. lesswrong.com was not re-attempted this
+    pass after six failures across two days.
+
+    On miss_review. The backtest seeded zero causes for 2026-09-13, so the labels it printed are
+    match status rather than cause, and the entries below are the ones where naming a cause would
+    change future ranking rather than an exhaustive relabelling. Two are genuine watchlist gaps: the
+    Apple Neural Engine reverse-engineering post at 225 points and the ud2 post at 181 points are
+    both squarely in scope for Apple platforms and Engineering posts respectively, and no query
+    caught either. The ud2 post is published on today's page, a day late, which is the cost of that
+    gap. Three are scrape gaps rather than editorial calls: Julia 1.13 surfaced on 2026-09-10 and
+    was not fetched until today, the Fable cipher post was created at 21:06 UTC on 2026-09-13 after
+    the publish-time fetch, and the LessWrong alignment-evals post was wanted and unreachable
+    because the host rate limited every attempt. Two high-point items are relevance skips and should
+    not be counted against coverage: JetKVM Mini at 507 points is a hardware product launch and the
+    e-scooter firmware rewrite at 332 points matched only on the Rust entity. The remaining
+    high-point candidates are out of scope on their face and are left at the default.
 mechanical:
   digest:
     domains:
     - accomplish.ai
     - anthropic.com
+    - apple.com
     - arxiv.org
     - bishopfox.com
+    - blog.cloudflare.com
     - businessinsider.com
     - calif.io
     - cisa.gov
+    - claude.com
     - devblogs.microsoft.com
+    - developer.apple.com
+    - dial9-rs.github.io
     - giannirosato.com
     - julialang.org
     - macrumors.com
@@ -146,6 +230,7 @@ mechanical:
     - reddit.com
     - techcrunch.com
     - temporal.io
+    - tenderlovemaking.com
     - vals.ai
     - wiz.io
     hn_ids:
@@ -158,25 +243,34 @@ mechanical:
     - 49691168
     - 49691732
     - 49695409
+    - 49695876
     - 49696335
     - 49696697
+    - 49698607
+    - 49700255
+    - 49701004
     sections:
       AI: 1
-      Agentic coding: 1
+      Agentic coding: 2
+      Apple platforms: 1
       Developer tools: 1
       Engineering posts: 1
+      Infrastructure: 1
+      Languages and runtimes: 1
       Linux and kernel: 1
       ML research: 1
       Markets and companies: 2
       Outages: 0
-      Security: 1
+      Security: 2
       Sources checked: 0
-      Top stories: 4
+      Top stories: 5
       Watchlist follow-ups: 2
-    source_count: 30
+    source_count: 40
     titles:
     - Wiz reports in-the-wild chaining of two JFrog Artifactory flaws from unauthenticated request to
       admin token
+    - Apple ships iOS 27, iPadOS 27 and macOS 27, with Siri AI as an English beta and no iPhone rollout
+      in the EU
     - Bishop Fox maps NetScaler CVE-2026-19490 from a safe patch-state probe to root, with the decoded
       length as the payload
     - Julia 1.13 skips system-image objects during GC marking and replaces the hash function with RapidhashNano
@@ -185,10 +279,19 @@ mechanical:
     - A Hopper profiling study argues a single SM utilization number hides how much useful work LLM decode
       does
     - Paired same-model tests find no average advantage for vendor-native agentic coding harnesses
+    - Anthropic reports CI jobs rising 25x in six months and rebuilds test selection around a shared journal
     - A generic Android strategy takes an unprivileged app to root on Samsung, Xiaomi and Oppo-family
       flagships
+    - A RubyGems maintainer finds the GemStuffer gems executed code on RubyDoc.info through YARD and hunted
+      cached API keys
     - A compression engineer argues against JPEG XL on the Web and demonstrates a 1,918-byte decode bomb
+    - >-
+      A Tokio performance write-up from RustConf names the failure modes, including a blocking-pool ceiling
+      near 50,000 tasks per second
+    - Xcode 27 adds coding agents with a choice of model, a Device Hub and a Swift Concurrency instrument
     - Ubuntu 26.10 moves cp, mv and rm to uutils, completing the Rust coreutils migration
+    - Cloudflare probes origins for key agreement support and cuts origin HelloRetryRequests from 52 percent
+      to 3.7 percent
     - Reverse engineering why the x86 undefined instruction is called ud2
     - Automattic confirms Mullenweg has returned as chairman and CEO after the board removed him
     - Temporal raises $550M at a $12.55B valuation and reports 1.9 trillion billable actions in August
@@ -198,101 +301,74 @@ mechanical:
       Follow-up: Anthropic's September threat report names Russian drone-swarm and Chinese naval weapons
       work beyond the Yemen cell
   fetched:
-  - detail: 60204 bytes (clipped)
+  - detail: 284438 bytes (clipped)
     ok: true
-    url: https://brew.sh/2026/09/13/homebrew-7.0.0/
-  - detail: 61565 bytes (clipped)
-    ok: true
-    url: https://calif.io/research/oempocalypse
-  - detail: 397589 bytes
-    ok: true
-    url: https://www.wiz.io/blog/artifactory-under-attack-in-the-wild-exploitation-of-cve-2026-42016-cve-2026-4201
+    url: https://www.apple.com/newsroom/2026/09/major-updates-for-apples-software-platforms-are-now-available/
   - detail: 15651 bytes
     ok: true
     url: https://tenderlovemaking.com/2026/09/11/what-a-time-to-be-alive/
-  - detail: 50832 bytes (clipped)
+  - detail: 348916 bytes (clipped)
     ok: true
-    url: https://www.rubyhack.ai/
-  - detail: >-
-      failed: rate limited: https://www.lesswrong.com/posts/munJKF7iWMsWJLAH2/astra-and-fable-still-hack-on-simple-variants-of-alignment
-    ok: false
-    url: https://www.lesswrong.com/posts/munJKF7iWMsWJLAH2/astra-and-fable-still-hack-on-simple-variants-of-alignment
-  - detail: 103063 bytes
+    url: https://blog.cloudflare.com/automatic-key-exchange-for-origins/
+  - detail: 512896 bytes
     ok: true
-    url: https://temporal.io/blog/temporal-raises-usd550m-series-e-at-usd12-55b-valuation-ai
-  - detail: 108222 bytes
+    url: https://claude.com/blog/agentic-coding-is-straining-ci-heres-how-we-scaled-test-impact-analysis-at-anthropic
+  - detail: 168470 bytes
     ok: true
-    url: https://www.omgubuntu.co.uk/2026/09/ubuntu-2610-rust-coreutils-complete
-  - detail: 435058 bytes
+    url: https://www.theregister.com/devops/2026/09/14/cpython-eases-rust-requirements-as-assimilation-continues/5296010
+  - detail: 116733 bytes
     ok: true
-    url: https://www.businessinsider.com/anthropic-says-threat-actors-used-claude-for-weapons-2026-9
-  - detail: 131365 bytes
+    url: https://developer.apple.com/xcode/whats-new/
+  - detail: 35607 bytes
     ok: true
-    url: https://www.macrumors.com/2026/09/14/siri-can-be-swapped-out-for-chatgpt-claude/
-  - detail: 250127 bytes
-    ok: true
-    url: https://developer.apple.com/news/releases/
-  - detail: 252134 bytes (clipped)
-    ok: true
-    url: https://developer.nvidia.com/blog/introducing-cuda-rust-two-tracks-for-writing-gpu-kernels/
-  - detail: 'failed: fetch failed: https://www.anthropic.com/news/detecting-and-countering-misuse-of-ai-september-2026:
-      HTTP Error 404: Not Found'
-    ok: false
-    url: https://www.anthropic.com/news/detecting-and-countering-misuse-of-ai-september-2026
-  - detail: 23526 bytes
-    ok: true
-    url: https://bcantrill.dtrace.org/2026/09/13/the-contagion-of-fear/
+    url: https://dial9-rs.github.io/blog/principles-for-fast-tokio-applications/
   - detail: 397589 bytes
     ok: true
     url: https://www.wiz.io/blog/artifactory-under-attack-in-the-wild-exploitation-of-cve-2026-42016-cve-2026-4201
-  - detail: 131365 bytes
+  - detail: 280603 bytes (clipped)
     ok: true
-    url: https://www.macrumors.com/2026/09/14/siri-can-be-swapped-out-for-chatgpt-claude/
-  - detail: 103063 bytes
+    url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+  - detail: 284438 bytes (clipped)
     ok: true
-    url: https://temporal.io/blog/temporal-raises-usd550m-series-e-at-usd12-55b-valuation-ai
-  - detail: 435138 bytes
+    url: https://www.apple.com/newsroom/2026/09/major-updates-for-apples-software-platforms-are-now-available/
+  - detail: 292086 bytes (clipped)
     ok: true
-    url: https://www.businessinsider.com/anthropic-says-threat-actors-used-claude-for-weapons-2026-9
-  - detail: 108418 bytes
+    url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog?search_api_fulltext=CVE-2026-19490
+  - detail: 410842 bytes (clipped)
     ok: true
-    url: https://www.omgubuntu.co.uk/2026/09/ubuntu-2610-rust-coreutils-complete
-  - detail: 43836 bytes
+    url: https://bishopfox.com/blog/mind-the-config-detecting-and-weaponizing-netscaler-cve-2026-19490
+  - detail: 194231 bytes
     ok: true
-    url: https://arxiv.org/abs/2609.11987
-  - detail: 465118 bytes
-    ok: true
-    url: https://www.anthropic.com/news
-  - detail: 'failed: fetch failed: https://www.anthropic.com/news/detecting-and-countering-misuse-of-ai-september-2026:
-      HTTP Error 404: Not Found'
-    ok: false
-    url: https://www.anthropic.com/news/detecting-and-countering-misuse-of-ai-september-2026
-  - detail: 'failed: fetch failed: https://www.anthropic.com/news/detecting-countering-misuse-ai-september-2026:
-      HTTP Error 404: Not Found'
-    ok: false
-    url: https://www.anthropic.com/news/detecting-countering-misuse-ai-september-2026
+    url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog?f%5B0%5D=vendor_project%3ACitrix
   - detail: 397589 bytes
     ok: true
     url: https://www.wiz.io/blog/artifactory-under-attack-in-the-wild-exploitation-of-cve-2026-42016-cve-2026-4201
-  - detail: 131196 bytes
+  - detail: 280603 bytes (clipped)
+    ok: true
+    url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+  - detail: 684902 bytes
+    ok: true
+    url: https://github.com/trending
+  - detail: 130349 bytes
     ok: true
     url: https://www.macrumors.com/2026/09/14/siri-can-be-swapped-out-for-chatgpt-claude/
-  - detail: 103063 bytes
+  - detail: 74481 bytes
     ok: true
-    url: https://temporal.io/blog/temporal-raises-usd550m-series-e-at-usd12-55b-valuation-ai
-  - detail: 435058 bytes
-    ok: true
-    url: https://www.businessinsider.com/anthropic-says-threat-actors-used-claude-for-weapons-2026-9
-  - detail: 465118 bytes
+    url: https://www.vals.ai/blogs/fable-solves-cyphral-distich
+  - detail: 465418 bytes
     ok: true
     url: https://www.anthropic.com/news
-  - detail: 108418 bytes
+  - detail: 435113 bytes
     ok: true
-    url: https://www.omgubuntu.co.uk/2026/09/ubuntu-2610-rust-coreutils-complete
-  - detail: 43836 bytes
+    url: https://www.businessinsider.com/anthropic-says-threat-actors-used-claude-for-weapons-2026-9
+  - detail: 'failed: fetch failed: https://www.reddit.com/r/ClaudeAI/comments/1wg6zf9/anthropic_says_russian_and_chinese_threat_actors/:
+      HTTP Error 403: Blocked'
+    ok: false
+    url: https://www.reddit.com/r/ClaudeAI/comments/1wg6zf9/anthropic_says_russian_and_chinese_threat_actors/
+  - detail: 116733 bytes
     ok: true
-    url: https://arxiv.org/abs/2609.11987
-  generated_at: '2026-09-14T16:23:52+00:00'
+    url: https://developer.apple.com/xcode/whats-new/
+  generated_at: '2026-09-14T20:26:09+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -301,19 +377,20 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-09-14T16:00:43+00:00'
+    fetched_at: '2026-09-14T19:57:48+00:00'
     pooled:
       added:
-        ask_hn: 16
-        comments: 42
-        front_page: 35
-        queries: 60
-        show_hn: 20
-        top_day: 25
-      snapshot_fetched_at: '2026-09-14T12:47:56+00:00'
+        ask_hn: 22
+        comments: 72
+        front_page: 44
+        queries: 76
+        show_hn: 25
+        top_day: 39
+      snapshot_fetched_at: '2026-09-14T19:50:37+00:00'
     queries_backend: algolia
     seen_ids:
     - 49630353
+    - 49631365
     - 49638510
     - 49638555
     - 49642645
@@ -323,12 +400,12 @@ mechanical:
     - 49651735
     - 49653311
     - 49655621
-    - 49657257
     - 49659557
     - 49662246
     - 49667198
     - 49667916
     - 49670852
+    - 49671831
     - 49680485
     - 49681100
     - 49681117
@@ -474,7 +551,6 @@ mechanical:
     - 49695065
     - 49695220
     - 49695295
-    - 49695304
     - 49695408
     - 49695409
     - 49695459
@@ -483,34 +559,55 @@ mechanical:
     - 49695638
     - 49695710
     - 49695744
-    - 49695805
     - 49695829
     - 49695876
     - 49696084
     - 49696125
-    - 49696132
     - 49696190
     - 49696202
     - 49696335
     - 49696402
-    - 49696552
+    - 49696660
     - 49696697
-    - 49696867
     - 49696875
     - 49697014
-    - 49697035
     - 49697094
-    - 49697103
     - 49697171
-    - 49697235
     - 49697367
-    - 49697417
-    - 49697444
-    - 49697642
     - 49697643
-    - 49697666
     - 49697912
+    - 49698073
+    - 49698198
     - 49698607
+    - 49698699
+    - 49698914
+    - 49699075
+    - 49699134
+    - 49699135
+    - 49699145
+    - 49699158
+    - 49699159
+    - 49699267
+    - 49699287
+    - 49699297
+    - 49699373
+    - 49699384
+    - 49699489
+    - 49699493
+    - 49699590
+    - 49699648
+    - 49699783
+    - 49699816
+    - 49699819
+    - 49700102
+    - 49700218
+    - 49700255
+    - 49700477
+    - 49700661
+    - 49701004
+    - 49701104
+    - 49702360
+    - 49702779
     source: cache
   query_yield:
     0day:
@@ -520,7 +617,7 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 8
+      matched: 9
       matched_ids:
       - 49683834
       - 49685253
@@ -529,7 +626,8 @@ mechanical:
       - 49690260
       - 49694596
       - 49695409
-      - 49695876
+      - 49697094
+      - 49699384
       published: 1
       published_ids:
       - 49695409
@@ -539,7 +637,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 4
     AWS:
       matched: 3
       matched_ids:
@@ -556,7 +654,7 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 9
+      matched: 10
       matched_ids:
       - 49684266
       - 49685132
@@ -567,6 +665,7 @@ mechanical:
       - 49692781
       - 49696781
       - 49698638
+      - 49698936
       published: 0
       published_ids: []
       raw: 5
@@ -598,7 +697,7 @@ mechanical:
       - 49694982
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     CVE:
       matched: 2
       matched_ids:
@@ -610,7 +709,7 @@ mechanical:
       - 49691732
       raw: 5
     Claude:
-      matched: 8
+      matched: 9
       matched_ids:
       - 49684165
       - 49684266
@@ -618,30 +717,35 @@ mechanical:
       - 49688595
       - 49690647
       - 49695409
-      - 49695492
       - 49697749
+      - 49699373
+      - 49701020
       published: 1
       published_ids:
       - 49695409
       raw: 5
     Claude Code:
-      matched: 3
+      matched: 5
       matched_ids:
       - 49684266
       - 49695492
       - 49697749
+      - 49699675
+      - 49701075
       published: 0
       published_ids: []
       raw: 5
     Cloudflare:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49684332
       - 49685280
       - 49696698
-      published: 0
-      published_ids: []
-      raw: 1
+      - 49700255
+      published: 1
+      published_ids:
+      - 49700255
+      raw: 2
     Copilot:
       matched: 1
       matched_ids:
@@ -675,21 +779,23 @@ mechanical:
       published_ids: []
       raw: 5
     Gemini:
-      matched: 2
+      matched: 4
       matched_ids:
       - 49686186
       - 49689865
+      - 49701075
+      - 49701239
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     Ghostty:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     GitHub:
-      matched: 10
+      matched: 11
       matched_ids:
       - 49682128
       - 49682451
@@ -701,6 +807,7 @@ mechanical:
       - 49696063
       - 49697367
       - 49697727
+      - 49701860
       published: 0
       published_ids: []
       raw: 5
@@ -782,20 +889,22 @@ mechanical:
       published_ids: []
       raw: 0
     Kubernetes:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49682192
+      - 49701032
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     LLM:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49683344
       - 49688115
-      - 49692131
+      - 49691112
       - 49693384
       - 49694097
+      - 49699590
       published: 0
       published_ids: []
       raw: 5
@@ -808,7 +917,7 @@ mechanical:
       published_ids: []
       raw: 5
     Linux:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49683180
       - 49683360
@@ -816,6 +925,7 @@ mechanical:
       - 49687083
       - 49688104
       - 49698358
+      - 49699204
       published: 0
       published_ids: []
       raw: 5
@@ -826,7 +936,7 @@ mechanical:
       published_ids: []
       raw: 3
     MCP:
-      matched: 7
+      matched: 8
       matched_ids:
       - 49681809
       - 49682852
@@ -835,6 +945,7 @@ mechanical:
       - 49695517
       - 49697080
       - 49698952
+      - 49700175
       published: 0
       published_ids: []
       raw: 5
@@ -857,7 +968,7 @@ mechanical:
       published_ids: []
       raw: 0
     Nvidia:
-      matched: 8
+      matched: 10
       matched_ids:
       - 49681474
       - 49682319
@@ -866,12 +977,14 @@ mechanical:
       - 49694823
       - 49694977
       - 49695653
-      - 49696719
+      - 49701038
+      - 49701613
+      - 49702319
       published: 0
       published_ids: []
       raw: 5
     OpenAI:
-      matched: 8
+      matched: 9
       matched_ids:
       - 49681012
       - 49681166
@@ -880,17 +993,20 @@ mechanical:
       - 49688493
       - 49690073
       - 49691983
+      - 49695876
       - 49697666
-      published: 0
-      published_ids: []
+      published: 1
+      published_ids:
+      - 49695876
       raw: 5
     OpenTelemetry:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49688317
+      - 49701032
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     Paxos:
       matched: 0
       matched_ids: []
@@ -914,21 +1030,23 @@ mechanical:
       published_ids: []
       raw: 0
     PyPI:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49687638
       - 49691614
+      - 49699298
       published: 0
       published_ids: []
       raw: 5
     Python:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49683344
       - 49685037
       - 49691063
       - 49691614
       - 49695615
+      - 49699751
       published: 0
       published_ids: []
       raw: 5
@@ -946,16 +1064,17 @@ mechanical:
       published_ids: []
       raw: 5
     Rust:
-      matched: 8
+      matched: 9
       matched_ids:
       - 49683551
       - 49684931
       - 49685037
       - 49686864
-      - 49694982
       - 49695805
       - 49696697
       - 49697375
+      - 49700153
+      - 49702192
       published: 1
       published_ids:
       - 49696697
@@ -965,7 +1084,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 4
     SQLite:
       matched: 1
       matched_ids:
@@ -988,17 +1107,19 @@ mechanical:
       published_ids: []
       raw: 5
     SwiftUI:
-      matched: 0
-      matched_ids: []
+      matched: 2
+      matched_ids:
+      - 49701863
+      - 49702344
       published: 0
       published_ids: []
-      raw: 3
+      raw: 5
     TypeScript:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 2
     Vim:
       matched: 0
       matched_ids: []
@@ -1013,10 +1134,12 @@ mechanical:
       published_ids: []
       raw: 2
     Xcode:
-      matched: 0
-      matched_ids: []
-      published: 0
-      published_ids: []
+      matched: 1
+      matched_ids:
+      - 49702664
+      published: 1
+      published_ids:
+      - 49702664
       raw: 5
     Zig:
       matched: 1
@@ -1031,7 +1154,7 @@ mechanical:
       - 49699127
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     acquisition:
       matched: 0
       matched_ids: []
@@ -1039,14 +1162,18 @@ mechanical:
       published_ids: []
       raw: 0
     agentic:
-      matched: 4
+      matched: 7
       matched_ids:
       - 49682988
       - 49685241
       - 49693899
       - 49698217
-      published: 0
-      published_ids: []
+      - 49701675
+      - 49702815
+      - 49702885
+      published: 1
+      published_ids:
+      - 49702815
       raw: 5
     arXiv:
       matched: 8
@@ -1091,11 +1218,12 @@ mechanical:
       published_ids: []
       raw: 5
     distributed systems:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49699158
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     drug discovery:
       matched: 0
       matched_ids: []
@@ -1116,16 +1244,19 @@ mechanical:
       published_ids: []
       raw: 5
     iOS:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49680654
       - 49685446
       - 49691225
-      - 49696279
       - 49697831
       - 49698390
-      published: 0
-      published_ids: []
+      - 49700193
+      - 49700357
+      - 49701004
+      published: 1
+      published_ids:
+      - 49701004
       raw: 5
     incident:
       matched: 4
@@ -1142,12 +1273,13 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 5
     kernel:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49690894
       - 49696551
+      - 49702764
       published: 0
       published_ids: []
       raw: 4
@@ -1159,7 +1291,7 @@ mechanical:
       published_ids: []
       raw: 2
     macOS:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49684444
       - 49688246
@@ -1167,8 +1299,11 @@ mechanical:
       - 49689504
       - 49696875
       - 49697022
-      published: 0
-      published_ids: []
+      - 49700445
+      - 49701004
+      published: 1
+      published_ids:
+      - 49701004
       raw: 5
     npm:
       matched: 0
@@ -1477,6 +1612,148 @@ mechanical:
       name: run_log
       status: ok
     - detail: 30 fetch(es), 4 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-09-14T20:26:22+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-09-14.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-09-13
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"Apple ships iOS 27, iPadOS 27 and macOS 27, with Siri AI as an English
+        beta and no iPhone rollout in the EU","section":"Top stories","category":"Apple","status":"confirmed","primary_url":"https://www.apple.com/newsroom/2026/09/major-updates-for-apples-software-platforms-are
+      name: select
+      status: ok
+      tokens:
+        in: 36
+        out: 23422
+      tools:
+        Bash: 1
+        Glob: 3
+        Grep: 7
+        Read: 8
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 7
+        mcp__digest__guidance: 1
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 2
+    - detail: |-
+        Gate passes with exit code 0. Third pass written to `data/digests/2026-09-14.md`.
+
+        **Added, six blocks, nothing displaced (the selection's `displace` list was empty):**
+
+        - **Top stories**, inserted second per the selection's stated rank: Apple's general release of iOS 27, iPadOS 27 and macOS 27, sou
+      name: write
+      status: ok
+      tokens:
+        in: 22
+        out: 17118
+      tools:
+        Edit: 8
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: "{\"findings\":[{\"severity\":\"blocking\",\"where\":\"Top stories: Bishop Fox maps NetScaler\
+        \ CVE-2026-19490 from a safe patch-state probe to root\",\"detail\":\"The blurb states \\\"CISA\
+        \ lists it as exploited with a 2026-09-12 due date\\\" and Why it matters states \\\"the CISA\
+        \ catalog read for this run lists the CVE "
+      name: review
+      status: ok
+      tokens:
+        in: 26
+        out: 20336
+      tools:
+        Glob: 1
+        Grep: 8
+        Read: 2
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 6
+        mcp__digest__memory_query: 1
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes with exit code 0. All six findings repaired.
+
+        **Blocking — NetScaler CISA claim.** `fetch_url` is not granted to the write step, so I could not read the KEV JSON feed or an NVD/Citrix advisory to re-source the dates. I dropped the claim instead: the `[CISA KEV catalog]` link is gone from
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: write
+      status: ok
+      tokens:
+        in: 38
+        out: 15607
+      tools:
+        Edit: 15
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 1
+        mcp__digest__memory_query: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Watchlist follow-ups / Follow-up: Anthropic's
+        September threat report names Russian drone-swarm and Chinese naval weapons work beyond the Yemen
+        cell","detail":"The third source link, https://www.reddit.com/r/ClaudeAI/comments/1wg6zf9/anthrop
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: review
+      status: ok
+      tokens:
+        in: 30
+        out: 26638
+      tools:
+        Glob: 1
+        Grep: 10
+        Read: 4
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 9
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 9 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 5 cause(s) corrected in 2026-09-13
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-09-14.yaml
+      name: run_log
+      status: ok
+    - detail: 22 fetch(es), 1 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
