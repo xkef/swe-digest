@@ -63,6 +63,9 @@ Primary sources:
   changelogs, and docs.
 - Model Context Protocol spec, servers, and clients.
 - Practitioner write-ups with concrete setup, prompts, or measured results.
+- Company engineering blogs describing their AI SDLC: Stripe, Spotify, Uber,
+  Cloudflare, Coinbase, Meta and PyTorch, Google, Block, Morgan Stanley.
+- Industry PR and CI datasets: LinearB, CircleCI, GitHub Octoverse.
 - Simon Willison's weblog and Latent Space for context.
 
 Selection rules:
@@ -73,3 +76,10 @@ Selection rules:
 - Prefer posts with metrics, failure analysis, or reproducible setup over launch
   marketing.
 - Track agent evaluation results and how they were produced.
+- For an AI SDLC account from a named organization, record which agents run
+  interactively, which run unattended, the sandbox and tool scope, how the
+  review gate works, and the reported numbers. Place it on the autonomy
+  scale: L1 assisted, L2 agent authors and a human reads every change, L3 AI
+  pre-review with gate authority, L4 scoped auto-merge, L5 no human authoring
+  or review. Include such an account whenever the source is first-party or a
+  credible practitioner with mechanism-level detail.

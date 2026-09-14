@@ -19,6 +19,15 @@ infrastructure.
   engineering tradeoffs. Route into ML research and AI sections.
 - Agentic coding: how practitioners use and build with coding agents (Claude
   Code, Cursor, Copilot), agent harnesses, MCP, subagents, and agent evaluation.
+- AI-driven SDLC at named organizations: first-party or well-sourced accounts
+  of which agents engineers run, which run unattended, how they are sandboxed
+  and given tools, how the review gate changed (AI pre-review, scoped
+  auto-merge, no human review), and measured outcomes (merged PRs, review
+  time, revert rate, cost per PR). Reference cases: Stripe Minions, Spotify
+  Honk, Uber managed agents, Cloudflare AI review, Coinbase, Meta RADAR,
+  StrongDM. Industry data on review bottlenecks (LinearB, CircleCI, GitHub)
+  counts too. Always include when the source is a company engineering blog or
+  a credible practitioner write-up with mechanism-level detail.
 - Major outages affecting developers, cloud users, identity, payments, package
   registries, and collaboration tools.
 - CVEs, active exploitation, supply chain attacks, breaches, and practical
