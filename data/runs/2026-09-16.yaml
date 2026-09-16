@@ -128,16 +128,76 @@ judgment:
     runtimes, object-storage tooling, and durable engineering-practice writing. The rest of the high
     scorers labelled no_query_match are correctly outside scope, and I marked the three clearest so
     the weekly review does not read them as coverage gaps.
+
+    Selection posture. This is the third run of 2026-09-16 and the first to hold fetch capability.
+    The two earlier runs left an explicit list of items dropped only because they could not read a
+    primary, so this run spent its budget resolving that list rather than finding new candidates.
+    Four items resolved and are added. Nothing already published was displaced: the day stood at 12
+    blocks against a budget of 25, AI was at 2 of 4, and no section was at its cap, so every
+    addition fit without contest. Top stories is unchanged at four blocks and the AWS Bahrain
+    data-loss item remains the lead.
+
+    Access-note correction worth keeping. The earlier runs recorded that the swiftlang/swift tag
+    swift-6.4-RELEASE returns HTTP 404 and concluded the Swift 6.4 primary was unreachable. The tag
+    is actually swift-6.4.0-RELEASE, published 2026-09-15T04:50:03Z, and its release body is empty,
+    which is why a release-page fetch alone looks like nothing shipped. The substance is in
+    CHANGELOG.md at that tag, which is readable and carries the full Swift 6.4 section. The separate
+    finding that swift.org returns undecoded bytes still stands and was not retested. Anyone
+    re-checking a Swift release should go to the CHANGELOG at the tag rather than to swift.org or
+    the release body.
+
+    The driver's license breach is published in Security rather than Top stories, and that is a date
+    call a reader cannot infer from the page. The Krebs report is dated 2026-09-01 and the
+    IDScan.net notice confirming unauthorized access to names and license numbers is dated
+    2026-09-08. What happened on this date is only renewed attention through a Lawfare commentary at
+    295 points. The story is large and this archive had never carried it, which is why it is
+    published at all, but leading the day on two-week-old facts would misdate it. The earlier run
+    was right to drop its version of this block: it cited the Lawfare piece as primary and credited
+    the IDScan link to the wrong outlet. The Krebs report names idscan.net directly, records the FBI
+    New Orleans field office opening an inquiry, and traces the data to ID scans taken at Hertz
+    counters and a Planet13 dispensary rather than at airport security.
+
+    Claims deliberately not made. The Claude Cowork block does not assert that the merge resolves
+    the Cowork sandbox escape tracked in the follow-up store. The post is a product announcement and
+    says nothing about sandboxing, host mounts, or local versus cloud execution, so connecting the
+    two would be inference. The block notes the adjacency and stops. The Google Play block is one
+    maintainer's report on one app, labelled discussion, and states that rather than presenting a
+    single screenshot as a measured trend.
+
+    Not published. OpenAI's Sponsored Agents announcement returns HTTP 403 from this environment, so
+    a real AI and platform-policy item went unverified and is omitted rather than sourced from
+    coverage. The PS5 Linux maintainer resignation over LLM-generated contributions, at 277 points,
+    fits the open source sustainability test, but the only available source is frvr.com, a secondary
+    this digest has no basis to treat as primary, and the maintainer's own statement was not
+    located. Rheinmetall's Battlesuite protocol documentation at 271 points was left out as outside
+    a software engineering digest's scope rather than as unverified. Engineering posts stays
+    omitted: the candidates are ordinary practitioner blog posts, none clears the bar the field
+    guide sets, and a padded section is worse than an absent one. Reddit and social pulse, Books,
+    and New videos stay omitted on the degraded coverage listed above, which is a fact about
+    collection on this date and not a quiet day.
+
+    Backtest. The tool scored 79 candidates for 2026-09-15 and seeded no default causes, so the four
+    entries in miss_review are flagged against the diagnostic labels it printed rather than against
+    seeded values. All four are engineering-relevant items labelled no_query_match, meaning the
+    watchlist queries did not reach them: a Tokio performance post, a single-node S3 tooling
+    comparison, a software design document write-up, and a model-versus-model code review cost
+    comparison. The last of these is the most useful signal, because agentic coding is a tracked
+    topic and a cost comparison between coding models should not depend on a title match to surface.
+    The bulk of the remaining high-point candidates are correctly out of scope, including the Papua
+    New Guinea essay, the Steam Frame price, the XCancel suspension, the H-1B fee, and the
+    surveillance commentary, and are not flagged.
 mechanical:
   digest:
     domains:
     - accomplish.ai
     - api.status.salesforce.com
     - arxiv.org
+    - claude.com
     - cnbc.com
     - codyho.dev
     - effort.news
     - github.com
+    - gultsch.social
     - mistral.ai
     - news.ycombinator.com
     - nginx.org
@@ -155,22 +215,26 @@ mechanical:
     - 49723408
     - 49724250
     - 49724488
-    - 49727207
+    - 49724927
+    - 49729412
     sections:
-      AI: 2
+      AI: 3
+      Developer tools: 1
       Hacker News: 1
+      Languages and runtimes: 1
       ML research: 2
       Outages: 1
       Security: 2
       Sources checked: 0
       Top stories: 4
-    source_count: 27
+    source_count: 32
     titles:
     - AWS says data hosted exclusively in its Bahrain region and one UAE zone cannot be restored
     - Two OpenAI Codex sandbox escapes disclosed, extending a run of coding-agent sandbox breaks
     - Apple Reference Image signs photos at the sensor and develops them in Private Cloud Compute
     - Two developers built a clean-room Linux GPU driver for the M4 Mac Mini in about a month using coding
       agents
+    - Anthropic merges Claude Cowork into the main Claude app and adds Docs and Slides
     - TypeSafe AI launches Jev, a model class that emits typed structured values instead of text
     - Firefox Smart Window runs on Mistral models in beta
     - Audit finds SWE-bench can no longer separate its top coding agents
@@ -179,38 +243,36 @@ mechanical:
     - Effort names Israeli firm Irregular as the common contractor behind the Anthropic, OpenAI, and Meta
       model hacks
     - Salesforce opens a major service disruption affecting multiple instances across all regions
+    - Conversations maintainer reports Google Play review regularly exceeding a week
+    - Swift 6.4 ships async defer, noncopyable associated types, and source-level warning control
     - 'Show HN: e-ink frame identifies garden birds by sound and draws them from 1800s plates'
   fetched:
-  - detail: 16294 bytes
+  - detail: 523383 bytes
     ok: true
-    url: https://mail.openjdk.org/archives/list/announce@openjdk.org/thread/ORGGLMN75HFEWP7YL3ZLGHLYHVIBJDYT/
-  - detail: 11403 bytes
+    url: https://claude.com/blog/cowork-is-now-claude
+  - detail: 16364 bytes
     ok: true
-    url: https://openjdk.org/projects/jdk/27/
-  - detail: 1507 bytes
+    url: https://api.github.com/repos/swiftlang/swift/releases?per_page=8
+  - detail: 'failed: fetch failed: https://forums.swift.org/t/announcing-swift-6-4/: HTTP Error 404: Not
+      Found'
+    ok: false
+    url: https://forums.swift.org/t/announcing-swift-6-4/
+  - detail: 111156 bytes (clipped)
     ok: true
-    url: https://status.salesforce.com/products/all
-  - detail: 427841 bytes
+    url: https://krebsonsecurity.com/
+  - detail: 84155 bytes (clipped)
     ok: true
-    url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-live-gemini-3-8-live-extended-thinking/
-  - detail: 234527 bytes
+    url: https://krebsonsecurity.com/2026/09/fbi-probes-service-selling-153m-drivers-licenses/
+  - detail: 61482 bytes
     ok: true
-    url: https://typesafe.ai/blog/introducing-system-one-models-and-jev
-  - detail: 68442 bytes
+    url: https://gultsch.social/@daniel/117280438824908947
+  - detail: 405657 bytes (clipped)
     ok: true
-    url: https://accomplish.ai/blog/beltdown-escaping-the-claude-code-sandbox/
-  - detail: 51501 bytes
-    ok: true
-    url: https://www.strix.ai/blog/baseten-harbor-github-pat-takeover
-  - detail: 16830 bytes
-    ok: true
-    url: https://www.swift.org/blog/swift-6.4-released/
-  - detail: 9631 bytes
-    ok: true
-    url: https://nginx.org/en/download.html
-  - detail: 135221 bytes
-    ok: true
-    url: https://blog.archive.org/2026/09/15/an-update-on-wayback-machine-access/
+    url: https://raw.githubusercontent.com/swiftlang/swift/swift-6.4.0-RELEASE/CHANGELOG.md
+  - detail: 'failed: fetch failed: https://openai.com/index/reimagining-advertising-with-ai/: HTTP Error
+      403: Forbidden'
+    ok: false
+    url: https://openai.com/index/reimagining-advertising-with-ai/
   - detail: 67252 bytes
     ok: true
     url: https://accomplish.ai/blog/escaping-the-openai-codex-sandbox-twice/
@@ -220,94 +282,44 @@ mechanical:
   - detail: 83250 bytes (clipped)
     ok: true
     url: https://security.apple.com/blog/apple-reference-image/
-  - detail: 'failed: fetch failed: https://www.reuters.com/world/middle-east/amazons-aws-is-unable-restore-access-bahrain-one-uae-cloud-data-zone-after-war-2026-09-15/:
-      HTTP Error 401: HTTP Forbidden'
-    ok: false
-    url: https://www.reuters.com/world/middle-east/amazons-aws-is-unable-restore-access-bahrain-one-uae-cloud-data-zone-after-war-2026-09-15/
-  - detail: 794623 bytes
+  - detail: 68442 bytes
+    ok: true
+    url: https://accomplish.ai/blog/beltdown-escaping-the-claude-code-sandbox/
+  - detail: 794101 bytes
     ok: true
     url: https://www.cnbc.com/2026/09/15/aws-cant-restore-service-to-bahrain-uae-6-months-after-iran-strikes.html
-  - detail: 3384 bytes
-    ok: true
-    url: https://health.aws.amazon.com/health/status
-  - detail: 1507 bytes
-    ok: true
-    url: https://status.salesforce.com/generalmessages
-  - detail: 25629 bytes (clipped)
+  - detail: 1570 bytes
     ok: true
     url: https://api.status.salesforce.com/v1/incidents/active
   - detail: 'failed: fetch failed: https://api.status.salesforce.com/v1/incidents/95390343: HTTP Error
       404: Not Found'
     ok: false
     url: https://api.status.salesforce.com/v1/incidents/95390343
-  - detail: 243456 bytes
+  - detail: 43351 bytes
     ok: true
-    url: https://mistral.ai/news/mistral-x-mozilla/
-  - detail: 516333 bytes
+    url: https://arxiv.org/abs/2609.17394v1
+  - detail: 23842 bytes
     ok: true
-    url: https://claude.com/blog/agentic-coding-is-straining-ci-heres-how-we-scaled-test-impact-analysis-at-anthropic
-  - detail: 252422 bytes (clipped)
-    ok: true
-    url: https://developer.nvidia.com/blog/introducing-cuda-rust-two-tracks-for-writing-gpu-kernels/
-  - detail: 26271 bytes (clipped)
-    ok: true
-    url: https://codyho.dev/blog/gpu-driver/
-  - detail: 68953 bytes
-    ok: true
-    url: https://noma.security/noma-labs/gitlost-how-we-tricked-githubs-ai-agent-into-leaking-private-repos
-  - detail: 297311 bytes (clipped)
-    ok: true
-    url: https://blog.cloudflare.com/accountable-mixed-use-ai-crawlers/
-  - detail: 67252 bytes
-    ok: true
-    url: https://accomplish.ai/blog/escaping-the-openai-codex-sandbox-twice/
-  - detail: 'failed: fetch failed: https://api.github.com/repos/swiftlang/swift/releases/tags/swift-6.4-RELEASE:
-      HTTP Error 404: Not Found'
-    ok: false
-    url: https://api.github.com/repos/swiftlang/swift/releases/tags/swift-6.4-RELEASE
-  - detail: 16830 bytes
-    ok: true
-    url: https://www.swift.org/blog/swift-6.4-released/
-  - detail: 793991 bytes
+    url: https://nginx.org/en/security_advisories.html
+  - detail: 794101 bytes
     ok: true
     url: https://www.cnbc.com/2026/09/15/aws-cant-restore-service-to-bahrain-uae-6-months-after-iran-strikes.html
-  - detail: 25629 bytes (clipped)
-    ok: true
-    url: https://api.status.salesforce.com/v1/incidents/active
-  - detail: 43351 bytes
-    ok: true
-    url: https://arxiv.org/abs/2609.17394v1
-  - detail: 44034 bytes
-    ok: true
-    url: https://arxiv.org/abs/2609.17380v1
-  - detail: 77105 bytes
-    ok: true
-    url: https://www.lawfaremedia.org/article/america%27s-drivers-licence-breach-is-a-national-security-disaster
-  - detail: 23842 bytes
-    ok: true
-    url: https://nginx.org/en/security_advisories.html
-  - detail: 26271 bytes (clipped)
-    ok: true
-    url: https://codyho.dev/blog/gpu-driver/
   - detail: 83250 bytes (clipped)
     ok: true
     url: https://security.apple.com/blog/apple-reference-image/
+  - detail: 202003 bytes
+    ok: true
+    url: https://github.com/swiftlang/swift/releases/tag/swift-6.4.0-RELEASE
+  - detail: 523383 bytes
+    ok: true
+    url: https://claude.com/blog/cowork-is-now-claude
+  - detail: 405657 bytes (clipped)
+    ok: true
+    url: https://raw.githubusercontent.com/swiftlang/swift/swift-6.4.0-RELEASE/CHANGELOG.md
   - detail: 243456 bytes
     ok: true
     url: https://mistral.ai/news/mistral-x-mozilla/
-  - detail: 23842 bytes
-    ok: true
-    url: https://nginx.org/en/security_advisories.html
-  - detail: 83250 bytes (clipped)
-    ok: true
-    url: https://security.apple.com/blog/apple-reference-image/
-  - detail: 43351 bytes
-    ok: true
-    url: https://arxiv.org/abs/2609.17394v1
-  - detail: 44034 bytes
-    ok: true
-    url: https://arxiv.org/abs/2609.17380v1
-  generated_at: '2026-09-16T15:00:23+00:00'
+  generated_at: '2026-09-16T19:28:48+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -316,16 +328,16 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-09-16T14:23:22+00:00'
+    fetched_at: '2026-09-16T19:07:49+00:00'
     pooled:
       added:
-        ask_hn: 10
-        comments: 48
-        front_page: 24
-        queries: 55
-        show_hn: 16
-        top_day: 22
-      snapshot_fetched_at: '2026-09-16T11:34:34+00:00'
+        ask_hn: 24
+        comments: 78
+        front_page: 37
+        queries: 113
+        show_hn: 34
+        top_day: 44
+      snapshot_fetched_at: '2026-09-16T16:55:43+00:00'
     queries_backend: algolia
     seen_ids:
     - 49680916
@@ -335,8 +347,8 @@ mechanical:
     - 49692510
     - 49693971
     - 49694035
-    - 49696995
     - 49697496
+    - 49698036
     - 49700928
     - 49704132
     - 49705944
@@ -350,10 +362,12 @@ mechanical:
     - 49709381
     - 49710015
     - 49710109
+    - 49710201
     - 49710253
     - 49710339
     - 49710778
     - 49710883
+    - 49710903
     - 49711063
     - 49711240
     - 49711267
@@ -385,9 +399,7 @@ mechanical:
     - 49713024
     - 49713037
     - 49713156
-    - 49713261
     - 49713262
-    - 49713336
     - 49713395
     - 49713468
     - 49713561
@@ -401,11 +413,9 @@ mechanical:
     - 49714039
     - 49714239
     - 49714268
-    - 49714400
     - 49714495
     - 49714547
     - 49714619
-    - 49714636
     - 49714644
     - 49714798
     - 49714867
@@ -436,6 +446,7 @@ mechanical:
     - 49716952
     - 49716953
     - 49717280
+    - 49717298
     - 49717545
     - 49717558
     - 49717605
@@ -447,8 +458,11 @@ mechanical:
     - 49718822
     - 49718928
     - 49719096
+    - 49719113
     - 49719249
+    - 49719467
     - 49719474
+    - 49719859
     - 49719938
     - 49719966
     - 49720159
@@ -456,6 +470,7 @@ mechanical:
     - 49720222
     - 49720414
     - 49720507
+    - 49720877
     - 49720965
     - 49721082
     - 49721254
@@ -463,13 +478,16 @@ mechanical:
     - 49721435
     - 49721483
     - 49721548
+    - 49721593
     - 49721869
     - 49722276
+    - 49722283
     - 49722369
     - 49722521
     - 49722591
     - 49722701
     - 49722980
+    - 49723043
     - 49723408
     - 49723424
     - 49723873
@@ -485,19 +503,67 @@ mechanical:
     - 49724849
     - 49724898
     - 49724927
+    - 49725053
+    - 49725197
+    - 49725238
     - 49725356
     - 49725461
+    - 49725471
     - 49725541
     - 49725610
+    - 49725800
+    - 49725890
     - 49726329
     - 49726343
     - 49726346
     - 49726350
+    - 49726430
+    - 49726451
+    - 49726577
     - 49726586
     - 49726662
+    - 49726752
     - 49726955
     - 49727041
     - 49727222
+    - 49727463
+    - 49727511
+    - 49727542
+    - 49727580
+    - 49727592
+    - 49727627
+    - 49727647
+    - 49727659
+    - 49727661
+    - 49727921
+    - 49728085
+    - 49728120
+    - 49728159
+    - 49728411
+    - 49728477
+    - 49728703
+    - 49728733
+    - 49728781
+    - 49728982
+    - 49729000
+    - 49729228
+    - 49729336
+    - 49729392
+    - 49729412
+    - 49729683
+    - 49729849
+    - 49730199
+    - 49730239
+    - 49730243
+    - 49730302
+    - 49730388
+    - 49730450
+    - 49730532
+    - 49730644
+    - 49731054
+    - 49731216
+    - 49731353
+    - 49731402
     source: cache
   query_yield:
     0day:
@@ -508,15 +574,17 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 7
+      matched: 9
       matched_ids:
       - 49712409
       - 49712416
-      - 49713894
       - 49713999
       - 49715113
       - 49721435
       - 49723408
+      - 49726329
+      - 49726343
+      - 49727661
       published: 1
       published_ids:
       - 49723408
@@ -528,7 +596,7 @@ mechanical:
       published_ids: []
       raw: 5
     AWS:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49714028
       - 49716456
@@ -536,10 +604,12 @@ mechanical:
       - 49719249
       - 49719474
       - 49723938
-      published: 2
+      - 49726904
+      published: 3
       published_ids:
       - 49718247
       - 49719249
+      - 49726904
       raw: 5
     AlphaFold:
       matched: 0
@@ -548,7 +618,7 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 8
+      matched: 10
       matched_ids:
       - 49712120
       - 49712409
@@ -558,6 +628,8 @@ mechanical:
       - 49719891
       - 49723441
       - 49723939
+      - 49727661
+      - 49729492
       published: 0
       published_ids: []
       raw: 5
@@ -569,7 +641,7 @@ mechanical:
       published: 1
       published_ids:
       - 49720125
-      raw: 2
+      raw: 3
     Azure:
       matched: 0
       matched_ids: []
@@ -591,7 +663,7 @@ mechanical:
       - 49724881
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     CVE:
       matched: 2
       matched_ids:
@@ -602,21 +674,27 @@ mechanical:
       - 49724250
       raw: 5
     Claude:
-      matched: 8
+      matched: 13
       matched_ids:
       - 49709289
       - 49711939
       - 49712305
-      - 49713489
-      - 49714089
       - 49714524
       - 49715239
+      - 49718056
+      - 49719696
       - 49719891
-      published: 0
-      published_ids: []
+      - 49721712
+      - 49729412
+      - 49730082
+      - 49730274
+      - 49731136
+      published: 1
+      published_ids:
+      - 49729412
       raw: 5
     Claude Code:
-      matched: 8
+      matched: 11
       matched_ids:
       - 49711939
       - 49712921
@@ -624,11 +702,13 @@ mechanical:
       - 49718056
       - 49719696
       - 49720176
-      - 49727207
       - 49727345
-      published: 1
-      published_ids:
-      - 49727207
+      - 49727534
+      - 49730005
+      - 49730274
+      - 49731161
+      published: 0
+      published_ids: []
       raw: 5
     Cloudflare:
       matched: 3
@@ -644,7 +724,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     Cursor:
       matched: 3
       matched_ids:
@@ -661,13 +741,14 @@ mechanical:
       published_ids: []
       raw: 5
     GPU:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49712596
       - 49713268
       - 49717638
       - 49724881
       - 49726812
+      - 49730220
       published: 1
       published_ids:
       - 49717638
@@ -688,9 +769,9 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     GitHub:
-      matched: 8
+      matched: 10
       matched_ids:
       - 49708881
       - 49711890
@@ -700,13 +781,16 @@ mechanical:
       - 49716865
       - 49719458
       - 49725461
+      - 49730302
+      - 49730833
       published: 0
       published_ids: []
       raw: 5
     Go:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49714495
+      - 49726350
       published: 0
       published_ids: []
       raw: 5
@@ -723,7 +807,7 @@ mechanical:
       - 49722369
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     Honk:
       matched: 0
       matched_ids: []
@@ -731,9 +815,10 @@ mechanical:
       published_ids: []
       raw: 5
     IPO:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49726405
+      - 49729147
       published: 0
       published_ids: []
       raw: 5
@@ -786,12 +871,15 @@ mechanical:
       - 49714404
       published: 0
       published_ids: []
-      raw: 2
+      raw: 0
     LLM:
-      matched: 2
+      matched: 5
       matched_ids:
       - 49710015
       - 49713671
+      - 49715574
+      - 49720322
+      - 49727542
       published: 0
       published_ids: []
       raw: 5
@@ -803,7 +891,7 @@ mechanical:
       published_ids: []
       raw: 5
     Linux:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49711267
       - 49715463
@@ -811,6 +899,8 @@ mechanical:
       - 49719247
       - 49720322
       - 49723292
+      - 49727627
+      - 49729712
       published: 1
       published_ids:
       - 49717638
@@ -821,13 +911,17 @@ mechanical:
       - 49726446
       published: 0
       published_ids: []
-      raw: 3
+      raw: 4
     MCP:
-      matched: 3
+      matched: 7
       matched_ids:
       - 49711256
       - 49719691
       - 49722560
+      - 49728735
+      - 49728983
+      - 49729373
+      - 49731353
       published: 0
       published_ids: []
       raw: 5
@@ -838,10 +932,11 @@ mechanical:
       published_ids: []
       raw: 5
     Mistral:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49723408
       - 49724424
+      - 49728558
       published: 1
       published_ids:
       - 49723408
@@ -867,14 +962,18 @@ mechanical:
       published_ids: []
       raw: 5
     OpenAI:
-      matched: 6
+      matched: 10
       matched_ids:
       - 49711240
       - 49713132
       - 49714663
       - 49716241
       - 49716466
+      - 49721979
+      - 49724324
+      - 49724407
       - 49727041
+      - 49730541
       published: 0
       published_ids: []
       raw: 5
@@ -891,30 +990,32 @@ mechanical:
       published_ids: []
       raw: 0
     Postgres:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49708460
       - 49711278
       - 49715402
       - 49718633
       - 49726651
+      - 49729383
+      - 49731285
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     Prometheus:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     PyPI:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 5
     Python:
-      matched: 7
+      matched: 8
       matched_ids:
       - 49709403
       - 49711491
@@ -923,6 +1024,7 @@ mechanical:
       - 49715750
       - 49719166
       - 49721806
+      - 49730479
       published: 0
       published_ids: []
       raw: 5
@@ -944,10 +1046,10 @@ mechanical:
       - 49711409
       - 49711418
       - 49711590
-      - 49713307
       - 49717709
       - 49718453
       - 49724881
+      - 49727889
       published: 0
       published_ids: []
       raw: 5
@@ -973,10 +1075,11 @@ mechanical:
       published_ids: []
       raw: 0
     Swift:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49714239
       - 49715182
+      - 49727511
       published: 0
       published_ids: []
       raw: 5
@@ -985,14 +1088,16 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     TypeScript:
-      matched: 1
+      matched: 3
       matched_ids:
       - 49718778
+      - 49727889
+      - 49730243
       published: 0
       published_ids: []
-      raw: 1
+      raw: 4
     Vim:
       matched: 0
       matched_ids: []
@@ -1020,11 +1125,12 @@ mechanical:
       published_ids: []
       raw: 5
     acquires:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49731435
       published: 0
       published_ids: []
-      raw: 3
+      raw: 5
     acquisition:
       matched: 0
       matched_ids: []
@@ -1032,7 +1138,7 @@ mechanical:
       published_ids: []
       raw: 0
     agentic:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49711545
       - 49714174
@@ -1040,11 +1146,13 @@ mechanical:
       - 49717352
       - 49721483
       - 49721869
+      - 49727518
+      - 49728747
       published: 0
       published_ids: []
       raw: 5
     arXiv:
-      matched: 7
+      matched: 8
       matched_ids:
       - 49708711
       - 49709129
@@ -1053,6 +1161,7 @@ mechanical:
       - 49723244
       - 49723395
       - 49726955
+      - 49731360
       published: 0
       published_ids: []
       raw: 5
@@ -1113,7 +1222,7 @@ mechanical:
       published_ids: []
       raw: 5
     iOS:
-      matched: 7
+      matched: 8
       matched_ids:
       - 49710592
       - 49711466
@@ -1122,6 +1231,7 @@ mechanical:
       - 49719113
       - 49722948
       - 49724255
+      - 49729749
       published: 0
       published_ids: []
       raw: 5
@@ -1138,38 +1248,42 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 0
     kernel:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49713268
       - 49714889
       - 49717279
       - 49723292
       - 49727295
+      - 49729749
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     local-first:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49708069
       - 49708806
       - 49712520
       - 49719496
       - 49721427
+      - 49728354
       published: 0
       published_ids: []
-      raw: 3
+      raw: 4
     macOS:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49714524
       - 49714644
       - 49715322
       - 49720656
+      - 49721995
       - 49722369
       - 49725610
+      - 49729749
       published: 0
       published_ids: []
       raw: 5
@@ -1196,7 +1310,7 @@ mechanical:
       published_ids: []
       raw: 0
     terminal:
-      matched: 7
+      matched: 9
       matched_ids:
       - 49709546
       - 49712433
@@ -1205,6 +1319,8 @@ mechanical:
       - 49719247
       - 49722065
       - 49723805
+      - 49728430
+      - 49730274
       published: 0
       published_ids: []
       raw: 5
@@ -1491,6 +1607,147 @@ mechanical:
       name: run_log
       status: ok
     - detail: 41 fetch(es), 3 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-09-16T19:29:02+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-09-16.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-09-15
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"AWS says data hosted exclusively in its Bahrain region and one UAE zone
+        cannot be restored","section":"Top stories","category":"Outage","status":"confirmed","primary_url":"https://www.cnbc.com/2026/09/15/aws-cant-restore-service-to-bahrain-uae-6-months-after-iran-strikes.ht
+      failed_tools:
+        Bash: 1
+        mcp__digest__fetch_url: 2
+      name: select
+      status: ok
+      tokens:
+        in: 26
+        out: 18819
+      tools:
+        Bash: 3
+        Grep: 2
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 8
+        mcp__digest__guidance: 1
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 1
+    - detail: |-
+        Write step complete for 2026-09-16. Gate exits 0.
+
+        **Added three stories** to the existing 12-block digest, no displacement (selection's `displace` was empty, day was at 12 of 25 with no section at cap):
+
+        - **AI** — Anthropic merges Claude Cowork into the main Claude app, `confirmed`. Block states t
+      name: write
+      status: ok
+      tokens:
+        in: 26
+        out: 9865
+      tools:
+        Edit: 9
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 2
+    - detail: >-
+        {"findings":[{"severity":"blocking","where":"Top stories / Two OpenAI Codex sandbox escapes disclosed,
+        extending a run of coding-agent sandbox breaks","detail":"The discussion link https://news.ycombinator.com/item?id=49727207
+        uses an item id that appears in neither .cache/hn/2026-09-16.json nor dat
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: review
+      status: ok
+      tokens:
+        in: 24
+        out: 14221
+      tools:
+        Glob: 1
+        Grep: 10
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 7
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes with exit code 0. All six findings repaired, nothing else touched.
+
+        **Blocking**
+        - **Codex block:** removed the discussion link `item?id=49727207`. That id appears in neither the day's fetch cache nor the snapshot, and the story is absent from the day's HN collection entirely, so it woul
+      name: write
+      status: ok
+      tokens:
+        in: 26
+        out: 6663
+      tools:
+        Edit: 13
+        Read: 2
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"findings":[{"severity":"blocking","where":"AI / Anthropic merges Claude Cowork into the main
+        Claude app and adds Docs and Slides","detail":"The block states a phased rollout as a completed
+        merge, which its primary does not support. claude.com/blog/cowork-is-now-claude says Cowork and
+        chat \"are me
+      name: review
+      status: ok
+      tokens:
+        in: 18
+        out: 13445
+      tools:
+        Glob: 1
+        Grep: 2
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 8
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 6 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: skipped (nothing to correct in 2026-09-15 (0 id(s) it never scored))
+      name: miss_review
+      status: skip
+    - detail: data/runs/2026-09-16.yaml
+      name: run_log
+      status: ok
+    - detail: 23 fetch(es), 3 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
