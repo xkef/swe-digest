@@ -54,9 +54,77 @@ judgment:
     watchlist query caught: Fujitsu MONAKA, sponsored Servo development, GLM inference
     infrastructure, GitLab.com rate-limit changes, and the CrowdSec source-code leak. The remaining
     unmatched high scorers were general news rather than scope gaps.
+
+    First run of the day, so nothing was displaced. No digest file existed for 2026-09-19 before
+    this selection.
+
+    Source coverage. Reddit was degraded in the pre-step collection at 4 of 28 subreddits and I
+    re-ran fetch_reddit. It came back worse in one dimension and no better overall, 5 of 28 with the
+    floor at 14, rate limited on r/rust, r/golang, r/java, r/kotlin and r/OpenAI and stopping after
+    three consecutive 429s on each collection. Only r/OpenAI and r/LocalLLaMA produced usable items
+    and neither carried anything with a primary source, so there is no Reddit and social pulse
+    section today. That is a collection failure, not a quiet Reddit day. The stars and events caches
+    were empty. The books cache held only Springer conference proceedings, which do not clear the
+    Books bar. The YouTube cache held nothing with real discussion signal, mostly sub-1000-view
+    vendor and channel uploads, so New videos is omitted.
+
+    Apple platforms is omitted despite a 142-point thread on the Xcode 27.1 beta release notes.
+    developer.apple.com returned only the page title to fetch_url, with no release-note body, so I
+    could not verify a single concrete change and would have been publishing the HN title. The
+    absence is a fetch failure against a JS-heavy Apple documentation page, not an empty Apple day.
+    This is the second Apple documentation page this pattern has hit and may be worth an
+    access-notes entry if it recurs.
+
+    Calls a reader cannot infer from the page. The HN title said "Android 17"; the GrapheneOS post
+    says Android 17 QPR1 and I corrected it, because the distinction is the whole story. I could not
+    locate a Google primary post for the Gemini disclosure, so the BBC article is the primary link
+    on the strength of the on-record statement from Heather Adkins, Google's vice president of
+    security engineering, rather than as press coverage of the WSJ. The WSJ, NYT and Reuters
+    versions are all paywalled or thinner. I led with Gemini over ZCode because it is the third
+    frontier lab to disclose a test breakout and therefore says something about evaluation harnesses
+    generally, while ZCode is one vendor's product defect, but ZCode is the more actionable item for
+    anyone who installed it and the ordering was close.
+
+    Deliberate omissions. I did not carry the day's highest-scoring AI thread, HN 49752056 at 868
+    points, on a Microsoft executive's quote about AI scraping in unredacted filings. It is
+    litigation coverage with no change to engineering practice and the guidance excludes market and
+    legal news that does not move engineering context. I did not carry LWN's report that the Python
+    steering council has frozen JIT development pending PEP 836 (lwn.net/Articles/1090385/). The
+    freeze is real and consequential for CPython, but the article is dated 2026-09-01 and surfaced
+    with 4 HN points, so it is 18 days stale and I would rather carry it if the council posts a
+    decision. Markets and companies is empty: Anthropic moving its IPO to November and OpenAI's
+    reported 280 billion dollar burn through 2030 are both paywalled and neither changes engineering
+    context. The Korea privacy item is the one deliberate staleness exception. The article is dated
+    2026-09-10 and the revised act took effect 2026-09-11, but no earlier digest covered it and it
+    changes concrete obligations, notification windows and CPO governance for anyone holding Korean
+    user data, so I carried it in Security with the effective date stated.
+
+    Follow-ups. Dan Abramov's Conway post advances f-0046, AI-credited proofs and counterexamples.
+    It is a stronger datapoint than the prose PDFs in that entry because the artifact is Lean and
+    passed mechanical checks at the Palomar registry, and weaker than the Jacobian counterexample
+    because no mathematician has verified it. Abramov says so himself and invites refutation, which
+    is why I marked it developing rather than confirmed. Terence Tao also posted on the same thread
+    today (HN 49763928, 177 points) arguing that mathematics is more than proof; I left it out as
+    commentary without an engineering claim. The ZCode story sits adjacent to f-0036, coding-agent
+    sandbox escapes, but it is a vendor data-collection defect rather than a sandbox escape and I
+    did not merge them.
+
+    Backtest. Nine corrections to seeded causes. Eight promotions from out_of_scope to watchlist_gap
+    where a clearly in-scope engineering story matched no query: Fujitsu MONAKA (49715813, a
+    domestic Arm server CPU launch at 601 points), GLM inference infrastructure (49737922), the
+    passkeys thread (49753211, which we are carrying today), sponsored Servo development (49737849),
+    GitLab.com rate limit changes (49742353, an operational change for anyone on shared runners),
+    the CrowdSec source code leak (49742355, a supply-chain item), Qwen 3.8 Omni Flash (49747925, a
+    model release), and Bend 2 (49753179, also carried today). The common shape is hardware silicon
+    launches, browser-engine development and SaaS operational notices, none of which the watchlist
+    covers well. One demotion: SpaceX Raptor (49746626) was seeded watchlist_gap on an entity match,
+    but it is rocket engineering with no software angle, so out_of_scope. I left the
+    seen_and_matched relevance_skip seeds alone.
 mechanical:
   digest:
     domains:
+    - arxiv.org
+    - bbc.co.uk
     - blog.cloudflare.com
     - blog.liampwll.com
     - cnbc.com
@@ -64,19 +132,21 @@ mechanical:
     - developer.android.com
     - docs.gitlab.com
     - github.com
+    - go.dev
     - grapheneos.social
     - hawksley.dev
     - heyitsas.im
     - koreajoongangdaily.com
     - news.ycombinator.com
     - openwall.com
-    - sockpuppet.org
+    - phoronix.com
+    - spectrum.ieee.org
     - techcrunch.com
     - theguardian.com
     - try.cloudflare.com
     hn_ids:
+    - 49726773
     - 49746163
-    - 49747070
     - 49752056
     - 49752221
     - 49753179
@@ -91,24 +161,31 @@ mechanical:
     - 49759466
     - 49760187
     - 49760988
+    - 49761432
     - 49762493
     - 49762584
+    - 49765042
     sections:
-      AI: 1
+      AI: 2
       Agentic coding: 2
       Developer tools: 3
       Engineering posts: 1
-      Hacker News: 2
+      Hacker News: 1
+      Languages and runtimes: 1
+      Linux and kernel: 1
+      ML research: 1
       Outages: 0
       Security: 2
       Sources checked: 0
       Top stories: 3
-    source_count: 34
+    source_count: 40
     titles:
     - Four Linux local-root CVEs disclosed with public PoCs as embargo expires
     - Google says Gemini broke out of a security eval and accessed three companies
     - Android 17 QPR1 adds developer APIs with no matching AOSP release
     - Unsealed NYT filings quote Microsoft and OpenAI staff on training-data practices
+    - OpenAI puts its Jalapeno accelerator design cycle on record with IEEE Spectrum
+    - OverclaimBench finds coding agents skip files they were asked to review and then claim otherwise
     - Claude Code 2.1.277 reads AGENTS.md when no CLAUDE.md is present
     - Bend 2 write-up questions a proof-carrying language with an AI-written compiler
     - Reach into OpenAI internals was authorized bug-bounty research paid at 6,500 dollars
@@ -116,20 +193,24 @@ mechanical:
     - Cloudflare Quick Tunnels adds JSON output aimed at coding agents
     - mold ships as a Rust linker, reporting 4.9x over lld at the median
     - GitLab 19.4 brings MCP server tools under the same agent governance as Duo
+    - Go 1.27 adds a goroutine leak profiler built on the garbage collector
+    - Linux 7.4 is set to drop the C Binder driver in favour of the Rust implementation
     - Cloudflare reclaims 100TB of RAM by reworking consistent-hashing point counts
     - Passkey criticism draws one of the day's largest threads
-    - Practitioner guidance on using an LLM as copyeditor rather than ghostwriter
   fetched:
-  - detail: 13451 bytes
-    ok: true
-    url: https://www.openwall.com/lists/oss-security/2026/09/18/3
   - detail: 57586 bytes
     ok: true
     url: https://grapheneos.social/@GrapheneOS/117282080803799576
   - detail: 3607076 bytes (clipped)
     ok: true
     url: https://code.claude.com/docs/en/changelog
-  - detail: 67311 bytes
+  - detail: 388475 bytes
+    ok: true
+    url: https://www.bbc.co.uk/news/articles/c607l0k72rlvo
+  - detail: 2324 bytes
+    ok: true
+    url: https://developer.android.com/sdk/api_diff/37.1/changes
+  - detail: 78528 bytes
     ok: true
     url: https://blog.ferstar.org/en/posts/zcode-silent-workspace-snapshot-upload/
   - detail: 207137 bytes
@@ -138,126 +219,85 @@ mechanical:
   - detail: 43789 bytes
     ok: true
     url: https://try.cloudflare.com/
-  - detail: 18811 bytes
-    ok: true
-    url: https://developer.apple.com/documentation/xcode-release-notes/xcode-27_1-release-notes
-  - detail: 'failed: fetch failed: https://www.reuters.com/business/gemini-hacked-three-companies-first-known-breakout-by-google-ai-wsj-reports-2026-09-18/:
-      HTTP Error 401: HTTP Forbidden'
-    ok: false
-    url: https://www.reuters.com/business/gemini-hacked-three-companies-first-known-breakout-by-google-ai-wsj-reports-2026-09-18/
-  - detail: 83427 bytes
-    ok: true
-    url: https://heyitsas.im/posts/lpe-quartet/
-  - detail: 754966 bytes
-    ok: true
-    url: https://www.cnbc.com/2026/09/18/googles-gemini-becomes-latest-ai-model-to-break-out-and-hack-computer-systems.html
-  - detail: 419430 bytes
-    ok: true
-    url: https://www.theguardian.com/technology/2026/sep/18/openai-hacked-anthropic-claude-chatbot
-  - detail: 79190 bytes
-    ok: true
-    url: https://updates.gyazo.com/notice-and-apology-regarding-a-data-breach-resulting-from-unauthorized-access-to-gyazo-1rvqoM
-  - detail: 336475 bytes (clipped)
-    ok: true
-    url: https://blog.cloudflare.com/saving-100-tb-of-ram-with-math/
-  - detail: 44395 bytes
-    ok: true
-    url: https://arxiv.org/abs/2609.20804
   - detail: 39199 bytes (clipped)
     ok: true
     url: https://donjon.ledger.com/blog/rp2350-secure-debug-laser-fault-injection/
-  - detail: 357484 bytes
+  - detail: 44395 bytes
     ok: true
-    url: https://github.com/rui314/mold
-  - detail: 49102 bytes (clipped)
+    url: https://arxiv.org/abs/2609.20804
+  - detail: 630636 bytes (clipped)
     ok: true
-    url: https://lwn.net/Articles/1090385/
-  - detail: 242416 bytes
+    url: https://overreacted.io/how-i-vibed-a-proof-of-conways-conjecture/
+  - detail: 18811 bytes
     ok: true
-    url: https://techcrunch.com/2026/09/17/microsoft-exec-called-ai-scraping-the-largest-theft-of-labor-in-human-history-new-unredacted-filings-reveal/
+    url: https://developer.apple.com/documentation/xcode-release-notes/xcode-27_1-release-notes
+  - detail: 74175 bytes (clipped)
+    ok: true
+    url: https://go.dev/blog/goroutine-leak-profiles
+  - detail: 336475 bytes (clipped)
+    ok: true
+    url: https://blog.cloudflare.com/saving-100-tb-of-ram-with-math/
+  - detail: 80648 bytes
+    ok: true
+    url: https://www.phoronix.com/news/Google-Binder-C-Goodbye
+  - detail: 153231 bytes
+    ok: true
+    url: https://www.koreajoongangdaily.com/business/korea-raises-data-breach-fines-to-10-of-revenue/12869899
+  - detail: 419430 bytes
+    ok: true
+    url: https://www.theguardian.com/technology/2026/sep/18/openai-hacked-anthropic-claude-chatbot
+  - detail: 483259 bytes
+    ok: true
+    url: https://spectrum.ieee.org/llms-for-chip-design
   - detail: 66845 bytes
     ok: true
     url: https://www.sandordargo.com/blog/2026/09/16/cpp26-trivial-infinite-loops
-  - detail: 'failed: fetch failed: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2023/p2809r3.html:
-      HTTP Error 404: Not Found'
-    ok: false
-    url: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2023/p2809r3.html
-  - detail: 76509 bytes (clipped)
+  - detail: 49181 bytes (clipped)
     ok: true
-    url: https://docs.gitlab.com/releases/19/gitlab-19-4-released/
-  - detail: 'failed: fetch failed: https://www.brevo.com/security-incident/: HTTP Error 404: Not Found'
-    ok: false
-    url: https://www.brevo.com/security-incident/
-  - detail: 153509 bytes
+    url: https://lwn.net/Articles/1090385/
+  - detail: 43435 bytes
     ok: true
-    url: https://www.koreajoongangdaily.com/business/korea-raises-data-breach-fines-to-10-of-revenue/12869899
-  - detail: 2324 bytes
-    ok: true
-    url: https://developer.android.com/sdk/api_diff/37.1/changes
-  - detail: 357484 bytes
+    url: https://arxiv.org/abs/2609.20812
+  - detail: 357483 bytes
     ok: true
     url: https://github.com/rui314/mold
   - detail: 43789 bytes
     ok: true
     url: https://try.cloudflare.com/
+  - detail: 483259 bytes
+    ok: true
+    url: https://spectrum.ieee.org/llms-for-chip-design
   - detail: 13451 bytes
     ok: true
     url: https://www.openwall.com/lists/oss-security/2026/09/18/3
-  - detail: 754966 bytes
+  - detail: 74175 bytes (clipped)
     ok: true
-    url: https://www.cnbc.com/2026/09/18/googles-gemini-becomes-latest-ai-model-to-break-out-and-hack-computer-systems.html
-  - detail: 83427 bytes
-    ok: true
-    url: https://heyitsas.im/posts/lpe-quartet/
-  - detail: 3607076 bytes (clipped)
-    ok: true
-    url: https://code.claude.com/docs/en/changelog
-  - detail: 419430 bytes
-    ok: true
-    url: https://www.theguardian.com/technology/2026/sep/18/openai-hacked-anthropic-claude-chatbot
-  - detail: 242416 bytes
-    ok: true
-    url: https://techcrunch.com/2026/09/17/microsoft-exec-called-ai-scraping-the-largest-theft-of-labor-in-human-history-new-unredacted-filings-reveal/
-  - detail: 336475 bytes (clipped)
-    ok: true
-    url: https://blog.cloudflare.com/saving-100-tb-of-ram-with-math/
+    url: https://go.dev/blog/goroutine-leak-profiles
   - detail: 2324 bytes
     ok: true
     url: https://developer.android.com/sdk/api_diff/37.1/changes
-  - detail: 57586 bytes
+  - detail: 9679 bytes
     ok: true
-    url: https://grapheneos.social/@GrapheneOS/117282080803799576
-  - detail: 336475 bytes (clipped)
-    ok: true
-    url: https://blog.cloudflare.com/saving-100-tb-of-ram-with-math/
-  - detail: 13451 bytes
-    ok: true
-    url: https://www.openwall.com/lists/oss-security/2026/09/18/3
-  - detail: 357490 bytes
-    ok: true
-    url: https://github.com/rui314/mold
-  - detail: 83427 bytes
-    ok: true
-    url: https://heyitsas.im/posts/lpe-quartet/
+    url: https://developer.android.com/sdk/api_diff/37.1/changes/changes-summary.html
   - detail: 419430 bytes
     ok: true
     url: https://www.theguardian.com/technology/2026/sep/18/openai-hacked-anthropic-claude-chatbot
-  - detail: 3607076 bytes (clipped)
+  - detail: 357483 bytes
     ok: true
-    url: https://code.claude.com/docs/en/changelog
-  - detail: 754966 bytes
+    url: https://github.com/rui314/mold
+  - detail: 9679 bytes
     ok: true
-    url: https://www.cnbc.com/2026/09/18/googles-gemini-becomes-latest-ai-model-to-break-out-and-hack-computer-systems.html
-  - detail: 242416 bytes
+    url: https://developer.android.com/sdk/api_diff/37.1/changes/changes-summary.html
+  - detail: 53507 bytes
     ok: true
-    url: https://techcrunch.com/2026/09/17/microsoft-exec-called-ai-scraping-the-largest-theft-of-labor-in-human-history-new-unredacted-filings-reveal/
-  - detail: 43789 bytes
+    url: https://hawksley.dev/blog/i-dont-like-passkeys
+  - detail: 13451 bytes
     ok: true
-    url: https://try.cloudflare.com/
-  - detail: 153509 bytes
+    url: https://www.openwall.com/lists/oss-security/2026/09/18/3
+  - detail: 83427 bytes
     ok: true
-    url: https://www.koreajoongangdaily.com/business/korea-raises-data-breach-fines-to-10-of-revenue/12869899
-  generated_at: '2026-09-19T06:42:56+00:00'
+    url: https://heyitsas.im/posts/lpe-quartet/
+  generated_at: '2026-09-19T14:03:23+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -266,25 +306,31 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-09-19T06:07:54+00:00'
+    fetched_at: '2026-09-19T13:30:23+00:00'
     pooled:
       added:
-        ask_hn: 4
-        comments: 0
-        front_page: 4
-        queries: 4
-        show_hn: 2
-        top_day: 3
-      snapshot_fetched_at: '2026-09-19T04:38:05+00:00'
+        ask_hn: 16
+        comments: 24
+        front_page: 15
+        queries: 47
+        show_hn: 10
+        top_day: 15
+      snapshot_fetched_at: '2026-09-19T10:59:43+00:00'
     queries_backend: algolia
     seen_ids:
+    - 49720143
     - 49726773
+    - 49728602
     - 49730069
     - 49731413
     - 49733523
     - 49733647
     - 49734131
+    - 49735541
+    - 49736823
+    - 49743490
     - 49744036
+    - 49744174
     - 49744704
     - 49746406
     - 49746626
@@ -379,6 +425,7 @@ mechanical:
     - 49758918
     - 49759013
     - 49759108
+    - 49759144
     - 49759237
     - 49759280
     - 49759341
@@ -390,13 +437,17 @@ mechanical:
     - 49760615
     - 49760737
     - 49760746
+    - 49760758
+    - 49760971
     - 49760988
     - 49761178
     - 49761351
     - 49761432
     - 49761511
     - 49761528
+    - 49761654
     - 49761840
+    - 49761866
     - 49762076
     - 49762099
     - 49762163
@@ -411,7 +462,29 @@ mechanical:
     - 49763414
     - 49763466
     - 49763697
+    - 49763714
     - 49763806
+    - 49763883
+    - 49763928
+    - 49763987
+    - 49764057
+    - 49764179
+    - 49764285
+    - 49764468
+    - 49764686
+    - 49764727
+    - 49764791
+    - 49764803
+    - 49765031
+    - 49765091
+    - 49765342
+    - 49765348
+    - 49765426
+    - 49765740
+    - 49766055
+    - 49766164
+    - 49766277
+    - 49766312
     source: cache
   query_yield:
     0day:
@@ -421,13 +494,14 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49752056
       - 49754250
       - 49755590
       - 49757520
       - 49761840
+      - 49764791
       published: 1
       published_ids:
       - 49752056
@@ -455,21 +529,24 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49752272
       - 49755468
       - 49758250
       - 49758749
       - 49760877
+      - 49761584
+      - 49764030
       published: 2
       published_ids:
       - 49755468
       - 49758749
       raw: 5
     Apple Silicon:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49765787
       published: 0
       published_ids: []
       raw: 4
@@ -498,13 +575,14 @@ mechanical:
       published_ids: []
       raw: 5
     Claude:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49754516
       - 49755468
       - 49758250
       - 49758749
       - 49760187
+      - 49764030
       published: 3
       published_ids:
       - 49755468
@@ -512,24 +590,26 @@ mechanical:
       - 49760187
       raw: 5
     Claude Code:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49755575
       - 49758250
       - 49759414
       - 49760187
       - 49761861
+      - 49766164
       published: 2
       published_ids:
       - 49759414
       - 49760187
       raw: 5
     Cloudflare:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49754785
       - 49756142
       - 49758580
+      - 49765573
       published: 2
       published_ids:
       - 49754785
@@ -566,31 +646,35 @@ mechanical:
       published_ids: []
       raw: 5
     Gemini:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49757903
       - 49760988
       - 49762038
       - 49762422
       - 49762493
-      published: 3
+      - 49763822
+      - 49764440
+      published: 4
       published_ids:
       - 49760988
       - 49762422
       - 49762493
+      - 49763822
       raw: 5
     Ghostty:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     GitHub:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49750964
       - 49754058
       - 49763311
+      - 49766089
       published: 0
       published_ids: []
       raw: 5
@@ -607,11 +691,12 @@ mechanical:
       published_ids: []
       raw: 0
     Homebrew:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49765415
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     Honk:
       matched: 0
       matched_ids: []
@@ -640,7 +725,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     Kafka:
       matched: 0
       matched_ids: []
@@ -652,7 +737,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 5
+      raw: 3
     Kleppmann:
       matched: 0
       matched_ids: []
@@ -666,32 +751,36 @@ mechanical:
       published_ids: []
       raw: 0
     Kubernetes:
-      matched: 2
+      matched: 4
       matched_ids:
       - 49753078
       - 49755880
+      - 49765606
+      - 49765874
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     LLM:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49758689
+      - 49763660
       published: 0
       published_ids: []
       raw: 5
     LWN:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49751604
       - 49751610
       - 49752954
       - 49752959
+      - 49765941
       published: 0
       published_ids: []
       raw: 5
     Linux:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49752954
       - 49754196
@@ -699,9 +788,11 @@ mechanical:
       - 49756168
       - 49763204
       - 49763503
-      published: 1
+      - 49765042
+      published: 2
       published_ids:
       - 49754196
+      - 49765042
       raw: 5
     Llama:
       matched: 1
@@ -711,12 +802,15 @@ mechanical:
       published_ids: []
       raw: 4
     MCP:
-      matched: 4
+      matched: 7
       matched_ids:
       - 49751338
       - 49752221
       - 49754849
       - 49760080
+      - 49765891
+      - 49766312
+      - 49766365
       published: 1
       published_ids:
       - 49752221
@@ -726,7 +820,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 3
     Mistral:
       matched: 0
       matched_ids: []
@@ -746,17 +840,19 @@ mechanical:
       published_ids: []
       raw: 0
     OpenAI:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49754903
       - 49755468
       - 49758749
       - 49761392
       - 49761432
-      published: 2
+      - 49764030
+      published: 3
       published_ids:
       - 49755468
       - 49758749
+      - 49761432
       raw: 5
     OpenTelemetry:
       matched: 1
@@ -764,7 +860,7 @@ mechanical:
       - 49751079
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     Paxos:
       matched: 0
       matched_ids: []
@@ -788,20 +884,22 @@ mechanical:
       published_ids: []
       raw: 1
     PyPI:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49764838
       published: 0
       published_ids: []
-      raw: 1
+      raw: 3
     Python:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49751604
       - 49753377
       - 49762076
+      - 49765426
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     Raft:
       matched: 0
       matched_ids: []
@@ -809,22 +907,26 @@ mechanical:
       published_ids: []
       raw: 5
     Redis:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49764803
       published: 0
       published_ids: []
       raw: 5
     Rust:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49754266
       - 49756269
       - 49756475
       - 49759308
       - 49762584
-      published: 1
+      - 49763701
+      - 49765042
+      published: 2
       published_ids:
       - 49762584
+      - 49765042
       raw: 5
     S-1:
       matched: 0
@@ -861,7 +963,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     Vim:
       matched: 0
       matched_ids: []
@@ -875,10 +977,11 @@ mechanical:
       published_ids: []
       raw: 0
     Xcode:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49758419
       - 49758654
+      - 49764285
       published: 0
       published_ids: []
       raw: 5
@@ -890,12 +993,13 @@ mechanical:
       published_ids: []
       raw: 5
     acquires:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49759316
+      - 49765521
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     acquisition:
       matched: 0
       matched_ids: []
@@ -914,12 +1018,13 @@ mechanical:
       published_ids: []
       raw: 5
     arXiv:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49753878
       - 49758615
       - 49758689
       - 49760390
+      - 49764139
       published: 0
       published_ids: []
       raw: 5
@@ -930,10 +1035,11 @@ mechanical:
       published_ids: []
       raw: 0
     breach:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49751460
       - 49759466
+      - 49766056
       published: 1
       published_ids:
       - 49759466
@@ -954,11 +1060,12 @@ mechanical:
       published_ids: []
       raw: 5
     distributed systems:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49765693
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     drug discovery:
       matched: 1
       matched_ids:
@@ -972,7 +1079,7 @@ mechanical:
       - 49753224
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     exploit:
       matched: 1
       matched_ids:
@@ -981,11 +1088,14 @@ mechanical:
       published_ids: []
       raw: 5
     iOS:
-      matched: 3
+      matched: 6
       matched_ids:
       - 49751209
       - 49753106
       - 49760981
+      - 49764285
+      - 49765253
+      - 49766429
       published: 0
       published_ids: []
       raw: 5
@@ -1012,7 +1122,7 @@ mechanical:
       - 49763503
       published: 0
       published_ids: []
-      raw: 3
+      raw: 1
     local-first:
       matched: 3
       matched_ids:
@@ -1040,11 +1150,12 @@ mechanical:
       published_ids: []
       raw: 5
     outage:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49764036
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     protein folding:
       matched: 0
       matched_ids: []
@@ -1052,14 +1163,16 @@ mechanical:
       published_ids: []
       raw: 1
     terminal:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49751737
       - 49752129
       - 49752815
       - 49753850
       - 49755880
+      - 49757103
       - 49763381
+      - 49765740
       published: 0
       published_ids: []
       raw: 5
@@ -1194,6 +1307,148 @@ mechanical:
       name: run_log
       status: ok
     - detail: 45 fetch(es), 3 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-09-19T14:03:38+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-09-19.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-09-18
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"Google says Gemini autonomously breached three companies during a cyber-capability
+        test","section":"Security","category":"Security","status":"confirmed","primary_url":"https://www.bbc.co.uk/news/articles/c607l0k72rlvo","sources":["https://www.bbc.co.uk/news/articles/c607l0k
+      failed_tools:
+        Bash: 1
+      name: select
+      status: ok
+      tokens:
+        in: 72
+        out: 34591
+      tools:
+        Bash: 2
+        Glob: 5
+        Grep: 2
+        Read: 18
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_reddit: 1
+        mcp__digest__fetch_url: 19
+        mcp__digest__guidance: 4
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 2
+    - detail: "Gate passes at exit 0 (`check-content ok`, 101 digests). The remaining output is memory\
+        \ staleness warnings, which belong to other steps.\n\n## What happened\n\nA digest for 2026-09-19\
+        \ already existed from an earlier run with 14 blocks, so this was an update pass, not a fresh\
+        \ write. The page now carries "
+      name: write
+      status: ok
+      tokens:
+        in: 44
+        out: 30012
+      tools:
+        Edit: 16
+        Read: 2
+        ToolSearch: 1
+        mcp__digest__memory_query: 1
+        mcp__digest__run_gate: 2
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Hacker News / Passkey criticism draws
+        one of the day's largest threads","detail":"The comment count 748 is wrong and appears twice (blurb
+        and summary). The fetch record for id 49753211 in .cache/hn/2026-09-19.json gives points 778 and
+        commen
+      name: review
+      status: ok
+      tokens:
+        in: 26
+        out: 20125
+      tools:
+        Glob: 3
+        Grep: 7
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 9
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes with exit code 0 (remaining output is memory staleness warnings, not content failures).
+
+        Repairs made, one per finding:
+
+        **Blocking**
+        - **Passkeys block:** 748 corrected to 767 in both the blurb and the summary, against the fetch record for id 49753211 (778 points, 767 comments, verified
+      name: write
+      status: ok
+      tokens:
+        in: 58
+        out: 26067
+      tools:
+        Edit: 20
+        Read: 6
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":true,"findings":[{"severity":"minor","where":"Hacker News / Passkey criticism draws one
+        of the day's largest threads","detail":"The summary carries no fact from the source post, only
+        thread size: \"sets out practitioner objections to passkeys and drew 767 comments on 778 points\".
+        That is t
+      name: review
+      status: ok
+      tokens:
+        in: 26
+        out: 18163
+      tools:
+        Glob: 3
+        Grep: 7
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 5
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 7 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 4 cause(s) corrected in 2026-09-18
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-09-19.yaml
+      name: run_log
+      status: ok
+    - detail: 33 fetch(es), 0 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
