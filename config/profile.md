@@ -34,12 +34,28 @@ infrastructure.
   mitigations.
 - Ghostty, Neovim, LazyVim, wincent/wincent, jj, Git, terminal tooling, shells,
   Wayland, dotfiles management (chezmoi), and Linux desktop infrastructure.
+- Lua outside editor configuration: Lua 5.x releases, LuaJIT, Luau, the C API
+  and embedding Lua as an extension language in servers, games, proxies and
+  network tooling, and performance work on Lua runtimes. Route into Languages
+  and runtimes and Developer tools. Neovim plugin and configuration Lua stays
+  under the developer tools bullet above. Exclude tutorials and beginner
+  material.
 - iOS and macOS engineering: Swift, SwiftUI, Xcode, Foundation Models, Apple
   Silicon, the Swift toolchain, and macOS and Darwin platform internals.
 - Linux kernel and LWN: kernel releases, scheduler, io_uring, eBPF, filesystems,
   memory management, and Rust for Linux.
 - Programming languages and runtimes: Java, Kotlin, Rust, Go, Python,
-  TypeScript, Zig, Swift, C++, WebAssembly.
+  TypeScript, Zig, Swift, C, C++, WebAssembly.
+- C outside the kernel: the ISO C standard and compiler support for it, glibc
+  and musl releases, the Clang, GCC and LLVM toolchains, sanitizers and
+  hardening flags, and memory-safety retrofits of existing C codebases. Route
+  into Languages and runtimes and Developer tools. Kernel C stays under the
+  Linux kernel bullet. Exclude tutorials and beginner material.
+- Notebooks and interactive computing for Python work: Jupyter and JupyterLab
+  releases, the notebook format and kernel protocol, execution and
+  reproducibility, notebook diffing and review, and packaging notebooks into
+  scripts or pipelines. Route into Developer tools and ML research. Exclude
+  tutorial notebooks and course material.
 - Spring Boot, JVM ecosystem, Netty, R2DBC, database drivers, TLS, cloud
   integration, and migration issues.
 - Observability: Prometheus, Grafana, OpenTelemetry, SLOs, latency, tracing,
