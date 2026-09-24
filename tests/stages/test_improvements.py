@@ -70,6 +70,15 @@ def owner(body: str) -> dict[str, str]:
     return {"author_association": "OWNER", "body": body}
 
 
+@pytest.fixture(autouse=True)
+def placed_as_written(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Placement reads the checked-out file, which these tests do not have.
+
+    ``tests/domain/test_patch.py`` and the gate tests cover placement itself.
+    """
+    monkeypatch.setattr(improvements, "applicable", lambda diff: diff)
+
+
 def test_the_change_set_ignores_headers_context_and_comments() -> None:
     assert improvements.change_set(KAGI) == improvements.change_set(KAGI_REWORDED)
     assert improvements.change_set(KAGI) == frozenset({'-"Kagi",'})

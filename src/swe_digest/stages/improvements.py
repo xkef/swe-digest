@@ -20,7 +20,7 @@ from typing import Any
 
 from swe_digest import settings
 from swe_digest.adapters.vcs import GitGh
-from swe_digest.gate.publish import DIFF_BLOCK, owner_approved
+from swe_digest.gate.publish import DIFF_BLOCK, applicable, owner_approved
 
 LABEL = "improvement"
 
@@ -70,13 +70,18 @@ def has_branch(gh: GitGh, number: int) -> bool:
 def diff_applies(gh: GitGh, issue: dict[str, Any]) -> bool:
     """Returns whether the issue's diff still applies to the checked-out tree.
 
-    A diff that no longer applies would stop the publish job at ``git apply``,
-    and every side effect after it would be lost with it.
+    The check runs the same placement the publish gate runs. A diff that no
+    longer applies would stop the publish job at ``git apply``, and every side
+    effect after it would be lost with it.
     """
     block = DIFF_BLOCK.search(issue.get("body") or "")
     if not block:
         return False
-    return gh.run("git", "apply", "--check", "-", stdin=block.group(1)).returncode == 0
+    try:
+        diff = applicable(block.group(1))
+    except SystemExit:
+        return False
+    return gh.run("git", "apply", "--check", "-", stdin=diff).returncode == 0
 
 
 def approved(gh: GitGh, issues: list[dict[str, Any]]) -> tuple[list[int], list[str]]:
