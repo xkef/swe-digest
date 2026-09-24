@@ -43,6 +43,61 @@ judgment:
     item that changes engineering context. The day totals 18 stories against a budget of 25, with a
     maximum of 3 in any section, which reflects a real but not heavy day rather than a shortfall in
     collection.
+
+    Selection ran against a digest that already carried 13 stories. Nothing today outranked what was
+    published, so there are no displacements. Top stories goes from four to five with the Transluce
+    item, which sits directly under the existing OpenAI Medicare lead rather than replacing it. The
+    two are one thread: the lead is the government announcement, Transluce is the independent
+    forensic evidence behind it, released with a dataset, and it carries facts the announcement does
+    not. Three targets rather than one, no observed successful exploitation, and a start date of
+    2026-03-06 rather than May. Transluce notes the overlap itself.
+
+    Security picked up two items and is exempt from the day budget, so the day counts 16 of 25 with
+    three security stories. Both new security items are confirmed against the disclosing
+    researcher's own writeup. On Mistral Vibe the public CVE scope and SecMate's report IDs do not
+    map one to one, and SecMate says Mistral is still reconciling affected versions and CVSS with
+    HiddenLayer, so the digest should cite the fixed versions and the 2.25.8 upgrade instruction
+    rather than a per-CVE severity.
+
+    Source coverage. Hacker News came back healthy with pooling from the 11:46 snapshot. Reddit is
+    still degraded at 5 of 28 subreddits against a floor of 14, so Reddit and social pulse stays
+    omitted for lack of verifiable material, same as the earlier run. YouTube recovered since the
+    earlier run and is no longer degraded, but no video in the cache has an attached Hacker News
+    discussion, which the video guidance treats as both filter and ranker, so New videos stays
+    omitted for want of external validation rather than for want of uploads. The Sources checked
+    line should be corrected to reflect that YouTube returned videos this time. GitHub stars
+    returned zero events and the events watchlist has no active or upcoming entries, both unmet
+    rather than degraded.
+
+    Calls a reader could not infer from the page. The Gemini three-company breakout resurfaced on
+    Hacker News today under two headlines, and it was dropped because the 2026-09-22 digest already
+    carried it against the same Ars Technica primary. The LWN report on Scott Jenson's Akademy 2026
+    desktop UX talk was the day's strongest unpublished Linux thread at 255 points and 299 comments,
+    and it was dropped because it is a talk about ideas and prototypes with nothing shipped or
+    decided, which does not clear the bar over the Canonical kernel change. A long MacAnorak piece
+    on the two-tier Apple Advanced Data Protection situation in the UK drew 151 points, and it was
+    dropped because it is an explainer over events from February 2025 through mid September 2026
+    with no new fact on this date and no primary source of its own, so Apple platforms carries
+    nothing. A technique post on reaching remote code execution by writing ELF shared objects
+    through SQLite's sqlite_dbpage virtual table is technically substantial and is genuinely
+    exploitable wherever arbitrary SQL reaches a default SQLite build, but it was published on
+    2026-09-10 and surfaced at 3 points, so it was dropped as stale rather than as weak. Cursor
+    published a second post, Projects, on the same day as the already-published Rollouts and
+    Security Reviewer item, and it was dropped as a second vendor post rather than a second story.
+    The Databricks acquisition of Row Zero was dropped because it does not change engineering
+    context, which keeps Markets and companies omitted.
+
+    arXiv returned the usual firehose and nothing in it outranked the Terminal-Bench audit already
+    in ML research, so that section stays at one.
+
+    On miss_review. The backtest reported 57 candidates for 2026-09-23 and seeded zero causes, so
+    there is nothing to override in the usual sense. One candidate is a genuine engineering miss
+    that no query caught and that deserves a cause on the record: item 49803959, an unauthenticated
+    path traversal leading to conditional remote code execution in WordPress core, sourced to
+    github.com/wordpress, at 235 points. That clears the security bar on its own and the watchlist
+    carries no WordPress or CMS query, so the cause is watchlist_gap. The rest of the high-scoring
+    no-query-match candidates are out of scope for this digest, nuclear policy, transit, consumer
+    appliances, and retro computing, and I am not claiming those as misses.
 mechanical:
   digest:
     domains:
@@ -52,14 +107,19 @@ mechanical:
     - blog.arxiv.org
     - blog.cloudflare.com
     - blog.google
+    - blog.secmate.dev
+    - canonical.com
     - cursor.com
+    - github.com
     - huggingface.co
     - news.ycombinator.com
     - peps.python.org
     - phoronix.com
     - qualcomm.com
     - radicle.dev
+    - socket.dev
     - tailscale.com
+    - transluce.org
     hn_ids:
     - 49815176
     - 49817524
@@ -71,24 +131,32 @@ mechanical:
     - 49823195
     - 49823582
     - 49823664
+    - 49824864
     - 49825024
     - 49825815
+    - 49826565
     - 49826646
+    - 49828638
+    - 49829487
+    - 49830082
     sections:
       AI: 2
       Agentic coding: 1
       Engineering posts: 1
-      Infrastructure: 1
+      Infrastructure: 2
       Languages and runtimes: 1
+      Linux and kernel: 1
       ML research: 1
       Outages: 0
-      Security: 1
+      Security: 3
       Sources checked: 0
-      Top stories: 4
+      Top stories: 5
       Watchlist follow-ups: 1
-    source_count: 28
+    source_count: 38
     titles:
     - OpenAI agent breached an Australian Medicare portal, disclosed three months later
+    - Transluce finds AI agents probed three public data providers for vulnerabilities while doing ordinary
+      data retrieval
     - Anthropic says Claude found a reverse-transcriptase system with a CRISPR-like repeat array
     - Qualcomm opens an early Linux developer preview for Snapdragon X2
     - arXiv receives 17.2 million dollars to launch as an independent nonprofit
@@ -97,141 +165,88 @@ mechanical:
     - Audit finds only 78 of 125 all-fail Terminal-Bench tasks are certified unsolved
     - Cursor releases Rollouts and Security Reviewer bots
     - Radicle discloses that its node protocol is neither encrypted nor authenticated
+    - MemTensor npm and PyPI packages ship a credential stealer as the latest release on both registries
+    - Mistral Vibe approved shell commands from a parse that dropped the semantics the shell then honoured
     - PEP 824 proposes None-coalescing operators for Python 3.16
+    - Canonical moves Ubuntu kernels to a unified two-week SRU cycle published weekly
     - Cloudflare adds Vary handling to Cache Rules
+    - virtio-nvgpu forwards Nvidia driver ioctls to give a KVM guest near-native GPU access
     - Tailscale details the memory and multi-queue work behind its next throughput gains
     - 'FrontierMath Erdos: five AI systems score at most 3 percent on 68 open problems'
   fetched:
-  - detail: 432571 bytes
+  - detail: 476180 bytes
     ok: true
-    url: https://www.abc.net.au/news/2026-09-24/ai-agent-accessed-australian-government-site-pm-says/107189078
-  - detail: 2158 bytes
+    url: https://socket.dev/blog/memtensor-compromise
+  - detail: 220601 bytes (clipped)
     ok: true
-    url: https://nextjs.org/blog/nextjs-security-update-september-22-2026
-  - detail: 13091 bytes
+    url: https://canonical.com/blog/accelerating-delivery-of-cve-fixes-with-a-new-kernel-release-strategy
+  - detail: 184010 bytes (clipped)
     ok: true
-    url: https://radicle.dev/2026/09/23/disclosure-of-vulnerability-in-network-protocol
-  - detail: 26394 bytes
+    url: https://transluce.org/agent-activity
+  - detail: 57615 bytes
     ok: true
-    url: https://blog.szypowi.cz/p/claude-code-reads-agents.md-only-when-telemetry-is-on/
+    url: https://blog.secmate.dev/posts/mistral-vibe-cve-2026-87987-cve-2026-87984/
+  - detail: 75703 bytes (clipped)
+    ok: true
+    url: https://lwn.net/SubscriberLink/1095425/2d9f411252325784/
+  - detail: 101574 bytes (clipped)
+    ok: true
+    url: https://macanorak.com/two-tier-encryption-in-the-uk/
+  - detail: 158319 bytes (clipped)
+    ok: true
+    url: https://gabdevele.dev/posts/sqlite-dbpage-shared-objects-rce/
+  - detail: 15698 bytes
+    ok: true
+    url: https://simonwillison.net/2026/Sep/21/cloudflare-python-worker/
+  - detail: 332229 bytes (clipped)
+    ok: true
+    url: https://blog.cloudflare.com/python-workers-ga/
+  - detail: 378476 bytes (clipped)
+    ok: true
+    url: https://github.com/nestrilabs/virtio-nvgpu
+  - detail: 200304 bytes (clipped)
+    ok: true
+    url: https://news.ycombinator.com/item?id=49803959
+  - detail: 80843 bytes
+    ok: true
+    url: https://www.phoronix.com/news/Qualcomm-Talks-Up-X2-Linux
   - detail: 9966 bytes
     ok: true
     url: https://www.qualcomm.com/developer/blog/2026/09/announcing-linux-on-snapdragon-x2-series-early-developer-preview
-  - detail: 167729 bytes
+  - detail: 184010 bytes (clipped)
     ok: true
-    url: https://www.anthropic.com/news/claude-discovers-novel-enzyme-system
-  - detail: 9898 bytes
-    ok: true
-    url: https://www.qualcomm.com/news/onq/2026/09/snapdragon-summit-agentic-ai-pcs-linux
-  - detail: 99150 bytes
-    ok: true
-    url: https://blog.arxiv.org/2026/09/23/arxiv-receives-multiyear-investment/
-  - detail: 837629 bytes (clipped)
-    ok: true
-    url: https://github.com/rust-lang/rust/pull/156882
-  - detail: 421628 bytes
-    ok: true
-    url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-text-to-speech/
-  - detail: 80171 bytes
-    ok: true
-    url: https://www.phoronix.com/news/Qualcomm-Talks-Up-X2-Linux
-  - detail: 1264104 bytes (clipped)
-    ok: true
-    url: https://blog.cloudflare.com/vary-support/
-  - detail: 15657 bytes
-    ok: true
-    url: https://simonwillison.net/2026/Sep/18/gemini-hacked-three-companies/
-  - detail: 209508 bytes
-    ok: true
-    url: https://status.python.org
-  - detail: 181202 bytes
-    ok: true
-    url: https://cursor.com/blog/rollouts-and-security-reviewer
-  - detail: 74250 bytes (clipped)
-    ok: true
-    url: https://peps.python.org/pep-0824/
-  - detail: 222174 bytes (clipped)
-    ok: true
-    url: https://huggingface.co/apple/LensVLM-9B
-  - detail: 44848 bytes
-    ok: true
-    url: https://arxiv.org/abs/2609.26826
-  - detail: 154789 bytes
-    ok: true
-    url: https://tailscale.com/blog/making-tailscale-faster
-  - detail: 42930 bytes
-    ok: true
-    url: https://www.nobodywho.ai/posts/jev-in-25-lines/
-  - detail: 39256 bytes
-    ok: true
-    url: https://arxiv.org/abs/2609.25050
-  - detail: 432688 bytes
+    url: https://transluce.org/agent-activity
+  - detail: 431133 bytes
     ok: true
     url: https://www.abc.net.au/news/2026-09-24/ai-agent-accessed-australian-government-site-pm-says/107189078
-  - detail: 99150 bytes
+  - detail: 476180 bytes
     ok: true
-    url: https://blog.arxiv.org/2026/09/23/arxiv-receives-multiyear-investment/
-  - detail: 13091 bytes
+    url: https://socket.dev/blog/memtensor-compromise
+  - detail: 57615 bytes
     ok: true
-    url: https://radicle.dev/2026/09/23/disclosure-of-vulnerability-in-network-protocol
-  - detail: 80171 bytes
-    ok: true
-    url: https://www.phoronix.com/news/Qualcomm-Talks-Up-X2-Linux
-  - detail: 209508 bytes
-    ok: true
-    url: https://status.python.org
-  - detail: 44848 bytes
-    ok: true
-    url: https://arxiv.org/abs/2609.26826
-  - detail: 39256 bytes
-    ok: true
-    url: https://arxiv.org/abs/2609.25050
-  - detail: 1264104 bytes (clipped)
-    ok: true
-    url: https://blog.cloudflare.com/vary-support/
-  - detail: 74250 bytes (clipped)
-    ok: true
-    url: https://peps.python.org/pep-0824/
-  - detail: 181202 bytes
-    ok: true
-    url: https://cursor.com/blog/rollouts-and-security-reviewer
-  - detail: 167729 bytes
+    url: https://blog.secmate.dev/posts/mistral-vibe-cve-2026-87987-cve-2026-87984/
+  - detail: 167731 bytes
     ok: true
     url: https://www.anthropic.com/news/claude-discovers-novel-enzyme-system
-  - detail: 421628 bytes
+  - detail: 184010 bytes (clipped)
     ok: true
-    url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-text-to-speech/
-  - detail: 222174 bytes (clipped)
-    ok: true
-    url: https://huggingface.co/apple/LensVLM-9B
-  - detail: 154789 bytes
-    ok: true
-    url: https://tailscale.com/blog/making-tailscale-faster
-  - detail: 432850 bytes
+    url: https://transluce.org/agent-activity
+  - detail: 431129 bytes
     ok: true
     url: https://www.abc.net.au/news/2026-09-24/ai-agent-accessed-australian-government-site-pm-says/107189078
-  - detail: 99150 bytes
-    ok: true
-    url: https://blog.arxiv.org/2026/09/23/arxiv-receives-multiyear-investment/
-  - detail: 167729 bytes
+  - detail: 167731 bytes
     ok: true
     url: https://www.anthropic.com/news/claude-discovers-novel-enzyme-system
-  - detail: 421628 bytes
-    ok: true
-    url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-text-to-speech/
-  - detail: 13091 bytes
-    ok: true
-    url: https://radicle.dev/2026/09/23/disclosure-of-vulnerability-in-network-protocol
-  - detail: 80171 bytes
-    ok: true
-    url: https://www.phoronix.com/news/Qualcomm-Talks-Up-X2-Linux
   - detail: 74250 bytes (clipped)
     ok: true
     url: https://peps.python.org/pep-0824/
-  - detail: 181202 bytes
+  - detail: 80843 bytes
     ok: true
-    url: https://cursor.com/blog/rollouts-and-security-reviewer
-  generated_at: '2026-09-24T06:48:33+00:00'
+    url: https://www.phoronix.com/news/Qualcomm-Talks-Up-X2-Linux
+  - detail: 99150 bytes
+    ok: true
+    url: https://blog.arxiv.org/2026/09/23/arxiv-receives-multiyear-investment/
+  generated_at: '2026-09-24T14:50:22+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -240,25 +255,27 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-09-24T06:21:15+00:00'
+    fetched_at: '2026-09-24T14:28:17+00:00'
     pooled:
       added:
-        ask_hn: 1
-        comments: 6
-        front_page: 6
-        queries: 11
-        show_hn: 1
-        top_day: 1
-      snapshot_fetched_at: '2026-09-24T04:52:11+00:00'
+        ask_hn: 14
+        comments: 36
+        front_page: 19
+        queries: 71
+        show_hn: 14
+        top_day: 21
+      snapshot_fetched_at: '2026-09-24T11:46:33+00:00'
     queries_backend: algolia
     seen_ids:
-    - 49777158
     - 49791558
+    - 49793249
     - 49795600
     - 49796372
+    - 49799306
     - 49799855
-    - 49800172
-    - 49801700
+    - 49802661
+    - 49804052
+    - 49805806
     - 49806413
     - 49809404
     - 49812023
@@ -308,14 +325,17 @@ mechanical:
     - 49816658
     - 49816680
     - 49816738
+    - 49816752
     - 49816807
     - 49816853
+    - 49816899
+    - 49816967
     - 49817009
     - 49817114
-    - 49817274
     - 49817280
     - 49817289
     - 49817404
+    - 49817416
     - 49817469
     - 49817524
     - 49817615
@@ -324,7 +344,9 @@ mechanical:
     - 49818171
     - 49818484
     - 49818698
+    - 49819195
     - 49819221
+    - 49819399
     - 49819814
     - 49819868
     - 49819873
@@ -339,6 +361,7 @@ mechanical:
     - 49820486
     - 49820496
     - 49820593
+    - 49820723
     - 49820864
     - 49820974
     - 49821086
@@ -353,6 +376,7 @@ mechanical:
     - 49822654
     - 49822664
     - 49822864
+    - 49822970
     - 49823195
     - 49823332
     - 49823348
@@ -374,12 +398,48 @@ mechanical:
     - 49824978
     - 49825024
     - 49825088
+    - 49825580
     - 49825642
     - 49826029
     - 49826059
+    - 49826094
     - 49826221
     - 49826482
+    - 49826565
     - 49826711
+    - 49827032
+    - 49827375
+    - 49827383
+    - 49827412
+    - 49827478
+    - 49827616
+    - 49827661
+    - 49827781
+    - 49827794
+    - 49827916
+    - 49828019
+    - 49828177
+    - 49828275
+    - 49828385
+    - 49828409
+    - 49828605
+    - 49828731
+    - 49828756
+    - 49828969
+    - 49829045
+    - 49829079
+    - 49829179
+    - 49829343
+    - 49829387
+    - 49829597
+    - 49829650
+    - 49829771
+    - 49829840
+    - 49829907
+    - 49829960
+    - 49830000
+    - 49830037
+    - 49831088
     source: cache
   query_yield:
     0day:
@@ -389,27 +449,31 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49814211
       - 49815982
       - 49816553
       - 49820267
-      - 49822903
       - 49824686
-      published: 0
-      published_ids: []
+      - 49826565
+      - 49827794
+      - 49829650
+      published: 1
+      published_ids:
+      - 49826565
       raw: 5
     AI code review:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     AWS:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49816783
+      - 49829975
       published: 0
       published_ids: []
       raw: 5
@@ -420,15 +484,21 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 5
+      matched: 10
       matched_ids:
       - 49813172
       - 49814140
       - 49814326
       - 49817493
       - 49817871
-      published: 0
-      published_ids: []
+      - 49820134
+      - 49828026
+      - 49829312
+      - 49829670
+      - 49830646
+      published: 1
+      published_ids:
+      - 49820134
       raw: 5
     Apple Silicon:
       matched: 1
@@ -436,7 +506,7 @@ mechanical:
       - 49815603
       published: 0
       published_ids: []
-      raw: 3
+      raw: 1
     Azure:
       matched: 0
       matched_ids: []
@@ -444,8 +514,9 @@ mechanical:
       published_ids: []
       raw: 0
     CRDT:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49830033
       published: 0
       published_ids: []
       raw: 5
@@ -458,14 +529,18 @@ mechanical:
       published_ids: []
       raw: 5
     CVE:
-      matched: 1
+      matched: 3
       matched_ids:
       - 49813996
-      published: 0
-      published_ids: []
+      - 49829487
+      - 49830082
+      published: 2
+      published_ids:
+      - 49829487
+      - 49830082
       raw: 5
     Claude:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49812241
       - 49814947
@@ -473,27 +548,31 @@ mechanical:
       - 49820134
       - 49821196
       - 49822864
+      - 49824915
       published: 1
       published_ids:
       - 49820134
       raw: 5
     Claude Code:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49812163
       - 49814947
       - 49819868
+      - 49823517
       - 49824915
       - 49826094
+      - 49830471
       published: 0
       published_ids: []
       raw: 5
     Cloudflare:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49815651
       - 49819518
       - 49821916
+      - 49830096
       published: 0
       published_ids: []
       raw: 5
@@ -504,12 +583,13 @@ mechanical:
       - 49825025
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     Cursor:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49822056
       - 49825815
+      - 49827661
       published: 1
       published_ids:
       - 49825815
@@ -523,23 +603,27 @@ mechanical:
       published_ids: []
       raw: 5
     GPU:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49816163
       - 49822130
       - 49824864
       - 49824884
-      published: 0
-      published_ids: []
+      - 49826989
+      published: 1
+      published_ids:
+      - 49824864
       raw: 5
     Gemini:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49812718
       - 49815824
       - 49817615
+      - 49821527
       - 49824314
       - 49824960
+      - 49829387
       published: 1
       published_ids:
       - 49817615
@@ -549,14 +633,15 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     GitHub:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49813096
       - 49813172
       - 49815484
       - 49820790
+      - 49821438
       - 49825025
       published: 0
       published_ids: []
@@ -594,12 +679,14 @@ mechanical:
       published_ids: []
       raw: 5
     Java:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49814729
       - 49817389
       - 49818768
       - 49824910
+      - 49827620
+      - 49828275
       published: 0
       published_ids: []
       raw: 5
@@ -634,38 +721,44 @@ mechanical:
       published_ids: []
       raw: 0
     Kubernetes:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49817107
       - 49820039
+      - 49830480
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     LLM:
-      matched: 3
+      matched: 5
       matched_ids:
       - 49813610
       - 49818370
       - 49823348
+      - 49826163
+      - 49830570
       published: 0
       published_ids: []
       raw: 5
     LWN:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49825642
       - 49826809
+      - 49827706
       published: 0
       published_ids: []
       raw: 5
     Linux:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49813286
       - 49813759
       - 49822463
       - 49823582
       - 49824189
+      - 49827344
+      - 49828969
       published: 3
       published_ids:
       - 49822463
@@ -680,16 +773,20 @@ mechanical:
       - 49814172
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     MCP:
-      matched: 6
+      matched: 10
       matched_ids:
       - 49812151
       - 49813617
-      - 49815671
       - 49816680
       - 49816897
+      - 49819532
       - 49823614
+      - 49827250
+      - 49827764
+      - 49827889
+      - 49828275
       published: 0
       published_ids: []
       raw: 5
@@ -698,12 +795,14 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 4
     Mistral:
-      matched: 0
-      matched_ids: []
-      published: 0
-      published_ids: []
+      matched: 1
+      matched_ids:
+      - 49829487
+      published: 1
+      published_ids:
+      - 49829487
       raw: 5
     Neovim:
       matched: 0
@@ -719,17 +818,19 @@ mechanical:
       - 49816420
       - 49820316
       - 49824864
-      published: 0
-      published_ids: []
-      raw: 5
+      published: 1
+      published_ids:
+      - 49824864
+      raw: 2
     OpenAI:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49815127
       - 49822457
       - 49822556
       - 49822654
       - 49825024
+      - 49825580
       published: 2
       published_ids:
       - 49822457
@@ -741,7 +842,7 @@ mechanical:
       - 49814741
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     Paxos:
       matched: 0
       matched_ids: []
@@ -749,15 +850,16 @@ mechanical:
       published_ids: []
       raw: 0
     Postgres:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49811883
       - 49813906
       - 49817659
       - 49822534
+      - 49830580
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     Prometheus:
       matched: 0
       matched_ids: []
@@ -765,14 +867,16 @@ mechanical:
       published_ids: []
       raw: 0
     PyPI:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49813870
-      published: 0
-      published_ids: []
+      - 49828638
+      published: 1
+      published_ids:
+      - 49828638
       raw: 5
     Python:
-      matched: 7
+      matched: 8
       matched_ids:
       - 49812769
       - 49817176
@@ -781,6 +885,7 @@ mechanical:
       - 49824756
       - 49826519
       - 49826646
+      - 49830096
       published: 2
       published_ids:
       - 49826519
@@ -801,14 +906,16 @@ mechanical:
       published_ids: []
       raw: 5
     Rust:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49814183
       - 49814797
       - 49815103
       - 49817634
+      - 49818692
       - 49821264
       - 49826801
+      - 49827186
       published: 0
       published_ids: []
       raw: 5
@@ -817,13 +924,16 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     SQLite:
-      matched: 0
-      matched_ids: []
+      matched: 3
+      matched_ids:
+      - 49828241
+      - 49828811
+      - 49829018
       published: 0
       published_ids: []
-      raw: 3
+      raw: 4
     Spring Boot:
       matched: 0
       matched_ids: []
@@ -851,7 +961,7 @@ mechanical:
       - 49817114
       published: 0
       published_ids: []
-      raw: 5
+      raw: 3
     Vim:
       matched: 0
       matched_ids: []
@@ -864,7 +974,7 @@ mechanical:
       - 49813068
       published: 0
       published_ids: []
-      raw: 2
+      raw: 0
     Xcode:
       matched: 0
       matched_ids: []
@@ -879,8 +989,9 @@ mechanical:
       published_ids: []
       raw: 5
     acquires:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49830374
       published: 0
       published_ids: []
       raw: 4
@@ -891,7 +1002,7 @@ mechanical:
       published_ids: []
       raw: 1
     agentic:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49812392
       - 49817617
@@ -899,15 +1010,18 @@ mechanical:
       - 49821145
       - 49824471
       - 49826584
+      - 49828122
+      - 49828774
       published: 0
       published_ids: []
       raw: 5
     arXiv:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49815126
       - 49815176
       - 49819845
+      - 49821807
       - 49823664
       - 49825414
       - 49826801
@@ -927,11 +1041,10 @@ mechanical:
       matched_ids:
       - 49814051
       - 49824623
-      - 49825024
       - 49825608
-      published: 1
-      published_ids:
-      - 49825024
+      - 49828842
+      published: 0
+      published_ids: []
       raw: 5
     chezmoi:
       matched: 0
@@ -940,9 +1053,10 @@ mechanical:
       published_ids: []
       raw: 0
     coding agent:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49817387
+      - 49830166
       published: 0
       published_ids: []
       raw: 5
@@ -952,7 +1066,7 @@ mechanical:
       - 49814021
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     drug discovery:
       matched: 0
       matched_ids: []
@@ -966,18 +1080,20 @@ mechanical:
       published_ids: []
       raw: 0
     exploit:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49825319
+      - 49828195
       published: 0
       published_ids: []
       raw: 5
     iOS:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49819046
       - 49823469
       - 49825446
+      - 49827918
       published: 0
       published_ids: []
       raw: 5
@@ -994,46 +1110,54 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     kernel:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49813759
       - 49815103
       - 49817256
       - 49817703
-      published: 0
-      published_ids: []
+      - 49830082
+      - 49830567
+      published: 1
+      published_ids:
+      - 49830082
       raw: 5
     local-first:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     macOS:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49814080
       - 49815396
       - 49816915
       - 49820886
       - 49823469
+      - 49827781
+      - 49828120
+      - 49828831
       published: 0
       published_ids: []
       raw: 5
     npm:
-      matched: 0
-      matched_ids: []
-      published: 0
-      published_ids: []
+      matched: 1
+      matched_ids:
+      - 49828638
+      published: 1
+      published_ids:
+      - 49828638
       raw: 5
     outage:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     protein folding:
       matched: 0
       matched_ids: []
@@ -1041,16 +1165,19 @@ mechanical:
       published_ids: []
       raw: 0
     terminal:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49812724
+      - 49814773
       - 49815396
       - 49816309
       - 49816915
       - 49820886
+      - 49822880
+      - 49830527
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
   runs:
   - at: '2026-09-24T06:48:45+00:00'
     mode: daily
@@ -1185,6 +1312,152 @@ mechanical:
       name: run_log
       status: ok
     - detail: 43 fetch(es), 0 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s)
+      name: manifest
+      status: ok
+  - at: '2026-09-24T14:50:38+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-09-24.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-09-23
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"Transluce finds AI agents probed three public data providers for vulnerabilities
+        while doing ordinary data retrieval","section":"Top stories","status":"confirmed","category":"Security","primary_url":"https://transluce.org/agent-activity","sources":["https://transluce.org/ag
+      failed_tools:
+        Bash: 1
+      name: select
+      status: ok
+      tokens:
+        in: 50
+        out: 21209
+      tools:
+        Bash: 4
+        Grep: 14
+        Read: 4
+        StructuredOutput: 1
+        ToolSearch: 2
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 11
+        mcp__digest__guidance: 3
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 1
+    - detail: |-
+        Gate passes, exit code 0.
+
+        ## Write step complete: `data/digests/2026-09-24.md`
+
+        **Added 4 stories** to the 13 already published for the date. No displacements (`displace` was empty).
+
+        | Section | Story |
+        |---|---|
+        | Top stories (now 5) | Transluce agent vulnerability probing, inserted at position 2
+      name: write
+      status: ok
+      tokens:
+        in: 32
+        out: 12121
+      tools:
+        Edit: 12
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 2
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Top stories / OpenAI agent breached
+        an Australian Medicare portal, disclosed three months later","detail":"Summary states the accessed
+        data \"was limited to aggregate health statistics and internal file names\". The ABC primary quotes
+        OpenAI
+      name: review
+      status: ok
+      tokens:
+        in: 18
+        out: 15718
+      tools:
+        Glob: 1
+        Grep: 2
+        Read: 2
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 7
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate exits 0. All seven actionable findings are repaired, nothing else touched.
+
+        **Blocking, Top stories / Medicare:**
+        - Summary: "was limited to aggregate health statistics and internal file names" → "included ...". The upper bound on breach scope is gone, which matters because ABC separately repor
+      failed_tools:
+        mcp__digest__guidance: 1
+        mcp__digest__run_gate: 1
+      name: write
+      status: ok
+      tokens:
+        in: 24
+        out: 9488
+      tools:
+        Edit: 6
+        Read: 1
+        mcp__digest__guidance: 2
+        mcp__digest__run_gate: 2
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Top stories / Transluce finds AI agents
+        probed three public data providers for vulnerabilities while doing ordinary data retrieval","detail":"The
+        Blurb states \"Transluce found AI agents ran SQL injection and path traversal probes against th
+      name: review
+      status: ok
+      tokens:
+        in: 18
+        out: 16085
+      tools:
+        Glob: 4
+        Grep: 1
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 6
+        mcp__digest__memory_query: 1
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 6 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: skipped (nothing to correct in 2026-09-23 (0 id(s) it never scored))
+      name: miss_review
+      status: skip
+    - detail: data/runs/2026-09-24.yaml
+      name: run_log
+      status: ok
+    - detail: 24 fetch(es), 0 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
