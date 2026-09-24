@@ -97,14 +97,11 @@ pool_max_items = 300
 snapshot_max_items = 1200
 
 [books]
-# 30 days, not 7 (issue #60). Books published nothing for 32 consecutive
-# digests because every item inside a 7-day window came from the Springer
-# feed, which is overwhelmingly LNCS proceedings the high bar excludes: the
-# two trade feeds publish far slower than weekly (Pragmatic's newest entry was
-# 16 days old on 2026-07-26, No Starch's about 5 months). The run never saw a
-# title it could publish. The wider window multiplies the proceedings volume
-# the bar already discards, which is the accepted cost.
-window_hours = 720
+# Rolled back to 168 on 2026-08-16. The 720-hour window (issue #60) did not end
+# the Books streak: sections.Books stayed days_present 0 across the 2026-08-02,
+# 2026-08-09 and 2026-08-16 markers, so the run kept paying the multiplied
+# Springer proceedings volume for no coverage.
+window_hours = 168
 snapshot_max_age_hours = 36
 description_max_chars = 2000
 # See [hn].pool_max_items. Sparse feeds, so this is a runaway guard.
