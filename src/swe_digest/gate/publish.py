@@ -17,6 +17,7 @@ from pathlib import Path
 from swe_digest import paths, settings
 from swe_digest.adapters.vcs import GitGh, commit_addition, parse_changes, working_addition
 from swe_digest.domain.document import slugify
+from swe_digest.domain.patch import PatchError, anchor
 from swe_digest.gate._manifest import IssueClose, NewIssue, load_manifest
 from swe_digest.paths import writable_paths as writable_paths
 
@@ -49,6 +50,8 @@ COMMAND_APPROVAL = re.compile(r"\A\s*/approved?\b", re.I)
 # persisted token.
 ALLOWED_MODES = {"100644", "100755"}
 DIFF_BLOCK = re.compile(r"```diff\n(.*?)```", re.S)
+HUNK = re.compile(r"^@@.*$", re.M)
+RANGED_HUNK = re.compile(r"^@@ -\d+(?:,\d+)? \+\d+(?:,\d+)? @@")
 URL = re.compile(r"https?://[^\s)\"'<>]+")
 
 
@@ -198,6 +201,30 @@ def create_issue(gh: GitGh, entry: NewIssue) -> None:
     print(f"created issue: {title}")
 
 
+def read_proposable(path: str) -> str:
+    """Returns a file a proposal may change, and refuses every other file."""
+    if path not in IMPROVEMENT_FILES:
+        raise SystemExit(f"improvement diff touches disallowed files: {[path]}")
+    return Path(path).read_text(encoding="utf-8")
+
+
+def applicable(diff: str) -> str:
+    """Returns the diff in the form ``git apply`` accepts.
+
+    A proposal names its hunks by section rather than by line range, so a hunk
+    without a range is placed by its context in the checked-out file. A diff
+    that already carries every range is passed through unchanged. Either way
+    ``git apply`` and the staged-file allowlist still decide what lands.
+    """
+    hunks = HUNK.findall(diff)
+    if hunks and all(RANGED_HUNK.match(hunk) for hunk in hunks):
+        return diff
+    try:
+        return anchor(diff, read_proposable)
+    except PatchError as error:
+        raise SystemExit(f"improvement diff does not apply: {error}") from None
+
+
 def improvement_pr(gh: GitGh, number: int) -> None:
     issue = gh.gh_json(f"repos/{REPO}/issues/{number}")
     labels = {label["name"] for label in issue["labels"]}
@@ -212,7 +239,7 @@ def improvement_pr(gh: GitGh, number: int) -> None:
     branch = f"improvement/{number}-{slug}"
     base_oid = gh.branch_oid(REPO, "main")
     gh.sh("git", "switch", "-c", branch, "origin/main")
-    gh.sh("git", "apply", "--index", "-", stdin=block.group(1))
+    gh.sh("git", "apply", "--index", "-", stdin=applicable(block.group(1)))
     files = gh.sh("git", "diff", "--cached", "--name-only").split()
     bad = set(files) - IMPROVEMENT_FILES
     if bad or not files:

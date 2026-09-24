@@ -12,6 +12,7 @@ network-facing methods.
 """
 
 import json
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -581,6 +582,37 @@ class TestImprovementPr:
             publish.improvement_pr(gh, 9)
         assert gh.commits == []
         git(gate_repo, "switch", "-q", "main")
+
+
+class TestApplicable:
+    def test_a_section_named_hunk_is_placed_in_the_checked_out_file(self, gate_repo: Path) -> None:
+        watchlist = gate_repo / "config" / "watchlist.toml"
+        watchlist.parent.mkdir(exist_ok=True)
+        watchlist.write_text('queries = [\n  "A",\n  "B",\n  "C",\n]\n', encoding="utf-8")
+        diff = '--- a/config/watchlist.toml\n+++ b/config/watchlist.toml\n@@ queries\n-  "B",\n'
+
+        placed = publish.applicable(diff)
+
+        check = subprocess.run(
+            ["git", "apply", "--check", "-"], cwd=gate_repo, input=placed, text=True
+        )
+        assert check.returncode == 0
+
+    def test_a_ranged_diff_passes_through_unchanged(self) -> None:
+        diff = "--- a/x\n+++ b/x\n@@ -1 +1 @@\n-a\n+b\n"
+        assert publish.applicable(diff) == diff
+
+    def test_a_file_outside_the_allowlist_is_never_read(self) -> None:
+        diff = "--- a/.github/workflows/ci.yml\n+++ b/.github/workflows/ci.yml\n@@\n-on: push\n"
+        with pytest.raises(SystemExit, match="disallowed files"):
+            publish.applicable(diff)
+
+    def test_a_diff_that_cannot_be_placed_is_refused(self, gate_repo: Path) -> None:
+        (gate_repo / "config").mkdir(exist_ok=True)
+        (gate_repo / "config" / "profile.md").write_text("# Profile\n", encoding="utf-8")
+        diff = "--- a/config/profile.md\n+++ b/config/profile.md\n@@\n-gone\n"
+        with pytest.raises(SystemExit, match="does not apply"):
+            publish.applicable(diff)
 
 
 class TestSideEffectsDispatch:

@@ -29,6 +29,7 @@ from swe_digest.gate.content import main as check_content
 from swe_digest.llm import catalog, hooks, net, specs
 from swe_digest.publish.format import fmt_run
 from swe_digest.publish.skeleton import main as new_digest
+from swe_digest.stages import improvements
 from swe_digest.stages.feedback import process as owner_feedback
 from swe_digest.stages.run_log import main as write_run_log
 from swe_digest.store import memory as memory_store
@@ -93,10 +94,13 @@ class Run:
     # repair budget clears.
     unresolved: list[str] = field(default_factory=list)
     proposals: list[dict[str, Any]] = field(default_factory=list)
+    # The open improvement issues, which the proposals are checked against.
+    open_improvements: list[dict[str, Any]] = field(default_factory=list)
 
     # What the manifest and the report are built from.
     closes: list[dict[str, Any]] = field(default_factory=list)
     new_issues: list[dict[str, Any]] = field(default_factory=list)
+    improvement_prs: list[int] = field(default_factory=list)
     results: list[StepResult] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
 
@@ -347,12 +351,17 @@ def manifest(run: Run) -> str:
             manifest["issue_closes"] = run.closes
         if run.new_issues:
             manifest["new_issues"] = run.new_issues
+        if run.improvement_prs:
+            manifest["improvement_prs"] = run.improvement_prs
     (run_dir / "manifest.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     if not run.gate_ok:
         return "no side effects: the gate rejected this run"
-    return f"{len(run.closes)} close(s), {len(run.new_issues)} new issue(s)"
+    return (
+        f"{len(run.closes)} close(s), {len(run.new_issues)} new issue(s),"
+        f" {len(run.improvement_prs)} improvement PR(s)"
+    )
 
 
 def record_run(run: Run) -> str:
@@ -532,13 +541,35 @@ PROPOSAL_BODY = """- **Axis:** {axis}
 """
 
 
+def tracker(run: Run) -> str:
+    """Reads the open improvement issues and requests a PR for each approved one.
+
+    The run holds a read-only token, so the PR is requested in the manifest and
+    the publish gate re-verifies the approval before it opens one.
+    """
+    gh = GitGh()
+    # ``GitGh.sh`` exits on a failed call. A tracker that cannot be read must
+    # fail this step, not the run, so the proposals and the commit still happen.
+    try:
+        run.open_improvements = improvements.open_issues(gh)
+        run.improvement_prs, report = improvements.approved(gh, run.open_improvements)
+    except SystemExit as error:
+        run.open_improvements, run.improvement_prs = [], []
+        raise StepError(f"could not read the tracker: {error}") from None
+    report.extend(f"#{number}: approved, PR requested" for number in run.improvement_prs)
+    return f"{len(run.open_improvements)} open; " + ("; ".join(report) or "none approved")
+
+
 def proposals(run: Run) -> str:
     """Turns the proposal steps' structured output into issue requests.
 
     Code assembles the body, not the model, so every proposal carries the fields
-    the owner-approval path needs to act on it.
+    the owner-approval path needs to act on it. A proposal whose change is
+    already open is dropped, because the proposal stages cannot read the
+    tracker and would otherwise file the same change every week.
     """
-    for proposal in run.proposals:
+    fresh, dropped = improvements.duplicates(run.proposals, run.open_improvements)
+    for proposal in fresh:
         run.new_issues.append(
             {
                 "title": str(proposal.get("title", ""))[: settings.PUBLISH_ISSUE_TITLE_MAX_CHARS],
@@ -552,4 +583,7 @@ def proposals(run: Run) -> str:
                 "labels": ["improvement"],
             }
         )
-    return f"{len(run.new_issues)} improvement issue(s)"
+    detail = f"{len(run.new_issues)} improvement issue(s)"
+    if dropped:
+        detail += ", already open: " + ", ".join(f"#{n}" for n in sorted(set(dropped.values())))
+    return detail

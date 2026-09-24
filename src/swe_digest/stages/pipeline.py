@@ -81,6 +81,7 @@ IMPROVE: tuple[Step, ...] = (
     specs.STAGES["improve:memory"],
     specs.STAGES["improve:watchlist"],
     specs.STAGES["improve:profile"],
+    Code("tracker", steps.tracker),
     Code("proposals", steps.proposals),
     Code("gate", steps.gate),
     Code("manifest", steps.manifest),

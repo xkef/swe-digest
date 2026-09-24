@@ -88,6 +88,10 @@ validates it, with no LLM in the loop:
   from the issue body, and may touch only `config/settings.toml`,
   `config/watchlist.toml`, and `config/profile.md`. The prompts are
   deliberately absent: a run may not propose edits to its own instructions.
+  A hunk written without a line range is placed by its context lines in the
+  checked-out file (`domain/patch.py`), which reads only those three files.
+  Placement adds file lines as context and never changes an added or removed
+  line.
 
 GitHub additionally rejects any `GITHUB_TOKEN` push that modifies
 `.github/workflows/`. The validator itself is `src/swe_digest/gate/`, which is
