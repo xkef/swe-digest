@@ -75,6 +75,68 @@ judgment:
     query; and Contrastive Language Models at 139 points, an ML research thread the arXiv query did
     not reach. The bulk of the remaining candidates are correctly unscored as off-topic, including
     the Italian nuclear vote, the Portobello clock, and the Seattle and Texas policy items.
+
+    Coverage correction that the page currently gets wrong. The published Sources checked line says
+    YouTube was degraded, that the videos backend returned null with zero items, and that New videos
+    is omitted for want of any upload to rank. The 14:47 fetch in .cache/youtube/2026-09-25.json is
+    not degraded and carries dozens of uploads across the watchlist channels, so that stated reason
+    is stale and should be replaced. New videos still stays omitted, but on the bar rather than on
+    coverage. The video guidance ranks on the attached HN discussion object, and exactly one upload
+    in the whole cache carries one: Asianometry on high-bandwidth flash, at 2 points and 0 comments.
+    Everything else is conference roster output, largely CNCF and AI Engineer Paris session uploads,
+    with no discussion signal and no primary source to anchor to. That is a real finding about the
+    day and not a fetch failure.
+
+    Reddit is degraded for a third consecutive day and the digest's existing description of it is
+    accurate. The one exception is worth recording: r/netsec surfaced the glyph.sh macOS CDC-ACM
+    disclosure, which is the only item the whole Reddit collection produced that cleared any bar,
+    and it is published as a Security story on its own primary rather than as social pulse. Reddit
+    and social pulse stays omitted.
+
+    Ranking call a reader could not infer. I judge the RSA signature-forging paper to outrank the
+    published file-notification block and to belong second behind the Cloudflare lead. I did not
+    reorder the three Top stories the earlier run published, because Top stories was at three of
+    five and adding two does not require displacing or re-ranking anything. Nothing was displaced
+    this run. Both additions are net new, so the day's Top stories now stands at five and is full. A
+    later run should displace rather than add.
+
+    Security is heavy today and that is what the day produced, not padding. Five of the six
+    selections carry Category Security. The two Security-section additions sit outside the day
+    budget by design.
+
+    Dropped despite being the day's second-largest thread: the Dutch DAWO NixOS workplace at 656
+    points. The primary at dawo.community resolves and is legitimate, built on the NL Design System
+    and linking to Codeberg and code.overheid.nl, but it is a community landing page with no dated
+    announcement, no release, no scope, no adoption figures and no technical detail beyond naming
+    DAWO-NixOS as an operating-system building block. Nothing could be stated as fact beyond the
+    existence of the community, so Infrastructure stays empty rather than carrying a headline with
+    no facts under it. This is the third thin-primary drop in three days and is worth watching as a
+    pattern.
+
+    Carried forward unchanged from earlier runs, and I agree with each: the Rails World 2026 keynote
+    drops again because its primary is a YouTube video this step cannot read, the two-tier UK
+    encryption post drops again for having no primary of its own, and the Meta AI Glasses takedown
+    drops again for resting on a Reddit thread with no verified account attribution.
+
+    ML research was left at one item deliberately. The papers cache is a large undifferentiated
+    arXiv flood. Two entries looked engineering-relevant, one on exactly-once semantics and
+    duplicate side effects in LLM agent tool contracts and one on thinking leakage in hybrid
+    reasoning models, but neither carries discussion signal or any external validation and I did not
+    verify either, so adding one would have been padding against the standard Books and New videos
+    set.
+
+    Backtest handling. The tool reported 62 candidates for 2026-09-24 and zero default causes
+    seeded, so the per-candidate labels in its output are match status rather than causes and there
+    were no seeds to override. I filled miss_review with the genuine exceptions instead. The
+    strongest evidence of a real watchlist gap is Fearless SIMD v1.0: it went unmatched by any query
+    yesterday and today's digest published it a day late, so the gap cost a day on a story the
+    routine ultimately wanted. Making Tailscale Faster and Contrastive Language Models are the same
+    shape, engineering-relevant and caught by no query. The Claude Code AGENTS.md telemetry thread
+    at 471 points is different: a query did match it, so the gap is editorial rather than coverage,
+    and I marked it relevance_skip. The VSCode SSH agent thread is a 2025 repost and is correctly
+    out of scope despite 292 points.
+
+    The issue inbox held no story issues this run.
 mechanical:
   digest:
     domains:
@@ -84,10 +146,13 @@ mechanical:
     - blog.google
     - cloud.google.com
     - github.blog
+    - glyph.sh
+    - go.dev
     - inoti.fyi
     - linebender.org
     - lwn.net
     - news.ycombinator.com
+    - reddit.com
     - socket.dev
     - theregister.com
     hn_ids:
@@ -100,16 +165,17 @@ mechanical:
     - 49835996
     - 49837177
     - 49840035
+    - 49843269
     sections:
       AI: 2
       Agentic coding: 1
-      Languages and runtimes: 1
+      Languages and runtimes: 2
       ML research: 1
       Outages: 0
-      Security: 1
+      Security: 2
       Sources checked: 0
       Top stories: 3
-    source_count: 21
+    source_count: 25
     titles:
     - Cloudflare fixes a cross-tenant data exposure in Containers
     - Two compromised GitHub Actions were re-enabled with their malicious tags intact
@@ -119,119 +185,68 @@ mechanical:
     - Automated C-to-Rust tools cut unsafe blocks without removing the memory bugs
     - GitHub Copilot app adds per-project local sandboxing that fails closed
     - SourceHut build logs allowed account takeover through an ansi2html XSS
+    - macOS serial device nodes sit outside TCC, and Apple declined the report
     - Fearless SIMD reaches 1.0 with portable SIMD and no ad-hoc unsafe code
+    - Go 1.27 adds a portable SIMD package with emulation fallback
   fetched:
-  - detail: 291675 bytes (clipped)
+  - detail: 35993 bytes
     ok: true
-    url: https://blog.cloudflare.com/containers-cross-tenant-vulnerability/
-  - detail: 49852 bytes
+    url: https://f-droid.org/2026/09/24/f-droid-2.0-a-new-chapter-for-android-freedom.html
+  - detail: 84340 bytes (clipped)
     ok: true
-    url: https://inoti.fyi/
-  - detail: 107332 bytes
+    url: https://go.dev/blog/simd-experiment
+  - detail: 184010 bytes (clipped)
     ok: true
-    url: https://status.gitlab.com/
-  - detail: 374492 bytes
+    url: https://transluce.org/agent-activity
+  - detail: 17076 bytes
     ok: true
-    url: https://socket.dev/blog/mini-shai-hulud-actions
-  - detail: 53458 bytes (clipped)
+    url: https://www.dawo.community/en/
+  - detail: 152054 bytes
     ok: true
-    url: https://blog.arusekk.pl/posts/srht-account-takeover/
-  - detail: 95645 bytes
+    url: https://successfulsoftware.net/2026/09/24/github-has-not-removed-malicious-imitation-software-after-3-weeks/
+  - detail: 17319 bytes
     ok: true
-    url: https://github.blog/changelog/2026-09-23-local-sandboxing-in-the-github-copilot-app/
-  - detail: 14299 bytes
+    url: https://eprint.iacr.org/2026/2131
+  - detail: 30077 bytes
     ok: true
-    url: https://linebender.org/blog/fearless-simd-1-0/
-  - detail: 19297 bytes
-    ok: true
-    url: https://developer.apple.com/documentation/xcode/updating-your-xcode-project-configuration-file-format
-  - detail: 'failed: fetch failed: https://blog.google/innovation-and-ai/models-and-research/google-research/google-project-suncatcher-facts/:
-      The read operation timed out'
-    ok: false
-    url: https://blog.google/innovation-and-ai/models-and-research/google-research/google-project-suncatcher-facts/
-  - detail: 6406 bytes
-    ok: true
-    url: https://lwn.net/Articles/1096431/
-  - detail: 263607 bytes
-    ok: true
-    url: https://www.docker.com/c/sbx-promo/
-  - detail: 155502 bytes
-    ok: true
-    url: https://arstechnica.com/gadgets/2026/09/owners-mourn-spoiled-food-after-firmware-update-bricks-samsung-smart-fridges/
-  - detail: 133053 bytes (clipped)
-    ok: true
-    url: https://robert.ocallahan.org/2026/09/goodbye-google.html
-  - detail: 74571 bytes (clipped)
-    ok: true
-    url: https://lwn.net/Articles/1091015/
-  - detail: 42801 bytes
-    ok: true
-    url: https://arxiv.org/abs/2609.25682
-  - detail: 379063 bytes
-    ok: true
-    url: https://blog.google/innovation-and-ai/models-and-research/google-research/google-project-suncatcher-facts/
-  - detail: 'failed: fetch failed: https://www.bloomberg.com/news/articles/2026-09-24/anthropic-strikes-12-billion-deal-with-akamai-for-ai-computing:
-      HTTP Error 403: Forbidden'
-    ok: false
-    url: https://www.bloomberg.com/news/articles/2026-09-24/anthropic-strikes-12-billion-deal-with-akamai-for-ai-computing
-  - detail: 42801 bytes
-    ok: true
-    url: https://arxiv.org/abs/2609.25682
-  - detail: 374492 bytes
-    ok: true
-    url: https://socket.dev/blog/mini-shai-hulud-actions
-  - detail: 291675 bytes (clipped)
-    ok: true
-    url: https://blog.cloudflare.com/containers-cross-tenant-vulnerability/
-  - detail: 95645 bytes
-    ok: true
-    url: https://github.blog/changelog/2026-09-23-local-sandboxing-in-the-github-copilot-app/
-  - detail: 259196 bytes
-    ok: true
-    url: https://cloud.google.com/blog/products/ai-machine-learning/gemini-3-8-live-with-live-avatar-is-now-generally-available
-  - detail: 379063 bytes
-    ok: true
-    url: https://blog.google/innovation-and-ai/models-and-research/google-research/google-project-suncatcher-facts/
-  - detail: 49852 bytes
-    ok: true
-    url: https://inoti.fyi/
-  - detail: 53458 bytes (clipped)
-    ok: true
-    url: https://blog.arusekk.pl/posts/srht-account-takeover/
-  - detail: 14299 bytes
-    ok: true
-    url: https://linebender.org/blog/fearless-simd-1-0/
+    url: https://glyph.sh/posts/macos-cdc-acm-tcc-bypass/
   - detail: 42823 bytes
     ok: true
     url: https://arxiv.org/abs/2609.25682
-  - detail: 259201 bytes
-    ok: true
-    url: https://cloud.google.com/blog/products/ai-machine-learning/gemini-3-8-live-with-live-avatar-is-now-generally-available
-  - detail: 291675 bytes (clipped)
-    ok: true
-    url: https://blog.cloudflare.com/containers-cross-tenant-vulnerability/
   - detail: 374492 bytes
     ok: true
     url: https://socket.dev/blog/mini-shai-hulud-actions
-  - detail: 49852 bytes
-    ok: true
-    url: https://inoti.fyi/
-  - detail: 167750 bytes
-    ok: true
-    url: https://www.theregister.com/security/2026/09/24/decades-old-file-security-flaws-found-in-android-linux-macos-and-windows/5298672
-  - detail: 6271 bytes
-    ok: true
-    url: https://lwn.net/Articles/1096431/
-  - detail: 379063 bytes
-    ok: true
-    url: https://blog.google/innovation-and-ai/models-and-research/google-research/google-project-suncatcher-facts/
   - detail: 53458 bytes (clipped)
     ok: true
     url: https://blog.arusekk.pl/posts/srht-account-takeover/
+  - detail: 291675 bytes (clipped)
+    ok: true
+    url: https://blog.cloudflare.com/containers-cross-tenant-vulnerability/
+  - detail: 259195 bytes
+    ok: true
+    url: https://cloud.google.com/blog/products/ai-machine-learning/gemini-3-8-live-with-live-avatar-is-now-generally-available
+  - detail: 14299 bytes
+    ok: true
+    url: https://linebender.org/blog/fearless-simd-1-0/
+  - detail: 30077 bytes
+    ok: true
+    url: https://glyph.sh/posts/macos-cdc-acm-tcc-bypass/
+  - detail: 84340 bytes (clipped)
+    ok: true
+    url: https://go.dev/blog/simd-experiment
+  - detail: 50082 bytes
+    ok: true
+    url: https://inoti.fyi/
+  - detail: 167369 bytes
+    ok: true
+    url: https://www.theregister.com/security/2026/09/24/decades-old-file-security-flaws-found-in-android-linux-macos-and-windows/5298672
+  - detail: 379055 bytes
+    ok: true
+    url: https://blog.google/innovation-and-ai/models-and-research/google-research/google-project-suncatcher-facts/
   - detail: 95645 bytes
     ok: true
     url: https://github.blog/changelog/2026-09-23-local-sandboxing-in-the-github-copilot-app/
-  generated_at: '2026-09-25T06:44:50+00:00'
+  generated_at: '2026-09-25T15:12:06+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -240,16 +255,16 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-09-25T06:16:34+00:00'
+    fetched_at: '2026-09-25T14:46:32+00:00'
     pooled:
       added:
-        ask_hn: 1
-        comments: 6
-        front_page: 1
-        queries: 6
-        show_hn: 1
-        top_day: 2
-      snapshot_fetched_at: '2026-09-25T04:58:13+00:00'
+        ask_hn: 8
+        comments: 30
+        front_page: 20
+        queries: 77
+        show_hn: 16
+        top_day: 27
+      snapshot_fetched_at: '2026-09-25T11:51:21+00:00'
     queries_backend: algolia
     seen_ids:
     - 49787759
@@ -299,6 +314,7 @@ mechanical:
     - 49830456
     - 49830606
     - 49830866
+    - 49830869
     - 49831000
     - 49831088
     - 49831098
@@ -327,7 +343,9 @@ mechanical:
     - 49833212
     - 49833541
     - 49833611
+    - 49833760
     - 49833867
+    - 49833958
     - 49834098
     - 49834132
     - 49834354
@@ -339,6 +357,7 @@ mechanical:
     - 49834990
     - 49834998
     - 49835019
+    - 49835193
     - 49835349
     - 49835496
     - 49835507
@@ -346,6 +365,7 @@ mechanical:
     - 49835532
     - 49835704
     - 49835866
+    - 49835913
     - 49835996
     - 49836075
     - 49836294
@@ -362,6 +382,7 @@ mechanical:
     - 49836740
     - 49836856
     - 49837006
+    - 49837132
     - 49837325
     - 49837473
     - 49837715
@@ -373,11 +394,53 @@ mechanical:
     - 49839082
     - 49839159
     - 49839405
+    - 49839664
     - 49839672
     - 49839721
     - 49839866
+    - 49840300
     - 49840314
+    - 49840469
+    - 49840526
     - 49840597
+    - 49840727
+    - 49840850
+    - 49841115
+    - 49841285
+    - 49841309
+    - 49841423
+    - 49841469
+    - 49841563
+    - 49841605
+    - 49841893
+    - 49841912
+    - 49842084
+    - 49842127
+    - 49842270
+    - 49842332
+    - 49842482
+    - 49842483
+    - 49842487
+    - 49842596
+    - 49842645
+    - 49842707
+    - 49842794
+    - 49842877
+    - 49843174
+    - 49843269
+    - 49843321
+    - 49843423
+    - 49843488
+    - 49843547
+    - 49843550
+    - 49843746
+    - 49843899
+    - 49843909
+    - 49844663
+    - 49844736
+    - 49844786
+    - 49844960
+    - 49844978
     source: cache
   query_yield:
     0day:
@@ -387,13 +450,16 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49826565
       - 49827794
       - 49829650
       - 49831269
       - 49831690
+      - 49832491
+      - 49832564
+      - 49842707
       published: 0
       published_ids: []
       raw: 5
@@ -417,13 +483,16 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49828026
       - 49829312
       - 49829670
+      - 49835056
       - 49835073
       - 49836364
+      - 49838156
+      - 49842788
       published: 0
       published_ids: []
       raw: 5
@@ -447,77 +516,92 @@ mechanical:
       published_ids: []
       raw: 5
     CUDA:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49842596
       published: 0
       published_ids: []
       raw: 5
     CVE:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49829487
       - 49830082
       - 49832673
       - 49833501
       - 49840266
+      - 49841115
       published: 0
       published_ids: []
       raw: 5
     Claude:
-      matched: 5
+      matched: 9
       matched_ids:
       - 49828187
       - 49829771
       - 49836164
       - 49837478
       - 49837537
+      - 49840365
+      - 49841720
+      - 49842744
+      - 49845110
       published: 0
       published_ids: []
       raw: 5
     Claude Code:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49830471
       - 49831324
       - 49837478
       - 49837537
       - 49839560
+      - 49840365
+      - 49841340
       published: 0
       published_ids: []
       raw: 5
     Cloudflare:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49830096
       - 49831647
-      published: 1
+      - 49842441
+      published: 2
       published_ids:
       - 49831647
-      raw: 2
+      - 49842441
+      raw: 3
     Copilot:
-      matched: 3
+      matched: 7
       matched_ids:
       - 49831744
       - 49833223
       - 49833566
+      - 49841103
+      - 49844143
+      - 49844564
+      - 49844896
       published: 1
       published_ids:
       - 49833223
       raw: 5
     Cursor:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49827661
+      - 49845110
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     DeepSeek:
       matched: 1
       matched_ids:
       - 49831159
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     GCP:
       matched: 1
       matched_ids:
@@ -526,30 +610,33 @@ mechanical:
       published_ids: []
       raw: 5
     GPT:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49826884
       - 49827255
       - 49835237
+      - 49843192
       published: 0
       published_ids: []
       raw: 5
     GPU:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49826989
       - 49835144
       - 49837324
+      - 49843615
       published: 0
       published_ids: []
       raw: 5
     Gemini:
-      matched: 4
+      matched: 5
       matched_ids:
       - 49829387
       - 49833536
       - 49833603
       - 49840035
+      - 49842997
       published: 3
       published_ids:
       - 49833536
@@ -557,30 +644,35 @@ mechanical:
       - 49840035
       raw: 5
     GitHub:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49832406
       - 49833223
       - 49833867
       - 49837177
       - 49837643
+      - 49841103
+      - 49842514
+      - 49843496
       published: 2
       published_ids:
       - 49833223
       - 49837177
       raw: 5
     Go:
-      matched: 0
-      matched_ids: []
-      published: 0
-      published_ids: []
+      matched: 1
+      matched_ids:
+      - 49843269
+      published: 1
+      published_ids:
+      - 49843269
       raw: 5
     Grafana:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     Homebrew:
       matched: 0
       matched_ids: []
@@ -594,8 +686,9 @@ mechanical:
       published_ids: []
       raw: 5
     IPO:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49841810
       published: 0
       published_ids: []
       raw: 5
@@ -636,54 +729,66 @@ mechanical:
       - 49839038
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     LLM:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49830570
       - 49830866
+      - 49838745
       published: 0
       published_ids: []
       raw: 5
     LWN:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49826809
       - 49827706
       - 49839129
       - 49839192
       - 49839946
+      - 49843231
       published: 1
       published_ids:
       - 49839946
       raw: 5
     Linux:
-      matched: 5
+      matched: 9
       matched_ids:
       - 49827344
       - 49828969
       - 49835358
       - 49835649
       - 49836525
-      published: 2
+      - 49839946
+      - 49841840
+      - 49844940
+      - 49845081
+      published: 3
       published_ids:
       - 49835358
       - 49835649
+      - 49839946
       raw: 5
     Llama:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49845314
       published: 0
       published_ids: []
       raw: 4
     MCP:
-      matched: 5
+      matched: 9
       matched_ids:
       - 49827250
       - 49827764
       - 49827889
       - 49828275
+      - 49829742
+      - 49830373
+      - 49833750
       - 49836880
+      - 49844569
       published: 0
       published_ids: []
       raw: 5
@@ -708,20 +813,24 @@ mechanical:
       published_ids: []
       raw: 0
     Nvidia:
-      matched: 1
+      matched: 2
       matched_ids:
       - 49838229
+      - 49841032
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     OpenAI:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49828422
       - 49830133
       - 49835056
       - 49838642
       - 49839469
+      - 49841456
+      - 49841605
+      - 49843979
       published: 0
       published_ids: []
       raw: 5
@@ -738,20 +847,21 @@ mechanical:
       published_ids: []
       raw: 0
     Postgres:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49830580
       - 49835096
       - 49840594
+      - 49842328
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     Prometheus:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     PyPI:
       matched: 1
       matched_ids:
@@ -760,7 +870,7 @@ mechanical:
       published_ids: []
       raw: 4
     Python:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49826646
       - 49832367
@@ -768,6 +878,7 @@ mechanical:
       - 49837891
       - 49837974
       - 49839129
+      - 49843825
       published: 0
       published_ids: []
       raw: 5
@@ -776,7 +887,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     Raft:
       matched: 0
       matched_ids: []
@@ -790,7 +901,7 @@ mechanical:
       published_ids: []
       raw: 5
     Rust:
-      matched: 6
+      matched: 8
       matched_ids:
       - 49826801
       - 49827186
@@ -798,6 +909,8 @@ mechanical:
       - 49836087
       - 49836245
       - 49837886
+      - 49840686
+      - 49842332
       published: 1
       published_ids:
       - 49826801
@@ -807,7 +920,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     SQLite:
       matched: 4
       matched_ids:
@@ -817,7 +930,7 @@ mechanical:
       - 49832367
       published: 0
       published_ids: []
-      raw: 5
+      raw: 3
     Spring Boot:
       matched: 0
       matched_ids: []
@@ -837,13 +950,14 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     TypeScript:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49845002
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     Vim:
       matched: 0
       matched_ids: []
@@ -877,7 +991,7 @@ mechanical:
       - 49830374
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     acquisition:
       matched: 0
       matched_ids: []
@@ -885,25 +999,28 @@ mechanical:
       published_ids: []
       raw: 0
     agentic:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49831231
       - 49834964
       - 49835646
       - 49837567
+      - 49838172
       - 49838792
+      - 49842596
       published: 0
       published_ids: []
       raw: 5
     arXiv:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49826801
       - 49835216
       - 49839376
       - 49839418
       - 49839875
-      - 49840713
+      - 49841300
+      - 49842617
       published: 1
       published_ids:
       - 49826801
@@ -915,10 +1032,11 @@ mechanical:
       published_ids: []
       raw: 0
     breach:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49826971
       - 49828842
+      - 49843979
       published: 0
       published_ids: []
       raw: 5
@@ -934,7 +1052,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     drug discovery:
       matched: 0
       matched_ids: []
@@ -978,30 +1096,37 @@ mechanical:
       - 49836245
       published: 0
       published_ids: []
-      raw: 3
+      raw: 4
     kernel:
-      matched: 3
+      matched: 6
       matched_ids:
       - 49830082
       - 49830567
       - 49833501
+      - 49842596
+      - 49843231
+      - 49844056
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     local-first:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49844383
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     macOS:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49827781
       - 49828120
+      - 49833525
       - 49835358
       - 49835649
       - 49836525
+      - 49842482
+      - 49843735
       published: 2
       published_ids:
       - 49835358
@@ -1016,12 +1141,14 @@ mechanical:
       published_ids: []
       raw: 5
     outage:
-      matched: 1
+      matched: 3
       matched_ids:
       - 49838034
+      - 49843085
+      - 49844310
       published: 0
       published_ids: []
-      raw: 2
+      raw: 4
   runs:
   - at: '2026-09-25T06:45:07+00:00'
     mode: daily
@@ -1153,6 +1280,115 @@ mechanical:
       name: run_log
       status: ok
     - detail: 36 fetch(es), 2 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s), 0 improvement PR(s)
+      name: manifest
+      status: ok
+  - at: '2026-09-25T15:12:22+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 0
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-09-25.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-09-24
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"Forging 1024-bit RSA signatures without factoring the key","section":"Top
+        stories","category":"Security","status":"confirmed","primary_url":"https://eprint.iacr.org/2026/2131","sources":["https://eprint.iacr.org/2026/2131","https://news.ycombinator.com/item?id=49831098"],"w
+      name: select
+      status: ok
+      tokens:
+        in: 38
+        out: 26539
+      tools:
+        Bash: 1
+        Glob: 3
+        Grep: 10
+        Read: 5
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 7
+        mcp__digest__guidance: 2
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 2
+    - detail: |-
+        The write step is complete. `data/digests/2026-09-25.md` passes the gate at exit code 0.
+
+        **What changed**
+
+        Two stories added:
+        - **Go 1.27 adds a portable SIMD package with emulation fallback** into `Languages and runtimes`, alongside the existing Fearless SIMD 1.0 block. The two portable-SIMD relea
+      name: write
+      status: ok
+      tokens:
+        in: 42
+        out: 25385
+      tools:
+        Edit: 13
+        Read: 5
+        ToolSearch: 1
+        mcp__digest__run_gate: 2
+    - detail: >-
+        {"findings":[{"severity":"minor","where":"Sources checked, GitHub watchlist line","detail":"Wrong
+        number against the run's own record. The note says simonw starred docker/sandbox-kit-spec \"at
+        25 stars\", but .cache/stars/2026-09-25.json records \"stars\": 46 for that event. Correct to
+        46."},{"sever
+      failed_tools:
+        Bash: 1
+      name: review
+      status: ok
+      tokens:
+        in: 40
+        out: 24079
+      tools:
+        Bash: 2
+        Glob: 1
+        Grep: 9
+        Read: 6
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 12
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 9 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 1 cause(s) corrected in 2026-09-24
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-09-25.yaml
+      name: run_log
+      status: ok
+    - detail: 19 fetch(es), 0 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
