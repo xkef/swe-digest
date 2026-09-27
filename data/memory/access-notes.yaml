@@ -19,13 +19,6 @@
     horizon must be re-verified before it is trusted, then re-dated.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0003
-  kind: guidance
-  last_seen: ''
-  note: The 403 responses first recorded on 2026-06-11 are specific to the remote execution environment
-    (cloud datacenter IP ranges).
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
   id: an-0010
   kind: fact
   last_seen: '2026-07-26'
@@ -37,50 +30,6 @@
     of slicing from the start.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0016
-  kind: fact
-  last_seen: '2026-07-25'
-  note: >-
-    `www.bleepingcomputer.com` - returns 403 to the harness WebFetch tool, but 2026-07-25 returned 200
-    with the full article body to a plain urllib request with a browser User-Agent from the run environment.
-    Prefer the direct fetch over WebSearch snippets; still confirm CVE details from vendor advisories.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0018
-  kind: fact
-  last_seen: '2026-07-25'
-  note: >-
-    `radicle.network` and `app.radicle.xyz` - the Radicle Explorer is a single-page app, so a repository
-    URL returns only the shell HTML and no repository content to any automated fetch. The seed node's
-    HTTP API at `https://{node}/api/v1/repos/{rid}` is the readable route, but it answers only for repositories
-    that node actually hosts (404 otherwise). A Radicle repository claim cannot be verified from the Explorer
-    URL alone; resolve the node named in the Explorer path and query that node's API instead. Confirmed
-    2026-07-25: `https://rosa.radicle.network/api/v1/repos/{rid}` returned 200 with name, description,
-    delegates and their aliases, and the seeding-node count, after `seed.radicle.xyz` had 404'd for the
-    same rid. Delegate aliases are self-declared, so they do not by themselves establish who publishes
-    a repository.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0019
-  kind: fact
-  last_seen: '2026-07-26'
-  note: >-
-    `lore.kernel.org` - kernel mailing-list archives sit behind an Anubis proof-of-work gate; any automated
-    fetch gets the challenge page and no message text. A kernel-list thread therefore cannot be cited
-    directly from this environment; take the quoted content from a secondary write-up (Phoronix, LWN)
-    and say so. Verified 2026-07-26.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0022
-  kind: fact
-  last_seen: '2026-07-26'
-  note: >-
-    `www.phoronix.com` - the `rss.php` feed and article pages both return 200 to a plain urllib request,
-    but a Linux/X11 browser User-Agent worked on 2026-07-26 where a macOS one had returned an empty body,
-    and the article text is not inside any single container element: strip tags across the whole page
-    and search for the headline string.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
   id: an-0023
   kind: fact
   last_seen: '2026-07-26'
@@ -90,65 +39,12 @@
     link to publish; do not try to re-fetch it for verification.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0031
-  kind: fact
-  last_seen: '2026-06-29'
-  note: >-
-    `www.cisa.gov/news-events/alerts/` - CISA alert pages return 403 from datacenter. Fallback: use WebSearch
-    with `site:cisa.gov` filter, or fetch the CISA KEV JSON feed at `https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json`
-    which may be CDN-fronted and accessible. GitHub issue #8 tracks this.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0032
-  kind: fact
-  last_seen: '2026-06-29'
-  note: >-
-    `forums.developer.nvidia.com` - NVIDIA developer forum returns 403 from datacenter. Use `developer.nvidia.com/blog`
-    and `nvidianews.nvidia.com` for NVIDIA release announcements instead. GitHub issue #9 tracks this.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
   id: an-0035
   kind: fact
   last_seen: '2026-06-29'
   note: >-
     `status.openai.com/history` - OpenAI status history accessible from the run environment; reliable
     for OpenAI incident timelines (verified 2026-06-18).
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0038
-  kind: fact
-  last_seen: '2026-07-25'
-  note: >-
-    `openjdk.org/jeps/` - JEP pages return 403 to the harness WebFetch tool but 200 to a plain urllib
-    request with a browser User-Agent (verified 2026-07-25 for JEP 541).
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0040
-  kind: fact
-  last_seen: '2026-07-25'
-  note: >-
-    `www.youtube.com/watch` - WebFetch returns only the page footer and legal navigation, never the title,
-    channel, date, view count, or description, so it cannot verify a video. Use the `make yt` snapshot
-    for watchlist channels, and for anything else use the HN or Reddit submission plus the event or project
-    page. Verified 2026-07-25.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0041
-  kind: fact
-  last_seen: '2026-07-25'
-  note: >-
-    `careersatdoordash.com/blog/` and `ndctoronto.com/agenda/` - both return HTTP 403 to WebFetch from
-    the run environment. A DoorDash engineering post and an NDC Toronto session page could not be verified
-    on 2026-07-25 and were not published.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0042
-  kind: fact
-  last_seen: '2026-07-25'
-  note: >-
-    `issuetracker.google.com/issues/{id}` - Google issue tracker pages return 200 to a plain urllib request
-    with a browser User-Agent, but the body is JS-rendered so the thread text is not extractable; treat
-    it as a link that resolves and take the thread content from a secondary write-up. Verified 2026-07-25.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
   id: an-0044
@@ -179,19 +75,6 @@
     log to keep the store under its byte bound.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0046
-  kind: fact
-  last_seen: '2026-08-09'
-  note: >-
-    Hosts returning 403 to automated fetch from the datacenter IP range, all last confirmed 2026-06-29.
-    Use WebSearch snippets and confirm from a primary advisory: `www.zerodayinitiative.com` (confirm from
-    MSRC), `blog.talosintelligence.com`, `www.cloudflarestatus.com`, `status.cloud.google.com` (WebSearch
-    with a site:cloud.google.com filter), `msrc.microsoft.com` (support.microsoft.com KB pages are accessible
-    instead), `developer.chrome.com`, `sec.cloudapps.cisco.com`. For the two Statuspage-backed hosts prefer
-    the `/api/v2/incidents.json` endpoint recorded in source-reliability, which was verified working for
-    Cloudflare on 2026-07-25. Merged from seven bullets to keep the store under its entry bound.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
   id: an-0047
   kind: fact
   last_seen: '2026-08-23'
@@ -203,16 +86,6 @@
     `blog.rust-lang.org` is 403/404 early after a release, so prefer the rust-lang/rust GitHub release
     object, then releases.rs and WebSearch. `blog.checkpoint.com` 403, use support.checkpoint.com sk advisory
     pages as primary. Merged from five bullets to keep the store under its entry bound.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0048
-  kind: fact
-  last_seen: '2026-08-23'
-  note: >-
-    `www.theguardian.com` - refuses the harness WebFetch tool with an unable-to-fetch error, but returns
-    200 to a plain urllib request with a browser User-Agent from the same run environment. Verified 2026-07-25.
-    Split out of a combined Guardian/Phoronix bullet; the Phoronix route is recorded separately and in
-    more detail.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
   id: an-0049
@@ -246,3 +119,54 @@
     (2026-06-11). Merged from seven bullets plus the access half of a source-reliability bullet to keep
     the store under its entry bound.
   subject: News and security outlets that refuse automated fetch
+- group: Datacenter-IP 403 blocks and fallbacks
+  id: an-0011
+  kind: fact
+  last_seen: '2026-09-27'
+  note: >-
+    These refuse the harness WebFetch tool but return 200 to a plain urllib request with a browser User-Agent
+    from the same run environment, so prefer the direct fetch over WebSearch snippets. `www.theguardian.com`
+    (2026-07-25). `www.bleepingcomputer.com`, which returns the full article body this way; still confirm
+    CVE ids and patched versions from the vendor advisory (2026-07-25). `openjdk.org/jeps/` JEP pages
+    (2026-07-25). `www.phoronix.com`, both the `rss.php` feed and article pages, with two caveats: a Linux/X11
+    User-Agent worked where a macOS one returned an empty body, and the article text sits inside no single
+    container element, so strip tags across the whole page and search for the headline string (2026-07-26).
+    `azure.status.microsoft/en-us/status/history/` uses the same route and is recorded in source-reliability
+    with its Post Incident Review detail. Merged from four bullets to keep the store under its entry bound.
+  subject: Hosts that refuse WebFetch but answer a plain urllib request
+- group: Datacenter-IP 403 blocks and fallbacks
+  id: an-0012
+  kind: fact
+  last_seen: '2026-09-27'
+  note: >-
+    Each returns a response but no readable content, so cite them only through a secondary source or a
+    different route. `lore.kernel.org` sits behind an Anubis proof-of-work gate and returns the challenge
+    page, so a kernel-list thread cannot be cited directly from this environment; take the quoted content
+    from Phoronix or LWN and say so (2026-07-26). `issuetracker.google.com/issues/{id}` returns 200 to
+    plain urllib with a browser User-Agent but the body is JS-rendered, so treat it as a link that resolves
+    and take the thread content from a secondary write-up (2026-07-25). `www.youtube.com/watch` returns
+    only the page footer and legal navigation to WebFetch, never title, channel, date, view count, or
+    description, so use the `make yt` snapshot for watchlist channels and otherwise the HN or Reddit submission
+    plus the project or event page (2026-07-25). `radicle.network` and `app.radicle.xyz` are a single-page
+    app returning only shell HTML; the readable route is the seed node named in the Explorer path, at
+    `https://{node}/api/v1/repos/{rid}`, which answers only for repositories that node actually hosts,
+    and delegate aliases there are self-declared so they do not establish who publishes a repository (2026-07-25).
+    Merged from four bullets to keep the store under its entry bound.
+  subject: Pages that resolve but yield no usable text to automated fetch
+- group: Datacenter-IP 403 blocks and fallbacks
+  id: an-0013
+  kind: fact
+  last_seen: '2026-09-27'
+  note: >-
+    Use WebSearch snippets and confirm from a primary advisory. Confirmed 2026-06-29: `www.zerodayinitiative.com`
+    (confirm from MSRC), `blog.talosintelligence.com`, `www.cloudflarestatus.com`, `status.cloud.google.com`
+    (WebSearch with a site:cloud.google.com filter), `msrc.microsoft.com` (support.microsoft.com KB pages
+    are accessible instead), `developer.chrome.com`, `sec.cloudapps.cisco.com`, `www.cisa.gov/news-events/alerts/`
+    (fall back to the KEV JSON at cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json,
+    which may be CDN-fronted; issue #8), `forums.developer.nvidia.com` (use developer.nvidia.com/blog
+    and nvidianews.nvidia.com instead; issue #9). Confirmed 2026-07-25: `careersatdoordash.com/blog/`
+    and `ndctoronto.com/agenda/`, where a DoorDash engineering post and an NDC Toronto session page could
+    not be verified and were not published. For the two Statuspage-backed hosts prefer the `/api/v2/incidents.json`
+    endpoint recorded in source-reliability, verified working for Cloudflare on 2026-07-25. Merged from
+    ten bullets to keep the store under its entry bound.
+  subject: Hosts returning 403 to automated fetch, with fallbacks
