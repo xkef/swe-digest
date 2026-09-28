@@ -18,7 +18,7 @@ digest pipeline in GitHub Actions. Reports of interest:
   metadata) to escape the content gates and inject markup, scripts, or secrets
   into the published site.
 - Ways for a prompt-injected agent run to bypass the publish gate in
-  `src/swe_digest/gate/` (path allowlist, commit-subject checks, issue
+  `src/swe_digest/gate/` (path allowlist, regular-file checks, issue
   authorship re-verification).
 - Workflow or token-permission weaknesses in `.github/workflows/`.
 
@@ -64,34 +64,38 @@ repository, or corrupt the routine so future runs stay compromised.
 Unattended runs are split into two jobs in `digest.yml`, which covers both the
 daily digest and the improvement review. The agent job runs with a read-only
 token (`contents: read`, `issues: read`, no persisted git credentials): it can
-fetch, write files, and commit locally, but cannot push or call a write API.
-Its entire output is an artifact: local commits exported as `.run/run.patch`,
-plus requested side effects in `.run/manifest.json`.
+fetch and write files locally, but cannot push or call a write API. Its entire
+output is an artifact: the files it changed under `.run/files/`, at their
+repository paths, plus requested side effects in `.run/manifest.json`.
 
 #### 2. A deterministic validator holds the write token
 
 The publish job applies the artifact only after `swe_digest.gate.publish`
 validates it, with no LLM in the loop:
 
-- At most two commits, with subjects matched against exact regexes.
-- Every added or modified path in every commit is matched against the publish
-  allowlist (`data/digests/`, `data/runs/`, and the four writable
-  `data/memory/` files). The check runs per commit, so a file added in one
-  commit and deleted in the next is still caught.
-- File modes are restricted to regular and executable, rejecting symlinks and
-  gitlinks that could smuggle file contents.
+- The run hands over files, never commits, so no history, message, or file
+  mode from the agent job reaches `main`. The publish job builds the one commit
+  and its subject itself.
+- Every file in the artifact is matched against the publish allowlist
+  (`data/digests/`, `data/runs/`, and the four writable `data/memory/` files)
+  before any is copied. A symlink, a symlinked directory, or any other
+  non-regular file stops the publish, so a link cannot smuggle a target's
+  contents.
+- Only `data/digests/`, `data/runs/`, and `data/memory/` are staged, and every
+  staged path is re-checked against the allowlist.
 - `make check` (site build plus the content gate) must pass.
 - Issue closes are re-verified against GitHub API fields (`author.login`,
   state, labels), never against claims in issue text. Close comments are
   bounded and may link only to the site or this repository.
-- Improvement PRs require an `OWNER` approval comment, apply only the diff
-  from the issue body, and may touch only `config/settings.toml`,
-  `config/watchlist.toml`, and `config/profile.md`. The prompts are
+- An improvement proposal becomes a pull request, never a push to `main`,
+  and the owner's merge is the only approval. Its diff may touch only
+  `config/settings.toml`, `config/watchlist.toml`, and `config/profile.md`,
+  and must pass `make check` before the branch is created. The prompts are
   deliberately absent: a run may not propose edits to its own instructions.
   A hunk written without a line range is placed by its context lines in the
   checked-out file (`domain/patch.py`), which reads only those three files.
   Placement adds file lines as context and never changes an added or removed
-  line.
+  line. The pull request body is assembled by code from bounded fields.
 
 GitHub additionally rejects any `GITHUB_TOKEN` push that modifies
 `.github/workflows/`. The validator itself is `src/swe_digest/gate/`, which is
@@ -117,8 +121,8 @@ enforced on the write that would break them rather than detected at publish
 time. The content gate's `gate/_memory.py` re-checks the same properties
 independently, so a file edited by something that bypassed the store still
 fails. Content screening (HTML, secrets, shorteners) applies to memory the
-same as to digests. `config/profile.md` is writable only through the
-owner-approved improvement-PR path.
+same as to digests. `config/profile.md` changes only through an improvement
+pull request the owner merges.
 
 #### 5. Issues are untrusted input
 
@@ -135,10 +139,8 @@ authorship and approval from API fields. Story issues act only when
 `OWNER`-association comment starting with `/approve` (prose like "Approve of
 the idea, but hold off" never fires) whose creation postdates the issue body's
 last edit (GraphQL `lastEditedAt`), so an approved issue cannot be repurposed
-by editing it afterward. Improvement diffs require an `OWNER`-association
-comment matching the leading-`approved` regex (so "not approved" does not
-match). A compromised or bypassed triage workflow can therefore mislabel
-issues but cannot make the gate act on one.
+by editing it afterward. A compromised or bypassed triage workflow can
+therefore mislabel issues but cannot make the gate act on one.
 
 #### 6. Snapshot workflows are minimal and signed
 
@@ -152,18 +154,21 @@ GitHub as `github-actions[bot]` and carry the Verified badge. A commit on
 #### 7. The staged pipeline prevents what the gate detects
 
 The agent runs as bounded steps rather than one open-ended session
-(`swe_digest.stages`). No step is granted `Bash`, `WebFetch`, or `WebSearch`.
-Collection, the backtest, feedback, the run log, formatting, the gate, and the
-commit are Python the model cannot influence. The web is reached only through
-`llm/net.py`, which allows https alone, refuses shorteners and any host
-resolving inside the network boundary, re-applies those rules to every
-redirect hop, and records what was read. A `PreToolUse` hook denies a write
-outside the step's declared files when it is attempted, and
-`permission_mode="dontAsk"` denies rather than prompts.
+(`swe_digest.stages`). No step is granted `Bash`, `WebFetch`, `WebSearch`, or
+any tool that writes a file (`Write`, `Edit`, `MultiEdit`, `NotebookEdit`). A
+stage returns structured data, and `domain/page.py` renders the day's page from
+it: every value is collapsed to one line and every link is escaped, so a value
+cannot open a section or a story of its own. Collection, the backtest,
+feedback, rendering, the run log, the gate, and the export are Python the model
+cannot influence. The web is reached only through `llm/net.py`, which allows
+https alone, refuses shorteners and any host resolving inside the network
+boundary, re-applies those rules to every redirect hop, and records what was
+read. `permission_mode="dontAsk"` denies anything outside a step's grant rather
+than prompting.
 
 This is prevention. `gate/` remains the independent detection layer, and the
 two stay independent. The gate does not import the agent, so a run that
-subverted a hook is still checked by a validator it never loaded.
+subverted the prevention is still checked by a validator it never loaded.
 
 #### 8. Supply chain
 
@@ -179,9 +184,11 @@ job could have poisoned.
 The controls above are executable, not prose.
 `tests/security/test_publish_gate.py`, `tests/gate/test_content.py`, and
 `tests/gate/test_memory.py` replay the attacks (workflow edits, gate-source
-edits, forged subjects, symlinks, add-then-delete smuggling, third-party issue
-closes, off-site comment links, encoded `javascript:` URIs, oversized memory)
-against the real gate code and assert rejection.
+edits, symlinked files and directories, proposals reaching outside `config/`,
+third-party issue closes, off-site comment links, encoded `javascript:` URIs,
+oversized memory) against the real gate code and assert rejection.
+`tests/domain/test_page.py` holds the renderer to the same gate and checks that
+a value cannot open a section or a story of its own.
 `tests/security/test_hostile.py` does the same for section 7 with fakes built
 to misbehave: a redirect to the metadata service, an issue whose body claims
 an authority its API fields deny, a record supplying its own dates, and a

@@ -160,8 +160,8 @@ def feedback(run: Run) -> str:
 def record_judgment(run: Run) -> str:
     """Puts what the run decided into today's log, beside what it measured.
 
-    The write guard grants the write step the digest and nothing else, so a
-    run's judgment travels as fields on the selection and code merges it here.
+    No stage writes a file, so a run's judgment travels as fields on the
+    selection and code merges it here.
     The log keeps its one valid shape, and the weekly review still hears about a
     degraded source or an owner request in the run's own words.
 

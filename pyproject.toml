@@ -57,15 +57,12 @@ target-version = "py314"
 src = ["src", "tests"]
 
 [tool.ruff.lint.per-file-ignores]
-# The digest story template must stay a single literal line.
-"src/swe_digest/publish/skeleton.py" = ["line-too-long"]
-# The SDK's hook and tool protocols take async callbacks. These two await
-# nothing, and still cannot be plain functions.
-"src/swe_digest/llm/hooks.py" = ["unused-async"]
+# The SDK's tool protocol takes async callbacks. Some await nothing, and still
+# cannot be plain functions.
 "src/swe_digest/llm/tools.py" = ["unused-async"]
 # Tests reach for private helpers on purpose: several of them exist to be
 # tested directly rather than through the one public entry point. RUF029 for
-# the same reason as the two modules above: a stand-in for an async callback
+# the same reason as the module above: a stand-in for an async callback
 # has to match its signature.
 "tests/**" = ["private-member-access", "import-private-name", "unused-async"]
 
@@ -162,9 +159,9 @@ forbidden_modules = [
   "swe_digest.publish",
 ]
 
-# And the other direction: prevention lives in llm.hooks, detection lives in
-# gate.publish, and both read the allowlist from paths. A run that subverted the
-# guard still meets a validator that never loaded it.
+# And the other direction: prevention lives in llm.specs, detection lives in
+# gate.publish. A run that subverted the prevention still meets a validator
+# that never loaded it.
 [[tool.importlinter.contracts]]
 name = "Prevention does not import detection"
 type = "forbidden"

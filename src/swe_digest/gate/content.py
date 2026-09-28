@@ -509,9 +509,8 @@ def _hn_ids_logged(root: Path, day: str) -> set[int]:
     ``mechanical.digest.hn_ids``, which is read back off the page and would let
     a story vouch for its own link.
 
-    No model stage may write a run log. The write guard grants the digest and
-    nothing else, so both keys are the fetcher's output, exactly as a snapshot
-    is.
+    No model stage writes a file, so both keys are the fetcher's output,
+    exactly as a snapshot is.
     """
     path = paths.RUN_LOG.path(root, day=day)
     if not path.exists():

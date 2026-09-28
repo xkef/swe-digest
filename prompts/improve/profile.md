@@ -2,8 +2,8 @@
 
 Propose changes to the reading profile, which states what the digest is
 interested in. **You write nothing.** This is the highest-trust surface in the
-repository, so the output is a proposal only, and only an owner-approved comment
-turns it into a pull request.
+repository, so the output is a proposal only. The publish job opens it as a pull
+request, and only the owner's merge applies it.
 
 Two kinds of evidence justify a proposal:
 

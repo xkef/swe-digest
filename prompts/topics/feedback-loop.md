@@ -32,8 +32,8 @@ Two steps own the mechanical parts, and you judge only the exceptions.
 - `mechanical.backtest`: written by the next day's first `backtest`.
 
 The `judgment` subtree is what a run decided rather than what it measured. No
-step writes a file, so nothing here is filled with an editor. A code step merges each key from a field of the select
-step's structured output:
+step writes a file, so nothing here is filled with an editor. A code step merges
+each key from a field of the select step's structured output:
 
 - `judgment.notes`: degraded sources, unusual calls, anything the weekly routine
   should see. From `notes`. Later runs of the same day append rather than
@@ -103,7 +103,7 @@ lists are never stored or proposed. Proposal discipline:
 
 - Evidence comes before proposals. A watchlist change needs repeated misses or
   zero yield across clean days, not one anecdote.
-- One issue per concern. Small diffs. No bundled rewrites.
+- One proposal per concern. Small diffs. No bundled rewrites.
 - Interest-drift and format proposals cite `feedback` issues by number.
 - A personalization proposal needs a technology, topic, or org recurring across
   the owner's own repos, stars, and follows in aggregate, not a single star or

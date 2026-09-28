@@ -1,9 +1,10 @@
 # Step: improve / watchlist
 
-Propose changes to what the digest watches. **You write nothing and you commit
-nothing.** Your output is a list of proposals. The pipeline turns each into an
-`improvement` issue, and only an owner-approved comment turns one into a pull
-request.
+Propose changes to what the digest watches. **You write nothing.** Your output
+is a list of proposals. The publish job opens each as a pull request, and only
+the owner's merge applies one. A proposal whose change is already open as a pull
+request is skipped, so re-proposing an open change costs nothing and adds
+nothing.
 
 The weekly marker is already aggregated. Read `data/runs/weekly/` for the newest
 marker and work from its `mechanical` block, never from the raw run logs. The
@@ -42,6 +43,6 @@ Each proposal is one concrete change with the fields the schema requires:
 - At most one exploratory query per window, from `recurring_candidates`, with a
   removal date four weeks out if it yields nothing.
 - A prediction that came due and went unmet is a rollback proposal, using the
-  rollback line the original issue recorded.
+  rollback line the original pull request recorded.
 - Owner feedback is binding. Every feedback kind in the window maps to either a
   proposal or an explicit rejection with a reason.

@@ -13,9 +13,11 @@ Three times a day, one ordered queue of steps
 
 1. Collect. Hacker News, Reddit, release feeds, papers, books, videos, and a
    watchlist. Plain Python. The run commits the responses as snapshots.
-2. Select, write, review. The only model calls. Each is one step with its own
-   prompt, tool grant, turn limit, and write allowlist.
-3. Gate, manifest, commit. Content and size checks, then a manifest listing the
+2. Select, write, review, and one repair. The only model calls. Each is one
+   step with its own prompt, tool grant, and turn limit, and each returns data.
+   Code renders the page from it, and a story the last review still objects to
+   is withheld.
+3. Gate, manifest, export. Content and size checks, then a manifest listing the
    side effects the run asks for.
 
 The model gets no shell and no unmediated network. A weekly run proposes config
@@ -23,9 +25,10 @@ changes as pull requests and publishes nothing.
 
 ## Publishing
 
-The agent job holds a read-only token and commits locally. A second job holds
-the write token, runs the gate code, and applies the manifest only if the checks
-pass. A page fetched in step 1 cannot widen what the run is allowed to write.
+The agent job holds a read-only token and hands over the files it changed. A
+second job holds the write token, runs the gate code, commits the files, and
+applies the manifest only if the checks pass. A page fetched in step 1 cannot
+widen what the run is allowed to write.
 
 ## Layout
 

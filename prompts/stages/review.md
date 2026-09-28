@@ -52,6 +52,6 @@ Before publishing, verify:
 Verify a claim you doubt against its source with `fetch_url`. That is the one
 judgment the gate cannot make for you.
 
-The backtest, the inboxes, the run log, the formatting, and the commit are the
+The backtest, the inboxes, the run log, the rendering, and the hand-off are the
 pipeline's job and run outside this step. Report what is wrong with the digest
 itself, and the pipeline does the rest.

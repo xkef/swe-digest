@@ -50,12 +50,11 @@ nothing installed.
 
 `swe-digest agent run --dry-run` prints the resolved configuration of a run
 without opening a session: every step in order, and for each model stage its
-prompt, turn bound, tool grant, and write allowlist. It is the fastest way to
-see what a change did.
+prompt, turn bound, output schema, and tool grant. It is the fastest way to see
+what a change did.
 
 `swe-digest runs show DATE` prints what a run actually did, from the record it
-committed: every step with its status, tokens, and tool calls, plus any write
-the guard refused.
+committed: every step with its status, tokens, and tool calls.
 
 ## The layers
 
@@ -69,7 +68,7 @@ cli → stages → analysis → (gate | llm | publish)
 
 | Package | What it owns |
 |---|---|
-| `domain/` | the vocabulary and the pure transforms over it, with no filesystem, network, or subprocess access |
+| `domain/` | the vocabulary and the pure transforms over it, including the page renderer, with no filesystem, network, or subprocess access |
 | `adapters/` | the two impure boundaries, `http` and `vcs`, both replaced whole in tests |
 | `store/` | every read and write of `data/` |
 | `sources/` | one module per fetched source, declared in the registry `domain/sources.py` |
@@ -77,7 +76,7 @@ cli → stages → analysis → (gate | llm | publish)
 | `llm/` | everything that knows the Agent SDK exists |
 | `analysis/` | the backtest and the weekly aggregation: evidence built from the store |
 | `stages/` | the work a run does, and the order it does it in |
-| `publish/` | the digest skeleton, the canonical form, and the Zola content tree |
+| `publish/` | the Zola content tree the site builds from |
 
 Four files define what a run does:
 
@@ -87,6 +86,10 @@ Four files define what a run does:
 | `stages/pipeline.py` | the order, the driver, and the report |
 | `llm/catalog.py` | the tool surface and the prose the model reads |
 | `llm/specs.py` | what a step may do: the grant per step, the turn ceiling |
+
+No model stage writes a file. A stage returns structured data, and code renders
+and writes it: `domain/page.py` turns the write and repair outputs into the
+day's page.
 
 A step returns the one line the report shows and raises to fail: `StepError`
 for a failure, `Skipped` for correctly doing nothing. No step builds its own
@@ -165,9 +168,10 @@ that job is the one that runs a model. Both requirements files are
 hand.
 
 **The gate does not import the agent.** `gate/` is the deterministic validator
-for a run it must not trust. Prevention is in `llm/hooks.py` and detection is
-in `gate/publish.py`. They stay independent so a compromised run cannot weaken
-its own validator, and both read the allowlist from `paths.py`, which imports
+for a run it must not trust. Prevention is in `llm/specs.py`, where no grant
+carries a shell or a tool that writes a file, and detection is in
+`gate/publish.py`. They stay independent so a compromised run cannot weaken its
+own validator, and the gate reads the allowlist from `paths.py`, which imports
 nothing. `gate/` is also outside the publish allowlist, so a run cannot
 rewrite its own validator.
 
