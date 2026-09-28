@@ -177,3 +177,24 @@ def test_seeded_causes_survive_a_run_that_corrects_none(log_dir: Path) -> None:
     scored("2026-07-24", 49034292)
 
     assert corrected("2026-07-25") == {"49034292": "out_of_scope"}
+
+
+def test_the_record_keeps_a_detail_line_only_where_it_says_something(log_dir: Path) -> None:
+    """A successful model stage's detail is its own output, already on the page
+    and in the log, so only code steps and failures carry one."""
+    state = steps.Run(day="2026-07-25")
+    state.results = [
+        steps.StepResult("collect", True, "7 source(s), all complete"),
+        steps.StepResult("write", True, '{"stories": []}', 10, 20),
+        steps.StepResult("review", False, "Reached maximum number of turns"),
+    ]
+
+    steps.record_run(state)
+
+    recorded = runs.load_run_log("2026-07-25")["mechanical"]["runs"][-1]["steps"]
+    assert [step.get("detail") for step in recorded] == [
+        "7 source(s), all complete",
+        None,
+        "Reached maximum number of turns",
+    ]
+    assert recorded[1]["tokens"] == {"in": 10, "out": 20}

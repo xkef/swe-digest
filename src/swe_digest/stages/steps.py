@@ -394,7 +394,10 @@ def record_run(run: Run) -> str:
     commit has no commit to carry the record anyway.
 
     Names and counts only, never a tool's arguments or results. Those carry text
-    fetched from the open web, and this file is published.
+    fetched from the open web, and this file is published. A model stage that
+    succeeded records no detail line: its detail is the stage's own output,
+    which the page and the rest of the log already hold, and three copies a day
+    of it were the largest part of the file.
     """
     entry: dict[str, Any] = {
         "at": datetime.now(UTC).isoformat(timespec="seconds"),
@@ -406,8 +409,12 @@ def record_run(run: Run) -> str:
             {
                 "name": result.name,
                 "status": "skip" if result.skipped else "ok" if result.ok else "fail",
-                "detail": result.detail[:RECORD_DETAIL_MAX_CHARS],
             }
+            | (
+                {}
+                if result.ok and result.name in specs.STAGES
+                else {"detail": result.detail[:RECORD_DETAIL_MAX_CHARS]}
+            )
             | (
                 {"tokens": {"in": result.input_tokens, "out": result.output_tokens}}
                 if result.output_tokens
