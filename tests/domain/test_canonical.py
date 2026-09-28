@@ -7,13 +7,10 @@ characters drawn from untrusted sources: a normalizing formatter rewrites
 published facts, which is why dprint's Markdown plugin was rejected.
 """
 
-from pathlib import Path
-
 import pytest
 
 from swe_digest import paths
 from swe_digest.domain import canonical
-from swe_digest.publish import format as fmt
 
 DIGEST = """+++
 title = "2026-07-25 digest"
@@ -94,24 +91,3 @@ def test_first_difference_points_at_the_line() -> None:
     text = DIGEST.replace("### A story", "### A story    ")
 
     assert canonical.first_difference(text) == 8
-
-
-def test_fmt_run_repairs_and_check_reports(
-    at_root: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    day = "2026-07-25"
-    path = paths.DIGEST.path(at_root, day=day)
-    path.parent.mkdir(parents=True)
-    path.write_text(DIGEST.replace("### A story", "### A story  "), encoding="utf-8")
-
-    assert fmt.fmt_run(day, check=True) == 1
-    assert path.read_text() != DIGEST
-
-    assert fmt.fmt_run(day) == 0
-    assert path.read_text() == DIGEST
-
-
-def test_fmt_run_on_a_day_with_no_digest_is_not_an_error(at_root: Path) -> None:
-    """The first run of the day formats before the digest exists."""
-
-    assert fmt.fmt_run("2026-07-25") == 0

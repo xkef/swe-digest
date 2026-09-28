@@ -49,7 +49,7 @@ __all__ = ["SECTIONS", "main", "split_front_matter"]
 REQUIRED_KEYS = ["title", "date", "status", "source_count"]
 
 # The document vocabulary (sections, anchors, statuses, categories, and the
-# Top stories cap) comes from digest.document, which the skeleton generator
+# Top stories cap) comes from domain.document, which the page renderer
 # and the step prompts are also built from. The gate does not keep its own copy.
 
 # The category check postdates the archive: published digests carry free-text
@@ -354,16 +354,17 @@ def scan_unsafe(path: Path, text: str) -> list[str]:
 
 
 def check_format(path: Path, text: str) -> list[str]:
-    """Agent output is held to a canonical form the gate computes itself.
+    """The page is held to the canonical form the gate computes itself.
 
-    Whitespace only, so it can never rewrite a published fact, and stdlib only,
-    so the publish job needs no formatter installed. ``swe-digest fmt-run``
-    applies it.
+    ``domain.page`` renders in this form, so a page that departs from it was
+    written by something other than the renderer. Whitespace only, so it can
+    never rewrite a published fact, and stdlib only, so the publish job needs
+    no formatter installed.
     """
     line = canonical.first_difference(text)
     if line is None:
         return []
-    return [f"{path}:{line}: not in canonical form; run `swe-digest fmt-run`"]
+    return [f"{path}:{line}: not in canonical form; the renderer did not write this page"]
 
 
 def check_digest(path: Path) -> list[str]:

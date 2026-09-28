@@ -240,21 +240,6 @@ class TestPaths:
             publish.check_paths([(mode, "data/memory/followups.yaml")], "test")
 
 
-class TestWritablePaths:
-    def test_digest_included_when_present(self, repo_tree: Path) -> None:
-        writable = publish.writable_paths(DIGEST_DATE, repo_tree)
-        assert writable == [f"data/digests/{DIGEST_DATE}.md"]
-
-    def test_missing_digest_omitted(self, repo_tree: Path) -> None:
-        # The memory stores are not here: what memory.store writes has exactly
-        # one valid formatting, so a formatter has nothing to say.
-        assert publish.writable_paths("2031-01-01", repo_tree) == []
-
-    def test_every_writable_path_is_inside_the_allowlist(self, repo_tree: Path) -> None:
-        for path in publish.writable_paths(DIGEST_DATE, repo_tree):
-            assert any(p.match(path) for p in publish.ALLOWED_PATHS)
-
-
 class TestComments:
     def test_oversized_comment_rejected(self) -> None:
         with pytest.raises(SystemExit, match="exceeds"):

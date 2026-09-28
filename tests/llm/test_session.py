@@ -51,7 +51,7 @@ def test_a_refused_tool_is_counted_as_a_failure(monkeypatch: pytest.MonkeyPatch)
         ),
     )
 
-    outcome = asyncio.run(session.run_stage(specs.STAGES["review"], "task", lambda: object(), "d"))
+    outcome = asyncio.run(session.run_stage(specs.STAGES["review"], "task", lambda: object()))
 
     assert outcome.tools == {"Bash": 1, "Read": 1}
     assert outcome.failed == {"Bash": 1}
@@ -84,6 +84,6 @@ def test_a_result_matching_no_call_is_still_counted(monkeypatch: pytest.MonkeyPa
         ),
     )
 
-    outcome = asyncio.run(session.run_stage(specs.STAGES["review"], "task", lambda: object(), "d"))
+    outcome = asyncio.run(session.run_stage(specs.STAGES["review"], "task", lambda: object()))
 
     assert outcome.failed == {"unmatched:orphan": 1}

@@ -9,11 +9,10 @@ UV         = $(MISE) exec -- uv
 # scheduled workflows and the publish job never need a package install.
 PY         = PYTHONPATH=src python3 -m swe_digest
 DIST       = dist
-TODAY      = $(shell date -u +%Y-%m-%d)
 RELEASE    = $(if $(GITHUB_SHA),$(shell git rev-parse --short HEAD 2>/dev/null || echo dev),$(shell git describe --tags --always 2>/dev/null || echo dev))
 BUILD_DATE = $(shell date -u +%Y-%m-%dT%H:%MZ)
 
-.PHONY: build serve check check-content fmt fmt-check fmt-run stories clean new-digest run-log backtest weekly-stats test lint typecheck imports clean-all
+.PHONY: build serve check check-content fmt fmt-check stories clean run-log backtest weekly-stats test lint typecheck imports clean-all
 
 stories:
 	@$(PY) build-stories
@@ -104,16 +103,6 @@ fmt:
 fmt-check:
 	@$(DPRINT) dprint check
 	@$(RUMDL) rumdl check .
-
-# fmt-run formats the agent's own output: today's digest, in the canonical form
-# that `check-content` enforces. It is pure Python, so the publish job can run
-# it with nothing installed. It changes only whitespace, so it can never
-# rewrite a published fact the way a Markdown formatter would.
-fmt-run:
-	@$(PY) fmt-run $(TODAY)
-
-new-digest:
-	@$(PY) new-digest $(TODAY)
 
 # Everything that a build or a check regenerates, including the generated day
 # pages under site/content/digests/. The fetch cache and the virtualenv are not

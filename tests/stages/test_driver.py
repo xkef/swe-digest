@@ -2,14 +2,28 @@
 
 import asyncio
 import json
+from pathlib import Path
 from typing import Any
 
 import pytest
 
+from swe_digest import paths
+from swe_digest.domain import page
 from swe_digest.llm import specs
 from swe_digest.stages import pipeline, steps
 
 from .conftest import drive, ok
+
+STORY: dict[str, Any] = {
+    "section": "Security",
+    "title": "A story",
+    "category": "Security",
+    "status": "confirmed",
+    "sources": [{"label": "primary", "url": "https://example.com/a"}],
+    "blurb": "b" * 120,
+    "summary": "What happened.",
+    "why_it_matters": "Why it matters.",
+}
 
 
 def test_the_selection_is_handed_to_the_write_step() -> None:
@@ -33,13 +47,25 @@ def test_review_findings_reach_the_repair_pass() -> None:
         },
     )
 
-    task = pipeline._task(specs.STAGES["write"], state)
+    task = pipeline._task(specs.STAGES["repair"], state)
 
     assert "unsourced claim" in task
 
 
+def test_the_page_reaches_the_review_with_its_ids(at_root: Path) -> None:
+    """A finding names a story by id, which is how a repair or a withhold
+    touches that story and no other."""
+    state = steps.Run(day="2026-07-25")
+    steps.save_page(state, page.Page(day="2026-07-25", stories=[dict(STORY, id="p1")]))
+    state.page = None
+
+    task = pipeline._task(specs.STAGES["review"], state)
+
+    assert '"id": "p1"' in task
+
+
 def test_a_step_without_a_schema_gets_no_structured_result() -> None:
-    assert pipeline._parse(specs.STAGES["write"], '{"anything": 1}') is None
+    assert pipeline._parse(specs.STAGES["improve:memory"], '{"anything": 1}') is None
 
 
 def test_malformed_structured_output_is_no_result_rather_than_half_a_result() -> None:
@@ -172,7 +198,7 @@ BLOCKING = {
 }
 
 
-def test_the_repair_pass_re_runs_write_and_review_before_finalize(
+def test_the_repair_pass_re_runs_repair_and_review_before_finalize(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """The repair pair goes to the front of the queue. Appending it would run
@@ -186,11 +212,12 @@ def test_the_repair_pass_re_runs_write_and_review_before_finalize(
         specs.STAGES["write"],
         specs.STAGES["review"],
         ok("gate"),
+        repair=True,
     )
 
     # Derived from the budget rather than spelled out, so raising it does not
     # silently turn this into a test of a number nobody meant.
-    assert calls == ["select", *["write", "review"] * (pipeline.MAX_REPAIRS + 1)]
+    assert calls == ["select", "write", "review", *["repair", "review"] * pipeline.MAX_REPAIRS]
     assert [result.name for result in state.results] == [*calls, "gate"]
     assert state.repairs == pipeline.MAX_REPAIRS
     # The stub review objects every time, so the second one exhausts the repair
@@ -202,7 +229,7 @@ def test_the_repair_pass_re_runs_write_and_review_before_finalize(
     assert state.unresolved
 
 
-def test_a_review_without_write_in_the_plan_does_not_repair(
+def test_a_review_without_repair_in_the_plan_does_not_repair(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """``--stage review`` has nothing to hand the findings back to."""
@@ -240,17 +267,38 @@ def test_a_review_that_never_clears_is_recorded_and_still_publishes() -> None:
     state.repairs = pipeline.MAX_REPAIRS
     state.review = {"ready": False, "findings": blocking}
 
-    assert pipeline._repair(specs.STAGES["review"], state, ("write", "review")) == ()
+    assert pipeline._repair(specs.STAGES["review"], state, ("repair", "review")) == ()
     assert state.unresolved == ["Security / a story"]
     # Recorded, and the commit is not withheld for it.
     assert steps.commit(state) == "nothing to commit"
+
+
+def test_a_story_the_last_review_still_names_is_withheld(at_root: Path) -> None:
+    """The story goes rather than the day, and the page says so."""
+    state = steps.Run(day="2026-07-25", gate_ok=True)
+    other = dict(STORY, title="Another story", sources=[{"label": "p", "url": "https://b.org/"}])
+    steps.save_page(state, page.Page(day="2026-07-25", stories=[dict(STORY), other]))
+    state.page.number("p")  # type: ignore[union-attr]
+    state.repairs = pipeline.MAX_REPAIRS
+    state.review = {
+        "ready": False,
+        "findings": [{"severity": "blocking", "id": "p1", "where": "Security / A story"}],
+    }
+
+    pipeline._repair(specs.STAGES["review"], state, ("repair", "review"))
+
+    text = paths.DIGEST.path(day="2026-07-25").read_text(encoding="utf-8")
+    assert "### A story" not in text
+    assert "### Another story" in text
+    assert "Withheld after review: A story." in text
+    assert state.unresolved == []
 
 
 def test_a_clean_review_leaves_the_commit_alone() -> None:
     state = steps.Run(day="2026-07-25", gate_ok=True)
     state.review = {"ready": True, "findings": []}
 
-    assert pipeline._repair(specs.STAGES["review"], state, ("write", "review")) == ()
+    assert pipeline._repair(specs.STAGES["review"], state, ("repair", "review")) == ()
     assert state.unresolved == []
 
 
@@ -267,7 +315,7 @@ def test_an_unresolved_sources_checked_finding_does_not_withhold() -> None:
         "findings": [{"severity": "blocking", "where": "Sources checked: GitHub watchlist"}],
     }
 
-    assert pipeline._repair(specs.STAGES["review"], state, ("write", "review")) == ()
+    assert pipeline._repair(specs.STAGES["review"], state, ("repair", "review")) == ()
     assert state.unresolved == []
 
 
@@ -282,6 +330,6 @@ def test_a_story_finding_still_withholds_alongside_a_disclosure_one() -> None:
         ],
     }
 
-    pipeline._repair(specs.STAGES["review"], state, ("write", "review"))
+    pipeline._repair(specs.STAGES["review"], state, ("repair", "review"))
 
     assert state.unresolved == ["Security / a story"]

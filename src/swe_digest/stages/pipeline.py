@@ -22,10 +22,11 @@ import json
 import sys
 from collections import deque
 from collections.abc import Callable, Collection, Sequence
+from dataclasses import replace
 from typing import Any
 
+from swe_digest.domain import page
 from swe_digest.llm import auth, catalog, net, prompts, session, specs
-from swe_digest.llm.hooks import writes_for
 from swe_digest.stages import steps
 from swe_digest.stages.steps import Code, Run, Skipped, StepError, StepResult
 
@@ -35,6 +36,11 @@ from swe_digest.stages.steps import Code, Run, Skipped, StepError, StepResult
 # review is now recorded rather than vetoing the commit, so converging is not
 # what the budget is for.
 MAX_REPAIRS = 1
+
+# What the page says about a story withheld after review. The reviewer's own
+# finding stays in the run log: it is written for the repair step, not for a
+# reader.
+WITHHELD = "The review found a claim its source did not support."
 
 # A model step is its spec, with no wrapper type, because both kinds already
 # carry the only thing the driver needs: a name.
@@ -49,12 +55,14 @@ DAILY: tuple[Step, ...] = (
     # spent the run's one repair pass on 2026-08-15.
     Code("prune_memory", steps.prune_memory),
     Code("collect", steps.collect),
-    Code("skeleton", steps.skeleton),
     Code("backtest", steps.backtest),
     Code("feedback", steps.feedback),
     specs.STAGES["select"],
     specs.STAGES["write"],
     specs.STAGES["review"],
+    # `repair` is not listed: a review with blocking findings queues it, then
+    # a second review, ahead of everything below.
+    #
     # After the model stages and before anything records or validates the page,
     # so a republished story costs its own block rather than the whole day.
     Code("dedup", steps.dedup),
@@ -64,7 +72,6 @@ DAILY: tuple[Step, ...] = (
     Code("run_log", steps.run_log),
     Code("reading", steps.record_reading),
     Code("prune", steps.prune),
-    Code("format", steps.format),
     Code("gate", steps.gate),
     Code("inbox", steps.inbox_closes),
     Code("manifest", steps.manifest),
@@ -105,27 +112,31 @@ def plan(mode: str, stages: Collection[str]) -> tuple[Step, ...]:
 def _task(spec: specs.StageSpec, run: Run) -> str:
     """Builds the user turn: what to do, plus what the previous step decided.
 
-    The selection reaches the write step as data rather than as something it has
-    to go looking for.
+    The selection and the page reach the next stage as data rather than as
+    something it has to go looking for.
     """
     lines = [f"Run the {spec.name} step for {run.day} (UTC). Follow your instructions exactly."]
 
     def hand(preamble: str, payload: Any) -> None:
         lines.extend([f"\n{preamble}\n", json.dumps(payload, indent=2)])
 
-    if spec.name == "write":
-        if run.selection is not None:
-            hand("The selection to write up, as returned by the select step:", run.selection)
-        if run.review is not None:
-            hand(
-                "The review found these blocking problems. Repair exactly these, and"
-                " nothing else. Dropping the story is always an acceptable repair and"
-                " is the right one when the source does not support the claim: this is"
-                " the last pass, so a finding you argue with rather than resolve"
-                " withholds the whole digest. Say what you dropped and why in Sources"
-                " checked.",
-                run.review.get("findings", []),
-            )
+    if spec.name == "write" and run.selection is not None:
+        hand("The selection to write up, as returned by the select step:", run.selection)
+    if spec.name in ("write", "repair", "review"):
+        current = steps.current_page(run)
+        if current.stories:
+            hand("The page as it stands, each story with its id:", current.as_data())
+        else:
+            lines.append("\nNothing is published for this date yet.")
+    if spec.name == "repair" and run.review is not None:
+        hand(
+            "The review found these blocking problems. Repair exactly these, and"
+            " nothing else. Dropping the story is always an acceptable repair and"
+            " is the right one when the source does not support the claim: this is"
+            " the last pass, and a story still named by the next review is taken"
+            " off the page.",
+            run.review.get("findings", []),
+        )
     if spec.name == "improve:memory" and run.pruned:
         hand(
             "These follow-ups were past the age bound and have already been dropped. "
@@ -154,15 +165,25 @@ def _absorb(spec: specs.StageSpec, result: StepResult, run: Run) -> None:
     """Puts a stage's structured output where the next stage looks for it.
 
     Keyed on the schema rather than the stage name, because the schema decides
-    the shape of ``result.data``.
+    the shape of ``result.data``. The page outputs are rendered to disk here,
+    so the file on disk is always what code rendered.
     """
+    data = result.data or {}
     match spec.schema:
         case "selection":
             run.selection = result.data
+        case "page":
+            current = steps.current_page(run)
+            run.notes.extend(page.apply_write(current, data))
+            steps.save_page(run, current)
+        case "repair":
+            current = steps.current_page(run)
+            run.notes.extend(page.apply_repair(current, data))
+            steps.save_page(run, current)
         case "review":
             run.review = result.data
         case "proposals":
-            run.proposals.extend((result.data or {}).get("proposals", []))
+            run.proposals.extend(data.get("proposals", []))
 
 
 def _is_disclosure(finding: dict[str, Any]) -> bool:
@@ -193,28 +214,48 @@ def _repair(spec: specs.StageSpec, run: Run, stages: Collection[str]) -> tuple[s
     # Withholding is for a claim a reader would act on being wrong, so a finding
     # against the coverage note alone is not a reason to publish nothing.
     reader_facing = [f for f in blocking if not _is_disclosure(f)]
-    if run.repairs >= MAX_REPAIRS or "write" not in stages:
+    if run.repairs >= MAX_REPAIRS or "repair" not in stages:
         if not reader_facing:
             run.notes.append(
                 f"review left {len(blocking)} finding(s) against Sources checked unresolved"
             )
             run.review = None
             return ()
-        # Out of repair passes with the reviewer still objecting. The content
-        # gate is mechanical and says nothing about whether a claim matches its
-        # source, so what publishes here ships the errors the reviewer named.
-        run.unresolved = [str(finding.get("where") or "?") for finding in reader_facing]
-        run.notes.append(f"review left {len(reader_facing)} blocking finding(s) unresolved")
-        print(
-            f"-- unresolved ({len(reader_facing)} blocking, no repair passes left)",
-            file=sys.stderr,
-        )
+        _withhold(run, reader_facing)
         run.review = None
         return ()
     run.repairs += 1
     run.notes.append(f"repair pass {run.repairs}: {len(blocking)} blocking finding(s)")
     print(f"-- repair ({len(blocking)} blocking)", file=sys.stderr)
-    return ("write", "review")
+    return ("repair", "review")
+
+
+def _withhold(run: Run, findings: list[dict[str, Any]]) -> None:
+    """Takes the stories the review still objects to off the page.
+
+    Out of repair passes with the reviewer still naming a story, the story goes
+    rather than the day: the rest of the page is unaffected, and publishing a
+    claim the reviewer found unsupported ships the error it named. A finding
+    that names no story on the page cannot be withheld, so it is recorded.
+    """
+    current = steps.current_page(run)
+    ids: list[str] = []
+    for finding in findings:
+        story_id = str(finding.get("id") or "")
+        if current.by_id(story_id) is not None:
+            ids.append(story_id)
+        else:
+            run.unresolved.append(str(finding.get("where") or "?"))
+    withheld = page.drop(current, dict.fromkeys(ids, WITHHELD), "Withheld after review")
+    if withheld:
+        steps.save_page(run, current)
+        run.notes.append(f"withheld {len(withheld)} story(ies) after review: {'; '.join(withheld)}")
+    if run.unresolved:
+        run.notes.append(f"review left {len(run.unresolved)} blocking finding(s) unresolved")
+    print(
+        f"-- withheld {len(withheld)}, unresolved {len(run.unresolved)} (no repair passes left)",
+        file=sys.stderr,
+    )
 
 
 async def _model_step(spec: specs.StageSpec, run: Run, server: Callable[[], object]) -> StepResult:
@@ -223,7 +264,7 @@ async def _model_step(spec: specs.StageSpec, run: Run, server: Callable[[], obje
     ``llm.session`` makes the call. What the pipeline owns is naming the step
     and failing a stage that declared a schema and returned something else.
     """
-    outcome = await session.run_stage(spec, _task(spec, run), server, run.day)
+    outcome = await session.run_stage(spec, _task(spec, run), server)
     if not outcome.ok:
         return StepResult(
             spec.name,
@@ -298,14 +339,17 @@ def _lazy_server() -> Callable[[], object]:
     return server
 
 
-async def _drive(run: Run, steps: Sequence[Step]) -> None:
+async def _drive(run: Run, steps: Sequence[Step], stages: Collection[str] | None = None) -> None:
     """Runs every step in order, from one queue, in one loop.
 
     The queue always drains. A stage skipped because an earlier one failed is
     the only cascade, because the code steps after them are how a run validates
-    and records what already reached disk.
+    and records what already reached disk. ``stages`` names the stages the run
+    may call, which includes ``repair``: it is queued by a review rather than
+    listed in the plan.
     """
-    stages = {step.name for step in steps if isinstance(step, specs.StageSpec)}
+    if stages is None:
+        stages = {step.name for step in steps if isinstance(step, specs.StageSpec)}
     queue: deque[Step] = deque(steps)
     server = _lazy_server()
 
@@ -322,7 +366,13 @@ async def _drive(run: Run, steps: Sequence[Step]) -> None:
                 print(f"-- {step.name}", file=sys.stderr)
                 result = await _model_step(step, run, server)
                 if result.ok:
-                    _absorb(step, result, run)
+                    try:
+                        _absorb(step, result, run)
+                    except Exception as error:
+                        result = replace(
+                            result, ok=False, detail=f"{type(error).__name__}: {error}"
+                        )
+                if result.ok:
                     for name in reversed(_repair(step, run, stages)):
                         queue.appendleft(specs.STAGES[name])
                 else:
@@ -333,13 +383,11 @@ async def _drive(run: Run, steps: Sequence[Step]) -> None:
 
 
 def _stage_report(spec: specs.StageSpec) -> list[str]:
-    writes = writes_for(spec, "YYYY-MM-DD") or ["nothing"]
     return [
         f"  {spec.name:<18} model",
         f"    prompt      {spec.prompt_path} ({'present' if prompts.exists(spec) else 'MISSING'})",
         f"    max_turns   {spec.max_turns}",
         f"    schema      {spec.schema or '-'}",
-        f"    writes      {', '.join(writes)}",
         f"    tools       {', '.join(spec.allowed_tools)}",
     ]
 
@@ -359,7 +407,7 @@ def dry_run(day: str, stages: Collection[str], mode: str = "daily") -> int:
     print(f"credentials {auth.describe()}")
     print("permissions dontAsk (deny anything outside a step's tool grant)")
     print("settings    none loaded (setting_sources=[]); each step states its own context")
-    print("writes      denied by a PreToolUse guard outside each step's declared files")
+    print("writes      none: stages return data, and code writes every file")
     print()
 
     print(f"tools exposed as mcp__{catalog.MCP_SERVER}__*:")
@@ -388,10 +436,13 @@ def dry_run(day: str, stages: Collection[str], mode: str = "daily") -> int:
             case Code():
                 print(f"  {step.name:<18} code")
             case specs.StageSpec():
-                for line in _stage_report(step):
-                    print(line)
-                if not prompts.exists(step):
-                    missing.append(step.prompt_path)
+                # The repair is queued by a blocking review, so it prints there.
+                queued = [specs.STAGES["repair"]] if step.schema == "review" else []
+                for spec in [step, *(q for q in queued if q.name in stages)]:
+                    for line in _stage_report(spec):
+                        print(line)
+                    if not prompts.exists(spec):
+                        missing.append(spec.prompt_path)
     print()
 
     if missing:
@@ -423,7 +474,7 @@ def run(day: str, stages: Collection[str], mode: str = "daily", commit: bool = T
 
     net.reset()
     state = Run(day=day, mode=mode, may_commit=commit)
-    asyncio.run(_drive(state, steps))
+    asyncio.run(_drive(state, steps, stages))
 
     print()
     for result in state.results:

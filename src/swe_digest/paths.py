@@ -13,9 +13,7 @@ and a run may propose only the files in ``IMPROVEMENT_FILES``, never its own
 instructions. ``site/`` is hand-authored, so no path under it is publishable.
 
 This module imports nothing from this package and nothing outside the standard
-library. Two consumers require that: the publish gate runs in a job that
-installs only PyYAML, and the write guard in ``llm.hooks`` reads this allowlist
-without importing the gate that enforces it.
+library, because the publish gate runs in a job that installs only PyYAML.
 """
 
 import re
@@ -92,8 +90,7 @@ CACHE_FILE = _family(".cache/{source}/{day}.json", source=SOURCE_DIRS, day=DAY)
 PROMPT = _family("prompts/{name}.md", name=r"[\w/-]+")
 
 # An unattended run's commit may carry these families and nothing else. The
-# publish gate matches every staged path against them, and the write guard
-# grants from them.
+# publish gate matches every staged path against them.
 PUBLISHABLE = (DIGEST, RUN_LOG, WEEKLY_LOG, MEMORY_STORE)
 
 # A run may propose these files through the owner-approved improvement pull
@@ -149,14 +146,3 @@ def site_digests_dir() -> Path:
     gitignored and no run may write it.
     """
     return site_dir() / "content" / "digests"
-
-
-def writable_paths(day: str, root: Path | None = None) -> list[str]:
-    """Returns the repo-relative files a run may format (``make fmt-run``).
-
-    The list holds the day's digest, once it exists. The memory stores are not
-    here: ``store.memory`` writes them in exactly one valid form, which the
-    content gate checks, so a formatter has nothing to decide.
-    """
-    digest = DIGEST.rel(day=day)
-    return [digest] if ((root or ROOT) / digest).exists() else []

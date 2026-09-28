@@ -32,9 +32,10 @@ def test_every_stage_appears_in_exactly_one_pipeline() -> None:
     daily = {step.name for step in pipeline.DAILY if isinstance(step, specs.StageSpec)}
     improve = {step.name for step in pipeline.IMPROVE if isinstance(step, specs.StageSpec)}
 
-    assert daily | improve == set(specs.STAGES)
+    # A review queues the repair, so it is offered but not listed.
+    assert daily | improve | {"repair"} == set(specs.STAGES)
     assert not daily & improve
-    assert daily == set(specs.STAGE_ORDER)
+    assert daily | {"repair"} == set(specs.STAGE_ORDER)
     assert improve == set(specs.IMPROVE_ORDER)
 
 
@@ -43,7 +44,6 @@ def test_the_improvement_run_publishes_nothing_and_collects_nothing() -> None:
     names = [step.name for step in pipeline.IMPROVE]
 
     assert "collect" not in names
-    assert "format" not in names
     assert "run_log" not in names
     assert "gate" in names, "it still validates what it wrote to memory"
 
@@ -67,6 +67,5 @@ def test_the_daily_run_gates_before_it_commits() -> None:
     names = [step.name for step in pipeline.DAILY]
 
     assert names.index("gate") < names.index("commit")
-    assert names.index("format") < names.index("gate")
-    for stage in specs.STAGE_ORDER:
+    for stage in set(specs.STAGE_ORDER) - {"repair"}:
         assert names.index(stage) < names.index("gate")

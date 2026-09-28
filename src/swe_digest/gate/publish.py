@@ -19,7 +19,6 @@ from swe_digest.adapters.vcs import GitGh, commit_addition, parse_changes, worki
 from swe_digest.domain.document import slugify
 from swe_digest.domain.patch import PatchError, anchor
 from swe_digest.gate._manifest import IssueClose, NewIssue, load_manifest
-from swe_digest.paths import writable_paths as writable_paths
 
 REPO = settings.REPO
 OWNER = settings.OWNER
@@ -31,9 +30,6 @@ SUBJECTS = [
     re.compile(r"^chore: weekly improvement review \d{4}-\d{2}-\d{2}$"),
 ]
 # What a run's commit may carry, and what it may propose, both from paths.py.
-# The write guard in llm.hooks reads the same families without importing this
-# module, so a run that subverted the guard still meets a validator it never
-# loaded.
 MEMORY_FILES = paths.MEMORY_STORES
 ALLOWED_PATHS = [family.pattern for family in paths.PUBLISHABLE]
 IMPROVEMENT_FILES = paths.IMPROVEMENT_FILES

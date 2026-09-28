@@ -6,7 +6,7 @@ or the profile and never to its own instructions.
 
 A prompt does not restate the document vocabulary. It names a placeholder and
 ``render`` substitutes the value from ``domain.document``, so the instructions
-and the gate read the sections, categories, statuses, and story shape from one
+and the gate read the sections, categories, statuses, and card band from one
 place. Restating them in prose is how a prompt ends up describing a format the
 gate does not accept.
 
@@ -65,7 +65,9 @@ def values(spec: specs.StageSpec) -> dict[str, str]:
         "sections": "\n".join(f"{n}. {name}" for n, name in enumerate(document.SECTIONS, 1)),
         "categories": " | ".join(document.CATEGORIES),
         "statuses": " | ".join(document.STORY_STATUSES),
-        "story_shape": document.story_shape(),
+        "blurb_min_chars": str(document.BLURB_MIN_CHARS),
+        "blurb_max_chars": str(document.BLURB_MAX_CHARS),
+        "sources_checked": "\n".join(f"- {name}" for name in document.SOURCES_CHECKED),
         "max_top_stories": str(document.MAX_TOP_STORIES),
         "max_stories": str(document.MAX_STORIES),
         "max_section_stories": str(document.MAX_SECTION_STORIES),

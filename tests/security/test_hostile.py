@@ -9,18 +9,17 @@ shell.
 A test here failing is a security regression, not a style one.
 """
 
-import asyncio
 from pathlib import Path
 from typing import Any
 
 import pytest
 
-from swe_digest import paths, settings
+from swe_digest import settings
 from swe_digest.adapters import http
 from swe_digest.adapters.vcs import GitGh
 from swe_digest.gate import publish
 from swe_digest.gate._manifest import IssueClose, NewIssue, parse_manifest
-from swe_digest.llm import hooks, net, specs
+from swe_digest.llm import net, specs
 from swe_digest.stages import feedback
 from swe_digest.store import memory as memory_store
 
@@ -34,35 +33,14 @@ def test_no_step_can_reach_a_shell_or_the_unaudited_web() -> None:
         assert not forbidden & set(spec.allowed_tools), spec.name
 
 
-def test_no_step_can_write_outside_the_digest() -> None:
-    """Only the write step writes, and only the day's digest."""
+def test_no_step_holds_a_tool_that_writes_a_file() -> None:
+    """A stage returns data and code writes it, so no grant carries a write
+    tool, and the list of what no step may hold names every one of them."""
+    writers = {"Write", "Edit", "MultiEdit", "NotebookEdit"}
+
+    assert writers <= set(specs.UNGRANTABLE)
     for spec in specs.STAGES.values():
-        writes = hooks.writes_for(spec, "2026-07-25")
-        assert writes in ([], [paths.DIGEST.rel(day="2026-07-25")]), spec.name
-
-
-@pytest.mark.parametrize(
-    "target",
-    [
-        "prompts/stages/select.md",
-        "prompts/common.md",
-        "agent/config/settings.toml",
-        "config/watchlist.toml",
-        "src/swe_digest/gate/publish.py",
-        ".github/workflows/digest.yml",
-        "data/memory/followups.yaml",
-        "Makefile",
-    ],
-)
-def test_a_run_cannot_write_what_judges_or_instructs_it(target: str, tmp_path: Path) -> None:
-    """The four things a compromised run would most want: its own prompt, its
-    own config, its own gate, and the workflow that runs it."""
-    guard = hooks.write_guard(["site/content/digests/2026-07-25/index.md"], tmp_path)
-    payload = {"tool_name": "Write", "tool_input": {"file_path": target}}
-
-    decision = asyncio.run(guard(payload, "toolu_1", None))
-
-    assert decision["hookSpecificOutput"]["permissionDecision"] == "deny"
+        assert not writers & set(spec.allowed_tools), spec.name
 
 
 @pytest.fixture(autouse=True)

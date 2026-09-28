@@ -39,9 +39,7 @@ class Outcome:
     failed: dict[str, int] = field(default_factory=dict)
 
 
-async def run_stage(
-    spec: specs.StageSpec, task: str, server: Callable[[], object], day: str
-) -> Outcome:
+async def run_stage(spec: specs.StageSpec, task: str, server: Callable[[], object]) -> Outcome:
     """Runs one stage: one query, fresh context, bounded turns.
 
     ``server`` is a factory called inside the guard rather than a value built
@@ -67,7 +65,7 @@ async def run_stage(
 
         from swe_digest.llm._options import build
 
-        options = build(spec, server(), day)  # type: ignore[arg-type]
+        options = build(spec, server())  # type: ignore[arg-type]
         async for message in query(prompt=task, options=options):
             if isinstance(message, AssistantMessage):
                 for block in message.content:

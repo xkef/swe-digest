@@ -1,7 +1,7 @@
 """The digest document format: the section vocabulary and the one parser.
 
-Every consumer of digest markdown crosses this interface. The skeleton generator
-and the content gate take the section layout from here, and the run log, the
+Every consumer of digest markdown crosses this interface. The page renderer and
+the content gate take the section layout from here, and the run log, the
 story-page builder, and the backtest all read digests through ``parse``. Only
 the standard library, so the gate stays runnable with bare python3.
 """
@@ -64,7 +64,7 @@ ANCHOR_SECTIONS = ("Security", "Outages", "Sources checked")
 FOLLOWUP_SECTIONS = {"Watchlist follow-ups"}
 
 # The rest of the vocabulary, from one source: the gate validates against it,
-# the skeleton is generated from it, the selection schema constrains the model
+# the page is rendered from it, the selection schema constrains the model
 # to it, and the prompts substitute it in.
 #
 # Statuses stay in code. Separating fact from rumor is a content-safety rule
@@ -99,37 +99,6 @@ UNCAPPED_SECTIONS = ("Security", "Outages")
 # an incident count is bounded by the day, an advisory count by whoever
 # published that morning.
 UNBUDGETED_SECTIONS = ("Security",)
-
-# The story block, in field order. Rendered into the skeleton and into the
-# write prompt, so both describe the same shape by construction.
-STORY_FIELDS: tuple[tuple[str, str], ...] = (
-    ("Category", " | ".join(CATEGORIES)),
-    ("Status", " | ".join(STORY_STATUSES)),
-    (
-        "Sources",
-        "[primary](https://example.com), [discussion](https://news.ycombinator.com/item?id=0)",
-    ),
-    (
-        "Blurb",
-        f"One sentence of {BLURB_MIN_CHARS} to {BLURB_MAX_CHARS} characters"
-        " that carries the story on its own. The site shows this, not the summary.",
-    ),
-    ("Summary", "One to three factual sentences."),
-    (
-        "Comments",
-        "Add only when the HN thread carries technical signal. One to three sentences "
-        "paraphrasing corrections, benchmarks, maintainer replies, or strong dissent, "
-        'attributed like "HN commenters report" or by username.',
-    ),
-    ("Why it matters", "One sentence about engineering impact."),
-    ("Follow-up", "Add only if this needs future tracking."),
-)
-
-
-def story_shape() -> str:
-    """Returns the story block as it appears in the prompt and the skeleton."""
-    lines = "\n".join(f"- **{label}:** {value}" for label, value in STORY_FIELDS)
-    return f"### Story title\n\n{lines}\n"
 
 
 def split_front_matter(text: str) -> tuple[str, str] | None:

@@ -1,39 +1,27 @@
 """Turns a ``specs.StageSpec`` into ``ClaudeAgentOptions``.
 
-Four choices carry the design, and each departs from how the action-driven run
+Three choices carry the design, and each departs from how the action-driven run
 behaves. ``setting_sources=[]`` stops the SDK from loading CLAUDE.md and
 .claude/ as an accidental prompt body. ``permission_mode="dontAsk"`` denies
 rather than prompts in a job with nobody to ask. ``max_turns`` bounds a stuck
-step, where the action run has only a 90-minute job timeout. A **PreToolUse
-write guard** decides which paths a granted tool may touch, which a tool grant
-cannot express.
+step, where the action run has only a 90-minute job timeout. No stage holds a
+tool that writes a file: a stage returns data, and code writes it.
 """
 
-from typing import cast
-
-from claude_agent_sdk import (
-    ClaudeAgentOptions,
-    HookCallback,
-    HookMatcher,
-    McpSdkServerConfig,
-)
+from claude_agent_sdk import ClaudeAgentOptions, McpSdkServerConfig
 
 from swe_digest import paths
 from swe_digest.domain import schemas
-from swe_digest.llm import catalog, hooks, prompts, specs
+from swe_digest.llm import catalog, prompts, specs
 
 
 def build(
     spec: specs.StageSpec,
     server: McpSdkServerConfig,
-    day: str,
     *,
     model: str = specs.DEFAULT_MODEL,
 ) -> ClaudeAgentOptions:
-    """Builds the options for one step, with its tool grant, turn bound, and write guard."""
-    # hooks.py stays free of SDK imports so the guard is testable without the
-    # SDK. The cast belongs here, where the SDK is already a dependency.
-    guard = cast(HookCallback, hooks.write_guard(hooks.writes_for(spec, day)))
+    """Builds the options for one step, with its tool grant and turn bound."""
     return ClaudeAgentOptions(
         model=model,
         system_prompt=prompts.load(spec),
@@ -43,6 +31,5 @@ def build(
         cwd=str(paths.ROOT),
         max_turns=spec.max_turns,
         mcp_servers={catalog.MCP_SERVER: server},
-        hooks={"PreToolUse": [HookMatcher(matcher=hooks.MATCHER, hooks=[guard])]},
         output_format=schemas.output_format(spec.schema),
     )

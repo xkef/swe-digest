@@ -24,11 +24,9 @@ from swe_digest import paths, serial, settings
 from swe_digest.adapters.vcs import GitGh
 from swe_digest.analysis.backtest import main as score_day
 from swe_digest.analysis.weekly import main as aggregate_window
-from swe_digest.domain.dedup import filter_republished
+from swe_digest.domain import page as pages
 from swe_digest.gate.content import main as check_content
-from swe_digest.llm import catalog, hooks, net, specs
-from swe_digest.publish.format import fmt_run
-from swe_digest.publish.skeleton import main as new_digest
+from swe_digest.llm import catalog, net, specs
 from swe_digest.stages import improvements
 from swe_digest.stages.feedback import process as owner_feedback
 from swe_digest.stages.run_log import main as write_run_log
@@ -86,12 +84,16 @@ class Run:
 
     # What one step hands the next.
     selection: dict[str, Any] | None = None
+    # The day's page as data. Code renders it to disk after every stage that
+    # changes it, so the file is only ever what code wrote.
+    page: pages.Page | None = None
     review: dict[str, Any] | None = None
     pruned: list[str] = field(default_factory=list)
-    # Where the reviewer still objected when the repair passes ran out.
-    # Recorded, not enforced: withholding on this published nothing for four
-    # consecutive runs, because the reviewer keeps a floor of objections that no
-    # repair budget clears.
+    # Where the reviewer still objected when the repair passes ran out, about
+    # nothing the pipeline could withhold on its own: a finding that names a
+    # story takes that story off the page, and one that names no story is
+    # recorded here. Withholding the whole day on these published nothing for
+    # four consecutive runs, because the reviewer keeps a floor of objections.
     unresolved: list[str] = field(default_factory=list)
     proposals: list[dict[str, Any]] = field(default_factory=list)
     # The open improvement issues, which the proposals are checked against.
@@ -139,11 +141,6 @@ def collect(run: Run) -> str:
     if degraded:
         return f"{count} source(s), degraded: {', '.join(degraded)}"
     return f"{count} source(s), all complete"
-
-
-def skeleton(run: Run) -> str:
-    new_digest(run.day)
-    return paths.DIGEST.rel(day=run.day)
 
 
 def backtest(run: Run) -> str:
@@ -275,35 +272,61 @@ def record_reading(run: Run) -> str:
     return f"{len(fetched)} fetch(es), {refused} refused"
 
 
+def current_page(run: Run) -> pages.Page:
+    """Returns the day's page, read from disk the first time a step asks.
+
+    A later run of the same date starts from what is published, so the write
+    step keeps what earlier runs decided unless it says otherwise.
+    """
+    if run.page is None:
+        path = paths.DIGEST.path(day=run.day)
+        run.page = (
+            pages.from_markdown(run.day, path.read_text(encoding="utf-8"))
+            if path.exists()
+            else pages.Page(day=run.day)
+        )
+    return run.page
+
+
+def save_page(run: Run, page: pages.Page) -> None:
+    """Renders the page to the day's digest, the one place a digest is written."""
+    run.page = page
+    path = paths.DIGEST.path(day=run.day)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(pages.render(page), encoding="utf-8")
+
+
 def dedup(run: Run) -> str:
     """Drops stories the archive already carries, before anything records them.
 
     The gate rejects a page that republishes, and a rejection withholds the
-    whole day, so the pipeline filters first: the republished blocks go, the
+    whole day, so the pipeline filters first: the republished stories go, the
     rest of the day stands, and the gate stays the backstop for what this step
-    misses.
+    misses. Follow-ups stay, because tracking published stories is their job.
     """
-    path = paths.DIGEST.path(day=run.day)
-    if not path.exists():
+    if not paths.DIGEST.path(day=run.day).exists():
         raise Skipped(f"no digest for {run.day}")
-    prior = (p.read_text(encoding="utf-8") for p in paths.DIGEST.glob() if p.stem < run.day)
-    filtered, dropped = filter_republished(path.read_text(encoding="utf-8"), prior)
+    page = current_page(run)
+    published = pages.published_primaries(
+        p.read_text(encoding="utf-8") for p in paths.DIGEST.glob() if p.stem < run.day
+    )
+    dropped = [
+        story
+        for story in page.stories
+        if not pages.is_followup(story) and pages.primary(story) in published
+    ]
     if not dropped:
         raise Skipped("no story republishes the archive")
-    path.write_text(filtered, encoding="utf-8")
-    return f"dropped {len(dropped)} republished: {', '.join(dropped)}"
+    for story in dropped:
+        page.stories.remove(story)
+    save_page(run, page)
+    return f"dropped {len(dropped)} republished: {', '.join(str(s.get('title')) for s in dropped)}"
 
 
 def prune(run: Run) -> str:
     if compact_run_logs():
         raise StepError("could not compact logs past the detail window")
     return "compacted logs past the detail window"
-
-
-def format(run: Run) -> str:
-    if fmt_run(run.day):
-        raise StepError("could not put the run's output in canonical form")
-    return "canonical form applied"
 
 
 def gate(run: Run) -> str:
@@ -369,8 +392,7 @@ def record_run(run: Run) -> str:
 
     A digest is a public artifact, so how it was made belongs in the repository
     rather than in an Actions log that expires: which stages ran, which failed
-    and why, what they cost, which tools they called, and what the write guard
-    refused.
+    and why, what they cost, and which tools they called.
 
     Placed immediately before ``commit``, so it sees every earlier step. It
     cannot record its own outcome or the commit's, and a run that fails at the
@@ -405,12 +427,6 @@ def record_run(run: Run) -> str:
             for result in run.results
         ],
     }
-    denied = hooks.denials()
-    if denied:
-        # A refused write is the write guard working, and belongs in the record
-        # as visibly as a step that failed.
-        entry["denied_writes"] = dict(sorted(denied.items()))
-
     load, save = (
         (runs.load_weekly_marker, runs.save_weekly_marker)
         if run.mode == "improve"
@@ -426,8 +442,6 @@ def record_run(run: Run) -> str:
     detail = f"{len(entry['steps'])} step(s)"
     if failed:
         detail += f", failed: {', '.join(failed)}"
-    if denied:
-        detail += f", {sum(denied.values())} write(s) denied"
     return detail
 
 

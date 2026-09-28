@@ -31,9 +31,8 @@ Two steps own the mechanical parts, and you judge only the exceptions.
   for the day.
 - `mechanical.backtest`: written by the next day's first `backtest`.
 
-The `judgment` subtree is what a run decided rather than what it measured. The
-write guard grants the write step the digest and nothing else, so nothing here is
-filled with an editor. A code step merges each key from a field of the select
+The `judgment` subtree is what a run decided rather than what it measured. No
+step writes a file, so nothing here is filled with an editor. A code step merges each key from a field of the select
 step's structured output:
 
 - `judgment.notes`: degraded sources, unusual calls, anything the weekly routine

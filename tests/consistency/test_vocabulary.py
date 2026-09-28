@@ -1,7 +1,7 @@
 """The document vocabulary has one source, and everything downstream agrees.
 
 Sections, categories, statuses, and the Top stories cap could exist in four
-places: the skeleton generator, the content gate, the selection schema, and the
+places: the page renderer, the content gate, the output schemas, and the
 write prompt. Four copies of one rule is three chances to drift, and the copy
 that drifts is the one that stops matching what the gate accepts.
 """
@@ -12,22 +12,10 @@ from swe_digest import paths
 from swe_digest.domain import document, schemas
 from swe_digest.llm import catalog, prompts, specs
 from swe_digest.paths import ROOT
-from swe_digest.publish import skeleton as new
 
 # Every check here reads the real repository on purpose: that is the drift
 # these tests exist to catch.
 pytestmark = pytest.mark.repo
-
-
-def test_the_skeleton_is_generated_from_the_vocabulary() -> None:
-    body = new.body()
-
-    for section in document.SECTIONS:
-        assert f"## {section}" in body
-    for category in document.CATEGORIES:
-        assert category in body
-    for source in document.SOURCES_CHECKED:
-        assert f"- {source}" in body
 
 
 def test_the_selection_schema_constrains_the_model_to_the_vocabulary() -> None:
@@ -58,10 +46,7 @@ def test_the_rendered_prompt_carries_the_real_vocabulary() -> None:
     assert " | ".join(document.CATEGORIES) in text
     assert " | ".join(document.STORY_STATUSES) in text
     assert f"3 to {document.MAX_TOP_STORIES} items" in text
-    # The whole story shape, so a field the gate requires cannot go missing
-    # from the instructions: the write step would then produce a digest the
-    # gate rejects on every run.
-    assert document.story_shape() in text
+    assert f"{document.BLURB_MIN_CHARS} to {document.BLURB_MAX_CHARS} characters" in text
     assert f"{document.MAX_STORIES} stories" in text
     assert f"{document.MAX_SECTION_STORIES} in any section" in text
     assert "{{" not in text

@@ -1,7 +1,10 @@
 # Step: review
 
 Read the day's digest and report what fails, as structured output. You do not
-edit it, because the write step applies your findings.
+edit it, because the repair step applies your findings. The task hands you the
+page with each story's `id`. Give every finding about one story that story's
+`id`: after the last repair, a story still named by a blocking finding is
+withheld from the page, and a finding without an `id` can only be recorded.
 
 Check against the gate below. `run_gate` covers the mechanical rules: section
 order, story shape, duplicate titles and URLs, the Top stories cap,
@@ -24,7 +27,6 @@ Before publishing, verify:
   digest is the day's best, not its earliest. A page at the budget full of
   marginal items is a worse failure than a short one, so name the blocks to
   drop.
-- Every story has at least one source.
 - Primary sources precede discussion links.
 - Every HN link's item id is one the day's fetch saw. `Grep` each id in
   `.cache/hn/YYYY-MM-DD.json`, or in `data/snapshots/hn/YYYY-MM-DD.json` when the

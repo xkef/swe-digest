@@ -29,9 +29,9 @@ MAX_TURNS_CEILING = 80
 class StageSpec:
     """One model-driven stage: its prompt, tool grant, and turn bound.
 
-    ``allowed_tools`` is the complete grant. ``Bash`` appears in no stage,
-    because git, formatting, and the gate run from ``pipeline`` as deterministic
-    code the model cannot steer.
+    ``allowed_tools`` is the complete grant. No stage holds ``Bash`` or a tool
+    that writes a file, because git, rendering, the gate, and every write run
+    from ``pipeline`` as deterministic code the model cannot steer.
     """
 
     name: str
@@ -39,9 +39,6 @@ class StageSpec:
     allowed_tools: tuple[str, ...]
     max_turns: int
     schema: SchemaName | None = None
-    # Whether this step may write the day's digest. Every other path is denied
-    # by the write guard, and a step that writes nothing declares nothing.
-    writes_digest: bool = False
 
     @property
     def prompt_path(self) -> str:
@@ -55,9 +52,9 @@ _COLLECT_TOOLS = tuple(qualified(tool.name) for tool in FETCH_TOOLS)
 # The grant per step, and the only place a grant is written. Config supplies the
 # model, the prompt, the schema, and the turn bound, and can supply no tool.
 #
-# Only `improve:memory` writes anything, through the memory tools. The other two
-# improvement steps produce proposals that the owner-approval path turns into
-# pull requests, so they hold no write tool.
+# No step writes a file. The write and repair steps return the page as data and
+# code renders it. `improve:memory` changes memory only through the typed memory
+# tools, and the other two improvement steps return proposals.
 GRANTS: dict[str, tuple[str, ...]] = {
     "select": (
         "Read",
@@ -72,10 +69,17 @@ GRANTS: dict[str, tuple[str, ...]] = {
     ),
     "write": (
         "Read",
-        "Edit",
-        "Write",
+        "Grep",
         qualified("guidance"),
-        qualified("run_gate"),
+        qualified("memory_query"),
+    ),
+    # fetch_url because a finding that a claim outruns its source is repaired
+    # by reading the source again.
+    "repair": (
+        "Read",
+        "Grep",
+        qualified("guidance"),
+        qualified("fetch_url"),
         qualified("memory_query"),
     ),
     # fetch_url because the review's whole job is judging whether a claim is
@@ -97,19 +101,20 @@ GRANTS: dict[str, tuple[str, ...]] = {
     "improve:profile": ("Read", "Grep", qualified("memory_query"), qualified("issue_inbox")),
 }
 
-# The one step that may put bytes in the digest.
-WRITES_DIGEST = "write"
-
 # What no step may ever hold. A stage that regained any of these would have a
-# shell back, or would bypass the audited fetch proxy, and the grants would stop
-# meaning anything. Named once so the dry run and the test read the same list.
+# shell back, would write a file code did not render, or would bypass the
+# audited fetch proxy, and the grants would stop meaning anything. Named once
+# so the dry run and the test read the same list.
 UNGRANTABLE: tuple[str, ...] = (
     "Bash",
     "BashOutput",
+    "Write",
+    "Edit",
+    "MultiEdit",
+    "NotebookEdit",
     "WebFetch",
     "WebSearch",
     "Task",
-    "NotebookEdit",
 )
 
 
@@ -132,7 +137,6 @@ def _stage(name: str, settings: dict[str, Any]) -> StageSpec:
         allowed_tools=GRANTS[name],
         max_turns=min(int(settings["max_turns"]), MAX_TURNS_CEILING),
         schema=schema,
-        writes_digest=name == WRITES_DIGEST,
     )
 
 
@@ -141,5 +145,5 @@ STAGES: dict[str, StageSpec] = {
 }
 
 # The daily run. The improvement steps run on their own schedule.
-STAGE_ORDER: tuple[str, ...] = ("select", "write", "review")
+STAGE_ORDER: tuple[str, ...] = ("select", "write", "review", "repair")
 IMPROVE_ORDER: tuple[str, ...] = ("improve:memory", "improve:watchlist", "improve:profile")

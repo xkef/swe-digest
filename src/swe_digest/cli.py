@@ -71,12 +71,6 @@ _FORWARDING: tuple[tuple[str, str, str, dict[str, dict[str, Any]]], ...] = (
         {},
     ),
     (
-        "new-digest",
-        "create the daily digest skeleton",
-        "swe_digest.publish.skeleton",
-        {"day": _DAY},
-    ),
-    (
         "run-log",
         "write the day's machine-readable run log",
         "swe_digest.stages.run_log",
@@ -126,12 +120,6 @@ def _call(module: str, *fields: str) -> Handler:
 
 #
 # One function per command that does more than pass arguments through.
-
-
-def _fmt_run(args: argparse.Namespace) -> int:
-    from swe_digest.publish.format import fmt_run
-
-    return fmt_run(args.date or _today(), check=args.check)
 
 
 def _runs_show(args: argparse.Namespace) -> int:
@@ -271,13 +259,6 @@ def build_parser() -> argparse.ArgumentParser:
             forwarded.add_argument(flag, **options)
         fields = tuple(flag.lstrip("-").replace("-", "_") for flag in arguments)
         forwarded.set_defaults(handler=_call(module, *fields))
-
-    fmt_run = sub.add_parser("fmt-run", help="put a run's own output in canonical form")
-    fmt_run.add_argument("date", nargs="?", help="YYYY-MM-DD, default today UTC")
-    fmt_run.add_argument(
-        "--check", action="store_true", help="report what is not canonical, write nothing"
-    )
-    fmt_run.set_defaults(handler=_fmt_run)
 
     publish = sub.add_parser("publish", help="validate and publish an unattended run")
     publish.set_defaults(handler=_publish)

@@ -12,6 +12,8 @@ The vocabulary comes from ``domain.document``, the one place it is written.
 from typing import Any, Literal, get_args
 
 from swe_digest.domain.document import (
+    BLURB_MAX_CHARS,
+    BLURB_MIN_CHARS,
     CATEGORIES,
     MAX_STORIES,
     MAX_TOP_STORIES,
@@ -23,7 +25,7 @@ from swe_digest.domain.vocab import CAUSES
 # Which structured shape a stage returns, and the key ``BY_NAME`` is read with.
 # Here rather than with the step specs, because the schema decides the shape and
 # a spec only names one.
-SchemaName = Literal["selection", "review", "proposals"]
+SchemaName = Literal["selection", "page", "repair", "review", "proposals"]
 
 SCHEMA_NAMES: tuple[str, ...] = get_args(SchemaName)
 
@@ -134,6 +136,114 @@ SELECTION: dict[str, Any] = {
     "additionalProperties": False,
 }
 
+# One story as the page carries it. The write and repair stages return these,
+# and ``domain.page`` renders them, so the story shape and the card band are a
+# precondition of the output rather than a rule the gate finds broken after the
+# page is written. ``id`` names a story already on the page: keep it to keep or
+# change that story, omit it for a new one.
+PAGE_STORY: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "id": {"type": "string", "description": "the id of a story already on the page"},
+        "section": {"type": "string", "enum": [s for s in SECTIONS if s != "Sources checked"]},
+        "title": {"type": "string"},
+        "category": {"type": "string", "enum": list(CATEGORIES)},
+        "status": {"type": "string", "enum": list(STORY_STATUSES)},
+        "sources": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "label": {"type": "string", "description": "primary, discussion, paper"},
+                    "url": {"type": "string", "description": "copied, never retyped"},
+                },
+                "required": ["label", "url"],
+                "additionalProperties": False,
+            },
+            "description": "primary source first",
+        },
+        "channel": {"type": "string", "description": "New videos only: the snapshot metadata"},
+        "blurb": {"type": "string", "minLength": BLURB_MIN_CHARS, "maxLength": BLURB_MAX_CHARS},
+        "summary": {"type": "string"},
+        "comments": {"type": "string"},
+        "why_it_matters": {"type": "string"},
+        "follow_up": {"type": "string"},
+    },
+    "required": [
+        "section",
+        "title",
+        "category",
+        "status",
+        "sources",
+        "blurb",
+        "summary",
+        "why_it_matters",
+    ],
+    "additionalProperties": False,
+}
+
+_DROPPED: dict[str, Any] = {
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "id": {"type": "string"},
+            "reason": {"type": "string", "description": "one clause, published in Sources checked"},
+        },
+        "required": ["id", "reason"],
+        "additionalProperties": False,
+    },
+}
+
+# The whole day as the write step leaves it. Code renders it, counts its
+# sources, and restores any earlier story the output left out without naming
+# it in ``removed``, so a later run cannot lose a published story by omission.
+PAGE: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "stories": {
+            "type": "array",
+            "items": PAGE_STORY,
+            "description": "every story on the page, in rank order within each section",
+        },
+        "removed": {
+            **_DROPPED,
+            "description": "stories already on the page that this run takes off it",
+        },
+        "sources_checked": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "one line per source, then the notes a reader needs",
+        },
+        "lede": {"type": "string", "description": "empty unless the day has a through-line"},
+    },
+    "required": ["stories", "sources_checked"],
+    "additionalProperties": False,
+}
+
+# A repair touches only what the review named: a replacement for a story by
+# id, or a drop with its reason. Everything else on the page stays as it is.
+REPAIR: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "stories": {
+            "type": "array",
+            "items": {**PAGE_STORY, "required": [*PAGE_STORY["required"], "id"]},
+            "description": "the corrected stories, each replacing the story with its id",
+        },
+        "dropped": {**_DROPPED, "description": "stories to take off the page"},
+        "sources_checked": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "the whole list, only when a finding is about it",
+        },
+        "lede": {"type": "string", "description": "only when a finding is about it"},
+    },
+    "required": ["stories", "dropped"],
+    "additionalProperties": False,
+}
+
 REVIEW: dict[str, Any] = {
     "type": "object",
     "properties": {
@@ -144,6 +254,10 @@ REVIEW: dict[str, Any] = {
                 "type": "object",
                 "properties": {
                     "severity": {"type": "string", "enum": ["blocking", "minor"]},
+                    "id": {
+                        "type": "string",
+                        "description": "the story's id, when the finding is about one story",
+                    },
                     "where": {"type": "string", "description": "section or story title"},
                     "detail": {"type": "string"},
                 },
@@ -185,6 +299,8 @@ PROPOSALS: dict[str, Any] = {
 
 BY_NAME: dict[SchemaName, dict[str, Any]] = {
     "selection": SELECTION,
+    "page": PAGE,
+    "repair": REPAIR,
     "review": REVIEW,
     "proposals": PROPOSALS,
 }
