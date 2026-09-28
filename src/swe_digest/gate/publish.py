@@ -1,131 +1,150 @@
-"""Applies and publishes an unattended run produced by the read-only agent job.
+"""Publishes an unattended run produced by the read-only agent job.
 
-The agent job holds no write token. It commits locally, exports the commits as
-``.run/run.patch``, and requests side effects in ``.run/manifest.json``. This
-module runs in the publish job, which does hold the write token, and applies
-both only after deterministic validation, so a prompt-injected agent cannot push
-outside the allowlist or act on issues that fail the API-field checks.
+The agent job holds no write token. It leaves the files it changed under
+``.run/files/``, at their repository paths, and requests side effects in
+``.run/manifest.json``. This module runs in the publish job, which does hold the
+write token, and acts on both only after deterministic validation, so a
+prompt-injected agent cannot publish outside the allowlist or act on issues
+that fail the API-field checks.
+
+The run hands over files, not commits. The publish job copies each allowlisted
+regular file into its own checkout and builds the one commit itself, so there
+is no commit message, file mode, or history from the agent job to validate.
 
 Every git and gh call crosses the ``GitGh`` adapter, which the entry points
 inject, so these checks are testable against an in-memory fake.
 """
 
+import hashlib
 import re
-from functools import partial
+import shutil
 from pathlib import Path
 
 from swe_digest import paths, settings
-from swe_digest.adapters.vcs import GitGh, commit_addition, parse_changes, working_addition
+from swe_digest.adapters.vcs import GitGh, parse_changes, working_addition
 from swe_digest.domain.document import slugify
 from swe_digest.domain.patch import PatchError, anchor
-from swe_digest.gate._manifest import IssueClose, NewIssue, load_manifest
+from swe_digest.gate._manifest import IssueClose, Proposal, load_manifest
 
 REPO = settings.REPO
 OWNER = settings.OWNER
 SITE = settings.SITE
 
-MAX_COMMITS = settings.PUBLISH_MAX_COMMITS
-SUBJECTS = [
-    re.compile(r"^chore: (publish|update) digest for \d{4}-\d{2}-\d{2}$"),
-    re.compile(r"^chore: weekly improvement review \d{4}-\d{2}-\d{2}$"),
-]
-# What a run's commit may carry, and what it may propose, both from paths.py.
+# What a run may publish, and what it may propose, both from paths.py.
 MEMORY_FILES = paths.MEMORY_STORES
 ALLOWED_PATHS = [family.pattern for family in paths.PUBLISHABLE]
 IMPROVEMENT_FILES = paths.IMPROVEMENT_FILES
+# The directories a run's files land in. Staging names these rather than the
+# whole tree, so a file the build or the check leaves behind cannot ride along.
+PUBLISH_DIRS = ("data/digests", "data/runs", "data/memory")
 REPO_URL = f"https://github.com/{REPO}"
 COMMENT_MAX_CHARS = settings.PUBLISH_COMMENT_MAX_CHARS
-# Approval must lead a line ("approved" / "approve" / "/approve"), so a
-# negation like "this is not approved yet" does not satisfy the gate.
-APPROVAL = re.compile(r"^\s*/?approved?\b", re.I | re.M)
 # An outsider approval must be the command form, so prose like "Approve of the
 # idea, but hold off" never fires.
 COMMAND_APPROVAL = re.compile(r"\A\s*/approved?\b", re.I)
-# Regular file and executable only. A symlink (120000) or gitlink (160000)
-# staged at an allowed path could publish the target's bytes, such as a
-# persisted token.
-ALLOWED_MODES = {"100644", "100755"}
-DIFF_BLOCK = re.compile(r"```diff\n(.*?)```", re.S)
 HUNK = re.compile(r"^@@.*$", re.M)
 RANGED_HUNK = re.compile(r"^@@ -\d+(?:,\d+)? \+\d+(?:,\d+)? @@")
 URL = re.compile(r"https?://[^\s)\"'<>]+")
 
+PROPOSAL_BODY = """Opened by the weekly improvement run. Merging this pull request is the
+approval, and closing it is the rejection.
 
-def check_paths(entries: list[tuple[str, str]], scope: str) -> None:
-    """Rejects a disallowed file mode or a path outside the publish allowlist.
+- **Axis:** {axis}
+- **Evidence:** {evidence}
+- **Expected effect:** {expected_effect}
+- **Rollback:** {rollback}
 
-    Runs per commit rather than on the cumulative HEAD diff, because a file
-    added in one commit and deleted in another never shows in the net diff and
-    still lands in main's history.
+```diff
+{diff}
+```
+
+The publish job ran `make check` on this branch before opening it. Pull requests
+opened with the workflow token do not trigger CI, so re-run CI from the Actions
+tab if the base has moved.
+"""
+
+
+def check_path(relative: str) -> None:
+    if not any(pattern.match(relative) for pattern in ALLOWED_PATHS):
+        raise SystemExit(f"path outside the publish allowlist: {relative}")
+
+
+def artifact_files(root: Path) -> list[str]:
+    """Returns the repo-relative files an artifact carries, or refuses it.
+
+    Only regular files at allowlisted paths. A symlink at an allowed path would
+    publish its target's bytes, such as a persisted token, and a symlinked
+    directory would reach outside the artifact, so either stops the publish.
     """
-    for mode, path in entries:
-        if mode not in ALLOWED_MODES:
-            raise SystemExit(f"disallowed file mode {mode} for {path} ({scope})")
-        if not any(p.match(path) for p in ALLOWED_PATHS):
-            raise SystemExit(f"path outside the publish allowlist: {path} ({scope})")
-
-
-def added_entries(gh: GitGh, *rev: str) -> list[tuple[str, str]]:
-    """Returns (dst_mode, path) for every added or modified file in a range."""
-    entries: list[tuple[str, str]] = []
-    for line in gh.sh("git", "diff", "--raw", *rev).splitlines():
-        if not line.startswith(":"):
+    found: list[str] = []
+    for path in sorted(root.rglob("*")):
+        relative = path.relative_to(root).as_posix()
+        if path.is_symlink():
+            raise SystemExit(f"artifact carries a symlink: {relative}")
+        if path.is_dir():
             continue
-        meta, _, path = line.partition("\t")
-        dst_mode = meta[1:].split()[1]
-        if dst_mode == "000000":
-            continue
-        entries.append((dst_mode, path))
-    return entries
+        if not path.is_file():
+            raise SystemExit(f"artifact carries a non-regular file: {relative}")
+        check_path(relative)
+        found.append(relative)
+    return found
 
 
-def apply(patch: str, gh: GitGh | None = None) -> None:
-    gh = gh or GitGh()
-    gh.sh("git", "config", "user.name", "swe-digest-publisher")
-    gh.sh("git", "config", "user.email", "actions@users.noreply.github.com")
-    gh.sh("git", "am", patch)
-    subjects = gh.sh("git", "log", "--format=%s", "origin/main..HEAD").splitlines()
-    if not 1 <= len(subjects) <= MAX_COMMITS:
-        raise SystemExit(f"expected 1 to {MAX_COMMITS} commits, got {len(subjects)}")
-    for subject in subjects:
-        if len(subject) > 72 or not any(p.match(subject) for p in SUBJECTS):
-            raise SystemExit(f"commit subject not allowed: {subject!r}")
-    commits = gh.sh("git", "rev-list", "--reverse", "origin/main..HEAD").split()
-    for commit in commits:
-        check_paths(added_entries(gh, f"{commit}^", commit), f"commit {commit[:9]}")
-    files = gh.sh("git", "diff", "--name-only", "origin/main..HEAD").split()
-    print(f"apply ok ({len(subjects)} commit(s), {len(files)} file(s))")
+def apply(run_dir: str, root: Path | None = None) -> list[str]:
+    """Copies the run's files into the checkout after checking every one."""
+    source = Path(run_dir) / "files"
+    target = root or paths.ROOT
+    files = artifact_files(source) if source.is_dir() else []
+    if not files:
+        raise SystemExit("the run carries no files to publish")
+    for relative in files:
+        destination = target / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source / relative, destination)
+    print(f"apply ok ({len(files)} file(s))")
+    return files
 
 
-def commit_message(gh: GitGh, commit: str) -> dict:
-    headline, _, body = gh.sh("git", "log", "-1", "--format=%B", commit).strip().partition("\n")
-    message = {"headline": headline.strip()}
-    if body.strip():
-        message["body"] = body.strip()
-    return message
+def subject(gh: GitGh, changed: list[str]) -> str:
+    """Returns the commit subject, from what the commit carries.
+
+    ``publish`` for the day's first digest, ``update`` for a later run of the
+    same date, and one subject for the improvement run's weekly marker.
+    """
+    digests = sorted(p for p in changed if paths.DIGEST.matches(p))
+    if digests:
+        day = Path(digests[-1]).stem
+        already = gh.run("git", "cat-file", "-e", f"HEAD:{digests[-1]}").returncode == 0
+        return f"chore: {'update' if already else 'publish'} digest for {day}"
+    weekly = sorted(p for p in changed if paths.WEEKLY_LOG.matches(p))
+    if weekly:
+        return f"chore: weekly improvement review {Path(weekly[-1]).stem}"
+    return "chore: update run records"
 
 
 def push(gh: GitGh | None = None, head_file: str | None = None) -> None:
-    """Recreates each applied commit on main as a signed Verified commit.
+    """Commits the applied files to main as one signed Verified commit.
 
-    With ``head_file``, writes the oid of the last landed commit there, so the
+    With ``head_file``, writes the oid of the landed commit there, so the
     caller can dispatch the site deploy against the exact tree that landed.
     Re-reading main can still return the pre-push head.
     """
     gh = gh or GitGh()
-    commits = gh.sh("git", "rev-list", "--reverse", "origin/main..HEAD").split()
-    if not commits:
+    gh.sh("git", "add", "--", *PUBLISH_DIRS)
+    status = gh.sh("git", "diff", "--cached", "--name-status", "-z")
+    additions, deletions = parse_changes(status, working_addition)
+    changed = [entry["path"] for entry in [*additions, *deletions]]
+    if not changed:
         print("nothing to push")
         return
-    for commit in commits:
-        additions, deletions = parse_changes(
-            gh.sh("git", "diff", "--name-status", "-z", f"{commit}^", commit),
-            partial(commit_addition, gh, commit),
-        )
-        head = gh.commit_on_branch(REPO, "main", commit_message(gh, commit), additions, deletions)
+    for relative in changed:
+        check_path(relative)
+    head = gh.commit_on_branch(
+        REPO, "main", {"headline": subject(gh, changed)}, additions, deletions
+    )
     if head_file:
         Path(head_file).write_text(head + "\n")
-    print(f"push ok ({len(commits)} verified commit(s))")
+    print(f"push ok ({len(changed)} file(s))")
 
 
 def check_comment(number: int, comment: str) -> None:
@@ -135,13 +154,6 @@ def check_comment(number: int, comment: str) -> None:
         allowed = url.startswith(SITE) or url == REPO_URL or url.startswith(f"{REPO_URL}/")
         if not allowed:
             raise SystemExit(f"comment for #{number} links outside the site/repo: {url}")
-
-
-def owner_approved(gh: GitGh, number: int) -> bool:
-    comments = gh.gh_json(f"repos/{REPO}/issues/{number}/comments")
-    return any(
-        c["author_association"] == "OWNER" and APPROVAL.search(c["body"] or "") for c in comments
-    )
 
 
 def outsider_approved(gh: GitGh, number: int) -> bool:
@@ -181,22 +193,6 @@ def close_issue(gh: GitGh, entry: IssueClose) -> None:
     print(f"closed #{number}")
 
 
-def create_issue(gh: GitGh, entry: NewIssue) -> None:
-    title, body, labels = entry.title, entry.body, list(entry.labels)
-    if not set(labels) <= {"improvement"}:
-        raise SystemExit(f"label not allowed on new issue: {labels}")
-    if (
-        len(title) > settings.PUBLISH_ISSUE_TITLE_MAX_CHARS
-        or len(body) > settings.PUBLISH_ISSUE_BODY_MAX_CHARS
-    ):
-        raise SystemExit("new issue exceeds size limits")
-    args = ["gh", "issue", "create", "--repo", REPO, "--title", title, "--body", body]
-    for label in labels:
-        args += ["--label", label]
-    gh.sh(*args)
-    print(f"created issue: {title}")
-
-
 def read_proposable(path: str) -> str:
     """Returns a file a proposal may change, and refuses every other file."""
     if path not in IMPROVEMENT_FILES:
@@ -221,70 +217,94 @@ def applicable(diff: str) -> str:
         raise SystemExit(f"improvement diff does not apply: {error}") from None
 
 
-def improvement_pr(gh: GitGh, number: int) -> None:
-    issue = gh.gh_json(f"repos/{REPO}/issues/{number}")
-    labels = {label["name"] for label in issue["labels"]}
-    if "improvement" not in labels or issue["state"] != "open":
-        raise SystemExit(f"issue #{number} is not an open improvement issue")
-    if not owner_approved(gh, number):
-        raise SystemExit(f"issue #{number} has no owner approval comment")
-    block = DIFF_BLOCK.search(issue["body"] or "")
-    if not block:
-        raise SystemExit(f"issue #{number} body has no fenced diff block")
-    slug = slugify(issue["title"])[:40]
-    branch = f"improvement/{number}-{slug}"
+def change_set(diff: str) -> frozenset[str]:
+    """Returns the configuration lines a diff adds and removes.
+
+    Header lines and comment lines are left out, so two proposals that differ
+    only in their explanation compare equal. A proposal repeated week after
+    week has the same change set, which is what names its branch.
+    """
+    changes = set()
+    for line in diff.splitlines():
+        if line.startswith(("+++", "---")) or line[:1] not in {"+", "-"}:
+            continue
+        text = line[1:].strip()
+        if text and not text.startswith("#"):
+            changes.add(f"{line[0]}{text}")
+    return frozenset(changes)
+
+
+def branch_name(proposal: Proposal) -> str:
+    digest = hashlib.sha256("\n".join(sorted(change_set(proposal.diff))).encode()).hexdigest()
+    return f"improvement/{slugify(proposal.title)[:40]}-{digest[:8]}"
+
+
+def proposal_pr(gh: GitGh, proposal: Proposal) -> None:
+    """Opens a pull request for one proposal, touching only the config files.
+
+    The owner's merge is the approval. The diff is applied in this checkout,
+    held to the three proposable files, and checked with ``make check`` before
+    the branch exists, so a proposal that does not apply or breaks the build
+    never reaches the owner.
+    """
+    title = f"chore(config): {proposal.title}"[: settings.PUBLISH_PR_TITLE_MAX_CHARS]
+    body = PROPOSAL_BODY.format(
+        axis=proposal.axis,
+        evidence=proposal.evidence,
+        expected_effect=proposal.expected_effect,
+        rollback=proposal.rollback,
+        diff=proposal.diff.strip(),
+    )
+    if len(body) > settings.PUBLISH_PR_BODY_MAX_CHARS:
+        raise SystemExit(f"proposal '{proposal.title}' exceeds the body size limit")
+    branch = branch_name(proposal)
+    if gh.run("gh", "api", f"repos/{REPO}/git/refs/heads/{branch}").returncode == 0:
+        print(f"skipped '{proposal.title}': {branch} already exists")
+        return
     base_oid = gh.branch_oid(REPO, "main")
-    gh.sh("git", "switch", "-c", branch, "origin/main")
-    gh.sh("git", "apply", "--index", "-", stdin=applicable(block.group(1)))
-    files = gh.sh("git", "diff", "--cached", "--name-only").split()
-    bad = set(files) - IMPROVEMENT_FILES
-    if bad or not files:
-        raise SystemExit(f"improvement diff touches disallowed files: {sorted(bad)}")
-    for mode, path in added_entries(gh, "--cached"):
-        if mode not in ALLOWED_MODES:
-            raise SystemExit(f"improvement diff stages disallowed file mode {mode} for {path}")
-    gh.sh("make", "check")
-    additions, deletions = parse_changes(
-        gh.sh("git", "diff", "--cached", "--name-status", "-z"), working_addition
-    )
+    # Start from main as checked out. The run's files are already on main
+    # through the API, and none of them is a proposable file.
+    gh.sh("git", "reset", "-q", "--hard")
+    gh.sh("git", "switch", "-q", "-c", branch)
+    try:
+        gh.sh("git", "apply", "--index", "-", stdin=applicable(proposal.diff))
+        files = gh.sh("git", "diff", "--cached", "--name-only").split()
+        bad = set(files) - IMPROVEMENT_FILES
+        if bad or not files:
+            raise SystemExit(f"improvement diff touches disallowed files: {sorted(bad)}")
+        gh.sh("make", "check")
+        additions, deletions = parse_changes(
+            gh.sh("git", "diff", "--cached", "--name-status", "-z"), working_addition
+        )
+    finally:
+        gh.sh("git", "reset", "-q", "--hard")
+        gh.sh("git", "switch", "-q", "-")
     gh.sh(
-        "gh",
-        "api",
-        f"repos/{REPO}/git/refs",
-        "-f",
-        f"ref=refs/heads/{branch}",
-        "-f",
-        f"sha={base_oid}",
-    )
-    gh.commit_on_branch(
-        REPO, branch, {"headline": f"chore: apply improvement #{number}"}, additions, deletions
-    )
-    gh.sh("git", "switch", "main")
+        "gh", "api", f"repos/{REPO}/git/refs", "-f", f"ref=refs/heads/{branch}",
+        "-f", f"sha={base_oid}",
+    )  # fmt: skip
+    gh.commit_on_branch(REPO, branch, {"headline": title}, additions, deletions)
     gh.sh(
-        "gh",
-        "pr",
-        "create",
-        "--repo",
-        REPO,
-        "--base",
-        "main",
-        "--head",
-        branch,
-        "--title",
-        f"chore: apply improvement #{number}",
-        "--body",
-        f"Applies the approved diff from #{number}. Review and merge manually.",
-    )
-    print(f"opened improvement PR for #{number}")
+        "gh", "pr", "create", "--repo", REPO, "--base", "main", "--head", branch,
+        "--title", title, "--body", body, "--label", "improvement",
+    )  # fmt: skip
+    print(f"opened improvement PR: {title}")
 
 
 def side_effects(path: str, gh: GitGh | None = None) -> None:
+    """Acts on the manifest. A proposal that fails is reported and the rest go on,
+    and the step still fails at the end so the failure alert sees it."""
     gh = gh or GitGh()
     manifest = load_manifest(Path(path))
     for entry in manifest.issue_closes:
         close_issue(gh, entry)
-    for issue in manifest.new_issues:
-        create_issue(gh, issue)
-    for number in manifest.improvement_prs:
-        improvement_pr(gh, number)
+    failed: list[str] = []
+    for proposal in manifest.proposals:
+        try:
+            proposal_pr(gh, proposal)
+        except SystemExit as error:
+            print(f"proposal '{proposal.title}' not opened: {error}")
+            failed.append(proposal.title)
+    if failed:
+        raise SystemExit(f"{len(failed)} proposal(s) not opened: {'; '.join(failed)}")
     print("side-effects ok")

@@ -14,6 +14,7 @@ readable in ``pipeline`` alone.
 """
 
 import json
+import shutil
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
@@ -25,9 +26,9 @@ from swe_digest.adapters.vcs import GitGh
 from swe_digest.analysis.backtest import main as score_day
 from swe_digest.analysis.weekly import main as aggregate_window
 from swe_digest.domain import page as pages
+from swe_digest.domain.schemas import PROPOSAL_FIELDS
 from swe_digest.gate.content import main as check_content
 from swe_digest.llm import catalog, net, specs
-from swe_digest.stages import improvements
 from swe_digest.stages.feedback import process as owner_feedback
 from swe_digest.stages.run_log import main as write_run_log
 from swe_digest.store import memory as memory_store
@@ -96,13 +97,9 @@ class Run:
     # four consecutive runs, because the reviewer keeps a floor of objections.
     unresolved: list[str] = field(default_factory=list)
     proposals: list[dict[str, Any]] = field(default_factory=list)
-    # The open improvement issues, which the proposals are checked against.
-    open_improvements: list[dict[str, Any]] = field(default_factory=list)
 
     # What the manifest and the report are built from.
     closes: list[dict[str, Any]] = field(default_factory=list)
-    new_issues: list[dict[str, Any]] = field(default_factory=list)
-    improvement_prs: list[int] = field(default_factory=list)
     results: list[StepResult] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
 
@@ -363,8 +360,8 @@ def manifest(run: Run) -> str:
     Built by code from typed values, never by the model. A run the gate rejected
     asks for nothing: its issues were closed against a digest that will not be
     published, so acting on them would announce a page that does not exist. The
-    workflow guards the side-effects step separately on the run having produced
-    a patch, because each check alone has failed to stop this.
+    workflow guards the side-effects step separately on the run having exported
+    files, because each check alone has failed to stop this.
     """
     run_dir = paths.run_dir()
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -372,19 +369,17 @@ def manifest(run: Run) -> str:
     if run.gate_ok:
         if run.closes:
             manifest["issue_closes"] = run.closes
-        if run.new_issues:
-            manifest["new_issues"] = run.new_issues
-        if run.improvement_prs:
-            manifest["improvement_prs"] = run.improvement_prs
+        if run.proposals:
+            manifest["proposals"] = [
+                {name: str(proposal.get(name, "")) for name in PROPOSAL_FIELDS}
+                for proposal in run.proposals
+            ]
     (run_dir / "manifest.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     if not run.gate_ok:
         return "no side effects: the gate rejected this run"
-    return (
-        f"{len(run.closes)} close(s), {len(run.new_issues)} new issue(s),"
-        f" {len(run.improvement_prs)} improvement PR(s)"
-    )
+    return f"{len(run.closes)} close(s), {len(run.proposals)} proposal(s)"
 
 
 def record_run(run: Run) -> str:
@@ -475,25 +470,15 @@ def committable(day: str, mode: str) -> list[str]:
     return [paths.DIGEST.rel(day=day), *dated_run_logs(), *stores]
 
 
-def subject(run: Run, gh: Any) -> str:
-    """Returns the commit subject, from the ones the gate's regexes accept.
+def export(run: Run) -> str:
+    """Leaves the files this run changed under ``.run/files/``, for the publish job.
 
-    ``publish`` for the day's first digest commit, ``update`` for a later run of
-    the same date, and one subject of its own for the improvement run.
-    """
-    if run.mode == "improve":
-        return f"chore: weekly improvement review {run.day}"
-    digest = paths.DIGEST.rel(day=run.day)
-    already = gh.run("git", "cat-file", "-e", f"HEAD:{digest}").returncode == 0
-    return f"chore: {'update' if already else 'publish'} digest for {run.day}"
-
-
-def commit(run: Run) -> str:
-    """Makes one commit, of exactly the paths the publish gate allows.
-
-    Both reasons to withhold it are stated here rather than in the driver.
-    ``git add`` names the allowlist rather than ``-A``, so a stray file in the
-    working tree cannot ride along.
+    The run hands over files rather than commits, so the publish job has no
+    history, message, or file mode of the agent's to validate: it copies each
+    allowlisted regular file and builds the one commit itself. Both reasons to
+    hand over nothing are stated here rather than in the driver, and the list
+    is the allowlist rather than the working tree, so a stray file cannot ride
+    along.
     """
     if not run.may_commit:
         raise Skipped("--no-commit")
@@ -503,15 +488,20 @@ def commit(run: Run) -> str:
     gh = GitGh()
     present = [path for path in committable(run.day, run.mode) if (paths.ROOT / path).exists()]
     if not present:
-        return "nothing to commit"
+        return "nothing to export"
+    changed = sorted(
+        set(gh.sh("git", "diff", "--name-only", "HEAD", "--", *present).split())
+        | set(gh.sh("git", "ls-files", "--others", "--exclude-standard", "--", *present).split())
+    )
+    if not changed:
+        return "no changes to export"
 
-    gh.sh("git", "add", "--", *present)
-    staged = gh.sh("git", "diff", "--cached", "--name-only").split()
-    if not staged:
-        return "no changes to commit"
-
-    gh.sh("git", "commit", "-m", subject(run, gh))
-    return f"{len(staged)} file(s)"
+    files = paths.run_dir() / "files"
+    for relative in changed:
+        target = files / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(paths.ROOT / relative, target)
+    return f"{len(changed)} file(s)"
 
 
 def prune_memory(run: Run) -> str:
@@ -540,64 +530,3 @@ def weekly_stats(run: Run) -> str:
     if aggregate_window(run.day, None):
         raise StepError(f"could not aggregate the window for {run.day}")
     return f"marker for {run.day}"
-
-
-PROPOSAL_BODY = """- **Axis:** {axis}
-- **Evidence:** {evidence}
-- **Proposed diff:**
-
-```diff
-{diff}
-```
-
-- **Expected effect:** {expected_effect}
-- **Rollback:** {rollback}
-"""
-
-
-def tracker(run: Run) -> str:
-    """Reads the open improvement issues and requests a PR for each approved one.
-
-    The run holds a read-only token, so the PR is requested in the manifest and
-    the publish gate re-verifies the approval before it opens one.
-    """
-    gh = GitGh()
-    # ``GitGh.sh`` exits on a failed call. A tracker that cannot be read must
-    # fail this step, not the run, so the proposals and the commit still happen.
-    try:
-        run.open_improvements = improvements.open_issues(gh)
-        run.improvement_prs, report = improvements.approved(gh, run.open_improvements)
-    except SystemExit as error:
-        run.open_improvements, run.improvement_prs = [], []
-        raise StepError(f"could not read the tracker: {error}") from None
-    report.extend(f"#{number}: approved, PR requested" for number in run.improvement_prs)
-    return f"{len(run.open_improvements)} open; " + ("; ".join(report) or "none approved")
-
-
-def proposals(run: Run) -> str:
-    """Turns the proposal steps' structured output into issue requests.
-
-    Code assembles the body, not the model, so every proposal carries the fields
-    the owner-approval path needs to act on it. A proposal whose change is
-    already open is dropped, because the proposal stages cannot read the
-    tracker and would otherwise file the same change every week.
-    """
-    fresh, dropped = improvements.duplicates(run.proposals, run.open_improvements)
-    for proposal in fresh:
-        run.new_issues.append(
-            {
-                "title": str(proposal.get("title", ""))[: settings.PUBLISH_ISSUE_TITLE_MAX_CHARS],
-                "body": PROPOSAL_BODY.format(
-                    axis=proposal.get("axis", ""),
-                    evidence=proposal.get("evidence", ""),
-                    diff=str(proposal.get("diff", "")).strip(),
-                    expected_effect=proposal.get("expected_effect", ""),
-                    rollback=proposal.get("rollback", ""),
-                )[: settings.PUBLISH_ISSUE_BODY_MAX_CHARS],
-                "labels": ["improvement"],
-            }
-        )
-    detail = f"{len(run.new_issues)} improvement issue(s)"
-    if dropped:
-        detail += ", already open: " + ", ".join(f"#{n}" for n in sorted(set(dropped.values())))
-    return detail

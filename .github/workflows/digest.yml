@@ -1,9 +1,7 @@
 name: Digest
 
 # The whole routine: the schedules, the read-only agent job, and the
-# deterministic publish gate. Replaces daily-digest.yml, weekly-improvement.yml,
-# and the content-run.yml reusable workflow they both called, which existed only
-# to hold the two-job split those two thin callers shared.
+# deterministic publish gate.
 #
 # Daily runs at 01:30/09:50/15:50 UTC. The morning cron is early on purpose:
 # GitHub delays scheduled runs by ~90-110 min and the run plus publish takes
@@ -15,9 +13,9 @@ name: Digest
 # concurrency group covers every mode, so two runs never overlap.
 #
 # The security invariant lives here and nowhere else: the agent job holds a
-# read-only token, commits locally, and exports its work; the publish job holds
-# the write token and applies the run only after swe_digest.gate.publish_run
-# validates it.
+# read-only token and hands over the files it changed; the publish job holds
+# the write token and publishes them only after swe_digest.gate.publish
+# validates them.
 on:
   schedule:
     - cron: "30 1 * * *"
@@ -50,7 +48,7 @@ jobs:
       contents: read
       issues: read
     outputs:
-      has_patch: ${{ steps.export.outputs.has_patch }}
+      has_files: ${{ steps.export.outputs.has_files }}
     env:
       # The Sunday cron is the improvement run; every other trigger is daily.
       MODE: ${{ (github.event.schedule == '30 6 * * 0' || inputs.mode == 'improve') && 'improve' || 'daily' }}
@@ -69,15 +67,11 @@ jobs:
           cache: true
       - name: Install Python deps
         run: python3 -m pip install --require-hashes -r requirements/base.txt
-      - name: Configure git identity
-        run: |
-          git config user.name "swe-digest-agent"
-          git config user.email "actions@users.noreply.github.com"
-
       # One ordered list of steps per mode. Collection, the backtest, feedback,
-      # the run log, formatting, the gate, and the commit are Python; each model
-      # stage gets its own prompt, tool grant, turn bound, and write allowlist,
-      # and no step has a shell. `agent run --dry-run` prints the whole list.
+      # rendering the page, the run log, the gate, and the export are Python;
+      # each model stage gets its own prompt, tool grant, and turn bound, and no
+      # stage has a shell or a tool that writes a file. `agent run --dry-run`
+      # prints the whole list.
       # CLAUDE_CODE_OAUTH_TOKEN bills the subscription, not the API.
       - name: Run the routine
         env:
@@ -90,21 +84,20 @@ jobs:
           PYTHONPATH=src python3 -m swe_digest agent run \
             --mode "$MODE" --day "$(date -u +%F)"
 
-      # always(): a run that times out or fails mid-stage has still done work on
-      # disk — a digest edited, causes seeded, memory written — and without this
-      # the export is skipped and every trace of it dies with the runner. The
-      # patch is the only forensic record of a run that never reached publish.
+      # The routine's export step leaves the files it changed under
+      # .run/files/, and only after a clean gate. always(): the artifact is
+      # also the forensic record of a run that stopped before publishing, so
+      # it uploads with whatever the run left.
       - name: Export run artifact
         id: export
         if: always()
         run: |
           mkdir -p .run
           [ -f .run/manifest.json ] || echo '{}' > .run/manifest.json
-          if [ "$(git rev-list --count origin/main..HEAD)" -gt 0 ]; then
-            git format-patch origin/main --stdout > .run/run.patch
-            echo "has_patch=true" >> "$GITHUB_OUTPUT"
+          if [ -n "$(find .run/files -type f 2>/dev/null)" ]; then
+            echo "has_files=true" >> "$GITHUB_OUTPUT"
           else
-            echo "has_patch=false" >> "$GITHUB_OUTPUT"
+            echo "has_files=false" >> "$GITHUB_OUTPUT"
           fi
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
@@ -120,15 +113,15 @@ jobs:
     # above runs on always() because a run that fails mid-stage has still done
     # work on disk, and until this condition existed the publish job dropped
     # that work anyway: on 2026-08-02 the improvement run failed only at
-    # improve:profile, having already passed the gate and committed the memory
+    # improve:profile, having already passed the gate and exported the memory
     # prune, the weekly marker, and one proposal, and none of it reached main.
     #
-    # Publishing this is what the gate is for, not a relaxation of it. A commit
-    # exists only where `steps.commit` saw a clean content gate, `publish apply`
-    # re-validates every staged path against the allowlist, and `make check`
-    # re-runs the whole gate on the applied tree. `!cancelled()` rather than
+    # Publishing this is what the gate is for, not a relaxation of it. Files
+    # exist only where `steps.export` saw a clean content gate, `publish apply`
+    # re-validates every file against the allowlist, and `make check` re-runs
+    # the whole gate on the applied tree. `!cancelled()` rather than
     # `always()`: a cancelled run is a decision to stop, not a result to apply.
-    if: ${{ !cancelled() && needs.agent.outputs.has_patch == 'true' }}
+    if: ${{ !cancelled() && needs.agent.outputs.has_files == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -154,29 +147,30 @@ jobs:
           name: run
           path: .run
       - name: Apply and push
-        if: needs.agent.outputs.has_patch == 'true'
+        if: needs.agent.outputs.has_files == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          PYTHONPATH=src python3 -m swe_digest publish apply .run/run.patch
+          PYTHONPATH=src python3 -m swe_digest publish apply .run
           make check
           # The head oid goes to RUNNER_TEMP, not .run: the artifact under
           # .run comes from the untrusted agent job, which could pre-seed a
           # file there for the dispatch to read.
           PYTHONPATH=src python3 -m swe_digest publish push "$RUNNER_TEMP/head"
           # Name the commit that actually landed, from the mutation response
-          # `publish push` wrote out. Not `git rev-parse HEAD`: the commit is
-          # built server-side, so the local SHA is never a ref the remote has.
+          # `publish push` wrote out. The commit is built server-side, so no
+          # local SHA is a ref the remote has.
           # Not an API read of main either: on 2026-07-30 that read, made a
           # second after the push, returned the pre-push head, and the deploy
           # went green with a stale tree.
           gh workflow run site.yml -f sha="$(cat "$RUNNER_TEMP/head")"
-      # Guarded on the run having produced a patch. A run whose gate rejected the
-      # digest closes no issue and opens none: its manifest is written empty by
-      # the manifest step for the same reason. Two independent checks, because
-      # either one alone has been enough to let a rejected run touch the tracker.
+      # Guarded on the run having exported files. A run whose gate rejected the
+      # digest closes no issue and opens no pull request: its manifest is
+      # written empty by the manifest step for the same reason. Two independent
+      # checks, because either one alone has been enough to let a rejected run
+      # touch the tracker.
       - name: Side effects
-        if: needs.agent.outputs.has_patch == 'true'
+        if: needs.agent.outputs.has_files == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: PYTHONPATH=src python3 -m swe_digest publish side-effects .run/manifest.json

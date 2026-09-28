@@ -270,6 +270,10 @@ REVIEW: dict[str, Any] = {
     "additionalProperties": False,
 }
 
+# What a proposal carries into the manifest. The publish job builds the pull
+# request from these values, so a run supplies fields and never markup.
+PROPOSAL_FIELDS = ("title", "axis", "evidence", "diff", "expected_effect", "rollback")
+
 PROPOSALS: dict[str, Any] = {
     "type": "object",
     "properties": {
@@ -288,7 +292,7 @@ PROPOSALS: dict[str, Any] = {
                     "expected_effect": {"type": "string"},
                     "rollback": {"type": "string"},
                 },
-                "required": ["axis", "title", "evidence", "diff", "expected_effect", "rollback"],
+                "required": list(PROPOSAL_FIELDS),
                 "additionalProperties": False,
             },
         }

@@ -18,7 +18,7 @@ EVERY_COMMAND = [
     ["commit-snapshot", "a headline"],
     ["check-content"],
     ["check-size"],
-    ["publish", "apply", "run.patch"],
+    ["publish", "apply", ".run"],
     ["publish", "push"],
     ["publish", "side-effects", "manifest.json"],
     ["build-stories"],
@@ -53,7 +53,7 @@ def test_known_commands_parse() -> None:
     # directory and the snapshot directory are all "youtube".
     assert parser.parse_args(["merge", "youtube", "a.json", "b.json"]).kind == "youtube"
     assert parser.parse_args(["merge", "reddit", "a.json", "b.json"]).kind == "reddit"
-    assert parser.parse_args(["publish", "apply", "run.patch"]).patch == "run.patch"
+    assert parser.parse_args(["publish", "apply", ".run"]).run_dir == ".run"
     assert parser.parse_args(["backtest", "2026-07-01", "--min-points", "50"]).min_points == 50
     args = parser.parse_args(["backtest", "--matched-min-points", "25"])
     assert args.matched_min_points == 25

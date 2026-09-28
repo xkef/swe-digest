@@ -48,7 +48,7 @@ def test_a_rejected_run_requests_no_side_effects(
     monkeypatch.setattr(paths, "ROOT", tmp_path)
     state = steps.Run(day="2026-07-25")
     state.closes.append({"number": 3, "comment": "done"})
-    state.new_issues.append({"title": "x", "body": "y", "labels": ["improvement"]})
+    state.proposals.append({"title": "x", "diff": "y"})
 
     detail = steps.manifest(state)
 
@@ -73,10 +73,9 @@ def test_the_manifest_parses_as_the_gate_will_read_it(
         }
     )
 
-    steps.proposals(state)
     steps.manifest(state)
 
     manifest = load_manifest(paths.run_dir() / "manifest.json")
     assert [entry.number for entry in manifest.issue_closes] == [4]
-    assert [issue.labels for issue in manifest.new_issues] == [("improvement",)]
-    assert "```diff" in manifest.new_issues[0].body
+    assert [proposal.title for proposal in manifest.proposals] == ["Add a Zig query"]
+    assert manifest.proposals[0].rollback == "remove the query"

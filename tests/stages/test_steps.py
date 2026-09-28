@@ -154,7 +154,7 @@ def test_the_commit_states_its_own_preconditions(
     state = steps.Run(day="2026-07-25", may_commit=may_commit, gate_ok=gate_ok)
 
     with pytest.raises(steps.Skipped, match=reason):
-        steps.commit(state)
+        steps.export(state)
 
 
 def test_the_commit_is_skipped_when_the_gate_rejects_the_run(
@@ -169,11 +169,11 @@ def test_the_commit_is_skipped_when_the_gate_rejects_the_run(
     monkeypatch.setitem(
         pipeline.PIPELINES,
         "daily",
-        (steps.Code("gate", steps.gate), steps.Code("commit", steps.commit)),
+        (steps.Code("gate", steps.gate), steps.Code("export", steps.export)),
     )
 
     assert pipeline.run("2026-07-25", (), mode="daily") == 1
 
     summary = capsys.readouterr().out
     assert "FAIL gate" in summary
-    assert "skip commit" in summary
+    assert "skip export" in summary

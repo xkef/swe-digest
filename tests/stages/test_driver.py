@@ -270,7 +270,7 @@ def test_a_review_that_never_clears_is_recorded_and_still_publishes() -> None:
     assert pipeline._repair(specs.STAGES["review"], state, ("repair", "review")) == ()
     assert state.unresolved == ["Security / a story"]
     # Recorded, and the commit is not withheld for it.
-    assert steps.commit(state) == "nothing to commit"
+    assert steps.export(state) == "nothing to export"
 
 
 def test_a_story_the_last_review_still_names_is_withheld(at_root: Path) -> None:

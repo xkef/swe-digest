@@ -75,9 +75,9 @@ DAILY: tuple[Step, ...] = (
     Code("gate", steps.gate),
     Code("inbox", steps.inbox_closes),
     Code("manifest", steps.manifest),
-    # Last before the commit, so it sees every step above it.
+    # Last before the export, so it sees every step above it.
     Code("record", steps.record_run),
-    Code("commit", steps.commit),
+    Code("export", steps.export),
 )
 
 # The improvement run reads its own evidence and publishes nothing, which is why
@@ -88,12 +88,10 @@ IMPROVE: tuple[Step, ...] = (
     specs.STAGES["improve:memory"],
     specs.STAGES["improve:watchlist"],
     specs.STAGES["improve:profile"],
-    Code("tracker", steps.tracker),
-    Code("proposals", steps.proposals),
     Code("gate", steps.gate),
     Code("manifest", steps.manifest),
     Code("record", steps.record_run),
-    Code("commit", steps.commit),
+    Code("export", steps.export),
 )
 
 PIPELINES: dict[str, tuple[Step, ...]] = {"daily": DAILY, "improve": IMPROVE}

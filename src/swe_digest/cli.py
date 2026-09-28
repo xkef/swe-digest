@@ -169,7 +169,7 @@ def _publish(args: argparse.Namespace) -> int:
 
     match args.step:
         case "apply":
-            publish.apply(args.patch)
+            publish.apply(args.run_dir)
         case "push":
             publish.push(head_file=args.head_file)
         case _:
@@ -263,7 +263,9 @@ def build_parser() -> argparse.ArgumentParser:
     publish = sub.add_parser("publish", help="validate and publish an unattended run")
     publish.set_defaults(handler=_publish)
     publish_sub = publish.add_subparsers(dest="step", required=True)
-    publish_sub.add_parser("apply").add_argument("patch")
+    publish_sub.add_parser("apply").add_argument(
+        "run_dir", help="the downloaded run artifact, holding files/ and manifest.json"
+    )
     publish_sub.add_parser("push").add_argument(
         "head_file", nargs="?", help="write the landed head oid here"
     )

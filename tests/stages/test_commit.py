@@ -1,7 +1,6 @@
 """What a run stages, and what it may commit."""
 
 from pathlib import Path
-from typing import Any
 
 import pytest
 
@@ -49,68 +48,33 @@ def test_the_daily_run_stages_every_log_it_writes(at_root: Path) -> None:
         assert any(pattern.match(path) for pattern in publish.ALLOWED_PATHS), path
 
 
-class FakeGh:
-    def __init__(self, published: bool) -> None:
-        self.published = published
+def test_an_approved_run_exports_what_it_changed(
+    git_repo: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The step past both of its guards, against real git.
 
-    def run(self, *args: str, stdin: str | None = None) -> Any:
-        class Result:
-            returncode = 0 if self.published else 1
-
-        return Result()
-
-
-class RecordingGh(FakeGh):
-    """Enough of ``GitGh`` for the commit step, recording what it was asked to do."""
-
-    def __init__(self, staged: str = "") -> None:
-        super().__init__(published=False)
-        self.staged = staged
-        self.calls: list[tuple[str, ...]] = []
-
-    def sh(self, *args: str, stdin: str | None = None) -> str:
-        self.calls.append(args)
-        return self.staged if args[:3] == ("git", "diff", "--cached") else ""
-
-
-def test_an_approved_run_stages_and_commits(at_root: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """The step past both of its guards.
-
-    The guards were the only part under test, so a name shadowing the ``paths``
-    module inside the staging comprehension raised on every approved commit and
-    the driver's catch-all reported it as an ordinary step failure.
+    Only the files the run changed travel, at their repository paths, so the
+    publish job copies exactly those and nothing a stray step left behind.
     """
-    digest = paths.DIGEST.path(at_root, day="2026-07-25")
-    digest.parent.mkdir(parents=True)
+    monkeypatch.chdir(git_repo)
+    monkeypatch.setattr(paths, "ROOT", git_repo)
+    digest = paths.DIGEST.path(git_repo, day="2026-07-25")
+    digest.parent.mkdir(parents=True, exist_ok=True)
     digest.write_text("# digest", encoding="utf-8")
-    gh = RecordingGh(staged=paths.DIGEST.rel(day="2026-07-25"))
-    monkeypatch.setattr(steps, "GitGh", lambda: gh)
+    (git_repo / "stray.txt").write_text("x", encoding="utf-8")
     state = steps.Run(day="2026-07-25", mode="daily", gate_ok=True)
 
-    detail = steps.commit(state)
+    detail = steps.export(state)
 
+    files = paths.run_dir() / "files"
     assert detail == "1 file(s)"
-    assert ("git", "add", "--", paths.DIGEST.rel(day="2026-07-25")) in gh.calls
-    assert any(call[:2] == ("git", "commit") for call in gh.calls)
+    assert sorted(p.relative_to(files).as_posix() for p in files.rglob("*") if p.is_file()) == [
+        paths.DIGEST.rel(day="2026-07-25")
+    ]
+    assert publish.artifact_files(files) == [paths.DIGEST.rel(day="2026-07-25")]
 
 
-@pytest.mark.parametrize(
-    ("mode", "published", "expected"),
-    [
-        ("daily", False, "chore: publish digest for 2026-07-25"),
-        ("daily", True, "chore: update digest for 2026-07-25"),
-        ("improve", False, "chore: weekly improvement review 2026-07-25"),
-    ],
-)
-def test_the_commit_subject_is_one_the_gate_accepts(
-    mode: str, published: bool, expected: str
-) -> None:
-    """The gate matches subjects against exact regexes, so a subject the
-    pipeline invents would fail the run after it had done all its work."""
-    state = steps.Run(day="2026-07-25", mode=mode)
-
-    line = steps.subject(state, FakeGh(published))
-
-    assert line == expected
-    assert any(pattern.match(line) for pattern in publish.SUBJECTS)
-    assert len(line) <= 72
+def test_a_rejected_run_exports_nothing(at_root: Path) -> None:
+    with pytest.raises(steps.Skipped, match="gate rejected"):
+        steps.export(steps.Run(day="2026-07-25"))
+    assert not (paths.run_dir() / "files").exists()

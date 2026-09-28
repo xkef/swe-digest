@@ -61,11 +61,11 @@ def test_both_modes_prune_the_age_bound_before_a_model_reads_memory() -> None:
             assert names.index("prune_memory") < names.index(stage), f"{mode}:{stage}"
 
 
-def test_the_daily_run_gates_before_it_commits() -> None:
+def test_the_daily_run_gates_before_it_exports() -> None:
     """Order is the whole safety property here, and it is now readable as one
     list rather than assembled from a before/after pair."""
     names = [step.name for step in pipeline.DAILY]
 
-    assert names.index("gate") < names.index("commit")
+    assert names.index("gate") < names.index("export")
     for stage in set(specs.STAGE_ORDER) - {"repair"}:
         assert names.index(stage) < names.index("gate")

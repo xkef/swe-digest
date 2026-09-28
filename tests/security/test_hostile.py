@@ -18,7 +18,7 @@ from swe_digest import settings
 from swe_digest.adapters import http
 from swe_digest.adapters.vcs import GitGh
 from swe_digest.gate import publish
-from swe_digest.gate._manifest import IssueClose, NewIssue, parse_manifest
+from swe_digest.gate._manifest import IssueClose, Proposal, parse_manifest
 from swe_digest.llm import net, specs
 from swe_digest.stages import feedback
 from swe_digest.store import memory as memory_store
@@ -190,17 +190,14 @@ def test_a_prose_approval_never_approves_an_outsider_story() -> None:
         publish.close_issue(gh, IssueClose(number=3, comment="done"))
 
 
-@pytest.mark.parametrize(
-    ("entry", "message"),
-    [
-        (NewIssue(title="t", body="b", labels=("security",)), "label not allowed"),
-        (NewIssue(title="t" * 500, body="b"), "size limits"),
-        (NewIssue(title="t", body="b" * 100_000), "size limits"),
-    ],
-)
-def test_a_manifest_cannot_smuggle_an_issue_past_the_bounds(entry: NewIssue, message: str) -> None:
-    with pytest.raises(SystemExit, match=message):
-        publish.create_issue(LyingGh([], []), entry)
+def test_a_manifest_cannot_smuggle_a_pull_request_body_past_the_bound(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal = Proposal("t", "format", "e" * 100_000, "d", "x", "r")
+    monkeypatch.setattr(publish, "applicable", lambda diff: diff)
+
+    with pytest.raises(SystemExit, match="body size limit"):
+        publish.proposal_pr(LyingGh([], []), proposal)
 
 
 def test_a_close_comment_cannot_carry_an_off_site_link() -> None:

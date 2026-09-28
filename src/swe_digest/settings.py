@@ -82,10 +82,9 @@ DIGEST_CATEGORIES: list[str] = _raw["digest"]["categories"]
 DIGEST_SOURCES_CHECKED: list[str] = _raw["digest"]["sources_checked"]
 
 # Publish gate and Verified commits
-PUBLISH_MAX_COMMITS: int = _raw["publish"]["max_commits"]
 PUBLISH_COMMENT_MAX_CHARS: int = _raw["publish"]["comment_max_chars"]
-PUBLISH_ISSUE_TITLE_MAX_CHARS: int = _raw["publish"]["issue_title_max_chars"]
-PUBLISH_ISSUE_BODY_MAX_CHARS: int = _raw["publish"]["issue_body_max_chars"]
+PUBLISH_PR_TITLE_MAX_CHARS: int = _raw["publish"]["pr_title_max_chars"]
+PUBLISH_PR_BODY_MAX_CHARS: int = _raw["publish"]["pr_body_max_chars"]
 COMMIT_RETRIES: int = _raw["publish"]["commit_retries"]
 
 # Backtest

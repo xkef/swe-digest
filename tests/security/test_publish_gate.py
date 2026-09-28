@@ -1,9 +1,10 @@
 """Adversarial tests for the unattended publish gate.
 
 Each case models a prompt-injected agent trying to smuggle a write past the
-deterministic validator: commits outside the path allowlist, forged subjects,
-symlinks at allowed paths, oversized or off-site issue comments, third-party
-issues, and manifest abuse. The gate must refuse every one.
+deterministic validator: files outside the path allowlist, symlinks at allowed
+paths, oversized or off-site issue comments, third-party issues, proposals that
+reach outside the config files, and manifest abuse. The gate must refuse every
+one.
 
 The gate crosses the GitGh adapter for every git and gh call. Unit cases pass
 FakeGitGh (in-memory: canned gh api responses, recorded commands); integration
@@ -21,7 +22,7 @@ import pytest
 from swe_digest import paths
 from swe_digest.adapters.vcs import GitGh
 from swe_digest.gate import publish
-from swe_digest.gate._manifest import IssueClose, Manifest, NewIssue, parse_manifest
+from swe_digest.gate._manifest import IssueClose, Manifest, Proposal, parse_manifest
 
 from ..conftest import DIGEST_DATE, digest_text, git
 
@@ -81,17 +82,14 @@ class RepoGitGh(GitGh):
         return f"oid{len(self.commits)}"
 
 
-def commit_all(repo: Path, subject: str) -> None:
-    git(repo, "add", "-A")
-    git(repo, "commit", "-qm", subject)
-
-
-def export_patch(repo: Path) -> Path:
-    patch = repo / "run.patch"
-    out = git(repo, "format-patch", "refs/remotes/origin/main", "--stdout")
-    patch.write_text(out)
-    git(repo, "reset", "-q", "--hard", "refs/remotes/origin/main")
-    return patch
+def artifact(tmp_path: Path, files: dict[str, str]) -> Path:
+    """Builds a run artifact the way the agent job leaves it."""
+    run_dir = tmp_path / "run"
+    for relative, text in files.items():
+        target = run_dir / "files" / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(text, encoding="utf-8")
+    return run_dir
 
 
 @pytest.fixture
@@ -105,96 +103,55 @@ def touch_digest(repo: Path) -> None:
     path.write_text(digest_text("\nUpdated by the run.\n"), encoding="utf-8")
 
 
+DIGEST_PATH = paths.DIGEST.rel(day=DIGEST_DATE)
+
+
 class TestApply:
-    def test_valid_digest_commit_passes(self, gate_repo: Path) -> None:
-        touch_digest(gate_repo)
-        commit_all(gate_repo, DIGEST_SUBJECT)
-        patch = export_patch(gate_repo)
-        publish.apply(str(patch))
+    def test_valid_digest_is_copied_into_the_checkout(
+        self, gate_repo: Path, tmp_path: Path
+    ) -> None:
+        run_dir = artifact(tmp_path, {DIGEST_PATH: digest_text("\nUpdated by the run.\n")})
 
-    def test_workflow_edit_rejected(self, gate_repo: Path) -> None:
-        workflows = gate_repo / ".github" / "workflows"
-        workflows.mkdir(parents=True)
-        (workflows / "evil.yml").write_text("on: push\n")
-        touch_digest(gate_repo)
-        commit_all(gate_repo, DIGEST_SUBJECT)
-        patch = export_patch(gate_repo)
-        with pytest.raises(SystemExit, match="outside the publish allowlist"):
-            publish.apply(str(patch))
-
-    def test_gate_source_edit_rejected(self, gate_repo: Path) -> None:
-        gate = gate_repo / "src" / "swe_digest" / "gate"
-        gate.mkdir(parents=True)
-        (gate / "publish.py").write_text("ALLOWED_PATHS = []\n")
-        commit_all(gate_repo, DIGEST_SUBJECT)
-        patch = export_patch(gate_repo)
-        with pytest.raises(SystemExit, match="outside the publish allowlist"):
-            publish.apply(str(patch))
-
-    def test_forged_subject_rejected(self, gate_repo: Path) -> None:
-        touch_digest(gate_repo)
-        commit_all(gate_repo, "feat: totally legitimate change")
-        patch = export_patch(gate_repo)
-        with pytest.raises(SystemExit, match="subject not allowed"):
-            publish.apply(str(patch))
-
-    def test_too_many_commits_rejected(self, gate_repo: Path) -> None:
-        for i in range(3):
-            paths.DIGEST.path(gate_repo, day=DIGEST_DATE).write_text(
-                digest_text(f"\nEdit {i}.\n"), encoding="utf-8"
-            )
-            commit_all(gate_repo, DIGEST_SUBJECT)
-        patch = export_patch(gate_repo)
-        with pytest.raises(SystemExit, match="expected 1 to 2 commits"):
-            publish.apply(str(patch))
-
-    def test_symlink_at_allowed_path_rejected(self, gate_repo: Path) -> None:
-        target = paths.MEMORY_STORE.path(gate_repo, store="followups")
-        target.unlink()
-        target.symlink_to("/etc/hostname")
-        commit_all(gate_repo, DIGEST_SUBJECT)
-        patch = export_patch(gate_repo)
-        with pytest.raises(SystemExit, match="disallowed file mode"):
-            publish.apply(str(patch))
-
-    def test_add_then_delete_still_rejected(self, gate_repo: Path) -> None:
-        """A file smuggled into one commit and deleted in the next never shows
-        in the net diff yet lands in history; the per-commit check catches it."""
-        evil = gate_repo / "evil.sh"
-        evil.write_text("#!/bin/sh\n")
-        commit_all(gate_repo, DIGEST_SUBJECT)
-        git(gate_repo, "rm", "-q", "evil.sh")
-        touch_digest(gate_repo)
-        commit_all(gate_repo, f"chore: weekly improvement review {DIGEST_DATE}")
-        patch = export_patch(gate_repo)
-        with pytest.raises(SystemExit, match="outside the publish allowlist"):
-            publish.apply(str(patch))
-
-
-class TestSubjects:
-    @pytest.mark.parametrize(
-        "subject",
-        [
-            "chore: publish digest for 2026-07-02",
-            "chore: update digest for 2026-07-02",
-            "chore: weekly improvement review 2026-07-06",
-        ],
-    )
-    def test_allowed(self, subject: str) -> None:
-        assert any(p.match(subject) for p in publish.SUBJECTS)
+        assert publish.apply(str(run_dir), gate_repo) == [DIGEST_PATH]
+        assert "Updated by the run." in (gate_repo / DIGEST_PATH).read_text(encoding="utf-8")
 
     @pytest.mark.parametrize(
-        "subject",
+        "relative",
         [
-            "feat: add workflow",
-            "chore: publish digest for 2026-07-02 and more",
-            "CHORE: publish digest for 2026-07-02",
-            "chore: publish digest for 2026-7-2",
-            "chore: publish digest for 2026-07-02\nsecond line",
+            ".github/workflows/evil.yml",
+            "src/swe_digest/gate/publish.py",
+            "prompts/common.md",
+            "config/settings.toml",
         ],
     )
-    def test_rejected(self, subject: str) -> None:
-        assert not any(p.match(subject) for p in publish.SUBJECTS)
+    def test_a_file_outside_the_allowlist_stops_the_publish(
+        self, gate_repo: Path, tmp_path: Path, relative: str
+    ) -> None:
+        run_dir = artifact(tmp_path, {DIGEST_PATH: digest_text(), relative: "x"})
+
+        with pytest.raises(SystemExit, match="outside the publish allowlist"):
+            publish.apply(str(run_dir), gate_repo)
+        assert not (gate_repo / relative).exists() or relative.startswith("config/")
+
+    def test_symlink_at_allowed_path_rejected(self, gate_repo: Path, tmp_path: Path) -> None:
+        run_dir = artifact(tmp_path, {DIGEST_PATH: digest_text()})
+        store = run_dir / "files" / paths.MEMORY_STORE.rel(store="followups")
+        store.parent.mkdir(parents=True)
+        store.symlink_to("/etc/hostname")
+
+        with pytest.raises(SystemExit, match="symlink"):
+            publish.apply(str(run_dir), gate_repo)
+
+    def test_a_symlinked_directory_is_rejected(self, gate_repo: Path, tmp_path: Path) -> None:
+        run_dir = artifact(tmp_path, {DIGEST_PATH: digest_text()})
+        (run_dir / "files" / "data" / "memory").symlink_to(gate_repo / "config")
+
+        with pytest.raises(SystemExit, match="symlink"):
+            publish.apply(str(run_dir), gate_repo)
+
+    def test_an_empty_artifact_publishes_nothing(self, gate_repo: Path, tmp_path: Path) -> None:
+        with pytest.raises(SystemExit, match="no files"):
+            publish.apply(str(tmp_path / "run"), gate_repo)
 
 
 class TestPaths:
@@ -208,7 +165,7 @@ class TestPaths:
         ],
     )
     def test_allowed(self, path: str) -> None:
-        publish.check_paths([("100644", path)], "test")
+        publish.check_path(path)
 
     @pytest.mark.parametrize(
         "path",
@@ -232,12 +189,7 @@ class TestPaths:
     )
     def test_rejected(self, path: str) -> None:
         with pytest.raises(SystemExit):
-            publish.check_paths([("100644", path)], "test")
-
-    @pytest.mark.parametrize("mode", ["120000", "160000"])
-    def test_symlink_and_gitlink_modes_rejected(self, mode: str) -> None:
-        with pytest.raises(SystemExit, match="disallowed file mode"):
-            publish.check_paths([(mode, "data/memory/followups.yaml")], "test")
+            publish.check_path(path)
 
 
 class TestComments:
@@ -261,17 +213,6 @@ class TestComments:
 
 
 class TestApproval:
-    @pytest.mark.parametrize("body", ["approved", "Approve.", "/approve", "  approved, ship it"])
-    def test_matches(self, body: str) -> None:
-        assert publish.APPROVAL.search(body)
-
-    @pytest.mark.parametrize(
-        "body",
-        ["this is not approved yet", "disapproved", "I might approve later once reviewed"],
-    )
-    def test_rejects(self, body: str) -> None:
-        assert not publish.APPROVAL.search(body)
-
     @pytest.mark.parametrize("body", ["/approve", "/Approved", "  /approve\nnice find"])
     def test_command_matches(self, body: str) -> None:
         assert publish.COMMAND_APPROVAL.search(body)
@@ -447,20 +388,6 @@ class TestIssueSideEffects:
         publish.close_issue(gh, IssueClose(number=5, comment=f"Published: {publish.SITE}"))
         assert gh.calls and gh.calls[0][:3] == ("gh", "issue", "close")
 
-    def test_create_issue_rejects_privileged_label(self) -> None:
-        with pytest.raises(SystemExit, match="label not allowed"):
-            publish.create_issue(FakeGitGh(), NewIssue(title="t", body="b", labels=("story",)))
-
-    def test_create_issue_rejects_oversize(self) -> None:
-        with pytest.raises(SystemExit, match="size limits"):
-            publish.create_issue(FakeGitGh(), NewIssue(title="t" * 121, body="b"))
-
-    def test_create_issue_happy_path(self) -> None:
-        gh = FakeGitGh()
-        publish.create_issue(gh, NewIssue(title="t", body="b", labels=("improvement",)))
-        assert gh.calls[0][:3] == ("gh", "issue", "create")
-        assert "--label" in gh.calls[0]
-
 
 class TestManifest:
     def test_unknown_keys_rejected(self) -> None:
@@ -482,61 +409,86 @@ class TestManifest:
         manifest = parse_manifest(
             {
                 "issue_closes": [{"number": "7", "comment": "done"}],
-                "new_issues": [{"title": "t", "body": "b", "labels": ["improvement"]}],
-                "improvement_prs": [12],
+                "proposals": [PROPOSAL],
             }
         )
         assert manifest.issue_closes == (IssueClose(number=7, comment="done"),)
-        assert manifest.new_issues == (NewIssue(title="t", body="b", labels=("improvement",)),)
-        assert manifest.improvement_prs == (12,)
+        assert manifest.proposals == (Proposal(**PROPOSAL),)
+
+    def test_a_proposal_missing_a_field_is_malformed(self) -> None:
+        with pytest.raises(SystemExit, match="malformed manifest entry"):
+            parse_manifest({"proposals": [{"title": "t"}]})
 
 
-class TestImprovementPr:
-    def test_requires_owner_approval(self) -> None:
-        gh = FakeGitGh(
-            {
-                **issue_response(
-                    9,
-                    {
-                        "state": "open",
-                        "labels": [{"name": "improvement"}],
-                        "title": "t",
-                        "body": "```diff\n--- a\n+++ b\n```",
-                    },
-                ),
-                f"repos/{publish.REPO}/issues/9/comments": [
-                    {"author_association": "NONE", "body": "approved"},
-                    {"author_association": "OWNER", "body": "not approved yet"},
-                ],
-            }
-        )
-        with pytest.raises(SystemExit, match="no owner approval"):
-            publish.improvement_pr(gh, 9)
+PROPOSAL = {
+    "title": "Add a Zig query",
+    "axis": "watchlist gap",
+    "evidence": "3 candidates over the window",
+    "diff": '--- a/config/watchlist.toml\n+++ b/config/watchlist.toml\n@@ queries\n-  "B",\n',
+    "expected_effect": "one more match a week",
+    "rollback": "restore the query",
+}
 
-    def test_requires_diff_block(self) -> None:
-        gh = FakeGitGh(
-            {
-                **issue_response(
-                    9,
-                    {
-                        "state": "open",
-                        "labels": [{"name": "improvement"}],
-                        "title": "t",
-                        "body": "please just do it",
-                    },
-                ),
-                f"repos/{publish.REPO}/issues/9/comments": [
-                    {"author_association": "OWNER", "body": "approved"}
-                ],
-            }
-        )
-        with pytest.raises(SystemExit, match="no fenced diff block"):
-            publish.improvement_pr(gh, 9)
 
-    def test_rejects_issue_without_label(self) -> None:
-        gh = FakeGitGh(issue_response(9, {"state": "open", "labels": [], "title": "t", "body": ""}))
-        with pytest.raises(SystemExit, match="not an open improvement issue"):
-            publish.improvement_pr(gh, 9)
+class RefsGitGh(RepoGitGh):
+    """Real git, with the branch lookup and the network calls recorded."""
+
+    def __init__(self, existing: set[str] = frozenset()) -> None:  # type: ignore[assignment]
+        super().__init__()
+        self.existing = existing
+        self.network: list[tuple[str, ...]] = []
+
+    def run(self, *args: str, stdin: str | None = None) -> subprocess.CompletedProcess[str]:
+        if args[:2] == ("gh", "api"):
+            found = any(args[2].endswith(branch) for branch in self.existing)
+            return subprocess.CompletedProcess(args, 0 if found else 1, "", "")
+        return super().run(*args, stdin=stdin)
+
+    def sh(self, *args: str, stdin: str | None = None) -> str:
+        if args[0] in {"gh", "make"}:
+            self.network.append(args)
+            return ""
+        return super().sh(*args, stdin=stdin)
+
+
+def watchlist(repo: Path) -> None:
+    target = repo / "config" / "watchlist.toml"
+    target.parent.mkdir(exist_ok=True)
+    target.write_text('queries = [\n  "A",\n  "B",\n  "C",\n]\n', encoding="utf-8")
+    git(repo, "add", "-A")
+    git(repo, "commit", "-qm", "watchlist")
+
+
+class TestProposalPr:
+    def test_a_proposal_becomes_a_pull_request_on_its_own_branch(self, gate_repo: Path) -> None:
+        watchlist(gate_repo)
+        gh = RefsGitGh()
+
+        publish.proposal_pr(gh, Proposal(**PROPOSAL))
+
+        branch = publish.branch_name(Proposal(**PROPOSAL))
+        assert gh.commits == [
+            (publish.REPO, branch, {"headline": "chore(config): Add a Zig query"}, 1, 0)
+        ]
+        assert ("make", "check") in gh.network
+        created = [call for call in gh.network if call[:3] == ("gh", "pr", "create")]
+        assert len(created) == 1 and "--label" in created[0]
+        # The checkout is back on main, clean, for the next proposal.
+        assert git(gate_repo, "branch", "--show-current").strip() == "main"
+        assert git(gate_repo, "status", "--porcelain") == ""
+
+    def test_a_proposal_already_open_is_skipped(self, gate_repo: Path) -> None:
+        watchlist(gate_repo)
+        branch = publish.branch_name(Proposal(**PROPOSAL))
+        gh = RefsGitGh({branch})
+
+        publish.proposal_pr(gh, Proposal(**PROPOSAL))
+
+        assert gh.commits == []
+
+    def test_the_branch_follows_the_change_not_its_wording(self) -> None:
+        reworded = Proposal(**{**PROPOSAL, "evidence": "other words"})
+        assert publish.branch_name(reworded) == publish.branch_name(Proposal(**PROPOSAL))
 
     def test_diff_outside_whitelist_rejected(self, gate_repo: Path) -> None:
         diff = (
@@ -547,26 +499,12 @@ class TestImprovementPr:
             "@@ -0,0 +1 @@\n"
             "+on: push\n"
         )
-        gh = RepoGitGh(
-            {
-                **issue_response(
-                    9,
-                    {
-                        "state": "open",
-                        "labels": [{"name": "improvement"}],
-                        "title": "add helpful workflow",
-                        "body": f"```diff\n{diff}```",
-                    },
-                ),
-                f"repos/{publish.REPO}/issues/9/comments": [
-                    {"author_association": "OWNER", "body": "approved"}
-                ],
-            }
-        )
+        gh = RefsGitGh()
         with pytest.raises(SystemExit, match="disallowed files"):
-            publish.improvement_pr(gh, 9)
+            publish.proposal_pr(gh, Proposal(**{**PROPOSAL, "diff": diff}))
         assert gh.commits == []
-        git(gate_repo, "switch", "-q", "main")
+        assert git(gate_repo, "branch", "--show-current").strip() == "main"
+        assert not (gate_repo / ".github" / "workflows" / "evil.yml").exists()
 
 
 class TestApplicable:
@@ -607,43 +545,71 @@ class TestSideEffectsDispatch:
             json.dumps(
                 {
                     "issue_closes": [{"number": 3, "comment": "done"}],
-                    "new_issues": [{"title": "t", "body": "b", "labels": ["improvement"]}],
-                    "improvement_prs": [8],
+                    "proposals": [PROPOSAL, {**PROPOSAL, "title": "second"}],
                 }
             )
         )
         seen: list[str] = []
+
+        def proposal_pr(gh: GitGh, proposal: Proposal) -> None:
+            seen.append(f"pr:{proposal.title}")
+            if proposal.title == "second":
+                raise SystemExit("does not apply")
+
         monkeypatch.setattr(publish, "close_issue", lambda gh, e: seen.append(f"close:{e.number}"))
-        monkeypatch.setattr(publish, "create_issue", lambda gh, e: seen.append(f"new:{e.title}"))
-        monkeypatch.setattr(publish, "improvement_pr", lambda gh, n: seen.append(f"pr:{n}"))
-        publish.side_effects(str(manifest), FakeGitGh())
-        assert seen == ["close:3", "new:t", "pr:8"]
+        monkeypatch.setattr(publish, "proposal_pr", proposal_pr)
+        # One bad proposal does not stop the others, and still fails the step.
+        with pytest.raises(SystemExit, match="1 proposal"):
+            publish.side_effects(str(manifest), FakeGitGh())
+        assert seen == ["close:3", "pr:Add a Zig query", "pr:second"]
 
     def test_missing_manifest_is_noop(self, tmp_path: Path) -> None:
         publish.side_effects(str(tmp_path / "absent.json"), FakeGitGh())
 
 
 class TestPush:
-    def test_push_replays_each_commit(self, gate_repo: Path) -> None:
-        touch_digest(gate_repo)
-        commit_all(gate_repo, DIGEST_SUBJECT)
+    def test_push_commits_the_applied_files_once(self, gate_repo: Path, tmp_path: Path) -> None:
+        publish.apply(str(artifact(tmp_path, {DIGEST_PATH: digest_text("\nNew.\n")})), gate_repo)
         gh = RepoGitGh()
-        publish.push(gh)
-        assert gh.commits == [(publish.REPO, "main", {"headline": DIGEST_SUBJECT}, 1, 0)]
 
-    def test_push_without_commits_is_noop(self, gate_repo: Path) -> None:
-        gh = RepoGitGh()
         publish.push(gh)
+
+        assert gh.commits == [
+            (publish.REPO, "main", {"headline": f"chore: update digest for {DIGEST_DATE}"}, 1, 0)
+        ]
+
+    def test_a_new_day_is_a_publish(self, gate_repo: Path, tmp_path: Path) -> None:
+        day = paths.DIGEST.rel(day="2031-01-01")
+        publish.apply(str(artifact(tmp_path, {day: digest_text(date="2031-01-01")})), gate_repo)
+        gh = RepoGitGh()
+
+        publish.push(gh)
+
+        assert gh.commits[0][2] == {"headline": "chore: publish digest for 2031-01-01"}
+
+    def test_push_stages_only_the_data_directories(self, gate_repo: Path) -> None:
+        """Something the build or the check left in the tree does not ride along."""
+        (gate_repo / "stray.txt").write_text("x", encoding="utf-8")
+        gh = RepoGitGh()
+
+        publish.push(gh)
+
         assert gh.commits == []
 
-    def test_push_writes_landed_head_oid(self, gate_repo: Path) -> None:
-        touch_digest(gate_repo)
-        commit_all(gate_repo, DIGEST_SUBJECT)
-        head_file = gate_repo / "head"
+    def test_push_writes_landed_head_oid(self, gate_repo: Path, tmp_path: Path) -> None:
+        publish.apply(str(artifact(tmp_path, {DIGEST_PATH: digest_text("\nNew.\n")})), gate_repo)
+        head_file = tmp_path / "head"
         publish.push(RepoGitGh(), str(head_file))
         assert head_file.read_text() == "oid1\n"
 
-    def test_push_without_commits_writes_no_head_file(self, gate_repo: Path) -> None:
-        head_file = gate_repo / "head"
+    def test_push_without_changes_writes_no_head_file(
+        self, gate_repo: Path, tmp_path: Path
+    ) -> None:
+        head_file = tmp_path / "head"
         publish.push(RepoGitGh(), str(head_file))
         assert not head_file.exists()
+
+
+def test_the_weekly_marker_names_the_improvement_commit() -> None:
+    changed = [paths.WEEKLY_LOG.rel(day="2026-07-26"), paths.MEMORY_STORE.rel(store="entities")]
+    assert publish.subject(FakeGitGh(), changed) == "chore: weekly improvement review 2026-07-26"

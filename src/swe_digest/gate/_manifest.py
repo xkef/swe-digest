@@ -11,7 +11,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-KNOWN_KEYS = {"issue_closes", "improvement_prs", "new_issues"}
+from swe_digest.domain.schemas import PROPOSAL_FIELDS
+
+KNOWN_KEYS = {"issue_closes", "proposals"}
 
 
 @dataclass(frozen=True, slots=True)
@@ -21,17 +23,19 @@ class IssueClose:
 
 
 @dataclass(frozen=True, slots=True)
-class NewIssue:
+class Proposal:
     title: str
-    body: str
-    labels: tuple[str, ...] = ()
+    axis: str
+    evidence: str
+    diff: str
+    expected_effect: str
+    rollback: str
 
 
 @dataclass(frozen=True, slots=True)
 class Manifest:
     issue_closes: tuple[IssueClose, ...] = ()
-    new_issues: tuple[NewIssue, ...] = ()
-    improvement_prs: tuple[int, ...] = ()
+    proposals: tuple[Proposal, ...] = ()
 
 
 def parse_manifest(data: Any) -> Manifest:
@@ -47,15 +51,10 @@ def parse_manifest(data: Any) -> Manifest:
                 IssueClose(number=int(entry["number"]), comment=str(entry["comment"]))
                 for entry in data.get("issue_closes") or []
             ),
-            new_issues=tuple(
-                NewIssue(
-                    title=str(entry["title"]),
-                    body=str(entry["body"]),
-                    labels=tuple(str(label) for label in entry.get("labels") or []),
-                )
-                for entry in data.get("new_issues") or []
+            proposals=tuple(
+                Proposal(**{name: str(entry[name]) for name in PROPOSAL_FIELDS})
+                for entry in data.get("proposals") or []
             ),
-            improvement_prs=tuple(int(number) for number in data.get("improvement_prs") or []),
         )
     except (KeyError, TypeError, ValueError) as error:
         raise SystemExit(f"malformed manifest entry: {error}") from error
