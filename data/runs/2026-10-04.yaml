@@ -143,14 +143,131 @@ judgment:
     skips rather than gaps. The Turso item was not republished today because it is 2026-10-03 news
     absent from today's corpus, and the Supabase announcement URL guessed for verification returned
     404, so no claim about it is published.
+
+    Third run of 2026-10-04. The day opened this run with 12 stories and closes with 18, against a
+    budget of 25 and a per-section cap of 4. Nothing was displaced and nothing dropped, because
+    neither the day budget nor any section was full. The HN cache was re-fetched at 18:49Z, three
+    and a half hours newer than the 15:00Z fetch the previous run read, and that window is where all
+    six additions came from.
+
+    Top stories went from four to five rather than being rebuilt. The lead, the Gitea advisory and
+    the Go SIMD post are unchanged and still rank where the morning run put them. The one insertion
+    is Apple's Full Disk Access notice at fourth, which pushes the OpenAI resignation to fifth. The
+    reasoning: Apple's post is a platform owner saying it will add controls in front of a grant that
+    terminals, backup tools, search indexers and coding agents all depend on, at 308 Hacker News
+    points with 217 comments, where the OpenAI item reports a personnel and culture change whose
+    stated operational hook, that no successor model is announced, is the thinnest in the set. I did
+    not promote it higher, because the post gives no mechanism, no OS version and no date, which is
+    why it is marked developing.
+
+    The Full Disk Access item is the backtest loop actually changing a decision. It scored
+    seen_and_matched at 256 points in the 2026-10-03 backtest and the earlier run today called that
+    a wrong relevance skip without republishing it. I resolved the primary properly this time rather
+    than relying on the 9to5mac secondary that surfaced today at 1 point: the Hacker News item
+    attributes it to developer.apple.com, and the permalink came from
+    developer.apple.com/news/rss/news.rss as id=p6zjojqw, pubDate 2026-10-02. The post text is short
+    and I am publishing only what it says. Apple states Full Disk Access largely sidesteps its
+    privacy controls to let backup apps work, that some developers use it in ways exposing files,
+    mail, messages and browsing history, and that it will add controls so the grant requires very
+    explicit user action, explicitly because AI agents are becoming more capable and autonomous. The
+    substantive Hacker News discussion is about the TCC design that makes this hard, in particular
+    that macOS attributes a subprocess's access to the parent app bundle, so granting a terminal
+    Full Disk Access grants it to every script run in it. I left that in the thread rather than
+    publishing it as fact.
+
+    Strata is a reversal of two earlier calls this same day and should be read as one. Both previous
+    runs cut it under the rule against benchmark claims with no method and no primary source. That
+    was wrong on the facts: the primary is an MIT-licensed repository, and it documents hardware,
+    RAM, quantization level, engine version and prompt sizes per row, ships a bench directory, and
+    describes the offloading and speculative-decoding mechanism. Attention also moved, from 157
+    points to 376 with 10.3k stars. What I did keep from the earlier skepticism is the headline. The
+    Hacker News title claims an RTX 4090 at 100 tokens per second and the repository contains no
+    4090 row at all: its fastest measured figure is 94 tokens per second on an RTX 5070 at Q2_0, and
+    100 to 140 appears only as a projection for an RTX 3090. Every figure is author-measured at
+    2-bit or 3-bit quantization, and the Coder variant's 91 percent of SWE-bench Verified is its own
+    authors' number. Reddit carries independent reports in both directions, one at 124 tokens per
+    second on a 4090 and one at 11 to 15 on an RTX 5070 with only 32GB of RAM, and the repository's
+    own text explains the latter as SSD paging. I published none of the community figures and no
+    claim about the Qwen model itself.
+
+    Local inference was the day's one convergent theme, across Hacker News at 376 points, a GitHub
+    trending entry, and several Reddit threads. I published only Strata from it. The other instance
+    is antirez's ds4, a hand-written C inference engine for DeepSeek 4 across Metal, CUDA and ROCm,
+    which scored 301 points in yesterday's backtest as seen_and_matched and is still on trending at
+    23.4k stars. I left it out because it is 2026-10-03 news with no fresh event today and I did not
+    verify it against its repository, and I recorded it in miss_review as a relevance skip rather
+    than carrying it as a second local-inference block. A reader of the page cannot infer that the
+    theme was wider than the one story.
+
+    I ran the GitHub trending check this run, which the two earlier runs recorded as not checked,
+    and deliberately published nothing from it. The daily view is dominated by agent skill and
+    harness-configuration packs, and Hacker News carries a matching cluster of Claude Code tooling
+    Show HN posts, so the convergence test in the github guidance is arguably met. I did not write
+    the emerging-advance note, because the trending page's star counts for those repositories run to
+    six figures for configuration bundles, I verified none of them against their own READMEs, and a
+    trend note assembled from unverified third-party repositories is weaker than an omission.
+    Flagging it as a judgment call rather than an oversight.
+
+    One correction to the previous runs' Sources checked. They listed GitHub stars as degraded
+    because the fetch returned zero repositories. The github guidance states that an empty stars
+    fetch exiting 0 is a quiet day, not degraded coverage, and today's cache carries an empty
+    degraded array, so stars should be reported as a quiet result. GitHub releases is the real gap
+    and is still unaddressed for a third consecutive run: no releases fetch ran against the 40
+    watchlist repositories. That matters more than usual, because two of today's six additions are
+    language-toolchain items that a releases check is the natural route to. Reddit again fell short
+    of its floor at 8 of 28 subreddits and was rescued by the pooled snapshot, which is where the
+    Rust for CPython writeup came from.
+
+    Placement calls a reader could not infer. The Rust for CPython writeup is dated 2026-09-30 and
+    surfaced on r/rust today, so it is a rediscovery rather than an event, which is why it sits in
+    Languages and runtimes as discussion rather than in Top stories despite being the
+    broadest-reaching item I found. The precedent is the 2026-10-01 digest, which carried the
+    Language Summit garbage-collection writeup the same way. wpd went to Engineering posts rather
+    than Languages and runtimes: it is a company blog write-up with a safety argument, a benchmark
+    method and a full feature matrix, and putting it beside the two Rust toolchain items would have
+    read as a Rust theme the day did not actually have. Apple platforms stays omitted because its
+    one story is in Top stories.
+
+    Candidates dropped with reasons. OpenBSD developers rejecting a uutils coreutils port drew 30
+    points and the only cited source is news.lavx.hu, an aggregator, with no mailing-list primary
+    located, so it is out. Nvidia's 64GB DGX Spark resurfaced at 1 point on two secondaries with no
+    vendor primary checked, unchanged from the earlier runs. Microsoft Doubles Down on Rust is a
+    4-point InfoWorld piece with no primary behind it. Pico CSS going unmaintained is a 1-point
+    Hacker News self-post. A Kotlin Toolchain claim about dropping Gradle for Android is sourced to
+    a report of a Slack message and fails the social-attribution rule. The Go JSON v2 migration post
+    is genuinely useful but sits on a secondary blog, and the day already carries a Go 1.27 item.
+    C++ Insights at 151 points is a long-standing tool showcase with no event behind it, though its
+    absence from the query set is a second-order watchlist gap worth noting alongside tmux.
+
+    Outages states no major items on the merits, carried from the earlier check of the GitHub status
+    summary at 2026-10-04T06:49Z, which reported all twelve components operational with an empty
+    incidents array. Nothing in the 18:49Z corpus changed that. Books returned Springer conference
+    proceedings again, mostly repeated ECCV 2026 volumes, and is omitted. New videos is omitted: the
+    YouTube fetch was healthy but returned conference uploads and routine channel output with no
+    item carrying a real discussion thread. ML research is omitted for a third run. Hacker News as a
+    section is omitted because today's high scorers are either published above or out of scope, the
+    largest being the Flock surveillance ruling at 462 points and a Bob Cringely obituary at 732.
+
+    On miss_review: the 2026-10-03 backtest reported 53 candidates and seeded zero causes, so these
+    six are additions rather than overrides, same as the earlier runs. Four are watchlist gaps where
+    no query matched an in-scope item: Supabase acquiring Turso at 203 points, a month-long GLM 5.3
+    Flash coding write-up at 205, Sites in ChatGPT at 320 where an OpenAI query exists and still did
+    not match, and Make Tmux the OS at 135 where no tmux query exists at all. Two are relevance
+    skips where the query found the item and the day passed on it: the macOS Full Disk Access post
+    at 256 points, which today's digest publishes, and antirez's ds4 at 301, the highest-scoring
+    in-scope miss in the set. The large remaining scorers, led by the Utah VPN ruling at 775 and the
+    Minecraft city at 637, are correctly out of scope and I left them alone.
 mechanical:
   digest:
     domains:
     - blog.cloudflare.com
+    - blog.python.org
     - da.vidbuchanan.co.uk
     - gitea.com
     - github.com
     - go.dev
+    - gvisor.dev
+    - halide.cx
     - liao.gg
     - news.ycombinator.com
     - nolanlawson.com
@@ -161,6 +278,7 @@ mechanical:
     - theatlantic.com
     - theguardian.com
     hn_ids:
+    - 49941641
     - 49943034
     - 49944227
     - 49945933
@@ -170,131 +288,154 @@ mechanical:
     - 49948332
     - 49949235
     - 49950554
+    - 49951218
+    - 49953495
+    - 49954243
     sections:
-      AI: 1
+      AI: 2
       Agentic coding: 1
       Developer tools: 1
-      Engineering posts: 2
+      Engineering posts: 3
+      Infrastructure: 1
+      Languages and runtimes: 2
       Linux and kernel: 1
       Outages: 0
       Security: 2
       Sources checked: 0
       Top stories: 4
-    source_count: 26
+    source_count: 36
     titles:
     - C2PA signatures can be crafted to cover zero bytes of the file they sign
     - Critical Gitea Actions runner flaw gives workflow authors root on the runner host
     - Go 1.27 extends its experimental SIMD API from amd64 to arm64 and wasm
     - OpenAI safety report lead David Robinson resigns and calls the company's culture broken
+    - Strata runs a 125B Qwen MoE on a 12GB consumer GPU by keeping the hottest experts in VRAM
     - Independent Kolibri walkthrough measures a larger German tokenizer advantage than the vendor claims
     - Practitioner argues coding agents need committed documentation rather than vector-store memory
     - Quadratic SVG parsing in probe-image-size blocks the Node event loop on crafted input
     - SiYuan agent tools reach internal addresses through a DNS rebinding SSRF bypass
     - Cloudflare puts Artifacts in open beta and starts billing on 2026-10-15
+    - Rust for CPython roadmap puts an optional Rust zlib backend in Python 3.16 and a required Rust build
+      no earlier than 3.18
+    - Out-of-tree rustc and cargo patches start dependent crates on early metadata and cut clean check
+      times
     - Valve's Timur Kristóf recounts moving GCN 1.0 and 1.1 Radeon cards to AMDGPU
+    - Google is donating gVisor to the CNCF and moving it off unilateral Google governance
+    - Halide releases wpd, a BSD-licensed Rust WebP decoder it measures faster than libwebp
     - Hard default budget caps, with Google Cloud shipped and the AWS spend limit in limited release
     - Nolan Lawson argues the case against "use the platform" before defending it
   fetched:
+  - detail: 18516 bytes
+    ok: true
+    url: https://gvisor.dev/blog/2026/10/02/gvisor-cncf/
+  - detail: 283594 bytes
+    ok: true
+    url: https://github.com/PowderworksCode/headstart
+  - detail: 387365 bytes
+    ok: true
+    url: https://github.com/Niko1221/Strata
+  - detail: 18061 bytes
+    ok: true
+    url: https://halide.cx/blog/wpd/
+  - detail: 52099 bytes
+    ok: true
+    url: https://blog.python.org/2026/09/language-summit-2026-rust-for-cpython/
+  - detail: 325733 bytes (clipped)
+    ok: true
+    url: https://news.ycombinator.com/item?id=49937631
+  - detail: 512187 bytes (clipped)
+    ok: true
+    url: https://developer.apple.com/news/
+  - detail: 430017 bytes (clipped)
+    ok: true
+    url: https://developer.apple.com/news/rss/news.rss
+  - detail: 637619 bytes
+    ok: true
+    url: https://github.com/trending?since=daily
+  - detail: 80268 bytes
+    ok: true
+    url: https://www.phoronix.com/news/XDC-2026-Valve-Timur-AMDGPU
+  - detail: 186439 bytes
+    ok: true
+    url: https://github.com/advisories/GHSA-x4q3-gcj3-m6cf
   - detail: 51909 bytes
     ok: true
     url: https://go.dev/blog/archsimd
-  - detail: 80285 bytes (clipped)
+  - detail: 191394 bytes
     ok: true
-    url: https://tej.as/blog/aleph-alpha-kolibri
-  - detail: 34841 bytes
-    ok: true
-    url: https://nolanlawson.com/2026/10/03/why-dont-more-developers-use-the-platform/
-  - detail: 532059 bytes
-    ok: true
-    url: https://claude.com/blog/claude-code-mods
+    url: https://github.com/advisories/GHSA-gjj5-9665-rwrc
   - detail: 19309 bytes
     ok: true
     url: https://www.da.vidbuchanan.co.uk/blog/hacking-time.html
-  - detail: 169517 bytes
-    ok: true
-    url: https://www.theregister.com/security/2026/10/03/anthropics-super-bug-hunting-model-mythos-is-hardcore-good-at-math-as-latest-vuln-under-attack-shows/5300933
-  - detail: 'failed: fetch failed: https://supabase.com/blog/supabase-acquires-turso: HTTP Error 404:
-      Not Found'
-    ok: false
-    url: https://supabase.com/blog/supabase-acquires-turso
-  - detail: 80058 bytes
-    ok: true
-    url: https://www.phoronix.com/news/XDC-2026-Valve-Timur-AMDGPU
-  - detail: 186445 bytes
-    ok: true
-    url: https://github.com/advisories/GHSA-x4q3-gcj3-m6cf
-  - detail: 101458 bytes
-    ok: true
-    url: https://gitea.com/gitea/runner/releases/tag/v3.0.0
-  - detail: 19309 bytes
-    ok: true
-    url: https://www.da.vidbuchanan.co.uk/blog/hacking-time.html
-  - detail: 435012 bytes
-    ok: true
-    url: https://www.theguardian.com/technology/2026/oct/03/openai-safety-leader-quits-warning-ai-companys-culture-is-broken
   - detail: 311127 bytes (clipped)
     ok: true
     url: https://blog.cloudflare.com/next-git-platform-on-cloudflare/
-  - detail: 'failed: fetch failed: https://www.theatlantic.com/technology/2026/10/openai-safety-team-resignation/688881/:
-      HTTP Error 403: Forbidden'
+  - detail: 18516 bytes
+    ok: true
+    url: https://gvisor.dev/blog/2026/10/02/gvisor-cncf/
+  - detail: 'failed: fetch failed: https://blog.python.org/2026/09/language-summit-2026-rust-for-cpython.html:
+      HTTP Error 404: Not Found'
     ok: false
-    url: https://www.theatlantic.com/technology/2026/10/openai-safety-team-resignation/688881/
-  - detail: 196926 bytes
+    url: https://blog.python.org/2026/09/language-summit-2026-rust-for-cpython.html
+  - detail: 52099 bytes
+    ok: true
+    url: https://blog.python.org/2026/09/language-summit-2026-rust-for-cpython/
+  - detail: 387673 bytes
+    ok: true
+    url: https://github.com/Niko1221/Strata
+  - detail: 196920 bytes
     ok: true
     url: https://github.com/advisories/GHSA-x8gv-g2g3-65fj
-  - detail: 191400 bytes
-    ok: true
-    url: https://github.com/advisories/GHSA-gjj5-9665-rwrc
-  - detail: 51909 bytes
-    ok: true
-    url: https://go.dev/blog/archsimd
-  - detail: 17614 bytes
-    ok: true
-    url: https://simonwillison.net/2026/Oct/3/default-hard-budget-caps/
-  - detail: 80285 bytes (clipped)
-    ok: true
-    url: https://tej.as/blog/aleph-alpha-kolibri
-  - detail: 80057 bytes
-    ok: true
-    url: https://www.phoronix.com/news/XDC-2026-Valve-Timur-AMDGPU
-  - detail: 51909 bytes
-    ok: true
-    url: https://go.dev/blog/archsimd
-  - detail: 186443 bytes
-    ok: true
-    url: https://github.com/advisories/GHSA-x4q3-gcj3-m6cf
-  - detail: 435012 bytes
+  - detail: 434836 bytes
     ok: true
     url: https://www.theguardian.com/technology/2026/oct/03/openai-safety-leader-quits-warning-ai-companys-culture-is-broken
-  - detail: 19309 bytes
-    ok: true
-    url: https://www.da.vidbuchanan.co.uk/blog/hacking-time.html
-  - detail: 191386 bytes
-    ok: true
-    url: https://github.com/advisories/GHSA-gjj5-9665-rwrc
-  - detail: 'failed: fetch failed: https://www.theatlantic.com/technology/2026/10/openai-safety-team-resignation/688881/:
-      HTTP Error 403: Forbidden'
-    ok: false
-    url: https://www.theatlantic.com/technology/2026/10/openai-safety-team-resignation/688881/
-  - detail: 196926 bytes
-    ok: true
-    url: https://github.com/advisories/GHSA-x8gv-g2g3-65fj
-  - detail: 311127 bytes (clipped)
-    ok: true
-    url: https://blog.cloudflare.com/next-git-platform-on-cloudflare/
-  - detail: 80285 bytes (clipped)
+  - detail: 80265 bytes (clipped)
     ok: true
     url: https://tej.as/blog/aleph-alpha-kolibri
+  - detail: 18061 bytes
+    ok: true
+    url: https://halide.cx/blog/wpd/
   - detail: 17614 bytes
     ok: true
     url: https://simonwillison.net/2026/Oct/3/default-hard-budget-caps/
-  - detail: 34841 bytes
+  - detail: 283594 bytes
     ok: true
-    url: https://nolanlawson.com/2026/10/03/why-dont-more-developers-use-the-platform/
+    url: https://github.com/PowderworksCode/headstart
   - detail: 12737 bytes
     ok: true
     url: https://liao.gg/blog/agents-dont-need-memory
-  generated_at: '2026-10-04T15:29:20+00:00'
+  - detail: 34841 bytes
+    ok: true
+    url: https://nolanlawson.com/2026/10/03/why-dont-more-developers-use-the-platform/
+  - detail: 80268 bytes
+    ok: true
+    url: https://www.phoronix.com/news/XDC-2026-Valve-Timur-AMDGPU
+  - detail: 51909 bytes
+    ok: true
+    url: https://go.dev/blog/archsimd
+  - detail: 387365 bytes
+    ok: true
+    url: https://github.com/Niko1221/Strata
+  - detail: 'failed: fetch failed: https://blog.python.org/2026/09/language-summit-2026-rust-for-cpython.html:
+      HTTP Error 404: Not Found'
+    ok: false
+    url: https://blog.python.org/2026/09/language-summit-2026-rust-for-cpython.html
+  - detail: 52099 bytes
+    ok: true
+    url: https://blog.python.org/2026/09/language-summit-2026-rust-for-cpython/
+  - detail: 18516 bytes
+    ok: true
+    url: https://gvisor.dev/blog/2026/10/02/gvisor-cncf/
+  - detail: 283594 bytes
+    ok: true
+    url: https://github.com/PowderworksCode/headstart
+  - detail: 311127 bytes (clipped)
+    ok: true
+    url: https://blog.cloudflare.com/next-git-platform-on-cloudflare/
+  - detail: 434836 bytes
+    ok: true
+    url: https://www.theguardian.com/technology/2026/oct/03/openai-safety-leader-quits-warning-ai-companys-culture-is-broken
+  generated_at: '2026-10-04T19:18:42+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -303,16 +444,16 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-10-04T15:00:06+00:00'
+    fetched_at: '2026-10-04T18:49:16+00:00'
     pooled:
       added:
-        ask_hn: 7
-        comments: 30
-        front_page: 18
-        queries: 48
-        show_hn: 12
-        top_day: 19
-      snapshot_fetched_at: '2026-10-04T12:22:28+00:00'
+        ask_hn: 14
+        comments: 36
+        front_page: 28
+        queries: 72
+        show_hn: 24
+        top_day: 36
+      snapshot_fetched_at: '2026-10-04T18:38:34+00:00'
     queries_backend: algolia
     seen_ids:
     - 49908570
@@ -322,7 +463,11 @@ mechanical:
     - 49928196
     - 49928361
     - 49930439
+    - 49933069
+    - 49933461
+    - 49935038
     - 49935097
+    - 49935250
     - 49936017
     - 49937304
     - 49938326
@@ -413,16 +558,19 @@ mechanical:
     - 49947051
     - 49947170
     - 49947176
+    - 49947336
     - 49947372
     - 49947404
     - 49947472
     - 49947482
+    - 49947565
     - 49947631
     - 49947799
     - 49947816
     - 49947858
     - 49947975
     - 49948107
+    - 49948161
     - 49948254
     - 49948332
     - 49948364
@@ -441,13 +589,16 @@ mechanical:
     - 49949699
     - 49949787
     - 49949896
+    - 49949990
     - 49950052
     - 49950177
+    - 49950226
     - 49950288
     - 49950478
     - 49950554
     - 49950772
     - 49950976
+    - 49951081
     - 49951110
     - 49951139
     - 49951218
@@ -459,10 +610,12 @@ mechanical:
     - 49951713
     - 49951873
     - 49951881
+    - 49951910
     - 49951966
     - 49952029
     - 49952073
     - 49952111
+    - 49952207
     - 49952373
     - 49952661
     - 49952885
@@ -470,12 +623,42 @@ mechanical:
     - 49953063
     - 49953116
     - 49953228
+    - 49953288
+    - 49953430
     - 49953495
     - 49953718
     - 49953734
+    - 49953789
     - 49953942
+    - 49954015
+    - 49954124
     - 49954166
+    - 49954243
     - 49954441
+    - 49954496
+    - 49954499
+    - 49954745
+    - 49954882
+    - 49954940
+    - 49955128
+    - 49955297
+    - 49955423
+    - 49955528
+    - 49955572
+    - 49955585
+    - 49955704
+    - 49955812
+    - 49955833
+    - 49955839
+    - 49955930
+    - 49956146
+    - 49956148
+    - 49956155
+    - 49956179
+    - 49956183
+    - 49956358
+    - 49956416
+    - 49956449
     source: cache
   query_yield:
     0day:
@@ -487,13 +670,15 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 5
+      matched: 7
       matched_ids:
       - 49944127
       - 49946228
       - 49946321
       - 49946873
+      - 49947050
       - 49948332
+      - 49952111
       published: 1
       published_ids:
       - 49948332
@@ -561,7 +746,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 4
     CVE:
       matched: 0
       matched_ids: []
@@ -569,26 +754,32 @@ mechanical:
       published_ids: []
       raw: 5
     Claude:
-      matched: 7
+      matched: 10
       matched_ids:
       - 49942155
       - 49943964
       - 49945189
       - 49946507
       - 49946567
+      - 49946733
       - 49949172
       - 49953892
+      - 49955324
+      - 49956284
       published: 0
       published_ids: []
       raw: 5
     Claude Code:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49946299
       - 49946507
       - 49946567
       - 49947646
       - 49949172
+      - 49955121
+      - 49955324
+      - 49956379
       published: 0
       published_ids: []
       raw: 5
@@ -602,20 +793,23 @@ mechanical:
       published: 1
       published_ids:
       - 49947051
-      raw: 4
+      raw: 5
     Copilot:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49954800
       published: 0
       published_ids: []
       raw: 2
     Cursor:
-      matched: 1
+      matched: 3
       matched_ids:
       - 49946607
+      - 49955746
+      - 49956379
       published: 0
       published_ids: []
-      raw: 1
+      raw: 3
     DeepSeek:
       matched: 2
       matched_ids:
@@ -631,7 +825,7 @@ mechanical:
       published_ids: []
       raw: 5
     GPT:
-      matched: 6
+      matched: 7
       matched_ids:
       - 49943964
       - 49944343
@@ -639,36 +833,43 @@ mechanical:
       - 49949914
       - 49953457
       - 49954402
+      - 49954871
       published: 0
       published_ids: []
       raw: 5
     GPU:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49942429
       - 49942621
       - 49947404
+      - 49956396
       published: 0
       published_ids: []
       raw: 5
     Gemini:
-      matched: 5
+      matched: 8
       matched_ids:
       - 49942592
       - 49943066
       - 49945630
       - 49948905
       - 49951886
+      - 49955364
+      - 49955938
+      - 49956449
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     GitHub:
-      matched: 4
+      matched: 6
       matched_ids:
       - 49942818
       - 49943375
       - 49944902
       - 49951609
+      - 49955474
+      - 49956183
       published: 0
       published_ids: []
       raw: 5
@@ -686,11 +887,12 @@ mechanical:
       published_ids: []
       raw: 0
     Homebrew:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49954801
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     Honk:
       matched: 0
       matched_ids: []
@@ -755,7 +957,7 @@ mechanical:
       published_ids: []
       raw: 5
     Linux:
-      matched: 9
+      matched: 10
       matched_ids:
       - 49941991
       - 49942443
@@ -766,6 +968,7 @@ mechanical:
       - 49953151
       - 49953503
       - 49954166
+      - 49955812
       published: 1
       published_ids:
       - 49946895
@@ -778,13 +981,14 @@ mechanical:
       published_ids: []
       raw: 0
     MCP:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49945978
       - 49946733
       - 49947600
       - 49949056
       - 49949710
+      - 49955746
       published: 0
       published_ids: []
       raw: 5
@@ -799,7 +1003,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     Neovim:
       matched: 0
       matched_ids: []
@@ -807,15 +1011,16 @@ mechanical:
       published_ids: []
       raw: 0
     Nvidia:
-      matched: 2
+      matched: 3
       matched_ids:
       - 49951093
       - 49953950
+      - 49954823
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     OpenAI:
-      matched: 7
+      matched: 9
       matched_ids:
       - 49942569
       - 49944227
@@ -823,7 +1028,9 @@ mechanical:
       - 49946016
       - 49948332
       - 49948566
+      - 49949988
       - 49953179
+      - 49956245
       published: 2
       published_ids:
       - 49944227
@@ -848,7 +1055,7 @@ mechanical:
       - 49948601
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     Prometheus:
       matched: 0
       matched_ids: []
@@ -856,21 +1063,24 @@ mechanical:
       published_ids: []
       raw: 0
     PyPI:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49956183
       published: 0
       published_ids: []
-      raw: 0
+      raw: 2
     Python:
-      matched: 5
+      matched: 6
       matched_ids:
       - 49945841
       - 49951398
       - 49952210
       - 49953718
       - 49954379
-      published: 0
-      published_ids: []
+      - 49954875
+      published: 1
+      published_ids:
+      - 49951398
       raw: 5
     Qwen:
       matched: 4
@@ -879,21 +1089,22 @@ mechanical:
       - 49942578
       - 49951343
       - 49953495
-      published: 0
-      published_ids: []
+      published: 1
+      published_ids:
+      - 49953495
       raw: 5
     Raft:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 5
     Redis:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     Rust:
       matched: 7
       matched_ids:
@@ -904,8 +1115,9 @@ mechanical:
       - 49949515
       - 49949680
       - 49951218
-      published: 0
-      published_ids: []
+      published: 1
+      published_ids:
+      - 49951218
       raw: 5
     S-1:
       matched: 0
@@ -918,7 +1130,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     Spring Boot:
       matched: 0
       matched_ids: []
@@ -932,13 +1144,13 @@ mechanical:
       - 49945569
       published: 0
       published_ids: []
-      raw: 4
+      raw: 5
     SwiftUI:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 1
     TypeScript:
       matched: 2
       matched_ids:
@@ -960,8 +1172,9 @@ mechanical:
       published_ids: []
       raw: 0
     Xcode:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49954764
       published: 0
       published_ids: []
       raw: 5
@@ -977,19 +1190,21 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 3
+      raw: 5
     acquisition:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49954718
       published: 0
       published_ids: []
-      raw: 0
+      raw: 2
     agentic:
-      matched: 3
+      matched: 4
       matched_ids:
       - 49945331
       - 49946225
       - 49951886
+      - 49956391
       published: 0
       published_ids: []
       raw: 5
@@ -1020,23 +1235,23 @@ mechanical:
       published_ids: []
       raw: 5
     coding agent:
-      matched: 6
+      matched: 5
       matched_ids:
       - 49942434
       - 49945696
       - 49946733
       - 49950321
       - 49953223
-      - 49954178
       published: 0
       published_ids: []
       raw: 5
     distributed systems:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49955223
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     drug discovery:
       matched: 0
       matched_ids: []
@@ -1075,7 +1290,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 1
     kernel:
       matched: 1
       matched_ids:
@@ -1090,7 +1305,7 @@ mechanical:
       published_ids: []
       raw: 0
     macOS:
-      matched: 7
+      matched: 8
       matched_ids:
       - 49942151
       - 49944332
@@ -1099,12 +1314,14 @@ mechanical:
       - 49950636
       - 49952111
       - 49953606
+      - 49955068
       published: 0
       published_ids: []
       raw: 5
     npm:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 49956183
       published: 0
       published_ids: []
       raw: 5
@@ -1113,7 +1330,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
   runs:
   - at: '2026-10-04T07:32:40+00:00'
     mode: daily
@@ -1390,6 +1607,150 @@ mechanical:
       name: run_log
       status: ok
     - detail: 32 fetch(es), 3 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s), 0 improvement PR(s)
+      name: manifest
+      status: ok
+  - at: '2026-10-04T19:19:00+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-10-04.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-10-03
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"C2PA signatures can be crafted to cover zero bytes of the file they
+        sign","section":"Top stories","status":"confirmed","category":"Security","primary_url":"https://www.da.vidbuchanan.co.uk/blog/hacking-time.html","sources":["https://www.da.vidbuchanan.co.uk/blog/hacking-tim
+      name: select
+      status: ok
+      tokens:
+        in: 46
+        out: 37802
+      tools:
+        Bash: 1
+        Glob: 3
+        Grep: 15
+        Read: 6
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 9
+        mcp__digest__guidance: 2
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 2
+    - detail: |-
+        The write step is complete and the gate exits 0.
+
+        **Written to `data/digests/2026-10-04.md`** (third run of the date, appended rather than rewritten):
+
+        - **Top stories**: unchanged at four. The selection's planned fourth-slot insertion, Apple's Full Disk Access notice, was **refused**. The 2026-10-0
+      name: write
+      status: ok
+      tokens:
+        in: 44
+        out: 20972
+      tools:
+        Bash: 1
+        Edit: 16
+        Read: 2
+        ToolSearch: 1
+        mcp__digest__run_gate: 2
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Agentic coding: Practitioner argues
+        coding agents need committed documentation rather than vector-store memory","detail":"The summary
+        states the author \"closes by promoting their own memory plugin, so the argument carries the author's
+        comme
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: review
+      status: ok
+      tokens:
+        in: 32
+        out: 26023
+      tools:
+        Glob: 1
+        Grep: 6
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 18
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes with exit code 0 (only pre-existing memory staleness warnings, outside this step's scope).
+
+        All four findings repaired in `data/digests/2026-10-04.md`, nothing dropped:
+
+        1. **Agentic coding, agent-memory block (blocking).** Removed the false commercial imputation. The summary now reads t
+      name: write
+      status: ok
+      tokens:
+        in: 18
+        out: 2732
+      tools:
+        Edit: 5
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"findings":[{"severity":"blocking","where":"Top stories / OpenAI safety report lead David Robinson
+        resigns and calls the company's culture broken","detail":"Unsourced claim in \"Why it matters\":
+        \"A team building on OpenAI models has no announced successor model to migrate to.\" The Guardian,
+        whic
+      failed_tools:
+        mcp__digest__fetch_url: 1
+      name: review
+      status: ok
+      tokens:
+        in: 20
+        out: 19862
+      tools:
+        Glob: 1
+        Grep: 2
+        Read: 2
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 9
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 11 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 1 cause(s) corrected in 2026-10-03
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-10-04.yaml
+      name: run_log
+      status: ok
+    - detail: 36 fetch(es), 2 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
