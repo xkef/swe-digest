@@ -30,49 +30,12 @@
     of slicing from the start.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0023
-  kind: fact
-  last_seen: '2026-07-26'
-  note: >-
-    Reddit post permalinks (`www.reddit.com/r/{sub}/comments/...`) return HTTP 403 to automated fetch
-    even when the RSS feed that produced them succeeded. The permalink is still the correct discussion
-    link to publish; do not try to re-fetch it for verification.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
   id: an-0035
   kind: fact
   last_seen: '2026-06-29'
   note: >-
     `status.openai.com/history` - OpenAI status history accessible from the run environment; reliable
     for OpenAI incident timelines (verified 2026-06-18).
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0044
-  kind: fact
-  last_seen: '2026-08-02'
-  note: >-
-    HN endpoints from the run environment: `hn.algolia.com` (returns full structured data with objectID,
-    points, num_comments, created_at), `hacker-news.firebaseio.com`, and `news.ycombinator.com` front
-    page and item pages all return 200 locally. Use them directly when local. `hnrss.org` returns 403
-    from datacenter IP ranges. Merged from four bullets to keep the store under its entry bound.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0045
-  kind: fact
-  last_seen: '2026-08-09'
-  note: >-
-    `www.reddit.com` / `old.reddit.com` - RSS feeds (`/hot/.rss`, `/top/.rss?t=day`) are heavily rate-limited
-    from datacenter IP ranges. GitHub Actions runners get HTTP 429 after the first few subreddits even
-    at 7s spacing, and sustained host-level blocks occurred on 2026-06-18 and across 2026-06-24..2026-06-30.
-    `make reddit` spaces requests 7s apart, rotates the starting subreddit each six-hour window, keeps
-    partial results marked degraded, and the snapshots workflow accumulates them in snapshots/reddit by
-    post id. Prefer the committed snapshot when live coverage is degraded and state the coverage in Sources
-    checked. Each additional spaced fetch across the UTC day keeps adding coverage: on 2026-07-25 three
-    successive fetches lifted the day from 14 to 20 of 28 subreddits, so run a second and third fetch
-    even when the first was 429ed. Full live coverage usually needs a residential network. A 2026-07-21
-    report (cole-k.com, HN 49005747) states logged-out old.reddit.com browsing now requires login; the
-    RSS feeds still returned data on 2026-07-25, so watch for further degradation. Compacted from a per-day
-    log to keep the store under its byte bound.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
   id: an-0047
@@ -86,21 +49,6 @@
     `blog.rust-lang.org` is 403/404 early after a release, so prefer the rust-lang/rust GitHub release
     object, then releases.rs and WebSearch. `blog.checkpoint.com` 403, use support.checkpoint.com sk advisory
     pages as primary. Merged from five bullets to keep the store under its entry bound.
-  subject: ''
-- group: Datacenter-IP 403 blocks and fallbacks
-  id: an-0049
-  kind: fact
-  last_seen: '2026-08-23'
-  note: >-
-    HN coverage from the unattended harness, confirmed 2026-06-29. All six fetcher backends 403 there,
-    including the community mirrors `api.hackerwebapp.com` and `api.hnpwa.com`. An hn-probe run on 2026-06-12
-    got 200 from all five probed endpoints on GitHub Actions runners, so the block does not cover Actions
-    egress. Use `make hn`, which walks Algolia, Firebase, front page HTML, community mirrors, and hnrss
-    in order and exits nonzero on degraded coverage. Fallback order for unattended runs: the committed
-    HN snapshot from the scheduled Actions fetch, then WebSearch supplementation with the degradation
-    stated in Sources checked. WebSearch alone is not acceptable coverage: the 2026-06-11 run used it
-    and missed Homebrew 6.0.0, a 600+ point front page release announcement. Merged from two bullets to
-    keep the store under its entry bound.
   subject: ''
 - group: Datacenter-IP 403 blocks and fallbacks
   id: an-0030
@@ -170,3 +118,41 @@
     endpoint recorded in source-reliability, verified working for Cloudflare on 2026-07-25. Merged from
     ten bullets to keep the store under its entry bound.
   subject: Hosts returning 403 to automated fetch, with fallbacks
+- group: Datacenter-IP 403 blocks and fallbacks
+  id: an-0014
+  kind: fact
+  last_seen: '2026-10-11'
+  note: >-
+    Merged from two entries covering one subject. From a local run environment `hn.algolia.com` (full
+    structured data with objectID, points, num_comments, created_at), `hacker-news.firebaseio.com`, and
+    `news.ycombinator.com` front page and item pages all return 200, so use them directly when local.
+    `hnrss.org` returns 403 from datacenter IP ranges. From the unattended harness all six fetcher backends
+    403, including the community mirrors `api.hackerwebapp.com` and `api.hnpwa.com`, confirmed 2026-06-29.
+    An hn-probe run on 2026-06-12 got 200 from all five probed endpoints on GitHub Actions runners, so
+    the block does not cover Actions egress. Use `make hn`, which walks Algolia, Firebase, front page
+    HTML, community mirrors, and hnrss in order and exits nonzero on degraded coverage. Fallback order
+    for unattended runs: the committed HN snapshot from the scheduled Actions fetch, then WebSearch supplementation
+    with the degradation stated in Sources checked. WebSearch alone is not acceptable coverage, since
+    the 2026-06-11 run used it and missed Homebrew 6.0.0, a front-page release announcement over 600 points.
+    Durable source judgment on the mirrors lives in source-reliability, not here.
+  subject: Hacker News fetch routes, local versus unattended
+- group: Datacenter-IP 403 blocks and fallbacks
+  id: an-0015
+  kind: fact
+  last_seen: '2026-10-11'
+  note: >-
+    Merged from two entries covering one subject. `www.reddit.com` and `old.reddit.com` RSS feeds (`/hot/.rss`,
+    `/top/.rss?t=day`) are heavily rate-limited from datacenter IP ranges. GitHub Actions runners get
+    HTTP 429 after the first few subreddits even at 7s spacing, and sustained host-level blocks occurred
+    on 2026-06-18 and across 2026-06-24 to 2026-06-30. `make reddit` spaces requests 7s apart, rotates
+    the starting subreddit each six-hour window, keeps partial results marked degraded, and the snapshots
+    workflow accumulates them in snapshots/reddit by post id. Prefer the committed snapshot when live
+    coverage is degraded and state the coverage in Sources checked. Each additional spaced fetch across
+    the UTC day keeps adding coverage: on 2026-07-25 three successive fetches lifted the day from 14 to
+    20 of 28 subreddits, so run a second and third fetch even when the first was 429ed. Full live coverage
+    usually needs a residential network. Post permalinks (`www.reddit.com/r/{sub}/comments/...`) return
+    403 to automated fetch even when the RSS feed that produced them succeeded. The permalink is still
+    the correct discussion link to publish, so do not re-fetch it for verification. A 2026-07-21 report
+    (cole-k.com, HN 49005747) states logged-out old.reddit.com browsing now requires login. The RSS feeds
+    still returned data on 2026-07-25, so watch for further degradation.
+  subject: Reddit fetch routes and rate limiting

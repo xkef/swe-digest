@@ -20,19 +20,6 @@
     merged PRs. Current 4.7.
   subject: Godot
 - group: Developer tools
-  id: e-0014
-  kind: fact
-  last_seen: '2026-07-26'
-  note: >-
-    cross-shell prompt engine. Track releases and security advisories touching prompt rendering. 2026-07-24
-    disclosed GHSA-6xj8-qv9j-xcjq: the resolved path string, built from raw folder names, is re-rendered
-    through Go `text/template`, whose function map exposes a `cmd` function, so a directory name containing
-    a template expression executes commands as the current user once the shell is in or below it; the
-    default configuration and every path style are affected, versions through 29.35.0 vulnerable, fixed
-    29.35.1. Companion GHSA-fwjx-9p69-h25h covers terminal escape sequence injection in prompt segment
-    data, same fix.
-  subject: Oh My Posh (JanDeDobbeleer/oh-my-posh, not in the [github] table)
-- group: Developer tools
   id: e-0021
   kind: fact
   last_seen: '2026-07-24'
@@ -115,17 +102,6 @@
     code change in the Rust stdlib verification effort, running in CI. Track releases, stdlib-verification
     coverage, and adoption.
   subject: Kani (model-checking/kani)
-- group: Developer tools
-  id: e-0030
-  kind: fact
-  last_seen: '2026-07-19'
-  note: >-
-    decentralized social-coding platform on the AT Protocol (same protocol as Bluesky); repos hosted on
-    user-run "knots", stacked pull requests, CI via "spindles". A GitHub alternative in the federated-forge
-    space alongside Codeberg and self-hosting. 2026-07-18 the Gleam language moved its canonical repository
-    to Tangled (HN 48959143); HN notes the feature set still trails GitHub. Track adoption by other prominent
-    projects, feature parity, and stability.
-  subject: Tangled (tangled.org)
 - group: AI
   id: e-0035
   kind: fact
@@ -266,20 +242,6 @@
     in the AI-assisted-discovery era. Track SIRT funding, adopted projects, and embargo governance.
   subject: Akrites (Linux Foundation)
 - group: Security
-  id: e-0068
-  kind: fact
-  last_seen: '2026-07-21'
-  note: >-
-    the CMS behind a large share of public sites. Track core security releases and REST API flaws. 2026-07-17
-    Searchlight Cyber disclosed wp2shell, an unauthenticated RCE in stock core: CVE-2026-63030 (REST API
-    batch endpoint `/wp-json/batch/v1` route confusion) chained with CVE-2026-60137 (SQL injection); affects
-    6.9.0-6.9.4 and 7.0.0-7.0.1, fixed 6.9.5/7.0.2 with forced auto-updates, public PoC, no active exploitation
-    reported at disclosure. 2026-07-20 Searchlight Cyber published its discovery write-up: it found wp2shell
-    using GPT-5.6 Sol Ultra for ~$25 of subscription usage (HN 48975665). 2026-07-21 CISA added both CVE-2026-63030
-    and CVE-2026-60137 to the KEV catalog (2026.07.21), confirming active exploitation, federal due 2026-07-24
-    for CVE-2026-63030. See [[followups]].
-  subject: WordPress core (wordpress.org)
-- group: Security
   id: e-0070
   kind: fact
   last_seen: '2026-07-07'
@@ -290,32 +252,6 @@
     change during rekey; adds experimental post-quantum signatures (ML-DSA 44 + Ed25519, off by default)
     and an NFA-based wildcard matcher. No CVE ids in the notes.
   subject: OpenSSH (openssh.com, not in the [github] table)
-- group: Languages and runtimes
-  id: e-0080
-  kind: fact
-  last_seen: '2026-07-21'
-  note: >-
-    memory-safe C and C++ compiler (LLVM-based, garbage-collected, FilPizlonator pass). Track tagged releases
-    past the v0.6xx pre-release line and which unsafe-C escape hatches it constrains (inline asm validated
-    2026-06-22; setjmp/longjmp and ucontext context switching documented 2026-06-30, ucontext new since
-    0.680). 2026-07-20 Zig accepted an issue to bring the Fil-C runtime memory-safety model (invisicaps,
-    syscall wrapping, no unsafe escape hatch) into Zig as a `fil` ABI, extending the approach beyond C/C++.
-    See [[followups]].
-  subject: Fil-C
-- group: Languages and runtimes
-  id: e-0081
-  kind: fact
-  last_seen: '2026-07-21'
-  note: >-
-    systems language and toolchain. Canonical repo moved from GitHub to Codeberg on 2025-11-26 (GitHub
-    read-only, new Codeberg issue numbers start at 30000). Track releases, breaking changes, and the compiler/build-system
-    split. Devlog 2026-06-30 moves `zig build`/`fetch`/`init`/`libc` into a separate build-system "maker"
-    process and strips package fetching, HTTP/TLS/crypto, Git protocol, and compression from the compiler
-    binary (14.1 to 13.5 MiB), almost entirely non-breaking. 2026-07-20 Andrew Kelley opened and accepted
-    issue 36237 for a `fil` ABI (alongside musl/gnu) compiling Zig with the Fil-C runtime memory-safety
-    model (runtime panics, no unsafe escape), initial x86_64-Linux only, ~1-6x overhead, all linked objects
-    must share the ABI. Current stable 0.15.1. See [[followups]].
-  subject: Zig (ziglang/zig)
 - group: Languages and runtimes
   id: e-0084
   kind: fact
@@ -340,19 +276,6 @@
     1.97.0 (2026-07-09) defaulted to the v0 symbol mangling scheme, fixed an unsound `pin!` deref coercion,
     warns on linker output; Cargo stabilized `build.warnings` and `resolver.lockfile-path`. See [[followups]].
   subject: Rust (rust-lang/rust, blog.rust-lang.org)
-- group: Linux and kernel
-  id: e-0092
-  kind: fact
-  last_seen: '2026-07-26'
-  note: >-
-    the C library under nearly every Linux deployment. Track feature releases (announced on the libc-announce
-    list with the full NEWS text), the CVEs each fixes, and compatibility removals. Current 2.44 (2026-07-25):
-    adds system-wide tunables via `/etc/tunables.conf` plus `ldconfig`, a `glibc.elf.thp` tunable, CORE-MATH
-    `cosh`/`sinh`/`tanh`, AArch64 SVE/AdvSIMD special cases and GCS operation locking, RISC-V vector string
-    routines, LoongArch32 support; fixes CVE-2026-4437 and CVE-2026-4438 (`gethostbyaddr` DNS response
-    handling) and CVE-2026-4046 (`iconv` assertion failure on untrusted input); drops 31-bit s390 and
-    the `--enable-memory-tagging` and `--enable-static-nss` configure options.
-  subject: GNU C Library (glibc, sourceware.org)
 - group: Linux and kernel
   id: e-0095
   kind: fact
@@ -637,19 +560,6 @@
     Braintree, and payments-infrastructure impact if it closes. Unconfirmed by the principals. Deal terms
     and the reported board timeline are in [[followups]]. Compacted from a dated deal log.
   subject: Stripe / PayPal / Advent
-- group: Developer tools
-  id: e-0135
-  kind: fact
-  last_seen: '2026-09-06'
-  note: >-
-    nonprofit Gitea-based code-hosting forge, a GitHub alternative in the federated-forge space alongside
-    Tangled and self-hosting. 2026-07 a membership vote amended the Terms of Use to prohibit projects
-    that mostly consist of generative-AI-written code, targeting whole repositories rather than individual
-    AI-assisted commits, enforced reactively case by case on community reports with no automated scanning
-    or mass deletion. A second amendment prohibits cryptocurrency and blockchain projects. Armin Ronacher
-    argued the "mostly" threshold is unenforceable and over-delegates to moderators. Track enforcement
-    detail and whether other forges follow. Compacted from a dated event log.
-  subject: Codeberg (codeberg.org)
 - group: Agentic coding
   id: e-0136
   kind: fact
@@ -899,3 +809,85 @@
     that had carried only a current version and no open question since early July.
   subject: Developer tools quiet watch (Ghostty, tmux, Typst, Xcode, Lore, ZLUDA, Box2D/Box3D, Podman,
     Immich)
+- group: Languages and runtimes
+  id: e-0073
+  kind: fact
+  last_seen: '2026-10-11'
+  note: >-
+    Merged from two entries that carried the same dated event. Zig is a systems language and toolchain.
+    Canonical repo moved from GitHub to Codeberg on 2025-11-26, GitHub read-only, new Codeberg issue numbers
+    start at 30000. Current stable 0.15.1, last confirmed 2026-07-21. Track releases, breaking changes,
+    and the compiler and build-system split: the 2026-06-30 devlog moves `zig build`, `fetch`, `init`,
+    and `libc` into a separate build-system maker process and strips package fetching, HTTP/TLS/crypto,
+    Git protocol, and compression from the compiler binary, 14.1 to 13.5 MiB, almost entirely non-breaking.
+    Fil-C is a memory-safe C and C++ compiler, LLVM-based, garbage-collected, FilPizlonator pass. Track
+    tagged releases past the v0.6xx pre-release line and which unsafe-C escape hatches it constrains:
+    inline asm validated 2026-06-22, setjmp/longjmp and ucontext context switching documented 2026-06-30,
+    ucontext new since 0.680. Shared thread: on 2026-07-20 Andrew Kelley opened and accepted ziglang issue
+    36237 for a `fil` ABI alongside musl and gnu, compiling Zig with the Fil-C runtime memory-safety model
+    (invisicaps, syscall wrapping, runtime panics, no unsafe escape hatch), initial x86_64-Linux only,
+    about 1x to 6x overhead, all linked objects must share the ABI. That extends the Fil-C approach beyond
+    C and C++. See [[followups]].
+  subject: Zig (ziglang/zig) and Fil-C
+- group: Developer tools
+  id: e-0076
+  kind: fact
+  last_seen: '2026-10-11'
+  note: >-
+    Merged from two entries that each named the other as the shared axis: GitHub alternatives in the federated-forge
+    space, alongside self-hosting. Codeberg (codeberg.org) is a nonprofit Gitea-based forge. In 2026-07
+    a membership vote amended the Terms of Use to prohibit projects that mostly consist of generative-AI-written
+    code, targeting whole repositories rather than individual AI-assisted commits, enforced reactively
+    case by case on community reports with no automated scanning or mass deletion. A second amendment
+    prohibits cryptocurrency and blockchain projects. Armin Ronacher argued the mostly threshold is unenforceable
+    and over-delegates to moderators. That continues the AI-authorship governance theme also running at
+    Debian, Godot, curl, and FFmpeg. Track enforcement detail and whether other forges follow. Tangled
+    (tangled.org) is a decentralized social-coding platform on the AT Protocol, the same protocol as Bluesky:
+    repos hosted on user-run knots, stacked pull requests, CI via spindles. On 2026-07-18 the Gleam language
+    moved its canonical repository to Tangled (HN 48959143), and HN noted the feature set still trails
+    GitHub. Track adoption by other prominent projects, feature parity, and stability.
+  subject: Federated forges (Codeberg, Tangled)
+- group: Linux and kernel
+  id: e-0087
+  kind: fact
+  last_seen: '2026-10-11'
+  note: >-
+    the C library under nearly every Linux deployment. Track feature releases, announced on the libc-announce
+    list with the full NEWS text, the CVEs each fixes, and compatibility removals. Current 2.44, released
+    2026-07-25 and last confirmed current 2026-07-26: added system-wide tunables via `/etc/tunables.conf`,
+    fixed CVE-2026-4437 and CVE-2026-4438 in `gethostbyaddr` DNS response handling and CVE-2026-4046 in
+    `iconv`, and dropped 31-bit s390 plus the `--enable-memory-tagging` and `--enable-static-nss` configure
+    options. Durable judgment: each feature release pairs new tunables and per-architecture math and string
+    work with compatibility removals, so read the NEWS text for dropped configure options and dropped
+    targets rather than the CVE list alone. Per-release feature detail lives in the dated digests. Compacted
+    from a full release-notes dump.
+  subject: GNU C Library (glibc, sourceware.org)
+- group: Security
+  id: e-0088
+  kind: fact
+  last_seen: '2026-10-11'
+  note: >-
+    the CMS behind a large share of public sites. Track core security releases and REST API flaws. Durable
+    judgment: the REST API is the recurring unauthenticated attack surface in stock core, and a core flaw
+    there reaches confirmed exploitation fast. wp2shell, disclosed 2026-07-17 by Searchlight Cyber, chained
+    CVE-2026-63030 (route confusion in the `/wp-json/batch/v1` batch endpoint) with CVE-2026-60137 (SQL
+    injection) for unauthenticated RCE, affecting 6.9.0 to 6.9.4 and 7.0.0 to 7.0.1, fixed in 6.9.5 and
+    7.0.2 with forced auto-updates. CISA added both CVEs to the KEV catalog on 2026-07-21, four days after
+    disclosure, federal due 2026-07-24 for CVE-2026-63030. Searchlight stated it found the chain using
+    GPT-5.6 Sol Ultra for about $25 of subscription usage (HN 48975665), which makes it a dated case of
+    an LLM-found core RCE. Compacted from a three-event log. See [[followups]].
+  subject: WordPress core (wordpress.org)
+- group: Developer tools
+  id: e-0089
+  kind: fact
+  last_seen: '2026-10-11'
+  note: >-
+    cross-shell prompt engine. Track releases and security advisories touching prompt rendering. Durable
+    judgment: prompt segments render untrusted strings, including raw folder names, so template injection
+    and terminal escape-sequence injection are the recurring classes. GHSA-6xj8-qv9j-xcjq, disclosed 2026-07-24,
+    re-rendered the resolved path string through Go `text/template`, whose function map exposed a `cmd`
+    function, so a directory name containing a template expression executed commands as the current user
+    once the shell was in or below it. The default configuration and every path style were affected, versions
+    through 29.35.0 vulnerable, fixed 29.35.1. Companion GHSA-fwjx-9p69-h25h covered escape-sequence injection
+    in prompt segment data, same fix. Compacted from a full advisory dump.
+  subject: Oh My Posh (JanDeDobbeleer/oh-my-posh, not in the [github] table)

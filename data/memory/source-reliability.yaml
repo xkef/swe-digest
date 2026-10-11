@@ -29,68 +29,6 @@
     Do not link it. The Apertus model is from EPFL/ETH Zurich/CSCS (released 2025-09-02); cite the ETH
     Zurich press release or `apertus.ai`, not the `apertvs.ai` look-alike.
   subject: ''
-- group: Notes / Reliable primary sources
-  id: sr-0028
-  kind: fact
-  last_seen: '2026-06-15'
-  note: >-
-    `github.com/trending` (and `?since=daily` language views) - Fetchable from datacenter; repo HTML lists
-    parse cleanly. Use `gh api repos/{owner}/{repo}` and `/readme` to verify any surfaced repo before
-    publishing.
-  subject: ''
-- group: Notes / Reliable primary sources
-  id: sr-0040
-  kind: fact
-  last_seen: '2026-07-25'
-  note: >-
-    `www.debian.org/vote/` - Debian General Resolution pages are primary; fetched 200 from the run environment
-    with the full ballot text of every proposal, proposers, and seconds (used 2026-07-25 for the LLM-usage
-    GR). Prefer this over mailing-list archives for the canonical proposal text.
-  subject: ''
-- group: Notes / Reliable primary sources
-  id: sr-0041
-  kind: fact
-  last_seen: '2026-07-25'
-  note: >-
-    `www.nist.gov/news-events/news/` - NIST news pages are primary and fetched 200 from the run environment
-    with full detail (used 2026-07-25 for the joint UK AISI / US CAISI preliminary cyber-capability assessment
-    of Kimi K3, including benchmark names, scores, and the stated limitations). The route for AI Security
-    Institute joint publications.
-  subject: ''
-- group: Notes / Reliable primary sources
-  id: sr-0043
-  kind: fact
-  last_seen: '2026-07-25'
-  note: >-
-    `huggingface.co/api/models/{id}` - the model API's `createdAt` and `lastModified` are the reliable
-    dates for when weights were actually published, and beat the model card when the card carries an earlier
-    date from the paper it cites (used 2026-07-25 for AMD Instella-MoE-16B-A3B: card dated November 2025,
-    repositories created 2026-07-23). Check the `license:` tag there too, since cards often omit it.
-  subject: ''
-- group: Notes / Reliable primary sources
-  id: sr-0047
-  kind: fact
-  last_seen: '2026-07-25'
-  note: >-
-    `www.microsoft.com/en-us/corporate-responsibility/topics/open-weight/` - host of the "Open Weights
-    and American AI Leadership" letter and its canonical signatory list; fetched 200 with the full list
-    (used 2026-07-25 to establish that OpenAI had been added and the list had grown from 25 to 35). The
-    signatory list changes after publication, so re-read it rather than trusting launch-day press coverage.
-    The NVIDIA-hosted PDF of the same letter uses a custom font encoding and does not yield readable text
-    to a plain extractor.
-  subject: ''
-- group: Notes / Reliable primary sources
-  id: sr-0052
-  kind: fact
-  last_seen: '2026-07-26'
-  note: >-
-    GitHub Security Advisories via `gh api graphql` (`securityAdvisories` / `securityAdvisory(ghsaId:)`)
-    - returns the full advisory description, severity, identifiers, affected package ranges, and first
-    patched version without any web fetch, and is the fastest way to sweep a day of ecosystem advisories.
-    Used 2026-07-26 for the etcd Watch bypass, the Oh My Posh template injection, and the sm-crypto RNG
-    defect. Note that many advisories carry no CVE id and a zero CVSS score, so do not treat a missing
-    CVE as a missing advisory.
-  subject: ''
 - group: Notes / Secondary/aggregation sources
   id: sr-0056
   kind: fact
@@ -255,3 +193,38 @@
     the HN fetch-route notes in access-notes, per this store's rule that it holds durable source judgment
     and not environment state.
   subject: HN community JSON mirrors (hackerwebapp, hnpwa)
+- group: Notes / Reliable primary sources
+  id: sr-0022
+  kind: fact
+  last_seen: '2026-10-11'
+  note: >-
+    Merged from three bullets to keep the store under its entry bound, each confirmed on the date given.
+    GitHub Security Advisories via `gh api graphql` (`securityAdvisories`, `securityAdvisory(ghsaId:)`)
+    returns the full advisory description, severity, identifiers, affected package ranges, and first patched
+    version with no web fetch, and is the fastest way to sweep a day of ecosystem advisories, used 2026-07-26
+    for the etcd Watch bypass, the Oh My Posh template injection, and the sm-crypto RNG defect. Many advisories
+    there carry no CVE id and a zero CVSS score, so a missing CVE is not a missing advisory. `huggingface.co/api/models/{id}`
+    gives `createdAt` and `lastModified` as the reliable dates for when weights were actually published,
+    which beat the model card when the card carries an earlier date from the paper it cites, used 2026-07-25
+    for AMD Instella-MoE-16B-A3B whose card was dated November 2025 while the repositories were created
+    2026-07-23. Check the `license:` tag there too, since cards often omit it. `github.com/trending` and
+    its `?since=daily` language views are fetchable from datacenter and the repo HTML lists parse cleanly,
+    confirmed 2026-06-15. Verify any surfaced repo with `gh api repos/{owner}/{repo}` and `/readme` before
+    publishing.
+  subject: Structured-data routes that answer without a web fetch
+- group: Notes / Reliable primary sources
+  id: sr-0023
+  kind: fact
+  last_seen: '2026-10-11'
+  note: >-
+    Merged from three bullets to keep the store under its entry bound. Each fetched 200 from the run environment
+    with the full text, on the date given. `www.debian.org/vote/` carries the canonical text of every
+    Debian General Resolution proposal with proposers and seconds, so prefer it over mailing-list archives,
+    used 2026-07-25 for the LLM-usage GR. `www.nist.gov/news-events/news/` is the route for AI Security
+    Institute joint publications and carries benchmark names, scores, and stated limitations, used 2026-07-25
+    for the joint UK AISI and US CAISI preliminary cyber-capability assessment of Kimi K3. `www.microsoft.com/en-us/corporate-responsibility/topics/open-weight/`
+    hosts the Open Weights and American AI Leadership letter and its canonical signatory list, used 2026-07-25
+    to establish that OpenAI had been added and the list had grown from 25 to 35. That list changes after
+    publication, so re-read it rather than trusting launch-day press coverage. The NVIDIA-hosted PDF of
+    the same letter uses a custom font encoding that yields no readable text to a plain extractor.
+  subject: Primary document and announcement pages confirmed fetchable
