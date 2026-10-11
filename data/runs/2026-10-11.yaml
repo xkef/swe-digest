@@ -153,6 +153,56 @@ judgment:
     The improvement inbox holds 12 open issues, all authored by github-actions[bot] with
     author_association CONTRIBUTOR and none carrying an owner approval comment, so none is
     actionable and none was acted on. The story and feedback inboxes are empty.
+
+    Page fetching worked on this run, unlike both earlier passes of this date, and the main result
+    was negative. The three strongest candidates it unblocked were already published and were
+    dropped rather than repeated: Python 3.15.0 and the Let's Encrypt move to 64-day certificates
+    both ran on 2026-10-09, and the FakeGit figures of 17,610 repositories re-aimed in 34 hours ran
+    on 2026-10-08 from the same Apiiro report. Each was caught by grepping the archive before
+    writing. That is the same failure the previous pass of this date recorded for Microsoft
+    Execution Containers and the SQLite Vec1 extension, so the archive check belongs before source
+    verification rather than after it.
+
+    The ARTEX AI story that the 2026-10-11 notes carried forward is resolved. Its article URL would
+    not resolve from the index page and did resolve from the BleepingComputer RSS feed, which is the
+    more reliable path to a URL on that site. It is dated 2026-10-10 and inside the window. It is
+    published in Security, not Top stories. On ranking it does outrank the agent decompilation story
+    holding the fifth Top stories slot, because it is real-world rather than a lab or hobby result.
+    It was not displaced, because the Huntley unikernels block in Engineering posts cross-references
+    that decompilation story by name when it calls the golden-oracle pattern the one that fixed the
+    day's decompilation project. Removing the block would leave a dangling reference in a block this
+    run cannot edit, and Security is exempt from both the per-section cap and the day budget, so the
+    item gives up nothing by sitting in its own section. No displacement was made on this run.
+
+    Two further items were dropped as outside the window despite reaching the front page on
+    2026-10-11: "Nix wrote half of my debugger", dated 2026-10-07, and "The tilde in your PATH may
+    not be your HOME", dated 2026-10-02. Front-page freshness and publication date diverged again,
+    which is now the fourth consecutive day on which checking the date rather than inferring it from
+    thread position changed a decision.
+
+    Security is exempt from the caps, so the omissions there are editorial and not budgetary.
+    Declined for lack of any action for a reader: the Pwn2Own Ireland results, three law-enforcement
+    items (the ShinyHunters-linked arrest, the Qilin arrest, and a money-mule guilty plea), and the
+    FBI seizure of Flax Typhoon domains. Declined on engineering relevance rather than sourcing: the
+    Nippon Columbia incident exposing 8.6 million records, and the Midnight Mimosa residential-proxy
+    firmware campaign on low-cost Android phones.
+
+    All three Security additions cite BleepingComputer, which names and quotes CrowdStrike, Huntress
+    and Cisco's own advisory. Neither the CrowdStrike research nor the Huntress write-up was read
+    directly, which matches the posture the page already takes on SonicWall and Citrix. On ARTEX,
+    CrowdStrike itself reports the operator identification as not reliable enough to confirm, noting
+    a contradictory date of birth, so the block carries the attribution of the tooling and not the
+    identification of a named individual.
+
+    On miss_review: the backtest seeded no causes, so these are supplied rather than corrected.
+    Items 50021127 (Python 3.15) and 50019911 (Cloudflare acquires Deno) are marked out_of_scope
+    because both were published on 2026-10-09, so neither is a miss for 2026-10-10 even though both
+    scored highly. Item 49998801 (WSL3 performance) is marked watchlist_gap because it is real
+    engineering content at 174 points that no query matched. Items left unmarked include "Reducing
+    undefined behavior in the C language" and "Compiling Rust to readable C with Eurydice", both
+    genuine engineering that was seen and skipped, because the 2026-10-09 digest carries a C2y
+    pointer-comparison item and it could not be settled here whether that overlaps the first of
+    them.
 mechanical:
   digest:
     domains:
@@ -169,9 +219,11 @@ mechanical:
     - news.ycombinator.com
     - nishtahir.com
     - phoronix.com
+    - shkspr.mobi
     - sqlite.org
     - techcrunch.com
     - theregister.com
+    - verdagon.dev
     hn_ids:
     - 50031438
     - 50033357
@@ -185,18 +237,22 @@ mechanical:
     - 50040360
     - 50040547
     - 50041619
+    - 50042219
+    - 50042362
     - 50042950
     sections:
       AI: 1
-      Engineering posts: 2
-      Infrastructure: 1
+      Agentic coding: 1
+      Engineering posts: 3
+      Infrastructure: 2
+      Languages and runtimes: 1
       Linux and kernel: 2
       ML research: 2
       Outages: 1
-      Security: 4
+      Security: 6
       Sources checked: 0
       Top stories: 5
-    source_count: 34
+    source_count: 42
     titles:
     - Ukrainian drone strikes knock out two of Yandex's five data centers, including two YandexGPT training
       supercomputers
@@ -206,12 +262,19 @@ mechanical:
       Shai-Hulud worm reaches AI agent infrastructure through Tensorlake's npm SDK, and revoking a stolen
       token can wipe a home directory
     - SonicWall SMA1000 CVE-2026-102255 draws exploitation attempts three days after patch
-    - >-
-      Autonomous agents rebuilt a first-person shooter to 83 percent byte-exact functions after an oracle
-      replaced the reviewer agent
+    - CrowdStrike ties South Korean bank attacks to the ARTEX AI pentest suite, found through the operator's
+      own open directories
     - Gemini API deprecates 3.7 Flash and 3.5 Flash, auto-routing existing requests to replacement models
     - Linear probes detect agent sabotage at 98.8 percent AUC and catch deception a transcript never states
     - Rounding 4-bit AdamW state in preconditioner space closes up to 70 percent of the gap to 32-bit
+    - >-
+      Autonomous agents rebuilt a first-person shooter to 83 percent byte-exact functions after an oracle
+      replaced the reviewer agent
+    - AhsayCBS authentication bypass and command injection exploited together, with the latest release
+      10.3.4 still affected
+    - >-
+      Cisco patches five critical NX-OS flaws giving root on Nexus switches, and a CVSS 10.0 signature-verification
+      flaw in Cisco License
     - One prompt to an exposed Bedrock AgentCore agent yielded credentials for every agent in the account
       and region
     - >-
@@ -221,109 +284,123 @@ mechanical:
     - ClickFix campaign routes Google ads through Bing redirects to a fake Claude installer that swaps
       the clipboard command
     - Ransomware takes down IDCF Cloud East Japan Region 1, affecting 495 companies and local governments
+    - Valen's borrow checker records the path each reference points to, relaxing shared-xor-mutable to
+      no-use-after-free
     - LineageOS 24.0 releases on Android 17 with browser-based WebUSB flashing and an experimental bare-metal
       target
     - NVIDIA releases Boro, an Apache-2.0 Rust CLI for local AI-assisted Linux kernel development
     - SQLite 3.54.0 drops Windows XP support, deprecates sqlite3_analyzer, and removes the go and slash
       command terminators
+    - Windows Update certificates expire in May and June 2027, cutting unsupported Windows versions off
+      from updates
     - A build-your-own decision model shows constrained-decoding confidence scores are badly uncalibrated
     - Geoffrey Huntley argues coding agents removed the friction that made unikernels impractical
+    - >-
+      Paid usability sessions on a project README found a wrong demo link, inconsistent quoting rules
+      and no statement of what the software does
   fetched:
+  - detail: 97517 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/
   - detail: 11518 bytes
     ok: true
     url: https://status.yandex.cloud/en/incidents/2136
-  - detail: 11518 bytes
-    ok: true
-    url: https://status.yandex.cloud/en/timeline
-  - detail: 153811 bytes
-    ok: true
-    url: https://arstechnica.com/security/2026/10/openai-agents-tried-to-hack-wikipedia-tools-and-flooded-it-with-traffic/
-  - detail: 149298 bytes
-    ok: true
-    url: https://arstechnica.com/information-technology/2026/10/ukraines-drones-knock-out-ai-data-center-belonging-to-russias-google/
-  - detail: 10105 bytes
-    ok: true
-    url: https://sqlite.org/releaselog/3_54_0.html
-  - detail: 29915 bytes
-    ok: true
-    url: https://sqlite.org/vec1/doc/trunk/doc/vec1.md
-  - detail: 'failed: fetch failed: https://lwn.net/Articles/1099024: HTTP Error 403: Forbidden'
-    ok: false
-    url: https://lwn.net/Articles/1099024
-  - detail: 143238 bytes
-    ok: true
-    url: https://blogs.windows.com/windowsdeveloper/2026/10/07/microsoft-execution-containers-policy-driven-containment-for-ai-agents/
-  - detail: 71401 bytes (clipped)
-    ok: true
-    url: https://lineageos.org/Changelog-32/
-  - detail: 'failed: fetch failed: https://radar.cloudflare.com/bots/as13238: HTTP Error 403: Forbidden'
-    ok: false
-    url: https://radar.cloudflare.com/bots/as13238
-  - detail: 175317 bytes
-    ok: true
-    url: https://www.theregister.com/security/2026/10/09/aws_agentcore_security_undone_by_prompt_requesting_credentials/5302436
-  - detail: 447168 bytes (clipped)
-    ok: true
-    url: https://www.theregister.com/security/
-  - detail: 174900 bytes
-    ok: true
-    url: https://www.theregister.com/security/2026/10/08/shai-hulud-worm-makes-jump-to-ai-infrastructure-with-tensorlake-compromise/5302054
-  - detail: 186021 bytes
-    ok: true
-    url: https://www.theregister.com/security/2026/10/11/ai-systems-are-fully-capable-of-carrying-out-nightmare-attacks-against-infrastructure-and-nobodys-ready/5302450
-  - detail: 155657 bytes (clipped)
-    ok: true
-    url: https://www.anthropic.com/research/investigating-unintended-model-actions
-  - detail: 71401 bytes (clipped)
-    ok: true
-    url: https://lineageos.org/Changelog-32/
-  - detail: 173869 bytes (clipped)
-    ok: true
-    url: https://ai.google.dev/gemini-api/docs/changelog
-  - detail: 10105 bytes
-    ok: true
-    url: https://sqlite.org/releaselog/3_54_0.html
-  - detail: 46985 bytes (clipped)
-    ok: true
-    url: https://momo5502.com/posts/2026-10-09-game-decompilation/
-  - detail: 174900 bytes
-    ok: true
-    url: https://www.theregister.com/security/2026/10/08/shai-hulud-worm-makes-jump-to-ai-infrastructure-with-tensorlake-compromise/5302054
-  - detail: 91378 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/max-severity-sonicwall-sma1000-flaw-now-exploited-in-attacks/
   - detail: 'failed: fetch failed: https://www.bleepingcomputer.com/news/security/artex-ai-claude-agents-used-in-cyberattacks-on-south-korean-banks/:
       HTTP Error 404: Not Found'
     ok: false
     url: https://www.bleepingcomputer.com/news/security/artex-ai-claude-agents-used-in-cyberattacks-on-south-korean-banks/
+  - detail: 'failed: fetch failed: https://lwn.net/Articles/1045678/: HTTP Error 404: Not Found'
+    ok: false
+    url: https://lwn.net/Articles/1045678/
+  - detail: 13065 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/feed/
+  - detail: 'failed: fetch failed: https://radar.cloudflare.com/bots/as13238: HTTP Error 403: Forbidden'
+    ok: false
+    url: https://radar.cloudflare.com/bots/as13238
+  - detail: 31346 bytes (clipped)
+    ok: true
+    url: https://lwn.net/
+  - detail: 11785 bytes
+    ok: true
+    url: https://www.python.org/downloads/release/python-3150/
+  - detail: 'failed: fetch failed: https://letsencrypt.org/2026/10/09/64-day-certificate-lifetimes/: HTTP
+      Error 404: Not Found'
+    ok: false
+    url: https://letsencrypt.org/2026/10/09/64-day-certificate-lifetimes/
+  - detail: 90171 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/hacker-used-artex-ai-and-claude-agents-to-target-south-korean-banks/
+  - detail: 440711 bytes (clipped)
+    ok: true
+    url: https://docs.python.org/3.15/whatsnew/3.15.html
+  - detail: 116535 bytes (clipped)
+    ok: true
+    url: https://letsencrypt.org/blog/
+  - detail: 92310 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/cisco-warns-of-critical-flaws-allowing-nexus-switch-takeover/
+  - detail: 93185 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/microsoft/microsoft-outdated-windows-devices-will-lose-security-protection-next-year/
+  - detail: 90262 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/unpatched-ahsaycbs-flaws-exploited-to-deploy-webshells-mine-crypto/
+  - detail: 89959 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/fakegit-malware-campaign-returns-with-17-610-malicious-github-repos/
+  - detail: 114838 bytes
+    ok: true
+    url: https://shkspr.mobi/blog/2026/10/i-paid-people-to-try-and-follow-my-readme/
+  - detail: 152549 bytes (clipped)
+    ok: true
+    url: https://verdagon.dev/blog/valen-group-borrowing
+  - detail: 43837 bytes
+    ok: true
+    url: https://arxiv.org/abs/2610.12445
+  - detail: 71420 bytes (clipped)
+    ok: true
+    url: https://lineageos.org/Changelog-32/
+  - detail: 155657 bytes (clipped)
+    ok: true
+    url: https://www.anthropic.com/research/investigating-unintended-model-actions
+  - detail: 92309 bytes
+    ok: true
+    url: https://www.bleepingcomputer.com/news/security/cisco-warns-of-critical-flaws-allowing-nexus-switch-takeover/
+  - detail: 45231 bytes
+    ok: true
+    url: https://arxiv.org/abs/2610.12444
+  - detail: 554381 bytes
+    ok: true
+    url: https://github.com/trending
+  - detail: 149584 bytes
+    ok: true
+    url: https://arstechnica.com/information-technology/2026/10/ukraines-drones-knock-out-ai-data-center-belonging-to-russias-google/
   - detail: 43837 bytes
     ok: true
     url: https://arxiv.org/abs/2610.12445
   - detail: 45231 bytes
     ok: true
     url: https://arxiv.org/abs/2610.12444
-  - detail: 71401 bytes (clipped)
+  - detail: 173869 bytes (clipped)
+    ok: true
+    url: https://ai.google.dev/gemini-api/docs/changelog
+  - detail: 10105 bytes
+    ok: true
+    url: https://sqlite.org/releaselog/3_54_0.html
+  - detail: 71420 bytes (clipped)
     ok: true
     url: https://lineageos.org/Changelog-32/
+  - detail: 46985 bytes (clipped)
+    ok: true
+    url: https://momo5502.com/posts/2026-10-09-game-decompilation/
   - detail: 155657 bytes (clipped)
     ok: true
     url: https://www.anthropic.com/research/investigating-unintended-model-actions
-  - detail: 149384 bytes
+  - detail: 149739 bytes
     ok: true
     url: https://arstechnica.com/information-technology/2026/10/ukraines-drones-knock-out-ai-data-center-belonging-to-russias-google/
-  - detail: 174900 bytes
-    ok: true
-    url: https://www.theregister.com/security/2026/10/08/shai-hulud-worm-makes-jump-to-ai-infrastructure-with-tensorlake-compromise/5302054
-  - detail: 173865 bytes (clipped)
-    ok: true
-    url: https://ai.google.dev/gemini-api/docs/changelog
-  - detail: 186021 bytes
-    ok: true
-    url: https://www.theregister.com/security/2026/10/11/ai-systems-are-fully-capable-of-carrying-out-nightmare-attacks-against-infrastructure-and-nobodys-ready/5302450
-  - detail: 97517 bytes
-    ok: true
-    url: https://www.bleepingcomputer.com/news/security/
-  generated_at: '2026-10-11T16:33:26+00:00'
+  generated_at: '2026-10-11T20:14:12+00:00'
   hn:
     backends:
       ask_hn: algolia
@@ -332,16 +409,16 @@ mechanical:
       show_hn: algolia
       top_day: algolia
     degraded: []
-    fetched_at: '2026-10-11T15:59:06+00:00'
+    fetched_at: '2026-10-11T19:45:33+00:00'
     pooled:
       added:
-        ask_hn: 9
-        comments: 42
-        front_page: 24
-        queries: 56
-        show_hn: 14
-        top_day: 22
-      snapshot_fetched_at: '2026-10-11T12:50:46+00:00'
+        ask_hn: 16
+        comments: 54
+        front_page: 32
+        queries: 79
+        show_hn: 18
+        top_day: 33
+      snapshot_fetched_at: '2026-10-11T19:33:38+00:00'
     queries_backend: algolia
     seen_ids:
     - 49980880
@@ -351,17 +428,17 @@ mechanical:
     - 50001234
     - 50005743
     - 50006930
+    - 50008566
     - 50015833
     - 50016956
     - 50017247
     - 50017548
     - 50018929
-    - 50019213
     - 50020901
     - 50021899
     - 50024242
-    - 50024570
     - 50024805
+    - 50028264
     - 50028647
     - 50029123
     - 50029487
@@ -386,6 +463,7 @@ mechanical:
     - 50032008
     - 50032064
     - 50032151
+    - 50032253
     - 50032374
     - 50032445
     - 50032556
@@ -491,7 +569,6 @@ mechanical:
     - 50040689
     - 50041008
     - 50041060
-    - 50041061
     - 50041068
     - 50041540
     - 50041619
@@ -515,12 +592,37 @@ mechanical:
     - 50043254
     - 50043311
     - 50043434
+    - 50043603
     - 50043682
+    - 50043689
     - 50043719
     - 50043900
-    - 50044109
+    - 50044272
     - 50044460
     - 50044479
+    - 50044634
+    - 50044715
+    - 50044733
+    - 50044784
+    - 50044824
+    - 50044989
+    - 50045273
+    - 50045288
+    - 50045340
+    - 50045494
+    - 50045518
+    - 50045575
+    - 50045579
+    - 50045735
+    - 50045895
+    - 50045946
+    - 50045948
+    - 50045984
+    - 50046241
+    - 50046381
+    - 50046402
+    - 50046625
+    - 50046855
     source: cache
   query_yield:
     0day:
@@ -530,7 +632,7 @@ mechanical:
       published_ids: []
       raw: 5
     AI:
-      matched: 9
+      matched: 10
       matched_ids:
       - 50031156
       - 50031614
@@ -540,6 +642,7 @@ mechanical:
       - 50039092
       - 50039630
       - 50041765
+      - 50041873
       - 50042107
       published: 1
       published_ids:
@@ -566,7 +669,7 @@ mechanical:
       published_ids: []
       raw: 0
     Anthropic:
-      matched: 8
+      matched: 9
       matched_ids:
       - 50030778
       - 50031438
@@ -576,6 +679,7 @@ mechanical:
       - 50038865
       - 50039318
       - 50040497
+      - 50046117
       published: 3
       published_ids:
       - 50030778
@@ -600,7 +704,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 0
+      raw: 2
     CUDA:
       matched: 0
       matched_ids: []
@@ -614,7 +718,7 @@ mechanical:
       published_ids: []
       raw: 5
     Claude:
-      matched: 6
+      matched: 7
       matched_ids:
       - 50032330
       - 50035460
@@ -622,6 +726,7 @@ mechanical:
       - 50038383
       - 50038865
       - 50038883
+      - 50046117
       published: 1
       published_ids:
       - 50037299
@@ -633,20 +738,21 @@ mechanical:
       - 50038883
       - 50039548
       - 50041068
-      - 50041433
       - 50042172
       - 50042642
+      - 50046655
       published: 0
       published_ids: []
       raw: 5
     Cloudflare:
-      matched: 8
+      matched: 9
       matched_ids:
       - 50031614
       - 50032609
       - 50035624
       - 50035874
       - 50036565
+      - 50036629
       - 50041619
       - 50042046
       - 50043938
@@ -655,12 +761,13 @@ mechanical:
       - 50041619
       raw: 5
     Copilot:
-      matched: 1
+      matched: 2
       matched_ids:
       - 50042149
+      - 50045348
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     Cursor:
       matched: 0
       matched_ids: []
@@ -668,8 +775,9 @@ mechanical:
       published_ids: []
       raw: 0
     DeepSeek:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 50046655
       published: 0
       published_ids: []
       raw: 1
@@ -700,14 +808,15 @@ mechanical:
       published_ids: []
       raw: 5
     Gemini:
-      matched: 2
+      matched: 3
       matched_ids:
       - 50031274
       - 50039886
+      - 50046655
       published: 1
       published_ids:
       - 50039886
-      raw: 1
+      raw: 2
     GitHub:
       matched: 6
       matched_ids:
@@ -738,7 +847,7 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 2
     Honk:
       matched: 0
       matched_ids: []
@@ -746,8 +855,9 @@ mechanical:
       published_ids: []
       raw: 5
     IPO:
-      matched: 0
-      matched_ids: []
+      matched: 1
+      matched_ids:
+      - 50046896
       published: 0
       published_ids: []
       raw: 5
@@ -785,13 +895,14 @@ mechanical:
       published_ids: []
       raw: 1
     LLM:
-      matched: 5
+      matched: 6
       matched_ids:
       - 50031664
       - 50033976
-      - 50036777
       - 50038599
       - 50039529
+      - 50045100
+      - 50045579
       published: 0
       published_ids: []
       raw: 5
@@ -803,7 +914,7 @@ mechanical:
       published_ids: []
       raw: 5
     Linux:
-      matched: 7
+      matched: 9
       matched_ids:
       - 50031324
       - 50033709
@@ -812,6 +923,8 @@ mechanical:
       - 50039459
       - 50041573
       - 50043150
+      - 50043545
+      - 50046885
       published: 1
       published_ids:
       - 50034676
@@ -823,7 +936,7 @@ mechanical:
       - 50041727
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     MCP:
       matched: 10
       matched_ids:
@@ -845,13 +958,13 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     Mistral:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 2
+      raw: 5
     Neovim:
       matched: 0
       matched_ids: []
@@ -859,7 +972,7 @@ mechanical:
       published_ids: []
       raw: 0
     Nvidia:
-      matched: 7
+      matched: 8
       matched_ids:
       - 50030251
       - 50031430
@@ -868,21 +981,22 @@ mechanical:
       - 50035862
       - 50035886
       - 50036910
+      - 50046896
       published: 1
       published_ids:
       - 50034676
-      raw: 5
+      raw: 3
     OpenAI:
       matched: 8
       matched_ids:
       - 50030776
       - 50030893
       - 50033313
-      - 50034279
       - 50036740
       - 50038054
       - 50041162
       - 50041861
+      - 50046959
       published: 0
       published_ids: []
       raw: 5
@@ -899,12 +1013,15 @@ mechanical:
       published_ids: []
       raw: 0
     Postgres:
-      matched: 1
+      matched: 4
       matched_ids:
       - 50035288
+      - 50045216
+      - 50045644
+      - 50045715
       published: 0
       published_ids: []
-      raw: 2
+      raw: 3
     Prometheus:
       matched: 0
       matched_ids: []
@@ -919,20 +1036,23 @@ mechanical:
       published_ids: []
       raw: 2
     Python:
-      matched: 4
+      matched: 6
       matched_ids:
       - 50031926
       - 50033796
       - 50036348
       - 50037852
+      - 50045273
+      - 50046453
       published: 0
       published_ids: []
-      raw: 2
+      raw: 5
     Qwen:
-      matched: 2
+      matched: 3
       matched_ids:
       - 50034279
       - 50041727
+      - 50047043
       published: 0
       published_ids: []
       raw: 5
@@ -967,16 +1087,18 @@ mechanical:
       published_ids: []
       raw: 1
     SQLite:
-      matched: 3
+      matched: 5
       matched_ids:
       - 50030011
       - 50032781
       - 50040360
+      - 50044919
+      - 50045273
       published: 2
       published_ids:
       - 50032781
       - 50040360
-      raw: 2
+      raw: 4
     Spring Boot:
       matched: 0
       matched_ids: []
@@ -996,7 +1118,7 @@ mechanical:
       - 50035030
       published: 0
       published_ids: []
-      raw: 3
+      raw: 2
     TypeScript:
       matched: 4
       matched_ids:
@@ -1038,13 +1160,13 @@ mechanical:
       - 50036629
       published: 0
       published_ids: []
-      raw: 5
+      raw: 4
     acquisition:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 1
+      raw: 0
     agentic:
       matched: 6
       matched_ids:
@@ -1058,7 +1180,7 @@ mechanical:
       published_ids: []
       raw: 5
     arXiv:
-      matched: 8
+      matched: 10
       matched_ids:
       - 50030940
       - 50031324
@@ -1066,8 +1188,10 @@ mechanical:
       - 50036001
       - 50036322
       - 50037251
+      - 50039682
       - 50039713
       - 50042042
+      - 50043658
       published: 0
       published_ids: []
       raw: 5
@@ -1132,13 +1256,13 @@ mechanical:
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 5
+      raw: 3
     io_uring:
       matched: 0
       matched_ids: []
       published: 0
       published_ids: []
-      raw: 4
+      raw: 3
     kernel:
       matched: 4
       matched_ids:
@@ -1149,7 +1273,7 @@ mechanical:
       published: 1
       published_ids:
       - 50034676
-      raw: 4
+      raw: 3
     local-first:
       matched: 2
       matched_ids:
@@ -1471,6 +1595,150 @@ mechanical:
       name: run_log
       status: ok
     - detail: 31 fetch(es), 3 refused
+      name: reading
+      status: ok
+    - detail: compacted logs past the detail window
+      name: prune
+      status: ok
+    - detail: canonical form applied
+      name: format
+      status: ok
+    - detail: ok
+      name: gate
+      status: ok
+    - detail: 0 issue(s) to close
+      name: inbox
+      status: ok
+    - detail: 0 close(s), 0 new issue(s), 0 improvement PR(s)
+      name: manifest
+      status: ok
+  - at: '2026-10-11T20:14:32+00:00'
+    mode: daily
+    model: claude-opus-5
+    outcome: ok
+    repairs: 1
+    steps:
+    - detail: no follow-up past the age bound
+      name: prune_memory
+      status: ok
+    - detail: '7 source(s), degraded: fetch_reddit'
+      name: collect
+      status: ok
+    - detail: data/digests/2026-10-11.md
+      name: skeleton
+      status: ok
+    - detail: scored 2026-10-10
+      name: backtest
+      status: ok
+    - detail: no owner feedback
+      name: feedback
+      status: ok
+    - detail: >-
+        {"top_stories":[{"title":"Ukrainian drone strikes knock out two of Yandex's five data centers,
+        including two YandexGPT training supercomputers","section":"Top stories","status":"developing","category":"Outage","primary_url":"https://arstechnica.com/information-technology/2026/10/ukraines-drones-knoc
+      failed_tools:
+        mcp__digest__fetch_url: 4
+      name: select
+      status: ok
+      tokens:
+        in: 44
+        out: 33559
+      tools:
+        Bash: 1
+        Glob: 3
+        Grep: 7
+        Read: 3
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__backtest: 1
+        mcp__digest__fetch_url: 18
+        mcp__digest__issue_inbox: 1
+        mcp__digest__memory_query: 1
+    - detail: |-
+        The write step is complete. `data/digests/2026-10-11.md` was updated in place, and `run_gate` returns exit code 0.
+
+        ## What changed
+
+        This was a third run of 2026-10-11, so I kept every existing block and added only what the selection carried. `displace` was empty, so nothing was removed.
+
+        **Six stor
+      name: write
+      status: ok
+      tokens:
+        in: 36
+        out: 18442
+      tools:
+        Edit: 13
+        Read: 2
+        ToolSearch: 1
+        mcp__digest__run_gate: 1
+    - detail: "{\"ready\":false,\"findings\":[{\"severity\":\"blocking\",\"where\":\"Top stories, lead\
+        \ story: \\\"Ukrainian drone strikes knock out two of Yandex's five data centers\\\"\",\"detail\"\
+        :\"The `Why it matters` claim \\\"this is the second case in 2026 of a provider losing data centers\
+        \ to drone strikes\\\" is contradicted by "
+      name: review
+      status: ok
+      tokens:
+        in: 16
+        out: 15647
+      tools:
+        Glob: 1
+        Grep: 3
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 7
+        mcp__digest__run_gate: 1
+    - detail: |-
+        Gate passes with exit code 0 (remaining output is memory staleness warnings, which belong to other steps).
+
+        ## Repairs made
+
+        **1. Lead story, `Why it matters` (blocking)** — Removed the "second case in 2026" count, which the Ars Technica source contradicts. The field now names the Russian drone camp
+      failed_tools:
+        mcp__digest__fetch_url: 2
+      name: write
+      status: ok
+      tokens:
+        in: 24
+        out: 13587
+      tools:
+        Edit: 8
+        Read: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 2
+        mcp__digest__run_gate: 1
+    - detail: >-
+        {"ready":false,"findings":[{"severity":"blocking","where":"Top stories: Ukrainian drone strikes
+        knock out two of Yandex's five data centers","detail":"Unsourced claim in `Why it matters`. The
+        clause \"which corroborates outside the provider's own event log the drone-strike cause AWS gave
+        for me-sout
+      name: review
+      status: ok
+      tokens:
+        in: 18
+        out: 16696
+      tools:
+        Glob: 1
+        Grep: 2
+        Read: 1
+        StructuredOutput: 1
+        ToolSearch: 1
+        mcp__digest__fetch_url: 8
+        mcp__digest__run_gate: 1
+    - detail: skipped (no story republishes the archive)
+      name: dedup
+      status: skip
+    - detail: 6 paragraph(s) of notes
+      name: judgment
+      status: ok
+    - detail: 2 cause(s) corrected in 2026-10-10
+      name: miss_review
+      status: ok
+    - detail: data/runs/2026-10-11.yaml
+      name: run_log
+      status: ok
+    - detail: 33 fetch(es), 4 refused
       name: reading
       status: ok
     - detail: compacted logs past the detail window
