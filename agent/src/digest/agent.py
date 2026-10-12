@@ -104,20 +104,37 @@ async def ask(prompt: str, data: str, schema: dict[str, Any], fetcher: Fetcher) 
 
     calls: Counter[str] = Counter()
     answer: Any = None
-    usage: dict[str, Any] = {}
+    spent: dict[str, Any] = {}
     async for message in query(prompt=data, options=options):
         if isinstance(message, AssistantMessage):
             calls.update(block.name for block in message.content if isinstance(block, ToolUseBlock))
         if isinstance(message, ResultMessage):
             answer = message.structured_output
-            usage = message.usage or {}
+            spent = usage(message)
 
     if not isinstance(answer, dict):
         raise AgentError("the model returned no structured answer")
     return {
         "answer": answer,
-        "tokens": {"input": usage.get("input_tokens", 0), "output": usage.get("output_tokens", 0)},
+        "usage": spent,
         "tools": dict(calls),
+    }
+
+
+def usage(message: ResultMessage) -> dict[str, Any]:
+    """Returns what a session cost.
+
+    Most input arrives as cache reads, so ``input_tokens`` alone undercounts it.
+    """
+    tokens = message.usage or {}
+    return {
+        "input_tokens": tokens.get("input_tokens", 0),
+        "cache_read_tokens": tokens.get("cache_read_input_tokens", 0),
+        "cache_write_tokens": tokens.get("cache_creation_input_tokens", 0),
+        "output_tokens": tokens.get("output_tokens", 0),
+        "turns": message.num_turns,
+        "seconds": message.duration_ms // 1000,
+        "cost_usd": round(message.total_cost_usd or 0, 4),
     }
 
 

@@ -78,7 +78,7 @@ def run(day: str) -> runs.Record:
     asked = {issue["number"] for issue in inbox}
     record |= {
         "finished": runs.stamp(datetime.now(UTC)),
-        "tokens": result["tokens"],
+        "usage": result["usage"],
         "tools": result["tools"],
         "fetched": fetcher.log,
         "added": added,

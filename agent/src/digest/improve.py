@@ -47,7 +47,7 @@ def run(day: str) -> runs.Record:
         "mode": "improve",
         "started": runs.stamp(started),
         "finished": runs.stamp(datetime.now(UTC)),
-        "tokens": result["tokens"],
+        "usage": result["usage"],
         "tools": result["tools"],
         "fetched": fetcher.log,
         "changed": changed,
