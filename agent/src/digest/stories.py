@@ -7,7 +7,6 @@
       - title: ...
         section: Top stories
         category: Infrastructure
-        status: confirmed
         blurb: one sentence, the card text
         summary: ...
         why: why it matters
@@ -33,7 +32,7 @@ type Story = dict[str, Any]
 type Day = dict[str, Any]
 
 REQUIRED = ("title", "section", "blurb", "summary", "sources")
-TEXT_FIELDS = ("title", "section", "category", "status", "blurb", "summary", "why", "followup", "comments")
+TEXT_FIELDS = ("title", "section", "category", "blurb", "summary", "why", "followup", "comments")
 MAX_TEXT_CHARS = 4000
 MAX_SOURCES = 8
 
@@ -115,7 +114,6 @@ def vet(story: Story, digest: Day, archive: set[str], known: set[str]) -> str | 
     checks = [
         (story["section"] in settings["sections"], f"unknown section {story['section']}"),
         (story.get("category") in settings["categories"], f"unknown category {story.get('category')}"),
-        (story.get("status") in settings["statuses"], f"unknown status {story.get('status')}"),
     ]
     low, high = settings["blurb_chars"]
     checks.append((low <= len(story["blurb"]) <= high, f"blurb outside {low}-{high} characters"))

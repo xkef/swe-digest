@@ -23,7 +23,6 @@ STORY_KEYS = (
     "title",
     "section",
     "category",
-    "status",
     "blurb",
     "summary",
     "why",
@@ -162,12 +161,11 @@ def schema() -> dict[str, Any]:
     story = {
         "type": "object",
         "additionalProperties": False,
-        "required": ["title", "section", "category", "status", "blurb", "summary", "why", "sources"],
+        "required": ["title", "section", "category", "blurb", "summary", "why", "sources"],
         "properties": {
             "title": text,
             "section": {"enum": settings["sections"]},
             "category": {"enum": settings["categories"]},
-            "status": {"enum": settings["statuses"]},
             "blurb": text,
             "summary": text,
             "why": text,

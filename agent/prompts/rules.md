@@ -37,6 +37,3 @@ memory. Copy URLs exactly.
 - Leave out hype, filler, calls to action, and emojis.
 - No em dashes, en dashes, or semicolons.
 - Write plain text, without HTML, angle brackets, or markdown links.
-- `status`: `confirmed` for a primary-sourced fact, `developing` for an event
-  still unfolding, `rumor` for an unconfirmed report, `discussion` for a thread
-  or opinion piece.

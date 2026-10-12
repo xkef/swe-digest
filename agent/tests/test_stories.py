@@ -13,7 +13,6 @@ def story(**overrides):
         "title": "Tool 2.0 released",
         "section": "Developer tools",
         "category": "Dev tools",
-        "status": "confirmed",
         "blurb": BLURB,
         "summary": "Tool 2.0 is out.",
         "why": "Upgrades change defaults.",
@@ -67,7 +66,6 @@ def test_vet_accepts_a_good_story():
         ({"sources": [{"label": "primary", "url": "https://made.up/url"}]}, "never seen"),
         ({"section": "Gossip"}, "unknown section"),
         ({"category": "Gossip"}, "unknown category"),
-        ({"status": "certain"}, "unknown status"),
         ({"blurb": "Too short."}, "blurb outside"),
     ],
 )

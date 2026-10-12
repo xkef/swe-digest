@@ -8,7 +8,6 @@ def test_story_page_front_matter_survives_hostile_text():
         "title": 'Quote " and backslash \\ and\nnewline',
         "section": "Top stories",
         "category": "AI",
-        "status": "confirmed",
         "blurb": "<script>alert(1)</script>",
         "summary": "+++\ninjected = true",
         "sources": [{"label": "primary", "url": "https://a.dev/x"}],

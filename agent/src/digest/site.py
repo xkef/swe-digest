@@ -64,7 +64,6 @@ def _card(day: str, story: dict[str, Any]) -> dict[str, Any]:
         "url": f"/digests/{day}/{slug}/",
         "category": story.get("category", ""),
         "show_category": story["section"] == LEAD_SECTION and bool(story.get("category")),
-        "status": story.get("status", ""),
         "blurb": story["blurb"],
     }
 
@@ -112,7 +111,6 @@ def _story_page(day: str, story: dict[str, Any], card: dict[str, Any]) -> str:
         f"section = {_toml(story['section'])}",
         f"category = {_toml(card['category'])}",
         f"show_category = {'true' if card['show_category'] else 'false'}",
-        f"status = {_toml(card['status'])}",
     ]
     for key, label in FIELDS:
         if story.get(key):
