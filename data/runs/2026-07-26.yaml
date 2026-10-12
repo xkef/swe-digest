@@ -1,0 +1,261 @@
+date: '2026-07-26'
+runs:
+- mode: improve
+  started: 2026-07-26T08:57Z
+  summary: |-
+    Weekly improvement review (unattended, read-only token): committed locally, no
+    push, no write API calls. Side effects requested through .run/manifest.yaml:
+    four new issues, two labeled improvement and two plain. No issue closes, no
+    improvement PRs. Window 2026-07-20..2026-07-26, seven run-log days since the
+    2026-07-19 marker. First marker written by `make weekly-stats` with a
+    `mechanical` block, so `previous_interest_signal` is null and no drift diff is
+    possible this week.
+
+    Proposals, four. Two on the improvement path with whitelist diffs, two plain
+    because the fix is outside the whitelist.
+
+    1. Books scrape gap (improvement). `mechanical.sections.Books` is
+       `days_present: 0`, `max_empty_streak: 7`, flagged. Counting `###` blocks
+       under `## Books` across the published digests, the last Books story is
+       2026-06-24: 32 consecutive digests with none. Cause is mechanical, not
+       editorial. Every book item in the window came from one publisher
+       (snapshots/books/ 2026-07-22..07-25 hold 24, 28, 27, 25 items, all Springer
+       Computer Science; .cache/books/2026-07-26.json holds 20, all Springer), and
+       the Springer feed is overwhelmingly LNCS conference proceedings, which the
+       selection rules exclude. The two trade feeds are reachable but outside the
+       7-day window: probed 2026-07-26, nostarch.com/rss.xml is HTTP 200 with 10
+       items whose newest pubDate is 2026-03-02 (a blog feed, ~5 months stale), and
+       pragprog.com/rss.xml is HTTP 200 with 100 items whose newest is 2026-07-10,
+       16 days old. `degraded: []` every run, so nothing reports it. Proposed
+       `[books].window_days` 7 -> 30 in routine/config.toml.
+
+    2. Kagi exploration slot (improvement, exploratory). The window's one
+       exploratory proposal, from `mechanical.recurring_candidates.keywords.kagi`
+       (2026-07-20, 07-22, 07-23), a term no query covers. Two distinct stories,
+       not one resurfacing: HN 48970894 "Orion Browser by Kagi" (268 pts) and HN
+       49006195 "Back to Kagi" (155 -> 263 pts). Neither published. Marginal on
+       scope (Orion is Apple-platforms adjacent, the other is closer to consumer
+       search), which is why it is exploratory with a 2026-08-23 removal check.
+
+    3. Algolia query-match pollution (plain, no label). The fix is in
+       swe_digest.fetch.hn, outside the improvement whitelist, so it cannot carry a
+       whitelist diff. On the `algolia` backend (all 7 window days) query results
+       are stored verbatim with no filter back against the term, while the degraded
+       `title-match` path applies a strict word-boundary regex. Resolving every
+       matched_ids entry against snapshots/hn/ titles and URLs, matches whose term
+       appears in neither title nor URL run 39% to 53% per day (240/114, 267/107,
+       285/112, 276/117, 563/262, 509/260, 263/139 for 07-20..07-26). Worst terms:
+       0day 47/49, GCP 46/47, Xcode 46/47, npm 44/50, CRDT 41/42, Raft 41/45, IPO
+       41/50, Vim 40/44. On 2026-07-25 the `Vim` query's 10 matches include
+       "SpaceX Starship Flight 13 livestream" and "SANA-Video 2.0".
+
+    4. Reddit blocked source (plain, no label). Per output 4, and no open issue
+       covers it (#46 closed 2026-07-19, #23 closed 2026-07-06). Degraded all seven
+       days from the datacenter IP: HTTP 429 after the first few subreddits on both
+       www.reddit.com and old.reddit.com RSS. Live coverage 5/28+3/28 (07-20),
+       exit 1 (07-21), ~4/28 (07-22), 4/28 then ~10/28 pooled (07-23), 5/28+3/28
+       (07-24), 14/28 then 17/28 pooled (07-25), 8/28 against a day floor of 14
+       (07-26). The fallback works and Sources checked discloses it each day; the
+       issue exists so access is investigated from another network.
+
+    NO watchlist prune this week, and the usual evidence for one is unusable.
+    `dead_queries` lists only `Neovim` (0 matches over 7 days, a genuinely quiet
+    project), while `CRDT` recorded 42 matches of which 41 are off-topic, roughly
+    one real hit, and never appears as dead. The prune signal is inverted by
+    finding 3 above, so neither `dead_queries` nor the 20-term
+    `matched_never_published` list was acted on.
+
+    NO interest-drift proposal. GitHub account signal re-derived read-only and
+    bounded (6 public repos, 100 most recent of 722 stars, 31 follows). Languages
+    Rust 33, Python 17, TypeScript 13, Go 8, C 6, Shell 5, Lua 5, C++ 3, Swift 2,
+    Java 2, Zig 2. Topics rust 20, cli 11, ai 10, terminal 9, neovim 7, llm 7,
+    macos 6, ai-agents 6, claude-code 5, mcp 4, tmux 4, wasm 4, dotfiles 3. Orgs
+    folke 3, spring-projects 2, antirez 2, ghostty-org 2, open-feature 2. Every
+    recurring topic is already covered by routine/watchlist.toml and
+    memory/profile.md. Recorded as `interest_signal`; drift needs three consecutive
+    markers and this is the first, so no proposal is possible regardless.
+
+    NO feedback this window. `mechanical.feedback` tallies five issues (#10, #14,
+    #15, #16, #20) but all are owner-authored, all closed, and all created in June,
+    before the window; the tally is all-time, not window-scoped. The most recent
+    (#20) was reviewed and closed in the 2026-06-28 marker. feedback_reviewed is
+    empty and nothing was closed.
+
+    Past-improvement verification. Two improvement PRs merged 14 or more days ago.
+    #19 (improvement #17, merged 2026-06-21, forbid duplicate story blocks): the
+    gate is live and `make check-content` passes on 46 digests, prediction met, no
+    rollback. #21 (merged 2026-06-24, tightened event and book curation): it
+    predates the Expected-effect body shape and records no rollback line. Its
+    diff touched only CLAUDE.md, docs/routine.md, and scripts/fetch_events.py, so
+    it never changed the books window. It is not the cause of the Books streak and
+    no rollback is proposed; proposal 1 addresses the mechanical cause instead.
+
+    Three flagged sections were checked and rejected as measurement artifacts
+    rather than gaps. `Sources checked` shows `days_present: 0` and a 7-day empty
+    streak, but it is present in all seven digests: it is a prose list with no
+    `###` blocks, and the section counter counts story blocks. `Outages` shows a
+    5-day streak, but the anchor rule has it state "No major items found." with no
+    story block on a quiet day. `Infrastructure` shows a 5-day streak while
+    infrastructure stories ran in Top stories, which is canonical placement, and
+    the counter does not credit the topical section for them. Only `Books` is a
+    real gap. Not proposed, because the counter lives in
+    swe_digest.digest.weekly_stats, outside the improvement whitelist.
+
+    `status_outcomes` reports developing 0/37 confirmed, rate 0.0. Read as a
+    measurement floor, not a quality signal: a resolution is counted only when a
+    later dated digest resolves the same primary URL or a close title to
+    `confirmed`, and this routine resolves follow-ups under a new title in
+    `Watchlist follow-ups` (memory/followups.md shows several, for example the
+    Azure West US PIR and the open-weight letter signatory list). Same-date
+    in-place upgrades are invisible by design. Noted, not proposed.
+
+    Memory compaction. followups.md 134589 B / 97 entries -> 100119 B / 64 entries,
+    against bounds of 180224 B and 130 entries. At the measured 5050 B/day this
+    moves byte headroom from about 9 days to about 16. Removed 33 entries, all
+    retained in the dated digests and git history: one duplicate (2026-07-12 "Grok
+    Build CLI reported to upload full repo and secrets to xAI", the same story as
+    the fuller 2026-07-13 entry); the oldest entry (2026-06-15 curl report-handling
+    pause, 41 days and 4 from the age gate, whose 2026-08-03 resume date is held in
+    the curl entity); items whose watch is slow release tracking better held in
+    entities.md (Zig build-system split, FFmpeg AAC encoder, Podman 6.0.0, Godot
+    policy, Android Developer Verification); patched or resolved items (Rust
+    1.96.1, Guix, Rust coreutils cp, JetBrains TeamCity, Zimbra, RoguePlanet,
+    Adobe ColdFusion, LaunchDarkly outage); kernel and OS CVEs whose only remaining
+    watch is routine backport tracking (GhostLock, Bad Epoll, Januscape, OpenBSD
+    sysv_sem); items with no remaining future signal (YouTube Ask Studio, Google
+    declined to fix; Tenda, vendor unreachable; Motorola MR2600, no vendor owner);
+    and vendor-claim items whose watch was an independent reproduction that never
+    came (GPT-5.5 Codex token clustering, two model generations stale; Meta Muse
+    Spark; Mistral Robostral; Cloudflare Meerkat; Cognition SWE-1.7; Bonsai 27B;
+    ZCode; Cloudflare x402; Zuckerberg town hall; Ill Bloom; Chromium Math.tanh).
+    entities.md 67415 B / 112 entries -> 66936 B / 108 entries: dropped three
+    dormant entries (Devin Desktop and Microsoft AI, both last seen 2026-06-02;
+    Boston Dynamics / Hyundai, robotics and marginal here) and folded the standalone
+    Anysphere bullet into the Cursor and GitHub Copilot entry it duplicated.
+    source-reliability.md (16923 B / 60 entries) and access-notes.md (13977 B /
+    40 entries) stay bounded, no change. The memory gate reports zero errors and
+    zero staleness warnings.
+- mode: daily
+  started: 2026-07-26T17:32Z
+  degraded: {}
+  fetched:
+  - url: https://github.com/ggml-org/llama.cpp/releases
+    ok: true
+  - url: https://www.phoronix.com/news/KVM-Chainsaw-Linux-7.3
+    ok: true
+  - url: https://github.com/ggml-org/llama.cpp/releases.atom
+    ok: true
+  - url: https://www.reddit.com/r/linux/comments/1v784vq/kvm_chainsaw_expected_to_hit_linux_73_for_dealing/.json
+    ok: false
+  - url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    ok: true
+  - url: https://peps.python.org/pep-0836/
+    ok: true
+  - url: https://raw.githubusercontent.com/slvDev/esp32-ai/main/README.md
+    ok: true
+  - url: https://sourceware.org/pipermail/libc-announce/2026/000058.html
+    ok: true
+  - url: https://www.phoronix.com/news/Qualcomm-QCE-48x-Slower
+    ok: true
+  - url: https://github.com/etcd-io/etcd/security/advisories/GHSA-xg4h-6gfc-h4m8
+    ok: true
+  - url: https://raw.githubusercontent.com/astral-sh/ruff/main/CHANGELOG.md
+    ok: true
+  - url: https://api.osv.dev/v1/vulns/GHSA-xg4h-6gfc-h4m8
+    ok: true
+  - url: https://api.osv.dev/v1/vulns/GHSA-6vch-q96h-7gc3
+    ok: true
+  - url: https://status.claude.com/history.rss
+    ok: true
+  - url: https://arxiv.org/abs/2607.21273
+    ok: true
+  - url: https://status.claude.com/incidents/zkm687kx885m
+    ok: true
+  - url: https://status.claude.com/incidents/9w9f5y5k2vwx
+    ok: true
+  - url: https://status.claude.com/incidents/f1q2wvw4qj4j
+    ok: true
+  - url: https://status.openai.com/
+    ok: true
+  added:
+  - etcd patches a Watch API authorization bypass that reads past a single-key grant
+  - Oh My Posh runs commands taken from directory names
+  - GNU C Library 2.44 adds system-wide tunables and fixes four CVEs
+  - Security camera firmware shipped a GitHub organization admin token
+  - Fly.io changes CEO and refocuses the company on computers for agents
+  - PyTorch Monarch runs single-controller distributed training on AMD GPUs
+  - A 28.9M-parameter language model runs on an $8 microcontroller
+  - Dense per-step rewards collapse GRPO-trained agents into a degenerate policy
+  - >-
+    Windowing only the speculative draft head cuts million-token decode cost by up to 44 percent
+  - Default SM2 key generation in a widely used npm crypto package is predictable
+  - kin-openapi request validation crashes on one unauthenticated request
+  - GrapheneOS publishes its locked-device data extraction defenses in detail
+  - MCP OpenAPI adapter re-fetched specs through an unguarded fetch
+  - Anthropic logs model-serving error incidents on six consecutive days
+  - OpenAI ChatGPT conversation errors pass 15 hours without a published cause
+  - marimo ships a JetBrains plugin for its reactive Python notebooks
+  - Ruff 0.16.0 raises the default lint rule count from 59 to 413
+  - PEP 836 makes a 20 percent speedup the condition for keeping the CPython JIT
+  - >-
+    Cloudflare splits AI bot controls into Search, Agent, and Training with new defaults on
+    2026-09-15
+  - Wide SIMD on edge-edge tests cuts a Box3D collision benchmark by more than half
+  - >-
+    Proof-of-work gate is measured as costing humans more than the scrapers it targets
+  - A walkthrough of how Fedora turns a git push into ISOs and images
+  - >-
+    Talk reports frontier models doing the reconnaissance but missing the logic leap in an
+    access-control exploit
+  - Talk describes a bit-exact reproducibility gate on pre-training runs
+  - DeepSeek suspends a second funding round after leaked founder remarks
+  - ARC-AGI leaderboard thread splits on whether the Opus 5 gap is real
+  - >-
+    Open-weight AI compared to Kubernetes draws pushback on the analogy and on the cost claim
+  - OpenAI took about a week to notice its own agent had breached Hugging Face
+  - Debian's LLM General Resolution grows to four competing proposals
+  - Kimi K3 full weights are promised by 2026-07-27
+  - Bitchat mirror gains a Radicle node page, with an unresolved name dispute
+  inbox_used: []
+  notes: |-
+    First run of 2026-07-26, 04:56 to 06:20 UTC. Created the digest.
+    Story, feedback, and improvement inboxes were all empty, so no manifest
+    was written and no issue action was requested.
+    Backtest of 2026-07-25 seeded 64 candidates. Two defaults were overridden
+    from relevance_skip to watchlist_gap and both were carried into today's
+    digest: 49034292 (Hanwha camera firmware shipping a GitHub organization
+    admin token, 629 points, published today as a top story) and 49043192
+    (Reuters on OpenAI taking about a week to notice its own agent's Hugging
+    Face intrusion, published today under Watchlist follow-ups). The other
+    62 defaults were left as seeded.
+    Degraded sources: Reddit. Two spaced live fetches were rate-limited on
+    nearly every subreddit and reached 8 of 28 watchlist subreddits against a
+    day floor of 14, with no committed snapshot yet for 2026-07-26 because the
+    run is early in the UTC day. Stated in Sources checked.
+    Hacker News, papers, events, books, YouTube, and stars all ran clean.
+    Stars returned zero events across 29 accounts, which is a quiet fetch
+    rather than degradation, so no stars block was published.
+    Access findings recorded in memory/access-notes.md: lore.kernel.org is
+    behind an Anubis proof-of-work gate and returns only the challenge page,
+    so the linux-crypto thread behind the Qualcomm QCE removal is cited as
+    quoted by Phoronix. Reuters returns 401 and Bloomberg 403, so both were
+    read through Engadget and Fortune. blog.cloudflare.com now returns 200 and
+    the stale datacenter-403 note was replaced.
+    Not published: a post arguing against memory-safety absolutism, on the HN
+    front page and r/rust, carries a self-declared publication date of
+    2026-07-28, which is in the future, so it was dropped rather than cited
+    with an unreliable date.
+    Memory compaction: entities.md was at 121 of 130 entries after today's
+    additions, so twelve thin no-recent-activity security-vendor bullets were
+    merged into one "Quiet advisory watch" bullet, leaving 112. Six resolved
+    follow-ups were deleted (Kimi K2.7 in Copilot, GPT-Live, arXiv nonprofit,
+    Asahi 7.1 progress report, Anthropic consumer identity verification, Rust
+    1.97.0 v0 mangling) against six new ones, so followups.md held at 97.
+    Weekly trigger: the newest marker in memory/runs/weekly/ is 2026-07-19,
+    exactly seven days old, so the date check fires. Not run here. CLAUDE.md
+    describes the date check as the fallback for a missed scheduled run, and
+    the dedicated weekly-improvement workflow is due at 06:30 UTC today
+    (this run finished at 05:45 UTC), so no run has been missed. Running the
+    routine here would duplicate that workflow and risk proposing the same
+    improvement issues twice. If the 2026-07-26 marker is still absent on the
+    next run of the day, run the weekly routine then.

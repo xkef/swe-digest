@@ -1,0 +1,348 @@
+date: '2026-08-12'
+runs:
+- mode: daily
+  started: 2026-08-12T03:57Z
+  degraded:
+    fetch_reddit: failed
+- mode: daily
+  started: 2026-08-12T11:05Z
+  degraded:
+    fetch_reddit: failed
+- mode: daily
+  started: 2026-08-12T17:05Z
+  degraded:
+    fetch_reddit: failed
+  fetched:
+  - url: https://tailscale.com/blog/sqlite-wal-reset-bug
+    ok: true
+  - url: https://www.githubstatus.com/incidents/76t89hbfb09h
+    ok: true
+  - url: https://sqlite.org/releaselog/3_51_3.html
+    ok: true
+  - url: https://pkg.go.dev/vuln/GO-2026-5970
+    ok: true
+  - url: https://hellorecon.com/blog/cve-2026-18690-mongodb-symbol-type-authz-bypass
+    ok: true
+  - url: https://nvd.nist.gov/vuln/detail/CVE-2026-18690
+    ok: false
+  - url: https://nvd.nist.gov/vuln/detail/CVE-2026-18691
+    ok: false
+  - url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-18690
+    ok: true
+  - url: https://api.osv.dev/v1/vulns/CVE-2026-18690
+    ok: false
+  - url: https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B
+    ok: true
+  - url: https://x.ai/news/grok-4-6
+    ok: true
+  - url: https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B/raw/main/LICENSE
+    ok: true
+  - url: https://github.com/metabase/metabase/security/advisories/GHSA-r495-55cx-fjh7
+    ok: true
+  - url: https://github.com/metabase/metabase/security/advisories/GHSA-vwf4-m7j8-wcjf
+    ok: false
+  - url: https://www.githubstatus.com/incidents/76t89hbfb09h
+    ok: true
+  - url: https://blogs.nvidia.com/blog/nemotron-lightning-switchyard-rtx-dgx/
+    ok: true
+  - url: https://sqlite.org/releaselog/3_51_3.html
+    ok: true
+  - url: https://x.ai/news/grok-4-6
+    ok: true
+  - url: https://www.githubstatus.com/incidents/76t89hbfb09h
+    ok: true
+  - url: https://www.openssh.com/releasenotes.html
+    ok: true
+  - url: https://blog.hartwork.org/posts/expat-2-8-3-released/
+    ok: true
+  - url: https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B/raw/main/LICENSE
+    ok: true
+  - url: https://clickhouse.com/blog/pg_clickhouse-whats-new-july-2026
+    ok: true
+  added:
+  - >-
+    OpenSSH 10.5 ships three security fixes and the project will release more often for now,
+    after AI-found bugs were independently rediscovered
+  - >-
+    Checkly reports an attacker used a Metabase Cloud zero-day to read its analytics warehouse
+    for 26 minutes
+  - >-
+    A public exploit lands for CVE-2026-53361, an AF_UNIX garbage collection race the author
+    uses to escape containers
+  - >-
+    Mojo reaches 1.0 with a primarily-additive change policy, while the compiler stays closed
+  - >-
+    CloudSEK publishes a victim list for the March 2026 LiteLLM supply chain compromise, naming
+    2,500 organizations and 434,000 CI/CD pipelines
+  - >-
+    NVIDIA releases NeMo Switchyard, an open source model-routing library, with partner cost
+    figures
+  - >-
+    xAI launches Grok Bot in beta, gated behind SuperGrok Heavy and Cursor paid tiers
+  - >-
+    Qwen publishes 2.4T-parameter weights under a licence requiring a separate agreement above
+    50 million dollars of model-as-a-service revenue
+  - >-
+    xAI releases Grok 4.6 at 2 dollars per million input tokens and 6 per million output
+  - >-
+    A case study reports tightened bounds on the Grothendieck constant reached with an AI
+    research system
+  - >-
+    MongoDB patches an authorization bypass reachable by sending a collection name as a BSON
+    symbol instead of a string
+  - >-
+    Expat 2.8.3 fixes CVE-2026-72522, an out-of-bounds read in UTF-16 decoding reachable over
+    the network
+  - >-
+    GitHub Issues and Pull Requests returned 500 errors for 25 minutes after an index hint
+    outlived the index a migration removed
+  - >-
+    llama.cpp publishes llama.app as an official install site with a unified llama command
+  - >-
+    A Google post argues language choice now matters for review rather than for writing speed
+  - >-
+    pg_clickhouse v0.10.0 pushes down 16 of 22 TPC-H queries and adds guards for a NULL semantics
+    mismatch that silently inverted NOT IN
+  - >-
+    Tailscale traces six months of database corruption to a SQLite WAL checkpoint data race
+    the SQLite developers date to at least 16 years
+  - >-
+    Compression is prediction, an explainer connecting entropy coding to language modeling
+  inbox_used: []
+  notes: |-
+    Today's digest file was still the unfilled template, so this run selected the whole day and
+    displaced nothing. Twelve stories across seven sections, well under the 25-story budget and the
+    per-section cap of 4. The day was genuinely security-weighted and three of the four Top stories
+    reflect that rather than a section quota.
+
+    Lead choice. OpenSSH 10.5 leads over the CVE-2026-53361 container escape on breadth and
+    certainty. The kernel exploit is the more severe single item, but its severity claim rests
+    partly on the exploit author's own targeting table, while the OpenSSH release is a confirmed
+    primary artifact on near-universal infrastructure and carries a stated policy change: the
+    project will ship more frequently because AI-found bugs are being independently rediscovered, so
+    it assumes non-reporting adversaries can find them too. That extends the AI-found-vulnerability
+    thread running through the Redis releases, the 432-CVE kernel batch, and Torvalds' remarks, and
+    it is the first case in that thread of a maintainer changing release process rather than
+    commenting on volume.
+
+    Verification and attribution calls a reader could not infer. CVE-2026-53361 is confirmed
+    independently of the exploit repository: NVD published it 2026-07-04 at CVSS 7.1 from the
+    kernel.org CNA, with fixes in 6.6.144, 6.12.95, 6.18.38, and 7.1, and Debian DSA-6381-1 confirms
+    6.12.95-1 for trixie. The exploit repository has zero stars, one fork, and a three-commit
+    history, and its claims that Ubuntu 24.04 HWE 6.17 and RHEL 10 remain unpatched are the author's
+    alone and were not verified this run. The story is written so the confirmed CVE and fixed
+    versions carry the claim and the unpatched assertion stays attributed.
+
+    The CloudSEK item is published as developing, not confirmed. The attack chain is specific and
+    checkable in outline, but CloudSEK states in its own post that the 2,500-organization and
+    434,000-pipeline figures are a reconstructed exposure dataset and not proof that any listed
+    organization was compromised. The post also carries a lead-generation exposure checker and a
+    named victim table, so the numbers are attributed to CloudSEK throughout and no named
+    organization is written as breached. The underlying LiteLLM compromise is from March 2026, which
+    predates this archive; the 2026-06-11 digest covered a different LiteLLM flaw, CVE-2026-42271,
+    so this is not a repeat.
+
+    Checkly's incident report is a primary source from the victim, but the vendor side is not:
+    metabase.com returned a 301 redirect loop on both paths tried, so Metabase's own advisory, the
+    patched version, and whether self-hosted installations are affected could not be established.
+    Self-hosted Metabase operators cannot act on this item yet, and that gap is why it sits in
+    Security rather than Top stories despite an exploited zero-day.
+
+    Reviewed and not published. OpenAI's head of ethics departing was the day's second-largest
+    thread at 318 points, but the FT primary is paywalled, the secondary coverage adds no verifiable
+    detail, and the HN thread carried no technical substance. The Claude Code issue at 37 points
+    claiming a real email address was sent as a User-Agent is a July 17 user report with no logs, no
+    reproduction, and no maintainer response, so it supports no publishable claim. Stratechery's
+    Nvidia piece was rejected on 2026-08-11 as subscription commentary with no primary filing and is
+    rejected again on the same ground. A tweet claiming hidden chain-of-thought leaks from a
+    deep_think tool is a plausible follow-up to yesterday's lead but has no write-up behind it and
+    was dropped rather than attributed from a social post. Nemotron 3.5 Lightning itself was
+    published 2026-08-11, so only NeMo Switchyard, which is new, is carried today.
+
+    Sections omitted for lack of material rather than lack of checking: Agentic coding, Developer
+    tools, Apple platforms, Linux and kernel, Markets and companies, Hacker News, Reddit and social
+    pulse, and Watchlist follow-ups. Books was omitted deliberately: the publisher feed returned
+    only Springer conference proceedings, which are not technical book releases with engineering
+    relevance. New videos was omitted because the two Dwarkesh Patel uploads and the Theo video
+    carry no HN discussion link, and the video bar ranks on external discussion signal rather than
+    view count.
+
+    Backtest. The tool scored 59 candidate misses for 2026-08-11 but seeded zero causes, so that
+    day's run log currently records no cause for any candidate. The dominant pattern is a timing
+    gap, not an editorial one: Mojo 1.0, the Go post, NeMo Switchyard, and the ngrok compression
+    post all reached HN between 16:56 and 19:49 UTC on 2026-08-11, after that day's publish fetch,
+    and all four are published today. They are marked scrape_gap. Jolt, a Clojure compiler on Chez
+    Scheme at 125 points, is marked watchlist_gap: it is a real languages story that no watchlist
+    query matched. Separately, and not entered as a cause because the story was already carried on
+    2026-08-10, no query matched Meta's Muse Glimmer at 1,138 points either, which suggests the
+    query corpus is under-covering model releases by name.
+
+    Memory hygiene, for the weekly review rather than the page. The followups store returned 51
+    records totaling roughly 89,000 characters, large enough that reading it required three chunked
+    passes. Several entries are resolved or stale enough to close: the Azure PIR entry f-0008 was
+    waiting on a final PIR due within 14 days of 2026-07-23, which has passed; f-0028, the approved
+    Anthropic settlement, has no open question left beyond payout mechanics; and f-0016 already
+    carries its own superseding correction inline. Every run of every day pays to re-read these
+    bytes.
+
+    Lead change. Today's file already carried a full digest written by the earlier run, with OpenSSH
+    10.5 leading. This run demotes nothing and displaces nothing: Top stories held 4 of 5 slots, so
+    the Stolen Thoughts finding took the free slot and takes the lead. The reasoning is breadth and
+    novelty. OpenSSH 10.5 is a confirmed primary artifact on near-universal infrastructure, but it
+    is a routine release with three fixes plus a stated cadence change. Stolen Thoughts is a
+    cross-vendor architectural finding covering OpenAI, Anthropic, and Google at once, and it
+    converts already-published artifacts into a live exposure rather than describing a patch to
+    apply. CloudSEK stays fifth in Top stories rather than being demoted to Security. It is the
+    weakest of the five and describes a March 2026 incident with vendor-reconstructed numbers, but
+    the earlier run made that placement today with the same evidence, and nothing this run found
+    changes it, so re-sectioning it would be churn rather than a better page.
+
+    Verification calls a reader could not infer. llama.app was published only after confirming
+    provenance: the ggml-org/llama.cpp README names https://llama.app as the first install option
+    and the repository's website field is llama.app, so the site is the project's own and not a
+    look-alike. Without that check a curl-to-shell installer on a fresh domain would not have been
+    linkable. The Copilot traffic capture is one author's mitmproxy session, published under his own
+    byline with request payloads shown. It is carried as confirmed for what the post records and the
+    summary attributes the captures to the author, because nothing here was reproduced and GitHub
+    has not responded. The Cua figures are the vendor's own benchmarks on a single M1 Ultra host,
+    and the post itself states the shim depends on private, version-sensitive guest Metal behavior
+    that Apple may change, which is why the story is scoped to the measurement rather than written
+    as a general macOS VM result. The Manus post is carried in Markets and companies rather than AI
+    because the ownership change is the story and the data deletion is its consequence, and the
+    deletion is explicitly stated by Manus not to be a security incident.
+
+    Content safety. The Stolen Thoughts page embeds decoded model reasoning that contains both
+    credential-shaped strings from a Terminal-Bench sanitization task and passages that read as
+    agent tool instructions. All of it was treated as data. No token, key, or instruction from that
+    page reached the selection, and no credential string is quoted in the story.
+
+    Sources not published. New videos is omitted again. The day's strongest upload is a Dwarkesh
+    Patel interview with Ryan Greenblatt at about 24,600 views, but the cache records no discussion
+    link, and its title makes a claim about a coding agent attacking a repository that could not be
+    verified without watching, so repeating it would have published an unverified assertion. Books
+    is omitted because the publisher feed returned only conference proceedings, the CRYPTO 2026
+    volumes and MESAS 2025, which is the same shape as yesterday. ML research adds nothing today:
+    the arXiv pull was healthy but returned surgical robotics, synthetic dialogue generation, and
+    sparse autoencoder interpretability, none with engineering relevance clearing the bar. Reddit
+    and social pulse and Hacker News are omitted because every item that cleared the bar resolved to
+    a primary source and belongs in a topical section, and the degraded Reddit fetch left no
+    verified social finding standing on its own. Outages stays at no major items found, and no
+    status page in scope reported an incident. Reviewed and not published: the Kalshi CFTC emergency
+    order, which is a real filing but does not change engineering context, the Canario terminal
+    source closing, too small against the Developer tools bar once llama.app was in, and the Bluesky
+    user-base piece, which is secondary reporting without a primary metric.
+
+    Backtest overrides. Three candidates were seeded no_query_match and are recorded here as
+    watchlist_gap instead, because each is squarely in scope and the watchlist simply had no query
+    for it. Muse Glimmer at 1,138 points is the clearest: it is a Meta 30B model release, and its
+    existence is corroborated independently in today's Cua post, which benchmarks Meta's official
+    Muse Glimmer 30B GGUF. A model release that large going uncaught is a gap in the AI query set,
+    not a relevance decision. The tl;dv exposure at 582 points is a meeting-recording service
+    leaving roughly 180,000 meetings reachable, which is core Security scope and matched nothing.
+    LFM2.5 2.6B is a smaller case of the same AI model-release gap. The remaining no_query_match
+    candidates were correctly seeded: France telemarketing, hepatitis C, the Mars bar, the Rubik's
+    cube scroller, and the surveillance and policy items are out of scope, and the Sonic Pi and
+    Squeak releases are in scope but would not have ranked into a published section, so their cause
+    is not a watchlist defect. The not_in_publish_fetch candidates need no override: Mojo 1.0, the
+    Go post, NeMo Switchyard, and Compression is prediction all arrived after yesterday's fetch
+    window and all four are published today, which is the timing artifact working as designed rather
+    than a miss.
+
+    Carried follow-ups. Metabase still owes an advisory, a fixed version, and a statement on
+    self-hosted exposure, unchanged from the earlier run, and metabase.com was not retried this run.
+    The CVE-2026-53361 distribution claims for Ubuntu 24.04 HWE and RHEL 10 remain the exploit
+    author's and unconfirmed. The Stolen Thoughts finding has no vendor response from OpenAI,
+    Anthropic, or Google recorded at this date, which is the first thing to check tomorrow, along
+    with whether any provider stops returning replayable reasoning blocks.
+
+    Third run of 2026-08-12. Nothing published earlier was displaced or rewritten. Five stories were
+    added and the day now carries 18, against a budget of 25. Top stories was left at four. The cap
+    is five, so a fifth slot was open and no displacement was needed to fill it, which makes the
+    decision to leave it empty the deliberate one described below. OpenSSH 10.5 keeps the lead.
+
+    The Tailscale SQLite post was the one candidate weighed for that open Top stories slot, and it
+    was placed in Engineering posts instead. It is the day's best-verified artifact and its subject
+    is close to universal, but the underlying fix shipped in SQLite 3.51.3 on 2026-03-13, five
+    months ago, so today's event is a retrospective rather than a change a reader has to act on
+    today. A reader who patches on the ordinary schedule is already past it. What the post does
+    carry, and what the story states, is that the trigger is far likelier under
+    application-controlled aggressive checkpointing than under SQLite's own, which narrows who was
+    ever exposed. Ranked against the four items already in Top stories it is stronger than the
+    CloudSEK LiteLLM entry on verifiability, but weaker than all four on being news of 2026-08-12.
+
+    Attribution calls a reader could not infer. The SQLite release log for 3.51.3 was fetched
+    independently and records the WAL-reset corruption fix, so the version floor is confirmed from
+    sqlite.org and not only from Tailscale. Three claims in that story remain Tailscale's alone and
+    are written as Tailscale's: the count of 19 corruption incidents over six months, the withdrawal
+    of 3.52.0 over a float-rounding change that produced false integrity_check failures on stale
+    expression indexes, and the self-healing index feature attributed to 3.53.0. The 16-year figure
+    is the SQLite developers' own estimate as Tailscale reports it, not a measurement.
+
+    On the MongoDB item, nvd.nist.gov timed out twice on the HTML detail pages for CVE-2026-18690
+    and CVE-2026-18691, so the record was verified through the NVD 2.0 REST API instead, which
+    returned the CNA entry from cna@mongodb.com published 2026-08-11 at CVSS 3.1 8.1, CVSS 4.0 7.2,
+    CWE-863, affecting 7.0 below 7.0.40, 8.0 below 8.0.29, and 8.3.0 below 8.3.8. The CISA SSVC
+    record on that entry scores exploitation as none and automatable as no. Both URLs are cited. The
+    source-code reading, the symbol type 0x0E mechanism, the parseNsFromCommand and
+    resourcePatternForNamespace excerpts, and the reproduction against 8.0.28 with the fix verified
+    on 8.0.29 are the RECON author's work, not MongoDB's, and RECON is a vendor blog that sells a
+    network tool and closes with a product pitch. The three sibling CVEs it summarises, 18691,
+    18692, and 18712, were not independently verified and are therefore not written as fact in the
+    story.
+
+    Outages carried "No major items found." from the two earlier runs and now carries the GitHub
+    incident. That is not a displacement. The incident opened at 16:16 UTC and resolved at 16:41 UTC
+    on 2026-08-12, and the status page was read directly at about 16:49 UTC, after the cache fetch
+    at 16:40 UTC had captured only the open incident. GitHub's own footer states the incident
+    affected Issues and Pull Requests, while its 16:38 update also names Search, and the story
+    states both rather than picking one.
+
+    AI now sits at its cap of four and carries two xAI items, Grok Bot from the earlier run and Grok
+    4.6 from this one. That concentration is recorded here because it reads as source bias on the
+    page and is not: both are same-day xAI primary sources and they are different things, an agent
+    product and a model release. Qwen3.8 is the stronger of today's two AI additions and Grok 4.6
+    the weaker, but Grok 4.6 clears the bar on published pricing and a named distribution list
+    rather than on its benchmark table. The Qwen licence terms were read from the LICENSE file
+    directly rather than from the model card's licence tag, because the tag only reads "other". The
+    model card's eval figures are marked unverified on the page itself and are not published as
+    results. The repository was created 2026-08-08 and last modified 2026-08-12, so the story does
+    not claim a release date.
+
+    Reviewed and not published this run. CVE-2026-56852, the infinite loop in
+    golang.org/x/text/unicode/norm on invalid UTF-8, was verified against the Go vulnerability
+    database and is real, fixed in v0.39.0, but the advisory was published 2026-07-14 and last
+    modified 2026-08-10, so there is no event today and a month-old denial-of-service advisory is
+    not a Security item for this date. The knownagents.com report of mass vulnerability scans
+    spoofing ClaudeBot and other AI crawlers is a single vendor page with no corroboration and no
+    method, and was dropped. The Neon and ElectricSQL item was dropped because the headline and the
+    linked post disagree about the acquirer, with the title naming Neon and the URL path naming
+    Databricks, and that could not be resolved to one primary. The CFTC Kalshi emergency order was
+    rejected on the same ground as the earlier run, a real filing that does not change engineering
+    context. The FT report on OpenAI's head of ethics remains paywalled and the secondary coverage
+    still adds no verifiable detail.
+
+    Sections omitted for lack of qualifying material rather than for lack of checking: Agentic
+    coding, Apple platforms, Linux and kernel, Markets and companies, Hacker News, Reddit and social
+    pulse, and Watchlist follow-ups. Books is omitted for the third run running because the
+    publisher feed still returns only conference proceedings. New videos is omitted because the
+    youtube cache records no discussion link on any of the day's uploads, which is the external
+    validation that section ranks on. ML research adds nothing because the strongest arXiv items
+    today are an introspective-awareness paper from January and a shortest-vector-problem bound,
+    neither with engineering relevance for this audience.
+
+    Carried follow-ups are unchanged and were not retried this run: Metabase still owes an advisory,
+    a fixed version, and a statement on self-hosted exposure, and the CVE-2026-53361
+    unpatched-distribution claims for Ubuntu 24.04 HWE and RHEL 10 remain the exploit author's.
+
+    On miss_review. The backtest for 2026-08-11 scored 59 candidates and reports seeding zero
+    default causes, so the two entries below are additions rather than corrections, and both are
+    genuine engineering misses that no watchlist query matched. Item 49241679, Muse Glimmer, a 30B
+    model aimed at always-on local agent workflows, is the highest-scoring candidate in the whole
+    set at 1138 points and sits squarely in a category the digest covers, since 2026-08-11 published
+    both Nemotron 3.5 Lightning and Cactus Needle 2 on the same beat. Item 49242739, the tl;dv
+    report of more than 180,000 meetings left exposed, is a data-exposure story at 582 points that
+    no security query caught. The remaining high scorers left unlabelled are correctly out of scope:
+    hepatitis C elimination, French telemarketing rules, facial recognition on the London
+    Underground, and the Mars bar. The candidates marked not_in_publish_fetch, including Mojo 1.0,
+    Compression is prediction, the Go post, and NeMo Switchyard, are all published on today's page
+    and are not misses at all.

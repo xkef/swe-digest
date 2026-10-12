@@ -36,7 +36,8 @@ def profile() -> str:
     return PROFILE.read_text()
 
 
-# Long prose reads best as a folded block under its key. A URL stays on one line.
+# Long prose reads best as a folded block under its key, and paragraphs as a
+# literal block. A URL stays on one line.
 FOLD_AT_CHARS = 80
 
 
@@ -45,7 +46,11 @@ class _Dumper(yaml.SafeDumper):
 
 
 def _text(dumper: yaml.SafeDumper, text: str) -> yaml.ScalarNode:
-    style = ">" if len(text) > FOLD_AT_CHARS and " " in text and "\n" not in text else None
+    style = None
+    if "\n" in text:
+        style = "|"
+    elif len(text) > FOLD_AT_CHARS and " " in text:
+        style = ">"
     return dumper.represent_scalar("tag:yaml.org,2002:str", text, style=style)
 
 
