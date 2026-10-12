@@ -1,0 +1,37 @@
+// Dependency updates, as one weekly pull request.
+//
+// Renovate covers every pin in the repository: GitHub Actions (by commit
+// digest), mise tools, uv.lock, the hash-pinned requirements in
+// agent/requirements/, and the Vale style packages. A release waits a week
+// before Renovate proposes it, so a compromised release has time to be pulled.
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:recommended", "helpers:pinGitHubActionDigests"],
+  timezone: "Europe/Zurich",
+  schedule: ["before 6am on monday"],
+  minimumReleaseAge: "7 days",
+  semanticCommits: "enabled",
+  semanticCommitType: "build",
+  semanticCommitScope: "deps",
+  lockFileMaintenance: { enabled: true, schedule: ["before 6am on monday"] },
+  packageRules: [
+    {
+      matchPackageNames: ["*"],
+      groupName: "dependencies",
+    },
+  ],
+  "pip-compile": {
+    managerFilePatterns: ["/^agent/requirements/[^/]+\\.txt$/"],
+  },
+  customManagers: [
+    {
+      // Vale styles are pinned by release URL in .config/vale.ini.
+      customType: "regex",
+      managerFilePatterns: ["/^\\.config/vale\\.ini$/"],
+      matchStrings: [
+        "https://github\\.com/(?<depName>[^/]+/[^/]+)/releases/download/(?<currentValue>v[^/]+)/",
+      ],
+      datasourceTemplate: "github-releases",
+    },
+  ],
+}

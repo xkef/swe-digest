@@ -51,7 +51,7 @@ them, and `mise run <task>` runs one.
 | `site:build`    | check the data, generate the site content, and build into dist/ |
 | `site:serve`    | serve the site at 127.0.0.1:3000                                |
 | `deps:setup`    | create agent/.venv from uv.lock for development                 |
-| `deps:lock`     | update uv.lock and both requirements files                      |
+| `deps:lock`     | upgrade every Python dependency and both requirements files     |
 | `deps:base`     | install the publish dependencies, in CI                         |
 | `deps:agent`    | install the agent dependencies, in CI                           |
 | `dev:test`      | run `pytest`                                                    |
@@ -67,6 +67,8 @@ them, and `mise run <task>` runs one.
 - **The model never writes a file.** It answers in JSON, and Python validates
   and writes. A new capability becomes a new field in the answer.
 - **Requirements files are generated.** `mise run deps:lock` rewrites them.
+- **Renovate updates every pin** in one weekly pull request, as configured in
+  `.github/renovate.json5`.
 
 ## Writing
 
