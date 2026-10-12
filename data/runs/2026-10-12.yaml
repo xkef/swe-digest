@@ -300,3 +300,52 @@ runs:
   - step: save
     status: ok
     seconds: 0.0
+- mode: improve
+  started: 2026-10-12T22:06Z
+  finished: 2026-10-12T22:07Z
+  usage:
+    input_tokens: 2
+    cache_read_tokens: 0
+    cache_write_tokens: 59646
+    output_tokens: 10119
+    turns: 2
+    seconds: 85
+    cost_usd: 0.6854
+  tools:
+    StructuredOutput: 1
+  fetched: []
+  changed:
+  - watchlist
+  refused: []
+  feedback_used: []
+  summary: |-
+    This PR makes three small watchlist changes. The profile is unchanged because no owner feedback came in and the week showed no clear pattern that needs a profile edit.
+
+    Add the Hacker News query DuckDB. The daily runs on 2026-10-09 and 2026-10-10 marked DuckDB Ducklake (226 points) as a watchlist_gap. They noted that the watchlist covers SQLite, Postgres, Redis and Kafka but not DuckDB. "Why DuckDB 2.0 is faster" also reached the front page more than once, at 183 to 205 points, and no DuckDB query matched it.
+
+    Add the Hacker News query WSL. Three passes on 2026-10-10 and 2026-10-11 marked WSL3 performance (item 49998801, 174 to 211 points) as a watchlist_gap. The notes said nothing in the watchlist matched the string WSL.
+
+    Add the Hacker News query DNSSEC. The DNS root KSK-2024 rollover on 2026-10-11 was the most time-critical item of the week. The run notes say no Hacker News, Reddit or watchlist query surfaced it. It was found by chance on the Cloudflare blog index, and its two Hacker News threads scored only 5 and 7 points. A DNSSEC query would have collected those threads directly.
+
+    Remove the Springer Computer Science feed. Runs on every day from 2026-10-06 to 2026-10-12 left out the Books section because this feed returned only Springer LNCS conference proceedings, such as ECCV, ESORICS, ICCC and IWOMP. None of them met the bar for a technical book release. Its matches were never useful. The No Starch Press and Pragmatic Bookshelf feeds stay.
+
+    Not changed. The Kubernetes, Kafka, Prometheus and other queries returned nothing on 2026-10-12, but that was one day only and they cover stated interests. Reddit was degraded on every run, but each run still reached 4 to 9 subreddits, so no subreddit has failed outright.
+  steps:
+  - step: week
+    status: ok
+    seconds: 0.0
+  - step: feedback
+    status: ok
+    seconds: 0.5
+  - step: misses
+    status: ok
+    seconds: 0.7
+  - step: brief
+    status: ok
+    seconds: 0.2
+  - step: ask
+    status: ok
+    seconds: 87.0
+  - step: propose
+    status: ok
+    seconds: 0.0
