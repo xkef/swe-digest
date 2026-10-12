@@ -1,14 +1,20 @@
-# Every version is explicit. Pagefind was pinned to the "1" major line, which
-# floats across releases that change the index format and CLI flags; a search
-# index rebuilt by a different minor is not guaranteed to match what the
-# templates in site/ expect.
+# The repository runner. `mise tasks` lists everything it does, and each task
+# is one file in .config/mise/tasks/.
+#
+# Every version is exact, because a different Pagefind minor can change the
+# index format the site templates expect. CI installs only the tools a job
+# needs, through install_args in the workflows.
 [tools]
-zola = "0.22.1"
 python = "3.14"
 uv = "0.11.26"
+zola = "0.22.1"
 "github:Pagefind/pagefind" = "1.5.2"
+dprint = "0.54.0"
+rumdl = "0.2.9"
 
-# dprint and rumdl are owner-side formatters, not runtime deps. They are kept
-# out of [tools] on purpose so CI's `mise install` (jdx/mise-action) does not
-# fetch them on every scheduled agent run. `make fmt` installs them on demand
-# at the versions pinned in the Makefile.
+# Every task runs inside agent/.venv. Locally `mise run setup` fills it from
+# uv.lock. In CI `mise run install:base` or `install:agent` fills it from the
+# hash-pinned requirements.
+[env]
+_.python.venv = { path = "{{config_root}}/agent/.venv", create = true }
+PYTHONPATH = "{{config_root}}/agent/src"

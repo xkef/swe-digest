@@ -7,7 +7,7 @@ mirrored under one directory. This module trusts none of it:
     2. Every file must be a regular file under the size cap, and parse and pass
        its own check.
     3. data/ files become one signed commit on main.
-    4. config/ files become a pull request. Merging it is the owner's approval.
+    4. agent/config/ files become a pull request. Merging it is the owner's approval.
     5. Issues the run used are closed only after the API confirms again that
        the owner opened them.
 
@@ -26,7 +26,7 @@ from digest import config, github, memory, runs, sources, stories
 
 DAY = r"\d{4}-\d{2}-\d{2}"
 DATA_PATHS = re.compile(rf"data/digests/{DAY}\.yaml|data/runs/{DAY}\.yaml|data/memory/followups\.yaml")
-CONFIG_PATHS = re.compile(r"config/watchlist\.yaml|config/profile\.md")
+CONFIG_PATHS = re.compile(r"agent/config/watchlist\.yaml|agent/config/profile\.md")
 MAX_FILE_BYTES = 2 * 1024 * 1024
 SITE_WORKFLOW = "site.yml"
 
@@ -57,7 +57,7 @@ def check(relative: str, body: bytes) -> list[str]:
     text = body.decode("utf-8")
     if stories.text_issues(text):
         return ["contains a secret pattern"]
-    if relative == "config/profile.md":
+    if relative == "agent/config/profile.md":
         return []
 
     parsed: Any = yaml.safe_load(text)
@@ -79,7 +79,7 @@ def publish(out_dir: Path, day: str) -> None:
 
     record = yaml.safe_load(files.get(f"data/runs/{day}.yaml", b"runs: [{}]"))["runs"][-1]
     data = {path: body for path, body in files.items() if path.startswith("data/")}
-    proposals = {path: body for path, body in files.items() if path.startswith("config/")}
+    proposals = {path: body for path, body in files.items() if path.startswith("agent/config/")}
 
     if data:
         sha = github.commit("main", data, f"chore: publish {record.get('mode', 'run')} run for {day}")

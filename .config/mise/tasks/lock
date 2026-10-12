@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#MISE description="Update uv.lock and regenerate both requirements files"
+#MISE dir="{{config_root}}/agent"
+set -euo pipefail
+
+uv lock
+uv pip compile --quiet --generate-hashes pyproject.toml -o requirements/base.txt
+uv pip compile --quiet --generate-hashes --extra agent pyproject.toml -o requirements/agent.txt

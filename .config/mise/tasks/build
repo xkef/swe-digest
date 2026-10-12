@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#MISE description="Check the data and build the site into dist/"
+#MISE dir="{{config_root}}"
+set -euo pipefail
+
+python -m digest build
+rm -rf dist
+zola --root site build --output-dir "$PWD/dist"
+pagefind --site dist --glob "digests/[0-9]*/*/index.html"
+
+# Every page is lang="en", so the fallback index and the UI bundles go unused.
+rm -f dist/pagefind/pagefind-ui.* dist/pagefind/pagefind-component-ui.* \
+  dist/pagefind/pagefind-modular-ui.* dist/pagefind/pagefind-highlight.js \
+  dist/pagefind/wasm.unknown.pagefind

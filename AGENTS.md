@@ -2,14 +2,24 @@
 
 ## Layout
 
-| Path | What it holds |
-|---|---|
-| `src/digest/` | the package, one module per concern |
-| `prompts/` | `rules.md`, then `daily.md` or `improve.md`. A run cannot change these |
-| `config/` | `settings.yaml`, `watchlist.yaml`, `profile.md` |
-| `data/` | what runs write: digests, run records, follow-ups. `data/runs/legacy/` holds the records of the previous pipeline |
-| `site/` | the Zola site. `make build` generates its content from `data/` |
-| `test/` | the suite |
+```text
+mise.toml               tools and environment. Tasks are in .config/mise/tasks/
+.config/                formatter configs and the mise tasks
+.github/                workflows, SECURITY.md, issue templates
+agent/                  the Python program
+  config/               settings.yaml, watchlist.yaml, profile.md
+  prompts/              rules.md, then daily.md or improve.md
+  src/digest/           the package
+  tests/
+  requirements/         hash-pinned installs for CI: base.txt, agent.txt
+data/                   what runs write: digests, run records, follow-ups
+  runs/legacy/          run records of the previous pipeline
+site/                   the Zola site. `mise run build` generates its content
+```
+
+A run may propose changes to `agent/config/watchlist.yaml` and
+`agent/config/profile.md` through a pull request. It may not change anything
+else under `agent/`.
 
 ## Modules
 
@@ -29,25 +39,27 @@
 
 ## Commands
 
+Every command is a mise task. `mise tasks` lists them.
+
 ```sh
-make test         # pytest
-make lint         # ruff
-make typecheck    # mypy --strict
-make check        # check every data file
-make build        # check, generate site content, zola, pagefind
-make serve        # local site at 127.0.0.1:3000
-make daily        # a real run, billed to the local claude login
-make fmt          # dprint + rumdl
+mise run setup       # agent/.venv from uv.lock, with the SDK and dev tools
+mise run test        # pytest
+mise run lint        # ruff and mypy
+mise run check       # check every data file
+mise run build       # check, generate site content, zola, pagefind
+mise run serve       # local site at 127.0.0.1:3000
+mise run daily       # a real run, billed to the local claude login
+mise run fmt         # ruff, dprint, rumdl
+mise run lock        # update uv.lock and both requirements files
 ```
 
 ## Constraints
 
 - **Only `agent.py` imports the agent SDK.** The publish job installs
   `requirements/base.txt` alone. A test fails if the publish path loads the SDK.
-- **The model never writes a file.** It answers in JSON and Python validates and
-  writes. A new capability is a new field in the answer, not a new tool.
-- **Requirements files are generated.** Run
-  `uv pip compile --generate-hashes [--extra agent] pyproject.toml -o FILE`.
+- **The model never writes a file.** It answers in JSON, and Python validates
+  and writes. A new capability is a new field in the answer, not a new tool.
+- **Requirements files are generated.** `mise run lock` rewrites them.
 
 ## Writing
 

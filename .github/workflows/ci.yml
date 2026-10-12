@@ -10,6 +10,9 @@ on:
 permissions:
   contents: read
 
+env:
+  MISE_TRUSTED_CONFIG_PATHS: ${{ github.workspace }}
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -27,22 +30,19 @@ jobs:
           persist-credentials: false
       - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
         with:
-          install: true
+          install_args: python uv
           cache: true
       - name: Sync environment
-        run: uv sync --frozen
-      - name: Lint
-        run: |
-          uv run ruff check .
-          uv run ruff format --check .
-      - name: Type check
-        run: uv run mypy
+        run: mise run setup
+      - name: Lint and type check
+        run: mise run lint
       - name: Tests
-        run: uv run pytest
+        run: mise run test
 
       # A dependabot bump of one pin can contradict another package's peer
       # pin. Without this step the first failure is the scheduled run.
       - name: Agent requirements resolve
+        working-directory: agent
         run: python3 -m pip install --dry-run --require-hashes -r requirements/agent.txt
 
   site:
@@ -57,15 +57,15 @@ jobs:
           persist-credentials: false
       - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
         with:
-          install: true
+          install_args: python uv zola github:Pagefind/pagefind
           cache: true
-      - name: Install Python deps
-        run: python3 -m pip install --require-hashes -r requirements/base.txt
-      - name: Build and check site
-        run: make check
+      - name: Install dependencies
+        run: mise run install:base
+      - name: Check and build the site
+        run: mise run build
 
-  # Formatting drift in owner-edited files. Tool versions are pinned in the
-  # Makefile, so this job and `make fmt-check` agree.
+  # Formatting drift in owner-edited files. Tool versions are pinned in
+  # mise.toml, so this job and a local `mise run fmt-check` agree.
   format:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -78,7 +78,7 @@ jobs:
           persist-credentials: false
       - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
         with:
-          install: true
+          install_args: python uv dprint rumdl
           cache: true
       - name: Check formatting
-        run: make fmt-check
+        run: mise run fmt-check

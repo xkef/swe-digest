@@ -6,13 +6,15 @@ from typing import Any
 
 import yaml
 
-ROOT = Path(__file__).resolve().parents[2]
-CONFIG = ROOT / "config"
+# The repository root, and the agent/ project inside it.
+ROOT = Path(__file__).resolve().parents[3]
+AGENT = ROOT / "agent"
+CONFIG = AGENT / "config"
 DATA = ROOT / "data"
 DIGESTS = DATA / "digests"
 RUNS = DATA / "runs"
 FOLLOWUPS = DATA / "memory" / "followups.yaml"
-PROMPTS = ROOT / "prompts"
+PROMPTS = AGENT / "prompts"
 SITE = ROOT / "site"
 
 WATCHLIST = CONFIG / "watchlist.yaml"

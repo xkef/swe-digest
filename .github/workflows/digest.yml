@@ -4,10 +4,11 @@ name: Digest
 #
 #   agent job (read-only token)          publish job (write token)
 #   collect, ask the model, write   ──>  check every file, commit data/ to main,
-#   upload the changed files             open a pull request for config/
+#   upload the changed files             open a pull request for agent/config/
 #
 # The agent job cannot push. The publish job runs only code from main and
-# trusts nothing in the uploaded files until src/digest/publish.py checks them.
+# trusts nothing in the uploaded files until agent/src/digest/publish.py
+# checks them. Every step runs through a mise task.
 #
 # GitHub delays scheduled runs by up to two hours, so the first run starts at
 # 01:30 UTC to land the morning digest before 06:00 in Zurich.
@@ -28,6 +29,10 @@ on:
         default: daily
 
 permissions: {}
+
+# The repository's own mise.toml defines the tasks every step runs.
+env:
+  MISE_TRUSTED_CONFIG_PATHS: ${{ github.workspace }}
 
 concurrency:
   group: digest
@@ -54,10 +59,10 @@ jobs:
           persist-credentials: false
       - uses: jdx/mise-action@3c2e0cf82a5b2e5249f0d3635a4d83d0ae861518 # v4.2.5
         with:
-          install: true
+          install_args: python uv
           cache: true
       - name: Install dependencies
-        run: python3 -m pip install --require-hashes -r requirements/agent.txt
+        run: mise run install:agent
       - id: day
         run: echo "day=$(date -u +%F)" >> "$GITHUB_OUTPUT"
 
@@ -66,7 +71,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-        run: PYTHONPATH=src python3 -m digest "$MODE" --day "${{ steps.day.outputs.day }}"
+        run: mise run "$MODE" --day "${{ steps.day.outputs.day }}"
 
       # Runs even when the run failed, because a failed run still writes its
       # run record, and that record is how a failure gets reviewed.
@@ -75,7 +80,7 @@ jobs:
         if: always()
         run: |
           mkdir -p .run/out
-          git ls-files -z --modified --others --exclude-standard -- data config |
+          git ls-files -z --modified --others --exclude-standard -- data agent/config |
             xargs -0 -r cp --parents -t .run/out
           if [ -n "$(ls -A .run/out)" ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -104,10 +109,10 @@ jobs:
       # the agent job could have written.
       - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
         with:
-          install: true
+          install_args: python uv
           cache: false
       - name: Install dependencies
-        run: python3 -m pip install --require-hashes -r requirements/base.txt
+        run: mise run install:base
       # Outside the checkout, so the uploaded files cannot shadow repository code.
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -116,4 +121,4 @@ jobs:
       - name: Check and publish
         env:
           GH_TOKEN: ${{ github.token }}
-        run: PYTHONPATH=src python3 -m digest publish "$RUNNER_TEMP/out" --day "${{ needs.agent.outputs.day }}"
+        run: mise run publish "$RUNNER_TEMP/out" --day "${{ needs.agent.outputs.day }}"

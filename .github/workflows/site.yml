@@ -28,6 +28,9 @@ on:
         type: string
         required: false
 
+env:
+  MISE_TRUSTED_CONFIG_PATHS: ${{ github.workspace }}
+
 permissions:
   contents: read
   pages: write
@@ -60,12 +63,12 @@ jobs:
       # a tool cache the untrusted agent job could have poisoned.
       - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
         with:
-          install: true
+          install_args: python uv zola github:Pagefind/pagefind
           cache: false
-      - name: Install Python deps
-        run: python3 -m pip install --require-hashes -r requirements/base.txt
+      - name: Install dependencies
+        run: mise run install:base
       - name: Check and build
-        run: make build
+        run: mise run build
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: dist

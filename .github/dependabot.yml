@@ -9,17 +9,17 @@ updates:
         patterns: ["*"]
 
   - package-ecosystem: "uv"
-    directory: "/"
+    directory: "/agent"
     schedule:
       interval: "weekly"
     groups:
       python:
         patterns: ["*"]
 
-  # requirements/: the hash-pinned installs the unattended jobs use, agent.txt
-  # for the SDK harness and base.txt for the publish gate. The lockfile above
-  # does not cover either.
+  # The hash-pinned installs the scheduled jobs use: agent.txt for the agent
+  # job, base.txt for the publish and site jobs. The lockfile above does not
+  # cover either.
   - package-ecosystem: "pip"
-    directory: "/requirements"
+    directory: "/agent/requirements"
     schedule:
       interval: "weekly"

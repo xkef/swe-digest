@@ -8,10 +8,10 @@ A software engineering digest curated by a scheduled agent:
 
 ## How a run works
 
-Five times a day ([daily.py](src/digest/daily.py)):
+Five times a day ([daily.py](agent/src/digest/daily.py)):
 
 1. Python collects candidates from Hacker News, Reddit, arXiv, and the RSS
-   feeds in [config/watchlist.yaml](config/watchlist.yaml).
+   feeds in [watchlist.yaml](agent/config/watchlist.yaml).
 2. One model call picks and writes the new stories. Its only tool is an audited
    `fetch_url`. It has no shell, no file access, and no web search.
 3. Python checks every story it returns. A source URL the run never saw, a
@@ -20,27 +20,27 @@ Five times a day ([daily.py](src/digest/daily.py)):
 4. Python writes the day's digest, the follow-ups, and the run record, all
    YAML.
 
-Once a week, [improve.py](src/digest/improve.py) reads the week's evidence and
-opens a pull request against the watchlist and the reading profile.
+Once a week, [improve.py](agent/src/digest/improve.py) reads the week's evidence
+and opens a pull request against the watchlist and the reading profile.
 
 ## Publishing
 
 The agent job holds a read-only token and uploads the files it changed. A second
 job holds the write token, checks every file against a path allowlist and its
-schema ([publish.py](src/digest/publish.py)), commits `data/` to main, and opens
-a pull request for `config/`. Code, prompts, and workflows are not on the
-allowlist.
+schema ([publish.py](agent/src/digest/publish.py)), commits `data/` to main,
+and opens a pull request for `agent/config/`. Code, prompts, and workflows are
+not on the allowlist.
 
 ## Layout
 
-- [src/digest/](src/digest/): the package, one module per concern.
-- [prompts/](prompts/): the standing rules and the two task prompts.
-- [config/](config/): settings, watchlist, and reading profile.
-- [data/](data/): digests, run records, and follow-ups, as YAML.
-- [site/](site/): the Zola site. The build generates its content from `data/`.
+```text
+agent/    the Python program: src/digest/, prompts/, config/, tests/
+data/     what runs write: digests, run records, follow-ups
+site/     the Zola site, built from data/
+```
 
-[SECURITY.md](SECURITY.md) states the threat model. [AGENTS.md](AGENTS.md)
-covers developing this repository.
+`mise tasks` lists every command. [SECURITY.md](.github/SECURITY.md) states the
+threat model. [AGENTS.md](AGENTS.md) covers developing this repository.
 
 ## License
 

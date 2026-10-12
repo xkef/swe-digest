@@ -2,7 +2,7 @@
 
 The evidence is what the week published, the Hacker News stories it missed,
 what the runs recorded, and the owner's feedback issues. The model answers
-with a full watchlist and profile. Python writes them to config/, and the
+with a full watchlist and profile. Python writes them to agent/config/, and the
 publish job opens a pull request. Merging it is the approval.
 """
 
