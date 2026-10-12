@@ -8,11 +8,11 @@ template = "about.html"
 
 SWE Digest is an independent, automated software engineering digest. Scheduled
 runs collect public engineering news from primary sources, Hacker News, Reddit,
-blogs, and public posts by named practitioners, then publish dated summaries
-that link back to the original sources. Digests update daily at 01:30, 09:50,
-and 15:50 UTC. It is a personal editorial project. It is not affiliated with,
-endorsed by, or speaking for any company, vendor, or the people and projects
-it covers.
+arXiv, and engineering blogs, then publish dated summaries that link back to the
+original sources. Digests update five times a day, at 01:30, 05:30, 09:30,
+13:30, and 17:30 UTC. It is a personal editorial project. It is not affiliated
+with, endorsed by, or speaking for any company, vendor, or the people and
+projects it covers.
 
 ## No warranty and no reliance
 
@@ -53,8 +53,8 @@ submit there is public.
 
 The digest reports on public, engineering-relevant work and public statements by
 named practitioners and organizations: releases, talks, posts, advisories, and
-similar. It links the primary source, attributes statements only to verified
-accounts, and labels unverified or discussion-only items as such. It does not
+similar. It links the primary source and attributes statements only to verified
+accounts. It does not
 publish private contact details, private personal information, or
 special-category data, and it does not track private behavior.
 
@@ -67,7 +67,6 @@ If you are mentioned and want a correction, added context, removal, or exclusion
 from future coverage, open a
 [correction or removal request](https://github.com/xkef/swe-digest/issues/new?template=removal.yml)
 and identify the specific page or item. Use that template rather than a blank
-issue: it keeps the request open for a human, while other outside issues pass
-through automated triage. Issues are public and are monitored. Reasonable
+issue: it keeps the request open for a human. Issues are public and are monitored. Reasonable
 requests are honored promptly, and asking to be excluded does not require a
 reason.

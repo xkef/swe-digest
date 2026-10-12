@@ -78,7 +78,3 @@ infrastructure.
 - Benchmarks without method.
 - Social media controversy without a primary source.
 - Consumer gadget news unless it affects developer platforms.
-
-## Private context boundary
-
-Private local preferences belong in `PRIVATE_CONTEXT.md`, not in the repository.

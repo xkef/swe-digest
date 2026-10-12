@@ -83,12 +83,12 @@ def _day_data(day: str, digest: dict[str, Any], cards: list[dict[str, Any]]) -> 
     for card in cards:
         if not sections or sections[-1]["name"] != card["section"]:
             sections.append({"name": card["section"], "stories": []})
-        sections[-1]["stories"].append(card)
+        # Section and slug only shape the build. The templates never read them.
+        sections[-1]["stories"].append({k: v for k, v in card.items() if k not in ("section", "slug")})
 
     updated = str(digest.get("updated") or "")
     last_run = (runs.load(day)["runs"] or [{}])[-1]
     return {
-        "date": day,
         "count": len(cards),
         "lede": digest.get("lede") or (cards[0]["blurb"] if cards else ""),
         "updated": updated.replace("T", " ").replace("Z", " UTC") if updated else None,
