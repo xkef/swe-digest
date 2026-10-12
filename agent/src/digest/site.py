@@ -17,7 +17,6 @@ from typing import Any
 
 from digest import config, memory, runs, stories
 
-LEAD_SECTION = "Top stories"
 INLINE_CODE = re.compile(r"`([^`\n]+)`")
 FIELDS = (
     ("summary", "Summary"),
@@ -67,7 +66,7 @@ def _card(day: str, story: dict[str, Any]) -> dict[str, Any]:
         "slug": slug,
         "url": f"/digests/{day}/{slug}/",
         "category": story.get("category", ""),
-        "show_category": story["section"] == LEAD_SECTION and bool(story.get("category")),
+        "show_category": story["section"] == config.settings()["sections"][0] and bool(story.get("category")),
         "blurb": _html(story["blurb"]),
     }
 

@@ -1,17 +1,12 @@
 name: Security
 
 # Static analysis and supply-chain scoring, both writing to the Security tab.
-# Merges the former codeql.yml and scorecard.yml, which shared a permission
-# model and differed only in trigger.
 #
-# CodeQL earns its place next to ruff and mypy because it does something they
-# do not: taint analysis. This codebase parses untrusted JSON, XML, and HTML
-# from six network sources and shells out through git_gh.py, so injection,
-# path traversal, and unsafe deserialization are live categories. The `actions`
-# language matters more still — ops.yml moves untrusted issue text into
-# workflow context, and workflow-injection analysis has no equivalent anywhere
-# else in the stack. The workflow file is also what the Scorecard SAST check
-# detects, since this repo merges no PRs for check-run detection.
+# CodeQL adds taint analysis, which ruff and mypy lack. The agent parses
+# untrusted JSON, XML, and HTML from the network and shells out to gh, so
+# injection, path traversal, and unsafe deserialization are live categories.
+# The `actions` language checks the workflows for injection, which nothing
+# else in the stack does.
 on:
   pull_request:
   push:

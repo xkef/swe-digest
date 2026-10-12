@@ -1,11 +1,7 @@
 name: Site
 
-# Build, deploy, and audit the published site. Merges the former pages.yml and
-# site-audit.yml.
-#
-# The audit used to find its target with `workflow_run: [Deploy Pages]`, which
-# meant renaming the deploy workflow silently stopped it running. As a
-# `needs: deploy` job the coupling is structural and cannot drift.
+# Build, deploy, and audit the published site. The audit is a `needs: deploy`
+# job, so it always audits the deploy that just finished.
 #
 # `workflow_dispatch` is load-bearing: the publish job in digest.yml pushes with
 # GITHUB_TOKEN, and GitHub suppresses the `push` trigger for those, so the

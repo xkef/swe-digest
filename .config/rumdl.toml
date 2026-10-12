@@ -1,18 +1,11 @@
 # rumdl owns Markdown; dprint owns everything else (TOML, JSON, YAML, CSS,
 # HTML, JS).
 #
-# Two formatters, on purpose. dprint has a Markdown plugin and it was tried:
-# it normalizes inline syntax, which rewrites prose rather than formatting it.
-# On this repo's own memory files it turned `~3x next-best` into `~~3x`
-# (creating strikethrough) and the X handle `@__alpoge__` into `@**alpoge**`
-# inside a link title. Memory and digests are prose dense with markdown-
-# significant characters, drawn from untrusted sources, so a normalizing
-# formatter corrupts published facts. rumdl lints instead of normalizing,
-# which is the property this content needs.
+# Two formatters, on purpose. dprint's Markdown plugin normalizes inline
+# syntax, which rewrites prose: it turns `~3x` into `~~3x` (strikethrough) and
+# `@__name__` into `@**name**`. rumdl lints instead of normalizing.
 #
-# `data/` is excluded whole: it is the tree the bot writes, the code that writes
-# it owns the form, and the content gate checks that form byte for byte. A
-# formatter touching anything under it is a gate failure, not a tidy-up. The
+# `data/` is excluded whole, because the code that writes it owns its form. The
 # generated Zola trees under `site/` are excluded for the same reason.
 [global]
 respect_gitignore = true
@@ -25,9 +18,6 @@ exclude = [
   ".run",
   ".claude-notes",
 ]
-# MD057: the README uses GitHub-relative links (../../issues/new?...) that
-# resolve on GitHub but not on the local filesystem.
-disable = ["MD057"]
 
 # Every Markdown file rumdl sees is prose a person reads in a diff, so
 # `mise run dev:fmt` rewraps paragraphs at 80 columns. Code blocks and tables keep

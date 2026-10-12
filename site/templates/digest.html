@@ -2,22 +2,6 @@
 {% block content %}
   {% set day = page.date | date(format='%Y-%m-%d') %}
   {% set digest = load_data(path="data/digests/" ~ day ~ ".json") %}
-  {% set build_date = get_env(name="BUILD_DATE", default="") %}
-  {% if digest.updated_at %}
-    {% set_global updated_iso = digest.updated_at %}
-  {% elif build_date %}
-    {% set_global updated_iso = build_date %}
-  {% else %}
-    {% set_global updated_iso = now() | date(format='%Y-%m-%dT%H:%M:%SZ') %}
-  {% endif %}
-  {% if digest.updated %}
-    {% set_global updated = digest.updated %}
-  {% elif build_date %}
-    {% set_global updated = build_date | replace(from="T", to=" ") %}
-    {% set_global updated = updated | replace(from="Z", to=" UTC") %}
-  {% else %}
-    {% set_global updated = now() | date(format='%Y-%m-%d %H:%M UTC') %}
-  {% endif %}
   <article class="layout digest-page">
     <header class="page-header digest-header">
       <h1><a
@@ -25,8 +9,13 @@
         href="{{ config.extra.repository | safe }}/blob/main/data/runs/{{ day }}.yaml"
       >{{ day }}</a></h1>
       <p class="meta">
-        <span><time class="js-localtime" data-clock datetime="{{ updated_iso }}"
-        >{{ <clock stamp={updated} /> }}</time></span>
+        {% if digest.updated %}
+          <span><time
+            class="js-localtime"
+            data-clock
+            datetime="{{ digest.updated_at }}"
+          >{{ <clock stamp={digest.updated} /> }}</time></span>
+        {% endif %}
         {% if digest.count %}<span>{{ digest.count }} stories</span>{% endif %}
         <span><a
           rel="nofollow"

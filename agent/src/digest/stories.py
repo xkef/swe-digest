@@ -17,13 +17,14 @@
 
 ``problems`` is the structural check every file must pass, at publish time and
 at build time. Fields may hold any text, including code such as `Box<str>`,
-because the site escapes every field it prints. ``vet`` is the stricter check a new story from the model must
-pass before it enters a day.
+because the site escapes every field it prints. ``vet`` is the stricter check
+a new story from the model must pass before it enters a day.
 """
 
 import re
 from datetime import date as Date
 from datetime import timedelta
+from pathlib import Path
 from typing import Any
 
 from digest import config
@@ -43,7 +44,7 @@ SECRETS = re.compile(
 SAFE_URL = re.compile(r"https://[^\s<>\"'`\\]+")
 
 
-def path(day: str) -> Any:
+def path(day: str) -> Path:
     return config.DIGESTS / f"{day}.yaml"
 
 
@@ -139,7 +140,7 @@ def _over_cap(story: Story, stories: list[Story]) -> str | None:
     if section in settings["uncapped_sections"]:
         return None
     if section == settings["sections"][0] and in_section >= settings["max_top_stories"]:
-        return "Top stories is full"
+        return f"{section} is full"
     if in_section >= settings["max_section_stories"]:
         return f"{section} is full"
     budgeted = sum(1 for s in stories if s["section"] not in settings["uncapped_sections"])

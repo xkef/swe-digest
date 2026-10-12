@@ -21,7 +21,7 @@ from typing import Any
 
 import feedparser
 
-from digest import http, stories
+from digest import http, runs, stories
 
 type Item = dict[str, Any]
 
@@ -30,6 +30,7 @@ HN_ITEM = "https://news.ycombinator.com/item?id="
 HN_TOP_MIN_POINTS = 100
 HN_QUERY_MIN_POINTS = 20
 HN_QUERY_HITS = 10
+WATCHLIST_KEYS = ("hacker_news", "reddit", "arxiv", "github_releases", "feeds", "youtube")
 REDDIT_HOSTS = ("www.reddit.com", "old.reddit.com")
 REDDIT_LIMIT = 100
 ARXIV = "https://export.arxiv.org/api/query"
@@ -223,7 +224,7 @@ def _published(entry: Any) -> int | None:
 def _iso(timestamp: int | None) -> str | None:
     if timestamp is None:
         return None
-    return datetime.fromtimestamp(timestamp, tz=UTC).strftime("%Y-%m-%dT%H:%MZ")
+    return runs.stamp(datetime.fromtimestamp(timestamp, tz=UTC))
 
 
 def watchlist_problems(watchlist: Any) -> list[str]:
@@ -250,6 +251,6 @@ def watchlist_problems(watchlist: Any) -> list[str]:
             found.append("youtube must map names to channel ids")
     except (KeyError, TypeError, AttributeError) as error:
         return [f"malformed watchlist: {error}"]
-    if set(watchlist) != {"hacker_news", "reddit", "arxiv", "github_releases", "feeds", "youtube"}:
+    if set(watchlist) != set(WATCHLIST_KEYS):
         found.append("unexpected top-level keys")
     return found
