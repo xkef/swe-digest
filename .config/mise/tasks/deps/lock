@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
-#MISE description="Update uv.lock and regenerate both requirements files"
+#MISE description="Upgrade every Python dependency in uv.lock and both requirements files"
 #MISE dir="{{config_root}}/agent"
 set -euo pipefail
 
-uv lock
-uv pip compile --quiet --generate-hashes pyproject.toml -o requirements/base.txt
-uv pip compile --quiet --generate-hashes --extra agent pyproject.toml -o requirements/agent.txt
+uv lock --upgrade
+
+# Compiled from scratch instead of with --upgrade, so the header of each file
+# records the plain command that Renovate re-runs on its own updates.
+rm -f requirements/base.txt requirements/agent.txt
+uv pip compile --generate-hashes pyproject.toml -o requirements/base.txt >/dev/null
+uv pip compile --generate-hashes --extra agent pyproject.toml -o requirements/agent.txt >/dev/null

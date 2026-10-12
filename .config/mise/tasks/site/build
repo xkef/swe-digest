@@ -5,7 +5,8 @@ set -euo pipefail
 
 python -m digest build
 rm -rf dist
-zola --root site build --output-dir "$PWD/dist"
+# Zola 0.23 prints build errors only through its log.
+RUST_LOG="${RUST_LOG:-info}" zola --root site build --output-dir "$PWD/dist"
 pagefind --site dist --glob "digests/[0-9]*/*/index.html"
 
 # Every page is lang="en", so the fallback index and the UI bundles go unused.

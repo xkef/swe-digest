@@ -17,7 +17,7 @@ run, the correct answer is an empty `stories` list.
 - `Top stories` holds the few items that define the day, strongest first. Put
   everything else in its topical section.
 - Stay inside the budget. When a section or the day is full and a candidate
-  ranks higher than a story of today's, add the candidate and put the
+  ranks higher than one of today's stories, add the candidate. Put the
   lower-ranked story's exact title in `drop`. Drop only for a clear improvement.
 - Security advisories and outages that affect developers always qualify.
 - Skip market news unless it changes engineering context, and benchmark

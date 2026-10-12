@@ -51,6 +51,7 @@ def build() -> None:
             (stories_dir / f"{day}-{card['slug']}.md").write_text(_story_page(day, story, card))
         (data_dir / f"{day}.json").write_text(json.dumps(_day_data(day, digest, cards), indent=1))
         total += len(cards)
+    (config.SITE / "data" / "stats.json").write_text(json.dumps({"stories": total}))
     print(f"site: {total} stories")
 
 

@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% import "macros.html" as macros %}
 {% block content %}
   {% set day = page.date | date(format='%Y-%m-%d') %}
   {% set digest = load_data(path="data/digests/" ~ day ~ ".json") %}
@@ -24,7 +23,7 @@
       <h1>{{ day }}</h1>
       <p class="meta">
         <span><time class="js-localtime" data-clock datetime="{{ updated_iso }}"
-        >{{ macros::clock(stamp=updated) }}</time></span>
+        >{{ <clock stamp={updated} /> }}</time></span>
         {% if digest.count %}<span>{{ digest.count }} stories</span>{% endif %}
         <span><a
           rel="nofollow"
@@ -33,10 +32,10 @@
       </p>
     </header>
 
-    {{ macros::day_sections(sections=digest.sections) }}
+    {{ <day_sections sections={digest.sections} /> }}
     {# With sort_by = "date" (newest first), page.lower is the next-newer
        day and page.higher the next-older day. #}
-    {{ macros::day_pager(newer=page.lower, older=page.higher) }}
+    {{ <day_pager newer={page.lower} older={page.higher} /> }}
     {% if digest.run %}
       <footer class="run-meta">
         <p class="meta">

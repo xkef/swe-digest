@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% import "macros.html" as macros %}
 {% block content %}
   {% set digests = get_section(path="digests/_index.md") %}
   {% set latest = digests.pages | first %}
@@ -17,7 +16,7 @@
         <input
           type="search"
           id="story-search"
-          placeholder="filter {{ macros::total_stories() }} stories"
+          placeholder="filter {{ <total_stories /> }} stories"
           autocomplete="off"
         >
       </label>
@@ -33,7 +32,7 @@
               class="js-localtime"
               data-clock
               datetime="{{ digest.updated_at }}"
-            >{{ macros::clock(stamp=digest.updated) }}</time></span>
+            >{{ <clock stamp={digest.updated} /> }}</time></span>
           {% endif %}
           {% if digest.count %}<span>{{ digest.count }} stories</span>{% endif %}
           <span><a
@@ -42,11 +41,11 @@
           >suggest &rarr;</a></span>
         </p>
       </header>
-      {{ macros::day_sections(sections=digest.sections) }}
+      {{ <day_sections sections={digest.sections} /> }}
       {% if digests.pages | length > 1 %}
-        {{ macros::day_pager(older=digests.pages | nth(n=1)) }}
+        {{ <day_pager older={digests.pages[1]} /> }}
       {% else %}
-        {{ macros::day_pager() }}
+        {{ <day_pager /> }}
       {% endif %}
       {% if digest.run %}
         <footer class="run-meta">
