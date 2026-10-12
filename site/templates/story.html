@@ -11,7 +11,7 @@
           data-pagefind-meta="date:{{ page.extra.day }}"
         >{{ page.extra.day }} digest</a>
       </p>
-      <h1>{{ page.title }}</h1>
+      <h1>{{ page.extra.title_html | safe }}</h1>
       {# Every section but the lead is itself a topic, so the category only
          says something new under Top stories. build-stories decides that;
          Pagefind reads the facet off the attribute either way. #}
@@ -31,7 +31,7 @@
           {% for source in page.extra.sources %}<a href="{{ source.url }}">{{ source.label }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
         </li>
         {% for field in page.extra.fields | default(value=[]) %}
-          <li><strong>{{ field.label }}:</strong> {{ field.text }}</li>
+          <li><strong>{{ field.label }}:</strong> {{ field.text | safe }}</li>
         {% endfor %}
       </ul>
     </div>

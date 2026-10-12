@@ -46,3 +46,30 @@ def test_build_on_a_clean_checkout(tmp_path, monkeypatch):
 
     assert (tmp_path / "site" / "data" / "digests" / "2026-10-09.json").exists()
     assert (tmp_path / "site" / "content" / "stories" / "2026-10-09-t.md").exists()
+
+
+CODE_STORY = {
+    "title": "Patch `hashicorp/boundary`",
+    "section": "Top stories",
+    "blurb": "Upgrade `hashicorp/boundary` <b>now</b>",
+    "summary": "Run `npm install` & wait",
+    "sources": [{"label": "primary", "url": "https://a.dev/x"}],
+}
+
+
+def test_story_text_renders_inline_code_and_escapes_html():
+    card = site._card("2026-10-09", CODE_STORY)
+    page = site._story_page("2026-10-09", CODE_STORY, card)
+    front = tomllib.loads(page.removeprefix("+++\n").rsplit("+++", 1)[0])
+    assert card["title"] == "Patch <code>hashicorp/boundary</code>"
+    assert card["blurb"] == "Upgrade <code>hashicorp/boundary</code> &lt;b&gt;now&lt;/b&gt;"
+    assert front["extra"]["title_html"] == card["title"]
+    assert front["extra"]["fields"][0]["text"] == "Run <code>npm install</code> &amp; wait"
+
+
+def test_plain_text_contexts_drop_backticks():
+    card = site._card("2026-10-09", CODE_STORY)
+    page = site._story_page("2026-10-09", CODE_STORY, card)
+    front = tomllib.loads(page.removeprefix("+++\n").rsplit("+++", 1)[0])
+    assert front["title"] == "Patch hashicorp/boundary"
+    assert front["description"] == "Upgrade hashicorp/boundary <b>now</b>"
