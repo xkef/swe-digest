@@ -1,0 +1,465 @@
+date: '2026-09-25'
+stories:
+- title: >-
+    Federal appeals court upholds the Pentagon designation that bars Claude from Defense Department
+    work
+  section: Top stories
+  category: AI
+  status: confirmed
+  blurb: >-
+    A 2-1 appeals panel upheld the Pentagon designation barring the Defense Department and
+    its contractors from using Claude.
+  summary: >-
+    The D.C. Circuit opinion listing for September 2026 records the case as docket 26-1049,
+    captioned Anthropic PBC v. United States Department of War, decided 2026-09-25. CNBC reports
+    that the panel upheld the Pentagon designation that bars the department from using Anthropic's
+    models and bars defence contractors from using them in department work. CNBC quotes Judge
+    Gregory Katsas, writing for a 2-1 majority, that the department had ample support for
+    treating continued integration of Claude into its information systems, by the department
+    or its contractors, as a statutorily covered national-security risk, with Judge Karen
+    LeCraft Henderson dissenting. The panel delayed the decision from taking immediate effect
+    so Anthropic can petition for rehearing or en banc review, and a San Francisco federal
+    judge held the parallel designation unlawful last month.
+  why: >-
+    The designation stops the US military and its contractors from using Claude in Department
+    of Defense work, so any programme that built on it has to move off it.
+  followup: >-
+    Track the rehearing or en banc petition, the parallel San Francisco case, and any migration
+    guidance Anthropic or the department publishes.
+  sources:
+  - label: court listing
+    url: https://media.cadc.uscourts.gov/opinions/bydate/2026/9
+  - label: report
+    url: https://www.cnbc.com/2026/09/25/pentagon-anthropic-ai-risk-appeals-court.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49845977
+- title: Cloudflare fixes a cross-tenant data exposure in Containers
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    Cloudflare fixed a Containers flaw that handed new tenants unzeroed 64 KiB disk blocks
+    holding other customers' data.
+  summary: >-
+    Cloudflare reports that a Workers Paid account could read residual disk blocks left behind
+    by other customers' Containers, including directory structures, database pages, and structurally
+    complete SQLite databases, because the dm-thin pool ran with `skip_block_zeroing` and
+    handed reused 64 KiB blocks to a new tenant unzeroed. Cloudflare reviewed retained disk-I/O
+    telemetry against detection signatures built from the proof of concept and attributed
+    every match to the researchers and its own engineers, finding no other exploitation. Beyond
+    the configuration change it retired all running container disks and cleared each host's
+    cached dm-thin image snapshots fleet-wide, because zeroing new allocations does not sanitize
+    mappings already present, and Cloudflare Sandboxes, which is built on Containers, was
+    in scope. Cloudflare bounds the technique: it could not be aimed at a particular customer,
+    workload, host or data, it could not reach an actively attached disk, and residual data
+    was not guaranteed to be present in a reused block.
+  why: >-
+    Block reuse without zeroing breaks the isolation that every multi-tenant container platform
+    sells, and the exposed material was complete enough to read as databases rather than as
+    fragments.
+  followup: >-
+    Track whether Cloudflare publishes the exposure window and any customer notification scope.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/containers-cross-tenant-vulnerability/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49831647
+- title: Two compromised GitHub Actions were re-enabled with their malicious tags intact
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    Two GitHub Actions disabled in May for compromise ran again from 2026-09-16 until both
+    were disabled again on 2026-09-25.
+  summary: >-
+    Socket reports that two GitHub Actions repositories disabled in May over a compromise
+    had access restored, which reactivated a months-old payload with no new attacker action.
+    The dependency graph lists about 15,000 dependents for `issues-helper` alone. Socket's
+    update dated 2026-09-25 states that `actions-cool/issues-helper` and `actions-cool/maintain-one-comment`
+    have been disabled on GitHub again, so workflows referencing them now fail at job setup
+    instead of running the payload.
+  why: >-
+    A platform decision rather than an attack re-armed a supply-chain compromise for a window
+    running 2026-09-16 to 2026-09-25, so a workflow that referenced either action by tag and
+    ran a job inside that window executed the payload with the job token and needs every secret
+    it could reach rotated, while a workflow with no job run in the window did not execute
+    it.
+  followup: >-
+    Track whether the malicious tags are removed, and whether a fuller dependent count is
+    published.
+  sources:
+  - label: primary
+    url: https://socket.dev/blog/mini-shai-hulud-actions
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49837177
+- title: >-
+    File-notification APIs leak user and application behaviour on four operating systems
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    File-notification APIs let a local app watch another's activity on Linux, Android, Windows,
+    and macOS, with only Linux partly fixed.
+  summary: >-
+    The researchers report that read permission on a directory is enough to recover keystroke
+    timing from `/dev/input` or `/dev/pts`, to watch another application's private WhatsApp
+    media folder on Android, and to identify which sites another Windows user visits. Linux
+    carries a partial mitigation as CVE-2025-68788 in 5.10.248, 5.15.198, 6.1.160, 6.6.120,
+    6.12.65, and 6.18.3. The Windows registry mitigation ships disabled by default, and Android
+    and macOS have none.
+  why: >-
+    The side channel needs only read permission on a directory, so sandboxing and per-app
+    storage separation do not bound it on three of the four systems.
+  followup: >-
+    Track an Android or macOS mitigation, whether Microsoft enables the registry setting by
+    default, and whether the Linux fix moves from partial to complete.
+  sources:
+  - label: primary
+    url: https://inoti.fyi/
+  - label: LWN
+    url: https://lwn.net/Articles/1096431/
+  - label: report
+    url: https://www.theregister.com/security/2026/09/24/decades-old-file-security-flaws-found-in-android-linux-macos-and-windows/5298672
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49835649
+- title: Google publishes Trillium TPU radiation test results for Project Suncatcher
+  section: AI
+  category: Infrastructure
+  status: developing
+  blurb: >-
+    Google reports Trillium TPUs surviving a proton beam past a five-year dose and a satellite
+    passing three-axis vibration testing.
+  summary: >-
+    Google states that Trillium TPUs survived a proton-beam total ionizing dose greater than
+    a five-year mission at UC Davis. The team also shook the satellite on all three axes to
+    mimic rocket launch frequencies and reports that the hardware held up, without publishing
+    a load figure for that test. The post names a Transporter-18 rideshare launch and a two-satellite
+    laser interconnect test in 2027.
+  why: >-
+    The radiation result is a measured number rather than a projection, and the named launch
+    vehicle and 2027 interconnect test give dated checkpoints for the rest of the plan.
+  followup: >-
+    Track the Transporter-18 launch, any on-orbit TPU telemetry Google publishes, and the
+    2027 two-satellite laser interconnect result.
+  sources:
+  - label: primary
+    url: https://blog.google/innovation-and-ai/models-and-research/google-research/google-project-suncatcher-facts/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49830606
+- title: Gemini 3.8 Live with Live Avatar reaches general availability
+  section: AI
+  category: AI
+  status: confirmed
+  blurb: >-
+    Google made Gemini 3.8 Live generally available in Gemini Enterprise with native speech-to-speech
+    and tool calling mid-conversation.
+  summary: >-
+    Google Cloud states that Gemini 3.8 Live with Live Avatar is generally available in Gemini
+    Enterprise, with US and EU endpoints and provisioned throughput. The model carries native
+    speech-to-speech, tool calling during a conversation, 97 languages with automatic detection,
+    and live camera and screen-share understanding, and SynthID watermarks are applied to
+    all generated audio and video. Custom avatars sit behind an enterprise allowlist, and
+    Gemini 3.8 Live Extended Thinking remains in private preview.
+  why: >-
+    Regional endpoints, provisioned throughput, and watermarking on every generated stream
+    are the terms that decide whether a real-time voice agent can be put into production.
+  followup: >-
+    Track whether Extended Thinking leaves private preview and whether custom avatars open
+    beyond the enterprise allowlist.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/products/ai-machine-learning/gemini-3-8-live-with-live-avatar-is-now-generally-available
+  - label: announcement
+    url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-live-with-live-avatar/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49840035
+- title: Automated C-to-Rust tools cut unsafe blocks without removing the memory bugs
+  section: ML research
+  category: Paper
+  status: confirmed
+  blurb: >-
+    A study of 464 machine-translated Rust programs found 177 inherited the C memory bugs
+    and 77 new Rust bugs appeared.
+  summary: >-
+    The paper runs C2Rust-analyze, CROWN, C2SaferRust, and FLOURINE over 116 buggy C programs
+    from the NIST Juliet suite, producing 464 Rust programs. Of those, 342 failed to compile,
+    177 inherited the original memory security bugs, and 77 new Rust bugs appeared.
+  why: >-
+    An unsafe-block count is the usual proxy for translation quality, and these numbers show
+    it is not evidence that a translation improved memory security.
+  sources:
+  - label: paper
+    url: https://arxiv.org/abs/2609.25682
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49826801
+- title: GitHub Copilot app adds per-project local sandboxing that fails closed
+  section: Agentic coding
+  category: Agentic coding
+  status: confirmed
+  blurb: >-
+    The GitHub Copilot app gained per-project local sandboxing that errors out rather than
+    running an unenforceable policy.
+  summary: >-
+    GitHub added local sandboxing to the Copilot app, bounding filesystem, network, and git
+    and GitHub CLI credential access per project. When the operating system cannot enforce
+    the requested policy the app errors out rather than running unsandboxed. The feature is
+    off by default, in public preview, and does not cover cloud or remote-host sessions.
+  why: >-
+    Failing closed on an unenforceable policy is the behaviour agent sandboxes have generally
+    lacked, though the default-off preview scope limits who gets it today.
+  followup: >-
+    Track whether sandboxing becomes the default, and whether cloud and remote-host sessions
+    gain equivalent enforcement.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-09-23-local-sandboxing-in-the-github-copilot-app/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49833223
+- title: >-
+    PHP stream wrapper sent Authorization and Cookie headers to the host a redirect pointed
+    at
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    PHP patched a stream wrapper that forwarded Authorization and Cookie headers to whatever
+    host a redirect pointed at.
+  summary: >-
+    Any application that calls `file_get_contents()` or `fopen()` on an `http://` stream with
+    a credential header and leaves `follow_location` at its default sent that header to whatever
+    host, port or downgraded scheme the redirect pointed at. CVE-2026-91766 is rated moderate
+    at CVSS 5.9, affects PHP below 8.2.34, 8.3.35, 8.4.26 and 8.5.11, and is patched in those
+    four releases, published 2026-09-24. The advisory states the fix records scheme, host
+    and port for the current request, strips `authorization`, `cookie` and `proxy-authorization`
+    on a cross-origin hop, and keeps them withheld on every later hop.
+  why: >-
+    Secrets carried in a header of your own, such as `X-Api-Key`, are not stripped, so those
+    callers still have to set `follow_location` to 0 and follow the redirect themselves.
+  sources:
+  - label: advisory
+    url: https://github.com/php/php-src/security/advisories/GHSA-fpwc-w8rq-cr92
+  - label: writeup
+    url: https://daubois.dev/blog/cve-2026-91766-php-http-redirect-credential-leak/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49832673
+- title: SourceHut build logs allowed account takeover through an ansi2html XSS
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    An ansi2html XSS let anyone who could write to a SourceHut build log run script in every
+    browser that viewed the job.
+  summary: >-
+    The report describes an XSS in ansi2html rendering of builds.sr.ht job logs, tracked as
+    CVE-2026-92973 and fixed in ansi2html 1.9.4 and builds.sr.ht 0.105.1. Getting text into
+    a build log was enough to trigger it, including by mailing a patch to a public list with
+    CI enabled and without holding an account. The build log page carries the CSRF token in
+    the DOM and builds.sr.ht holds deploy keys for sr.ht itself, and the author reasons from
+    those two facts that a payload could reach both, while stating he did not build or run
+    one. He states the flaw sat in builds.sr.ht for about four and a half years.
+  why: >-
+    Build log output is attacker-controlled text on any CI system that accepts outside patches,
+    and rendering it as markup let a public mailing list post execute script in the browser
+    of everyone who read the job.
+  sources:
+  - label: primary
+    url: https://blog.arusekk.pl/posts/srht-account-takeover/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49835996
+- title: macOS serial device nodes sit outside TCC, and Apple declined the report
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    A researcher reports macOS serial device nodes are world-readable with no TCC prompt,
+    and Apple declined the report.
+  summary: >-
+    Kevin Kessler published on 2026-09-24 that macOS creates the CDC-ACM device node `/dev/cu.usbmodem*`
+    readable and writable by any process, with no TCC prompt and no entitlement. Chained with
+    an HID keyboard interface on the same USB composite device, he reports a 24-second exfiltration
+    of SSH keys, AWS, GCP, Azure and Kubernetes credentials, keychain metadata and environment
+    secrets from an unlocked Mac with no consent sheet shown, tested on macOS 26.4.1 on Apple
+    Silicon with roughly 20 dollars of parts. He separately reports that a composite device
+    plugged into a previously approved hub enumerates on a locked Mac with Lockdown Mode on,
+    because macOS does not re-prompt downstream of an approved hub, which makes a one-time
+    hub approval a persistent enumeration exemption.
+  why: >-
+    Apple declined the report on 2026-05-20 as no identified security issue and left the 2026-05-21
+    rebuttal unanswered for four months, so this researcher-reported credential-theft path
+    over USB has no vendor fix pending and no CVE assigned.
+  followup: >-
+    Track the pending MITRE CNA-LR request for a CVE, and whether Apple reopens case OE11057041574014
+    or extends TCC to serial device nodes.
+  sources:
+  - label: primary
+    url: https://glyph.sh/posts/macos-cdc-acm-tcc-bypass/
+  - label: discussion
+    url: https://www.reddit.com/r/netsec/comments/1wplpp1/cdcacm_serial_interface_bypasses_tcc_on_macos/
+- title: >-
+    git-bug 0.11.0 ships a rewritten web UI, a code browser and a formal on-disk specification
+  section: Developer tools
+  category: Dev tools
+  status: confirmed
+  blurb: >-
+    git-bug 0.11.0 ships a rewritten web UI, a formal on-disk specification, and preservation
+    of unknown operations.
+  summary: >-
+    The release arrives sixteen months and close to 300 commits after 0.10.1 and moves the
+    distributed issue tracker from a viewer to something usable, with a rewritten web UI and
+    a code browser, GoReleaser builds carrying a cosign-signed checksum file, an SBOM and
+    a build provenance attestation, and macOS on Apple silicon back. Unknown operation types
+    are now preserved and written back untouched instead of being silently destroyed by an
+    older binary, and the on-disk format has a formal specification in its own repository
+    covering the DAG entity format, identities and the bug entity, so a second implementation
+    can be written against it. Breaking changes: the search index moved from bleve v1 to v2
+    and rebuilds automatically on upgrade but cannot be downgraded without removing `.git/git-bug`,
+    `go install` no longer produces a binary with a web UI, `git bug commands` is removed,
+    `git bug webui --host` is now `--bind`, and the `linux/386` and `linux/s390x` artefacts
+    are gone.
+  why: >-
+    Preserving unknown operations removes the compatibility hazard from every future addition
+    to the data model, and a specified on-disk format is what a second implementation needs.
+  sources:
+  - label: release
+    url: https://github.com/git-bug/git-bug/releases/tag/v0.11.0
+  - label: specification
+    url: https://github.com/git-bug/spec
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49843174
+- title: Fearless SIMD reaches 1.0 with portable SIMD and no ad-hoc unsafe code
+  section: Languages and runtimes
+  category: Languages
+  status: confirmed
+  blurb: >-
+    Fearless SIMD 1.0 confines Rust SIMD unsafe code to one kernel macro and a small safe
+    transmute module, with a three-year support commitment.
+  summary: >-
+    Linebender released Fearless SIMD 1.0. The crate confines memory safety review to a `kernel!`
+    macro built on target feature v1.1 and a small safe transmute module, rather than the
+    thousands of unsafe blocks other SIMD abstractions carry. It ships a `#[simd]` multiversioning
+    macro as `fearless_simd_macros` 0.1 and commits to three years of security updates, with
+    30 direct and over a thousand indirect dependents already.
+  why: >-
+    Portable SIMD in Rust has generally meant auditing unsafe intrinsic blocks per target,
+    and this release moves that review surface into two reviewable places.
+  sources:
+  - label: primary
+    url: https://linebender.org/blog/fearless-simd-1-0/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49800085
+- title: Go 1.27 adds a portable SIMD package with emulation fallback
+  section: Languages and runtimes
+  category: Languages
+  status: confirmed
+  blurb: >-
+    Go 1.27 adds an experimental portable simd package that emulates missing operations where
+    no hardware SIMD exists.
+  summary: >-
+    The Go blog post of 2026-09-24 by David Chase and Junyang Shao describes an experimental
+    platform-independent `simd` package in Go 1.27, loosely based on Highway for C++, alongside
+    the architecture-dependent `archsimd` package that Go 1.26 introduced for amd64 and that
+    1.27 extends to arm64 NEON and wasm. The portable package removes fixed vector sizes from
+    the type system, supports only the intersection of platform operations, and emulates the
+    gaps, so code compiles and runs where there is no hardware SIMD at all. Both sit behind
+    `GOEXPERIMENT=simd`, `GODEBUG=simd` accepts 0 for forced emulation and 128, 256 or 512
+    to pin vector width for testing with plus variants that panic only when an unsupported
+    instruction is reached, and `ToArch` and `FromArch` let code drop to architecture-specific
+    intrinsics for operations the portable set lacks.
+  why: >-
+    A vector API that still compiles and runs on targets without SIMD removes the per-architecture
+    build split Go numeric code has needed, though reduction across a vector is absent in
+    1.27 and `ReduceSum` arrives in the next release.
+  sources:
+  - label: primary
+    url: https://go.dev/blog/simd-experiment
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49843269
+- title: KosmicKrisp passes the Vulkan 1.4 conformance test suite on Apple silicon
+  section: Apple platforms
+  category: Apple
+  status: confirmed
+  blurb: >-
+    KosmicKrisp passed the Vulkan 1.4 conformance suite on Apple silicon, giving macOS a Khronos-conformant
+    driver.
+  summary: >-
+    LunarG states that KosmicKrisp, an MIT-licensed Mesa driver that emits Metal Shading Language
+    through NIR and encodes to Metal 4, passed the Khronos conformance test suite for Vulkan
+    1.4 on Apple silicon, and that performance has tripled since 1.3 conformance. It requires
+    M1 or later and macOS 26 or later, so MoltenVK stays the path for Intel Macs and older
+    releases, and mixed fleets still have to pick the ICD at runtime. iOS is not enabled in
+    this release, with LunarG stating the conformance test suite was not fully passing and
+    that it is not resourced to support iOS alongside macOS, and LunarG states the conformant
+    driver will be available in the Vulkan SDK releasing 2026-09-29.
+  why: >-
+    A conformant Vulkan 1.4 implementation on macOS lets an engine keep one Vulkan path across
+    Windows, Linux and Apple silicon instead of a separate Metal path, and gives validation
+    layers, capture and replay, and diagnostics a conformant ICD to target on the Mac.
+  sources:
+  - label: primary
+    url: https://www.lunarg.com/kosmickrisp-achieves-vulkan-1-4-conformance-on-apple-silicon/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49848157
+- title: >-
+    The Dutch interior ministry publishes the NixOS configuration behind its government workplace
+  section: Infrastructure
+  category: Infrastructure
+  status: confirmed
+  blurb: >-
+    The Dutch interior ministry published the NixOS flake behind its government workplace,
+    with SBOM-per-host CI.
+  summary: >-
+    The repository sits on the Dutch government's own Forgejo instance at code.overheid.nl
+    under the interior ministry account MinBZK, and holds 128 commits, 19 branches and 5 tags
+    across 2.7 MiB of Nix, with the first generic DAWO profile committed 2026-06-17 and the
+    newest commit dated 2026-09-17. The module map covers boot, desktops, hardware, hardening
+    with a rule register that selects controls, hosts, networking, services and users, the
+    flake is described as multi-tenant from desktops to core services, and the CI publishes
+    a software bill of materials per host and reports what is known wrong with it. The README
+    states that DAWO Core has moved to Codeberg for community collaboration and that code.overheid.nl
+    and the DAWO-community GitHub copy are backups, so the canonical location is no longer
+    the government platform.
+  why: >-
+    The repository is the first verifiable artefact behind the Digitaal Autonome Werkomgeving
+    Overheid initiative, and it is a public, dated reference for running a government desktop
+    and server fleet on a single Nix flake.
+  followup: >-
+    Track deployment scope and seat counts, and whether the government instance or Codeberg
+    becomes the canonical location.
+  sources:
+  - label: repository
+    url: https://code.overheid.nl/MinBZK/DAWO-NixOS
+  - label: project site
+    url: https://www.dawo.community/en/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49841563
+- title: >-
+    Kafgres reaches 700 MB/s produce throughput inside Postgres after replacing a tick loop
+    with socket readiness
+  section: Engineering posts
+  category: Engineering post
+  status: confirmed
+  blurb: >-
+    Replacing a 5 ms tick loop with socket readiness took Kafgres produce throughput from
+    197 MB/s to 703 MB/s.
+  summary: >-
+    The post is a profiling walkthrough of Kafgres, a Postgres extension that embeds a Kafka-protocol
+    broker as a background worker and writes topic bytes straight to disk, and on-CPU profiling
+    put 40.7% of time in parse, analyse and plan for metadata statements alone. Caching SPI
+    plans with `SPI_keepplan`, relaxing the offset commit behind a `relaxed_produce_commit`
+    GUC, and a few smaller changes took 256 KiB record throughput from 113.3 MB/s to 197.3
+    MB/s, and replacing the 5 ms tick loop with Postgres's own `WaitEventSet`, so the worker
+    blocks until a client socket is readable rather than until the next timer edge, took it
+    to 703.4 MB/s and 600k events per second on a roughly 0.25 dollar per hour Hetzner i9
+    box. Moving topic data to a second NVMe held the impact on pgbench against the same database
+    under 1% at 100 MB/s, and the author notes the tradeoff Kafgres does not close: it fails
+    over like the Postgres instance does and cannot absorb a zonal outage the way a three-zone
+    Kafka cluster can.
+  why: >-
+    The numbers locate a background worker's cost in statement planning and timer latency
+    rather than in disk, and both fixes are available to any Postgres extension that polls
+    on a tick.
+  sources:
+  - label: primary
+    url: https://rynr.dev/blog/700mbskafgres/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49840594

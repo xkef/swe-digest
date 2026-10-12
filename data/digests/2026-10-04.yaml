@@ -1,0 +1,469 @@
+date: '2026-10-04'
+stories:
+- title: C2PA signatures can be crafted to cover zero bytes of the file they sign
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    A malicious C2PA signer can declare the whole file an excluded range, so a valid signature
+    and trusted timestamp cover nothing.
+  summary: >-
+    C2PA lets a signer mark byte ranges as excluded from the hash, and David Buchanan's post
+    dated 2026-10-02 shows that a malicious signer can declare the entire file excluded, so
+    a valid claim signature and a valid RFC 3161 trusted timestamp both attest to an empty
+    string. He timestamped a photo of a lottery ticket before the draw, edited the winning
+    numbers in afterwards, and every C2PA verification tool he tested accepted the result.
+    The flaw is in the C2PA specification's exclusion feature rather than in a single implementation,
+    so no patched version exists and the feature cannot simply be removed, because formats
+    such as PNG need it for CRC32 fixups, and the mitigation Buchanan proposes is a per-format
+    allowlist of exclusion ranges that verifiers enforce.
+  why: >-
+    C2PA is the content-provenance standard camera vendors and AI tooling are adopting, and
+    a signature covering zero bytes removes the one guarantee the standard exists to provide.
+  followup: >-
+    Watch for a C2PA specification change that requires verifiers to enforce per-format exclusion-range
+    allowlists.
+  sources:
+  - label: primary
+    url: https://www.da.vidbuchanan.co.uk/blog/hacking-time.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49946707
+- title: >-
+    Critical Gitea Actions runner flaw gives workflow authors root on the runner host
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    On a shared Docker-backed Gitea Actions runner, a workflow author can reach root on the
+    host even with privileged mode off.
+  summary: >-
+    GHSA-x4q3-gcj3-m6cf, CVE-2026-73802 at CVSS 9.9, records that a shared Docker-backed Gitea
+    Actions runner appends a workflow's `container.options` to the Docker HostConfig, so the
+    workflow author escalates to root on the host the runner sits on, and turning privileged
+    mode off does not prevent it. Versions below the pseudo-version 1.0.9-0.20260731160927-34bfa1915022
+    are affected, which is the patched version the advisory records, and the same change reaches
+    users as the Gitea runner v3.0.0 release carried in runner pull request 1058. The advisory
+    was disclosed 2026-08-15 and entered the GitHub Advisory Database on 2026-10-02, so it
+    is a seven-week-old disclosure newly indexed rather than a fresh one.
+  why: >-
+    A shared Docker-backed Gitea Actions runner can still be rooted by anyone able to push
+    a workflow to it, so self-hosted CI operators have to upgrade the runner instead of relying
+    on privileged mode being off.
+  sources:
+  - label: primary
+    url: https://github.com/advisories/GHSA-x4q3-gcj3-m6cf
+  - label: fix release
+    url: https://gitea.com/gitea/runner/releases/tag/v3.0.0
+  - label: pull request
+    url: https://gitea.com/gitea/runner/pulls/1058
+- title: Go 1.27 extends its experimental SIMD API from amd64 to arm64 and wasm
+  section: Top stories
+  category: Languages
+  status: confirmed
+  blurb: >-
+    Go 1.27's experimental simd package extends from amd64 AVX-512 to arm64 NEON and the 128-bit
+    wasm vector set.
+  summary: >-
+    The Go blog post covers the `simd` and `archsimd` packages behind `GOEXPERIMENT=simd`,
+    which now reach AVX through AVX-512 on amd64, NEON on arm64, and the 128-bit wasm vector
+    set, with one method name shared across widths and architectures and masks as opaque types
+    the compiler fuses into single instructions where the hardware allows. The post is explicit
+    that CPU feature checks are required to avoid SIGILL and also act as optimization hints,
+    and that loop bounds have to be written so the prove pass can drop bounds checks. The
+    API stays experimental, and SVE, SVE2, riscv64, ppc64, s390x, and loong64 are listed as
+    future work.
+  why: >-
+    Writing SIMD in Go has required hand-written assembly, and a portable experimental API
+    changes what a Go hot loop can reach without dropping out of the language.
+  followup: >-
+    Watch whether the simd and archsimd packages leave GOEXPERIMENT and which of SVE, riscv64,
+    and the remaining architectures land first.
+  sources:
+  - label: primary
+    url: https://go.dev/blog/archsimd
+  - label: discussion
+    url: https://www.reddit.com/r/golang/comments/1wwpfbh/archspecific_simd_in_go_the_go_programming/
+- title: >-
+    OpenAI safety report lead David Robinson resigns and calls the company's culture broken
+  section: Top stories
+  category: Markets
+  status: confirmed
+  blurb: >-
+    David Robinson, who led OpenAI's product safety reports, resigned and wrote that the company's
+    culture is broken.
+  summary: >-
+    The Guardian reports that David Robinson, who led the writing of the safety reports that
+    accompanied OpenAI product releases, resigned and set out his reasons in a first-person
+    essay in the Atlantic headlined "I quit OpenAI because its culture is broken", writing
+    that as the company sprints from one launch to the next it is failing to achieve the level
+    of care he believes is needed. An OpenAI spokesperson told the Guardian that the company
+    is making sure its models do not become more capable than it can safely manage and secure,
+    and that it pauses training or holds back models when it needs to slow down, and the Guardian
+    reports both that OpenAI announced it was scrapping the release of a next-generation model
+    after researchers raised safety concerns in internal testing and that OpenAI has paused
+    training of its most advanced models. The scrapped model is not named in that report,
+    and the essay itself returns HTTP 403 to this environment, so every claim here rests on
+    the Guardian.
+  why: >-
+    A team building on OpenAI models has no announced successor model to migrate to and should
+    plan on the current lineup standing rather than on a near-term upgrade.
+  followup: >-
+    Watch whether OpenAI resumes its most advanced training runs or announces a successor
+    model.
+  sources:
+  - label: primary
+    url: https://www.theguardian.com/technology/2026/oct/03/openai-safety-leader-quits-warning-ai-companys-culture-is-broken
+  - label: essay
+    url: https://www.theatlantic.com/technology/2026/10/openai-safety-team-resignation/688881/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49944227
+  - label: further discussion
+    url: https://news.ycombinator.com/item?id=49948332
+- title: >-
+    Strata runs a 125B Qwen MoE on a 12GB consumer GPU by keeping the hottest experts in VRAM
+  section: AI
+  category: AI
+  status: confirmed
+  blurb: >-
+    Strata serves a 125B Qwen mixture-of-experts on a 12GB GPU, measured at 94 tokens per
+    second on an RTX 5070 at Q2_0.
+  summary: >-
+    The MIT-licensed project serves Qwen3.8-Flash-Next behind OpenAI-compatible and Anthropic-compatible
+    endpoints on localhost, splitting a model of 24,576 experts with 10 active per token so
+    that the GPU holds the most-used experts, RAM holds all of them, the CPU works the rest,
+    and the SSD holds a lookup table, with speculative decoding the authors put at 1.6 to
+    1.8x, against requirements of 12GB or more of VRAM, 32GB or more of RAM, and about 80GB
+    of disk. Every published figure is author-measured at 2-bit or 3-bit quantization: an
+    RTX 5070 with 12GB and 64GB of RAM writes 94 tokens per second at Q2_0, an RX 9070 XT
+    writes 60, and the Coder variant has half the experts removed and reaches 91 percent of
+    the full model's SWE-bench Verified score by its own authors' measurement. The Hacker
+    News headline's claim of an RTX 4090 at 100 tokens per second does not appear in the repository,
+    whose fastest measured row is the RTX 5070 at 94 and which gives 100 to 140 only as a
+    projection for an RTX 3090.
+  why: >-
+    A 125-billion-parameter mixture-of-experts model becomes reachable on a gaming PC, which
+    changes what local inference can host, provided the quantization caveat travels with the
+    numbers.
+  sources:
+  - label: primary
+    url: https://github.com/Niko1221/Strata
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49953495
+- title: >-
+    Independent Kolibri walkthrough measures a larger German tokenizer advantage than the
+    vendor claims
+  section: AI
+  category: AI
+  status: discussion
+  blurb: >-
+    An independent Kolibri walkthrough measures 15 percent fewer German tokens than the GPT-5
+    tokenizer, above Aleph Alpha's 11.2 percent.
+  summary: >-
+    The post distils Aleph Alpha's 189-page technical report, the model card, and the launch
+    post into six design choices: 50 layers of 384 experts plus one shared expert with 6 routed
+    per token, giving 78.1B total and 3.46B active parameters, a 128,000-token UniBPE vocabulary,
+    sliding-window attention on 40 of 50 layers with only those layers carrying rotary position
+    embeddings, which is what lets context stretch past the 262,144 tokens it was trained
+    on to a validated 1,048,576, German-language reasoning training, a per-request `reasoning_effort`
+    selector, and Merlin-Arthur abstention training. The author ran his own tokenizer comparison
+    over the German Basic Law and measured 15 percent fewer tokens than the GPT-5 tokenizer,
+    a larger reduction than the 11.2 percent Aleph Alpha claims rather than a reproduction
+    of it, and he also lists the weak rows: last of twelve on a closed-book test, 39.8 on
+    multi-turn Berkeley Function Calling against 54.0 for Qwen3.5 35B-A3B, and 27.7 on Terminal-Bench
+    2.1. Benchmark comparisons otherwise come from Aleph Alpha's own evaluation, and the author
+    discloses a friendship with a member of the team.
+  why: >-
+    The tokenizer measurement is the one number in the post a reader can reproduce independently,
+    and it lands above the vendor's figure on a corpus the author chose himself.
+  sources:
+  - label: primary
+    url: https://tej.as/blog/aleph-alpha-kolibri
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49943034
+- title: >-
+    Practitioner argues coding agents need committed documentation rather than vector-store
+    memory
+  section: Agentic coding
+  category: Agentic coding
+  status: discussion
+  blurb: >-
+    A practitioner argues coding agents need documentation committed to the repository rather
+    than an opaque vector-store memory.
+  summary: >-
+    The post argues that what agent memory systems reach for is documentation, and that docs
+    committed to the repository give a team something readable and reviewable where an embedding
+    store does not. Kevin Liao closes by promoting his own free and open-source memory plugin,
+    Operator Memory, so the post argues for a system its author maintains.
+  why: >-
+    It frames agent memory as a documentation problem that lives in the repository, which
+    a team can read and review, unlike an opaque embedding store.
+  sources:
+  - label: primary
+    url: https://liao.gg/blog/agents-dont-need-memory
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49945933
+- title: >-
+    Quadratic SVG parsing in probe-image-size blocks the Node event loop on crafted input
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    A crafted SVG makes probe-image-size parse quadratically and stall a Node event loop at
+    full CPU, fixed in 7.4.0.
+  summary: >-
+    GHSA-gjj5-9665-rwrc, CVE-2026-104861 at CVSS 7.5, records quadratic complexity in the
+    SVG handling of probe-image-size, so a small crafted response holds the Node event loop
+    at full CPU. Versions through 7.3.0 are affected, and release 7.4.0 fixes both the synchronous
+    path and the stream path. The advisory was disclosed 2026-08-15 and entered the GitHub
+    Advisory Database on 2026-10-02.
+  why: >-
+    Any upload validator, image proxy, or link unfurler that calls probe on a remote URL can
+    be stalled at full CPU by a small crafted response, and 7.4.0 fixes both the sync and
+    the stream path.
+  sources:
+  - label: primary
+    url: https://github.com/advisories/GHSA-gjj5-9665-rwrc
+  - label: fix release
+    url: https://github.com/nodeca/probe-image-size/releases/tag/7.4.0
+- title: SiYuan agent tools reach internal addresses through a DNS rebinding SSRF bypass
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    SiYuan's agent tools can be pointed at internal addresses, because its SSRF guard and
+    its dialer resolve the hostname twice.
+  summary: >-
+    GHSA-x8gv-g2g3-65fj, CVSS 8.2, records that SiYuan's SSRF protection resolves a supplied
+    hostname to check it against blocked ranges, and the HTTP dialer then resolves the same
+    hostname again when it makes the request. An attacker who controls the DNS answer can
+    return an internal address on the second lookup, so the agent tools fetch from the internal
+    network past the guard. Versions through 3.8.0 are affected and 3.8.1 carries the fix,
+    and the advisory was disclosed 2026-08-13 and entered the GitHub Advisory Database on
+    2026-10-02.
+  why: >-
+    The guard resolves the hostname once and the dialer resolves it again, a split any agent
+    tool that fetches a model-supplied URL can reproduce.
+  sources:
+  - label: primary
+    url: https://github.com/advisories/GHSA-x8gv-g2g3-65fj
+- title: Cloudflare puts Artifacts in open beta and starts billing on 2026-10-15
+  section: Developer tools
+  category: Dev tools
+  status: confirmed
+  blurb: >-
+    Cloudflare moved Artifacts to open beta for Workers Paid customers, with Workers bindings
+    and events, and billing from 2026-10-15.
+  summary: >-
+    Cloudflare's post on its Git platform, dated 2026-10-01, moves Artifacts into open beta
+    for customers on the Workers Paid plan and states that billing begins 2026-10-15. The
+    open beta adds Workers bindings, repository event subscriptions, a choice of US or EU
+    data jurisdiction, and per-repository metrics. The post leads on a competition rather
+    than on the billing date, asking developers to build a Git platform for agents on Workers
+    and Artifacts, with submissions closing 2026-10-14, the top three teams flown to Cloudflare
+    Connect, and 25,000 dollars in Cloudflare credits for first place.
+  why: >-
+    A team already keeping agent sessions in Artifacts has until 2026-10-15 to decide whether
+    to keep paying to store them there or move them out.
+  followup: >-
+    Check on 2026-10-15 whether Artifacts billing starts as announced, and at what rates.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/next-git-platform-on-cloudflare/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49947051
+- title: >-
+    Rust for CPython roadmap puts an optional Rust zlib backend in Python 3.16 and a required
+    Rust build no earlier than 3.18
+  section: Languages and runtimes
+  category: Event
+  status: discussion
+  blurb: >-
+    A Python Language Summit roadmap targets an optional Rust zlib backend in 3.16 and a required
+    Rust build in 2029 or later.
+  summary: >-
+    The Python Insider writeup by Seth Larson, dated 2026-09-30, records David Hewitt presenting
+    for a team led by core developers Kirill Podoprigora and Emma Smith, authors of a Rust
+    for CPython PEP draft, with a timeline of a PEP defining success criteria in late 2026,
+    an optional Rust zlib backend and a private Rust API in Python 3.16 in October 2027 with
+    the C code kept as a fallback, io, json, xml, memoryview and the parser in 3.17 in October
+    2028, and a required Rust build with a public Rust API in October 2029 or later. zlib
+    was chosen because zlib-rs is already used by Firefox, uv, and Cargo, and because zlib
+    is widely used by Python packaging, so almost every pip install in 3.16 would be sped
+    up if the proposal is accepted. Nothing is accepted: Pablo Galindo Salgado called reaching
+    for Cargo dependencies a potential showstopper given that CPython vendors a selective
+    dependency set, Hewitt answered that sources would be vendored so building CPython would
+    not require Cargo, and Hewitt also said it would be disingenuous to claim Rust stays optional
+    forever.
+  why: >-
+    CPython now has a dated path toward requiring a Rust toolchain to build, which every distributor
+    and platform packager has to plan against.
+  followup: >-
+    Watch for the Rust for CPython PEP and whether the optional zlib backend lands in Python
+    3.16.
+  sources:
+  - label: primary
+    url: https://blog.python.org/2026/09/language-summit-2026-rust-for-cpython/
+  - label: discussion
+    url: https://www.reddit.com/r/rust/comments/1wx5we5/rust_for_cpython_python_language_summit_2026/
+- title: >-
+    Out-of-tree rustc and cargo patches start dependent crates on early metadata and cut clean
+    check times
+  section: Languages and runtimes
+  category: Languages
+  status: developing
+  blurb: >-
+    An out-of-tree rustc and cargo patch series starts dependents on early metadata and measures
+    cargo check up to 54 percent faster.
+  summary: >-
+    A rustc patch series behind `-Zearly-metadata` splits analysis into item interfaces and
+    function bodies, writes an `.early-rmeta` file between the two, and swaps in full metadata
+    before code generation, while a cargo series behind `-Zheadstart` starts dependents on
+    the early-metadata notification and returns a paused compilation's job slot. The author
+    measures clean builds of 13 real projects including rust-analyzer, zed, bevy, lemmy, and
+    polars at up to 54 percent faster for `cargo check` and up to 42 percent for `cargo build`
+    on 16 cores with none slower, falling to 24 percent for rust-analyzer's check on 4 cores
+    because the gain comes from cores the build would otherwise leave idle, against stated
+    costs of discarded downstream work, errors reported slightly later, and higher peak memory.
+    Treat it as unlanded: the patches are described as a commit series meant to become upstream
+    pull requests, the repository has 23 stars, and every figure is the author's own, though
+    the repository ships scripts that compare diagnostics, JSON output, and exit status with
+    the feature off and on and sweep the 53 rustc-perf compile benchmarks.
+  why: >-
+    Rust clean-build time is a standing complaint, and this is a concrete scheduling mechanism
+    rather than a tuning tip.
+  followup: >-
+    Watch whether the early-metadata and headstart series open as upstream rustc and cargo
+    pull requests.
+  sources:
+  - label: primary
+    url: https://github.com/PowderworksCode/headstart
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49951218
+- title: Valve's Timur Kristóf recounts moving GCN 1.0 and 1.1 Radeon cards to AMDGPU
+  section: Linux and kernel
+  category: Event
+  status: confirmed
+  blurb: >-
+    An XDC 2026 talk recounts moving GCN 1.0 and 1.1 Radeon cards to AMDGPU, giving decade-old
+    hardware the RADV Vulkan path.
+  summary: >-
+    Phoronix reports an XDC 2026 talk by Valve's Timur Kristóf on moving GCN 1.0 and 1.1 Radeon
+    cards onto the AMDGPU kernel driver. That move puts the cards on the RADV Vulkan driver,
+    and Phoronix puts the result at a performance boost of roughly 30 percent for those old
+    GPUs, which shipped in Linux 6.19 last year.
+  why: >-
+    Decade-old Radeon hardware gains the RADV Vulkan path and roughly 30 percent more performance,
+    which changes what those cards can still be used for.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/XDC-2026-Valve-Timur-AMDGPU
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49946895
+- title: >-
+    Google is donating gVisor to the CNCF and moving it off unilateral Google governance
+  section: Infrastructure
+  category: Infrastructure
+  status: confirmed
+  blurb: >-
+    Google is donating gVisor to the CNCF, with CNCF Sandbox status, non-Google merge rights,
+    and org-based voting to follow.
+  summary: >-
+    The post dated 2026-10-02 by Etienne Perot and Jing Chen states that Google donates the
+    project including its name and trademarks, with the application submitted 2026-09-07,
+    reviewed 2026-09-22, and accepted 2026-09-28. Over weeks the project moves to CNCF Sandbox
+    status, build and testing move to GitHub Actions and Buildkite, Google's internal test
+    infrastructure stops blocking pull requests, and non-Google maintainers get merge rights.
+    Over months it targets Incubation status, the repository leaves the google GitHub organization,
+    and governance moves to org-based voting so Google no longer holds unilateral control,
+    with Ant Group, Modal, and Tines committing maintainers and OpenAI, Tencent, and NVIDIA
+    named as continuing contributors.
+  why: >-
+    The post states that kernel maintainers turned down Google's upstream patches improving
+    gVisor performance because gVisor is a wholly-owned Google project, so the donation is
+    aimed at unblocking the changes that make a self-installed gVisor fast.
+  followup: >-
+    Watch for gVisor reaching CNCF Sandbox status and for the repository moving out of the
+    google GitHub organization.
+  sources:
+  - label: primary
+    url: https://gvisor.dev/blog/2026/10/02/gvisor-cncf/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49954243
+- title: >-
+    Halide releases wpd, a BSD-licensed Rust WebP decoder it measures faster than libwebp
+  section: Engineering posts
+  category: Engineering post
+  status: confirmed
+  blurb: >-
+    Halide's wpd is a BSD-2-Clause Rust WebP decoder its own harness measures 1.19x to 3.19x
+    faster than libwebp.
+  summary: >-
+    The post, dated 2026-10-02, names CVE-2023-4863 as the motivation, a libwebp flaw that
+    affected Chrome, Firefox, Signal, and Microsoft Teams and that CISA added to its Known
+    Exploited Vulnerabilities catalog. wpd is written in Rust with hand-written assembly SIMD
+    routines and can be compiled without them, which the authors state leaves the remaining
+    code memory-safe with the only unsafe code in the zerocopy crate, against a libwebp written
+    entirely in unsafe C. The speed figures are the vendor's own, from the repository's harness
+    against image-webp 0.2.4 and libwebp at commit a1d89ff over a subset of Halide's own test
+    data: 1.19x faster single-threaded lossy, 2.74x single-threaded lossless, 2.68x multi-threaded
+    lossy, and 3.19x multi-threaded lossless, with the multi-threaded gains helped by parallel
+    animation frame decoding, and the post discloses that Halide also sells closed-source
+    encoders.
+  why: >-
+    libwebp sits in browsers, operating systems, and chat clients, and a BSD-2-Clause Rust
+    decoder targeting feature parity without a speed penalty is a credible replacement path
+    for the component behind CVE-2023-4863.
+  sources:
+  - label: primary
+    url: https://halide.cx/blog/wpd/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49941641
+- title: >-
+    Hard default budget caps, with Google Cloud shipped and the AWS spend limit in limited
+    release
+  section: Engineering posts
+  category: Engineering post
+  status: discussion
+  blurb: >-
+    Simon Willison argues metered clouds need hard default budget caps, with Google Cloud
+    shipped and the AWS limit in limited release.
+  summary: >-
+    The post, dated 2026-10-03, argues that a metered cloud service should ship a hard spending
+    cap rather than an alert that fires after the money is spent. It names Google Cloud Spend
+    Caps, launched in July, as the shipped example. The AWS spend limit it links sits behind
+    a billing experience that the AWS settings page describes as releasing to a limited number
+    of customers, and Willison writes that he hopes it reaches general availability for existing
+    accounts soon.
+  why: >-
+    Agent-written deployments make runaway metered spend a routine failure mode, and a team
+    can turn a hard cap on today only on Google Cloud, while an existing AWS account still
+    has alerts rather than a cap.
+  sources:
+  - label: primary
+    url: https://simonwillison.net/2026/Oct/3/default-hard-budget-caps/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49949235
+- title: Nolan Lawson argues the case against "use the platform" before defending it
+  section: Engineering posts
+  category: Engineering post
+  status: discussion
+  blurb: >-
+    Nolan Lawson argues the platform-skeptic case, then names browser lag and better npm docs
+    as the reasons behind it.
+  summary: >-
+    The post takes the platform-skeptic side seriously and names the causes: browsers spent
+    years behind the library ecosystem, npm packages documented themselves better than the
+    platform did, and building a modal yourself teaches more than reaching for the `dialog`
+    element. Lawson generalises past the web with a ClickHouse example where he and a coworker
+    each built compression and key-value indirection that the columnar store already did better.
+    He splits the AI effect in two, with models either picking the right platform API because
+    they know it or flooding codebases with duplicated non-idiomatic code, and states he has
+    seen both.
+  why: >-
+    It gives a concrete account of why teams rebuild what a platform already provides, which
+    is the decision an AI-assisted codebase now makes at higher volume.
+  sources:
+  - label: primary
+    url: https://nolanlawson.com/2026/10/03/why-dont-more-developers-use-the-platform/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49950554

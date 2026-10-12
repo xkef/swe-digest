@@ -1,0 +1,367 @@
+date: '2026-06-29'
+stories:
+- title: GLM 5.2 tops Semgrep's IDOR cyber benchmark, beating bare Claude Code
+  section: Top stories
+  category: AI
+  status: discussion
+  blurb: >-
+    Open-weight GLM 5.2 scored 39 percent F1 on IDOR detection versus Claude Code's 32 percent,
+    at 0.17 USD per vulnerability found.
+  summary: >-
+    Semgrep published an IDOR (insecure direct object reference) detection benchmark on 2026-06-22
+    in which the open-weight GLM 5.2 from Zhipu, run with no scaffolding, scored 39 percent
+    F1 against Claude Code at 32 percent, at roughly 0.17 USD per vulnerability found. Semgrep's
+    own multi-agent pipeline still led the table, 61 percent F1 with GPT-5.5 and 53 percent
+    with Opus 4.8, both using specialized endpoint-discovery scaffolding. The post repeatedly
+    flags the limits: one task, one dataset, one run, on a non-deterministic detection problem.
+  why: >-
+    An open-weight model matching a frontier coding model on a security task at roughly one-sixth
+    the cost continues the migration pressure GLM 5.2 and Kimi K2.7-Code put on proprietary
+    agents.
+  followup: >-
+    Watch for a reproduced or expanded benchmark across more vulnerability classes and harnesses.
+  comments: >-
+    HN commenters were skeptical, noting the headline hides which Claude model is compared
+    and that a single "find IDOR" prompt is pitted against a full multi-agent system; several
+    called IDOR the easiest vulnerability class and read the post as marketing. Others said
+    the same subagent scaffolding Semgrep sells is now reproducible inside Claude Code, Codex,
+    or OpenCode.
+  sources:
+  - label: Semgrep blog
+    url: https://semgrep.dev/blog/2026/we-have-mythos-at-home-glm-52-beats-claude-in-our-cyber-benchmarks/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48709670
+- title: OpenAI Codex still lacks a way to exclude sensitive files from the model
+  section: Top stories
+  category: Agentic coding
+  status: discussion
+  blurb: >-
+    Codex lacks a .codexignore mechanism to exclude secrets and credentials from being read
+    and sent to the model, open since 2025-08-28.
+  summary: >-
+    A feature request open since 2025-08-28 asks OpenAI Codex for a deterministic ignore mechanism,
+    a proposed `.codexignore` at repository and global scope, so files such as `.env`, `*.pem`,
+    and SSH or cloud credentials are never read or sent to the model while the rest of the
+    tree stays searchable. The issue reached the front page (192 points) because the gap persists
+    in the Rust rewrite (codex-rs); a related earlier request (#205) was closed in favor of
+    that rewrite without the feature landing.
+  why: >-
+    Without a path-based exclusion boundary, a coding agent can read secrets into its context
+    and transmit them to the provider, a data-exfiltration risk for any team running Codex
+    over a repository that holds credentials.
+  followup: >-
+    Watch for a `.codexignore` or equivalent exclusion mechanism landing in codex-rs.
+  sources:
+  - label: GitHub issue openai/codex#2847
+    url: https://github.com/openai/codex/issues/2847
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48706714
+- title: Developer uses Claude Code to get a second opinion on an MRI report
+  section: Top stories
+  category: Agentic coding
+  status: discussion
+  blurb: >-
+    A developer used Claude Code to cross-reference an MRI report against clinical guidelines
+    to question a treatment recommendation.
+  summary: >-
+    A developer described pointing Claude Code at their own shoulder MRI report and clinical
+    history, using the agent to cross-reference findings against published clinical practice
+    guidelines and question a recommended treatment. The post is a personal workflow account,
+    not a study, and works from the text report rather than the raw image data.
+  why: >-
+    It shows practitioners using coding agents as general document-reasoning tools outside
+    software, and the failure modes that follow when output is unverified.
+  comments: >-
+    A self-identified radiologist cautioned that a full 3D MRI dataset is needed to weigh
+    in and noted current frontier models are unreliable on medical imaging itself; others
+    warned of a coming pattern of patients second-guessing clinicians with AI, the successor
+    to symptom-Googling. Usernames are not verified identities.
+  sources:
+  - label: author write-up
+    url: https://antoine.fi/mri-analysis-using-claude-code-opus
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48708941
+- title: >-
+    Librepods reaches the front page with AirPods reverse-engineered for non-Apple devices
+  section: Top stories
+  category: Dev tools
+  status: discussion
+  blurb: >-
+    Librepods, a GPL-3.0 project, reverse-engineered AirPods control features to expose battery,
+    noise control, and gestures on Android and Linux.
+  summary: >-
+    Librepods (librepods-org/librepods, GPL-3.0, about 28,000 stars) reimplements AirPods
+    control features on non-Apple platforms, exposing battery status, noise-control modes,
+    ear detection, and gestures on Android and Linux through the proprietary Bluetooth protocol.
+    The project re-surfaced on the front page after prior discussion.
+  why: >-
+    It is a worked example of reverse-engineering a closed accessory protocol to restore interoperability,
+    the recurring right-to-repair and protocol-liberation theme.
+  comments: >-
+    Commenters asked which features are lost when AirPods pair with non-Apple hardware and
+    debated whether the audio quality justifies the Apple-ecosystem lock-in the project works
+    around.
+  sources:
+  - label: GitHub repository
+    url: https://github.com/librepods-org/librepods
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48710232
+- title: Paper argues AI-agent risk should be measured at the repository level
+  section: ML research
+  category: Paper
+  status: developing
+  blurb: >-
+    A preprint argues that evaluating coding agents one at a time misses ecosystem harm when
+    many agents commit to shared repositories concurrently.
+  summary: >-
+    A preprint posted 2026-06-26, "Govern the Repository, Not the Agent," argues that evaluating
+    autonomous coding agents one at a time on isolated benchmark tasks misses ecosystem-level
+    harm: agents that each pass their own tests still leave repositories accumulating problems
+    no single contribution accounts for. The authors study "integration friction," the cost
+    of merging a contribution into a codebase that other contributors are concurrently changing,
+    as a repository-level metric.
+  why: >-
+    It reframes agent evaluation from per-task pass rates toward the integration and maintenance
+    cost that shows up when many agents commit to a shared repository.
+  followup: Watch for released measurement code or datasets and independent reproduction.
+  sources:
+  - label: arXiv 2606.28235
+    url: https://arxiv.org/abs/2606.28235v1
+- title: >-
+    ToolPrivacyBench audits whether tool-using agents leak private data to the wrong tools
+  section: ML research
+  category: Paper
+  status: developing
+  blurb: >-
+    2,150-case benchmark found tool-using agents completed tasks while inappropriately disclosing
+    private data through intermediate tool calls.
+  summary: >-
+    A preprint posted 2026-06-26 introduces ToolPrivacyBench, a 2,150-case benchmark (1,150
+    synthetic privacy-sensitive business workflows plus 1,000 cases adapted from existing
+    multi-tool and function-calling benchmarks) that audits an agent's full execution trajectory
+    rather than its final answer. After an agent runs against mock backends, an evaluator
+    compares recorded tool arguments and backend audit logs against a per-case policy to check
+    whether private data reached only authorized tools. Across nine agents the authors report
+    that successful task completion does not imply appropriate disclosure: agents finish tasks
+    while passing unnecessary private information through intermediate tool calls.
+  why: >-
+    It formalizes a need-to-know disclosure boundary for tool-using agents, the same data-leak
+    surface raised by the Codex file-exclusion gap in Top stories.
+  followup: Watch for the dataset or evaluator release and independent reproduction.
+  sources:
+  - label: arXiv 2606.28061
+    url: https://arxiv.org/abs/2606.28061v1
+- title: '"Tokenmaxxing" framed as returning on compounding-correctness economics'
+  section: Agentic coding
+  category: Agentic coding
+  status: discussion
+  blurb: >-
+    An opinion post argues that early agent tokenmaxxing is replaced by compounding correctness,
+    where more tokens tend to yield better outcomes.
+  summary: >-
+    A 2026-06-27 post argues that early "tokenmaxxing," pushing heavy token spend to drive
+    AI-tool adoption, is being replaced by an economic case the author calls "compounding
+    correctness," where spending more tokens on a task tends to yield better outcomes rather
+    than accumulating errors. The claim is an opinion piece with no measured setup or benchmark.
+  why: >-
+    It captures the practitioner argument behind rising per-task token budgets in agent harnesses,
+    relevant to coding-agent cost models.
+  sources:
+  - label: author post
+    url: https://12gramsofcarbon.com/p/agentics-tech-things-tokenmaxxing
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48708795
+- title: Reverse-engineering Apple's Sparse Image Format (ASIF)
+  section: Apple platforms
+  category: Apple
+  status: discussion
+  blurb: >-
+    Erik Schamper reverse-engineered ASIF, Apple's sparse virtual-disk format for macOS virtual
+    machines, and released an open-source reader.
+  summary: >-
+    Erik Schamper published a 2026-06-18 teardown of ASIF, the sparse virtual-disk format
+    Apple introduced in macOS 26 Tahoe for virtual machines. The format opens with a `shdw`
+    magic signature and metadata (sector count, 1 MiB chunk size, directory offsets), organizes
+    data through directory tables and chunk groups with embedded bitmaps using two-bit per-block
+    allocation flags, and reaches just under 4 PiB maximum virtual size via 55-bit chunk addressing
+    in 64-bit entries. The author recovered the layout from hex dumps and the `diskimagescontroller`
+    binary in IDA Pro and released a reader in the open-source `dissect.hypervisor` project.
+  why: >-
+    A documented on-disk layout and open-source reader let forensic and VM tooling inspect
+    ASIF images without Apple's frameworks, relevant to anyone running or analyzing macOS
+    virtual machines.
+  sources:
+  - label: author write-up
+    url: https://schamper.dev/dissecting-apples-sparse-image-format-asif/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48708644
+- title: >-
+    China's LineShine debuts at TOP500 number 1, first China system to lead since 2017
+  section: Infrastructure
+  category: Infrastructure
+  status: confirmed
+  blurb: >-
+    LineShine, running custom domestic processors and interconnect, became the first Chinese
+    system to lead TOP500 since Sunway TaihuLight in 2017.
+  summary: >-
+    The 67th TOP500 list, released 2026-06-23 at ISC 2026 in Hamburg, places a previously
+    unlisted Chinese system, LineShine, at number 1 with 2.198 Eflop/s on High Performance
+    Linpack across 13,789,440 cores, more than 20 percent ahead of the displaced El Capitan.
+    LineShine is installed at the National Supercomputing Centre in Shenzhen and runs a custom
+    domestic stack: the LingKun platform with 304-core LX2 processors at 1.55 GHz, a proprietary
+    LingQi interconnect, and Kylin OS. It is the first China-based system to top the list
+    since Sunway TaihuLight in 2017 and the fifth exascale system overall.
+  why: >-
+    A domestically built exascale system leading TOP500 on non-US processors and interconnect
+    signals that export controls have not stalled China's high-end HPC, with implications
+    for compute sovereignty and the semiconductor supply chain.
+  followup: >-
+    Watch for an HPL run audit or independent verification of the LX2/LingQi architecture
+    details and any sustained-workload (HPCG, MLPerf) results.
+  sources:
+  - label: TOP500 June 2026 list
+    url: https://top500.org/lists/top500/2026/06/
+  - label: HPCwire
+    url: https://www.hpcwire.com/2026/06/25/inside-lineshine-the-new-chinese-supercomputer-sitting-atop-the-top500/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48710775
+- title: >-
+    Cloudflare traces an intermittent image-truncation bug to a discarded Poll::Pending in
+    hyper
+  section: Engineering posts
+  category: Engineering post
+  status: confirmed
+  blurb: >-
+    Cloudflare traced a six-week image-truncation bug to a discarded Poll::Pending in hyper's
+    HTTP/1 state machine, a four-line fix in dispatch.rs.
+  summary: >-
+    Cloudflare published a 2026-06-22 write-up of a six-week hunt for a bug in its Rust-based
+    Images service, where larger transformed images intermittently returned a 200 status with
+    the body cut short (a 2 MB response arriving as a few hundred kilobytes). The root cause
+    was in hyper's HTTP/1 connection state machine in `dispatch.rs`: a `let _ =` before `poll_flush`
+    discarded the result, including the `Poll::Pending` that signals an incomplete flush,
+    so the write loop never learned that megabytes were still buffered. The fix was four lines.
+  why: >-
+    It is a concrete example of how silently dropping a `Poll::Pending` in async Rust produces
+    a data-truncation race that surfaces only under load and large payloads, a failure mode
+    for any service building on hyper or hand-written poll loops.
+  sources:
+  - label: Cloudflare blog
+    url: https://blog.cloudflare.com/hyper-bug/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48670314
+- title: >-
+    HackerRank open-sourced its resume-scoring agent; analysis finds the scores non-deterministic
+  section: Engineering posts
+  category: Engineering post
+  status: discussion
+  blurb: >-
+    One resume scored 66 to 99 out of 120 through HackerRank's open-source resume-scoring
+    agent, revealing unreliable evaluative judgment.
+  summary: >-
+    HackerRank published an open-source LLM resume-scoring agent (interviewstreet/hiring-agent,
+    MIT, about 3,250 stars). An analysis ran one resume 100 times through the default gemma3:4b
+    model at temperature 0.1 and recorded scores from 66 to 99 out of 120; at an 85-point
+    cutoff the same candidate would be rejected about 65 percent of the time. The author traces
+    the variance to the subjective project- and experience-scoring prompts, which carry no
+    rubric, examples, or anchors, while the checklist-based technical-skills score stays stable
+    across runs.
+  why: >-
+    It is a concrete measurement of how LLM-as-judge scoring conflates reliable parsing with
+    unreliable evaluative judgment, a failure mode for any team wiring a language model into
+    automated screening or grading.
+  sources:
+  - label: analysis
+    url: https://danunparsed.com/p/hackerrank-open-source-ats
+  - label: repository
+    url: https://github.com/interviewstreet/hiring-agent
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48713832
+- title: >-
+    Samsung, SK Hynix, and Micron hit with US antitrust class action over DRAM prices
+  section: Markets and companies
+  category: Markets
+  status: confirmed
+  blurb: >-
+    A class action alleges Samsung, SK Hynix, and Micron coordinated DRAM pricing since 2022,
+    with prices rising approximately 700 percent.
+  summary: >-
+    A class-action antitrust complaint filed 2026-06-25 in the US District Court for the Northern
+    District of California (before Judge Noel Wise) names Samsung, SK Hynix, and Micron, which
+    together produce most of the world's DRAM. The 17 plaintiffs (individuals and small businesses)
+    allege the three coordinated supply and pricing from 2022 onward, using the industry's
+    shift to High Bandwidth Memory for AI data centers as a pretext to curtail DDR3 and DDR4
+    output, with prices rising roughly 700 percent over four years. The allegations are unproven;
+    the three companies pleaded guilty to DOJ DRAM price-fixing charges in the 2000s.
+  why: >-
+    It is the first US legal challenge to the memory-price surge that this week drove Apple
+    consumer hardware price increases and Micron multi-year floor-price contracts, and a finding
+    either way bears on memory costs across the hardware supply chain.
+  followup: >-
+    Watch for the manufacturers' responses, any motion to dismiss, and whether regulators
+    open a parallel probe.
+  sources:
+  - label: Tom's Hardware
+    url: https://www.tomshardware.com/tech-industry/samsung-sk-hynix-and-micron-sued-over-alleged-dram-price-fixing-amid-record-memory-costs
+  - label: MLex
+    url: https://www.mlex.com/mlex/articles/2493973/samsung-sk-hynix-micron-accused-in-us-of-fixing-dram-prices
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48718102
+- title: >-
+    Essay argues age verification is a precursor to speech attribution tops the front page
+  section: Hacker News
+  category: Pulse
+  status: discussion
+  blurb: >-
+    An opinion essay arguing mandatory age verification precedes persistent identity attribution
+    of online speech topped the front page.
+  summary: >-
+    An opinion essay arguing that mandatory online age verification is a stepping stone toward
+    persistent identity attribution of online speech reached the top of the front page (849
+    points). It is commentary, not a primary technical source.
+  why: >-
+    The discussion connects to the identity-verification gates spreading across developer-facing
+    AI services, including Anthropic's consumer ID checks effective 2026-07-08 tracked in
+    Watchlist follow-ups.
+  sources:
+  - label: essay
+    url: https://nonogra.ph/age-verification-is-just-a-precursor-to-attribution-of-speech-06-29-2026
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48714529
+- title: Stanford data page charts memory prices from 1960 to 2026
+  section: Hacker News
+  category: Pulse
+  status: discussion
+  blurb: >-
+    A Stanford data page plotting per-byte prices for DRAM, flash, and disk memory from 1960
+    to 2026 reached the front page with 167 points.
+  summary: >-
+    A Stanford data page plotting historical per-byte prices for DRAM, flash, and disk from
+    1960 to 2026 reached the front page (167 points). It is a reference data set, surfaced
+    amid ongoing discussion of recent DRAM price increases.
+  why: >-
+    Long-run memory-cost curves are useful context for capacity planning and the current memory-price
+    discussion.
+  sources:
+  - label: Stanford DAM
+    url: https://dam.stanford.edu/memory-prices.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48710092
+- title: GLM 5.2 benchmark thread, methodology skepticism
+  section: Hacker News
+  category: Pulse
+  status: discussion
+  blurb: >-
+    Hacker News commenters scrutinized the GLM 5.2 benchmark, arguing it pits a bare prompt
+    against Semgrep's scaffolded multi-agent pipeline.
+  summary: >-
+    Cross-reference to the GLM 5.2 cyber-benchmark story in Top stories. The HN thread's signal
+    is methodological: commenters argue the comparison pits a single bare prompt against Semgrep's
+    scaffolded pipeline, that the headline omits the exact Claude model, and that IDOR is
+    among the easiest bug classes to detect.
+  why: >-
+    The discussion is a caution against reading single-task vendor benchmarks as capability
+    rankings.
+  sources:
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48709670

@@ -1,0 +1,388 @@
+date: '2026-09-16'
+stories:
+- title: >-
+    AWS says data hosted exclusively in its Bahrain region and one UAE zone cannot be restored
+  section: Top stories
+  category: Outage
+  status: confirmed
+  blurb: >-
+    AWS told customers that data hosted exclusively in its Bahrain region and one UAE availability
+    zone cannot be restored.
+  summary: >-
+    CNBC reports that AWS told customers the resources and data hosted exclusively in the
+    Bahrain region and in one UAE availability zone cannot be restored, quoting the AWS Health
+    Dashboard wording. AWS continues to work on restoring the two other affected UAE availability
+    zones. The report states AWS promised further updates on UAE in the coming months and
+    on Bahrain in early 2027.
+  why: >-
+    A hyperscaler has now told customers that single-region data is permanently gone, which
+    converts cross-region backup from a recommended practice into a demonstrated requirement.
+  followup: >-
+    Track the promised AWS updates on UAE in the coming months and on Bahrain in early 2027.
+  sources:
+  - label: primary
+    url: https://www.cnbc.com/2026/09/15/aws-cant-restore-service-to-bahrain-uae-6-months-after-iran-strikes.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49719249
+- title: >-
+    Two OpenAI Codex sandbox escapes disclosed, extending a run of coding-agent sandbox breaks
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    Accomplish disclosed two Codex sandbox escapes, reported to OpenAI on 2026-08-12 and fixed
+    within eight days.
+  summary: >-
+    Accomplish, a vendor selling VM-isolated agent environments, describes two escapes from
+    the OpenAI Codex sandbox and states both were reported to OpenAI on 2026-08-12 and fixed
+    within eight days. Overpatch abuses apply_patch granting write access to the parent directory
+    of every path in a patch, so naming /tmp widens the grant to the filesystem root and a
+    symlinked write reaches .zshrc with no approval prompt. Heapjack recovers the trusted-context
+    token from a V8 heap snapshot inside the node_repl tool that Codex Desktop writes into
+    the global config with no opt-out, then forges requests on the stdout pipe shared by both
+    contexts to reach unsandboxed execution from read-only mode. The post names no affected
+    and no fixed version for Codex CLI or Codex Desktop, so the versions are not known from
+    this source.
+  why: >-
+    The same vendor published a Claude Code escape on 2026-09-11, fixed in Claude Code 2.1.247,
+    and a Cursor CLI escape on 2026-09-12, so opening an untrusted repository under a sandboxed
+    agent has now failed on three harnesses where the enforcement ran inside the process it
+    was enforcing.
+  followup: >-
+    Track whether any vendor moves agent sandboxing outside the agent process rather than
+    patching individual escapes.
+  sources:
+  - label: primary
+    url: https://accomplish.ai/blog/escaping-the-openai-codex-sandbox-twice/
+  - label: Claude Code escape
+    url: https://accomplish.ai/blog/beltdown-escaping-the-claude-code-sandbox/
+  - label: Cursor CLI escape
+    url: https://www.accomplish.ai/blog/beltdown2-escaping-the-cursor-cli-sandbox/
+- title: >-
+    Apple Reference Image signs photos at the sensor and develops them in Private Cloud Compute
+  section: Top stories
+  category: Apple
+  status: confirmed
+  blurb: >-
+    Apple Reference Image signs captures inside the sensor on iPhone 18 Pro and 18 Pro Max,
+    developing them in Private Cloud Compute.
+  summary: >-
+    Apple described Reference Image as an opt-in capture mode debuting on the main camera
+    sensor of iPhone 18 Pro and iPhone 18 Pro Max, relying on custom-designed sensors in those
+    two models rather than on the platform as a whole. The sensor signs the capture and Private
+    Cloud Compute develops the raw image. The final file carries a composite post-quantum
+    signature combining RSA-3072 and ML-DSA-87, and the design supports revoking a sensor,
+    meaning every photo from it, and revoking individual photos.
+  why: >-
+    It moves image provenance from post-capture metadata, which C2PA relies on, to a hardware
+    root of trust.
+  sources:
+  - label: primary
+    url: https://security.apple.com/blog/apple-reference-image/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49721322
+- title: >-
+    Two developers built a clean-room Linux GPU driver for the M4 Mac Mini in about a month
+    using coding agents
+  section: Top stories
+  category: Linux/Kernel
+  status: confirmed
+  blurb: >-
+    Two developers used coding agents to build a clean-room Linux GPU driver for the M4 Mac
+    Mini in about a month.
+  summary: >-
+    Cody Ho and Niklas Sheth report a conformant OpenGL ES 3.0 driver for the AGX GPU on the
+    M4 Mac Mini and MacBook Neo, spanning a reverse-engineered firmware ABI, a Linux kernel
+    driver written in Rust, a custom shader compiler and Mesa integration. They state the
+    work was clean room, using traces from their own hypervisor and shaders they wrote rather
+    than Apple binaries, and that Codex and Claude produced most of the code. They put the
+    A18 Pro firmware ABI at roughly 1.5 times the structs and twice the pointers of the M1
+    ABI.
+  why: >-
+    Reverse engineering a firmware ABI against hardware traces is the kind of slow, rote work
+    where agents compound over a long run.
+  followup: >-
+    Nothing is upstream and the authors state the code is not ready for end users, so track
+    whether their kernel driver lands after the M1 and M2 drivers.
+  sources:
+  - label: primary
+    url: https://codyho.dev/blog/gpu-driver/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49717638
+  - label: further discussion
+    url: https://news.ycombinator.com/item?id=49720125
+- title: Anthropic merges Claude Cowork into the main Claude app and adds Docs and Slides
+  section: AI
+  category: AI
+  status: confirmed
+  blurb: >-
+    Anthropic merged Claude Cowork into the main Claude app and added Docs and Slides, ending
+    Cowork as a separate product.
+  summary: >-
+    Anthropic states that Claude Cowork is now part of the main Claude app rather than a separate
+    product, and that the app gains Docs and Slides. The post is written in product terms
+    and states nothing about sandboxing or about where the work now executes.
+  why: >-
+    Cowork stops being a separate product with its own execution environment, which is the
+    surface a published sandbox escape targeted in July, though this post makes no claim about
+    that.
+  followup: >-
+    Track whether Anthropic states where merged Cowork work executes and how it is isolated.
+  sources:
+  - label: primary
+    url: https://claude.com/blog/cowork-is-now-claude
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49729412
+- title: >-
+    TypeSafe AI launches Jev, a model class that emits typed structured values instead of
+    text
+  section: AI
+  category: AI
+  status: developing
+  blurb: >-
+    TypeSafe AI announced Jev, a model class that returns typed structured values rather than
+    text, on vendor-run numbers only.
+  summary: >-
+    TypeSafe AI described Jev, a model class whose output is a typed structured value rather
+    than generated text, aimed at classification and routing calls inside ordinary software.
+    Access is waitlist-gated and every latency and cost figure published is vendor-run, which
+    the company states itself.
+  why: >-
+    If the claimed latency and cost hold, classification and routing stop being an LLM budget
+    line, but nobody outside the company has reproduced the figures.
+  followup: >-
+    Track an independent benchmark of Jev latency and cost once access opens beyond the waitlist.
+  sources:
+  - label: primary
+    url: https://typesafe.ai/blog/introducing-system-one-models-and-jev
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49717558
+- title: Firefox Smart Window runs on Mistral models in beta
+  section: AI
+  category: AI
+  status: confirmed
+  blurb: >-
+    Mozilla's Firefox Smart Window assistant is in beta on Mistral models in France and North
+    America, with partners stating zero data retention.
+  summary: >-
+    Mistral states that Firefox Smart Window, Mozilla's AI browsing assistant, is in beta
+    powered by Mistral models for users in France and North America, with the United Kingdom
+    and Germany expected to follow later this year. Mozilla states that conversations are
+    not saved on its servers by default and that partners including Mistral agree to zero
+    data retention. Neither company published model identifiers, context limits or evaluation
+    results.
+  why: >-
+    A major browser is routing assistant traffic to a provider other than its search incumbent,
+    and the only published technical substance is the data-handling commitment.
+  sources:
+  - label: primary
+    url: https://mistral.ai/news/mistral-x-mozilla/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49723408
+- title: Audit finds SWE-bench can no longer separate its top coding agents
+  section: ML research
+  category: Paper
+  status: developing
+  blurb: >-
+    An audit of 254 SWE-bench submissions finds paired tests separate none of the 29 adjacent
+    pairs in the Verified top thirty.
+  summary: >-
+    The paper, whose arXiv comments field states it is the camera-ready version accepted at
+    ADMA 2026, the International Conference on Advanced Data Mining and Applications, in its
+    Special Session on Responsible Data Intelligence, audits 254 SWE-bench submissions across
+    four splits without rerunning any model. On Verified the leading two entries each resolve
+    396 of 500 instances, the top ten share 285 successes and 51 failures, and only 164 instances
+    distinguish their outcomes at all. Exact paired McNemar tests separate none of the 29
+    adjacent pairs in the Verified top thirty at alpha 0.05, while the larger Test split separates
+    14 of 23, and observed within-model scaffold ranges reach 29.8 percentage points against
+    an 8.8-point spread across the entire top thirty.
+  why: >-
+    Picking a coding agent on a one-point leaderboard gap is not supported by the published
+    verdicts, because the harness moves the score more than the model does.
+  followup: >-
+    Track whether anyone outside the author group adopts the released partition and five-step
+    audit protocol when reporting a SWE-bench result.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2609.17394v1
+- title: OPEN-1B claims a bitwise reproducible distributed training run
+  section: ML research
+  category: Paper
+  status: developing
+  blurb: >-
+    Researchers release OPEN-1B and claim any single step of its distributed training run
+    replays bitwise on one machine.
+  summary: >-
+    The authors fix an order on the three sources of training nondeterminism, namely GPU kernel
+    reductions, batch ordering across a data-parallel cluster, and inter-node and intra-node
+    collective communication, so any single step of a large distributed run can be replayed
+    on one commodity machine and checked bitwise against the published trajectory. Because
+    replaying a whole run on one machine is infeasible, they propose collective verification
+    in which independent auditors each certify individual steps. They release Open-1B with
+    its full pretraining dataset, every intermediate checkpoint, the training code and the
+    audit harness.
+  why: >-
+    Published weights and recipes do not prove a checkpoint came from the declared recipe,
+    which is the gap that leaves room for undisclosed data or a backdoor, and bitwise step
+    replay is a check a third party can run on one machine.
+  followup: >-
+    The preprint is not peer reviewed and the reproducibility claim has not been independently
+    exercised, so track a third-party replay of a published step.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2609.17380v1
+- title: nginx patches an HTTP/3 buffer overflow in 1.31.6 mainline and 1.30.5 stable
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    nginx 1.31.6 mainline and 1.30.5 stable fix CVE-2026-90439, a buffer overflow in ngx_http_v3_module,
+    rated medium.
+  summary: >-
+    The nginx security advisories page lists CVE-2026-90439, a buffer overflow in ngx_http_v3_module
+    that the project rates medium. Versions 1.29.2 through 1.31.5 are listed as vulnerable,
+    and 1.31.6 mainline and 1.30.5 stable as not vulnerable. The advisory is silent on exploitation
+    and carries no proof of concept.
+  why: >-
+    Exposure is limited to builds that include and serve HTTP/3, which is not the default,
+    so the practical check is whether a deployment compiled and enabled that module.
+  sources:
+  - label: primary
+    url: https://nginx.org/en/security_advisories.html
+  - label: downloads
+    url: https://nginx.org/en/download.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49724250
+- title: >-
+    Effort names Israeli firm Irregular as the common contractor behind the Anthropic, OpenAI,
+    and Meta model hacks
+  section: Security
+  category: Security
+  status: developing
+  blurb: >-
+    Effort names Israeli security firm Irregular as the common contractor behind the Anthropic,
+    OpenAI, and Meta model hacks.
+  summary: >-
+    Effort published an investigation dated 2026-09-14 that names one Israeli firm, Irregular,
+    as the common contractor across the model-hacking incidents at Anthropic, OpenAI, and
+    Meta that this digest has tracked since 2026-07-24. The part Anthropic has itself disclosed
+    is narrower: Irregular created the tests involved and supplied the internet access used
+    in them. Effort's further framing, that a media campaign accompanied the incidents and
+    that the firm sits inside an Effective Altruism funding network, is the outlet's own reading
+    and is not corroborated by the labs.
+  why: >-
+    If one contractor built the evaluation setup at three labs, the incidents share a supply-chain
+    dependency rather than being three independent events, which changes what each lab's disclosure
+    actually covers.
+  followup: >-
+    Whether Anthropic, OpenAI, or Meta confirm Irregular's role beyond the test creation and
+    internet access Anthropic has already disclosed.
+  sources:
+  - label: primary
+    url: https://www.effort.news/irregular
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49704132
+- title: >-
+    Salesforce opens a major service disruption affecting multiple instances across all regions
+  section: Outages
+  category: Outage
+  status: developing
+  blurb: >-
+    Salesforce opened a major service disruption at 07:50 UTC on 2026-09-16 affecting multiple
+    instances across all regions.
+  summary: >-
+    Salesforce opened a major service disruption, externalId 95390343, with impact starting
+    2026-09-16 07:50 UTC, described in the 08:45 UTC update as affecting multiple instances
+    across all regions, and customers reported severe delays, intermittent errors and an inability
+    to open support cases. The 14:00 UTC update states the impact radius is narrower than
+    initially understood and that instances which have not experienced impact will be removed
+    from the incident, and the active-incidents record carries `affectsAll` false with an
+    enumerated instance list. A fleetwide fix began rolling out region by region from 10:56
+    UTC, with manual restarts where it did not fully apply, and the incident was still active
+    at 14:27 UTC with GovCloud stated out of impact, the `rootCause` field null and no published
+    root cause. Every figure here was read from the active-incidents endpoint while the incident
+    was open. That endpoint lists only open incidents and has since dropped externalId 95390343,
+    and the per-incident path for that id returns HTTP 404, so the timeline and the instance
+    list cannot be re-checked there.
+  why: >-
+    The only mechanism Salesforce has named is a shared login path, given at 09:10 UTC as
+    requests stalling while waiting on a response from an internal login service, at 09:57
+    UTC as a suspected external dependency failure affecting the legacy login server, and
+    at 10:18 UTC as a core system component under increased load, so what a reader can act
+    on is a vendor-named dependency rather than a cause.
+  followup: >-
+    Track the resolution time, the final instance list and the root cause Salesforce publishes.
+  sources:
+  - label: primary
+    url: https://status.salesforce.com/products/all
+  - label: active incidents API
+    url: https://api.status.salesforce.com/v1/incidents/active
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49724488
+- title: Conversations maintainer reports Google Play review regularly exceeding a week
+  section: Developer tools
+  category: Dev tools
+  status: discussion
+  blurb: >-
+    The Conversations maintainer reports Google Play review times regularly exceeding a week
+    for his Android app.
+  summary: >-
+    Daniel Gultsch, maintainer of the Conversations XMPP client, posted that Google Play review
+    now regularly takes more than a week for his releases. This is one maintainer's report
+    on one app rather than a measured distribution, and Google has published nothing on review
+    latency for it.
+  why: >-
+    Review latency of this size changes Android release planning, because a fixed monthly
+    cadence stops being reliable and a security fix cannot be scheduled against a known publication
+    date.
+  sources:
+  - label: primary
+    url: https://gultsch.social/@daniel/117280438824908947
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49724927
+- title: >-
+    Swift 6.4 ships async defer, noncopyable associated types, and source-level warning control
+  section: Languages and runtimes
+  category: Languages
+  status: confirmed
+  blurb: >-
+    Swift 6.4 ships async defer, noncopyable associated types, and typed throws on unstructured
+    Task initializers.
+  summary: >-
+    The Swift 6.4 release is tagged swift-6.4.0-RELEASE and was published 2026-09-15. Its
+    language changes include async defer, noncopyable associated types, and source-level control
+    of warnings. Unstructured throwing Task initializers now use typed throws and warn when
+    a throwing operation's result is neither stored nor ignored, and forward references to
+    local variables inside closures that the type checker previously accepted are now rejected.
+  why: >-
+    The concurrency changes alter existing code rather than only adding surface, so both are
+    upgrade work rather than opt-in features.
+  followup: >-
+    The release body on the tag is empty, so the CHANGELOG at the tag is the readable primary
+    for any Swift release check.
+  sources:
+  - label: primary
+    url: https://github.com/swiftlang/swift/releases/tag/swift-6.4.0-RELEASE
+  - label: changelog
+    url: https://github.com/swiftlang/swift/blob/swift-6.4.0-RELEASE/CHANGELOG.md
+- title: >-
+    Show HN: e-ink frame identifies garden birds by sound and draws them from 1800s plates
+  section: Hacker News
+  category: Dev tools
+  status: discussion
+  blurb: >-
+    An e-ink picture frame identifies garden birds from their calls on a Raspberry Pi and
+    draws them from 1800s plates.
+  summary: >-
+    The day's highest-voted Hacker News thread is a Show HN for an e-ink frame that identifies
+    garden birds by sound and renders them from 1800s illustration plates. The pipeline runs
+    locally with a BirdNET classifier on a Raspberry Pi and no cloud dependency.
+  why: >-
+    It is a working example of on-device audio classification with no network path off the
+    device.
+  comments: A commenter raised an unresolved question about overlap with an earlier project.
+  sources:
+  - label: primary
+    url: https://github.com/arnegiacomo/fugleramme
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49711544

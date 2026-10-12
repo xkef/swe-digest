@@ -30,7 +30,14 @@
       </p>
     </header>
     <div class="story-fields">
-      {{ page.content | safe }}
+      <ul>
+        <li><strong>Sources:</strong>
+          {% for source in page.extra.sources %}<a href="{{ source.url }}">{{ source.label }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+        </li>
+        {% for field in page.extra.fields | default(value=[]) %}
+          <li><strong>{{ field.label }}:</strong> {{ field.text }}</li>
+        {% endfor %}
+      </ul>
     </div>
     <p class="meta story-feedback" data-pagefind-ignore>
       <a

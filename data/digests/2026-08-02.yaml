@@ -1,0 +1,466 @@
+date: '2026-08-02'
+stories:
+- title: >-
+    Coldcard ships an urgent hotfix after a build flag disabled the hardware random number
+    generator, leaving seeds with as little as 40 bits of entropy
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    Coldcard firmware 4.0.1 through 4.1.9 reduced Mk3 seed entropy from 128 bits to 40 bits
+    due to a build flag disabling hardware RNG.
+  summary: >-
+    The Coldcard upgrade page carries a first-party urgent hotfix dated 2026-07-31. It states
+    that Mk3 seeds generated on firmware 4.0.1 through 4.1.9 inclusive hold about 40 bits
+    of entropy, and that Mk4, Mk5 and Q seeds hold as low as about 72 bits, against a stated
+    target of 128 bits. Fixed builds are v5.6.0, v1.5.0Q, v4.2.0 and Edge 6.6.0X/QX, all released
+    2026-07-31, and the page names a BIP-39 passphrase as a stopgap. A separate commit-level
+    analysis by a Core Lightning developer traces the cause through public commits to `#define
+    MICROPY_HW_ENABLE_RNG (0)`, which removed the STM32 hardware RNG path so that `random.bytes(32)`
+    in `make_new_wallet()` fell through to MicroPython's Yasmarang generator, and argues the
+    define was set to silence a duplicate-symbol compiler error. The Coinkite blog index lists
+    two first-party posts dated 2026-07-30, a technical deep dive into the entropy issue and
+    a security advisory whose deck states that funds from affected Coldcard seeds are at risk
+    if the seed lacks 50 independent private dice rolls, and the upgrade page points readers
+    to that blog announcement. Neither post resolved from this environment and three slug
+    guesses returned HTTP 404, so the mechanism above is attributed to the commit-level analysis
+    and has not been compared against the vendor deep dive. CoinDesk reports losses of 38
+    million US dollars so far.
+  why: >-
+    A single build-time define silenced a duplicate-symbol compiler error and swapped a hardware
+    entropy source for a toy pseudorandom generator, and nothing in the running firmware surfaced
+    the downgrade, so seeds looked normal while carrying a third of the intended entropy.
+  followup: >-
+    Resolve the URL of the Coinkite technical deep dive and check whether it confirms or contradicts
+    the commit-level mechanism.
+  sources:
+  - label: Coldcard firmware upgrade notes
+    url: https://coldcard.com/docs/upgrade/
+  - label: Coinkite blog index
+    url: https://blog.coinkite.com/
+  - label: commit-level analysis by Dusty Daemon
+    url: https://insider.btcpp.dev/p/when-randombytes-runs-but-doesnt
+  - label: CoinDesk report
+    url: https://www.coindesk.com/business/2026/07/31/coldcard-s-usd38-million-so-far-exploit-shakes-faith-in-self-custody-may-push-investors-to-etfs
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49138553
+- title: >-
+    A ripgrep segfault investigation localizes a Linux kernel TLB-shootdown race between the
+    per-VMA-lock anonymous fault path and concurrent munmap
+  section: Top stories
+  category: Linux/Kernel
+  status: developing
+  blurb: >-
+    A Linux kernel race in the v7.0 anonymous page fault path and munmap can silently lose
+    stores from multithreaded processes.
+  summary: >-
+    dfoxfranke published a separate analysis repository for ripgrep issue 3494 that reattributes
+    the crash from the allocator to the kernel. The write-up reports that a thread's own store
+    to a freshly faulted anonymous page is visible to an immediate reload and gone about ten
+    instructions later, with pagemap showing the address backed by the kernel zero page. The
+    analysis is a source-level review of Linux 7.0.12 that names a v7.0 munmap-teardown change,
+    and it rules out use-after-free and buffer overrun on four grounds after pinning suppression
+    of the fault to prefaulting one specific page.
+  why: >-
+    If the analysis holds, any multithreaded process on the affected kernels can have a store
+    to a freshly faulted anonymous page silently lost, so the failure surfaces as unexplained
+    heap corruption in unrelated software rather than as a kernel error.
+  followup: >-
+    Track whether a kernel maintainer confirms or refutes the race and whether a fix lands.
+  comments: HN commenters ask whether kernel maintainers have confirmed the diagnosis.
+  sources:
+  - label: analysis repository
+    url: https://github.com/dfoxfranke/ripgrep-3494-analysis
+  - label: ripgrep issue 3494
+    url: https://github.com/BurntSushi/ripgrep/issues/3494
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49133889
+- title: >-
+    Lean publishes a postmortem for kernel soundness bug 14576 after an AI-assisted false
+    disproof of Collatz passed both the official kernel and a then-week-old version of the
+    main external checker
+  section: Top stories
+  category: Engineering post
+  status: confirmed
+  blurb: >-
+    A Lean kernel soundness bug required two distinct bugs in Lean and the external checker
+    nanoda for an AI-assisted false disproof to pass.
+  summary: >-
+    Leonardo de Moura published a first-party postmortem for Lean kernel soundness bug 14576.
+    The post states the bug was reachable only through metaprogramming, that lean4lean is
+    affected by it, and that the fix landed about an hour after the report. The Collatz repository
+    also passed a week-old version of the external checker nanoda, and the postmortem states
+    that the nanoda bug was reported by Jeremy Chen and fixed a week before the Lean bug was
+    reported, so the false disproof required two distinct bugs in two implementations. The
+    post also records that an OpenAI cybersecurity model run by Daniel Selsam found further
+    kernel mistakes, all of them caught by nanoda.
+  why: >-
+    The postmortem concludes that checking with an independent kernel still works, so anyone
+    treating a Lean certificate as verification needs current versions of both the kernel
+    and the external checker rather than whichever build was to hand.
+  sources:
+  - label: postmortem
+    url: https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49137060
+- title: >-
+    OpenAI publishes ten claimed advances in mathematics and theoretical computer science
+    with Lean 4 certificates under Apache-2.0
+  section: Top stories
+  category: ML research
+  status: developing
+  blurb: >-
+    OpenAI released ten formalizations in Lean 4 of mathematics and computer science results
+    without peer review under Apache-2.0.
+  summary: >-
+    OpenAI published a repository of ten claimed results in mathematics and theoretical computer
+    science, each accompanied by a Lean 4 formalization under Apache-2.0, targeting Lean 4.32.0
+    with mathlib and containing ten named proof files including ConnesRigidity.lean. The results
+    have not been through peer review. The repository routes independent checking through
+    Comparator, and the postmortem above records as part of the response to kernel bug 14576
+    that comparator.live now runs the external checker nanoda by default and that nanoda is
+    tracked daily.
+  why: >-
+    The formalizations are machine-checkable artifacts rather than a benchmark score, which
+    is a materially different evidence standard for an AI capability claim, though the postmortem
+    above bounds a Lean certificate to current versions of both the kernel and the external
+    checker.
+  followup: >-
+    A claimed rebuttal of the Connes rigidity result circulated on Hacker News but the hosting
+    site returned HTTP 403 from this environment, so it is unverified and excluded. Recheck
+    it.
+  sources:
+  - label: repository
+    url: https://github.com/openai/ten-proofs
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49132058
+- title: >-
+    Wafer measures Kimi K3 at 952 tokens per second per node on eight MI355X after fixing
+    a missing ROCm top-k renorm and an AITER prefill head-count mismatch
+  section: AI
+  category: AI
+  status: developing
+  blurb: >-
+    Framework defects in Kimi K3's ROCm build left the speculative decoder and MLA prefill
+    broken, fixed with small source-level changes.
+  summary: >-
+    Kimi K3 at 2.8T parameters needs over 1.5 TB of VRAM before a KV cache, which rules out
+    a single B200 node and leaves the MI355X at 288 GB per GPU as the reason the comparison
+    exists. Both blockers the post reports were framework defects rather than missing kernels:
+    the sglang ROCm build leaves `top_k_renorm_prob` undefined so the speculative-decode verifier
+    takes the scheduler down with a `NameError`, fixed with a sort, a masked fill, and a divide
+    in PyTorch, and the fast AITER MLA prefill kernel would not load because K3 at TP8 gives
+    12 attention heads per rank against a path built for 4, 8, or multiples of 16, fixed by
+    zero-padding to 16 and extracting 12. The post reports the prefill fix moving a 172k-token
+    cold prefill from the Triton fallback at 4,000 to 7,000 tokens per second to about 13,000,
+    or roughly 51 seconds on MI355X against 23 on a B300. This is a vendor post from an inference
+    provider, the throughput figures are unreproduced, and its performance-per-dollar claim
+    of 48 against 33 tokens per second per dollar rests on its own stated rates of 2.50, 6.00,
+    and 4.25 US dollars per GPU-hour.
+  why: >-
+    Both blockers to serving a 2.8T-parameter model on ROCm were framework defects with small
+    source-level fixes, so the gap was tooling rather than hardware capability.
+  followup: >-
+    Track whether an independent run reproduces the 952 tokens per second per node figure
+    on eight MI355X.
+  sources:
+  - label: write-up
+    url: https://www.wafer.ai/blog/kimi-k3-mi355x
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49141073
+- title: ByteDance releases Seedance 2.5 without published weights
+  section: AI
+  category: AI
+  status: confirmed
+  blurb: >-
+    ByteDance released Seedance 2.5 video generation model without weights or stated training
+    and evaluation methods.
+  summary: >-
+    ByteDance Seed announced Seedance 2.5, a video generation model, with no published weights
+    and no stated training or evaluation method. The announcement describes single-take creation
+    and flexible referencing as the product changes.
+  why: >-
+    Video generation quality claims are hard to check without weights or a stated method,
+    so this is an API-only product change rather than a reproducible capability result.
+  sources:
+  - label: announcement
+    url: https://seed.bytedance.com/en/blog/one-take-creation-flexible-referencing-introducing-seedance-2-5
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49138302
+- title: >-
+    A token-cost-matched study finds no self-inspection method beats repeated sampling in
+    open models from 1.5B to 7B
+  section: ML research
+  category: Paper
+  status: developing
+  blurb: >-
+    No self-critique method matched repeated sampling at equal token cost across 1.5B to 7B
+    parameter open models on math benchmarks.
+  summary: >-
+    The preprint compares seven methods against repeated sampling at matched token cost, counting
+    every critique, reflection, debate and checking token, across open models of 1.5B, 3B
+    and 7B parameters on two mathematics benchmarks at 150 questions each. That design gives
+    36 comparisons, each paired by question, and the paper reports that no method beats repeated
+    sampling at equal cost, that ten of the 36 are reliably worse, all of them methods where
+    the model inspects its own output, and that all 18 self-inspection comparisons are negative.
+    The two kinds of self-inspection separate as models grow: the Best-of-N choosing gap falls
+    from 8.0 and 11.3 points at 1.5B to 2.0 and 1.3 at 7B, which the paper describes as no
+    longer distinguishable from zero, while Self-Refine and a forced Reflexion stay 3.6 to
+    10.1 points below baseline at 7B.
+  why: >-
+    Self-critique and reflection loops are a common agent design pattern, and this measurement
+    bounds them only for open models up to 7B, where the penalty for having the model choose
+    among its own samples closes with scale but the penalty for having it rewrite its own
+    output does not.
+  followup: >-
+    Single-author v1 preprint with no peer review. Track whether the result holds at larger
+    model scale.
+  sources:
+  - label: paper
+    url: https://arxiv.org/abs/2607.28576v1
+- title: >-
+    Unit 42 reports XCSSET v40 spreading through the Xcode projects of legitimate apps since
+    April 2026, with fileless persistence and suppression of macOS security updates
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    XCSSET v40 spreading since April 2026 disables macOS security updates and adds fileless
+    persistence through Chrome and Telegram trojans.
+  summary: >-
+    Unit 42 reports XCSSET v40 spreading through the Xcode projects of legitimate apps since
+    April 2026, with infection triggered when a developer builds an infected project locally
+    and the variant then worming into every Xcode project on the host. It disables the macOS
+    SoftwareUpdate configuration channel covering XProtect, MRT, TCC, and Rapid Security Response,
+    holds an exclusive file lock on the XProtect signature database, terminates CloudTelemetryService,
+    and calls `tccutil reset AppleEvents` to re-prompt for automation while masquerading as
+    System Settings or Xcode. A new Chrome module abuses the Chrome DevTools Protocol for
+    a fileless reverse shell and MetaMask transaction rewriting, a further new module replaces
+    Telegram.app with an ad hoc signed trojanized copy, and Unit 42 reported the Chrome behavior
+    to Google, which protects against it on Windows and is extending the protection to macOS.
+    The analysis enumerates no affected macOS or Xcode version numbers, so the version scope
+    of an exposed build host is not stated.
+  why: >-
+    An infected build host stops receiving the signature updates that would detect the infection,
+    so a developer machine that compiles one untrusted Xcode project loses both the detection
+    and the update path at the same time.
+  sources:
+  - label: Unit 42 analysis
+    url: https://unit42.paloaltonetworks.com/xcsset-v40-malware-analysis/
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49142886
+- title: >-
+    A scan of 7.6 petabytes of public Hugging Face datasets finds 221,303 live credentials,
+    including 349 live GitHub personal access tokens
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    A scan of 7.6 petabytes of public Hugging Face datasets found 221,303 live credentials
+    including 349 GitHub personal access tokens.
+  summary: >-
+    Truffle Security scanned 7.6 petabytes of public Hugging Face datasets and reports 221,303
+    live credentials, with 44 percent of them appearing in more than one dataset, 19,380 appearing
+    in ten or more, and one Infura key pasted into a chatbot reaching 1,131 datasets and 10,162
+    file locations. It reports 349 live GitHub personal access tokens, of which 223 carry
+    full repository write, 130 can rewrite CI workflows, 112 carry admin:org, and 110 can
+    publish packages, sub-counts that overlap. The rest of the supply-chain subset is 318
+    Docker Hub push tokens and 787 live Hugging Face tokens of which 237 carry write and 70
+    org-admin, against zero live tokens for npm and PyPI. Findings were shared with Hugging
+    Face before publication, dataset names and key material are withheld, and the stated fix
+    is rotation plus scanning a corpus before publishing or training on it. No affected versions
+    apply, because the finding is a set of published dataset corpora rather than a versioned
+    product.
+  why: >-
+    A credential published in a training corpus cannot be recalled, so revoking at the original
+    source leaves every copied instance working and rotation is the only remedy.
+  followup: >-
+    The post carries a byline date that predates the incident and the conference booth its
+    own text references, so no publication date is asserted here. Track whether the vendor
+    corrects it.
+  sources:
+  - label: scan write-up
+    url: https://trufflesecurity.com/blog/scanning-7-6-petabytes-of-ai-training-data-for-secrets
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49136955
+- title: >-
+    RFC 10015 makes finite-field Diffie-Hellman and RSA key exchange MUST NOT in TLS 1.2 and
+    DTLS 1.2
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    RFC 10015 published in July 2026 makes finite-field Diffie-Hellman and RSA key exchange
+    disallowed in TLS 1.2 and DTLS 1.2.
+  summary: >-
+    RFC 10015, published in July 2026, sets finite-field Diffie-Hellman and RSA key exchange
+    to MUST NOT in TLS 1.2 and DTLS 1.2. The document updates seventeen RFCs: 4162, 4279,
+    4346, 4785, 5246, 5288, 5289, 5469, 5487, 5932, 6209, 6347, 6367, 6655, 7905, 8422 and
+    9325. One of those, RFC 9325, is part of BCP 195 alongside RFC 8996, so the change reaches
+    BCP 195 through that document rather than updating BCP 195 directly.
+  why: >-
+    TLS 1.2 cipher-suite allowlists that still carry DHE or RSA key exchange are now non-conformant
+    and need review.
+  sources:
+  - label: RFC 10015
+    url: https://www.rfc-editor.org/rfc/rfc10015.html
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49139711
+- title: >-
+    A USENIX Security paper shows the major end-to-end encrypted messengers give no transcript
+    consistency in group chats
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    A USENIX Security paper finds no major end-to-end encrypted messenger provides transcript
+    consistency against malicious group members.
+  summary: >-
+    The USENIX Security paper analyzes group messaging in the major end-to-end encrypted messengers
+    and reports that none of them provide transcript consistency. A malicious group member
+    can omit, reorder, or alter content per recipient with no warning surfaced in any user
+    interface. The abstract names Signal, WhatsApp, iMessage and Threema as messengers that
+    have added poll features on top of group messaging, and does not enumerate the full set
+    analyzed. No affected versions are given, because the finding is a design property of
+    the group protocols and their fallback paths rather than a versioned defect in a client
+    build.
+  why: >-
+    A malicious group member can omit, reorder, or alter content per recipient with no warning
+    in any user interface, so a group transcript and the polls built on top of it cannot be
+    treated as an agreed record.
+  sources:
+  - label: paper
+    url: https://arxiv.org/abs/2607.27510
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49139831
+- title: >-
+    Go 1.27 draft release notes describe generic methods, encoding/json/v2 backing encoding/json,
+    and a post-quantum crypto/mldsa package
+  section: Languages and runtimes
+  category: Languages
+  status: developing
+  blurb: >-
+    Go 1.27 draft notes describe generic methods, encoding/json/v2 backing encoding/json,
+    and a new post-quantum crypto/mldsa package.
+  summary: >-
+    The Go 1.27 draft release notes describe generic methods, a switch of encoding/json to
+    the encoding/json/v2 implementation, and a new post-quantum crypto/mldsa package. Go 1.27
+    is not released. The draft notes state the release is expected in August 2026.
+  why: >-
+    Replacing the encoding/json implementation and adding generic methods touches nearly every
+    Go codebase, and the release is expected in August 2026 so the migration window is now.
+  followup: Track the actual Go 1.27 release and the final release notes.
+  comments: >-
+    The Hacker News submission points at a third-party interactive tour of the changes rather
+    than an official announcement.
+  sources:
+  - label: draft release notes
+    url: https://go.dev/doc/go1.27
+  - label: third-party tour
+    url: https://victoriametrics.com/blog/go-1-27/index.html
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49140218
+- title: >-
+    The Rust All Hands 2026 retrospective records settled reference and union validity, renewed
+    momentum to stabilize Allocator, and a rustdoc JSON path for cargo-semver-checks
+  section: Languages and runtimes
+  category: Languages
+  status: confirmed
+  blurb: >-
+    The Rust All Hands retrospective records settled reference and union validity semantics
+    and renewed momentum to stabilize Allocator trait.
+  summary: >-
+    The Inside Rust blog published a retrospective of the Rust All Hands 2026 on 2026-07-31.
+    It records that the operational semantics of reference and union validity are settled
+    and in an in-progress FCP, renewed momentum to stabilize the Allocator trait, and a path
+    from rustdoc JSON to cargo-semver-checks. The post points to recorded sessions for the
+    individual topics.
+  why: >-
+    The operational semantics work that unblocks unsafe-code reasoning moved from open question
+    to in-progress FCP, and the recorded sessions name which long-running features have a
+    path forward rather than only a wish list.
+  sources:
+  - label: Inside Rust blog
+    url: https://blog.rust-lang.org/inside-rust/2026/07/31/all-hands-2026-retrospective/
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49143096
+- title: Solid Queue 1.6.0 adds fiber-based workers
+  section: Languages and runtimes
+  category: Languages
+  status: confirmed
+  blurb: >-
+    Solid Queue 1.6.0 adds fiber-based worker mode to the default Rails background job system,
+    changing concurrency and memory profiles.
+  summary: >-
+    Solid Queue 1.6.0 adds a fiber-based worker mode. Solid Queue is the default backing job
+    system in Rails.
+  why: >-
+    A fiber worker mode changes the concurrency and memory profile of background processing
+    for teams running Rails defaults.
+  sources:
+  - label: release notes
+    url: https://github.com/rails/solid_queue/releases/tag/v1.6.0
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49132083
+- title: >-
+    NetBSD 11.0 ships with three open security pull-ups the project chose to disclose rather
+    than delay the release for
+  section: Linux and kernel
+  category: Linux/Kernel
+  status: confirmed
+  blurb: >-
+    NetBSD 11.0 shipped with three open security issues the project disclosed rather than
+    delay release, targeting fixes for 11.1.
+  summary: >-
+    NetBSD 11.0 was released on 2026-08-01 with three security pull-ups still open, and the
+    project named them in the announcement instead of holding the release: a missing local
+    privilege check on hdaudio(4) ioctl commands (PR 60492), a remotely triggerable null pointer
+    dereference in ipfilter (PR 60484), and a use-after-free in pf fragment reassembly (PR
+    60485). The announcement states that IPF and PF are not included in any released kernel
+    by default, and that the fixes are targeted for 11.1 within two months. It also states
+    the volume of security issues found or suspected has risen with AI tooling to the point
+    that shipping with no open issues is no longer achievable.
+  why: >-
+    The hdaudio issue reaches default installs and the announcement gives a manual workaround
+    of removing /dev/hdaudio*, while the ipfilter and pf issues need those subsystems built
+    in, so upgrade exposure is one item for most installations.
+  sources:
+  - label: release announcement
+    url: https://blog.netbsd.org/tnf/entry/netbsd_11_0_released
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49136736
+- title: >-
+    An Android developer consulted by the European Commission describes what the DMA interoperability
+    action requires Alphabet to open, including DSP wake word detection
+  section: Engineering posts
+  category: Engineering post
+  status: developing
+  blurb: >-
+    The European Commission ordered Alphabet to open 11 Android features to third parties
+    by 2027, including DSP wake word detection.
+  summary: >-
+    The Open Home Foundation write-up, by the Home Assistant Android developer the European
+    Commission consulted, states that the Commission acted on 2026-07-16 to require Alphabet
+    to open eleven Android features to third parties, with deadlines given as Android 18 by
+    2027-08-01 and concurrent hotword detection by Android 19 no later than 2028-08-01. The
+    post documents the two-stage Android wake word architecture, in which a DSP stage runs
+    always-on detection that third-party assistants cannot reach, and enumerates the platform
+    capabilities that have been closed to them. The Commission's own DMA news index carries
+    an item dated 2026-07-16 but titles it as guidance to Google for AI interoperability on
+    Android, and the underlying document did not resolve from this environment, so this block
+    does not assert which instrument was issued.
+  why: >-
+    The write-up documents the two-stage Android wake word architecture and the exact platform
+    capabilities third-party assistants have been unable to reach, which is the concrete reason
+    an always-on wake word costs roughly 15 percent battery in a third-party app against about
+    1 percent for the built-in path.
+  followup: >-
+    Resolve from the Commission's own document whether the 2026-07-16 action is a binding
+    specification decision or guidance.
+  sources:
+  - label: Open Home Foundation write-up
+    url: https://www.openhomefoundation.org/blog/a-big-win-for-android-interoperability/
+  - label: European Commission DMA site
+    url: https://digital-markets-act.ec.europa.eu/index_en
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49124051

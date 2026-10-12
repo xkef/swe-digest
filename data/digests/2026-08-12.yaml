@@ -1,0 +1,490 @@
+date: '2026-08-12'
+stories:
+- title: >-
+    OpenSSH 10.5 ships three security fixes and the project will release more often for now,
+    after AI-found bugs were independently rediscovered
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    OpenSSH 10.5 ships three security fixes and the project will increase release frequency
+    after AI-found bugs were independently rediscovered.
+  summary: >-
+    The OpenSSH 10.5 release notes record three security fixes. The stated reason for the
+    cadence change is independent rediscovery: the project says it has seen a number of cases
+    where a security bug identified by AI tools was subsequently found independently by a
+    different researcher, which it reads as evidence that adversaries who do not report bugs
+    can reach the same bugs, and on that basis the team will for now make more frequent releases.
+    The same notes state that many AI reports are determined not to have security impact when
+    considered against a realistic threat model.
+  why: >-
+    OpenSSH sits on nearly every server and developer machine, and the project is changing
+    how often it ships rather than only commenting on report volume.
+  followup: Whether the stated cadence holds, and what the next releases carry.
+  sources:
+  - label: primary
+    url: https://www.openssh.com/releasenotes.html#10.5
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49261895
+- title: >-
+    Checkly reports an attacker used a Metabase Cloud zero-day to read its analytics warehouse
+    for 26 minutes
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    An attacker exploited a Metabase Cloud zero-day to read Checkly's analytics warehouse
+    for 26 minutes on 2026-08-03.
+  summary: >-
+    Checkly states an attacker exploited a zero-day in Metabase Cloud on 2026-08-03 and read
+    its analytics warehouse for about 26 minutes. Checkly states Metabase discovered the intrusion
+    the same day, blocked the endpoints used, patched the vulnerability, and published a security
+    update, that customers, law enforcement, and a third-party forensics firm were notified
+    on 2026-08-06, and that Checkly closed its investigation on 2026-08-10. The post names
+    the data at risk and lists what customers should rotate. Metabase published advisory GHSA-r495-55cx-fjh7
+    on 2026-08-11 at Critical severity with no CVE assigned, patched in x.58.28, x.59.25,
+    x.60.21, x.61.15, x.62.13, and x.63.10, and it lists OSS and EE jar and docker artifacts
+    for each, so self-hosted installations are in scope and have a named upgrade target. That
+    advisory describes hardening the project identified proactively across query validation,
+    permission checks on nested references, rate limiting, sandboxing and impersonation, and
+    network exposure, and it attributes no item to the Checkly intrusion, so the link between
+    the advisory and the exploited zero-day is not established here.
+  why: >-
+    Self-hosted operators now have a Critical advisory with a fixed version for every supported
+    major line, and Checkly customers who placed authorization headers, cookies, or query
+    string parameters directly in a check configuration, or who use OTEL API keys, have a
+    named rotation list and the 2026-08-03 window to search their logs against.
+  followup: >-
+    Whether Metabase states which issue was the one exploited against Metabase Cloud.
+  sources:
+  - label: primary
+    url: https://www.checklyhq.com/blog/metabase-security-incident/
+  - label: advisory
+    url: https://github.com/metabase/metabase/security/advisories/GHSA-r495-55cx-fjh7
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49253669
+- title: >-
+    A public exploit lands for CVE-2026-53361, an AF_UNIX garbage collection race the author
+    uses to escape containers
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    A public exploit landed for CVE-2026-53361, an AF_UNIX garbage collection race that researchers
+    use to escape containers.
+  summary: >-
+    NVD published CVE-2026-53361 on 2026-07-04 at CVSS 7.1 from the kernel.org CNA. NVD describes
+    a race condition in `AF_UNIX` garbage collection, where `unix_gc()` could run with `gc_in_progress`
+    false when work is scheduled while it is already running and `unix_peek_fpl()` relies
+    on that flag, and records the fix as setting `gc_in_progress` to true in `unix_gc()`.
+    The CNA vector `CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:H` records local access and
+    low privileges as required and no confidentiality impact, with fixes in 6.6.144, 6.12.95,
+    6.18.38, and 7.1, and Debian DSA-6381-1 records 6.12.95-1 for trixie. A public repository
+    now carries exploit code, and the container escape, the use-after-free framing, and the
+    claim that Ubuntu 24.04 HWE 6.17 and RHEL 10 remain unpatched are the exploit author's
+    alone and were not verified for this digest.
+  why: >-
+    Anyone running untrusted or multi-tenant containers on an unpatched 6.12, 6.17, or 6.18
+    kernel now faces public exploit code rather than a patch note, and the fixed stable versions
+    are the check to run.
+  followup: >-
+    Whether distributions confirm or refute the unpatched claims for Ubuntu 24.04 HWE and
+    RHEL 10.
+  sources:
+  - label: primary
+    url: https://nvd.nist.gov/vuln/detail/CVE-2026-53361
+  - label: exploit
+    url: https://github.com/sgkdev/bad_garbage
+  - label: advisory
+    url: https://www.debian.org/security/2026/dsa-6381
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49267550
+- title: >-
+    Mojo reaches 1.0 with a primarily-additive change policy, while the compiler stays closed
+  section: Top stories
+  category: Languages
+  status: confirmed
+  blurb: >-
+    Mojo reached 1.0 under Qualcomm ownership with a primarily-additive change policy, while
+    the compiler remains closed-source.
+  summary: >-
+    Modular released Mojo 1.0 as part of Modular 26.5 and states that changes during the 1.x
+    timeframe should primarily be additive, while adding that breaking changes may still be
+    made and will be managed the way mature languages such as C++ evolve. The compiler remains
+    closed source, and Modular restates a commitment to open source the Mojo compiler and
+    toolchain in 2026 and to progressively open source more of the language. The release comes
+    under Qualcomm ownership of Modular.
+  why: >-
+    Mojo has been unstable enough that long-term projects were hard to maintain, and 1.0 is
+    the point where Modular asks teams to build on it, with the compiler still unreleased.
+  followup: >-
+    Whether the 2026 date for opening the compiler is met, and how breaking changes are handled
+    across the 1.x releases.
+  sources:
+  - label: primary
+    url: https://www.modular.com/blog/modular-26-5-mojo-1-0-is-here
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49261128
+- title: >-
+    CloudSEK publishes a victim list for the March 2026 LiteLLM supply chain compromise, naming
+    2,500 organizations and 434,000 CI/CD pipelines
+  section: Top stories
+  category: Security
+  status: developing
+  blurb: >-
+    CloudSEK published a list of the March 2026 LiteLLM supply-chain exposure, naming 2,500
+    organizations and 434,000 CI/CD pipelines.
+  summary: >-
+    CloudSEK describes the March 2026 LiteLLM supply chain compromise as running through an
+    unpinned scanner invoked in a CI job and a Python `.pth` file that executes at interpreter
+    startup, inside a publication window it puts at 40 minutes. CloudSEK states the figures
+    of 2,500 organizations and 434,000 CI/CD pipelines come from a reconstructed exposure
+    dataset and are not proof that any listed organization was compromised. The post also
+    carries an exposure checker that collects contact details, so the numbers are recorded
+    here as CloudSEK's own. The compromised package versions and their publication timestamps
+    are not established here, because the CloudSEK post as read for this digest names no affected
+    version range, so a reader cannot determine exposure from a pinned version alone and has
+    to check whether the CI job resolved an unpinned dependency inside the 40-minute window.
+  why: >-
+    Execution at interpreter startup through a `.pth` file means `--ignore-scripts` did not
+    help, and credentials reachable in that window stay valid unless rotated.
+  followup: >-
+    Independent confirmation of the exposure dataset, and any statement from the LiteLLM maintainers.
+  sources:
+  - label: primary
+    url: https://www.cloudsek.com/blog/ai-supply-chain-breach-2500-companies-434000-cicd-pipelines
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49255598
+- title: >-
+    NVIDIA releases NeMo Switchyard, an open source model-routing library, with partner cost
+    figures
+  section: AI
+  category: AI
+  status: confirmed
+  blurb: >-
+    NVIDIA released NeMo Switchyard, an open-source library that routes agent steps to cost-optimized
+    models from a mixed provider set.
+  summary: >-
+    NVIDIA released NeMo Switchyard as an open source library that routes each step of an
+    agent workflow to a model chosen from a developer's own mix of open, proprietary, and
+    NVIDIA models, selected on quality, latency, and cost. NVIDIA reports that LangChain routed
+    7 percent of calls to a larger model at 74 percent lower cost. The cost and quality figures
+    in the announcement are reported by NVIDIA and its partners, and none were independently
+    reproduced for this digest.
+  why: >-
+    Per-step model selection across a mixed model set is being packaged as a library rather
+    than as per-team glue.
+  followup: Whether an independent party reproduces the cost figures.
+  sources:
+  - label: primary
+    url: https://blogs.nvidia.com/blog/nemotron-lightning-switchyard-rtx-dgx/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49263340
+- title: >-
+    xAI launches Grok Bot in beta, gated behind SuperGrok Heavy and Cursor paid tiers
+  section: AI
+  category: AI
+  status: confirmed
+  blurb: >-
+    xAI launched Grok Bot in beta behind SuperGrok Heavy and Cursor Ultra subscriptions, with
+    always-on agents that share cloud infrastructure.
+  summary: >-
+    xAI announced Grok Bot in beta as always-on agents that share a computer of their own
+    in the cloud, sign into and work across apps, tools, and websites including platforms
+    with no clean API or MCP, run in parallel with one bot managing others, message each other
+    and coordinate in group chats, and learn a workflow by watching a user perform it once.
+    Access is gated behind the SuperGrok Heavy subscription and the Cursor Ultra and Cursor
+    Teams Premium tiers, on desktop and iOS, with a macOS download and an enterprise waitlist.
+    The capability claims are the announcement's own and were not tested for this digest,
+    and the page is branded SpaceXAI with a footer reading X.AI LLC.
+  why: >-
+    The launch bundles an xAI agent product into Cursor subscriptions, which is a distribution
+    change for teams already paying for Cursor.
+  sources:
+  - label: primary
+    url: https://x.ai/news/introducing-grok-bot
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49261514
+- title: >-
+    Qwen publishes 2.4T-parameter weights under a licence requiring a separate agreement above
+    50 million dollars of model-as-a-service revenue
+  section: AI
+  category: AI
+  status: confirmed
+  blurb: >-
+    Qwen published 2.4T-parameter weights under a licence requiring separate agreement once
+    deployment passes 50 million dollars in revenue.
+  summary: >-
+    Qwen published the Qwen3.8-2.4T-A95B weights on Hugging Face. The `LICENSE` file was read
+    directly for this digest, because the model card's licence tag reads only "other", and
+    it requires a separate agreement from Qwen once a deployment passes stated thresholds,
+    including 50 million dollars of model-as-a-service revenue and a monthly active user count.
+    The repository was created 2026-08-08 and last modified 2026-08-12, so no release date
+    is claimed here. The model card's own evaluation figures are marked unverified on the
+    page and are not published as results.
+  why: >-
+    The licence rather than the parameter count decides who can serve this model, and the
+    thresholds are written in revenue and monthly active users rather than in field of use,
+    so a team hosting inference for third parties has a revenue line to check while purely
+    internal use is not restricted by the same terms.
+  sources:
+  - label: primary
+    url: https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B
+  - label: licence
+    url: https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B/raw/main/LICENSE
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49273478
+- title: >-
+    xAI releases Grok 4.6 at 2 dollars per million input tokens and 6 per million output
+  section: AI
+  category: AI
+  status: confirmed
+  blurb: >-
+    xAI released Grok 4.6 with published pricing of two dollars per million input tokens and
+    six per million output tokens.
+  summary: >-
+    xAI released Grok 4.6 and published API pricing of 2 dollars per million input tokens
+    and 6 dollars per million output tokens, along with the surfaces the model ships on. The
+    announcement's benchmark table is xAI's own and states that competitor figures are the
+    best of self-reported or publicly available results, so those comparisons are not a like-for-like
+    measurement.
+  why: >-
+    The published pricing and the named distribution surfaces are the checkable parts of the
+    release, and they are what a team comparing hosted models can act on.
+  sources:
+  - label: primary
+    url: https://x.ai/news/grok-4-6
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49274027
+- title: >-
+    A case study reports tightened bounds on the Grothendieck constant reached with an AI
+    research system
+  section: ML research
+  category: Paper
+  status: developing
+  blurb: >-
+    A case study reports tightened bounds on the Grothendieck constant obtained with an AI
+    research system, documenting method and failures.
+  summary: >-
+    The paper reports tightened bounds on the Grothendieck constant obtained with an AI research
+    system, and is written as a case study of how the agents were used, including where they
+    failed. The result has no independent review recorded at this date.
+  why: >-
+    The account of method and failure is the part missing from most AI-credited mathematics
+    claims.
+  followup: Independent review of the bounds.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2608.11195
+- title: >-
+    MongoDB patches an authorization bypass reachable by sending a collection name as a BSON
+    symbol instead of a string
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    MongoDB patched CVE-2026-18690, an authorization bypass exploitable by sending a collection
+    name as a BSON symbol instead of string.
+  summary: >-
+    NVD carries CVE-2026-18690 from the `cna@mongodb.com` CNA, published 2026-08-11, at CVSS
+    3.1 8.1 and CVSS 4.0 7.2 under CWE-863, affecting 7.0 below 7.0.40, 8.0 below 8.0.29,
+    and 8.3.0 below 8.3.8. The NVD HTML detail page timed out twice for this digest, so the
+    record was read through the NVD 2.0 REST API instead, and both URLs are cited. The CISA
+    SSVC entry on that record scores exploitation as none and automatable as no. The mechanism,
+    that a collection name sent as a BSON symbol rather than a string takes a different path
+    through namespace parsing and permission matching, is the RECON author's source reading
+    and reproduction against 8.0.28 with the fix confirmed on 8.0.29, not MongoDB's description,
+    and RECON is a vendor blog that closes with a product pitch. The three sibling CVEs that
+    post summarises were not verified for this digest and are not restated here.
+  why: >-
+    The precondition is holding a database-scoped role rather than full admin, which is the
+    ordinary configuration for an application account, so most authenticated deployments meet
+    it, and there is no configuration workaround.
+  followup: >-
+    Whether the sibling CVEs carry the same precondition, and whether MongoDB publishes its
+    own technical detail.
+  sources:
+  - label: primary
+    url: https://nvd.nist.gov/vuln/detail/CVE-2026-18690
+  - label: NVD API record
+    url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-18690
+  - label: analysis
+    url: https://hellorecon.com/blog/cve-2026-18690-mongodb-symbol-type-authz-bypass
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49273886
+- title: >-
+    Expat 2.8.3 fixes CVE-2026-72522, an out-of-bounds read in UTF-16 decoding reachable over
+    the network
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    Expat 2.8.3 fixes CVE-2026-72522, an out-of-bounds read in UTF-16 decoding causing denial
+    of service over the network.
+  summary: >-
+    Expat 2.8.3 fixes CVE-2026-72522, which the maintainer describes as technically an out-of-bounds
+    read in UTF-16 decoding whose practical symptom is easy and reliable denial of service
+    through an infinite loop. The maintainer states the flaw needs no local access and that
+    the NVD vector nonetheless records the attack vector as Local. The release also fixes
+    a regression in 2.8.2 that wrongly rejected XML content of 2 GiB or more as out of memory
+    on 32-bit platforms and on 64-bit Windows. The Mozilla Security Team reported the vulnerability.
+  why: >-
+    Expat is bundled and pinned across a large part of the C and Python stack, so the fix
+    has to travel through many vendored copies, and a severity triage that reads the NVD vector
+    alone will score it too low.
+  followup: Whether the NVD vector is corrected, and downstream rebuilds of vendored copies.
+  sources:
+  - label: primary
+    url: https://blog.hartwork.org/posts/expat-2-8-3-released/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49257903
+- title: >-
+    GitHub Issues and Pull Requests returned 500 errors for 25 minutes after an index hint
+    outlived the index a migration removed
+  section: Outages
+  category: Outage
+  status: confirmed
+  blurb: >-
+    GitHub returned 500 errors for 25 minutes when a query hint outlived a database index
+    that a migration had removed.
+  summary: >-
+    GitHub's status page records an incident opened at 16:16 UTC and resolved at 16:41 UTC
+    on 2026-08-12, in which requests returned HTTP 500 errors. GitHub attributes the failure
+    to a query hint that named a database index a later migration had removed. The closing
+    footer names Issues and Pull Requests as affected, while the 16:38 update also names Search,
+    so both are recorded here. The status page was read directly at about 16:49 UTC, after
+    the cached fetch at 16:40 UTC had captured only the open incident. A detailed root cause
+    analysis is still outstanding.
+  why: >-
+    GitHub published a concrete cause rather than a generic database note, and the shape of
+    it is reproducible in any schema-migration pipeline that does not check query hints against
+    the post-migration schema.
+  followup: GitHub's detailed root cause analysis.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/76t89hbfb09h
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49274894
+- title: >-
+    llama.cpp publishes llama.app as an official install site with a unified llama command
+  section: Developer tools
+  category: Dev tools
+  status: confirmed
+  blurb: >-
+    llama.cpp published llama.app as its official install site with a unified llama command
+    for cli and serve subcommands.
+  summary: >-
+    The llama.cpp project published llama.app as an install site carrying a shell installer,
+    alongside a unified `llama` command with `llama cli` and `llama serve` subcommands. Provenance
+    was checked for this digest: the ggml-org/llama.cpp README names llama.app as its first
+    install option and the repository's website field points to the same domain, so the site
+    is the project's own.
+  why: >-
+    The llama.cpp repository README points to llama.app as the first install option and documents
+    `llama cli` and `llama serve` subcommands, so the install path and command names both
+    change for a project with roughly 124,000 stars.
+  sources:
+  - label: primary
+    url: https://llama.app
+  - label: repository
+    url: https://github.com/ggml-org/llama.cpp
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49267928
+- title: >-
+    A Google post argues language choice now matters for review rather than for writing speed
+  section: Languages and runtimes
+  category: Languages
+  status: discussion
+  blurb: >-
+    Google argues that once agents write code, language choice matters for review rather than
+    speed, favoring explicitness and small feature surface.
+  summary: >-
+    A Google developers blog post dated 2026-08-11, bylined Cameron Balahan, Group Product
+    Manager for Go, and Richard Seroter, Chief Evangelist for Google Cloud, argues that once
+    an agent writes the code, the cost that remains is reading and reviewing it, so the language
+    properties that matter are explicitness and a small feature surface rather than brevity.
+    The post carries no measurement, so what it holds is a stated position from two Google
+    authors rather than a Go team position or a result.
+  why: >-
+    This archive carried Dan Luu's evals on 2026-08-11, which found the token-efficiency argument
+    for dynamic languages did not survive larger tasks, and the two frame the same choice
+    on different grounds.
+  sources:
+  - label: primary
+    url: https://developers.googleblog.com/why-go-is-an-ideal-language-for-ai-assisted-software-engineering/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49261133
+- title: >-
+    pg_clickhouse v0.10.0 pushes down 16 of 22 TPC-H queries and adds guards for a NULL semantics
+    mismatch that silently inverted NOT IN
+  section: Infrastructure
+  category: Infrastructure
+  status: confirmed
+  blurb: >-
+    pg_clickhouse v0.10.0 pushes down 16 of 22 TPC-H queries and adds guards for a NULL-semantics
+    mismatch that inverted NOT IN queries.
+  summary: >-
+    ClickHouse reports that pg_clickhouse v0.10.0 pushes 16 of 22 TPC-H queries down to ClickHouse.
+    The release adds guards for a semantics mismatch in `IN`, where ClickHouse uses two-valued
+    logic and PostgreSQL uses three-valued, so a naive pushdown of `NOT IN` returned rows
+    PostgreSQL would have filtered out.
+  why: >-
+    The mismatch produced wrong results under a plan that looked correct, which is the failure
+    mode a pushdown extension has to close before its benchmark numbers mean anything.
+  sources:
+  - label: primary
+    url: https://clickhouse.com/blog/pg_clickhouse-whats-new-july-2026
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49265031
+- title: >-
+    Tailscale traces six months of database corruption to a SQLite WAL checkpoint data race
+    the SQLite developers date to at least 16 years
+  section: Engineering posts
+  category: Engineering post
+  status: confirmed
+  blurb: >-
+    Tailscale traced six months of database corruption to a SQLite WAL checkpoint data race
+    the developers date to at least 16 years old.
+  summary: >-
+    Tailscale describes tracing recurring database corruption to a data race in SQLite's write-ahead
+    log reset during checkpointing, where a committed write becomes invisible to later transactions
+    and no error is raised. The SQLite release log for 3.51.3, released 2026-03-13, was fetched
+    independently for this digest and records a single functional change, the WAL-reset corruption
+    fix, so the fixed version floor is confirmed from sqlite.org rather than only from Tailscale.
+    Three claims stay Tailscale's own: the count of 19 corruption incidents over six months,
+    the withdrawal of 3.52.0 over a float-rounding change that produced false `integrity_check`
+    failures on stale expression indexes, and a self-healing index feature attributed to 3.53.0.
+    The at-least-16-year age is the SQLite developers' estimate as Tailscale reports it, not
+    a measurement.
+  why: >-
+    Tailscale states the SQLite developers explained the disproportionate impact by its manual
+    and aggressive checkpointing, so any deployment that drives `PRAGMA wal_checkpoint` from
+    application code rather than leaving SQLite to decide is in the same position, and 3.51.3
+    is the version to check against.
+  sources:
+  - label: primary
+    url: https://tailscale.com/blog/sqlite-wal-reset-bug
+  - label: release log
+    url: https://sqlite.org/releaselog/3_51_3.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49272832
+- title: >-
+    Compression is prediction, an explainer connecting entropy coding to language modeling
+  section: Engineering posts
+  category: Engineering post
+  status: confirmed
+  blurb: >-
+    An explainer post connects arithmetic coding and entropy to language modeling, arguing
+    they measure the same quantity from different ends.
+  summary: >-
+    The post builds arithmetic coding and Shannon entropy from worked examples, up to the
+    point where a better probability model is the only thing that lowers the size floor.
+  why: >-
+    The post argues that the quantity the coder is bounded by and the quantity a language
+    model is trained to reduce are the same measurement seen from different ends, which is
+    its framing rather than a measured result.
+  sources:
+  - label: primary
+    url: https://ngrok.com/blog/compression-is-prediction
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49263497

@@ -1,0 +1,657 @@
+date: '2026-06-19'
+stories:
+- title: >-
+    Splunk Enterprise unauthenticated file-write flaw CVE-2026-20253 is under active exploitation
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    Unauthenticated arbitrary file write in Splunk Enterprise PostgreSQL sidecar under active
+    exploitation, CISA three-day deadline in effect.
+  summary: >-
+    CVE-2026-20253 (CVSS 9.8) is a missing-authentication flaw on a Splunk Enterprise PostgreSQL
+    sidecar service endpoint that lets an unauthenticated, network-reachable attacker create
+    or truncate arbitrary files, which can chain to denial of service, log-integrity loss,
+    or remote code execution. It affects Splunk Enterprise 10.0.0 through 10.0.6 and 10.2.0
+    through 10.2.3; versions 9.4 and earlier are not affected. Splunk patched it in 10.0.7
+    and 10.2.4. Public exploit analysis appeared on 2026-06-13, three days after disclosure,
+    and CISA added it to the Known Exploited Vulnerabilities catalog on 2026-06-18 with a
+    three-day federal remediation deadline.
+  why: >-
+    Splunk Enterprise is core SOC and log-analysis infrastructure, so an unauthenticated file-write
+    to remote-code-execution path under active exploitation puts detection pipelines themselves
+    at risk.
+  followup: >-
+    Watch for confirmed RCE chains, ransomware follow-on, and patch adoption. Tracked in `memory/followups.md`.
+  sources:
+  - label: Splunk advisory SVD-2026-0603
+    url: https://advisory.splunk.com/advisories/SVD-2026-0603
+  - label: Horizon3.ai analysis
+    url: https://horizon3.ai/attack-research/vulnerabilities/cve-2026-20253/
+  - label: SecurityWeek
+    url: https://www.securityweek.com/splunk-enterprise-vulnerability-exploited-in-attacks-days-after-disclosure/
+  - label: CISA KEV
+    url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+- title: Noam Shazeer leaves Google to join OpenAI as AI architecture lead
+  section: Top stories
+  category: AI
+  status: confirmed
+  blurb: >-
+    Noam Shazeer, Gemini co-lead and Attention Is All You Need co-author, is leaving Google
+    for OpenAI as Lead for AI Architecture Research.
+  summary: >-
+    Noam Shazeer announced on 2026-06-18 that he is leaving Google to join OpenAI as Lead
+    for AI Architecture Research. He co-led Google's Gemini models with Jeff Dean and Oriol
+    Vinyals and returned to Google in 2024 in a reported 2.7B USD deal that brought back him
+    and the Character.AI team. He is a co-author of the 2017 "Attention Is All You Need" paper.
+  why: >-
+    A senior architecture lead moving between the two largest frontier labs during OpenAI's
+    pre-IPO period signals continued concentration of model-design talent.
+  followup: >-
+    Watch for OpenAI confirmation of role and team, and any Gemini-team departures that follow.
+  sources:
+  - label: The Decoder
+    url: https://the-decoder.com/googles-gemini-co-lead-noam-shazeer-joins-openai-after-two-year-return-stint/
+  - label: Yahoo Finance
+    url: https://finance.yahoo.com/technology/ai/articles/googles-gemini-co-lead-noam-002548928.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48578913
+- title: >-
+    Apple says price increases are unavoidable as the AI-driven memory shortage bites
+  section: Top stories
+  category: Markets
+  status: confirmed
+  blurb: >-
+    Tim Cook told the WSJ Apple will raise product prices to offset AI-driven DRAM and NAND
+    demand, saying increases are unavoidable.
+  summary: >-
+    Tim Cook told the Wall Street Journal that Apple will raise product prices to offset rising
+    memory and storage chip costs, saying increases are unavoidable and the situation has
+    become unsustainable. He cited AI data-center demand draining DRAM and NAND supply, and
+    said Apple is willing to use its balance sheet to help secure memory. No timing, magnitude,
+    or affected product lines were given.
+  why: >-
+    The AI memory crunch is now reaching consumer hardware pricing, and the same DRAM and
+    NAND contention raises bill-of-materials and server costs across the industry.
+  followup: >-
+    Watch for the magnitude and timing of Apple price changes and for memory-pricing pass-through
+    from Samsung, SK hynix, and Micron.
+  sources:
+  - label: BBC
+    url: https://www.bbc.com/news/articles/c3wyxvqdx1zo
+  - label: Yahoo Finance
+    url: https://finance.yahoo.com/technology/articles/apple-raise-prices-due-memory-212327523.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48580466
+- title: TypeScript 7.0 reaches release candidate with the native Go compiler
+  section: Top stories
+  category: Languages
+  status: confirmed
+  blurb: >-
+    TypeScript 7.0 RC rewrites the bootstrapped compiler to Go, achieving roughly 10x speedup,
+    with config defaults breaking existing projects.
+  summary: >-
+    Microsoft published the TypeScript 7.0 release candidate on 2026-06-18. 7.0 is the compiler
+    rewritten from the bootstrapped TypeScript codebase to Go, and the team reports it is
+    often about 10 times faster than 6.0. Install is `npm install -D typescript@rc`; a stable
+    release is planned within a month, with stable programmatic APIs arriving in 7.1 several
+    months later. Breaking changes include `rootDir` defaulting to `./` instead of inference,
+    `types` defaulting to `[]` instead of auto-loading `@types` packages, and removal of `target`
+    `es5` plus the `node`/`node10` module resolution modes.
+  why: >-
+    The native compiler cuts type-checking and build times across the JavaScript ecosystem,
+    and the changed config defaults create migration work for existing projects.
+  followup: >-
+    Watch for the 7.0 stable release within a month and the 7.1 stable programmatic API.
+  sources:
+  - label: TypeScript blog
+    url: https://devblogs.microsoft.com/typescript/announcing-typescript-7-0-rc/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48586001
+- title: MCP Enterprise-Managed Authorization extension reaches stable
+  section: Top stories
+  category: Agentic coding
+  status: confirmed
+  blurb: >-
+    MCP Enterprise-Managed Authorization stabilizes, letting organizations control which MCP
+    servers employees access through their IdP.
+  summary: >-
+    The Model Context Protocol project marked its Enterprise-Managed Authorization (EMA) extension
+    stable. EMA lets an organization centrally control which MCP servers employees may connect
+    to through the corporate identity provider, replacing per-user, per-server OAuth prompts
+    with a single sign-in governed by IdP policy. The post reports Anthropic implemented EMA
+    in its shared MCP layer across Claude, Claude Code, and Cowork; VS Code added IDE support;
+    and Asana, Atlassian, Canva, Figma, Granola, Linear, and Supabase support it, with Slack
+    adding it.
+  why: >-
+    Centralized IdP control over MCP server access removes a per-user authorization bottleneck
+    and gives security teams a governance point for agent tool access in the enterprise.
+  followup: >-
+    Track which additional MCP servers and clients implement EMA and whether the extension
+    stays stable through the next spec revision.
+  sources:
+  - label: Model Context Protocol blog
+    url: https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48592163
+- title: Anthropic says Fable 5 and Mythos 5 access should return in coming days
+  section: Top stories
+  category: AI
+  status: developing
+  blurb: >-
+    Anthropic managing director Chris Ciauri said in Seoul Fable 5 and Mythos 5 should be
+    available within coming days after export control block.
+  summary: >-
+    Anthropic Managing Director of International Chris Ciauri said in Seoul on 2026-06-18
+    that the company is confident Fable 5 and Mythos 5 will become available again in the
+    coming days. Anthropic disabled both models for all customers on 2026-06-12 after a US
+    export control directive ordered it to block foreign-national access. Anthropic maintains
+    the underlying concern is a misunderstanding. Separately, Wired identified SK Telecom
+    as the Korean telecom at the center of the Mythos dispute.
+  why: >-
+    Restoration timing determines how long teams outside the US remain cut off from Anthropic's
+    two top models, which affects model selection and migration plans.
+  followup: >-
+    Watch for an actual re-enable date, the scope of restored access, and any official US
+    government statement.
+  sources:
+  - label: Anthropic statement
+    url: https://www.anthropic.com/news/fable-mythos-access
+  - label: Korea JoongAng Daily
+    url: https://www.koreajoongangdaily.com/business/anthropic-confident-of-reenabling-mythos-fable-5-access-in-coming-days-executive/12727522
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48589194
+- title: >-
+    Researcher catalogs about 10,000 GitHub repositories distributing Trojan archives
+  section: Top stories
+  category: Security
+  status: developing
+  blurb: >-
+    Roughly 10,000 look-alike GitHub repositories copy real commit history and profiles, then
+    serve trojanized archives that evade URL scanning.
+  summary: >-
+    A 2026-06-18 write-up describes roughly 10,000 fresh non-fork GitHub repositories that
+    copy a legitimate repo's commit history and contributor profiles, then push periodic "Update
+    README.md" commits pointing at a trojanized zip. The archive URLs scan clean on VirusTotal
+    while the zip itself flags as a Trojan. The author found them by filtering GHArchive events
+    for commit-frequency and README-only patterns and published a detection script. Some repositories
+    persisted for over a year; GitHub does not auto-remove them.
+  why: >-
+    Developers searching GitHub for tools can land on look-alike repositories whose payloads
+    evade URL-based scanning, extending the supply-chain risk seen in recent npm and AUR campaigns.
+  followup: >-
+    Track GitHub takedowns and any broader attribution. Tracked in `memory/followups.md`.
+  comments: >-
+    HN commenters note the true count likely exceeds 10,000 because of API limits and discuss
+    the reputational-laundering technique of cloning real contributor profiles.
+  sources:
+  - label: orchidfiles.com write-up
+    url: https://orchidfiles.com/github-repositories-distributing-malware/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48583928
+- title: DeepSeek adds a Vision image-understanding mode to its chat
+  section: AI
+  category: AI
+  status: developing
+  blurb: >-
+    DeepSeek added Vision mode to its chat for image understanding alongside its existing
+    expert and flash modes.
+  summary: >-
+    DeepSeek added a Vision mode in beta to its chat interface for image-understanding tasks,
+    alongside its existing expert and flash modes. Reporting frames this as DeepSeek's first
+    user-facing multimodal capability and ties it to the Chinese model price war. DeepSeek
+    has previously shipped open-weight vision models (DeepSeek-VL, VL2, Janus, OCR), but a
+    primary changelog for this chat feature was not published.
+  why: >-
+    Native image input in DeepSeek's low-cost chat broadens the set of cheap multimodal options
+    practitioners can evaluate.
+  followup: >-
+    Watch for a model card, API exposure, and pricing for the vision capability, and whether
+    it is V4-based.
+  sources:
+  - label: South China Morning Post
+    url: https://www.scmp.com/tech/tech-trends/article/3351892/whale-can-now-see-deepseek-adds-ai-vision-major-move
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48581458
+- title: Anthropic Fable 5 and Mythos 5 restoration
+  section: AI
+  category: AI
+  status: developing
+  blurb: >-
+    SK Telecom identified as the Korean telecom at center of Mythos dispute; Anthropic said
+    access should return within coming days.
+  summary: >-
+    See the Top stories item. The new signal today is the "coming days" restoration guidance
+    and Wired's identification of SK Telecom in the Mythos dispute. No restoration has occurred
+    yet.
+  why: >-
+    The case remains the clearest recent example of US export controls reaching a hosted frontier
+    model.
+  sources:
+  - label: Anthropic statement
+    url: https://www.anthropic.com/news/fable-mythos-access
+  - label: Wired
+    url: https://www.wired.com/story/sk-telecom-anthropic-mythos
+- title: Datasette Apps run sandboxed HTML and AI-generated code over a database
+  section: Agentic coding
+  category: Agentic coding
+  status: confirmed
+  blurb: >-
+    Datasette Apps are sandboxed HTML and JavaScript applications that run read-only SQL directly
+    against a Datasette instance.
+  summary: >-
+    Simon Willison published Datasette Apps on 2026-06-18: self-contained HTML and JavaScript
+    applications that run in sandboxed iframes on a Datasette instance. They can execute read-only
+    SQL directly and writes through pre-configured stored queries, and the sandbox blocks
+    cookies, localStorage, and external exfiltration. The design explicitly targets accepting
+    AI-generated code while keeping a hard security boundary.
+  why: >-
+    It is a concrete pattern for letting an LLM produce runnable data apps without granting
+    unrestricted database or network access.
+  followup: Watch for adoption and whether the sandbox model holds up under review.
+  sources:
+  - label: Simon Willison
+    url: https://simonwillison.net/2026/Jun/18/datasette-apps/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48593731
+- title: Enterprise-Managed Authorization for MCP
+  section: Agentic coding
+  category: Agentic coding
+  status: confirmed
+  blurb: >-
+    IdP-governed single-sign-in for MCP server access is now stable across Claude, Claude
+    Code, Cowork, and VS Code integrations.
+  summary: >-
+    See the Top stories item. EMA stabilizes the IdP-governed, single-sign-in path for MCP
+    server access across Claude, Claude Code, Cowork, and VS Code.
+  why: This is the enterprise governance layer the MCP ecosystem has lacked.
+  sources:
+  - label: Model Context Protocol blog
+    url: https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth/
+- title: Splunk Enterprise CVE-2026-20253 under active exploitation
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    Splunk Enterprise CVSS 9.8 file-write flaw is actively exploited; affects 10.0.0-10.0.6
+    and 10.2.0-10.2.3, patched in 10.0.7 and 10.2.4.
+  summary: >-
+    See the Top stories item. Unauthenticated arbitrary file write (CVSS 9.8) via a Splunk
+    Enterprise PostgreSQL sidecar endpoint, affecting 10.0.0 to 10.0.6 and 10.2.0 to 10.2.3,
+    patched in 10.0.7 and 10.2.4. CISA KEV addition 2026-06-18 with a three-day federal deadline.
+  why: Active exploitation of widely deployed log and SIEM infrastructure.
+  sources:
+  - label: Splunk advisory SVD-2026-0603
+    url: https://advisory.splunk.com/advisories/SVD-2026-0603
+  - label: Horizon3.ai analysis
+    url: https://horizon3.ai/attack-research/vulnerabilities/cve-2026-20253/
+- title: AMD removes TSME memory encryption from consumer Ryzen CPUs in firmware
+  section: Security
+  category: Security
+  status: developing
+  blurb: >-
+    AGESA 1.2.7.0 firmware disabled Transparent Secure Memory Encryption on consumer Ryzen
+    parts while leaving BIOS toggle visible but inert.
+  summary: >-
+    AGESA 1.2.7.0 firmware disabled Transparent Secure Memory Encryption (TSME) on consumer
+    Ryzen parts while leaving the BIOS toggle visible but inert. The flag DfIsTsmeEnabled
+    is set FALSE for consumer parts and TRUE for PRO and EPYC. TSME encrypts all RAM under
+    firmware control, blocking cold-boot, DRAM-snooping, and module-removal attacks. AMD's
+    first explicit statement says TSME is a feature for PRO CPUs under AMD PRO Technologies,
+    despite AMD engineers having recommended it on consumer parts in 2020 and 2025.
+  why: >-
+    A silently removed hardware memory-encryption protection leaves consumer Ryzen users exposed
+    to physical-access attacks they may believe are mitigated.
+  followup: >-
+    Watch for an AMD revert, documentation, or an AGESA update restoring TSME. Tracked in
+    `memory/followups.md`.
+  sources:
+  - label: Tom's Hardware
+    url: https://www.tomshardware.com/pc-components/cpus/amd-silently-removes-memory-encryption-from-consumer-ryzen-cpus-leaving-users-unaware-that-they-may-be-vulnerable-security-feature-vanishes-after-newer-agesa-firmware-amd-engineers-go-radio-silent-when-pressed-about-the-change
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48582320
+- title: GitHub repositories distributing Trojan archives
+  section: Security
+  category: Security
+  status: developing
+  blurb: >-
+    Look-alike GitHub repositories serve trojanized archives that evade URL-based scanning,
+    extending developer-targeted supply-chain abuse.
+  summary: >-
+    See the Top stories item. About 10,000 look-alike repositories serve trojanized archives
+    whose URLs pass VirusTotal while the payload does not.
+  why: It extends developer-targeted supply-chain abuse onto GitHub's search surface.
+  sources:
+  - label: orchidfiles.com write-up
+    url: https://orchidfiles.com/github-repositories-distributing-malware/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48583928
+- title: Let's Encrypt production ACME API logs errors after an upstream network event
+  section: Outages
+  category: Outage
+  status: developing
+  blurb: >-
+    Let's Encrypt production ACME API suffered upstream network disruption 2026-06-18; most
+    requests succeeded but some received error responses.
+  summary: >-
+    Let's Encrypt's status page recorded an incident on its production ACME API (acme-v02.api.letsencrypt.org)
+    starting 2026-06-18 16:04 UTC. An upstream network event disrupted traffic between two
+    of its datacenters, and some clients received 400 and 500 responses while most requests
+    still succeeded. As of the 2026-06-19 04:45 UTC update the API was operating normally
+    but with reduced redundancy, with Let's Encrypt still working with its upstream ISP to
+    resolve the root cause. The matching HN thread surfaced on 2026-06-19 as renewal errors.
+  why: >-
+    Let's Encrypt issues certificates for a large share of the public web, so renewal failures
+    during the window risk expired certificates for clients without retry headroom.
+  followup: Watch for full redundancy restoration and any Let's Encrypt post-incident note.
+  sources:
+  - label: Let's Encrypt status
+    url: https://letsencrypt.status.io/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48594715
+- title: OpenAI logs FedRAMP and enterprise SSO incidents on 2026-06-18
+  section: Outages
+  category: Outage
+  status: developing
+  blurb: >-
+    OpenAI recorded three incidents on 2026-06-18: ChatGPT loading failures, SSO login errors
+    for Enterprise, and FedRAMP workspace degradation.
+  summary: >-
+    OpenAI's status history records three 2026-06-18 incidents: ChatGPT failing to load or
+    save (03:55, recovered), SSO login errors for some ChatGPT Enterprise workspaces (11:55,
+    recovered), and degraded performance for FedRAMP workspaces and API orgs (19:41, listed
+    as under investigation). No 2026-06-19 incident was listed at the time of this run.
+  why: >-
+    Repeated enterprise and FedRAMP-scoped incidents affect regulated and SSO-dependent ChatGPT
+    deployments.
+  followup: >-
+    Watch for resolution of the FedRAMP workspace incident and any OpenAI root-cause note.
+  sources:
+  - label: OpenAI status history
+    url: https://status.openai.com/history
+- title: Godot 4.7 released as stable
+  section: Developer tools
+  category: Dev tools
+  status: confirmed
+  blurb: >-
+    Godot 4.7 brings HDR output, AreaLight3D, redesigned Asset Store, standalone Android export,
+    and Android XR and Steam Frame day-one support.
+  summary: >-
+    The Godot engine team published 4.7 stable on 2026-06-18, a feature release that preserves
+    compatibility with the 4.x line. Headline changes include HDR output on Windows, macOS,
+    iOS, visionOS, and Linux/Wayland, an AreaLight3D node, a redesigned Asset Store, standalone
+    Android export through a GABE companion app, GDScript implementing Java interfaces, a
+    VirtualJoystick node with gyro aiming, and day-one Android XR and Steam Frame support
+    with Vulkan subsampled foveated rendering. The team recommends reviewing the migration
+    guide for breaking changes before upgrading existing projects.
+  why: >-
+    Godot is a widely used open-source game engine, and 4.7 broadens its mobile, XR, and HDR
+    reach without breaking the 4.x compatibility line.
+  sources:
+  - label: Godot 4.7 release notes
+    url: https://godotengine.org/releases/4.7/
+  - label: GitHub release
+    url: https://github.com/godotengine/godot/releases/tag/4.7-stable
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48585879
+- title: 'Practitioner write-up: migrating dotfiles from GNU Stow to chezmoi'
+  section: Developer tools
+  category: Dev tools
+  status: discussion
+  blurb: >-
+    A 2026-06-18 post details migrating dotfiles from GNU Stow symlink farms to chezmoi's
+    templated source-state model with secret handling.
+  summary: >-
+    A 2026-06-18 post details moving a dotfiles setup from GNU Stow's symlink-farm model to
+    chezmoi's templated, source-state model, covering machine-specific templating, secret
+    handling, and the migration mechanics. It is an experience write-up, not a release.
+  why: >-
+    chezmoi is on the watchlist; the post is a concrete reference for teams standardizing
+    cross-machine dotfiles management.
+  sources:
+  - label: rednafi.com
+    url: https://rednafi.com/misc/chezmoi/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48588413
+- title: Emacs 31 daily-driving notes ahead of the 31.1 release
+  section: Developer tools
+  category: Dev tools
+  status: discussion
+  blurb: >-
+    A practitioner write-up covers Emacs 31 tree-sitter defaults and editable xref workflow
+    to help early adopters before the 31.1 release.
+  summary: >-
+    A practitioner write-up covers the Emacs 31 changes worth adopting now, centered on the
+    tree-sitter default behavior (treesit-enabled-modes, grammar auto-install) and the editable
+    xref workflow that the 31.0.90 pretest introduced. It complements the pretest announcement
+    tracked on 2026-06-18.
+  why: >-
+    It gives early adopters a concrete view of the tree-sitter defaults before Emacs 31.1
+    ships.
+  sources:
+  - label: rahuljuliato.com
+    url: https://www.rahuljuliato.com/posts/emacs-31-around-the-corner/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48584135
+- title: .gitignore is not the only way to ignore files in Git
+  section: Developer tools
+  category: Dev tools
+  status: discussion
+  blurb: >-
+    A reference post walks through Git's ignore mechanisms beyond .gitignore: .git/info/exclude,
+    core.excludesFile, and skip-worktree options.
+  summary: >-
+    A reference post walks through Git's ignore mechanisms beyond a tracked .gitignore: the
+    per-repo .git/info/exclude, the global core.excludesFile, and assume-unchanged and skip-worktree
+    for tracked files. It clarifies which mechanism is local-only versus shared.
+  why: >-
+    The distinction between shared and local ignore rules is a common source of accidental
+    commits and confusion in teams.
+  sources:
+  - label: nelson.cloud
+    url: https://nelson.cloud/.gitignore-isnt-the-only-way-to-ignore-files-in-git/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48583356
+- title: TypeScript 7.0 release candidate
+  section: Languages and runtimes
+  category: Languages
+  status: confirmed
+  blurb: >-
+    The Go-rewritten TypeScript compiler reaches RC at roughly 10x 6.0's speed with config-default
+    breaking changes including rootDir and types.
+  summary: >-
+    See the Top stories item. The Go-port compiler reaches RC at roughly 10 times the speed
+    of 6.0, with config-default breaking changes (`rootDir`, `types`, removed `es5` and `node10`
+    resolution).
+  why: >-
+    It is the largest TypeScript toolchain change in years and sets near-term migration work.
+  sources:
+  - label: TypeScript blog
+    url: https://devblogs.microsoft.com/typescript/announcing-typescript-7-0-rc/
+- title: SteamOS 3.8 released as stable
+  section: Linux and kernel
+  category: Linux/Kernel
+  status: confirmed
+  blurb: >-
+    Valve promoted SteamOS 3.8 stable; the Arch-based immutable Linux distribution underpins
+    Steam Deck and feeds changes back to Linux gaming.
+  summary: >-
+    Valve promoted SteamOS 3.8 to stable. The Arch-based, immutable Linux distribution underpins
+    the Steam Deck and the broader SteamOS device push. The release continues Valve's cadence
+    of platform updates feeding back into the Linux gaming stack.
+  why: >-
+    SteamOS changes propagate into Proton, Mesa, and kernel work that the wider Linux desktop
+    and handheld ecosystem depends on.
+  sources:
+  - label: Steam news
+    url: https://store.steampowered.com/news/app/1675200/view/691784599739266972
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48580686
+- title: Ubiquiti launches an Enterprise NAS built on ZFS
+  section: Infrastructure
+  category: Infrastructure
+  status: discussion
+  blurb: >-
+    Ubiquiti announced Enterprise NAS with eight Arm cores, 64GB ECC memory, 16 expandable
+    drive bays, dual NVMe cache, and dual 25Gbps ports.
+  summary: >-
+    Ubiquiti announced its Enterprise NAS (ENAS) on 2026-06-18: a ZFS-based appliance with
+    8 Arm Neoverse N2 cores, 64GB ECC memory, 16 drive bays expandable past one petabyte raw,
+    dual NVMe cache, and dual 25 Gigabit SFP28 ports with redundant power. It targets file
+    storage, iSCSI for virtualization, and identity-driven sharing; cross-site backup orchestration
+    is listed as coming soon.
+  why: >-
+    A ZFS appliance integrated into an existing Ubiquiti network is a lower-cost on-prem storage
+    option versus subscription-based competitors.
+  comments: >-
+    HN commenters highlight the absence of a recurring subscription as the main draw and ask
+    about Time Machine and network-backup integration, with interest in replacing DIY NAS
+    builds.
+  sources:
+  - label: Ubiquiti blog
+    url: https://blog.ui.com/article/introducing-enterprise-nas
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48585866
+- title: American Express details a cell-based architecture for payment resilience
+  section: Engineering posts
+  category: Engineering post
+  status: confirmed
+  blurb: >-
+    American Express runs payments on independent cells, each with its own microservices and
+    databases, routing by deterministic data locality.
+  summary: >-
+    Benjamin Cane describes how American Express runs core payments on independent cells,
+    each holding its own microservices, databases, and infrastructure. Static reference data
+    is replicated to every cell to avoid synchronous lookups; a Global Transaction Router
+    is the only cross-cell path and routes by deterministic data locality. On a mid-transaction
+    cell failure, the system reroutes and restarts in a healthy cell with idempotency keys
+    rather than resuming across boundaries, and critical-path components avoid blocking on
+    logging or config.
+  why: >-
+    It is a concrete, production account of bounding failure domains and preserving predictable
+    latency in a high-volume payments system.
+  sources:
+  - label: americanexpress.io
+    url: https://americanexpress.io/cell-based-architecture-for-resilient-payment-systems/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48547969
+- title: Mark Nottingham on how to define a well-known URI
+  section: Engineering posts
+  category: Engineering post
+  status: discussion
+  blurb: >-
+    RFC 8615 co-author Mark Nottingham published guidance on designing .well-known URIs for
+    discovery, cautioning against shortener misuse.
+  summary: >-
+    Mark Nottingham, co-author of RFC 8615 and the IANA well-known URI registry expert, published
+    guidance on 2026-06-19 for designing `.well-known/` URIs. He argues they fit discovery
+    of facts about a site as a whole, such as access policies, and cautions against using
+    them as URL shorteners or legitimacy signals because that locks deployments into rigid
+    one-to-one site-to-service relationships. The post covers discovery mechanisms, content-metadata
+    tradeoffs, transition planning, and registering new well-known locations through the IANA
+    GitHub process.
+  why: >-
+    It is authoritative design guidance for a widely used web-platform mechanism, pairing
+    with the HTTP QUERY method (RFC 10008) standardized this week as part of the same protocol-hygiene
+    theme.
+  sources:
+  - label: mnot.net
+    url: https://mnot.net/blog/2026/well_known_uris
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48595331
+- title: AI talent and hardware cost signals
+  section: Markets and companies
+  category: Markets
+  status: confirmed
+  blurb: >-
+    Noam Shazeer's move to OpenAI and Apple's signal of AI-driven memory-cost price increases
+    reflect talent concentration and DRAM-NAND contention.
+  summary: >-
+    Two market items today carry engineering weight: Noam Shazeer's move from Google to OpenAI
+    (talent concentration at frontier labs) and Apple's signal that memory-cost-driven price
+    increases are unavoidable (AI demand reshaping the DRAM and NAND market). Both are detailed
+    under Top stories.
+  why: >-
+    Talent flow and the AI memory crunch are the two clearest current forces moving the frontier-model
+    and hardware supply chains.
+  sources:
+  - label: The Decoder
+    url: https://the-decoder.com/googles-gemini-co-lead-noam-shazeer-joins-openai-after-two-year-return-stint/
+  - label: BBC
+    url: https://www.bbc.com/news/articles/c3wyxvqdx1zo
+- title: 'Ask HN: tools for AI-assisted code review'
+  section: Hacker News
+  category: Pulse
+  status: discussion
+  blurb: >-
+    An Ask HN thread collected what practitioners use for AI-assisted code review, alongside
+    parallel thread on agent-review failures.
+  summary: >-
+    An Ask HN thread collects what practitioners use for AI-assisted code review. It runs
+    alongside a separate "how have you gotten burned by coding agents" thread, giving a paired
+    view of where teams find value and where agent-driven review fails.
+  why: >-
+    The threads are practitioner signal on real agent-review workflows rather than vendor
+    claims.
+  sources:
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48587808
+- title: 'Show HN: Are You in the Weights?'
+  section: Hacker News
+  category: Pulse
+  status: discussion
+  blurb: >-
+    A Show HN project lets users probe whether they appear memorized in LLM weights, surfacing
+    concerns about training-data provenance.
+  summary: >-
+    A Show HN project lets people probe whether information about them appears to be memorized
+    in large language model weights. The thread debates memorization, training-data provenance,
+    and privacy implications.
+  why: >-
+    It surfaces ongoing practitioner concern about what training corpora retain about individuals.
+  sources:
+  - label: project
+    url: https://www.intheweights.com/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48591348
+- title: Project Valhalla explainer trends as JEP 401 nears JDK 28
+  section: Hacker News
+  category: Pulse
+  status: discussion
+  blurb: >-
+    A JVM Weekly explainer of Project Valhalla trended; value objects without identity enable
+    inlining and flattening, heading toward JDK 28 preview.
+  summary: >-
+    A JVM Weekly explainer of Project Valhalla reached the HN front page at 173 points as
+    JEP 401 (Value Classes and Objects) heads for an opt-in preview in JDK 28. Value objects
+    have no identity, which lets the JVM flatten and inline them. The underlying JEP 401 merge
+    to OpenJDK mainline is tracked in `memory/followups.md`.
+  why: >-
+    It is practitioner signal on how Java developers read the Valhalla tradeoffs as the feature
+    finally approaches a preview.
+  comments: >-
+    HN commenters note the first preview does not yet deliver a flat `ArrayList<Point>`, debate
+    whether dropping object identity was necessary, and compare the decade-long retrofit to
+    .NET structs that shipped years earlier.
+  sources:
+  - label: jvm-weekly.com
+    url: https://www.jvm-weekly.com/p/project-valhalla-explained-how-a
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48595511
+- title: 'Ask HN: Is anyone using the A2A protocol?'
+  section: Hacker News
+  category: Pulse
+  status: discussion
+  blurb: >-
+    An Ask HN thread asks whether Agent2Agent protocol for agent interoperability sees production
+    adoption beyond announcements versus MCP.
+  summary: >-
+    An Ask HN thread asks whether practitioners are actually deploying the Agent2Agent (A2A)
+    protocol for agent interoperability, weighing real adoption against MCP and newer agent-interop
+    standards.
+  why: >-
+    It is practitioner signal on whether agent-to-agent interop protocols see production use
+    beyond announcements, the same governance theme as the MCP EMA item above.
+  sources:
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=48582679

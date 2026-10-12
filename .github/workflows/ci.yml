@@ -1,15 +1,11 @@
 name: CI
 
-# Validates the Python package (lint, format, types, tests with the gate
-# coverage floor), the full site build, and Markdown/TOML/JSON formatting on
-# every PR and push to main. Snapshot data commits skip CI: they are
-# bot-authored JSON validated by the snapshot pipeline itself.
+# Lint, types, tests, the site build, and formatting, on every pull request
+# and push to main.
 on:
   pull_request:
   push:
     branches: [main]
-    paths-ignore:
-      - "data/snapshots/**"
 
 permissions:
   contents: read
@@ -41,18 +37,11 @@ jobs:
           uv run ruff format --check .
       - name: Type check
         run: uv run mypy
-      # AGENTS.md says the layer direction is a CI failure rather than a review
-      # comment. It was neither until now: the contracts existed and nothing ran
-      # them outside a developer's own `make imports`.
-      - name: Import contract
-        run: uv run lint-imports
       - name: Tests
         run: uv run pytest
 
-      # requirements-agent.txt is a flat pinned file, so a dependabot bump of
-      # one transitive pin can contradict another package's exact peer pin and
-      # still look green. Nothing else in CI installs it; the first failure
-      # would otherwise be the unattended digest run.
+      # A dependabot bump of one pin can contradict another package's peer
+      # pin. Without this step the first failure is the scheduled run.
       - name: Agent requirements resolve
         run: python3 -m pip install --dry-run --require-hashes -r requirements/agent.txt
 
@@ -75,12 +64,8 @@ jobs:
       - name: Build and check site
         run: make check
 
-  # Formatting drift check for owner-edited files (config, prompts, memory,
-  # README). dprint and rumdl both exclude site/content/ and snapshots/, and
-  # both tool versions are pinned in the Makefile, so this job and
-  # `make fmt-check` locally always agree. It reports drift; the publish gate
-  # (`make check`) stays formatting-free so unattended runs are never blocked
-  # on it.
+  # Formatting drift in owner-edited files. Tool versions are pinned in the
+  # Makefile, so this job and `make fmt-check` agree.
   format:
     runs-on: ubuntu-latest
     timeout-minutes: 10

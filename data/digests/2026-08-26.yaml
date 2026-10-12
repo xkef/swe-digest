@@ -1,0 +1,415 @@
+date: '2026-08-26'
+stories:
+- title: >-
+    DuckLabs will join AWS in early September, and DuckDB stays MIT licensed under the nonprofit
+    DuckDB Foundation
+  section: Top stories
+  category: Infrastructure
+  status: confirmed
+  blurb: >-
+    The DuckDB company joins AWS in early September while the nonprofit Foundation keeps the
+    MIT-licensed projects and the IP.
+  summary: >-
+    DuckLabs published an announcement dated 2026-08-26, signed by Mark Raasveldt and Hannes
+    Muehleisen, stating that the company will join AWS with the move expected effective in
+    early September. The post states that DuckDB, DuckLake, Quack, and the other open-source
+    components stay free and MIT licensed, that the nonprofit DuckDB Foundation continues
+    to hold the IP and steward the projects, and that the team stays together in Amsterdam.
+    Two commitments are stated and not yet delivered: a technical advisory board inside the
+    Foundation, and opening the extension stack so extensions signed by other developers and
+    organizations can run. The post quotes Andy Warfield of AWS, Peter Boncz for CWI on the
+    Foundation board, Torsten Grust of Tuebingen, Jordan Tigani of MotherDuck, and George
+    Fraser of Fivetran. No terms are disclosed, and this run read no AWS-side page, so the
+    block rests on the DuckLabs announcement alone. The Hacker News title reads `AWS Acquires
+    DuckDB`, which is not what the announcement states: the company is acquired and the projects
+    stay with the Foundation.
+  why: >-
+    DuckDB reports more than one million downloads a day and sits inside a large number of
+    data pipelines, so the MIT license and the Foundation, rather than founder independence,
+    are what a downstream user now relies on.
+  followup: >-
+    Track whether the Foundation's technical advisory board and the signed-extension stack
+    arrive, and whether AWS publishes its own statement or any terms.
+  sources:
+  - label: primary
+    url: https://ducklabs.com/news/2026/08/26/ducklabs-to-join-aws
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49448321
+- title: >-
+    Nitter and XCancel both stop after cease and desist letters, and XCancel names X Corp
+    as the sender
+  section: Top stories
+  category: Infrastructure
+  status: confirmed
+  blurb: >-
+    Nitter and XCancel are both stopped after cease and desist letters, and XCancel names
+    X Corp as the sender of its letter.
+  summary: >-
+    Issue 1442 on zedeus/nitter carries comment 5413651441 with `user.login` zedeus and `author_association`
+    OWNER, created 2026-08-25T16:42:56Z, stating that cease and desist letters were received
+    and that all nitter instances should be expected to remain down for the foreseeable future.
+    The xcancel.com front page serves its own notice, which names X Corp as the sender of
+    a letter dated Monday 24 August at 8PM EST, states the service is stopped until further
+    notice, and states that XCancel is seeking legal advice. The GitHub API reports the repository
+    as archived, with 13,548 stars and 943 forks under AGPL-3.0. Neither letter is public.
+    XCancel names X Corp and the nitter owner names no sender, so this entry states no grounds
+    for the letters and does not place both with the same party.
+  why: >-
+    Nitter and XCancel were how tools, archives, and researchers read X without an account,
+    and both are stopped by legal action rather than by a rate limit, so anything depending
+    on either needs a different path and self-hosting now carries the same legal exposure.
+  followup: >-
+    Track the legal outcome for either party, and whether a fork continues maintenance.
+  sources:
+  - label: issue
+    url: https://github.com/zedeus/nitter/issues/1442
+  - label: XCancel notice
+    url: https://xcancel.com
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49437283
+  - label: XCancel discussion
+    url: https://news.ycombinator.com/item?id=49440786
+- title: >-
+    Researcher signs forged C2PA images on a fully patched Pixel, and Google closes the report
+    as Won't fix (infeasible)
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    A researcher signed forged C2PA images on a fully patched Pixel, and Google closed the
+    report as Won't fix.
+  summary: >-
+    David Buchanan published first-hand research signing forged C2PA images and video on a
+    fully patched Pixel device, with a proof of concept. The post's thesis is that C2PA on
+    Android cannot be realistically patched, because low-cost hardware fault injection yields
+    valid signatures regardless of patch level, and the published demo image and video were
+    signed through the hardware attack rather than the software path. It names CVE-2026-43499
+    as a one-click root path that still works at current Pixel patch levels with the bootloader
+    locked, and states that Meta patched that CVE on Quest earlier this month while Google
+    has shipped no Pixel patch. Google closed the report as Won't fix (infeasible) and paid
+    a 7,500 dollar bounty for an attack class its bug bounty formally excludes. The post states
+    that every Android C2PA camera app resting on Key Attestation or Play Integrity breaks
+    the same way, so the result is not Pixel-specific. One counterexample is in the post:
+    the author's PTE bit-flip step stopped working on a Samsung A07 after an update enabled
+    Samsung's RKP mitigation, whose EL2 hypervisor blocks the overwrite, and he states he
+    has untested plans to work around it. The post also states that a separate private key
+    disclosure was reported and patched within a day while most C2PA verifiers do not check
+    revocation.
+  why: >-
+    C2PA on Android rests on Key Attestation and Play Integrity, a rooted-but-locked device
+    defeats both, and the hardware path defeats them at any patch level, so the signature
+    is not evidence that a camera captured the image.
+  followup: >-
+    Track whether Google revises the hardware attestation basis for C2PA on Android, or the
+    bug bounty scope for this attack class.
+  sources:
+  - label: primary
+    url: https://www.da.vidbuchanan.co.uk/blog/android-c2pa.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49439499
+- title: >-
+    OpenAI publishes the first Jalapeno benchmarks at Hot Chips 2026, and SemiAnalysis reports
+    the 700W part beating Blackwell on throughput per megawatt
+  section: Top stories
+  category: AI
+  status: developing
+  blurb: >-
+    OpenAI published the first Jalapeno benchmarks at Hot Chips 2026, and every performance
+    number came from OpenAI.
+  summary: >-
+    OpenAI published the first benchmark numbers for its in-house Jalapeno inference chip
+    at Hot Chips 2026. SemiAnalysis reports the 700W part beating Blackwell on throughput
+    per megawatt, states it verified the InferenceX runs in person, and notes it did not run
+    the full suite and has no AgentX results. Every performance number was supplied by OpenAI,
+    the chip is at engineering samples, and SemiAnalysis argues the Blackwell comparison is
+    unfair because Jalapeno competes with Rubin, which is shipping.
+  why: >-
+    A first-generation in-house inference ASIC reaching flagship-GPU efficiency changes who
+    sets the price of served tokens, though the sourcing does not yet support the claim independently.
+  followup: Watch for independent third-party runs and for AgentX results.
+  sources:
+  - label: SemiAnalysis
+    url: https://newsletter.semianalysis.com/p/openai-jalapeno-better-than-nvidia
+  - label: Tom's Hardware
+    url: https://www.tomshardware.com/tech-industry/semiconductors/openai-says-its-jalapeno-chip-beats-nvidias-gb300-in-first-published-benchmarks
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49434378
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49439565
+- title: >-
+    PromptArmor established an attacker command loop inside the Microsoft Copilot Cowork sandbox,
+    and Microsoft confirmed a mitigation on 2026-08-19
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    PromptArmor held an attacker command loop inside the Microsoft Copilot Cowork sandbox,
+    mitigated on 2026-08-19.
+  summary: >-
+    PromptArmor reports that Microsoft Copilot Cowork was vulnerable to a persistent attacker
+    command loop established inside its sandbox, and that the user-facing stop button did
+    not end the loop. The escape used a file-sync service running outside the sandbox that
+    accepted an attacker-supplied URL, reachable from ordinary Skill code a user downloaded.
+    The disclosure timeline gives the report to Microsoft as 2026-06-24, and states that Microsoft
+    confirmed on 2026-08-19 that the issue had been mitigated, so the write-up describes a
+    fixed condition rather than a live one. Affected versions do not apply, because Cowork
+    is a hosted service with no user-visible version and the mitigation was server-side.
+  why: >-
+    The network isolation the agent's threat model depended on was reachable from ordinary
+    Skill code, so sandboxing the agent process does not bound the agent when adjacent services
+    are not sandboxed with it.
+  sources:
+  - label: primary
+    url: https://www.promptarmor.com/resources/microsoft-copilot-cowork-sandbox-bypass
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49441298
+- title: >-
+    Qwen3.8-Flash-Next ships open weights at 125B total and 6B active, billed as an experimental
+    preview of the Qwen4 architecture
+  section: AI
+  category: AI
+  status: confirmed
+  blurb: >-
+    Qwen3.8-Flash-Next ships open weights at 125B total and 6B active under a community license,
+    not a permissive one.
+  summary: >-
+    The Hugging Face page that carried a countdown placeholder earlier on this date is now
+    a model card with weights and a technical report link, and it bills the model as an experimental
+    preview of the Qwen4 architecture. The card states 125B total parameters with 6B activated,
+    plus 51B of n-gram embedding and 4B of MTP, 48 layers, 512 experts with 10 routed and
+    1 shared activated, a native context of 262,144 extensible to 1,000,000, and a hidden
+    layout pairing Gated DeltaNet with Qwen Sparse Attention. The license is qwen-community-1.0
+    rather than a standard permissive license. Every benchmark figure on the card is vendor-supplied
+    and several carry harness caveats in the card's own footnotes.
+  why: >-
+    The architecture is the substance rather than the scores, because the 51B n-gram embedding
+    is a parameter axis that offloads more cheaply than adding experts, and the micro-block
+    sparse attention is what carries the context claim.
+  followup: >-
+    Track independent evaluations and whether the Qwen4 line adopts the same attention layout.
+  sources:
+  - label: model card
+    url: https://huggingface.co/Qwen/Qwen3.8-Flash-Next
+  - label: card source
+    url: https://huggingface.co/Qwen/Qwen3.8-Flash-Next/raw/main/README.md
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49448210
+- title: >-
+    Z.ai releases GLM-5.3-Flash under MIT at 320B total and 18B active, the first natively
+    multimodal model in the GLM-5 series
+  section: AI
+  category: AI
+  status: confirmed
+  blurb: >-
+    Z.ai publishes GLM-5.3-Flash under MIT at 320B total and 18B active, the first natively
+    multimodal GLM-5 model.
+  summary: >-
+    The Hugging Face card for GLM-5.3-Flash is licensed MIT and states 320B total parameters
+    with 18B active, describing the model as the first natively multimodal entry in the GLM-5
+    series. The stated architecture combines hybrid sparse and linear attention with Manifold-Constrained
+    Hyper-Connections, over a claimed 30T-token multimodal pre-training corpus, and the card
+    publishes serving paths for SGLang, vLLM, TokenSpeed, and KTransformers. The comparisons
+    to GLM-5.2 and to Claude Opus 4.8 are vendor-run, and the card's own footnote states that
+    its HLE figure is measured with tools on the full set under a 300K context management
+    strategy and judged by GPT-5.6-luna rather than the task default. Z.ai's own blog returned
+    an empty body to this run, so the block rests on the model card.
+  why: >-
+    An MIT license on a 320B-parameter multimodal checkpoint with published vLLM, SGLang,
+    and KTransformers paths makes it deployable without a negotiated license, which is the
+    part the benchmark table does not decide.
+  sources:
+  - label: model card
+    url: https://huggingface.co/zai-org/GLM-5.3-Flash
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49449507
+- title: >-
+    CVE-2026-18963 lets an unauthenticated attacker complete a Keycloak password reset without
+    the verification link
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    CVE-2026-18963 lets an unauthenticated attacker finish a Keycloak password reset without
+    the verification link.
+  summary: >-
+    CVE-2026-18963 lets an unauthenticated attacker complete a Keycloak password reset without
+    possessing the verification link. The CVE was published 2026-08-18 and is rated CVSS 9.1,
+    with errata shipped 2026-08-18 and 2026-08-20. Red Hat lists Red Hat build of Keycloak
+    26.4 as affected with the fix in 26.4.15 and container 26.4-23, Red Hat build of Keycloak
+    26.6 as affected with the fix in 26.6.6-1 and container 26.6-12, Red Hat JBoss EAP Expansion
+    Pack as affected, and Red Hat Single Sign-On 7 as unaffected. Red Hat's mitigation section
+    gives turning `Forgot password` off across all realms, under Realm settings and Login,
+    as a temporary measure for deployments that cannot patch. NVD's CISA-ADP SSVC entry dated
+    2026-08-20 records exploitation as none, and no cited source records a public exploit.
+  why: >-
+    Keycloak is the identity layer in front of other systems, so an unauthenticated account
+    takeover at CVSS 9.1 is worth patching on the fixed versions above or disabling password
+    reset until it is done.
+  followup: >-
+    Track advisories from downstream Keycloak distributions and managed identity providers.
+  sources:
+  - label: Red Hat CVE page
+    url: https://access.redhat.com/security/cve/CVE-2026-18963
+  - label: NVD
+    url: https://nvd.nist.gov/vuln/detail/CVE-2026-18963
+  - label: RHSA-2026:56519
+    url: https://access.redhat.com/errata/RHSA-2026:56519
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49441617
+- title: >-
+    GitHub opens a critical Actions incident at 15:11 UTC, and a database primary failover
+    does not fully mitigate
+  section: Outages
+  category: Outage
+  status: developing
+  blurb: >-
+    GitHub Actions has been at major outage since 15:11 UTC, with recovery observed at 16:50
+    UTC and the incident still open.
+  summary: >-
+    GitHub opened incident y1t7p9fzrlj2, titled `Incident with Actions`, at 15:11 UTC on 2026-08-26
+    with impact critical, Actions at major outage and Pages at degraded performance at open.
+    The published updates run 15:12 Pages degraded, 15:23 an issue identified with a database
+    primary and a failover to a replica underway, 15:48 the failover briefly improved performance
+    but did not fully mitigate, inbound traffic throttled and upstream Vitess issues under
+    investigation, 16:14 believed identified and addressed with traffic ramping back slowly
+    and some customers still seeing delays, 16:49 Pages operating normally, and 16:50 recovery
+    being observed with delayed queues burning down and full completion expected within the
+    hour. The incident carried no resolved entry at the last read, so it was still open.
+  why: >-
+    Actions is the CI path for a large share of public and private repositories, so an open
+    critical incident affects builds and Pages deploys rather than a background service.
+  followup: Track the resolution and the root cause analysis GitHub states it will publish.
+  comments: >-
+    Hacker News item 49450722 links incident hcbtzksccj2f, a separate and lesser event titled
+    `Disruption with some GitHub services` at impact minor, open 15:09 to 16:07 UTC and resolved.
+    The thread is discussion of the visible symptoms rather than of the Actions incident tracked
+    here.
+  sources:
+  - label: incident
+    url: https://www.githubstatus.com/incidents/y1t7p9fzrlj2
+  - label: incident API
+    url: https://www.githubstatus.com/api/v2/incidents.json
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49450722
+- title: >-
+    The mold author publishes a linker paper reporting 2.4x to 16.1x over lld, accepted to
+    ASPLOS 2027
+  section: Developer tools
+  category: Paper
+  status: confirmed
+  blurb: >-
+    The mold author published a linker design paper reporting 2.4x to 16.1x over lld, accepted
+    to ASPLOS 2027.
+  summary: >-
+    The author of the mold linker published a paper on its design, reporting speedups of 2.4x
+    to 16.1x over lld. The paper is accepted to ASPLOS 2027. The ablation reports that no
+    single optimization dominates the result.
+  why: >-
+    The speedup comes from parallelizing every pass rather than from one trick another linker
+    could adopt, which sets expectations for what incremental work on existing linkers can
+    recover.
+  sources:
+  - label: arXiv
+    url: https://arxiv.org/abs/2608.23228
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49433376
+- title: >-
+    Firefox 157 will ship JPEG XL on all platforms using a Rust decoder Mozilla required before
+    it would ship the format
+  section: Developer tools
+  category: Dev tools
+  status: confirmed
+  blurb: >-
+    Mozilla will ship JPEG XL in Firefox 157 on all platforms, using the Rust decoder it required
+    before shipping the format.
+  summary: >-
+    Mozilla announced intent to ship JPEG XL in Firefox 157 on all platforms. The decoder
+    is written in Rust, which Mozilla set as a condition before it would ship the format.
+    Mozilla put that challenge to the JPEG XL team at Google Research, which built `jxl-rs`,
+    now the core of Firefox's support. The intent-to-ship notice ran on the dev-platform list.
+    Mozilla projects that the format will be supported across browsers before the end of the
+    year, resting that on Chrome stating an intent to ship and on a partial Safari implementation
+    that lacks the progressive rendering the post highlights. Chrome has not shipped it.
+  why: >-
+    Mozilla's Rust condition sets a precedent for gating new C++ attack surface behind a rewrite,
+    and if the projected Chrome and Safari support lands, a second modern image format changes
+    the encode decision for anyone serving images.
+  sources:
+  - label: primary
+    url: https://hacks.mozilla.org/2026/08/intent-to-ship-jpeg-xl/
+  - label: dev-platform thread
+    url: https://groups.google.com/a/mozilla.org/g/dev-platform/c/3YMV4MS34KA
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49437946
+- title: >-
+    Fenris Creations begins moving EVE Online's 2.4 million lines of Python 2.7 to Python
+    3 and deploys the first stage to Tranquility
+  section: Languages and runtimes
+  category: Languages
+  status: confirmed
+  blurb: >-
+    Fenris Creations began moving EVE Online's 2.4 million lines of Python 2.7 to Python 3
+    and shipped stage one.
+  summary: >-
+    Fenris Creations, named as the publisher throughout the source, began migrating EVE Online's
+    2.4 million lines of Python 2.7 to Python 3 and deployed the first stage to the Tranquility
+    cluster. The published scan numbers state that 95.9 percent of files already compiled
+    under both versions. About 20,000 lines compile under both and behave differently.
+  why: >-
+    The scan numbers are the reusable part for anyone scoping a similar migration, because
+    the silent behaviour differences, not the compile failures, are what the file-level pass
+    rate hides.
+  sources:
+  - label: primary
+    url: https://www.eveonline.com/news/view/the-move-to-python-3-begins
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49433328
+- title: >-
+    First public release of the multikernel Linux tree runs several kernels on one machine
+    on bare metal without a hypervisor
+  section: Linux and kernel
+  category: Linux/Kernel
+  status: confirmed
+  blurb: >-
+    The multikernel Linux tree's first public release runs several kernels on one machine
+    with no hypervisor.
+  summary: >-
+    Cong Wang announced the first public release of the multikernel tree on the linux-kernel
+    list on 2026-08-25. The tree runs several independent kernel instances on one physical
+    machine on bare metal, with no hypervisor. The announcement carries its own lmbench and
+    will-it-scale tables, and puts the gain on the will-it-scale results while the lmbench
+    syscall-path controls are unchanged. The code is published at github.com/multikernel/linux.
+  why: >-
+    The published will-it-scale numbers put the gain on lock contention a single kernel cannot
+    shard, with unchanged syscall-path controls, which is a different lever from the namespace
+    and container isolation the same machine already has.
+  sources:
+  - label: announcement
+    url: https://lwn.net/ml/all/ao34RJ7aZ2BLd67S@pop-os.localdomain/
+  - label: repository
+    url: https://github.com/multikernel/linux
+  - label: submission
+    url: https://news.ycombinator.com/item?id=49444507
+- title: >-
+    A follow-up on executables as SQLite databases shows a webserver storing its own state
+    in the file it runs from
+  section: Engineering posts
+  category: Engineering post
+  status: confirmed
+  blurb: >-
+    A follow-up on executables as SQLite databases demonstrates a webserver storing its state
+    in the file it runs from.
+  summary: >-
+    A post dated 2026-08-24 at fzakaria.com follows up earlier work on executables as SQLite
+    databases. The demonstration is a webserver that stores its own state in the same file
+    it runs from, so the program and its data are one SQLite database reachable with ordinary
+    SQL. The post states that the proof of concept is half-baked and AI assisted.
+  why: >-
+    Making the container the database rather than a byte layout collapses deploys, diffs,
+    and content edits into ordinary SQL against one file, and the post is explicit that the
+    proof of concept is half-baked and AI assisted.
+  sources:
+  - label: post
+    url: https://fzakaria.com/2026/08/24/actually-queryable-executables
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49442589

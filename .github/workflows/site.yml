@@ -20,7 +20,6 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - "data/snapshots/**"
       - "data/runs/**"
   workflow_dispatch:
     inputs:
@@ -65,9 +64,7 @@ jobs:
           cache: false
       - name: Install Python deps
         run: python3 -m pip install --require-hashes -r requirements/base.txt
-      - name: Validate content
-        run: make check-content
-      - name: Build
+      - name: Check and build
         run: make build
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
@@ -93,7 +90,7 @@ jobs:
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
 
   # Lighthouse against the live site, asserting a perfect score in every
-  # category. Failures surface through the ops scheduled scan.
+  # category.
   audit:
     needs: deploy
     runs-on: ubuntu-latest

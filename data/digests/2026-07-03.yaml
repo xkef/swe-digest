@@ -1,0 +1,573 @@
+date: '2026-07-03'
+stories:
+- title: LUKS suspend stopped wiping disk-encryption keys from memory since Linux 6.9
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    Linux kernel refactoring disabled LUKS suspend key-wiping for two years, leaving full-disk-encryption
+    keys in RAM if a laptop is seized.
+  summary: >-
+    Ingo Blechschmidt git-bisected a regression showing that since Linux 6.9 (May 2024) the
+    mechanism that flushes a LUKS master key on suspend to RAM silently stopped working, so
+    full-disk-encryption keys stayed resident in kernel memory across suspend for over two
+    years. A kernel refactoring (commit a28d893) had an unexpected long-range interaction
+    with the encryption path; the fix is one line. A cryptsetup merge request adds a warning
+    instead of failing silently, and a NixOS test guards against future regressions.
+  why: >-
+    Anyone relying on LUKS to protect a lost or seized laptop lost that protection across
+    suspend on kernels 6.9 and later until the fix propagates through stable trees and distributions.
+  followup: >-
+    Track backport into stable kernel trees and distribution updates, and the cryptsetup warning
+    landing in a release.
+  comments: >-
+    HN commenters note the class of bug: everything still worked, so the failure never announced
+    itself, and a suspended laptop that is seized or stolen would surrender its key. Some
+    observed that a full shutdown still wiped the key, but suspend is the common case.
+  sources:
+  - label: author write-up
+    url: https://mathstodon.xyz/@iblech/116769502749142438
+  - label: culprit commit
+    url: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a28d893eb3270cf62c10dd8777af0d8452cdc072
+  - label: one-line fix
+    url: https://lore.kernel.org/all/ajKwRtP8izwRsMmv@quasitopos/
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48763035
+- title: Podman v6.0.0 moves rootless networking to Netavark, Pasta, and nftables
+  section: Top stories
+  category: Dev tools
+  status: confirmed
+  blurb: >-
+    Podman 6.0.0 switches default rootless networking from slirp4netns to Netavark and Pasta,
+    requiring testing of connectivity and port forwarding.
+  summary: >-
+    Podman 6.0.0 shipped 2026-07-02. It transitions the default networking stack away from
+    slirp4netns and iptables toward Netavark, Pasta, and nftables, and adds experimental Pesto
+    rootless port forwarding for custom networks. Quadlet gains a REST API, expanded .volume
+    unit features, and more distribution search paths, and a new `podman machine os update`
+    command maintains the machine VM. Docker API compatibility and command output are refined
+    for easier migration.
+  why: >-
+    The networking backend change alters firewall and port-forwarding behavior for rootless
+    containers, so operators upgrading from Podman 5.x should test connectivity and custom
+    network setups.
+  followup: >-
+    Track breaking-change reports from the slirp4netns-to-Pasta and iptables-to-nftables transition
+    and Pesto stabilization.
+  comments: >-
+    HN commenters welcomed the networking rework and asked about migrating existing Docker
+    Compose setups; sentiment leaned toward Podman as the cleaner rootless implementation.
+  sources:
+  - label: Podman blog
+    url: https://blog.podman.io/2026/07/introducing-podman-v6-0-0/
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48762098
+- title: >-
+    Alibaba to ban Claude Code at work over alleged backdoor risk after Anthropic confirms
+    a proxy check
+  section: Top stories
+  category: Agentic coding
+  status: developing
+  blurb: >-
+    Alibaba bans Claude Code from July 10 after alleged backdoor discovery; Anthropic acknowledges
+    undisclosed proxy checks to detect account resale.
+  summary: >-
+    Reuters reported on 2026-07-03, citing a source, that Alibaba will bar employees from
+    using Claude Code in workplace environments starting 2026-07-10, after Chinese financial
+    outlet Yicai reported Alibaba identified an embedded backdoor risk in the tool. The allegation
+    originated in a 2026-06-30 reverse-engineering writeup claiming that Claude Code since
+    v2.1.91 (2026-04-02) silently inspected users' proxy configuration and system time zone.
+    A member of Anthropic's Claude Code team said on social media that the mechanism existed
+    to detect account resale and model distillation rather than to spy on users, and that
+    it would be removed in the next update. No third-party security firm has independently
+    confirmed a backdoor.
+  why: >-
+    A major cloud vendor banning a widely used coding agent, together with Anthropic acknowledging
+    an undisclosed environment check, turns the running Claude Code telemetry question into
+    a concrete tool-selection and data-governance decision for engineering teams.
+  followup: >-
+    Track the Claude Code update that removes the proxy and time-zone check, any Anthropic
+    statement or documentation change, and whether other firms restrict the tool.
+  comments: >-
+    HN commenters tied the ban to the request-marking and proxy-check reports of the prior
+    days and argued the incident is a reason to prefer open-source coding agents and local
+    models; others stressed that the reverse-engineering claims remain independently unverified.
+  sources:
+  - label: Reuters
+    url: https://www.reuters.com/world/china/alibaba-ban-claude-code-workplace-over-alleged-backdoor-risks-source-says-2026-07-03/
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48772443
+- title: crustc translates the Rust compiler to about 46 million lines of C
+  section: Top stories
+  category: Languages
+  status: discussion
+  blurb: >-
+    crustc, a proof of concept, compiles rustc 1.98.0-nightly into 46 million lines of C that
+    build with GCC and make, portability without LLVM.
+  summary: >-
+    crustc is a demonstration that compiles rustc 1.98.0-nightly into roughly 46 million lines
+    of C that build with GCC and make, without LLVM. It is produced by "cilly," a Rust-to-C
+    backend that adapts output to a target C compiler using small witness programs and targets
+    close to ANSI C. The stated motivation is Rust portability to old or obscure hardware
+    without LLVM or a GCC Rust frontend. The author labels it a proof of concept: the full
+    cilly toolchain is not released, optimization bugs remain, compilation is slow, and it
+    crashes when run from the repository root.
+  why: >-
+    Rust portability to niche targets is a recurring argument against choosing Rust over C,
+    and a C-buildable rustc is a concrete, if early, response to that gap.
+  followup: >-
+    Track a cilly toolchain release and any move from proof of concept toward reproducible
+    builds on real minority platforms.
+  sources:
+  - label: crustc repository
+    url: https://github.com/FractalFir/crustc
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48768464
+- title: ICML 2026 starts in 3 days
+  section: Conferences and events
+  category: Event
+  status: developing
+  blurb: >-
+    The International Conference on Machine Learning 2026 begins July 6 through July 11, opening
+    a week of paper releases and lab announcements.
+  summary: >-
+    The International Conference on Machine Learning 2026 starts in 3 days (2026-07-06) and
+    runs through 2026-07-11.
+  why: >-
+    ICML sets a week of paper releases and lab announcements that flow into the ML research
+    and AI sections.
+  sources:
+  - label: ICML 2026 dates
+    url: https://icml.cc/Conferences/2026/Dates
+- title: Paper argues a single transformer layer can match full-parameter RL fine-tuning
+  section: ML research
+  category: Paper
+  status: developing
+  blurb: >-
+    A preprint reports that RL fine-tuning gains concentrate in one transformer layer, potentially
+    cutting compute and memory for reasoning models.
+  summary: >-
+    A preprint submitted 2026-07-01 (Zhang and co-authors) reports that reinforcement-learning
+    fine-tuning gains are concentrated in a small subset of transformer layers, often a single
+    middle layer, and that training only that layer can recover or exceed full-parameter RL
+    results. The authors define a "layer contribution" metric and evaluate seven Qwen2.5 and
+    Qwen3 models across three RL algorithms (GRPO, GiGPO, Dr. GRPO) on math, code, and agentic
+    tasks.
+  why: >-
+    If it reproduces, single-layer RL fine-tuning would cut the compute and memory needed
+    to post-train reasoning and agentic models.
+  followup: >-
+    Track independent reproduction on non-Qwen model families and released training code.
+  sources:
+  - label: arXiv 2607.01232
+    url: https://arxiv.org/abs/2607.01232
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48760201
+- title: Cursor publishes CursorBench 3.1 coding-agent evaluation
+  section: Agentic coding
+  category: Agentic coding
+  status: discussion
+  blurb: >-
+    Cursor published CursorBench 3.1, an evaluation of 36 coding-agent configurations on ambiguous
+    real-world tasks without public rubrics.
+  summary: >-
+    Cursor published CursorBench 3.1, a vendor evaluation of coding agents on ambiguous multi-file
+    tasks drawn from real Cursor sessions, covering codebase understanding, bugfinding, planning,
+    and code review. The page ranks 36 model configurations and describes its per-task cost
+    calculation from published per-token pricing, but does not disclose task construction
+    or grading rubrics.
+  why: >-
+    CursorBench is a signal on how frontier models perform inside one widely used agent harness,
+    though as a vendor benchmark without a published rubric it is not an independent result.
+  followup: >-
+    Track whether Cursor publishes task construction and grading methodology or an independent
+    replication appears.
+  sources:
+  - label: CursorBench 3.1
+    url: https://cursor.com/evals
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48756840
+- title: Practitioner argues for a short-leash workflow when coding with AI agents
+  section: Agentic coding
+  category: Agentic coding
+  status: discussion
+  blurb: >-
+    Slepak describes a short-leash coding-agent workflow for security-critical software: review
+    and approve each diff, commit after each step.
+  summary: >-
+    Greg Slepak (okTurtles) describes a short-leash method for using coding agents on security-critical
+    software: break work into tracked steps, require a permission prompt that shows each diff
+    before it applies, review and approve or deny every change, commit after each subtask,
+    and record which models assisted in a mandatory pull-request AI-disclosure section. The
+    post is a practitioner opinion drawn from maintaining the Group Income codebase, with
+    no measured results or reproducible benchmark.
+  why: >-
+    It is a concrete counter-model to autonomous agent workflows and reinforces the day's
+    maintainer-review theme, positioning human diff review as the control that keeps AI-authored
+    code accountable.
+  sources:
+  - label: okTurtles blog
+    url: https://blog.okturtles.org/2026/07/short-leash-ai-method/
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48766026
+- title: WebKit ships a Safari MCP server for autonomous web debugging
+  section: Agentic coding
+  category: Agentic coding
+  status: confirmed
+  blurb: >-
+    WebKit published a Safari MCP server that lets any Model Context Protocol client drive
+    a Safari window for debugging and inspection.
+  summary: >-
+    WebKit published a Safari MCP server on 2026-07-01 that lets any Model Context Protocol
+    client drive a Safari window for debugging. It exposes 16 tools spanning tab and navigation
+    control, DOM inspection, clicks and typing, screenshots, console buffering, network request
+    listing and inspection, JavaScript evaluation, performance timing, accessibility checks,
+    and viewport and media emulation, so an agent can reproduce what a user sees. It requires
+    Safari Technology Preview 247 or later with developer features enabled and is configured
+    per agent (Claude, Codex, and others).
+  why: >-
+    It gives coding agents a first-party browser-automation and inspection surface on Apple's
+    engine, an alternative to Chromium-based DevTools MCP servers for front-end debugging
+    workflows.
+  followup: >-
+    Track the server moving from Safari Technology Preview into a shipping Safari release
+    and any WebDriver BiDi or DevTools overlap.
+  sources:
+  - label: WebKit blog
+    url: https://webkit.org/blog/18136/introducing-the-safari-mcp-server-for-web-developers/
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48769639
+- title: Bernstein calls on standards bodies to reject non-hybrid ML-KEM in TLS
+  section: Security
+  category: Security
+  status: discussion
+  blurb: >-
+    Bernstein argues that TLS should require hybrid ECC-ML-KEM key exchange for defense in
+    depth, cautioning against solo post-quantum algorithms.
+  summary: >-
+    Daniel J. Bernstein published an argument and call to action against IETF endorsement
+    of solo ML-KEM in TLS, framing it as a weakening of the deployed ECC plus ML-KEM hybrid.
+    His case rests on the history of broken post-quantum candidates (SIKE was broken after
+    deployment to millions of connections) and on hybrid key exchange as defense in depth
+    if the lattice layer fails. He characterizes the push toward non-hybrid post-quantum key
+    exchange as driven by NSA and GCHQ.
+  why: >-
+    The hybrid-versus-non-hybrid choice sets the default post-quantum key-exchange posture
+    for TLS libraries and the browsers and servers that depend on them.
+  followup: >-
+    Track the IETF TLS working group position on non-hybrid ML-KEM and any library defaults
+    that follow.
+  sources:
+  - label: Understanding lattice risks
+    url: https://blog.cr.yp.to/20260630-risk.html
+  - label: action page
+    url: https://nsa.2026.action.cr.yp.to
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48760490
+- title: Immich 3.0 ships workflows, mobile editing, and breaking API changes
+  section: Developer tools
+  category: Dev tools
+  status: confirmed
+  blurb: >-
+    Immich 3.0 adds drag-and-drop Workflows automation, mobile non-destructive editing, and
+    breaking changes to pgvecto.rs support and API schemas.
+  summary: >-
+    The self-hosted photo platform Immich released 3.0 on 2026-07-02 (patch 3.0.1 same day).
+    It adds a drag-and-drop Workflows automation builder (preview), mobile non-destructive
+    editing, a Recently Added view, HLS and real-time video transcoding (preview, web), mobile
+    OCR, and integrity checks for untracked, missing, and checksum-mismatched files. Breaking
+    changes affect API integrators: pgvecto.rs support is dropped, deprecated environment
+    variables and old timeline sync endpoints are removed, durations move to milliseconds,
+    and the error and validation schema is restructured.
+  why: >-
+    Self-hosters upgrading across the v2-to-v3 boundary must complete the vectorchord migration
+    first (from before v1.133.0) and update any third-party tooling built on the changed API.
+  followup: >-
+    Track workflow and HLS transcoding moving out of preview and third-party client updates
+    for the new API schema.
+  sources:
+  - label: Immich 3.0 discussion
+    url: https://github.com/immich-app/immich/discussions/29439
+  - label: release notes
+    url: https://github.com/immich-app/immich/releases/tag/v3.0.0
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48761944
+- title: ProseMirror creator releases Wordgard, an MIT semantic rich-text editor
+  section: Developer tools
+  category: Dev tools
+  status: discussion
+  blurb: >-
+    Marijn Haverbeke released Wordgard, an MIT in-browser rich-text editor with semantic structure,
+    collaborative editing, and accessibility.
+  summary: >-
+    Marijn Haverbeke, author of ProseMirror and CodeMirror, published Wordgard, an open-source
+    (MIT) in-browser rich-text editor library. It models documents as schema-based semantic
+    structure with custom elements rather than free-form HTML, supports tables, nested lists,
+    captioned figures, collaborative editing, accessibility, and right-to-left text, and exposes
+    a programming interface for building customized editors. Commercial users are asked to
+    help fund maintenance under a social, non-legal expectation.
+  why: >-
+    A new editor foundation from the ProseMirror author is a candidate base layer for teams
+    building structured document tooling, where schema-first content models reduce the HTML-sanitization
+    surface.
+  followup: >-
+    Track a tagged release, versioning stability of the programming interface, and migration
+    notes for ProseMirror users.
+  sources:
+  - label: Wordgard
+    url: https://wordgard.net/
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48772573
+- title: Deno 2.9.1 refines desktop bundling and Node compatibility
+  section: Languages and runtimes
+  category: Languages
+  status: confirmed
+  blurb: >-
+    Deno 2.9.1 adds a --desktop flag for bundling and fixes CSS imports, Node compatibility,
+    and npm scoped-registry authentication issues.
+  summary: >-
+    Deno 2.9.1 released 2026-07-01 with over 40 fixes across the 2.9 line. It adds a `--desktop`
+    flag for type-checking desktop applications and deep-link URL scheme registration at bundle
+    time, updates the Laufey desktop framework to 0.5.0, and fixes CSS raw imports in bundling,
+    `node:net` socket permissions, TLS shutdown handling, npm bin resolution, and scoped-registry
+    authentication.
+  why: >-
+    The 2.9 desktop-bundling path is maturing, and the Node compatibility fixes reduce friction
+    for teams running npm packages under Deno.
+  followup: >-
+    Track desktop bundling stability reports across Linux, macOS, and Windows backends.
+  sources:
+  - label: Deno 2.9.1 release
+    url: https://github.com/denoland/deno/releases/tag/v2.9.1
+- title: LMDB 1.0 released with a breaking on-disk format change
+  section: Infrastructure
+  category: Infrastructure
+  status: confirmed
+  blurb: >-
+    LMDB 1.0 shipped with breaking on-disk format; existing data requires export with 0.9
+    and reimport with 1.0, adding checksums and encryption.
+  summary: >-
+    LMDB (Lightning Memory-Mapped Database), the embedded copy-on-write key-value store used
+    by OpenLDAP, Monero, and many language bindings, tagged 1.0.0 on 2026-06-30, its first
+    1.0 after more than a decade on the 0.9.x line. The 1.0 on-disk format is incompatible
+    with 0.9 and there is no in-place upgrade, so existing data must be exported with the
+    0.9 `mdb_dump` and reimported with the 1.0 `mdb_load`. New features listed in the upgrade
+    notes are incremental backup, page-level checksums and encryption, databases on raw block
+    devices, two-phase commit, and page sizes up to 64KB.
+  why: >-
+    Operators running LMDB-backed systems must plan an explicit data migration to adopt 1.0,
+    and the added checksums, encryption, and incremental backup change the durability and
+    operational story for embedded deployments.
+  followup: >-
+    Track 1.0.x point releases, downstream adoption in OpenLDAP and the language bindings,
+    and whether the reported large-database write-stall behavior persists in 1.0.
+  comments: >-
+    HN commenters report production caveats: write latency degrading into multi-hour stalls
+    once a database grows to several hundred GB, and iOS not paging dirty mmap pages back
+    to disk causing app OOM under churn; some moved to libmdbx or RocksDB. Several flagged
+    the 0.9-to-1.0 dump-and-restore requirement as the main migration cost.
+  sources:
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48766598
+- title: Co-locating workflow state with data in Postgres for exactly-once execution
+  section: Engineering posts
+  category: Engineering post
+  status: discussion
+  blurb: >-
+    Storing workflow state in Postgres with application data lets checkpoints and updates
+    commit together, replacing transactional-outbox pattern.
+  summary: >-
+    A DBOS post argues that keeping durable-workflow checkpoints in the same Postgres database
+    as application data lets the step checkpoint and the data update commit in one transaction.
+    That removes the failure window that forces application-level idempotency bookkeeping,
+    and it collapses the transactional-outbox pattern: either the update commits and the workflow
+    is enqueued or neither happens.
+  why: >-
+    It reframes a common distributed-systems problem (exactly-once execution across a workflow
+    engine and a database) as a single-database transaction for teams already standardized
+    on Postgres.
+  sources:
+  - label: DBOS blog
+    url: https://www.dbos.dev/blog/co-locating-workflow-state-with-your-data
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48765639
+- title: >-
+    Ubicloud runs PostgreSQL with strict memory overcommit to avoid OOM-killer cascades
+  section: Engineering posts
+  category: Engineering post
+  status: discussion
+  blurb: >-
+    Ubicloud sets vm.overcommit_memory=2 for PostgreSQL so one over-allocating query fails
+    locally rather than triggering a cascade of backend kills.
+  summary: >-
+    A Ubicloud post dated 2026-04-27 (front page on 2026-07-03) explains why they set `vm.overcommit_memory=2`
+    for PostgreSQL. When the Linux OOM killer terminates any backend, the postmaster assumes
+    shared memory may be corrupted and kills all backends, dropping every connection and forcing
+    crash recovery. Strict overcommit makes the kernel return ENOMEM to a single allocation
+    instead, so one backend fails its transaction and the postmaster stays up. They size the
+    limit at 80 percent of physical memory plus 2 GB, which they say protects over 99 percent
+    of their fleet, and note a one-character kernel accounting bug in 6.5 that forced them
+    to disable the setting until the 6.8 fix.
+  why: >-
+    It is a concrete operational recipe for turning a full PostgreSQL outage into a single
+    failed query, relevant to anyone running Postgres on Linux without cgroup memory limits.
+  sources:
+  - label: Ubicloud blog
+    url: https://www.ubicloud.com/blog/postgresql-and-the-oom-killer-why-we-use-strict-memory-overcommit
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48774509
+- title: >-
+    git-annex maintainer spends about 100 hours excluding LLM-generated dependency code
+  section: Engineering posts
+  category: Engineering post
+  status: discussion
+  blurb: >-
+    Joey Hess spent roughly 100 hours ensuring git-annex builds without AI-generated code
+    in dependencies, citing copyright risks and review burden.
+  summary: >-
+    Joey Hess describes spending roughly 100 hours ensuring git-annex can build without dependencies
+    that contain LLM-generated code. He cites large AI-generated changes later reverted without
+    explanation, incoherent commit messages on large diffs, and copyright-attribution risk,
+    and maintains a tracking resource to make per-dependency decisions. He acknowledges the
+    effort may not scale against industry trends.
+  why: >-
+    It is a concrete data point in the maintainer-burden theme alongside the Godot AI-contribution
+    ban and the curl vulnerability-report pause, showing the review cost that AI-authored
+    code shifts onto downstream maintainers.
+  sources:
+  - label: Joey Hess blog
+    url: https://joeyh.name/blog/entry/no_LLM_code_in_dependencies/
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48762008
+- title: Kent Beck on why test-driven development lost popularity
+  section: New videos
+  category: Video
+  status: discussion
+  blurb: >-
+    Kent Beck, who codified test-driven development, reflects on why TDD adoption declined
+    and how his own view of when to apply it has shifted.
+  summary: >-
+    Kent Beck, who codified test-driven development and extreme programming, discusses why
+    TDD adoption declined and how his own view of when to apply it has shifted. Channel: The
+    Pragmatic Engineer (2064 views, 5.0 over 22 ratings)
+  why: >-
+    A primary-source reflection from the practice's originator on where automated testing
+    discipline fits in current engineering practice.
+  sources:
+  - label: watch
+    url: https://www.youtube.com/watch?v=WUqA6eCDxIE
+- title: OpenAI reported in early talks over a US government equity stake
+  section: Markets and companies
+  category: Markets
+  status: rumor
+  blurb: >-
+    Reporting says OpenAI is in early talks that could give the US government about five percent
+    ownership, though the talks remain unconfirmed.
+  summary: >-
+    Reporting on 2026-07-02 says OpenAI is in early talks that could give the US government
+    about a 5 percent stake. The talks are described as early and unconfirmed by a definitive
+    filing.
+  why: >-
+    Government ownership of a core model and API provider would affect governance and procurement
+    questions for the developers who build on OpenAI, though nothing is settled.
+  followup: Track any confirmed agreement, filing, or official statement.
+  sources:
+  - label: The Guardian
+    url: https://www.theguardian.com/technology/2026/jul/02/openai-stake-us-government-ai-sam-altman
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48759623
+- title: 'Discussion: the primary purpose of code review'
+  section: Hacker News
+  category: Pulse
+  status: discussion
+  blurb: >-
+    A HN thread debated whether code review's main value is catching bugs or steering away
+    from hard-to-maintain patterns that persist later.
+  summary: >-
+    A post arguing that the main value of code review is catching code that will be hard to
+    maintain, rather than finding bugs, drew a large HN thread (334 points).
+  comments: >-
+    Commenters split on the premise. Some report finding plenty of bugs in review and argue
+    architecture should already be settled in design before a pull request; others agree the
+    durable payoff is steering away from patterns that get copied into future code, and one
+    framed review cynically as gatekeeping hierarchy.
+  sources:
+  - label: primary post
+    url: https://mathstodon.xyz/@mjd/115096720350507897
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=48759870
+- title: 'Show HN: ZeroFS presents S3 as POSIX filesystems and block devices'
+  section: Hacker News
+  category: Pulse
+  status: discussion
+  blurb: >-
+    ZeroFS, a Show HN, exposes S3-compatible storage as POSIX filesystems over NFS/9P and
+    block devices over NBD with encryption and compression.
+  summary: >-
+    ZeroFS, a Show HN that reached 122 points, is a userspace log-structured filesystem that
+    exposes S3-compatible object storage as POSIX filesystems over NFS and 9P and as raw block
+    devices over NBD. Data is written as immutable segments, compressed with zstd or lz4 and
+    encrypted with XChaCha20-Poly1305 before upload. It is dual-licensed AGPL-3.0 and commercial.
+  comments: >-
+    Commenters compared it to JuiceFS, SeaweedFS, and s3fs and questioned metadata latency
+    and log-structured compaction pauses over a remote store, and warned that per-object read
+    cost dominates when fetching data in 128 KiB parts. Several were skeptical of trusting
+    storage to what they read as an AI-generated project and codebase.
+  sources:
+  - label: ZeroFS
+    url: https://www.zerofs.net/
+  - label: Show HN discussion
+    url: https://news.ycombinator.com/item?id=48761493
+- title: 'Show HN: claude-real-video feeds videos to any LLM by selecting key frames'
+  section: Hacker News
+  category: Pulse
+  status: discussion
+  blurb: >-
+    claude-real-video selects video frames on scene change rather than at fixed intervals,
+    reducing token usage while preserving video comprehension.
+  summary: >-
+    A Show HN reaching 141 points, claude-real-video (MIT) processes a video locally and emits
+    frames, a transcript, and a manifest that any model can read. It selects frames on scene
+    change rather than at fixed intervals, deduplicates near-identical shots by RGB pixel
+    difference with a per-N-seconds density floor, prefers existing subtitles and falls back
+    to Whisper for audio, and accepts URLs via yt-dlp or local files. The stated goal is to
+    send fewer but more relevant frames to cut token usage while preserving comprehension.
+  why: >-
+    It is a token-efficiency pattern for giving text or vision models video context without
+    uploading media to a cloud service.
+  sources:
+  - label: repository
+    url: https://github.com/HUANGCHIHHUNGLeo/claude-real-video
+  - label: Show HN discussion
+    url: https://news.ycombinator.com/item?id=48766005
+- title: Show HN and Ask HN signal
+  section: Hacker News
+  category: Pulse
+  status: discussion
+  blurb: >-
+    PeerTube, the federated video platform, reached the HN front page; the monthly Ask HN:
+    Who is quitting? thread surfaced labor-sentiment accounts.
+  summary: >-
+    PeerTube, the federated ActivityPub video platform, reached the front page (558 points)
+    amid renewed interest in decentralized media. The monthly "Ask HN: Who is quitting?" thread
+    (176 points) collected practitioner accounts of job changes and labor sentiment.
+  sources:
+  - label: PeerTube
+    url: https://news.ycombinator.com/item?id=48759634
+  - label: 'Ask HN: Who is quitting?'
+    url: https://news.ycombinator.com/item?id=48760048
+- title: r/programming discussion pulse
+  section: Reddit and social pulse
+  category: Pulse
+  status: discussion
+  blurb: >-
+    r/programming surfaced engineering write-ups on data-oriented design, API design, database
+    optimization, and how models function as programs.
+  summary: >-
+    With Reddit RSS partially degraded from the run environment, r/programming top-of-day
+    surfaced engineering write-ups including data-oriented design outside gamedev, "Good APIs
+    Age Slowly," a CockroachDB slow-logout optimization tale, and "Models are programs." These
+    are discussion-level blog posts rather than primary releases.
+  sources:
+  - label: r/programming top
+    url: https://www.reddit.com/r/programming/top/.rss?t=day

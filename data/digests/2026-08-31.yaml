@@ -1,0 +1,313 @@
+date: '2026-08-31'
+stories:
+- title: The rest of the Linux 7.3 merge window lands 15,267 changesets in -rc1
+  section: Top stories
+  category: Linux/Kernel
+  status: confirmed
+  blurb: >-
+    Jonathan Corbet reports 15,267 non-merge changesets in Linux 7.3-rc1, the second-highest
+    -rc1 count in kernel history.
+  summary: >-
+    Corbet's summary of the rest of the 7.3 merge window records 15,267 non-merge changesets
+    in 7.3-rc1 from 2,450 developers, 520 of them first-time contributors, with about 13,000
+    landing after the first merge-window summary. The count is second only to 6.7-rc1. Changes
+    with operational consequences include the completion of the sched_ext sub-scheduler feature,
+    which lets a root BPF scheduler hand a cgroup subtree to a nested sub-scheduler with revocable
+    CPU grants, the outright removal of Btrfs version 1 free-space cache support after deprecation
+    since 6.11 and of the `usebackuproot` mount option, a new `crypto/af_alg_restrict` sysctl
+    that partly restricts user-space access to the AF_ALG API by default, `LANDLOCK_RESTRICT_SELF_NO_NEW_PRIVS`
+    for `landlock_restrict_self()`, and `RWF_DONTCACHE` for buffered I/O to block devices.
+    Rust support adds I/O types and projection, the fwctl API and SRCU, BPF gains `KF_SPINLOCK_SAFE`
+    kfuncs, arena pointer parameters and per-CPU global data, 1,264 commits carry `Assisted-by`
+    tags at just over 8 percent of the total, which Corbet states is likely an undercount
+    of LLM-assisted commits, and 153 exported symbols were removed against 523 added.
+  why: >-
+    The two removals and the new AF_ALG default are behaviour changes that reach machines
+    engineers already run, rather than opt-in features.
+  followup: >-
+    Track the 7.3 release, which Corbet places most likely on 2026-10-18, and whether the
+    AF_ALG restriction breaks user-space crypto consumers.
+  sources:
+  - label: primary
+    url: https://lwn.net/SubscriberLink/1089791/94dc9b4ae3998556/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49511809
+- title: >-
+    Haiku R1/beta6 ships after two years with a new userland malloc and halved WebKit build
+    time
+  section: Top stories
+  category: Dev tools
+  status: confirmed
+  blurb: >-
+    Haiku R1/beta6 ships after two years, cutting a full HaikuWebKit rebuild from 4h53m to
+    2h33m and replacing its malloc.
+  summary: >-
+    The release notes record over 530 tickets resolved since beta5, a full HaikuWebKit rebuild
+    falling from 4h53m to 2h33m, and `git status` in a 160,000-file repository falling from
+    about 33s to 20s cold and from 15s to 2.5s hot. The named causes are a directory-entry
+    cache that no longer takes a write lock to add entries, read-write locking in the inode
+    block cache, and a new userland malloc based on OpenBSD's with a global caching layer,
+    replacing an aging hoard fork. The release also adds NVMM hardware virtualization for
+    QEMU on x86_64 through `-accel nvmm`, officially branded Firefox after Mozilla granted
+    permission, and a Go 1.26.1 port, and memory work brings 32-bit boot back within 128 MB
+    of RAM.
+  why: >-
+    The performance claims are stated as measured before-and-after numbers with named causes
+    in the kernel's caching and locking paths, which is the form that can be checked rather
+    than taken on trust.
+  sources:
+  - label: release notes
+    url: https://www.haiku-os.org/get-haiku/r1beta6/release-notes/
+  - label: announcement
+    url: https://www.haiku-os.org/news/2026-08-26_haiku_r1_beta6
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49499867
+- title: >-
+    Asahi Linux posts initial USB4 and Thunderbolt support for Apple M1, M2 and M3 to the
+    kernel list
+  section: Top stories
+  category: Linux/Kernel
+  status: developing
+  blurb: >-
+    Sven Peter posted a 19-patch series adding initial USB4 and Thunderbolt support for Apple
+    M1, M2 and M3 to the kernel list.
+  summary: >-
+    The series, posted on 2026-08-30, adds 3872 lines including a 1028-line `drivers/thunderbolt/apple.c`.
+    Each USB4-capable Type-C port carries an Apple Converged I/O block with a Cortex-M3 co-processor,
+    and the main SoC bus sees only a 16 MiB window into its MMIO space while that co-processor
+    runs, so the NHI and the DART IOMMU are modelled as device-tree children populated after
+    boot and removed before power-down. The stated scope is bounded: only XDomain connections
+    and USB3-over-USB4 tunnels work, PCIe and DisplayPort tunneling need reverse engineering
+    that is not done, and suspend is blocked whenever a connection is active because resume
+    hits an SError.
+  why: >-
+    Apple Silicon laptops running Linux gain a path to their USB4 ports, though the series
+    is posted for review, depends on five other in-flight series, and lands nothing today.
+  followup: >-
+    Track whether the series is taken through the thunderbolt tree and whether PCIe and DisplayPort
+    tunneling follow.
+  sources:
+  - label: patch series
+    url: https://lore.kernel.org/asahi/20260830-b4-apple-soc-tbt-v1-0-44bc9348683c@kernel.org/
+  - label: author post
+    url: https://social.treehouse.systems/@sven/117186314116319619
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49502515
+- title: >-
+    A Debian developer retires from the project over the outcome of the LLM general resolution
+  section: Top stories
+  category: Dev tools
+  status: confirmed
+  blurb: >-
+    Debian Developer Antoine Le Gonidec retired from the project on 2026-08-29, citing the
+    outcome of the LLM general resolution.
+  summary: >-
+    Antoine Le Gonidec, posting from vv221@debian.org with a PGP signature, told debian-project
+    and debian-devel on 2026-08-29 that he is retiring, citing the project's decision on LLM
+    use and stating that a neutral stance is not neutrality. The ballot page records him as
+    a seconder of both Proposal A, the outright ban routed through the Social Contract, and
+    Proposal C, the reject-as-far-as-practical option, so this is a participant on the losing
+    side rather than a bystander. The general resolution closed on 2026-08-28 and the winning
+    option was Option 5, "Responsible Use of Generative AI".
+  why: >-
+    A contributor departure attached to the resolution's outcome is the cost side of a governance
+    decision other projects are weighing.
+  followup: >-
+    Track whether further contributors leave or whether the project revisits the policy.
+  comments: >-
+    The Hacker News thread is titled "Debian developer resigns after corporate LLM use without
+    disclosure wins vote". Nothing in the ballot or the retirement message restricts the winning
+    option to corporate contributors, so the thread is linked for discussion and the corporate
+    framing is not adopted here.
+  sources:
+  - label: retirement message
+    url: https://lists.debian.org/debian-devel/2026/08/msg00318.html
+  - label: ballot
+    url: https://www.debian.org/vote/2026/vote_002
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49504083
+- title: >-
+    Simon Willison maps what ChatGPT Work actually does, including 223 tools and 44 skills
+  section: AI
+  category: AI
+  status: confirmed
+  blurb: >-
+    Simon Willison separates ChatGPT Work into cloud and local products and has a session
+    enumerate its 223 tools and 44 skills.
+  summary: >-
+    OpenAI announced ChatGPT Work on 2026-07-09 and documents it by what it is for rather
+    than what it does. Willison separates it into a cloud version reached through chatgpt.com
+    and the mobile apps and a local version in the desktop app that was previously Codex,
+    then enumerates what the cloud version has that Chat does not: a code execution environment
+    whose internet access defaults to open rather than to an allowlist, a full headless Chrome
+    that runs JavaScript against the DOM and can hand over to the user for sign-in without
+    routing credentials through the model, a `/workspace` filesystem persisted and shared
+    across sessions, sub-agent sessions, and site deployment onto Cloudflare Workers with
+    D1 and R2. He then had a Work session enumerate its own tooling and published the result
+    as a reference listing 223 registered tools, 6 of them his own MCP servers, and 44 skills.
+    Access is limited to subscribers at 20 dollars per month and above.
+  why: >-
+    Willison states the product combines all three legs of his lethal trifecta, private data
+    access, exposure to untrusted content and an exfiltration path, and that OpenAI has not
+    explained how Work sessions are defended against prompt injection.
+  sources:
+  - label: primary
+    url: https://simonwillison.net/2026/Aug/30/understanding-chatgpt-work/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49504625
+  - label: second thread
+    url: https://news.ycombinator.com/item?id=49510000
+- title: Sander Dieleman surveys the return of continuous diffusion language models
+  section: ML research
+  category: ML research
+  status: confirmed
+  blurb: >-
+    Sander Dieleman traces why continuous diffusion for language died after 2023 and what
+    changed to bring it back.
+  summary: >-
+    The concrete anchor is Gulrajani and Hashimoto's May 2023 measurement that a likelihood-based
+    continuous diffusion model was 64x less training-efficient than an autoregressive baseline,
+    which Dieleman argues was disqualifying while the field was still optimising Chinchilla-style
+    compute against perplexity. The technical section covers embedding strategies from one-hot
+    through pre-trained to jointly learned and the collapse failure mode of the last, the
+    pairing of loss function to unembedding strategy, and why noise schedules matter more
+    here because meaningful corruption of high-dimensional embeddings happens across a narrow
+    band of noise levels. He flags the account as subjective and the causal claims as speculative.
+  why: >-
+    A DeepMind research scientist writing on his own domain sets out the design choices and
+    failure modes anyone building a continuous diffusion language model has to make first.
+  sources:
+  - label: primary
+    url: https://sander.ai/2026/08/24/continuous-dlms.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49502611
+- title: >-
+    Cal Paterson proposes agent memory as a file format of Markdown pages and a SQLite vector
+    index
+  section: Agentic coding
+  category: Agentic coding
+  status: discussion
+  blurb: >-
+    Cal Paterson proposes storing agent memory as Markdown pages with a SQLite vector index,
+    a format rather than a pipeline.
+  summary: >-
+    Paterson's proposal treats agent memory as a file format rather than as a retrieval pipeline:
+    Markdown pages on disk, with a SQLite vector index over them for lookup. The argument
+    is that agents already handle Markdown, bash and SQLite directly, so a store defined as
+    files needs no fixed API between the agent and the data.
+  why: >-
+    The argument is that a data format beats a pipeline, because agents already handle Markdown,
+    bash and SQLite, and a store with no fixed API does not need rewriting as models improve.
+  sources:
+  - label: primary
+    url: https://calpaterson.com/memoryfields.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49508317
+- title: >-
+    OpenAI resolves the ChatGPT Work incident after about five and a half hours with no published
+    cause
+  section: Outages
+  category: Outage
+  status: confirmed
+  blurb: >-
+    OpenAI closed the ChatGPT Work incident about five and a half hours after it opened, publishing
+    no root cause.
+  summary: >-
+    The incident opened as elevated latency and was reclassified about 17 minutes later as
+    elevated errors, naming Plus users as particularly affected and Work mode as unavailable
+    for them, with later updates stating that users across multiple subscription plans may
+    be unable to start or continue tasks. The status page now shows Resolved with all impacted
+    services recovered, after a Monitoring update roughly half an hour earlier, and the elapsed
+    time between the opening and closing markers is about five hours and twenty-four minutes.
+    The page renders a twelve-hour clock with no explicit zone, so no resolution timestamp
+    is asserted here in UTC. No root cause is published.
+  why: >-
+    The incident is closed and no root cause is published, so teams that moved task execution
+    into ChatGPT Work have a duration to plan against and nothing else.
+  followup: Track whether OpenAI publishes a root cause or a post-incident review.
+  sources:
+  - label: status page
+    url: https://status.openai.com/incidents/01M1C5M4K0WC8PPT0Z175RJA1E
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49511356
+- title: >-
+    omniflake puts about twelve thousand Nix flakes behind one input, and its author submits
+    a quadratic lock-naming fix upstream
+  section: Developer tools
+  category: Dev tools
+  status: confirmed
+  blurb: >-
+    omniflake exposes about twelve thousand Nix flakes behind one input, and its author submitted
+    a lock-naming fix to Nix.
+  summary: >-
+    Declaring thousands of flakes as inputs failed, because Nix evaluates every input to write
+    the lock file and one unlockable input aborts the run. It was also quadratic: every flake
+    brings its own `systems` input, so 4000 inputs produced nodes named `systems_2` through
+    `systems_4000` with the collision search restarting at `_2` each time, roughly 8 million
+    string formats per evaluation. Zakaria's fix, filed as NixOS/nix#16387, remembers the
+    highest suffix per name and resumes there, reports about 21x faster locking at 4000 inputs,
+    and writes byte-identical lock files, while omniflake itself abandons inputs entirely,
+    storing a JSONL table of locked pins and fetching each flake on demand with `builtins.fetchTree`
+    at a cost of about 1.5s for `nix flake lock` and six inherited nodes.
+  why: >-
+    The quadratic lock-naming path affects any flake with a large input set, independent of
+    whether anyone adopts omniflake.
+  followup: Track whether NixOS/nix#16387 is merged and which Nix release carries it.
+  sources:
+  - label: primary
+    url: https://fzakaria.com/2026/08/28/one-flake-to-rule-them-all
+  - label: project
+    url: https://omniflake.com/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49497712
+- title: >-
+    uv merges file-level deduplication of the wheel cache, saving about 10 percent of cache
+    size
+  section: Developer tools
+  category: Dev tools
+  status: confirmed
+  blurb: >-
+    uv merged file-level wheel cache deduplication behind a preview flag, recovering 545.2
+    MiB or about 10 percent of one cache.
+  summary: >-
+    Charlie Marsh opened the change on 2026-08-27 and merged it on 2026-08-31. uv previously
+    deduplicated whole wheels only, so identical files inside or across wheels each got their
+    own copy, and every file is now stored under its BLAKE3 hash in a `files-v0` bucket and
+    hardlinked back into `archive-v0`, leaving installation unchanged, with cache cleanup
+    deleting an object once its hardlink count drops to one. On the author's machine deduplicating
+    all payload files recovered 545.2 MiB by hardlinking 134,222 files onto 87,129 distinct
+    objects, at a measured cold-install cost with median changes of 3.39 percent for AnyIO,
+    3.95 percent for SymPy and NumPy and 3.03 percent for PyTorch CPU, and with no consistent
+    warm-install effect.
+  why: >-
+    The saving is real but opt-in, because the feature sits behind the content-addressed-cache
+    preview flag and is not on by default.
+  followup: >-
+    Track whether the content-addressed cache leaves preview and becomes the default.
+  sources:
+  - label: pull request
+    url: https://github.com/astral-sh/uv/pull/21327
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49506142
+- title: >-
+    Dan Luu argues that engineers stop seeing the bugs they have learned to work around
+  section: Engineering posts
+  category: Engineering post
+  status: confirmed
+  blurb: >-
+    Dan Luu argues that developers stop noticing bugs they have built habits around, which
+    is where dogfooding fails.
+  summary: >-
+    Luu's claim is that developers who use their own product every day stop perceiving its
+    defects, because they have already built unconscious habits around them, so dogfooding
+    fails at exactly the point it is relied on. The essay argues this through named cases
+    rather than through the general claim alone. One of those cases is attributed rather than
+    asserted here: Luu states that Discourse carried code that slowed real page loads in order
+    to improve web performance metrics, and that rests on his own earlier post rather than
+    on a Discourse source. The site dates the essay to August 2026 without a day.
+  why: >-
+    The failure mode Luu names sits inside the practice teams most often cite as their bug-detection
+    safety net.
+  sources:
+  - label: primary
+    url: https://danluu.com/bug-blind/

@@ -5,37 +5,37 @@ ZOLA       = $(MISE) exec -- zola
 DPRINT     = $(MISE) exec dprint@0.54.0 --
 RUMDL      = $(MISE) exec rumdl@0.2.9 --
 UV         = $(MISE) exec -- uv
-# Install-free invocation: it runs with only python3 and PyYAML, so the
-# scheduled workflows and the publish job never need a package install.
-PY         = PYTHONPATH=src python3 -m swe_digest
+# Runs with python3, PyYAML, and feedparser, so the publish and site jobs need
+# no package install beyond requirements/base.txt.
+PY         = PYTHONPATH=src python3 -m digest
 DIST       = dist
-TODAY      = $(shell date -u +%Y-%m-%d)
 RELEASE    = $(if $(GITHUB_SHA),$(shell git rev-parse --short HEAD 2>/dev/null || echo dev),$(shell git describe --tags --always 2>/dev/null || echo dev))
 BUILD_DATE = $(shell date -u +%Y-%m-%dT%H:%MZ)
 
-.PHONY: build serve check check-content fmt fmt-check fmt-run stories clean new-digest run-log backtest weekly-stats test lint typecheck imports clean-all
+.PHONY: daily improve check build serve test lint typecheck fmt fmt-check clean
 
-stories:
-	@$(PY) build-stories
+# A local run bills the `claude` login on this machine.
+daily:
+	@$(UV) run python -m digest daily
 
-# One rule for every source rather than one target each: `make fetch-hn`,
-# `make fetch-reddit`. The registry defines the list of sources, so this rule
-# fetches a new source without changes to this file.
-fetch-%:
-	@$(PY) fetch $*
+improve:
+	@$(UV) run python -m digest improve
 
-run-log:
-	@$(PY) run-log
+check:
+	@$(PY) check
 
-backtest:
-	@$(PY) backtest
+build:
+	@$(PY) build
+	@rm -rf $(DIST)
+	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) --root site build --output-dir "$(CURDIR)/$(DIST)"
+	@$(MISE) exec -- pagefind --site $(DIST) --glob "digests/[0-9]*/*/index.html"
+# Every page is lang="en", so Pagefind never needs its fallback or UI bundles.
+	@rm -f $(DIST)/pagefind/pagefind-ui.* $(DIST)/pagefind/pagefind-component-ui.* $(DIST)/pagefind/pagefind-modular-ui.* $(DIST)/pagefind/pagefind-highlight.js $(DIST)/pagefind/wasm.unknown.pagefind
 
-weekly-stats:
-	@$(PY) weekly-stats
+serve:
+	@$(PY) build
+	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) --root site serve --interface 127.0.0.1 --port 3000
 
-# Developer and CI checks for the Python package itself. These targets are not
-# part of `check`, so the publish gate stays runnable with only python3 and
-# PyYAML.
 test:
 	@$(UV) run pytest
 
@@ -46,57 +46,9 @@ lint:
 typecheck:
 	@$(UV) run mypy
 
-# The layer contract in pyproject.toml. A violation is a CI failure rather than
-# a review comment, which is the only enforcement that keeps an import rule
-# effective.
-imports:
-	@$(UV) run lint-imports
-
-build: stories
-	@$(PY) check-content
-	@command -v $(MISE) >/dev/null || { echo "mise not found"; exit 1; }
-	@rm -rf $(DIST)
-	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) --root site build --output-dir "$(CURDIR)/$(DIST)"
-	@$(MISE) exec -- pagefind --site $(DIST) --glob "digests/[0-9]*/*/index.html"
-# wasm.unknown.pagefind is Pagefind's fallback backend. Every page is lang="en"
-# and the entry manifest contains one index, so the runtime always resolves to
-# wasm.en.pagefind and never fetches the fallback.
-	@rm -f $(DIST)/pagefind/pagefind-ui.* $(DIST)/pagefind/pagefind-component-ui.* $(DIST)/pagefind/pagefind-modular-ui.* $(DIST)/pagefind/pagefind-highlight.js $(DIST)/pagefind/wasm.unknown.pagefind
-
-serve: stories
-	@command -v $(MISE) >/dev/null || { echo "mise not found"; exit 1; }
-	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) --root site build --output-dir "$(CURDIR)/$(DIST)" --force
-	@$(MISE) exec -- pagefind --site $(DIST) --glob "digests/[0-9]*/*/index.html"
-	@RELEASE="$(RELEASE)" BUILD_DATE="$(BUILD_DATE)" $(ZOLA) --root site serve --interface 127.0.0.1 --port 3000 --output-dir "$(CURDIR)/$(DIST)" --force
-
-check: build
-	@test -f $(DIST)/index.html
-	@test -f $(DIST)/feed.xml
-	@test -d $(DIST)/pagefind
-	@$(PY) check-size $(DIST)
-	@echo "check ok"
-
-check-content:
-	@$(PY) check-content
-
-# CI's `format` job (`make fmt-check`) enforces formatting. Formatting is
-# intentionally not part of `check`, so unattended digest runs are never gated
-# on it. rumdl formats Markdown. dprint formats everything else. Both
-# configuration files are at the root, and both skip site/content/ and
-# snapshots/. The tools install on demand here, so they stay out of the mise
-# [tools] configuration.
-#
-# site/templates/ is the one directory that dprint does not format. markup_fmt
-# selects its language from the file extension, so Zola's .html templates parse
-# as plain HTML, and markup_fmt reflows Tera tags as prose (for example,
-# `{% block content` on one line and `%}` on the next). The templates are
-# formatted by hand instead: block tags on their own line, indented as blocks,
-# and no tag ever wrapped.
-#
-# Two tools rather than one: dprint's Markdown plugin normalizes inline syntax
-# and corrupts this repo's prose (see the note in .rumdl.toml). Each tool has
-# one configuration file at the root, so neither tool needs a second
-# invocation.
+# dprint formats YAML, TOML, JSON, CSS, and HTML. rumdl formats Markdown,
+# because dprint's Markdown plugin rewrites inline syntax. site/templates/ is
+# formatted by hand: markup_fmt reflows Tera tags as prose.
 fmt:
 	@$(DPRINT) dprint fmt
 	@$(RUMDL) rumdl fmt
@@ -105,30 +57,6 @@ fmt-check:
 	@$(DPRINT) dprint check
 	@$(RUMDL) rumdl check .
 
-# fmt-run formats the agent's own output: today's digest, in the canonical form
-# that `check-content` enforces. It is pure Python, so the publish job can run
-# it with nothing installed. It changes only whitespace, so it can never
-# rewrite a published fact the way a Markdown formatter would.
-fmt-run:
-	@$(PY) fmt-run $(TODAY)
-
-new-digest:
-	@$(PY) new-digest $(TODAY)
-
-# Everything that a build or a check regenerates, including the generated day
-# pages under site/content/digests/. The fetch cache and the virtualenv are not
-# included (see clean-all).
-CACHES = .mypy_cache .ruff_cache .pytest_cache .hypothesis .rumdl_cache .coverage
-
 clean:
-	@rm -rf $(DIST) public site/data site/content/stories site/content/home site/content/digests/[0-9]*
-	@rm -rf $(CACHES)
-	@find . -name .DS_Store -not -path './.git/*' -delete
-	@echo "clean ok (kept .cache/ and the virtualenvs; use clean-all to drop those)"
-
-# Also removes the day's collected sources and the virtualenvs. A re-fetch is
-# slow: the Reddit fetcher paces its requests and takes tens of minutes to
-# rebuild the cache.
-clean-all: clean
-	@rm -rf .cache .run .venv
-	@echo "clean-all ok (uv sync rebuilds the environment)"
+	@rm -rf $(DIST) site/data site/content/stories site/content/digests/[0-9]* .run
+	@rm -rf .mypy_cache .ruff_cache .pytest_cache .coverage

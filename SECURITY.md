@@ -11,189 +11,80 @@ a best-effort basis, because this is a single-maintainer project.
 
 ## Scope
 
-This repository publishes a static site built with Zola and runs an automated
+This repository publishes a static site built with Zola and runs a scheduled
 digest pipeline in GitHub Actions. Reports of interest:
 
-- Ways for fetched untrusted content (Hacker News, Reddit, blogs, YouTube
-  metadata) to escape the content gates and inject markup, scripts, or secrets
-  into the published site.
-- Ways for a prompt-injected agent run to bypass the publish gate in
-  `src/swe_digest/gate/` (path allowlist, commit-subject checks, issue
-  authorship re-verification).
+- Ways for fetched untrusted content to inject markup, scripts, or secrets into
+  the published site.
+- Ways for a prompt-injected run to get past the publish gate in
+  `src/digest/publish.py`.
 - Workflow or token-permission weaknesses in `.github/workflows/`.
 
 ## Supported versions
 
-Only the current state of `main` is supported. There are no releases or
-backports.
+Only the current state of `main` is supported.
 
 ## Threat model
 
-This repository runs an LLM agent unattended, several times a day, over
-untrusted internet text, and publishes the result to a public site. The design
-assumption is that the agent **will** eventually be prompt-injected. Every
+A model runs unattended over untrusted internet text and its output is
+published. The design assumes the model **will** be prompt-injected. Every
 control below holds even then.
 
 ### Attacker
 
-Anyone who can put text where the routine reads it:
+Anyone who can put text where a run reads it: Hacker News, Reddit, arXiv, the
+watchlist feeds, any page the model fetches, and earlier output committed to
+`data/`. The attacker wants to publish their content, leak a secret, gain write
+access, or change what future runs do.
 
-- Hacker News titles and comments, Reddit posts, YouTube titles and
-  descriptions, arXiv abstracts, publisher feeds, blog posts, and web search
-  results (fetched every run).
-- GitHub issues and comments (public, and the feedback links on the site
-  invite them).
-- Previously committed memory (`data/memory/*.yaml`) and snapshots
-  (`data/snapshots/*/*.json`), as a persistence channel for an earlier
-  injection.
+Non-goals: a malicious repository owner, a failure of GitHub itself, and denial
+of service (a failed run publishes nothing).
 
-Assumed attacker goal: make the agent publish attacker content (XSS, SEO spam,
-defamation), exfiltrate secrets or private context, gain write access to the
-repository, or corrupt the routine so future runs stay compromised.
+### Controls
 
-### Non-goals
-
-- A malicious repository owner. The owner holds admin either way.
-- GitHub itself (Actions isolation, token scoping) failing.
-- Denial of service against the digest (a failed run publishes nothing).
-
-### Trust boundaries and controls
-
-#### 1. The agent job holds no write capability
-
-Unattended runs are split into two jobs in `digest.yml`, which covers both the
-daily digest and the improvement review. The agent job runs with a read-only
-token (`contents: read`, `issues: read`, no persisted git credentials): it can
-fetch, write files, and commit locally, but cannot push or call a write API.
-Its entire output is an artifact: local commits exported as `.run/run.patch`,
-plus requested side effects in `.run/manifest.json`.
-
-#### 2. A deterministic validator holds the write token
-
-The publish job applies the artifact only after `swe_digest.gate.publish`
-validates it, with no LLM in the loop:
-
-- At most two commits, with subjects matched against exact regexes.
-- Every added or modified path in every commit is matched against the publish
-  allowlist (`data/digests/`, `data/runs/`, and the four writable
-  `data/memory/` files). The check runs per commit, so a file added in one
-  commit and deleted in the next is still caught.
-- File modes are restricted to regular and executable, rejecting symlinks and
-  gitlinks that could smuggle file contents.
-- `make check` (site build plus the content gate) must pass.
-- Issue closes are re-verified against GitHub API fields (`author.login`,
-  state, labels), never against claims in issue text. Close comments are
-  bounded and may link only to the site or this repository.
-- Improvement PRs require an `OWNER` approval comment, apply only the diff
-  from the issue body, and may touch only `config/settings.toml`,
-  `config/watchlist.toml`, and `config/profile.md`. The prompts are
-  deliberately absent: a run may not propose edits to its own instructions.
-  A hunk written without a line range is placed by its context lines in the
-  checked-out file (`domain/patch.py`), which reads only those three files.
-  Placement adds file lines as context and never changes an added or removed
-  line.
-
-GitHub additionally rejects any `GITHUB_TOKEN` push that modifies
-`.github/workflows/`. The validator itself is `src/swe_digest/gate/`, which is
-outside the publish allowlist: a run cannot rewrite its own gate.
-
-#### 3. The content gate fails closed
-
-`swe_digest.gate.content` runs in `make check`, in the publish job, and in CI.
-It rejects raw HTML elements, inline event handlers, `javascript:` and scripty
-`data:` URIs (including HTML-entity-encoded forms), URL shorteners, and
-high-signal secret patterns across digests, memory, run logs, and snapshots.
-The site build escapes raw HTML independently
-(`swe_digest.publish.stories.neutralize_html`), so the gate and the renderer
-check the same content by two separate mechanisms.
-
-#### 4. Memory is a typed store, bounded on write
-
-Memory persists across runs, so it is the primary target for a persistent
-injection. It is four YAML stores reached only through `memory.store`: no step
-holds `Write` or `Edit` on `data/memory/`, identity and dates are assigned by
-code rather than supplied by a caller, and the entry and byte bounds are
-enforced on the write that would break them rather than detected at publish
-time. The content gate's `gate/_memory.py` re-checks the same properties
-independently, so a file edited by something that bypassed the store still
-fails. Content screening (HTML, secrets, shorteners) applies to memory the
-same as to digests. `config/profile.md` is writable only through the
-owner-approved improvement-PR path.
-
-#### 5. Issues are untrusted input
-
-The triage jobs in `ops.yml` handle third-party issues deterministically,
-reading only API event fields. Outsider `story` issues get a guide comment and
-`triage/pending`. An owner `/approve` comment promotes them to
-`triage/approved`. An owner `/reject` or a 14-day timeout closes and locks
-them. All other outsider issues are closed and locked on arrival. Untrusted
-comment text crosses the workflow shell only as env var data.
-
-The triage labels carry no authority. Every issue-derived action re-verifies
-authorship and approval from API fields. Story issues act only when
-`author.login` is the owner, or when the comments API shows an
-`OWNER`-association comment starting with `/approve` (prose like "Approve of
-the idea, but hold off" never fires) whose creation postdates the issue body's
-last edit (GraphQL `lastEditedAt`), so an approved issue cannot be repurposed
-by editing it afterward. Improvement diffs require an `OWNER`-association
-comment matching the leading-`approved` regex (so "not approved" does not
-match). A compromised or bypassed triage workflow can therefore mislabel
-issues but cannot make the gate act on one.
-
-#### 6. Snapshot workflows are minimal and signed
-
-The `snapshots.yml` accumulator runs only the pinned checkout plus
-`swe_digest` fetch, merge, and commit steps. The staged paths are checked
-against the target `snapshots/` directory before committing. All bot commits
-go through the GraphQL `createCommitOnBranch` mutation, so they are signed by
-GitHub as `github-actions[bot]` and carry the Verified badge. A commit on
-`main` without that signature did not come from the pipeline.
-
-#### 7. The staged pipeline prevents what the gate detects
-
-The agent runs as bounded steps rather than one open-ended session
-(`swe_digest.stages`). No step is granted `Bash`, `WebFetch`, or `WebSearch`.
-Collection, the backtest, feedback, the run log, formatting, the gate, and the
-commit are Python the model cannot influence. The web is reached only through
-`llm/net.py`, which allows https alone, refuses shorteners and any host
-resolving inside the network boundary, re-applies those rules to every
-redirect hop, and records what was read. A `PreToolUse` hook denies a write
-outside the step's declared files when it is attempted, and
-`permission_mode="dontAsk"` denies rather than prompts.
-
-This is prevention. `gate/` remains the independent detection layer, and the
-two stay independent. The gate does not import the agent, so a run that
-subverted a hook is still checked by a validator it never loaded.
-
-#### 8. Supply chain
-
-Every action is pinned by commit SHA and updated by Dependabot. Python
-dependencies are locked by `uv.lock`, and the base package has exactly one
-(PyYAML), so the privileged publish job installs one hash-pinned package.
-`step-security/harden-runner` records egress per run. OpenSSF Scorecard runs
-weekly. The privileged publish job does not restore caches the untrusted agent
-job could have poisoned.
+1. **The model has one tool.** `src/digest/agent.py` starts the session with
+   `tools=[]`, so the model has no shell, no file access, and no web search. Its
+   only tool is `fetch_url`. A `PreToolUse` hook denies any other tool, the
+   working directory is empty, and `setting_sources=[]` keeps repository files
+   out of the prompt.
+2. **The fetch is audited.** `fetch_url` allows https alone, refuses URL
+   shorteners and any host resolving to a non-public address, applies the same
+   rules to every redirect hop, bounds the response, and records every attempt
+   in the run record.
+3. **Python writes every file.** The model returns JSON against a schema.
+   `stories.vet` refuses a story whose source URL the run never saw, a
+   duplicate, a vocabulary miss, or one past the day's caps, and records why.
+   Follow-up ids and dates come from code.
+4. **The agent job cannot write.** It runs with `contents: read` and
+   `issues: read` and no persisted credentials. Its output is the set of files
+   it changed, uploaded as an artifact.
+5. **A deterministic gate holds the write token.** The publish job runs code
+   from `main` and `src/digest/publish.py` accepts only regular files on a path
+   allowlist (`data/digests/DAY.yaml`, `data/runs/DAY.yaml`,
+   `data/memory/followups.yaml`, `config/watchlist.yaml`, `config/profile.md`),
+   under a size cap, that parse and pass their own check and carry no secret
+   pattern. Code, prompts, settings, and workflows are not on the list. `data/`
+   lands as one commit signed by GitHub. `config/` becomes a pull request, and
+   the owner's merge is the approval.
+6. **Issues are untrusted.** Only open issues whose API author is the owner
+   reach the model. The publish job checks authorship again before closing one.
+7. **Rendering escapes everything.** Story text never passes through Markdown.
+   It goes into front matter as TOML strings and the templates print it with
+   autoescaping on.
+8. **Supply chain.** Actions are pinned by commit SHA. Python dependencies are
+   hash-locked, and the publish job installs two (PyYAML and feedparser), never
+   the agent SDK. `harden-runner` records egress. The publish job restores no
+   cache.
 
 ### Verification
 
-The controls above are executable, not prose.
-`tests/security/test_publish_gate.py`, `tests/gate/test_content.py`, and
-`tests/gate/test_memory.py` replay the attacks (workflow edits, gate-source
-edits, forged subjects, symlinks, add-then-delete smuggling, third-party issue
-closes, off-site comment links, encoded `javascript:` URIs, oversized memory)
-against the real gate code and assert rejection.
-`tests/security/test_hostile.py` does the same for section 7 with fakes built
-to misbehave: a redirect to the metadata service, an issue whose body claims
-an authority its API fields deny, a record supplying its own dates, and a
-config granting itself a shell. CI enforces a coverage floor on the gate
-modules.
+`test/test_publish.py` replays the publish attacks: workflow, code, and prompt
+paths, symlinks, secrets, malformed files, and a check that the publish path
+never loads the agent SDK. `test/test_stories.py` covers story validation,
+including invented URLs. `test/test_http.py` covers the fetch rules.
 
 ### Residual risks
 
-- The agent can publish misleading *text* within the allowed structure.
-  Editorial quality relies on the routine and the owner's review of the public
-  output.
-- A compromised upstream source can feed false stories. The routine's
-  primary-source rules reduce but cannot eliminate this.
-- The read-only agent job can still consume its token's read scope. Secrets
-  beyond `GITHUB_TOKEN` are limited to the model credential.
+- The model can publish misleading text within the allowed structure, sourced
+  to a page it did fetch.
+- A compromised upstream source can feed a false story.

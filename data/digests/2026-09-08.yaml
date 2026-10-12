@@ -1,0 +1,389 @@
+date: '2026-09-08'
+lede: >-
+  Two Lean-formalized fluid blowup results landed together, one published by mathematicians
+  and one claimed by OpenAI amid a provenance dispute.
+stories:
+- title: >-
+    OpenAI says an internal model proved finite-time blowup for Navier-Stokes, and mathematicians
+    dispute the provenance
+  section: Top stories
+  category: AI
+  status: developing
+  blurb: >-
+    OpenAI says an internal model produced a Lean-certified Navier-Stokes blowup proof, and
+    Tristan Buckmaster disputes its provenance.
+  summary: >-
+    Scientific American reported on 2026-09-08 that OpenAI states an internal model, which
+    OpenAI has not named, produced a proof of finite-time blowup for the Navier-Stokes equations
+    certified in Lean, and the article characterizes that claim as the second solution ever
+    of one of the seven Millennium Prize Problems. The same article reports Tristan Buckmaster
+    alleging the result draws on work he and Levent Alpoge, a mathematician employed by Anthropic,
+    had not yet released. OpenAI mathematician Sebastien Bubeck denied that at a press briefing,
+    said the Navier-Stokes solution followed a method similar to the two mathematicians' while
+    the Euler result did not, and said the proof was developed over the weekend, which the
+    article notes is after the point at which Buckmaster claims news of his result had reached
+    OpenAI.
+  why: >-
+    OpenAI states the proof was certified in Lean, which makes the claim machine-checkable
+    rather than prose, and the unresolved question is whether the lab's result was independent
+    of work it had already learned about.
+  followup: >-
+    Track the release of the Lean artifacts and any independent account of the timeline.
+  sources:
+  - label: report
+    url: https://www.scientificamerican.com/article/openai-claims-blockbuster-math-breakthrough-amid-swirl-of-controversy/
+  - label: statement
+    url: https://cims.nyu.edu/~tristanb/statement.pdf
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49613262
+- title: >-
+    Alpoge and Buckmaster publish finite-time blowup with smooth forcing for 3D Euler, Boussinesq
+    and incompressible porous media
+  section: Top stories
+  category: Paper
+  status: confirmed
+  blurb: >-
+    Alpoge and Buckmaster released Lean-formalized finite-time blowup results with smooth
+    forcing for 3D Euler and two related systems.
+  summary: >-
+    Tristan Buckmaster announced on his own account that he and Levent Alpoge proved finite-time
+    blowup with a smooth forcing term for 3D incompressible Euler, the Boussinesq system,
+    and incompressible porous media, which is not the unforced Navier-Stokes Millennium problem.
+    The arguments are formalized in Lean, and the repository carries `affinecore`, `boussinesq-blowup`
+    and `euler-blowup` directories. Terence Tao posted an assessment the same day naming the
+    Cordoba and Martinez-Zoroa approach, confirming the Lean formalization, stating the arguments
+    contain significant AI input that the authors spent recent weeks reworking into an acceptable
+    form, and stating the authors released far earlier than planned because of external events.
+  why: >-
+    The arguments are formalized in Lean and the code is public, so the AI contribution sits
+    behind a proof checker rather than behind a claim, which is the standard the weaker AI-proof
+    announcements of the past year did not meet.
+  sources:
+  - label: primary
+    url: https://mastodon.social/@tristanbuckmaster/117233413705701198
+  - label: assessment
+    url: https://mathstodon.xyz/@tao/117233527638291447
+  - label: repository
+    url: https://github.com/tristanbuckmaster/fluid_lean
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49605915
+- title: >-
+    CERN moves 2,200 accelerator control computers from CentOS to Debian over the x86-64-v2
+    baseline
+  section: Top stories
+  category: Linux/Kernel
+  status: confirmed
+  blurb: >-
+    CERN is moving 2,200 accelerator control machines from CentOS to Debian rather than funding
+    a 5.4 million franc upgrade.
+  summary: >-
+    CERN is moving 2,200 accelerator control computers from CentOS to Debian. A compiler baseline
+    of x86-64-v2 would have left 47 percent of those control systems unable to boot, and another
+    17 percent would have failed under x86-64-v3, close to 65 percent in total. CERN put the
+    estimated total cost of upgrading the affected machines at 5.4 million Swiss francs, which
+    covers engineers, technicians, added rack space, and possible excavation rather than hardware
+    alone.
+  why: >-
+    A distribution's microarchitecture baseline is a hardware retirement schedule for any
+    fleet with long-lived embedded machines.
+  sources:
+  - label: primary
+    url: https://lwn.net/SubscriberLink/1092512/45bba78661c89e5a/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49604026
+- title: >-
+    Mistral raises 3 billion euros at more than 21 billion euros post-money, led by Samsung
+    Electronics
+  section: Top stories
+  category: Markets
+  status: confirmed
+  blurb: >-
+    Mistral raised 3 billion euros at over 21 billion post-money, led by Samsung Electronics,
+    in what it calls Europe's largest round.
+  summary: >-
+    Mistral raised 3 billion euros at a post-money valuation above 21 billion euros, in a
+    round led by Samsung Electronics. Mistral states this is the largest equity round ever
+    completed by a European technology company. The company frames the raise as funding compute
+    and infrastructure for its open-weight models.
+  why: >-
+    It funds the main open-weight alternative to the US frontier vendors for teams that need
+    models they can host themselves.
+  sources:
+  - label: primary
+    url: https://mistral.ai/news/mistral-makes-sovereign-open-weight-ai-to-frontier/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49605767
+- title: >-
+    Naming a test or verification technique to a coding agent does not beat giving it no instruction
+  section: Top stories
+  category: Agentic coding
+  status: confirmed
+  blurb: >-
+    A 26-condition eval on codex with GPT-5.6 Sol found naming a technique or library did
+    not beat the no-instruction default.
+  summary: >-
+    The evaluation ran 26 prompt conditions at 80 runs each on a Zstd implementation task,
+    using codex with GPT-5.6 Sol at medium and xhigh effort levels. No condition wildly outperformed,
+    and the default condition, which gave the agent no testing instruction, scored well above
+    the average across conditions. Agents given the name of a technique or a library applied
+    it superficially rather than to the code most likely to hold the bug.
+  why: >-
+    Prompt boilerplate that names fuzzing or property testing did not outperform the default
+    on this task and this model.
+  sources:
+  - label: primary
+    url: https://danluu.com/agentic-testing/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49605246
+- title: >-
+    A Qwen3.8 27B quantization benchmark puts 4-bit at parity with BF16 and 1-bit at random
+    chance
+  section: AI
+  category: AI
+  status: confirmed
+  blurb: >-
+    A Qwen3.8 27B benchmark finds 4-bit at BF16 parity on GPQA Diamond and Terminal-Bench
+    2.1, and 1-bit at random chance.
+  summary: >-
+    A benchmark of Qwen3.8 27B across quantization levels, posted 2026-08-26 and picked up
+    on Hacker News on 2026-09-08, reports 4-bit output at parity with BF16 on Terminal-Bench
+    2.1 and GPQA Diamond, and 1-bit output at around random chance on GPQA Diamond. The three
+    benchmarks are GPQA Diamond, IFBench and Terminal-Bench 2.1, and the run replicated the
+    official BF16 numbers first, so the quantized deltas are measured against a reproduced
+    baseline. The post puts BF16 at 55 GB and Q4_K_M at 17 GB, which fits a 24 GB card such
+    as an RTX 4090 with room for about 64k tokens of context.
+  why: >-
+    It puts a number on what a local coding model costs in GPU memory, 17 GB at Q4_K_M against
+    55 GB at BF16, which is the difference between one 24 GB card and a multi-GPU host.
+  sources:
+  - label: primary
+    url: https://quesma.com/blog/qwen38-27b-quantizations-benchmarked/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49611128
+- title: >-
+    A researcher factored two 512-bit certificate authority root keys shipped in Netscape
+    4.51
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    A researcher factored both 512-bit E-Certify root keys from Netscape 4.51 in 32 and 29
+    hours on one desktop Ryzen.
+  summary: >-
+    A researcher ran CADO-NFS on a single Ryzen 9 5950X desktop to factor two 512-bit RSA
+    certificate authority root keys that shipped in the Netscape 4.51 trust store. The two
+    E-Certify root private keys were recovered in 32 hours and 29 hours. There is no live
+    exposure: Netscape removed the roots in 2002, they expired on 2003-10-16, and using the
+    recovered keys requires running Netscape 4.51 with the clock set back.
+  why: >-
+    It puts a measured single-machine cost on RSA key sizes that once anchored browser trust
+    stores, without touching any current trust store.
+  sources:
+  - label: primary
+    url: https://mcpherrin.ca/2026/09/07/rsa.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49604637
+- title: TALA, the D2 orthogonal layout engine, is open-sourced under MPL-2.0
+  section: Developer tools
+  category: Dev tools
+  status: confirmed
+  blurb: >-
+    D2's orthogonal layout engine TALA is now MPL-2.0 and bundled in D2 v0.9.0, so --layout=tala
+    needs no separate license.
+  summary: >-
+    TALA, the orthogonal layout engine for the D2 diagram language, is released under MPL-2.0,
+    the same license as D2. It ships bundled in D2 v0.9.0, so `--layout=tala` no longer requires
+    a separate license. Node coordinates can be pinned while the engine still handles routing.
+  why: >-
+    Diagram-as-code pipelines can use the layout engine in CI without a per-seat license step.
+  sources:
+  - label: primary
+    url: https://d2lang.com/blog/tala-is-open-source/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49604150
+- title: NVIDIA publishes CUDA Rust with two tracks for writing GPU kernels
+  section: Languages and runtimes
+  category: Languages
+  status: confirmed
+  blurb: >-
+    NVIDIA published CUDA Rust, letting GPU kernels compile natively to PTX through two tracks
+    rather than through C++ wrappers.
+  summary: >-
+    NVIDIA published CUDA Rust, which compiles Rust GPU kernels natively to PTX rather than
+    wrapping CUDA C++. The post sets out two tracks for writing those kernels, and states
+    the compiler rejects at build time the case where a kernel output aliases its input. NVIDIA
+    also states that both projects are early-stage and neither is production-ready, with cuda-oxide
+    in early alpha, that the SIMT track needs a pinned nightly toolchain plus LLVM, and that
+    the Tile track needs CUDA 13.3, stable Rust 1.89 or later, and compute capability 8.0
+    or later.
+  why: >-
+    The Rust path to PTX is a real compilation target rather than a wrapper, but NVIDIA labels
+    it not production-ready, so it is something to evaluate on a pinned toolchain rather than
+    build on.
+  sources:
+  - label: primary
+    url: https://developer.nvidia.com/blog/introducing-cuda-rust-two-tracks-for-writing-gpu-kernels/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49609377
+- title: >-
+    Broadcom removed the public VMware VDDK downloads that migration tooling depends on
+  section: Infrastructure
+  category: Infrastructure
+  status: developing
+  blurb: >-
+    Broadcom pulled the public VMware VDDK downloads that Azure Migrate, Nutanix Move and
+    virt-v2v need for agentless migration.
+  summary: >-
+    The Broadcom download pages for the VMware Virtual Disk Development Kit now return errors,
+    and Broadcom has published no announcement, deprecation notice, or replacement. The change
+    was first written up by ShapeBlue on 2026-08-25, with a Red Hat support article on 2026-08-27
+    that directs customers to contact Broadcom support to request access, and a Platform9
+    post on 2026-09-01. Azure Migrate, Red Hat Migration Toolkit for Virtualization, Nutanix
+    Move, virt-v2v and nbdkit all require the VDDK for agentless VMware migration.
+  why: >-
+    Teams mid-migration off VMware now need a support request to obtain the copy path their
+    tooling is built on, with no public vendor statement to plan against.
+  followup: >-
+    Track a Broadcom statement, a restored download path, or a documented replacement interface.
+  sources:
+  - label: report
+    url: https://www.virtualizationhowto.com/2026/09/leaving-vmware-just-got-harder-after-broadcom-pulled-vddk-downloads/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49602699
+- title: >-
+    Jellyfin 12.0 rewrites the library database on first boot and drops the legacy client
+    routes
+  section: Infrastructure
+  category: Infrastructure
+  status: confirmed
+  blurb: >-
+    Jellyfin 12.0 rewrites the library database on first boot, removes the /emby/ routes and
+    breaks every 10.11 plugin.
+  summary: >-
+    Jellyfin 12.0 rewrites the library database on first start, with a manual backup as the
+    only way back to the previous version. The upgrade requires a full library scan, removes
+    the `/emby/` and `/mediabrowser/` routes, and breaks plugins built for 10.11. The release
+    notes also list security fixes affecting 10.11.x and earlier: several paths by which a
+    crafted request could reach files outside the directories Jellyfin serves, re-running
+    the setup wizard on a misconfigured server without signing in, plugin packages with unsafe
+    names, parental controls, and cross-site scripting in the web client. The project recommends
+    upgrading for those fixes.
+  why: >-
+    The upgrade is one-way in practice, so self-hosted operators need a verified backup and
+    a plugin inventory before starting it, and the security fixes are an argument against
+    deferring it indefinitely.
+  sources:
+  - label: primary
+    url: https://jellyfin.org/posts/jellyfin-release-12.0/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49604861
+- title: PostgreSQL reverts SQL/PGQ property graph queries out of version 19
+  section: Infrastructure
+  category: Infrastructure
+  status: confirmed
+  blurb: >-
+    PostgreSQL reverted SQL/PGQ property graph support out of the version 19 branch, removing
+    GRAPH_TABLE and pg_propgraph before release.
+  summary: >-
+    A commit on the PostgreSQL 19 branch, authored by Peter Eisentraut on 2026-09-07, reverts
+    the SQL/PGQ property graph work. The revert removes `CREATE PROPERTY GRAPH`, the `GRAPH_TABLE`
+    query clause, and the `pg_propgraph` catalogs from the branch.
+  why: >-
+    SQL/PGQ is out of version 19 before general availability, so anyone who planned on GRAPH_TABLE,
+    CREATE PROPERTY GRAPH, or the pg_propgraph catalogs in 19 has to replan.
+  sources:
+  - label: primary
+    url: https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=b1f106c80cbeb18d3a0219994d98a51a6eca8ede
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49608213
+- title: >-
+    FreeBSD 14.5-RELEASE ships as a maintenance release and sets the 14.4 end-of-life date
+  section: Infrastructure
+  category: Infrastructure
+  status: confirmed
+  blurb: >-
+    FreeBSD 14.5-RELEASE is a maintenance release, and it sets 14.4 end of life at 2026-12-31
+    and 14.5 at 2027-06-30.
+  summary: >-
+    FreeBSD 14.5-RELEASE is out, and the announcement states the focus is maintenance with
+    few new features. It sets the end of life for 14.4 at 2026-12-31 and support for 14.5
+    through 2027-06-30. The 14 series ends on 2028-11-30.
+  why: >-
+    The operational content is the schedule rather than the features: 14.4 reaches end of
+    life on 2026-12-31, 14.5 is supported to 2027-06-30, and the 14 series ends on 2028-11-30.
+  sources:
+  - label: primary
+    url: https://www.freebsd.org/releases/14.5R/announce/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49609174
+- title: >-
+    An argument that cheap open-weight models put exploit discovery within reach of anyone
+    with a workstation
+  section: Engineering posts
+  category: Engineering post
+  status: discussion
+  blurb: >-
+    An argument that open-weight models scoring 84.5 percent on CyberGym move the security
+    bottleneck from finding bugs to shipping fixes.
+  summary: >-
+    The post argues that open-weight models cheap enough to run locally bring exploit discovery
+    within reach of anyone with a workstation. It cites published scores of GLM 5.3 at 84.5
+    percent on CyberGym and 54.4 percent on ExploitBench. The author's conclusion is that
+    the constraint moves from finding vulnerabilities to triaging, backporting, and deploying
+    the fixes.
+  why: >-
+    If the argument holds, maintainer triage capacity and downstream patch latency become
+    the limiting factors rather than researcher time.
+  sources:
+  - label: primary
+    url: https://jyn.dev/a-year-to-fix-security/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49605691
+- title: >-
+    An independent wiki host reports Google indexes only the main page of brand-new domains
+  section: Engineering posts
+  category: Engineering post
+  status: discussion
+  blurb: >-
+    A wiki host reports Google indexed only the main page of its new domains for months, with
+    a subdomain as the workaround.
+  summary: >-
+    An independent wiki host reports that Google indexes the main page of a brand-new domain
+    and leaves the remaining pages out of the index for months. The post, dated 2026-08-17,
+    traces the behaviour to a Google core update in March 2024 and reports it affecting roughly
+    90 percent of the wikis launched on new domains since then, in some cases for up to a
+    year. The post describes serving the same content from a subdomain of an established domain
+    as the workaround that restored indexing. The account is one operator's observation rather
+    than documented Google behaviour.
+  why: >-
+    If the pattern holds, launching on a fresh domain costs most search traffic for months,
+    and a subdomain of an established domain is the reported workaround.
+  sources:
+  - label: primary
+    url: https://weirdgloop.org/blog/google-jail
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49604870
+- title: The bzip3 thread turns into a dispute over compression benchmark window sizes
+  section: Hacker News
+  category: Dev tools
+  status: discussion
+  blurb: >-
+    An HN commenter reports zstd with --long=29 compresses more than 2x smaller than bzip3
+    and at half its own default-window CPU time.
+  summary: >-
+    A Hacker News thread on the bzip3 compressor moved from the project's headline comparison
+    to the window sizes the comparison was run at.
+  why: >-
+    It reframes the project's published size advantage as a configuration artifact, which
+    is the usual failure mode of compressor benchmarks.
+  comments: >-
+    An HN commenter reports that matching zstd's window to bzip3's 512MB block with `--long=29`
+    produces output more than twice smaller than bzip3. The same comment gives zstd -T8 -16
+    at 2054.50 seconds user time and the same command with `--long=29` at 1083.06 seconds,
+    so the CPU-time halving is measured against zstd's own default window and not against
+    bzip3, which the thread does not time.
+  sources:
+  - label: repository
+    url: https://github.com/iczelia/bzip3
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49598291

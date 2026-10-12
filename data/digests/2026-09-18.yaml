@@ -1,0 +1,504 @@
+date: '2026-09-18'
+stories:
+- title: Cisco ISE authentication bypass rated 10.0 is under active exploitation
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    Cisco patched CVE-2026-76460, a CVSS 10.0 ISE and ISE-PIC authentication bypass under
+    active exploitation.
+  summary: >-
+    The Cisco advisory covers CVE-2026-76460, an authentication bypass in Identity Services
+    Engine and the ISE Passive Identity Connector rated 10.0 that yields unauthenticated remote
+    root, with fixes in ISE and ISE-PIC 3.1 Patch 12, 3.2 Patch 11, 3.3 Patch 12, 3.4 Patch
+    7 and 3.5 Patch 4, and ISE 3.0 past end of software maintenance and requiring migration
+    instead. Cisco states that no workaround exists and names infrastructure access control
+    lists as a temporary mitigation that restricts management and control-plane traffic reaching
+    affected systems. The CISA known exploited vulnerabilities catalog carries it with a remediation
+    deadline of 2026-09-19, and The Register covers it as another actively exploited Cisco
+    zero-day.
+  why: >-
+    Unauthenticated remote root on a network access control platform is being exploited now,
+    and the access control list mitigation only buys time for a deployment that cannot reach
+    a fixed patch level before 2026-09-19.
+  followup: >-
+    Track attacker attribution, dwell time, and an affected-deployment count, none of which
+    Cisco has disclosed.
+  sources:
+  - label: primary
+    url: https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-ISE-ABP-VNSW7Tn5
+  - label: CISA KEV catalog
+    url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+  - label: coverage
+    url: https://www.theregister.com/security/2026/09/17/cisco-drops-another-exploited-zero-day-this-time-a-perfect-10/5297180
+- title: Plugin4Shell gives zero-click code execution in major coding agents
+  section: Top stories
+  category: Agentic coding
+  status: confirmed
+  blurb: >-
+    Researchers report Plugin4Shell, a zero-click code execution flaw in major coding agents,
+    with Gemini CLI and Copilot unpatched.
+  summary: >-
+    The Register describes a flaw the research firm Air calls Plugin4Shell as a plugin SHA-pinning
+    bypass, in which the agent checks out the exact commit the marketplace pinned but never
+    verifies the content that landed there, so an attacker controlling the plugin repository
+    makes the checkout resolve to malicious code while the pin still reads as honored, reaching
+    code execution with no user action. Claude Code 2.1.179 and Codex 0.146.0 are named as
+    the fixed versions while Gemini CLI and Microsoft Copilot shipped no patch, and plugin
+    auto-update widens the reach, because control of a marketplace then becomes silent code
+    execution on every machine that installs from it. Air's own report was not reachable on
+    this run, so the account here is The Register's, which carries GitHub's statement that
+    the attacks do not affect GitHub because it blocks branch and tag names resembling commit
+    SHAs, Air's rebuttal that the mitigation is insufficient because marketplaces can be hosted
+    on Bitbucket and Copilot supports those, a second-hand relay that Google told Air it will
+    not patch Gemini CLI, and no answer from Microsoft, with no CVE apparently assigned.
+  why: >-
+    Claude Code and Codex shipped fixes while Copilot and the deprecated Gemini CLI did not,
+    which leaves Copilot's Fortune 500 install base without a vendor fix and leaves Gemini
+    CLI users with migration to Google's Antigravity environment as the stated path.
+  followup: >-
+    Track Air's own disclosure, a CVE assignment, and whether Microsoft patches Copilot.
+  sources:
+  - label: primary
+    url: https://www.theregister.com/security/2026/09/17/ai-coding-agents-0-click-rce-flaw-could-hand-attackers-keys-to-the-kingdom/5297335
+- title: libheif heap overflow chained through OpenAI SSO to internal repository access
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    Hacktron details a libheif heap overflow chained through OpenAI SSO, with Discourse and
+    Debian patched since 2026-07-28.
+  summary: >-
+    Hacktron describes a heap overflow in libheif, reached through a user-supplied HEIF or
+    AVIF image that the target service decodes, and chains it through OpenAI single sign-on
+    to reach an internal repository, with the writeup rather than the fix being what is new
+    today. The post names the affected 1.19.x, 1.20.x, 1.22.x and 1.23.x release families,
+    the vulnerable 1.19.7 in the Discourse Docker image and the 1.19.8 shipped by Debian 13,
+    and upstream v1.23.4 as the current patched release after v1.23.2 was superseded, while
+    the Discourse advisory GHSA-vhm9-85gw-x335, published 2026-07-28 and carrying CVE-2026-32882,
+    lists patched versions 2026.7.0, 2026.6.1, 2026.5.2 and 2026.1.6. The chain is corroborated
+    outside the researchers' own account by that advisory, by CVE-2026-32882 and by Debian
+    DSA-6417-1, while the wider campaign the researchers call HEIF Heist, tracing libheif
+    across Slack, Meta, GitHub Enterprise, Ruby on Rails and Node.js frameworks including
+    Next.js, Astro and Gatsby, rests on their account alone.
+  why: >-
+    Any service that decodes user-supplied HEIF or AVIF through libheif needs the current
+    security release, and Debian shipped vulnerable versions for months with no CVE to flag
+    them.
+  followup: >-
+    Track independent confirmation of the HEIF Heist claims against the named services and
+    frameworks.
+  sources:
+  - label: primary
+    url: https://www.hacktron.ai/blog/hacking-openai
+  - label: Discourse advisory
+    url: https://github.com/discourse/discourse/security/advisories/GHSA-vhm9-85gw-x335
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49749656
+- title: Researcher reports ZCode packages full Git history for upload to Aliyun OSS
+  section: Top stories
+  category: Agentic coding
+  status: developing
+  blurb: >-
+    A researcher reports ZCode packages full Git history for upload to Aliyun OSS, with no
+    user setting that stops it.
+  summary: >-
+    A researcher writing at blog.ferstar.org reports that the ZCode client, from Zhipu, runs
+    a snapshot sidecar instantiated at startup, which packages the repository's full Git history
+    and, in the post's phrasing, encrypts it under a key only Z.ai holds for upload to Aliyun
+    OSS through a zcode.z.ai endpoint, with neither the Optimize Experience toggle nor the
+    Repo Snapshot Indexing toggle gating it and a filesystem immutability flag on the checkpoints
+    directory named as the only working defence. The post does not show a completed upload:
+    the state file it quotes records a 313MB archive sitting in the local pending directory
+    with a failure count of 564, and the upload and encryption path is reconstructed from
+    the client's decompiled app.asar plus observed socket endpoints. This is one researcher's
+    reverse engineering with no vendor statement, the blog states its posts are AI-drafted
+    and author-approved, and one commenter on the second thread reports no checkpoints directory
+    and no capture logs on a long-running install.
+  why: >-
+    The payload described is the whole repository lineage rather than the working tree, which
+    carries API keys deleted in later commits, unpushed branch names and internal host names
+    in .git/config.
+  followup: >-
+    Track a Z.ai response and any independent reproduction of the sidecar behaviour on a clean
+    install.
+  comments: >-
+    HN commenters on the second thread identify the tokenstead.ai page submitted there as
+    an AI paraphrase of the original post, and redirect readers to the thread on the author's
+    own blog, which is the primary and the first discussion link here.
+  sources:
+  - label: primary
+    url: https://blog.ferstar.org/en/posts/zcode-silent-workspace-snapshot-upload/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49750694
+  - label: second thread
+    url: https://news.ycombinator.com/item?id=49752422
+- title: Bonsai 2 27B compresses Qwen3.8 27B to 5.9GB with 98.2% benchmark retention
+  section: AI
+  category: AI
+  status: confirmed
+  blurb: >-
+    PrismML's Bonsai 2 27B compresses Qwen3.8 27B to ternary weights at 5.9GB, retaining 98.2%
+    of aggregate benchmark performance.
+  summary: >-
+    The release page describes Bonsai 2 27B as a ternary compression of Qwen3.8 27B, distributed
+    at 5.9GB under Apache 2.0, retaining 98.2% of aggregate benchmark performance against
+    95% retention in the prior generation. The same page states that the model runs on NVIDIA
+    GPUs through CUDA and on Apple devices through MLX, in both cases through custom low-bit
+    kernels. Every capability claim is the publisher's own and none is independently reproduced
+    here.
+  why: >-
+    Near-parity benchmarks on a 27B-class model in 5.9GB put coding-agent and computer-use
+    workloads on a single consumer GPU or on Apple silicon.
+  followup: Track independent benchmark results reproducing the 98.2% retention claim.
+  sources:
+  - label: primary
+    url: https://prismml.com/news/bonsai-2-27b
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49746618
+- title: >-
+    Component-level harness study finds bash-only interfaces cut cost for bash-capable models
+    and rule-based elision beats recoverable context
+  section: ML research
+  category: Paper
+  status: confirmed
+  blurb: >-
+    A 176-setting harness study finds bash-only interfaces cut cost for bash-capable models,
+    and recoverable elided context gains no accuracy.
+  summary: >-
+    The paper fixes the execution loop and varies planning, action space and context management
+    across 176 matched settings on SWE-Bench Verified and Terminal-Bench 2.1 with four models.
+    It reports that staging rule-based elision before LLM summarization gives the strongest
+    overall efficiency among the context-management strategies, that making elided content
+    recoverable adds machinery models rarely use and gains no accuracy, that planning shifts
+    from an accuracy scaffold on weaker models to a cost saver on stronger ones, and that
+    predefined tools improve performance for models with weaker bash proficiency while bash-capable
+    models run a bash-only interface at substantially lower cost, especially on command-line-centric
+    tasks.
+  why: >-
+    The matched-setting comparison is the one most harness write-ups skip, so the results
+    are directly actionable for anyone choosing an action space or a context policy.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2609.20804
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49753878
+- title: >-
+    A month of multi-agent Codex and Claude sessions produced a Lean proof of Conway's refinement
+    conjecture
+  section: Agentic coding
+  category: Agentic coding
+  status: developing
+  blurb: >-
+    Dan Abramov reports a month of multi-agent Codex and Claude sessions producing a Lean
+    proof of Conway's refinement conjecture.
+  summary: >-
+    Dan Abramov, who states he is not a mathematician, describes running Codex sessions in
+    fixed roles, a project manager that commits work, two math agents, a red agent, a random
+    agent and a Lean agent, with a relay agent emulating a group chat, and resetting sessions
+    when they drifted. He reports that one-shot prompting produced invented terminology he
+    could not pass to a mathematician, that a claimed complete proof was withdrawn after a
+    fresh session found a circular step which also invalidated earlier results, and that the
+    fix was refusing to build on unformalized claims and grounding the work by having mathematicians
+    confirm typo fixes in a peer-reviewed reference. The resulting Lean proof passed the Palomar
+    registry mechanical checks, is not independently verified by mathematicians, and the author
+    invites refutation, so the mathematical claim stays developing.
+  why: >-
+    The account is the most detailed public description of a long-running multi-agent harness
+    and names its failure modes, including a proof that read as complete and was circular.
+  followup: >-
+    Track independent mathematician verification of the Lean proof, which advances the open
+    follow-up on AI-credited proofs.
+  sources:
+  - label: primary
+    url: https://overreacted.io/how-i-vibed-a-proof-of-conways-conjecture/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49755024
+- title: >-
+    Gyazo breach exposes 23.62 million user records and 490 million image metadata records
+    mostly predating 2019
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    Gyazo says an attacker reached its database on 2026-09-11, exposing 23.62 million user
+    records and password hashes.
+  summary: >-
+    Helpfeel states that a third party exploited a vulnerability in the Gyazo image upload
+    server on 2026-09-11 to execute arbitrary commands and reach the database, disclosing
+    23.62 million user records and 490 million image metadata records associated primarily
+    with images registered in or before January 2019, about 14.4 percent of all image-related
+    data, with a further 2.4 million records retrieved separately using filtering criteria.
+    The disclosed user fields include password hashes, login session IDs, device IDs and X
+    integration tokens, and the metadata includes the image IDs used to construct Gyazo URLs
+    plus a list identifying which images are private. Helpfeel states it blocked all access
+    routes and completed remediation of the exploited vulnerability by 2026-09-12, that it
+    reviewed the authentication information involved and has already applied measures including
+    invalidation and restrictions, that all users should change passwords, and that viewing
+    of some images is temporarily disabled, while the vulnerability itself is not described.
+  why: >-
+    Helpfeel says it invalidated the affected authentication data and closed the vulnerability
+    by 2026-09-12 without disclosing the scope of either, and the exposed image IDs let a
+    third party address private images directly.
+  followup: >-
+    Track the vulnerability detail, the session invalidation scope, and whether the private-image
+    list was used.
+  sources:
+  - label: primary
+    url: https://updates.gyazo.com/notice-and-apology-regarding-a-data-breach-resulting-from-unauthorized-access-to-gyazo-1rvqoM
+- title: >-
+    Laser fault injection sets RP2350 debug-enable bits and recovers an OTP secret after a
+    rescue reset
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    Ledger Donjon used laser fault injection to set RP2350 debug-enable bits and restore Secure
+    debug on a locked part.
+  summary: >-
+    Ledger Donjon located the DEBUGEN bit sites with differential photon-emission microscopy,
+    then set PROC1 and PROC1_SECURE with laser pulses at two positions a few micrometres apart
+    on a revision A4 part with glitch detectors at maximum sensitivity, restoring Secure debug.
+    The permanent debug-disable flag sits in OTP with three-of-eight and majority-vote redundancy,
+    but the memory-mapped DEBUGEN register that can override it has no documented redundancy,
+    parity or vote, DEBUGEN_LOCK did not prevent the fault, and a pulse could set a lock bit
+    so firmware could not restore the disabled value. Separately, an RP-AP rescue reset halts
+    the chip in boot-ROM wait paths before firmware applies its runtime OTP page lock, which
+    let the researchers read the full challenge secret.
+  why: >-
+    The attack needs destructive backside decapsulation, physical access and roughly $250,000
+    of equipment, so the result is a design lesson about the whole enforcement path rather
+    than a remote risk to shipped parts.
+  followup: Track a Raspberry Pi response to the 2026-07-28 disclosure.
+  sources:
+  - label: primary
+    url: https://donjon.ledger.com/blog/rp2350-secure-debug-laser-fault-injection/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49757050
+- title: >-
+    NATS traces the 2026-09-08 UK airspace disruption to a preempted aircraft code request
+    that resumed incorrectly
+  section: Outages
+  category: Outage
+  status: confirmed
+  blurb: >-
+    NATS traces the 2026-09-08 UK airspace disruption to a paused aircraft code request that
+    resumed with corrupt state.
+  summary: >-
+    The preliminary report names a software defect in the part of the National Airspace System
+    that allocates aircraft codes on manual request. A higher priority message paused an in-flight
+    code request, the resume path did not restore state correctly, and the corrupted output
+    propagated into later flight data updates within a millisecond. Restrictions ran about
+    six hours across the whole UK even though only the London Area Control centre was affected,
+    because the system had to be restarted and flight data reloaded, and the passenger backlog
+    took more than two days to clear.
+  why: >-
+    A preemption path that resumed without restoring state turned one request into a national
+    restriction, and the blast radius came from the restart and reload rather than from the
+    defect.
+  followup: Track the final report, which NATS has not yet dated.
+  sources:
+  - label: primary
+    url: https://www.nats.aero/news/nats-publishes-preliminary-report-on-technical-incident-of-8-september/
+- title: Telstra outage traced to a GPS week rollover and an NTP timing loop
+  section: Outages
+  category: Outage
+  status: confirmed
+  blurb: >-
+    An independent review traces Telstra's 2026-07-08 outage to a GPS week rollover on one
+    receiver and an NTP timing loop.
+  summary: >-
+    Telstra commissioned an independent review from Technology Audit Partners, which attributes
+    the 2026-07-08 outage to one GPS receiver that had not been patched for the GPS week rollover
+    and so set its time to 2006, and to an NTP timing loop that carried that time into the
+    network. The review finds that two changes made five years apart, each defensible on its
+    own, had removed both of NTP's defences against a single bad time source. Netnod summarises
+    that report in a blog post, which is where these findings surfaced.
+  why: >-
+    A national mobile network took its clock from one unpatched receiver, which puts the control
+    in the sanity checks around a time source rather than in the receiver itself.
+  sources:
+  - label: primary
+    url: https://www.netnod.se/blog/telstra-outage-night-network-decided-year-was-2006
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49748957
+- title: >-
+    Zed opens the Delta public beta and disables pull requests on Delta's own repository
+  section: Developer tools
+  category: Dev tools
+  status: confirmed
+  blurb: >-
+    Zed opened the Delta public beta and reports 33 people landing 570 changes to main with
+    pull requests turned off.
+  summary: >-
+    Delta replaces the pull request with a thread a teammate joins, sharing the same worktrees
+    and the originating agent's context, and each review gets an isolated copy of the parent
+    worktrees. It is built on DeltaDB, which records edits between commits alongside human
+    and agent messages while leaving the commit as the checkpoint teams push and build from,
+    so a repository stays a normal Git repository for anyone who never opens Delta. Zed reports
+    33 people landing 570 changes to main on Delta's own repository since pull requests were
+    turned off there, while zed-industries/zed itself stays on GitHub.
+  why: >-
+    The design keeps Git as the checkpoint boundary and puts the review record in a separate
+    store, so adopting it does not require every contributor to switch tools.
+  sources:
+  - label: primary
+    url: https://zed.dev/blog/delta-public-beta
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49727245
+- title: >-
+    jemalloc 5.4.0 removes seven tcache tuning options and silently ignores their malloc_conf
+    settings
+  section: Languages and runtimes
+  category: Languages
+  status: confirmed
+  blurb: >-
+    jemalloc 5.4.0 removes seven tcache tuning options and ignores their malloc_conf settings
+    without any error.
+  summary: >-
+    The tcache fill and retention targets now adapt per bin to demand observed between GC
+    events, replacing the fixed refill and flush policy, and the options lg_tcache_nslots_mul,
+    tcache_nslots_small_min, tcache_nslots_small_max, tcache_nslots_large, tcache_gc_delay_bytes,
+    lg_tcache_flush_small_div and lg_tcache_flush_large_div are gone. Settings for them in
+    malloc_conf are ignored without error and the matching opt mallctls return ENOENT. The
+    release also preserves errno across free, free_sized and free_aligned_sized, accepts NULL
+    in free_sized and free_aligned_sized for C23 correctness, and fixes a potential deadlock
+    in arena_reset.
+  why: >-
+    A deployment tuned against those options loses its tuning quietly on upgrade, because
+    the allocator neither errors nor warns on the removed settings.
+  sources:
+  - label: primary
+    url: https://github.com/jemalloc/jemalloc/releases/tag/5.4.0
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49750152
+- title: >-
+    Python's steering council froze CPython JIT development pending a standards-track PEP
+  section: Languages and runtimes
+  category: Languages
+  status: confirmed
+  blurb: >-
+    The Python steering council barred new CPython JIT work until a standards-track PEP is
+    accepted, with removal as the default.
+  summary: >-
+    LWN, in an account dated 2026-09-01, reports that the JIT shipped experimentally in Python
+    3.13 on an informational PEP, and that in June the steering council ruled no new JIT development
+    may land in main beyond bug and security fixes until a standards-track PEP is accepted,
+    stating the JIT code is to be removed from main if none is accepted within six months.
+    PEP 836 was drafted in response and the discussion stalled on whether it should be split,
+    with several core developers arguing the acceptance criteria and the implementation plan
+    belong in separate documents and one warning the pressure could drive contributors away.
+    The PEP targets at least a 20 percent pyperformance geometric mean improvement with free-threaded
+    Python by the first 3.17 beta and proposes replacing the tracing frontend with a method-based
+    one, while building with the JIT still pins an LLVM version, 19 for 3.14 and 21 for 3.15,
+    both already end of life, which PEP 774 would remove.
+  why: >-
+    A JIT that already ships in released CPython is on a removal clock, so anyone planning
+    around it depends on the PEP 836 outcome rather than on the code in main.
+  followup: >-
+    Track whether PEP 836 is accepted before the six-month removal threshold, on which the
+    council has published no outcome.
+  sources:
+  - label: primary
+    url: https://lwn.net/Articles/1090385/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49751604
+- title: >-
+    C++26 makes trivial infinite loops well-defined after compilers optimized embedded halt
+    loops away
+  section: Languages and runtimes
+  category: Languages
+  status: confirmed
+  blurb: >-
+    C++26 adopts P2809R3, making a trivially empty while (true) loop defined behaviour that
+    optimizers may no longer delete.
+  summary: >-
+    A `while (true);` loop with no side effects was undefined behaviour before C++26 under
+    the C++11 forward progress rules, so the optimizer could delete it, and the post shows
+    Clang doing exactly that and falling through into a linker-adjacent function. P2809R3
+    defines a narrow category, a trivially empty body plus a controlling constant expression
+    that is true, whose body becomes a call to std::this_thread::yield, and amends the forward
+    progress guarantee to allow continuing such a loop, while on freestanding implementations
+    whether the yield replacement happens at all is implementation-defined. The proposal was
+    also accepted as a defect report, so implementations may apply it to earlier language
+    modes, which is why the old behaviour may not reproduce even in C++20, and C has had the
+    equivalent rule since C11.
+  why: >-
+    The halt-on-error loop used in embedded and kernel code with no operating system to exit
+    to could be deleted, leaving the device running on through corrupt state.
+  sources:
+  - label: primary
+    url: https://www.sandordargo.com/blog/2026/09/16/cpp26-trivial-infinite-loops
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49746406
+- title: AWS spend limits pause a project and can delete Bedrock custom model weights
+  section: Infrastructure
+  category: Infrastructure
+  status: confirmed
+  blurb: >-
+    AWS documents per-project monthly spend limits whose enforcement terminates EC2 instances
+    and deletes Bedrock model weights.
+  summary: >-
+    The documentation describes a per-project monthly ceiling that stops resources when reached,
+    with optional early controls acting at about seven, five and four days before the limit:
+    a service control policy blocks new resource launches, Compute Optimizer criteria pause
+    idle EC2, RDS and SageMaker endpoints, and top cost drivers are paused by terminating
+    EC2 instances after snapshotting attached EBS volumes and releasing Elastic IPs, disabling
+    Lambda event source mappings, and deleting Bedrock provisioned throughput. Deleting provisioned
+    throughput deletes custom fine-tuned model weights, because deletion is the only way to
+    stop those charges. The minimum limit is the greater of $20 or an AWS conservative estimate,
+    limits apply to at most 10 projects and exclude credits, project data is permanently deleted
+    90 days after a pause, and the page states the new experience is releasing to a limited
+    number of customers.
+  why: >-
+    This is the hard cap engineers have asked AWS for, and its enforcement is destructive,
+    so the price of reaching the limit includes terminated instances and deleted fine-tuned
+    weights.
+  sources:
+  - label: primary
+    url: https://docs.aws.amazon.com/accounts/latest/reference/create-spend-limit.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49749357
+- title: Uber caps retry storms by making services claim ownership of errors
+  section: Engineering posts
+  category: Engineering post
+  status: confirmed
+  blurb: >-
+    Uber cut its maximum retry storm radius from 25 hops to 3 by making each service declare
+    which errors it owns.
+  summary: >-
+    Uber states that retry budgets alone still let a deep call chain amplify one failure,
+    because every hop retries against its own budget. The post describes marking which service
+    owns an error so callers stop retrying failures they do not own, and reports the maximum
+    retry storm radius falling from 25 hops to 3.
+  why: >-
+    The change is in what an error carries rather than in added capacity, so it applies to
+    any deep RPC chain with per-hop retries.
+  sources:
+  - label: primary
+    url: https://www.uber.com/us/en/blog/protecting-against-retry-storms/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49746628
+- title: FEX-Emu measures what emulating x86 total store ordering costs on five ARM cores
+  section: Engineering posts
+  category: Engineering post
+  status: confirmed
+  blurb: >-
+    FEX-Emu benchmarks x86 store-ordering emulation on five ARM cores and finds a hardware
+    TSO toggle beats LRCPC.
+  summary: >-
+    The post benchmarks AmpereOne, Cortex-X4, Cortex-X925, Oryon-3 and Apple M1, separating
+    acquire-load and release-store on ARMv8.0-a, the LRCPC instructions mandatory since ARMv8.3,
+    and Apple's hardware TSO mode. Unaligned x86 accesses force FEX to patch its JIT output
+    back to a plain load-store wrapped in a data memory barrier, which costs roughly half
+    the throughput on Cortex-X4 and Cortex-X925 and more on Oryon-3 stores, while the M1 with
+    TSO enabled shows aligned and unaligned within about 5 percent. The stated conclusion
+    is that a hardware TSO toggle beats successive LRCPC extension versions.
+  why: >-
+    The measured gap sets what x86-on-ARM emulation costs per core design, and points the
+    fix at a silicon feature rather than at the JIT.
+  sources:
+  - label: primary
+    url: https://fex-emu.com/Scourge-of-emulation/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49750094

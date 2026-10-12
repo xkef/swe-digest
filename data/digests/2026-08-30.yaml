@@ -1,0 +1,314 @@
+date: '2026-08-30'
+stories:
+- title: >-
+    California AB 1856 carves open-source distributors out of the Digital Age Assurance Act
+    by license terms rather than by named license
+  section: Top stories
+  category: Markets
+  status: developing
+  blurb: >-
+    California AB 1856 exempts open-source distributors from the age-verification law by license
+    terms, naming no license.
+  summary: >-
+    AB 1856, titled "Age verification signals: software applications" and led by author Wicks,
+    amends Civil Code sections 1798.500 through 1798.504, and section 1798.500(g)(2) states
+    that operating system provider does not mean a person or entity that distributes an operating
+    system or application under license terms permitting a recipient to copy, redistribute,
+    and modify the software. That is a test on license terms, and the bill names no license
+    anywhere in its text, so the widely repeated framing that GPL, MIT, BSD and Apache software
+    is exempt does not come from the bill. The legislature's status page lists the measure
+    as passed, recording a Senate third reading passed 39 to 0 on 2026-08-26 and Senate amendments
+    concurred in 69 to 0 on 2026-08-27, sending it to engrossing and enrolling, so it has
+    cleared both houses and is not yet enrolled, chaptered, or signed. Section 1798.500(e)(2)
+    separately excludes stores that distribute extensions, plug-ins or add-ons running exclusively
+    inside a host application, and section 1798.503 sets penalties of 2,500 dollars per affected
+    child for a negligent violation and 7,500 dollars for an intentional one, enforced only
+    by the Attorney General.
+  why: >-
+    Anyone distributing an operating system in California has to apply a functional license-terms
+    test to their own license before the Digital Age Assurance Act takes effect on 2027-01-01,
+    and the carve-out reaches no further than the operating system provider definition.
+  followup: >-
+    The bill sits at engrossing and enrolling after unanimous passage in both houses, so the
+    signature or veto and the chaptered text are what remain to track.
+  sources:
+  - label: bill text
+    url: https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202520260AB1856
+  - label: bill status
+    url: https://leginfo.legislature.ca.gov/faces/billStatusClient.xhtml?bill_id=202520260AB1856
+  - label: Tom's Hardware
+    url: https://www.tomshardware.com/software/linux/california-lawmakers-unanimously-pass-linux-exemption-from-age-verification-law-software-distributed-under-the-gpl-mit-bsd-and-apache-licenses-are-exempt
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49495372
+- title: >-
+    kernel.org reports 20 percent of its serving capacity rendering git commits for AI scrapers
+  section: Top stories
+  category: Infrastructure
+  status: confirmed
+  blurb: >-
+    kernel.org reports 20 percent of its serving capacity rendering git commits for AI scrapers,
+    with 2 percent of traffic legitimate.
+  summary: >-
+    Konstantin Ryabitsev reports git.kernel.org taking about 6 million daily requests for
+    commit pages, with 66 percent turned away by the Anubis challenge and 33 percent now solving
+    it. He puts legitimate traffic at about 2 percent on generous assumptions, and 14 to 16
+    of 90 cores across 5 nodes permanently rendering commits for scrapers. The cause he gives
+    is scrapers walking rendered HTML across roughly 922 forks of a 1.48 million commit repository
+    instead of cloning it once.
+  why: >-
+    Proof-of-work gating has already been beaten, with Anubis difficulty raised from 4 to
+    5 and the bots now solving 5, so kernel.org is removing features and gating anonymous
+    access instead.
+  followup: >-
+    Track which git.kernel.org features are removed and whether anonymous access is gated.
+  sources:
+  - label: primary
+    url: https://people.kernel.org/monsieuricon/creepy-crawlies
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49491791
+- title: Tencent open-sources Hy4 preview at 770B parameters with 49B active
+  section: Top stories
+  category: AI
+  status: confirmed
+  blurb: >-
+    Tencent open-sourced Hy4 preview, a 770B-parameter model with 49B active and a context
+    window over 1M tokens.
+  summary: >-
+    Tencent released and open-sourced Hy4 preview, describing a 770B-parameter model with
+    49B active parameters and a context window over 1M tokens. The announcement prices it
+    at 0.834 US dollars per million input tokens, 2.501 US dollars per million output tokens,
+    and 0.042 US dollars per million tokens on cache hits. It also reports a score of 2.99
+    out of 4.00 against GLM-5.3 and Kimi K3. That number comes from an evaluation Tencent
+    ran internally with its own experts, which is a disclosed method and not a reproducible
+    one, so this block rests on the architecture, the context length and the pricing instead.
+  why: >-
+    An open-weight model at this size and context length adds a self-hostable option at the
+    top of the open model tier.
+  sources:
+  - label: primary
+    url: https://www.tencent.com/tencent-releases-and-open-sources-tencent-hy4-preview/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49492632
+- title: >-
+    vLLM v0.28.0 raises the default batched token budget and moves bitsandbytes out of tree
+  section: Top stories
+  category: AI
+  status: confirmed
+  blurb: >-
+    vLLM v0.28.0 ships 584 commits, raises the default batched token budget to 16384, and
+    drops in-tree bitsandbytes.
+  summary: >-
+    The vLLM v0.28.0 release notes list 584 commits. The release raises the default batched
+    token budget to 16384 and moves bitsandbytes support out of the tree. Four features are
+    removed or relocated in this release.
+  why: >-
+    Operators upgrading inherit new scheduling defaults and four removed or relocated features
+    that need checking before rollout.
+  sources:
+  - label: primary
+    url: https://github.com/vllm-project/vllm/releases/tag/v0.28.0
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49492067
+- title: Sony Music Publishing and Warner Chappell sue Anthropic over training data
+  section: Top stories
+  category: Markets
+  status: confirmed
+  blurb: >-
+    Sony Music Publishing and Warner Chappell sued Anthropic over training data, naming Dario
+    Amodei and Benjamin Mann as defendants.
+  summary: >-
+    The Verge and TechCrunch report that Sony Music Publishing and Warner Chappell filed a
+    copyright suit against Anthropic in the US District Court for the Northern District of
+    California, naming Dario Amodei and Benjamin Mann as defendants alongside the company.
+    The Verge states the plaintiffs seek up to 150,000 dollars per work across tens of thousands
+    of works, plus up to 25,000 dollars per instance of stripped copyright management information.
+    The complaint alleges that Mann used BitTorrent to download over five million pirated
+    books, that employees took at least two million more from Pirate Library Mirror, and that
+    lyrics were scraped from MusixMatch and LyricFind.
+  why: >-
+    Another training-data suit against a major model vendor adds to the licensing risk attached
+    to commercially served models.
+  sources:
+  - label: The Verge
+    url: https://www.theverge.com/ai-artificial-intelligence/986438/sony-music-warner-chappell-anthropic-lawsuit-copyright
+  - label: TechCrunch
+    url: https://techcrunch.com/2026/08/29/sony-music-warner-sue-anthropic-alleging-a-brazen-campaign-of-intellectual-property-theft/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49492119
+- title: RestrictedPython guard hooks can be shadowed through positional-only arguments
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    RestrictedPython before 8.3 lets positional-only arguments shadow its guard hooks, bypassing
+    the sandbox policy.
+  summary: >-
+    GitHub advisory GHSA-ffg3-p8fm-mjx2, tracked as CVE-2026-55830, states that RestrictedPython's
+    guard hooks can be shadowed through positional-only arguments. The fix is in RestrictedPython
+    8.3.
+  why: >-
+    Any application embedding RestrictedPython as a sandbox can have its access policy bypassed
+    until it moves to 8.3.
+  sources:
+  - label: advisory
+    url: https://github.com/advisories/GHSA-ffg3-p8fm-mjx2
+  - label: NVD
+    url: https://nvd.nist.gov/vuln/detail/CVE-2026-55830
+- title: >-
+    MariaDB Connector/Node.js allows SQL injection in Buffer parameters on five character
+    sets
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    MariaDB Connector/Node.js allows SQL injection through Buffer parameters on big5, gbk,
+    sjis, cp932 and gb18030.
+  summary: >-
+    GitHub advisory GHSA-g5xc-5w98-jfvm, tracked as CVE-2026-55855, states that MariaDB Connector/Node.js
+    allows SQL injection through Buffer parameters when the client character set is big5,
+    gbk, sjis, cp932 or gb18030. The affected ranges are below 3.2.4, 3.3.0 up to 3.3.3, 3.4.0
+    up to 3.4.6, and 3.5.0 up to 3.5.3. Two conditions bound the exposure: none of the five
+    character sets is the default, which is utf8mb4, and parameters bound through server-side
+    prepared statements are unaffected because they are never escaped into SQL text.
+  why: >-
+    Applications on one of those five client charsets that bind untrusted data as Buffer parameters
+    through client-side escaping are injectable until the connector is patched.
+  followup: >-
+    The advisory sidebar lists 3.3.4 as the patched 3.3.x release while the description gives
+    3.3.3, so the fixed version on that branch needs confirming against the connector's own
+    release notes.
+  sources:
+  - label: advisory
+    url: https://github.com/advisories/GHSA-g5xc-5w98-jfvm
+  - label: issue tracker
+    url: https://jira.mariadb.org/browse/CONJS-350
+- title: >-
+    MariaDB Connector/R2DBC 1.4.1 fixes cleartext password disclosure and charset confusion
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    MariaDB Connector/R2DBC 1.4.1 fixes cleartext password disclosure to a hostile server
+    and charset confusion.
+  summary: >-
+    Two GitHub advisories cover MariaDB Connector/R2DBC. One is cleartext password disclosure
+    to a hostile server, tracked as CVE-2026-55860 at moderate severity and CVSS 5.9 under
+    CWE-319 and CWE-522, affecting versions below 1.4.1 and patched in 1.4.1. The other is
+    character set confusion applied mid-session, also fixed in 1.4.1. GHSA-c857-9x2m-cvh2
+    gives a workaround for anyone who cannot upgrade yet: supply the server or CA certificate
+    and select a verifying SSL mode, so the transport is encrypted before credentials are
+    sent.
+  why: >-
+    An on-path attacker posing as the server can capture database passwords in cleartext from
+    unpatched Connector/R2DBC clients.
+  sources:
+  - label: advisory
+    url: https://github.com/advisories/GHSA-c857-9x2m-cvh2
+  - label: second advisory
+    url: https://github.com/advisories/GHSA-5rqc-86vf-g8r2
+  - label: release
+    url: https://github.com/mariadb-corporation/mariadb-connector-r2dbc/releases/tag/1.4.1
+- title: >-
+    Qubes OS bulletin QSB-118 reports dom0 arbitrary code execution through the qvm-copy-to-vm
+    error path
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    Qubes bulletin QSB-118 reports dom0 arbitrary code execution through an unsanitised filename
+    in the copy-to-vm error path.
+  summary: >-
+    The bulletin states that the filename sanitiser replaces only non-printable characters
+    and double quotes, leaving shell metacharacters intact, and that the dom0 error dialog
+    is built into a string and run through system(). A compromised qube can therefore inject
+    a shell command that dom0 executes when the user copies a file to that qube from dom0.
+    All Qubes OS releases are affected, and the fix for Qubes 4.3 is qubes-core-dom0-linux
+    4.3.22, moving from security-testing to stable.
+  why: >-
+    Code execution in dom0 is a full compromise of a Qubes system, and the trigger is an ordinary
+    file copy out of dom0.
+  followup: The bulletin names no CVE, so a tracking identifier needs picking up later.
+  sources:
+  - label: bulletin
+    url: https://www.qubes-os.org/news/2026/08/29/qsb-118/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49496918
+- title: >-
+    Qubes OS bulletin QSB-117 covers five Intel microcode advisories it cannot assess
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    Qubes bulletin QSB-117 states it cannot assess five Intel microcode advisories, and Intel
+    withdrew the Meteor Lake update.
+  summary: >-
+    Qubes states that Intel's five advisories do not carry enough information for a definitive
+    assessment and that it cannot exclude a cross-qube attack, meaning one compromised qube
+    inferring data from another or escalating privileges. Affected parts are 10th and 11th
+    generation Intel Core, Core Ultra Series 1 to 3, and various Xeon. Intel has withdrawn
+    the update for Meteor Lake, Core Ultra Series 2, citing functional issues, while the Qubes
+    4.3 fix for the rest is microcode_ctl 2.1.20260812, already in stable.
+  why: >-
+    Meteor Lake systems have no fix and an exposure Qubes says it cannot bound, and applying
+    the fix elsewhere needs a dom0 restart plus an Anti Evil Maid reseal because PCR18 and
+    PCR19 change.
+  followup: >-
+    Intel has not republished the Meteor Lake microcode, so Core Ultra Series 2 exposure needs
+    re-checking.
+  sources:
+  - label: bulletin
+    url: https://www.qubes-os.org/news/2026/08/28/qsb-117/
+- title: >-
+    Omarchy put its default user in the docker group, giving every session process passwordless
+    root until 4.0.1
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    Omarchy put its default user in the docker group before 4.0.1, giving every session process
+    passwordless root on the host.
+  summary: >-
+    Omarchy added its default user to the Linux docker group, and on Arch the Docker daemon
+    runs as root on /var/run/docker.sock, so any process in the desktop session could ask
+    that daemon to mount the host filesystem into a root container. The researcher gives a
+    proof of concept reading /etc/shadow through `docker run -v /:/hostroot`, and notes that
+    supplementary groups are inherited, so browsers, editors, npm scripts and AI coding agents
+    all held root without sudo or a prompt. Versions below 4.0.1 are affected, the report
+    was tested on 3.8.4 and disclosed privately before publication, and the group membership
+    was introduced on 2025-06-01 and removed on 2026-08-24.
+  why: >-
+    A default desktop configuration turned every unprivileged process in the session into
+    a path to full host compromise with no authentication step.
+  sources:
+  - label: primary
+    url: https://0xcc.io/posts/omarchy-root-creds/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49499854
+- title: >-
+    Tether reaches iMessage, SMS and notifications on Linux through a clean-room Bluetooth
+    implementation
+  section: Developer tools
+  category: Dev tools
+  status: confirmed
+  blurb: >-
+    Tether adds iMessage, SMS, notifications and contact sync on Linux over a clean-room Bluetooth
+    stack with mTLS transport.
+  summary: >-
+    Tether now covers iMessage, SMS, notifications and contact sync alongside its earlier
+    file transfer, clipboard sync and OTP handling, which is the part of Apple Continuity
+    a Linux user with an iPhone otherwise loses. The author states the transport is mTLS between
+    iOS and Linux with both sides required to agree before communication, and that the Bluetooth
+    work is a clean-room C++ implementation written against published protocol documentation
+    rather than derived from the existing ancs4linux and BlueFerry code, so the project stays
+    MIT rather than GPL. OTP autofill runs through browser and mail WebExtensions, which the
+    author states work only for Firefox-family and Thunderbird-family clients. The post is
+    dated 2026-08-23 and its Hacker News submission dates to 2026-08-24, so this is an older
+    item still on the front page rather than a release published today.
+  why: >-
+    A Linux desktop paired with an iPhone gets the Continuity features Apple ships no client
+    for, under a license that permits reuse.
+  sources:
+  - label: primary
+    url: https://zackbartel.com/blog/2026/08/tether/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=49415386

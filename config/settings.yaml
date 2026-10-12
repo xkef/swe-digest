@@ -1,0 +1,70 @@
+# Tunables for a run. The tool grant is not here on purpose: an improvement
+# pull request may edit config/, and a run must never propose widening its own
+# capability. The grant lives in src/digest/agent.py.
+
+repo: xkef/swe-digest
+owner: xkef
+site: https://xkef.github.io/swe-digest/
+
+model: claude-opus-5
+max_turns: 60
+
+# How far back each run collects.
+window_hours: 24
+# How far back a story counts as already published.
+archive_days: 14
+# Characters of a fetched page the model reads.
+fetch_max_chars: 20000
+
+# A digest is a bounded page, not a feed.
+max_stories: 25
+max_top_stories: 5
+max_section_stories: 4
+# A heavy advisory or incident day is what the reader came for.
+uncapped_sections: [Security, Outages]
+
+followup_max_age_days: 45
+max_open_followups: 60
+
+# The card text on every day page.
+blurb_chars: [100, 145]
+
+sections:
+  - Top stories
+  - Security
+  - Outages
+  - AI
+  - Agentic coding
+  - ML research
+  - Developer tools
+  - Languages and runtimes
+  - Linux and kernel
+  - Apple platforms
+  - Infrastructure
+  - Engineering posts
+  - Markets and companies
+  - Books
+  - New videos
+  - Hacker News
+  - Reddit and social pulse
+
+categories:
+  - AI
+  - ML research
+  - Agentic coding
+  - Security
+  - Outage
+  - Dev tools
+  - Languages
+  - Apple
+  - Linux/Kernel
+  - Infrastructure
+  - Engineering post
+  - Event
+  - Book
+  - Paper
+  - Video
+  - Markets
+  - Pulse
+
+statuses: [confirmed, developing, rumor, discussion]

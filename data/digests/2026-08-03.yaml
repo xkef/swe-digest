@@ -1,0 +1,460 @@
+date: '2026-08-03'
+lede: >-
+  Arch Linux disabled the AUR after malicious takeovers of roughly 200 orphaned packages with
+  credential-stealing build steps.
+stories:
+- title: >-
+    Arch Linux disables AUR package adoption and then all pushes after a wave of malicious
+    takeovers of orphaned packages
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    Arch Linux disabled AUR adoption on 2026-07-30 after malicious takeovers of roughly 200
+    orphaned packages with credential-stealing build steps.
+  summary: >-
+    The Arch Linux DevOps team announced on the aur-general mailing list that package adoption
+    in the AUR was disabled on 2026-07-30, and then that all pushes to the AUR were disabled
+    on 2026-08-01, after a wave of malicious takeovers of orphaned packages. The first-party
+    announcement names neither the affected packages nor a count. BleepingComputer relays
+    a community tracker putting the scale at roughly 200 packages, states that the figure
+    is not independently confirmed, and no full list has been published. The reported malware
+    behaviour is a poisoned PKGBUILD build step whose second stage collects SSH keys, cloud
+    and AI service API keys, and password manager data, and that behaviour comes from third-party
+    analysis rather than from Arch.
+  why: >-
+    An AUR helper builds and runs PKGBUILD code as the invoking user, so a poisoned build
+    step runs on the developer's own machine, and the reported second stage takes credentials
+    from exactly that machine.
+  followup: >-
+    Track whether Arch publishes a list of affected packages and when pushes are restored.
+  sources:
+  - label: aur-general announcement
+    url: https://lists.archlinux.org/archives/list/aur-general@lists.archlinux.org/message/YPJ3FQYJTJXXY3RUXCYLMHUKHLIUNVFF/
+  - label: aur-general archive
+    url: https://lists.archlinux.org/archives/list/aur-general@lists.archlinux.org/latest
+  - label: BleepingComputer report
+    url: https://www.bleepingcomputer.com/news/security/arch-linux-disables-aur-package-adoption-to-stop-malware-flood/
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49146238
+- title: >-
+    JFrog audits 55 advisories from one GitHub account and finds 54 fabricated, after NVD
+    rated six SQLite CVEs critical or high
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    JFrog found 54 of 55 advisories from one GitHub account fabricated, including six SQLite
+    CVEs that NVD had rated critical or high.
+  summary: >-
+    JFrog audited 55 advisories submitted from a single GitHub account and found 54 of them
+    fabricated, among them six SQLite CVEs that NVD had rated critical or high. The post names
+    checkable red flags for a fabricated record: no entry on the maintainer's own advisory
+    page, no linked commit or pull request, empty CPE fields, and code references that do
+    not exist in the claimed version. The post is dated 2026-07-30 and reached the Hacker
+    News front page on 2026-08-03. The records are still moving: JFrog records Red Hat scoring
+    CVE-2026-51302 at 10.0 Critical and downgrading it to 7.6 High between two days of writing,
+    and JFrog reported the findings to GHSA, Red Hat and NVD.
+  why: >-
+    The MITRE submission form verifies no identity and no step in the pipeline requires a
+    reproducible proof of concept, so a fabricated advisory reaches GHSA, downstream databases,
+    and enterprise scanners carrying a critical score.
+  followup: Track whether GHSA, Red Hat and NVD withdraw or rescore the disputed records.
+  sources:
+  - label: JFrog research
+    url: https://research.jfrog.com/post/sqlite-critical-cves-or-llm-slops/
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49154332
+- title: >-
+    Unit 42 recovers a threat actor's environment showing an unattended DeepSeek-driven agent
+    chain that compromised no targets, with the three confirmed compromises coming from manual
+    attacks
+  section: Top stories
+  category: Security
+  status: developing
+  blurb: >-
+    Unit 42 recovered a threat actor's unattended DeepSeek-driven agent that autonomously
+    chained three CVE exploits but compromised no systems.
+  summary: >-
+    BleepingComputer reports that Palo Alto Networks Unit 42 recovered an exposed environment
+    belonging to a threat actor and reconstructed a May 2026 session in which DeepSeek drove
+    the Hermes agent through target selection, exploit choice, and attack in a single unattended
+    run. The operator supplied only an initial task, after which the agent pivoted from Langflow,
+    CVE-2026-33017, to n8n on its own and downloaded exploit code chaining CVE-2026-21858
+    and CVE-2025-68613. Those autonomous attempts failed to compromise any target, and Unit
+    42 is quoted stating that the observed campaign had limited impacts. The only three confirmed
+    compromises are Citrix NetScaler systems, CVE-2026-3055, and the report attributes them
+    to manual attacks the operator ran against more than 460 systems rather than to the agent.
+    The report names no affected or fixed version for any of the four CVEs, so the versions
+    are not yet known from this sourcing. The Unit 42 research index confirms a report dated
+    2026-07-30 on a Chinese-speaking threat actor using AI models for autonomous cyberattacks,
+    but the index does not expose the article URL in text and the report did not resolve from
+    this environment, so this block cites BleepingComputer as primary and the vendor index
+    as confirmation.
+  why: >-
+    Unit 42 is quoted stating that the system executed hundreds of hours of manual targeting
+    analysis in mere minutes, so what the recovered session bounds is analyst time rather
+    than attacker success, and the four named CVEs are the actionable part for anyone running
+    Langflow, n8n, or Citrix NetScaler.
+  followup: >-
+    Resolve the Unit 42 report URL and check the reconstructed session against the vendor
+    account.
+  sources:
+  - label: BleepingComputer report
+    url: https://www.bleepingcomputer.com/news/security/hacker-uses-deepseek-ai-to-autonomously-attack-vulnerable-servers/
+  - label: Unit 42 research index
+    url: https://unit42.paloaltonetworks.com/
+- title: >-
+    ComfyUI ships day-zero support for the open-weights MiniMax H3 video model and reports
+    cutting its memory footprint 66 percent, from 123.6 GB to 42.5 GB
+  section: AI
+  category: AI
+  status: confirmed
+  blurb: >-
+    ComfyUI's day-zero MiniMax H3 support achieves 66 percent memory reduction through lookup-table
+    replacement and quantization of the video model.
+  summary: >-
+    ComfyUI published day-zero support for MiniMax H3 and reports cutting the model's memory
+    footprint 66 percent, from 123.6 GB in full precision to 42.5 GB with the smallest model
+    variants. The post states that the modulation weights it replaced with a functionally
+    equivalent lookup table are about 40 percent of the total parameters, and pairs that replacement
+    with an int8 convrot quantization and custom kernels. H3 is MiniMax's third-generation
+    video model and the first the company has released with open weights. ComfyUI is first-party
+    for its own integration and optimization figures and is relaying MiniMax's claims about
+    the model itself, and no MiniMax first-party page was in the day's collection.
+  why: >-
+    The pruning and quantization work rather than the weights release is what decides whether
+    a 2K video model runs on one GPU.
+  followup: >-
+    Resolve a MiniMax first-party page for the model claims and check the parameter and footprint
+    figures against it.
+  sources:
+  - label: ComfyUI blog post
+    url: https://blog.comfy.org/p/minimax-h3-day-0-support-in-comfyui
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49155629
+- title: >-
+    TokTier measures tokenization reaching up to 64 percent of time to first token for coding
+    agents at a 94.1 percent prompt-cache hit rate
+  section: ML research
+  category: Paper
+  status: developing
+  blurb: >-
+    Tokenization consumes up to 64 percent of time to first token for coding agents at high
+    cache hit rates, dropping 16 to 34 percent under vLLM.
+  summary: >-
+    The preprint measures tokenization taking up to 64 percent of time to first token for
+    coding agents running at a 94.1 percent prompt-cache hit rate. The measurement comes from
+    153,951 calls across two agent ecosystems, where the median call appends about 1.4K characters.
+    The stated contract is that emitted token ids are always identical to full reference tokenization,
+    and the paper reports a 16 to 34 percent drop in median time to first token under vLLM.
+  why: >-
+    Prompt-cache work moved the serving bottleneck onto a front end that was assumed cheap,
+    and the identical-ids contract means the reported drop does not trade correctness for
+    speed.
+  followup: >-
+    Preprint with no peer review. Track whether the overhead figures reproduce outside the
+    authors' two agent ecosystems.
+  sources:
+  - label: paper
+    url: https://arxiv.org/abs/2607.29678
+- title: >-
+    A Locksmith Loop paper reports 91.90 percent branch coverage on one internal COBOL program
+    when validating agent-migrated code against the original with a deterministic parity oracle
+  section: ML research
+  category: Paper
+  status: developing
+  blurb: >-
+    Locksmith Loop validates agent-migrated COBOL against the original with a deterministic
+    parity oracle achieving 91.9 percent branch coverage.
+  summary: >-
+    The preprint describes Locksmith Loop, a method that validates agent-migrated COBOL against
+    the original program with a deterministic parity oracle. The 91.90 percent branch coverage
+    figure describes one of three case studies, an internal production-like COBOL program,
+    and the abstract reports nearly complete coverage for the two open-source programs. The
+    corpus spans 430 to 4,114 source lines. The method instruments the COBOL source and the
+    generated Java with mocks and runs both off-mainframe on commodity hardware.
+  why: >-
+    The contribution is a deterministic oracle for agent output rather than a model score,
+    so the check does not depend on a second model agreeing with the first.
+  followup: >-
+    Preprint with no peer review. Track whether the parity oracle is reproduced outside the
+    authors' corpus.
+  sources:
+  - label: paper
+    url: https://arxiv.org/abs/2607.28271
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49150773
+- title: >-
+    Anthropic's Claude Code lead says a single agent run rewriting the Electron Claude desktop
+    app in Swift has been going about 15 days and is still running
+  section: Agentic coding
+  category: Agentic coding
+  status: discussion
+  blurb: >-
+    Anthropic's Claude Code lead reports a single agent run rewriting the Electron Claude
+    desktop app in Swift has been running for 15 days.
+  summary: >-
+    John Gruber relays a statement by Boris Cherny, Anthropic's Claude Code lead, that a single
+    agent run rewriting the Electron Claude desktop application in Swift has been going about
+    15 days and is still running. The quoted prompt builds its own verification loop, running
+    the Electron app in a macOS runner, taking screenshots, and comparing them pixel by pixel
+    against the Swift build. Cherny names verification as the single thing practitioners most
+    often get wrong. No shipped artifact and no code from the run has been published.
+  why: >-
+    The claim of interest is not the run length but the verification design, because a run
+    of that duration only means anything if something other than the agent decides whether
+    the output matches.
+  sources:
+  - label: Daring Fireball link post
+    url: https://daringfireball.net/linked/2026/08/02/cherny-claude-swift
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49149800
+- title: >-
+    David Crawshaw argues agent-driven personalization replaces plugin systems, and names
+    Claude Code's closed source as the wall
+  section: Agentic coding
+  category: Agentic coding
+  status: discussion
+  blurb: >-
+    Crawshaw argues that agent-driven personalization of developer tools replaces plugins,
+    but Claude Code's closed source blocks that approach.
+  summary: >-
+    David Crawshaw argues that agent-driven personalization of a developer tool replaces the
+    plugin system as the extension mechanism, and names Claude Code's closed source as the
+    wall that argument runs into. The argument turns on a maintenance claim rather than a
+    licensing preference. What Crawshaw says changed the return on a private fork is a nightly
+    agent job that rebases local changes onto upstream and checks the result, which is the
+    cost that historically made personal patches unsurvivable. The post is argument and worked
+    example, not measurement.
+  why: >-
+    A plugin API exists because maintaining a fork against upstream is expensive, so the claim
+    under test is whether an automated rebase-and-check loop removes that cost.
+  sources:
+  - label: post
+    url: https://blog.exe.dev/devtools-must-be-open-source
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49156111
+- title: >-
+    RFC 9851 puts TLS 1.2 in feature freeze and states that post-quantum cryptography for
+    it will not be specified at any time
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    RFC 9851 places TLS 1.2 in feature freeze and states post-quantum cryptography for it
+    will never be specified at any time.
+  summary: >-
+    RFC 9851 places TLS 1.2 in feature freeze. The only additions still permitted are urgent
+    security fixes decided by working group consensus, ALPN protocol identifiers, and exporter
+    labels. The document states that post-quantum cryptography for TLS 1.2 will not be specified
+    at any time, and that anyone deploying post-quantum cryptography should expect to use
+    TLS 1.3. The document states twice that the freeze applies to TLS only and does not apply
+    to DTLS in any DTLS version.
+  why: >-
+    A TLS 1.2 endpoint now has a fixed capability ceiling, so a post-quantum migration plan
+    that assumes TLS 1.2 will eventually carry the new key exchanges has no specification
+    to wait for.
+  sources:
+  - label: RFC 9851
+    url: https://www.rfc-editor.org/rfc/rfc9851.html
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49150181
+- title: >-
+    Kakehashi loads Darwin Mach-O binaries on Linux aarch64 against a freestanding libSystem,
+    running 7-Zip about 5.2 times slower than native on a multi-file archive
+  section: Developer tools
+  category: Dev tools
+  status: developing
+  blurb: >-
+    Kakehashi runs Darwin Mach-O binaries on Linux aarch64 with 5.2x slowdown for 7-Zip, useful
+    for CI at one-tenth the cost of hosted macOS.
+  summary: >-
+    Kakehashi loads Darwin Mach-O binaries on Linux aarch64 against a freestanding libSystem
+    rather than emulating a full macOS userland. The repository reports 7-Zip running about
+    5.2 times slower than native on a multi-file archive, and publishes its unsupported surfaces
+    alongside that measurement rather than claiming parity. The stated target is continuous
+    integration, running Darwin command line tools on Linux arm64 runners.
+  why: >-
+    Linux arm64 runners bill at roughly a tenth of a hosted macOS minute, so a 5.2 times slowdown
+    on a command line tool can still cut cost for the build steps that do not need a full
+    macOS host.
+  followup: Track whether the supported binary surface grows beyond command line tools.
+  sources:
+  - label: repository
+    url: https://github.com/wie-project/kakehashi
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49145937
+- title: >-
+    Rust accepts a 2026-2027 project goal for Move and Forget traits, with the stated aim
+    of deprecating Pin rather than extending it
+  section: Languages and runtimes
+  category: Languages
+  status: developing
+  blurb: >-
+    Rust accepted a 2026-2027 goal to add Move and Forget traits with the eventual aim of
+    deprecating Pin entirely rather than extending it.
+  summary: >-
+    The Rust project accepted a 2026-2027 goal to add Move and Forget traits. The document
+    names deprecating Pin entirely as the eventual aim rather than extending it. Changing
+    the Future trait, the only stable trait that depends on Pin, is stated as out of scope
+    for this year.
+  why: >-
+    Pin is the current encoding of immovability, so the stated direction for Pin-based async
+    code and Rust-for-Linux is replacement rather than the ergonomics work proposed for 2025H2.
+  followup: >-
+    Track whether Move and Forget reach a nightly implementation and what the Future trait
+    migration looks like.
+  sources:
+  - label: project goal
+    url: https://github.com/rust-lang/rust-project-goals/blob/main/src/2026/move-trait.md
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49152023
+- title: >-
+    Octane compiles React's hooks model ahead of time with no virtual DOM, and its own benchmark
+    grid puts Vue Vapor ahead on the geometric mean
+  section: Languages and runtimes
+  category: Languages
+  status: developing
+  blurb: >-
+    Octane compiles React hooks ahead of time with no virtual DOM, using a per-component OctaneCompat
+    island to migrate existing React applications.
+  summary: >-
+    Octane compiles React's hooks model ahead of time and runs with no virtual DOM. The compiler
+    infers what effects and memos capture, so dependency arrays and the rules of hooks go
+    away and a hook can sit behind a condition. Adoption is per component through an OctaneCompat
+    island inside an existing React 19 app rather than a rewrite, and React Server Components
+    are the one feature the project states does not carry over. The comparison grid is self-published
+    by the project, and on its own numbers Vue Vapor is ahead on the geometric mean.
+  why: >-
+    The dependency array and the rules of hooks are the parts of the model a compiler can
+    take over, and this is a per-component migration path rather than a framework switch.
+  followup: Track independent benchmarks and whether React Server Components gain a path.
+  sources:
+  - label: project site
+    url: https://octanejs.dev
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49152640
+- title: >-
+    A SwiftUI retrospective points at Apple's own Landmarks tutorial rendering a broken sidebar
+    on current Xcode and macOS, unchanged for over two years
+  section: Apple platforms
+  category: Apple
+  status: discussion
+  blurb: >-
+    A SwiftUI retrospective points at Apple's own Landmarks tutorial showing a broken sidebar
+    unchanged for over two years on current macOS.
+  summary: >-
+    A retrospective on seven years of SwiftUI argues the framework has stayed mediocre, and
+    grounds the argument in specific checkable defects rather than general complaint. The
+    lead example is Apple's own Landmarks tutorial rendering a broken sidebar on current Xcode
+    and macOS, unchanged for over two years. The structural argument of the piece is that
+    back-deploying the framework as a dependency, the way Jetpack Compose ships on Android,
+    would remove most of the availability-check churn in SwiftUI code.
+  why: >-
+    Availability checks against OS versions are the cost SwiftUI imposes on every codebase
+    that supports more than the newest release, and the piece names a shipping model that
+    would remove them rather than a preference about API design.
+  sources:
+  - label: retrospective
+    url: https://ykvm.com/2026/07/swiftui-a-story-of-mediocrity/
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49147263
+  - label: r/swift thread
+    url: https://www.reddit.com/r/swift/comments/1vdst4t/swiftui_after_7_years_a_story_of_mediocrity/
+- title: >-
+    Linus Torvalds calls Linux 7.2-rc6 the biggest rc6 in years by commit count and says nothing
+    in it justifies delaying the release
+  section: Linux and kernel
+  category: Linux/Kernel
+  status: confirmed
+  blurb: >-
+    Linus Torvalds released Linux 7.2-rc6 as the biggest rc6 in years by commit count but
+    says nothing in it justifies delaying the release.
+  summary: >-
+    Linus Torvalds released Linux 7.2-rc6 and described it as the biggest rc6 in years by
+    commit count, while stating that nothing in it justifies delaying the release. The composition
+    is ordinary at just under 60 percent drivers, 20 percent networking, and 20 percent the
+    rest. Phoronix attributes the fix volume to AI coding agents, which is that publication's
+    reading and not something Torvalds says in the quoted announcement. lore.kernel.org sits
+    behind a proof-of-work gate from this environment and was not attempted, so the announcement
+    is quoted as relayed by Phoronix.
+  why: >-
+    It is the volume rather than the content that anyone tracking stable 7.2 about two weeks
+    out has to weigh, because an rc6 this large lands late with no single change to review.
+  followup: Track whether 7.2 releases on schedule or gains an rc8.
+  sources:
+  - label: Phoronix report
+    url: https://www.phoronix.com/news/Linux-7.2-rc6-Released
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49150505
+- title: >-
+    Cloudflare moves cdnjs, 9 billion requests a day, off 26 alphabet-sharded Cloud Functions
+    and a 1.1 TB git repo onto its own developer platform
+  section: Engineering posts
+  category: Engineering post
+  status: confirmed
+  blurb: >-
+    Cloudflare moved cdnjs from 26 sharded Cloud Functions and a 1.1 TB repo onto its developer
+    platform, consolidating with R2 as source of truth.
+  summary: >-
+    Cloudflare published an account of migrating cdnjs, which serves 9 billion requests a
+    day, off 26 alphabet-sharded Cloud Functions and a 1.1 TB git repository onto its own
+    developer platform. The post names the failure mode of the old design as partial success
+    with no correlation id shared between the two logging systems, so a version could write
+    to the edge, silently fail to reach the source of truth, and serve correctly for weeks
+    with no alert.
+  why: >-
+    The missing correlation id was the diagnostic gap rather than the remedy, and the remedy
+    the post describes is a re-platform onto Workflows, R2, D1, Queues and Containers with
+    R2 as the single source of truth, which removes the two divergent writes instead of instrumenting
+    them.
+  sources:
+  - label: Cloudflare blog post
+    url: https://blog.cloudflare.com/cdnjs-dev-platform-migration/
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49146702
+- title: >-
+    Andy Pavlo joins ClickHouse as VP of Database Research to establish ClickHouse Labs
+  section: Markets and companies
+  category: Markets
+  status: confirmed
+  blurb: >-
+    Andy Pavlo joins ClickHouse as VP of Database Research to establish ClickHouse Labs covering
+    agents and automated DBMS development.
+  summary: >-
+    ClickHouse announced that Andy Pavlo joins as VP of Database Research to establish ClickHouse
+    Labs. The stated remit covers ClickHouse's PostgreSQL managed service alongside the analytical
+    engine, and names two research questions: what a DBMS should look like to support agents,
+    and how agents can automate DBMS development itself. Pavlo also names an immediate priority
+    of validating and shipping a backlog of optimizations the engineering team explored but
+    did not finish, which is a roadmap claim rather than a research one.
+  why: >-
+    The backlog item is the near-term one for anyone running ClickHouse, because it describes
+    optimizations that already exist in exploratory form rather than research that has yet
+    to start.
+  sources:
+  - label: ClickHouse announcement
+    url: https://clickhouse.com/blog/andy-pavlo-joins-clickhouse
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49156011
+- title: >-
+    The Hacker News thread on the Wafer MI355X post disputes its performance-per-dollar claim
+    using the post's own comparison table
+  section: Hacker News
+  category: Pulse
+  status: discussion
+  blurb: >-
+    The Hacker News thread on Wafer's Kimi K3 post disputes its performance-per-dollar claim
+    by reading the post's own comparison table differently.
+  summary: >-
+    The Hacker News thread on Wafer's Kimi K3 on MI355X write-up disputes the post's performance-per-dollar
+    claim. HN commenters read the post's own comparison table as favouring the B300 on every
+    row except the GPU-hour rental rate the post selected. The 2026-08-02 digest carried the
+    throughput figures from that post without the thread.
+  why: >-
+    The disputed number is the one a capacity decision would rest on, and the counterargument
+    uses the vendor's own table rather than an independent benchmark.
+  sources:
+  - label: HN discussion
+    url: https://news.ycombinator.com/item?id=49141073
