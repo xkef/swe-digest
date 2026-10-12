@@ -1,5 +1,5 @@
 date: '2026-10-12'
-updated: 2026-10-12T19:59Z
+updated: 2026-10-12T22:03Z
 stories:
 - title: Zod 4.6.6 published to npm with a malicious preinstall script
   section: Top stories
@@ -145,6 +145,174 @@ stories:
     url: https://pub.sakana.ai/mass/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50048522
+- title: >-
+    Flask session key recovered from its own cookie yields RCE across Google DevSite domains
+  section: Security
+  category: Security
+  blurb: >-
+    A Flask secret key stored inside its own session cookie gave pickle RCE across Google
+    DevSite domains, paid at 90,000 dollars.
+  summary: >-
+    Reported 2026-08-06 and fixed 2026-10-07, the OAuth flow shared by Google's developer
+    documentation sites set a roughly 1,200 byte Flask session cookie, and because Flask signs
+    session cookies rather than encrypting them, the payload decoded to a pickle-serialized
+    `oauth2client.client.OAuth2WebServerFlow` object carrying the OAuth `client_id` and `client_secret`
+    in plaintext. That client secret was also the Flask `SECRET_KEY`, so the author recomputed
+    the itsdangerous signature offline, matched it byte for byte, then forged a session with
+    an attacker-chosen CSRF token and a pickle under the matching flow key, which the callback
+    passes to `pickle.loads`. Execution was demonstrated with a `time.sleep` reduce payload
+    whose response times tracked the requested delay at 0, 3, 5 and 8 seconds, with negative
+    controls for a missing cookie, a flipped signature byte and a missing flow entry, and
+    because DevSite is a shared platform the key validated sessions on firebase.google.com,
+    developer.android.com, source.android.com and docs.partner.android.com.
+  why: >-
+    The chain is four independent mistakes stacked, a credential reused as a signing key,
+    secrets in a client-held cookie, pickle across a client boundary, and one key shared across
+    deployments, and each is checkable in a codebase today.
+  sources:
+  - label: primary
+    url: https://simonkoeck.com/writeups/google-devsite-flask-session-pickle-rce
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50052638
+- title: TinaCMS CLI code injection via unescaped Git branch name in generated client
+  section: Security
+  category: Security
+  blurb: >-
+    An unescaped Git branch name interpolated into generated TinaCMS client code executes
+    during preview builds.
+  summary: >-
+    `@tinacms/cli` reads the Git branch from `VERCEL_GIT_COMMIT_REF`, `GITHUB_BRANCH` or `HEAD`
+    and interpolates it into the generated `client.ts` source with no escaping or encoding,
+    so a branch name that `git check-ref-format` accepts can close the string literal and
+    inject a JavaScript expression that runs when the consumer build imports the generated
+    module. Affected versions are 2.7.0 and earlier, patched in 3.0.0, scored CVSS 8.2 and
+    tracked as CVE-2026-108259. The advisory was published in `tinacms/tinacms` on 2026-09-16
+    and published to the GitHub Advisory Database on 2026-10-09, where it was also reviewed
+    and last updated, so this is a four-week-old disclosure carried here for its pattern rather
+    than as same-day news. The practical attack is a pull request against any project using
+    TinaCMS with preview deployments enabled, where the build runs codegen and executes the
+    attacker's expression with full build privileges and access to build environment variables.
+  why: >-
+    A Git ref is attacker-controlled input, so interpolating one into generated source or
+    a URL path without `JSON.stringify` or `encodeURIComponent` turns every preview build
+    into a code execution sink, well past this one package.
+  sources:
+  - label: primary
+    url: https://github.com/advisories/GHSA-pwhx-cvv3-qj5c
+- title: >-
+    GitLab patches CVSS 10 unauthenticated RCE in the CI/CD regular expression compiler
+  section: Security
+  category: Security
+  blurb: >-
+    Self-managed GitLab 19.2 to 19.4 allows unauthenticated code execution through a crafted
+    CI/CD regex until patched to 19.4.2, 19.3.5 or 19.2.8.
+  summary: >-
+    GitLab released critical patch versions 19.4.2, 19.3.5 and 19.2.8 on 2026-10-12. CVE-2026-97229
+    is an integer overflow in the CI/CD Regular Expression Compiler that could let an unauthenticated
+    user execute arbitrary code on the server, scored CVSS 10.0. The release fixes 23 other
+    issues, including a High severity prompt injection in the Duo Agent Platform and a cache
+    poisoning flaw that can expose protected CI variables.
+  why: >-
+    Self-managed GitLab instances on 19.2 through 19.4 need an immediate upgrade, while GitLab.com
+    and Dedicated are already patched.
+  followup: Watch for a public exploit or a CISA KEV listing for CVE-2026-97229.
+  sources:
+  - label: primary
+    url: https://docs.gitlab.com/releases/patches/patch-release-gitlab-19-4-2-released/
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/gitlab-warns-of-max-severity-rce-flaw-in-regex-compiler-engine/
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1x41p46/gitlab_warns_of_max_severity_code_execution/
+- title: >-
+    php-fpm IPv6 allow list matched only 96 of 128 bits for eleven years (CVE-2026-91768)
+  section: Security
+  category: Security
+  blurb: >-
+    A memcmp that compared 12 of 16 bytes let php-fpm admit any IPv6 client in the same /96
+    as an allowed address, including all of ::/96 for ::1.
+  summary: >-
+    The fix author explains that fcgi_is_allowed compared 12 bytes of IPv6 addresses since
+    PHP 5.5.20, so listen.allowed_clients behaved as a /96 prefix match. An entry of ::ffff:127.0.0.1
+    admitted every IPv4 client on a dual-stack listener. Fixed versions are 8.2.34, 8.3.35,
+    8.4.26 and 8.5.11, and PHP 8.1 and older get no patch.
+  why: >-
+    Pools that rely on listen.allowed_clients over IPv6 need a patched PHP, and any range
+    access must move to a firewall or proxy.
+  sources:
+  - label: primary
+    url: https://daubois.dev/blog/cve-2026-91768-php-fpm-ipv6-allowed-clients-bypass/
+  - label: discussion
+    url: https://www.reddit.com/r/netsec/comments/1x3xa8g/cve202691768_fastcgi_allowed_clients_compared/
+- title: >-
+    GitHub degraded Actions, Issues and Pull Requests with a long notification backlog
+  section: Outages
+  category: Outage
+  blurb: >-
+    GitHub degraded Actions, Issues and Pull Requests for over two hours on 2026-10-12, with
+    notifications backlogged longer.
+  summary: >-
+    GitHub began investigating degraded performance at 12:21 UTC on 2026-10-12, with stated
+    impact on loading the Actions tab, interacting with the Checks API, queueing new Actions
+    runs, creating and updating issues, and requesting pull request reviews, including through
+    the REST and GraphQL APIs. Pull Requests returned to normal at 13:02 UTC, an initial mitigation
+    at 13:38 UTC was reported as not fully successful, and Issues and Actions were mitigated
+    at 14:35 and 14:36 UTC. Notifications were the long tail, resuming at 15:19 UTC but still
+    working through a backlog, with the 19:28 UTC update giving one more hour of delay, and
+    no root cause has been published.
+  why: >-
+    Teams that gate merges on Actions or hand off review through notifications should expect
+    gaps inside that window rather than assume missing runs and alerts were never triggered.
+  followup: >-
+    Whether GitHub publishes a root cause and when the notification backlog finally cleared.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/93njd414rpbx
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50055375
+- title: >-
+    Anthropic finds small open models near the capability to self-replicate across IoT devices
+  section: AI
+  category: AI
+  blurb: >-
+    Anthropic red-teamers show small open models setting up inference on unfamiliar devices,
+    with GLM-5.2 completing replication in a test fleet.
+  summary: >-
+    Anthropic's Frontier Red Team ran Gemma4-26B-A4B across 15 Android TV boxes at 0.39 tokens
+    per second, and a 9B model got inference running on 8 of 9 hardware types. In a simplified
+    8-node redroid fleet with an unauthenticated ADB port, only GLM-5.2 completed end-to-end
+    replication, spreading to all nodes in 4 of 5 trials. A trend fit on small open models
+    puts one at that capability level by the end of 2026.
+  why: >-
+    Unpatched IoT and edge devices become plausible hosts for AI worms, which raises the cost
+    of leaving ADB and default credentials exposed.
+  comments: >-
+    HN commenters questioned whether the simplified exploit step makes the result an upper
+    bound, a caveat the post itself states.
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/research/self-replicating-ai
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50061603
+- title: Meta releases Muse Wonder and Muse Wonder Full for agentic and coding work
+  section: AI
+  category: AI
+  blurb: >-
+    Meta's new Muse Wonder model targets long-running agents and coding, and is available
+    now through the Meta Model API and Muse Code.
+  summary: >-
+    Meta announced Muse Wonder and Muse Wonder Full on 2026-10-12, trained at its Prometheus
+    data center and pitched at personal and professional agents, memory and coding. Muse Wonder
+    is available through the Meta Model API and Muse Code, and Muse Wonder Full is limited
+    to Muse Code subscribers. Benchmark claims are Meta's own, and a full safety report is
+    promised later.
+  why: >-
+    Teams choosing agent backends have another closed frontier option, also exposed on Vercel
+    AI Gateway, though its benchmark lead is unverified.
+  sources:
+  - label: primary
+    url: https://research.meta.ai/blog/muse-wonder
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50059115
 - title: QGIS merges a policy prohibiting AI contributions
   section: Agentic coding
   category: Agentic coding
@@ -202,86 +370,66 @@ stories:
     url: https://github.com/openai/codex/issues/48195
   - label: discussion
     url: https://news.ycombinator.com/item?id=50060694
-- title: >-
-    Flask session key recovered from its own cookie yields RCE across Google DevSite domains
-  section: Security
-  category: Security
+- title: Python 3.10 reaches end of life as Python 3.15 becomes the newest release
+  section: Languages and runtimes
+  category: Languages
   blurb: >-
-    A Flask secret key stored inside its own session cookie gave pickle RCE across Google
-    DevSite domains, paid at 90,000 dollars.
+    Python 3.10 reached end of life on 2026-10-12 after 3.15.0 shipped with lazy imports,
+    a sampling profiler and frame pointers on by default.
   summary: >-
-    Reported 2026-08-06 and fixed 2026-10-07, the OAuth flow shared by Google's developer
-    documentation sites set a roughly 1,200 byte Flask session cookie, and because Flask signs
-    session cookies rather than encrypting them, the payload decoded to a pickle-serialized
-    `oauth2client.client.OAuth2WebServerFlow` object carrying the OAuth `client_id` and `client_secret`
-    in plaintext. That client secret was also the Flask `SECRET_KEY`, so the author recomputed
-    the itsdangerous signature offline, matched it byte for byte, then forged a session with
-    an attacker-chosen CSRF token and a pickle under the matching flow key, which the callback
-    passes to `pickle.loads`. Execution was demonstrated with a `time.sleep` reduce payload
-    whose response times tracked the requested delay at 0, 3, 5 and 8 seconds, with negative
-    controls for a missing cookie, a flipped signature byte and a missing flow entry, and
-    because DevSite is a shared platform the key validated sessions on firebase.google.com,
-    developer.android.com, source.android.com and docs.partner.android.com.
+    Pablo Galindo tagged the Python 3.10 end of life release on 2026-10-12. Python 3.15.0,
+    released 2026-10-09, adds explicit lazy imports (PEP 810), the Tachyon sampling profiler
+    under profiling.sampling, UTF-8 as default encoding, frame pointers by default, and a
+    stable ABI for free-threaded builds. The release notes warn that tkinter apps may hang
+    on macOS 27.0.
   why: >-
-    The chain is four independent mistakes stacked, a credential reused as a signing key,
-    secrets in a client-held cookie, pickle across a client boundary, and one key shared across
-    deployments, and each is checkable in a codebase today.
+    Projects supporting every maintained Python can drop 3.10 and adopt 3.11 features, and
+    services still on 3.10 no longer get security fixes.
   sources:
   - label: primary
-    url: https://simonkoeck.com/writeups/google-devsite-flask-session-pickle-rce
+    url: https://github.com/python/cpython/releases/tag/3.10
+  - label: primary
+    url: https://www.python.org/downloads/release/python-3150/
   - label: discussion
-    url: https://news.ycombinator.com/item?id=50052638
-- title: TinaCMS CLI code injection via unescaped Git branch name in generated client
-  section: Security
-  category: Security
-  blurb: >-
-    An unescaped Git branch name interpolated into generated TinaCMS client code executes
-    during preview builds.
-  summary: >-
-    `@tinacms/cli` reads the Git branch from `VERCEL_GIT_COMMIT_REF`, `GITHUB_BRANCH` or `HEAD`
-    and interpolates it into the generated `client.ts` source with no escaping or encoding,
-    so a branch name that `git check-ref-format` accepts can close the string literal and
-    inject a JavaScript expression that runs when the consumer build imports the generated
-    module. Affected versions are 2.7.0 and earlier, patched in 3.0.0, scored CVSS 8.2 and
-    tracked as CVE-2026-108259. The advisory was published in `tinacms/tinacms` on 2026-09-16
-    and published to the GitHub Advisory Database on 2026-10-09, where it was also reviewed
-    and last updated, so this is a four-week-old disclosure carried here for its pattern rather
-    than as same-day news. The practical attack is a pull request against any project using
-    TinaCMS with preview deployments enabled, where the build runs codegen and executes the
-    attacker's expression with full build privileges and access to build environment variables.
-  why: >-
-    A Git ref is attacker-controlled input, so interpolating one into generated source or
-    a URL path without `JSON.stringify` or `encodeURIComponent` turns every preview build
-    into a code execution sink, well past this one package.
-  sources:
-  - label: primary
-    url: https://github.com/advisories/GHSA-pwhx-cvv3-qj5c
+    url: https://simonwillison.net/2026/Oct/12/python-3-15/
 - title: >-
-    GitHub degraded Actions, Issues and Pull Requests with a long notification backlog
-  section: Outages
-  category: Outage
+    Postgres 19 makes LZ4 the default TOAST compression, and pglz still wins some workloads
+  section: Infrastructure
+  category: Infrastructure
   blurb: >-
-    GitHub degraded Actions, Issues and Pull Requests for over two hours on 2026-10-12, with
-    notifications backlogged longer.
+    Postgres 19 switches default TOAST compression to LZ4, and PlanetScale measures where
+    pglz still wins on size and on prefix reads.
   summary: >-
-    GitHub began investigating degraded performance at 12:21 UTC on 2026-10-12, with stated
-    impact on loading the Actions tab, interacting with the Checks API, queueing new Actions
-    runs, creating and updating issues, and requesting pull request reviews, including through
-    the REST and GraphQL APIs. Pull Requests returned to normal at 13:02 UTC, an initial mitigation
-    at 13:38 UTC was reported as not fully successful, and Issues and Actions were mitigated
-    at 14:35 and 14:36 UTC. Notifications were the long tail, resuming at 15:19 UTC but still
-    working through a backlog, with the 19:28 UTC update giving one more hour of delay, and
-    no root cause has been published.
+    PlanetScale shows TOAST triggers above 2,032 bytes per row and explains the 4 KB pglz
+    window against the 64 KB LZ4 window. On 10,000 JSON orders pglz produced 19 MB against
+    24 MB for LZ4, while LZ4 loaded faster. For 200-character previews of 1 MB values pglz
+    needed 301 page lookups against 6,234 for LZ4, and EXTERNAL storage made mid-value bytea
+    reads about 70 times faster than LZ4.
   why: >-
-    Teams that gate merges on Actions or hand off review through notifications should expect
-    gaps inside that window rather than assume missing runs and alerts were never triggered.
-  followup: >-
-    Whether GitHub publishes a root cause and when the notification backlog finally cleared.
+    Upgrading to Postgres 19 changes compression for new values, so tables with prefix reads
+    or random-access bytea may need an explicit COMPRESSION or STORAGE setting.
   sources:
   - label: primary
-    url: https://www.githubstatus.com/incidents/93njd414rpbx
-  - label: discussion
-    url: https://news.ycombinator.com/item?id=50055375
+    url: https://planetscale.com/blog/what-gets-toasted-in-postgres
+- title: >-
+    Meta moves Instagram Live ingest to Media over QUIC at parity with its in-house RUSH protocol
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Instagram Live ingest on iOS and Android now runs over Media over QUIC, with an edge translator
+    feeding the existing RUSH backend unchanged.
+  summary: >-
+    Meta shipped the IETF draft Media over QUIC protocol for Instagram Live ingest using its
+    open-source moxygen library on mvfst. MoQ connections terminate at edge endpoints that
+    translate to RUSH so downstream systems did not change, and server-side routing let the
+    experiment resize in minutes. Meta pinned draft versions, picks TCP or QUIC per session
+    where UDP is blocked, and built MoQ-aware tracing to debug encrypted framing.
+  why: >-
+    It is a worked example of swapping a production transport behind a translation shim and
+    of running an evolving IETF draft at scale.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/10/12/video-engineering/shipping-media-over-quic-at-meta-scale-for-instagram-live-ingest/
 - title: >-
     Yandex Cloud outage and a collapse in Yandex bot traffic drive the day's largest threads
   section: Hacker News
