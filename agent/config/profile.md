@@ -28,12 +28,21 @@ infrastructure.
   StrongDM. Industry data on review bottlenecks (LinearB, CircleCI, GitHub)
   counts too. Always include when the source is a company engineering blog or
   a credible practitioner write-up with mechanism-level detail.
+- Software factories: systems where specifications and scenarios drive fleets
+  of coding agents from ticket to deployed change with little or no human code
+  review. Track StrongDM's factory, Factory.ai, first-party
+  accounts from engineering organizations, and critiques with evidence. Route
+  into Agentic coding.
 - Major outages affecting developers, cloud users, identity, payments, package
   registries, and collaboration tools.
 - CVEs, active exploitation, supply chain attacks, breaches, and practical
   mitigations.
-- Ghostty, Neovim, LazyVim, wincent/wincent, jj, Git, terminal tooling, shells,
+- Ghostty, Neovim, LazyVim, wincent/wincent, Git, terminal tooling, shells,
   Wayland, dotfiles management (chezmoi), and Linux desktop infrastructure.
+- Jujutsu (jj) and everything around it: releases, tools such as jjui, and
+  workflows such as megamerges. Track the work of its creator, Martin von
+  Zweigbergk, and East River Source Control (ERSC), his company building
+  version control servers for humans and agents. Route into Developer tools.
 - Lua outside editor configuration: Lua 5.x releases, LuaJIT, Luau, the C API
   and embedding Lua as an extension language in servers, games, proxies and
   network tooling, and performance work on Lua runtimes. Route into Languages
@@ -59,7 +68,15 @@ infrastructure.
 - Spring Boot, JVM ecosystem, Netty, R2DBC, database drivers, TLS, cloud
   integration, and migration issues.
 - Observability: Prometheus, Grafana, OpenTelemetry, SLOs, latency, tracing,
-  dashboards, postmortems.
+  dashboards, postmortems. Track the Grafana Labs stack: Grafana, Loki, Tempo,
+  Mimir, and Alloy.
+- Kubernetes and cloud native networking: Kubernetes releases and KEPs,
+  Cilium, Tetragon, eBPF-based networking and security, Isovalent, and CNCF
+  projects. Route into Infrastructure.
+- PostgreSQL and Postgres-compatible distributed SQL: PostgreSQL releases,
+  extensions, and internals, CockroachDB, YugabyteDB, and other NewSQL
+  databases, with their consistency models, benchmarks with method, and
+  licensing changes. Route into Infrastructure and Engineering posts.
 - Distributed systems research and practice: consensus protocols, replication,
   CRDTs and local-first software, eventual consistency, and distributed
   transactions. Track Martin Kleppmann's work and the Automerge and Yjs
@@ -68,6 +85,9 @@ infrastructure.
   tradeoffs, incident analysis, performance work, or debugging lessons.
 - Reddit topics that show adoption pain, repeated failure modes, or fast-moving
   hype around tools and AI.
+- The digital euro, covering the ECB design and technical architecture, the
+  EU legislation, privacy, offline payments, and holding limits. Route into
+  Markets and companies.
 - Acquisitions, IPOs, governance changes, and licensing changes that affect
   developer infrastructure or open source sustainability.
 
