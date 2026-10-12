@@ -3,6 +3,10 @@
 #MISE dir="{{config_root}}"
 set -euo pipefail
 
+# The footer links the build time to the commit the site was built from.
+export RELEASE="${RELEASE:-$(git rev-parse --short HEAD 2>/dev/null || echo dev)}"
+export BUILD_DATE="${BUILD_DATE:-$(date -u +%Y-%m-%dT%H:%MZ)}"
+
 python -m digest build
 rm -rf dist
 # Zola 0.23 prints build errors only through its log.
