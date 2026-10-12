@@ -13,6 +13,9 @@ def main() -> int:
     for name, purpose in (("daily", "update today's digest"), ("improve", "propose watchlist changes")):
         command = commands.add_parser(name, help=purpose)
         command.add_argument("--day", default=datetime.now(UTC).date().isoformat())
+        command.add_argument(
+            "--replay", action="store_true", help="reuse the day's saved model reply instead of asking again"
+        )
     publish = commands.add_parser("publish", help="validate a run's files and publish them")
     publish.add_argument("out_dir")
     publish.add_argument("--day", default=datetime.now(UTC).date().isoformat())
@@ -23,14 +26,14 @@ def main() -> int:
     # Each command imports only what it needs. The publish job installs no
     # agent SDK, so nothing on its path may import it.
     if args.command == "daily":
-        from digest import daily
+        from digest import daily, runs
 
-        print(config.dump(daily.run(args.day)))
+        print(config.dump(daily.run(args.day, runs.replay(args.day, "daily") if args.replay else {})))
         return 0
     if args.command == "improve":
-        from digest import improve
+        from digest import improve, runs
 
-        print(config.dump(improve.run(args.day)))
+        print(config.dump(improve.run(args.day, runs.replay(args.day, "improve") if args.replay else {})))
         return 0
     if args.command == "publish":
         from digest import publish as gate

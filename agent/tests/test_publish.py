@@ -13,7 +13,7 @@ def write(root, relative, text="date: '2026-10-09'\nruns: []\n"):
 def test_gather_accepts_allowlisted_paths(tmp_path):
     write(tmp_path, "data/runs/2026-10-09.yaml")
     write(tmp_path, "agent/config/profile.md", "# Profile\n")
-    assert set(publish.gather(tmp_path)) == {"data/runs/2026-10-09.yaml", "agent/config/profile.md"}
+    assert set(publish.gather(tmp_path)["files"]) == {"data/runs/2026-10-09.yaml", "agent/config/profile.md"}
 
 
 @pytest.mark.parametrize(

@@ -13,6 +13,12 @@ mirrored under one directory. This module trusts none of it:
 
 Code, prompts, workflows, and settings are not on the allowlist, so a run can
 never change its own instructions or this gate.
+
+The steps form a graph. Only ``verify`` gives what the writing steps need, so
+nothing reaches GitHub before every file passes:
+
+    gather ──> verify ──┬──> commit ──> close_requests
+                        └──> propose ──> close_feedback
 """
 
 import re
@@ -22,7 +28,8 @@ from typing import Any
 
 import yaml
 
-from digest import config, github, memory, runs, sources, stories
+from digest import config, github, graph, memory, runs, sources, stories
+from digest.graph import State, Step
 
 DAY = r"\d{4}-\d{2}-\d{2}"
 DATA_PATHS = re.compile(rf"data/digests/{DAY}\.yaml|data/runs/{DAY}\.yaml|data/memory/followups\.yaml")
@@ -35,7 +42,7 @@ class Refused(RuntimeError):
     """The run's output breaks a publish rule. Nothing is published."""
 
 
-def gather(out_dir: Path) -> dict[str, bytes]:
+def gather(out_dir: Path) -> State:
     """Returns the run's files by repository path, refusing anything off the allowlist."""
     files: dict[str, bytes] = {}
     for entry in sorted(out_dir.rglob("*")):
@@ -49,7 +56,7 @@ def gather(out_dir: Path) -> dict[str, bytes]:
         if entry.stat().st_size > MAX_FILE_BYTES:
             raise Refused(f"{relative}: over {MAX_FILE_BYTES} bytes")
         files[relative] = entry.read_bytes()
-    return files
+    return {"files": files}
 
 
 def check(relative: str, body: bytes) -> list[str]:
@@ -71,34 +78,70 @@ def check(relative: str, body: bytes) -> list[str]:
     return sources.watchlist_problems(parsed)
 
 
-def publish(out_dir: Path, day: str) -> None:
-    files = gather(out_dir)
+def verify(files: dict[str, bytes], day: str) -> State:
+    """Checks every file, then splits them into data and proposals."""
     problems = [f"{path}: {issue}" for path, body in files.items() for issue in check(path, body)]
     if problems:
         raise Refused("\n".join(problems))
 
     record = yaml.safe_load(files.get(f"data/runs/{day}.yaml", b"runs: [{}]"))["runs"][-1]
-    data = {path: body for path, body in files.items() if path.startswith("data/")}
-    proposals = {path: body for path, body in files.items() if path.startswith("agent/config/")}
+    return {
+        "data": {path: body for path, body in files.items() if path.startswith("data/")},
+        "proposals": {path: body for path, body in files.items() if path.startswith("agent/config/")},
+        "record": record,
+    }
 
-    if data:
-        sha = github.commit("main", data, f"chore: publish {record.get('mode', 'run')} run for {day}")
-        print(f"committed {sha}")
-        github.dispatch(SITE_WORKFLOW, sha)
 
+def commit(data: dict[str, bytes], record: runs.Record, day: str) -> State:
+    if not data:
+        return {"sha": None}
+    sha = github.commit("main", data, f"chore: publish {record.get('mode', 'run')} run for {day}")
+    print(f"committed {sha}")
+    github.dispatch(SITE_WORKFLOW, sha)
+    return {"sha": sha}
+
+
+def close_requests(sha: str | None, record: runs.Record, day: str) -> State:
+    """Closes the story requests the run used, once the digest is committed."""
     digest_url = f"{config.settings()['site'].rstrip('/')}/digests/{day}/"
     for number in record.get("inbox_used", []):
         github.close(number, "story", f"Covered in the {day} digest: {digest_url}")
+    return {}
 
+
+def propose(proposals: dict[str, bytes], record: runs.Record, day: str) -> State:
     if not proposals:
-        return
+        return {"pr": None}
     branch = f"improve/{day}"
     github.create_branch(branch, github.head("main"))
     github.commit(branch, proposals, f"chore: propose watchlist and profile changes for {day}")
     pr = github.open_pr(branch, f"chore: weekly improvements for {day}", record.get("summary", ""))
     print(f"opened {pr}")
+    return {"pr": pr}
+
+
+def close_feedback(pr: str | None, record: runs.Record) -> State:
+    """Closes the feedback issues the run used, once the pull request is open."""
     for number in record.get("feedback_used", []):
         github.close(number, "feedback", f"Addressed in {pr}")
+    return {}
+
+
+STEPS = (
+    Step(gather, gives=("files",)),
+    Step(verify, gives=("data", "proposals", "record")),
+    Step(commit, gives=("sha",)),
+    Step(close_requests),
+    Step(propose, gives=("pr",)),
+    Step(close_feedback),
+)
+
+
+def publish(out_dir: Path, day: str) -> None:
+    outcome = graph.run(STEPS, {"out_dir": out_dir, "day": day})
+    print(config.dump(outcome.steps))
+    if outcome.error:
+        raise outcome.error
 
 
 def main(out_dir: str, day: str) -> int:
