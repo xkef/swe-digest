@@ -3,4 +3,6 @@
 #MISE dir="{{config_root}}/agent"
 set -euo pipefail
 
-uv sync --active --extra agent
+# --frozen installs uv.lock as committed. Without it, uv re-resolves and can
+# write machine-local settings into the lock. `mise run lock` updates it.
+uv sync --frozen --active --extra agent
