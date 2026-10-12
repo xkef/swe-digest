@@ -88,6 +88,7 @@ async def ask(prompt: str, data: str, schema: dict[str, Any], fetcher: Fetcher) 
 
     options = ClaudeAgentOptions(
         model=config.settings()["model"],
+        effort=config.settings()["effort"],
         system_prompt=prompt,
         tools=[],
         allowed_tools=[FETCH_TOOL],
