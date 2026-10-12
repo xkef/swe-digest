@@ -3,10 +3,13 @@
 For each day it writes a day page, one page per story, and the day's JSON that
 the templates read. Every output is gitignored and rebuilt on each build.
 
-Untrusted text never passes through markdown. Story fields go into front matter
-as TOML strings, and the templates print them with autoescaping on.
+Untrusted text never passes through markdown. Python escapes it and marks only
+backtick spans as inline code, and the templates print that HTML as it is. The
+browser tab title, the meta description, and the feed take plain text, so they
+get the text with its backticks dropped.
 """
 
+import html
 import json
 import re
 import shutil
@@ -15,6 +18,7 @@ from typing import Any
 from digest import config, memory, runs, stories
 
 LEAD_SECTION = "Top stories"
+INLINE_CODE = re.compile(r"`([^`\n]+)`")
 FIELDS = (
     ("summary", "Summary"),
     ("why", "Why it matters"),
@@ -45,7 +49,7 @@ def build() -> None:
         page.parent.mkdir(parents=True)
         page.write_text(
             f'+++\ntitle = "{day} digest"\ndate = {day}\ntemplate = "digest.html"\n'
-            f"description = {_toml(digest.get('lede') or (cards[0]['blurb'] if cards else ''))}\n+++\n"
+            f"description = {_toml(_plain(_lede(digest)))}\n+++\n"
         )
         for story, card in zip(digest["stories"], cards, strict=True):
             (stories_dir / f"{day}-{card['slug']}.md").write_text(_story_page(day, story, card))
@@ -59,12 +63,12 @@ def _card(day: str, story: dict[str, Any]) -> dict[str, Any]:
     slug = slugify(story["title"])
     return {
         "section": story["section"],
-        "title": story["title"],
+        "title": _html(story["title"]),
         "slug": slug,
         "url": f"/digests/{day}/{slug}/",
         "category": story.get("category", ""),
         "show_category": story["section"] == LEAD_SECTION and bool(story.get("category")),
-        "blurb": story["blurb"],
+        "blurb": _html(story["blurb"]),
     }
 
 
@@ -90,7 +94,7 @@ def _day_data(day: str, digest: dict[str, Any], cards: list[dict[str, Any]]) -> 
     last_run = (runs.load(day)["runs"] or [{}])[-1]
     return {
         "count": len(cards),
-        "lede": digest.get("lede") or (cards[0]["blurb"] if cards else ""),
+        "lede": _html(_lede(digest)),
         "updated": updated.replace("T", " ").replace("Z", " UTC") if updated else None,
         "updated_at": updated.replace("Z", ":00Z") if updated else None,
         "sections": sections,
@@ -101,12 +105,13 @@ def _day_data(day: str, digest: dict[str, Any], cards: list[dict[str, Any]]) -> 
 def _story_page(day: str, story: dict[str, Any], card: dict[str, Any]) -> str:
     lines = [
         "+++",
-        f"title = {_toml(story['title'])}",
+        f"title = {_toml(_plain(story['title']))}",
         f"date = {day}",
         f"path = {_toml(f'digests/{day}/{card["slug"]}')}",
         'template = "story.html"',
-        f"description = {_toml(story['blurb'])}",
+        f"description = {_toml(_plain(story['blurb']))}",
         "[extra]",
+        f"title_html = {_toml(card['title'])}",
         f"day = {_toml(day)}",
         f"section = {_toml(story['section'])}",
         f"category = {_toml(card['category'])}",
@@ -114,10 +119,25 @@ def _story_page(day: str, story: dict[str, Any], card: dict[str, Any]) -> str:
     ]
     for key, label in FIELDS:
         if story.get(key):
-            lines += ["[[extra.fields]]", f"label = {_toml(label)}", f"text = {_toml(story[key])}"]
+            lines += ["[[extra.fields]]", f"label = {_toml(label)}", f"text = {_toml(_html(story[key]))}"]
     for source in story["sources"]:
         lines += ["[[extra.sources]]", f"label = {_toml(source['label'])}", f"url = {_toml(source['url'])}"]
     return "\n".join([*lines, "+++", ""])
+
+
+def _lede(digest: dict[str, Any]) -> str:
+    """Returns the day's lede, or the lead story's blurb on a day without one."""
+    return str(digest.get("lede") or (digest["stories"][0]["blurb"] if digest["stories"] else ""))
+
+
+def _html(text: str) -> str:
+    """Returns the text as HTML: escaped, with each `span` as inline code."""
+    return INLINE_CODE.sub(r"<code>\1</code>", html.escape(str(text)))
+
+
+def _plain(text: str) -> str:
+    """Returns the text for places that take no markup, without backticks."""
+    return INLINE_CODE.sub(r"\1", str(text))
 
 
 def _toml(text: str) -> str:
