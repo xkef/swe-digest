@@ -3,6 +3,7 @@
 #MISE dir="{{config_root}}"
 set -euo pipefail
 
-vale --config .config/vale.ini sync >/dev/null
-vale --config .config/vale.ini README.md AGENTS.md .github/SECURITY.md \
+# --no-global keeps a personal Vale config from changing the project's rules.
+vale --no-global --config .config/vale.ini sync >/dev/null
+vale --no-global --config .config/vale.ini README.md AGENTS.md .github/SECURITY.md \
   agent/prompts agent/config/profile.md
