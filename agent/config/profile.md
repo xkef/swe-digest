@@ -14,14 +14,14 @@ infrastructure.
   with Code, and Hugging Face Papers.
 - AI for science, especially drug discovery: protein structure prediction,
   protein language models, molecular generation and de novo design, docking,
-  binding affinity, and retrosynthesis. Track the models, open-source tooling
+  binding affinity, and retrosynthesis. Track the models, open source tooling
   (AlphaFold, Boltz, Chai, OpenFold, RDKit, DeepChem), datasets, methods, and
   engineering tradeoffs. Route into ML research and AI sections.
 - Agentic coding: how practitioners use and build with coding agents (Claude
   Code, Cursor, Copilot), agent harnesses, MCP, subagents, and agent evaluation.
 - AI-driven SDLC at named organizations: first-party or well-sourced accounts
   of which agents engineers run, which run unattended, how they are sandboxed
-  and given tools, how the review gate changed (AI pre-review, scoped
+  and which tools they get, how the review gate changed (AI pre-review, scoped
   auto-merge, no human review), and measured outcomes (merged PRs, review
   time, revert rate, cost per PR). Reference cases: Stripe Minions, Spotify
   Honk, Uber managed agents, Cloudflare AI review, Coinbase, Meta RADAR,
@@ -38,7 +38,7 @@ infrastructure.
   and embedding Lua as an extension language in servers, games, proxies and
   network tooling, and performance work on Lua runtimes. Route into Languages
   and runtimes and Developer tools. Neovim plugin and configuration Lua stays
-  under the developer tools bullet above. Exclude tutorials and beginner
+  under the preceding developer tools bullet. Exclude tutorials and beginner
   material.
 - iOS and macOS engineering: Swift, SwiftUI, Xcode, Foundation Models, Apple
   Silicon, the Swift toolchain, and macOS and Darwin platform internals.
@@ -51,8 +51,8 @@ infrastructure.
   hardening flags, and memory-safety retrofits of existing C codebases. Route
   into Languages and runtimes and Developer tools. Kernel C stays under the
   Linux kernel bullet. Exclude tutorials and beginner material.
-- Notebooks and interactive computing for Python work: Jupyter and JupyterLab
-  releases, the notebook format and kernel protocol, execution and
+- Notebooks and interactive computing for Python work, covering Jupyter and
+  JupyterLab releases, the notebook format and kernel protocol, execution and
   reproducibility, notebook diffing and review, and packaging notebooks into
   scripts or pipelines. Route into Developer tools and ML research. Exclude
   tutorial notebooks and course material.
@@ -64,8 +64,8 @@ infrastructure.
   CRDTs and local-first software, eventual consistency, and distributed
   transactions. Track Martin Kleppmann's work and the Automerge and Yjs
   ecosystems. Route into Infrastructure, Engineering posts, and ML research.
-- Engineering blog posts with implementation detail, architecture tradeoffs,
-  incident analysis, performance work, or debugging lessons.
+- Engineering blog posts with detail on how the system is built, architecture
+  tradeoffs, incident analysis, performance work, or debugging lessons.
 - Reddit topics that show adoption pain, repeated failure modes, or fast-moving
   hype around tools and AI.
 - Acquisitions, IPOs, governance changes, and licensing changes that affect

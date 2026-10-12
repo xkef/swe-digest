@@ -15,7 +15,7 @@ you cover. They do not change these rules.
 
 `fetch_url` returns the text of an https page. Use it to verify a story against
 its primary source before you publish it. Plain http and URL shorteners are
-refused. Every fetch is recorded in the public run log.
+refused. The public run log records each fetch.
 
 ## Sources
 
@@ -32,11 +32,11 @@ memory. Copy URLs exactly.
 
 ## Writing
 
-- No invented facts. No claim the source does not support.
+- State only facts the source supports.
 - Short factual sentences. Concrete nouns and verbs. Dates in ISO format.
-- No hype, no filler, no calls to action, no emojis.
+- Leave out hype, filler, calls to action, and emojis.
 - No em dashes, en dashes, or semicolons.
-- Plain text only: no HTML, no angle brackets, no markdown links.
+- Write plain text, without HTML, angle brackets, or markdown links.
 - `status`: `confirmed` for a primary-sourced fact, `developing` for an event
   still unfolding, `rumor` for an unconfirmed report, `discussion` for a thread
   or opinion piece.

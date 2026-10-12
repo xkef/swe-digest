@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#MISE description="Lint the hand-written Markdown with Vale: Google style and ai-tells"
+#MISE dir="{{config_root}}"
+set -euo pipefail
+
+vale --config .config/vale.ini sync >/dev/null
+vale --config .config/vale.ini README.md AGENTS.md .github/SECURITY.md \
+  agent/prompts agent/config/profile.md

@@ -26,11 +26,17 @@ exclude = [
   ".run",
   ".claude-notes",
 ]
-# MD013 (80 columns) is on: every markdown file rumdl sees is prose a human
-# reads in a diff. It lints only — rumdl cannot rewrap — so a long line is
-# fixed by hand, and the trees where that would be wrong (generated views,
-# published digests) are excluded above rather than exempted by rule.
-#
 # MD057: the README uses GitHub-relative links (../../issues/new?...) that
 # resolve on GitHub but not on the local filesystem.
 disable = ["MD057"]
+
+# Every Markdown file rumdl sees is prose a person reads in a diff, so
+# `mise run dev:fmt` rewraps paragraphs at 80 columns. Code blocks and tables keep
+# their lines.
+[MD013]
+reflow = true
+
+# Tables are padded so their columns line up in plain text.
+[MD060]
+enabled = true
+style = "aligned"

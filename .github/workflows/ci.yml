@@ -33,11 +33,11 @@ jobs:
           install_args: python uv
           cache: true
       - name: Sync environment
-        run: mise run setup
+        run: mise run deps:setup
       - name: Lint and type check
-        run: mise run lint
+        run: mise run dev:lint
       - name: Tests
-        run: mise run test
+        run: mise run dev:test
 
       # A dependabot bump of one pin can contradict another package's peer
       # pin. Without this step the first failure is the scheduled run.
@@ -60,12 +60,12 @@ jobs:
           install_args: python uv zola github:Pagefind/pagefind
           cache: true
       - name: Install dependencies
-        run: mise run install:base
+        run: mise run deps:base
       - name: Check and build the site
-        run: mise run build
+        run: mise run site:build
 
-  # Formatting drift in owner-edited files. Tool versions are pinned in
-  # mise.toml, so this job and a local `mise run fmt-check` agree.
+  # Formatting drift and prose lint in owner-edited files. Tool versions are pinned in
+  # mise.toml, so this job and a local `mise run dev:fmt-check` agree.
   format:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -78,7 +78,9 @@ jobs:
           persist-credentials: false
       - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
         with:
-          install_args: python uv dprint rumdl
+          install_args: python uv dprint rumdl vale
           cache: true
       - name: Check formatting
-        run: mise run fmt-check
+        run: mise run dev:fmt-check
+      - name: Lint prose
+        run: mise run dev:prose
