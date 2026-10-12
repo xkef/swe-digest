@@ -1,0 +1,376 @@
+date: '2026-10-12'
+updated: 2026-10-12T19:59Z
+stories:
+- title: Zod 4.6.6 published to npm with a malicious preinstall script
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    A malicious `preinstall` script shipped in zod 4.6.6 and @zod/mini 4.6.6, running on plain
+    npm install without import.
+  summary: >-
+    A commit attributed to the maintainer account added a file named `meta.test.mjs` to both
+    the `zod` and `@zod/mini` packages at version 4.6.6 and wired it to a `preinstall` hook,
+    so it runs on plain `npm install` without the package being imported. The script reads
+    an Ethereum contract through three public RPC endpoints, decodes a list of domains from
+    the return value, fetches a `/loader` endpoint on each, writes a base64 payload to a temporary
+    directory, and imports a second base64 stage as a `data:` URL, so the operator can repoint
+    command and control through a chain write rather than through the package. The same commit
+    changed the release workflow from maintainer-triggered dispatch to publishing on any version
+    bump pushed to main, and the 4.6.6 publish carries an npm provenance attestation naming
+    the GitHub Actions trusted publisher with approver colinhacks, which is the observable
+    trace of that workflow change rather than a safety signal. The registry dates the 4.6.6
+    publish to 2026-10-11, and the version still resolves with full dist metadata and no deprecation
+    marker, so it remains installable even though npm now lists 4.6.7 as the `latest` dist-tag.
+  why: >-
+    zod is among the most depended on packages in the JavaScript ecosystem, so any install
+    or CI run that resolved 4.6.6 should be treated as having executed untrusted code, with
+    no import of the package required.
+  followup: >-
+    Whether the commit is confirmed as an account compromise rather than maintainer action,
+    which the diff alone cannot distinguish.
+  sources:
+  - label: primary
+    url: https://github.com/colinhacks/zod/commit/d821685ea6732436fcdf786a81d076958471e467
+  - label: registry
+    url: https://registry.npmjs.org/zod
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50052814
+- title: >-
+    Cyberattack on Danfoss refrigeration software heats fridges in hundreds of French supermarkets
+  section: Top stories
+  category: Security
+  status: confirmed
+  blurb: >-
+    Attackers took over Danfoss refrigeration management software and ordered fridges in hundreds
+    of French supermarkets to heat.
+  summary: >-
+    The BBC reports that attackers gained control of software from the Danish engineering
+    firm Danfoss that retailers use to manage refrigeration units remotely, and ordered units
+    to heat up and stay hot overnight rather than run the normal short defrost cycle. Intermarche
+    reported its fridges held 50C for six hours, and figures from individual chains point
+    to roughly 400 of about 15,000 French stores, including more than 100 at Cooperative U,
+    180 across Intermarche and Netto with another 100 urgently disconnected from the internet,
+    80 of Carrefour's 6,000, and 5 percent of Monoprix's 400 plus, with two Alsace stores
+    alone reporting 270,000 euros of losses. Danfoss said the affected units were older models
+    whose security software could not be updated against a risk the firm had already identified,
+    and the Paris prosecutor opened a cyber-crime investigation. No affected product names,
+    firmware builds, or software versions have been published, so the scope is stated only
+    as older models.
+  why: >-
+    Remote management software for physical plant was abused at fleet scale, and the vendor's
+    own account points at an installed base that cannot be patched, which is an industry pattern
+    rather than one vendor's incident.
+  followup: >-
+    Whether Danfoss or French authorities publish the initial access vector, and the final
+    count of affected stores.
+  sources:
+  - label: primary
+    url: https://www.bbc.com/news/articles/crq5nzxv9q4yo
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50055304
+  - label: thread
+    url: https://news.ycombinator.com/item?id=50057551
+- title: >-
+    Torvalds publishes a page-cache patch series written with Claude Code and says so in the
+    patch message
+  section: Top stories
+  category: Agentic coding
+  status: confirmed
+  blurb: >-
+    Torvalds posted an unmerged page-cache patch series and disclosed in the patch message
+    that he wrote it with Claude Code.
+  summary: >-
+    Phoronix reports a Torvalds branch named `noref-filemap-read-with-llm` that reads from
+    the page cache without taking folio references, which targets the reference-count contention
+    that appears when many threads perform small reads of one file. The patch message states
+    the work was done with Claude Code, and the branch is unmerged, with Phoronix speculating
+    about the Linux 7.4 merge window rather than reporting a target Torvalds stated. This
+    digest sources the branch name and the attribution line to Phoronix because `lore.kernel.org`
+    refuses automated fetch from this environment.
+  why: >-
+    The kernel's maintainer documenting LLM-assisted authorship inside a memory-management
+    patch series sets a concrete disclosure precedent for every project deciding how to handle
+    agent-written code.
+  followup: >-
+    Whether the series lands in the 7.4 merge window and whether kernel submission policy
+    picks up an explicit LLM-disclosure convention.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Linus-Torvalds-Claude-Code
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50050367
+- title: >-
+    HashiCorp archives Boundary Community Edition with no further security patches planned
+  section: Top stories
+  category: Infrastructure
+  status: confirmed
+  blurb: >-
+    HashiCorp archived the Boundary Community Edition repository and plans no further bug
+    fixes or security patches.
+  summary: >-
+    The `hashicorp/boundary` repository is archived and read-only. The README gives an archive
+    date of 2026-10-08 and the repository banner dates the archive to 2026-10-09. The README
+    states that no new Boundary CE releases, maintenance updates, bug fixes, or security patches
+    are currently planned, which is a statement about what is planned rather than a commitment
+    never to patch.
+  why: >-
+    Teams running Boundary CE for identity-based access to production infrastructure now run
+    software with no releases, bug fixes, or security patches currently planned, so the choice
+    is a migration or an exposure that grows with every unfixed flaw.
+  followup: >-
+    Whether HashiCorp publishes a migration path for CE users and whether a community fork
+    takes over patching.
+  sources:
+  - label: primary
+    url: https://github.com/hashicorp/boundary
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50049498
+- title: >-
+    Sakana AI reports recursive self-improvement from multi-agent self-supervision, with uneven
+    transfer
+  section: Top stories
+  category: ML research
+  status: confirmed
+  blurb: >-
+    Sakana AI reports 1.2x to 1.6x gains per output token from multi-agent self-supervision,
+    but below 1x on SWE-bench Verified.
+  summary: >-
+    MASS applies multi-agent self-supervision to Qwen3.6-27B in the qwen-code agent environment
+    and reports 1.2x to 1.6x score per output token after two rounds on MLR-Bench, DSBench,
+    ScienceAgentBench, and AstaBench. The same configuration reports 0.96x on Terminal-Bench
+    2.0 and 0.94x on SWE-bench Verified. The post publishes the regressions alongside the
+    gains.
+  why: >-
+    A team reading this as a route to cheaper coding agents gets nothing from it, because
+    the two software engineering benchmarks are the ones where the method falls below its
+    own baseline.
+  sources:
+  - label: primary
+    url: https://pub.sakana.ai/mass/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50048522
+- title: QGIS merges a policy prohibiting AI contributions
+  section: Agentic coding
+  category: Agentic coding
+  status: confirmed
+  blurb: >-
+    QGIS merged an enhancement proposal prohibiting AI contributions, citing maintainer review
+    capacity rather than code quality.
+  summary: >-
+    The enhancement proposal was merged on 2026-10-07 after passing discussion on 2026-10-05
+    and moving to a vote, replacing an earlier human-in-the-loop policy with a strict not-allowed
+    stance. Maintainers gave review capacity as the reason rather than code quality in the
+    abstract, writing that AI-assisted submission volume exceeds what human review can absorb,
+    and the proposal author said the project has already lost at least one high-value contributor.
+    A reviewer noted the previous policy failed in practice, with roughly 50 pull requests
+    tagged AI Assisted and about 40 of those closed unmerged, and the author framed the ban
+    as a closed door to be opened selectively later rather than a permanent position.
+  why: >-
+    Projects writing their own contribution policy now have a merged precedent from a large
+    established codebase that bans AI contributions on maintainer capacity grounds.
+  followup: >-
+    Whether QGIS narrows the wording, which contributors in the thread said does not separate
+    agent-written code from LLM-backed autocomplete, review assistance, or translation.
+  sources:
+  - label: primary
+    url: https://github.com/qgis/QGIS-Enhancement-Proposals/pull/387
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50054751
+- title: Codex CLI starts a persistent self-updating background daemon by default
+  section: Agentic coding
+  category: Agentic coding
+  status: confirmed
+  blurb: >-
+    Codex CLI 0.157.0 starts a 374 MB self-updating background daemon that survives closing
+    every Codex window.
+  summary: >-
+    The issue was opened on 2026-09-25 against CLI 0.157.0, it is open, and it is reproduced
+    on Linux, WSL2 and Windows, with `codex features disable daemon_auto_start` given as the
+    reporter's workaround. Whether the behaviour is still the default on the current release
+    line is unverified here, because the thread references later releases up to 0.160.1 without
+    restating the default. Since CLI 0.157.0, opening an interactive `codex` session starts
+    `codex app-server --managed-daemon` in its own session with no TTY, reparented to PID
+    1, and it survives closing every Codex window until an explicit `daemon stop` or a reboot.
+    The CLI copies about 374 MB of platform package, including bundled `bwrap`, `zsh` and
+    `rg`, into `~/.codex/packages/app-server-daemon/releases/` and runs the daemon from that
+    copy, then a detached `pid-update-loop` process checks for updates five minutes after
+    start and hourly after that, downloading releases and restarting the backend. The daemon
+    also pins the environment of whichever session started it, so a per-invocation `HTTPS_PROXY`
+    setting leaks into later sessions, and `daemon stop` leaves the updater running.
+  why: >-
+    The serving backend's version decouples from the binary the package manager installed,
+    so a machine's effective Codex version is set by a background updater rather than by the
+    fleet's package policy.
+  followup: >-
+    Whether the default changes and whether `daemon stop` also stops the update loop.
+  sources:
+  - label: primary
+    url: https://github.com/openai/codex/issues/48195
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50060694
+- title: >-
+    Flask session key recovered from its own cookie yields RCE across Google DevSite domains
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    A Flask secret key stored inside its own session cookie gave pickle RCE across Google
+    DevSite domains, paid at 90,000 dollars.
+  summary: >-
+    Reported 2026-08-06 and fixed 2026-10-07, the OAuth flow shared by Google's developer
+    documentation sites set a roughly 1,200 byte Flask session cookie, and because Flask signs
+    session cookies rather than encrypting them, the payload decoded to a pickle-serialized
+    `oauth2client.client.OAuth2WebServerFlow` object carrying the OAuth `client_id` and `client_secret`
+    in plaintext. That client secret was also the Flask `SECRET_KEY`, so the author recomputed
+    the itsdangerous signature offline, matched it byte for byte, then forged a session with
+    an attacker-chosen CSRF token and a pickle under the matching flow key, which the callback
+    passes to `pickle.loads`. Execution was demonstrated with a `time.sleep` reduce payload
+    whose response times tracked the requested delay at 0, 3, 5 and 8 seconds, with negative
+    controls for a missing cookie, a flipped signature byte and a missing flow entry, and
+    because DevSite is a shared platform the key validated sessions on firebase.google.com,
+    developer.android.com, source.android.com and docs.partner.android.com.
+  why: >-
+    The chain is four independent mistakes stacked, a credential reused as a signing key,
+    secrets in a client-held cookie, pickle across a client boundary, and one key shared across
+    deployments, and each is checkable in a codebase today.
+  sources:
+  - label: primary
+    url: https://simonkoeck.com/writeups/google-devsite-flask-session-pickle-rce
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50052638
+- title: TinaCMS CLI code injection via unescaped Git branch name in generated client
+  section: Security
+  category: Security
+  status: confirmed
+  blurb: >-
+    An unescaped Git branch name interpolated into generated TinaCMS client code executes
+    during preview builds.
+  summary: >-
+    `@tinacms/cli` reads the Git branch from `VERCEL_GIT_COMMIT_REF`, `GITHUB_BRANCH` or `HEAD`
+    and interpolates it into the generated `client.ts` source with no escaping or encoding,
+    so a branch name that `git check-ref-format` accepts can close the string literal and
+    inject a JavaScript expression that runs when the consumer build imports the generated
+    module. Affected versions are 2.7.0 and earlier, patched in 3.0.0, scored CVSS 8.2 and
+    tracked as CVE-2026-108259. The advisory was published in `tinacms/tinacms` on 2026-09-16
+    and published to the GitHub Advisory Database on 2026-10-09, where it was also reviewed
+    and last updated, so this is a four-week-old disclosure carried here for its pattern rather
+    than as same-day news. The practical attack is a pull request against any project using
+    TinaCMS with preview deployments enabled, where the build runs codegen and executes the
+    attacker's expression with full build privileges and access to build environment variables.
+  why: >-
+    A Git ref is attacker-controlled input, so interpolating one into generated source or
+    a URL path without `JSON.stringify` or `encodeURIComponent` turns every preview build
+    into a code execution sink, well past this one package.
+  sources:
+  - label: primary
+    url: https://github.com/advisories/GHSA-pwhx-cvv3-qj5c
+- title: >-
+    GitHub degraded Actions, Issues and Pull Requests with a long notification backlog
+  section: Outages
+  category: Outage
+  status: developing
+  blurb: >-
+    GitHub degraded Actions, Issues and Pull Requests for over two hours on 2026-10-12, with
+    notifications backlogged longer.
+  summary: >-
+    GitHub began investigating degraded performance at 12:21 UTC on 2026-10-12, with stated
+    impact on loading the Actions tab, interacting with the Checks API, queueing new Actions
+    runs, creating and updating issues, and requesting pull request reviews, including through
+    the REST and GraphQL APIs. Pull Requests returned to normal at 13:02 UTC, an initial mitigation
+    at 13:38 UTC was reported as not fully successful, and Issues and Actions were mitigated
+    at 14:35 and 14:36 UTC. Notifications were the long tail, resuming at 15:19 UTC but still
+    working through a backlog, with the 19:28 UTC update giving one more hour of delay, and
+    no root cause has been published.
+  why: >-
+    Teams that gate merges on Actions or hand off review through notifications should expect
+    gaps inside that window rather than assume missing runs and alerts were never triggered.
+  followup: >-
+    Whether GitHub publishes a root cause and when the notification backlog finally cleared.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/93njd414rpbx
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50055375
+- title: >-
+    Yandex Cloud outage and a collapse in Yandex bot traffic drive the day's largest threads
+  section: Hacker News
+  category: Outage
+  status: discussion
+  blurb: >-
+    Three HN threads on a reported Yandex Cloud outage drew about 1,350 points, with no primary
+    source readable here.
+  summary: >-
+    Three submissions on 2026-10-11 and 2026-10-12 drew roughly 1,350 combined points and
+    over 1,000 comments around a reported Yandex Cloud data center loss and a near total drop
+    in traffic from AS13238. Neither underlying source could be read from this environment,
+    because the Yandex Cloud status page returns a browser-detection interstitial to automated
+    fetch and the Cloudflare Radar pages submitters pointed to are a client-rendered application
+    whose API returned 400 and 403. The destruction and attribution claims circulating in
+    the thread are unverified here, so this item is carried as discussion only and no outage
+    block is published for it.
+  why: >-
+    The externally visible signal for a reported cloud capacity loss is a third-party crawler
+    traffic series rather than any provider disclosure, which is what observers outside the
+    provider have to work with.
+  followup: >-
+    Whether Yandex Cloud publishes an incident report, and whether the AS13238 traffic series
+    recovers.
+  comments: >-
+    Commenters separated the traffic series into crawler traffic versus user traffic, which
+    is the distinction that decides whether the drop indicates lost serving capacity or lost
+    outbound crawling.
+  sources:
+  - label: thread
+    url: https://news.ycombinator.com/item?id=50040547
+  - label: thread
+    url: https://news.ycombinator.com/item?id=50041619
+  - label: thread
+    url: https://news.ycombinator.com/item?id=50051532
+- title: >-
+    HN debates whether human review, not model capability, is now the binding constraint
+  section: Hacker News
+  category: Pulse
+  status: discussion
+  blurb: >-
+    A 940-comment HN thread on a Karpathy post argues human code review, not model capability,
+    now limits shipping.
+  summary: >-
+    The thread responds to a post on Andrej Karpathy's own account arguing that the gap in
+    shared understanding of LLM capability is widening. It drew 647 points and about 940 comments,
+    the largest comment count on Hacker News for this date. It centers on review throughput
+    and names no specific model, product, or API surface, which is why it is carried as pulse
+    rather than as an AI item.
+  why: >-
+    If review is the binding constraint, the next throughput gain for a team comes from changing
+    how changes get reviewed rather than from upgrading a model.
+  comments: >-
+    Commenters report that code review at their own employers has become a formality, and
+    argue from that experience that review throughput rather than model capability now sets
+    the limit.
+  sources:
+  - label: primary
+    url: https://twitter.com/karpathy/status/2109361546505966046
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50047422
+- title: >-
+    Passkey criticism draws technical dissent over whether password managers restore user
+    control
+  section: Hacker News
+  category: Security
+  status: discussion
+  blurb: >-
+    HN splits on passkeys, with commenters arguing KeePassXC and Bitwarden keep user control
+    over the credentials.
+  summary: >-
+    The thread splits over whether passkeys remove user control or whether holding them in
+    a third-party password manager restores it.
+  why: >-
+    Choosing passkeys as a second factor now requires checking per-site support for third-party
+    managers first, because that support is what decides whether the credential stays portable.
+  comments: >-
+    Commenters argue that passkeys stored in KeePassXC or Bitwarden keep the credential under
+    user control, while conceding that site support for third-party managers is uneven.
+  sources:
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50048312
