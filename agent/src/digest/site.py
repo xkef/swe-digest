@@ -28,7 +28,8 @@ def build() -> None:
     stories_dir = config.SITE / "content" / "stories"
     data_dir = config.SITE / "data" / "digests"
     for generated in (stories_dir, data_dir, *(d for d in days_dir.glob("*") if d.is_dir())):
-        shutil.rmtree(generated)
+        # A fresh checkout has none of these yet.
+        shutil.rmtree(generated, ignore_errors=True)
     stories_dir.mkdir(parents=True)
     data_dir.mkdir(parents=True)
     (stories_dir / "_index.md").write_text('+++\ntitle = "Stories"\nrender = false\n+++\n')

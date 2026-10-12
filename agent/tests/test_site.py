@@ -29,3 +29,21 @@ def test_unique_slugs():
     cards = [{"slug": "a", "url": "/d/a/"}, {"slug": "a", "url": "/d/a/"}]
     site._unique_slugs(cards)
     assert [card["url"] for card in cards] == ["/d/a/", "/d/a-2/"]
+
+
+def test_build_on_a_clean_checkout(tmp_path, monkeypatch):
+    digests = tmp_path / "data" / "digests"
+    digests.mkdir(parents=True)
+    (digests / "2026-10-09.yaml").write_text(
+        "date: '2026-10-09'\nstories:\n- title: T\n  section: Security\n  blurb: B\n"
+        "  summary: S\n  sources:\n  - {label: primary, url: 'https://a.dev/x'}\n"
+    )
+    (tmp_path / "site" / "content" / "digests").mkdir(parents=True)
+    monkeypatch.setattr(site.config, "DIGESTS", digests)
+    monkeypatch.setattr(site.config, "RUNS", tmp_path / "data" / "runs")
+    monkeypatch.setattr(site.config, "SITE", tmp_path / "site")
+
+    site.build()
+
+    assert (tmp_path / "site" / "data" / "digests" / "2026-10-09.json").exists()
+    assert (tmp_path / "site" / "content" / "stories" / "2026-10-09-t.md").exists()
