@@ -53,14 +53,15 @@
      is whatever color-scheme resolves to: the OS preference by default, or
      the explicit data-theme override set by theme.js.
 
-     A neutral grey scale with one accent, which marks a story whose status
-     is developing. The site asserts a perfect Lighthouse accessibility
-     score, which wants 4.5:1 on text this small, so the text steps stop at
-     4.5. Measured against --bg, light then dark: --fg 15.9 and 13.3,
-     --muted 7.0 and 7.5, --quiet 5.6 and 5.9, --dim 4.9 and 5.3, --accent
-     5.2 and 11.3. --border and --surface carry no text. */
+     A neutral grey scale with one accent, which marks keyboard focus. The
+     site asserts a perfect Lighthouse accessibility score, which wants 4.5:1
+     on text this small, so the text steps stop at 4.5. Measured against
+     --bg, light then dark: --fg 15.9 and 13.3, --muted 7.0 and 7.5, --quiet
+     5.6 and 5.9, --dim 4.9 and 5.3, --accent 5.2 and 11.3. --border and
+     --surface carry no text. */
   :root {
     color-scheme: light dark;
+    --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     --font-mono:
       ui-monospace,
       SFMono-Regular,
@@ -114,7 +115,7 @@
     grid-template-rows: auto 1fr auto;
     background-color: var(--bg);
     color: var(--fg);
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     font-size: 0.875rem;
     -webkit-font-smoothing: antialiased;
   }
@@ -130,13 +131,13 @@
   }
 
   code, pre {
-    font-family: inherit;
+    font-family: var(--font-mono);
   }
   code {
     padding: 0 var(--space-3xs);
-    border: 1px solid var(--border);
     background: var(--surface);
     color: var(--fg);
+    font-size: 0.9em;
   }
   pre {
     overflow-x: auto;
@@ -284,7 +285,6 @@
   .eyebrow,
   .day-section h2,
   .digest-month h2,
-  .prose h2,
   .story-fields > ul > li > strong:first-child {
     color: var(--muted);
     font-size: var(--label-size);
@@ -476,7 +476,7 @@
     text-wrap: pretty;
   }
 
-  /* Category and status read after the summary, not before the title: the
+  /* The category reads after the summary, not before the title: the
      headline is what the eye should land on first. */
   .story-meta {
     display: flex;
@@ -489,10 +489,6 @@
 
   .badge {
     color: var(--dim);
-  }
-
-  .status-developing {
-    color: var(--accent);
   }
 
   .story-empty {
@@ -522,19 +518,29 @@
 
 @layer prose {
   .prose > * + * {
-    margin-top: var(--space-sm);
+    margin-top: var(--space-md);
   }
 
-  /* One block rhythm, shared by the about page's headed blocks and the story
-     page's fields: whitespace alone separates blocks, and the gap below the
-     header matches the gap between blocks. */
-  .prose > .page-header + *,
-  .prose h2 {
+  /* Prose reads poorly past about 72 characters a line. Story fields sit
+     inside their own block, so they keep the full column. */
+  .prose > p,
+  .prose > ul,
+  .prose > ol,
+  .prose > blockquote {
+    max-width: 72ch;
+  }
+
+  .prose > .page-header + * {
     margin-top: var(--space-lg);
   }
-  /* Label to its content, the same 6px used by every other label on the site. */
+  .prose h2 {
+    margin-top: var(--space-xl);
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+  /* A heading sits closer to the block it introduces than to the one above. */
   .prose h2 + * {
-    margin-top: var(--space-2xs);
+    margin-top: var(--space-xs);
   }
   .prose h3 {
     margin-top: var(--space-md);
@@ -615,6 +621,12 @@
     margin-top: var(--space-lg);
     padding-top: var(--space-sm);
     border-top: 1px solid var(--border);
+  }
+
+  /* The header already ends the block above the first section. */
+  .page-header + .day-section {
+    padding-top: 0;
+    border-top: 0;
   }
 
   .run-meta {
