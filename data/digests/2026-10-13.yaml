@@ -1,5 +1,5 @@
 date: '2026-10-13'
-updated: 2026-10-13T19:55Z
+updated: 2026-10-13T21:57Z
 stories:
 - title: >-
     Attack forces Danfoss supermarket refrigeration into nonstop defrost across French chains
@@ -149,6 +149,34 @@ stories:
   sources:
   - label: primary
     url: https://lwn.net/Articles/1100247/
+- title: >-
+    XBOW details AI-built Chrome full chain through V8, animated WebP and Crashpad bugs, built
+    in six days
+  section: Security
+  category: Security
+  blurb: >-
+    AI agents and XBOW researchers chained V8, WebP and Crashpad bugs into a Chrome sandbox
+    escape in six days for about $40,000 in API costs.
+  summary: >-
+    XBOW published the root causes of a three-stage Chrome exploit: a Maglev deoptimization
+    bug that reused a mutable HeapNumber, an animated WebP TOCTOU in ImageDecoder that produced
+    one native write outside the V8 cage, and a Crashpad ProcessMemoryWin::ReadUpTo overflow
+    made reachable by a freeze-bypassing renderer thread. Google awarded the first $250,000
+    Chrome full-chain reward under the VRP rules introduced in April 2026. XBOW says agents
+    using gpt-5.6-sol did the work from 2026-08-02 to 2026-08-07, and all three bugs have
+    landed fixes.
+  why: >-
+    An AI-assisted team built a full browser exploit chain in days rather than months, so
+    the time between a bug landing and a weaponized exploit is getting shorter for anyone
+    running Chromium.
+  comments: >-
+    XBOW says it will present the chronology and orchestration at Unprompted at the end of
+    October.
+  sources:
+  - label: primary
+    url: https://xbow.com/labs/research/zero-to-calc-in-six-days-inside-xbow-chrome-full-chain
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50076503
 - title: Intel names Crescent Island the GPU D270 with up to 480 GB LPDDR5X
   section: AI
   category: AI
@@ -186,6 +214,28 @@ stories:
     url: https://huggingface.co/openbmb/MiniCPM-V-4.7-35B-A3B
   - label: discussion
     url: https://www.reddit.com/r/LocalLLaMA/comments/1x47taj/openbmbminicpmv4735ba3b/
+- title: >-
+    Liquid AI releases LFM2.5-24B-A2B, a reasoning MoE with 2B active parameters for on-device
+    agents
+  section: AI
+  category: AI
+  blurb: >-
+    Liquid AI's 24B-parameter reasoning MoE activates 2B per token, targets on-device agents,
+    and ships with llama.cpp, MLX and vLLM support.
+  summary: >-
+    LFM2.5-24B-A2B keeps the LFM2 hybrid architecture of gated short convolutions and GQA
+    with 64 experts and top-4 routing. It raises context from 32K to 131K tokens and was pre-trained
+    on about 33T tokens. Liquid AI reports 184 tokens per second on an Apple M5 Max and 51.0
+    on SWE-Bench Verified, below Qwen3.6-35B-A3B at 66.2. Base and instruct weights are on
+    Hugging Face.
+  why: >-
+    It is an open-weight option for local tool-calling agents on laptop-class hardware, but
+    its coding scores trail larger MoEs.
+  sources:
+  - label: primary
+    url: https://huggingface.co/blog/LiquidAI/lfm25-24b-a2b
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1x52kco/liquidailfm2524ba2b/
 - title: >-
     Anthropic replaces git with Scion, an in-house server-side VCS, as merges reach 30,000
     per day
@@ -366,6 +416,27 @@ stories:
   sources:
   - label: primary
     url: https://engineering.fb.com/2026/10/12/ml-applications/turning-opportunistic-ai-inference-capacity-into-better-ads-recommendations/
+- title: >-
+    Materialize rebuilds its Postgres metadata log on READ COMMITTED after a SERIALIZABLE
+    metastable failure
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    A Postgres SERIALIZABLE metastable failure pushed Materialize to rebuild its metadata
+    log on READ COMMITTED, verified with a Lean 4 proof.
+  summary: >-
+    In a self-managed deployment, metadata latency rose from milliseconds to thirty seconds
+    as SIRead locks grew to hundreds of thousands under SERIALIZABLE isolation. Materialize
+    redesigned its compare-and-set log around a contiguity invariant, a FOR KEY SHARE lock
+    on the predecessor row and the primary key. It then proved the design linearizable under
+    a model of READ COMMITTED in Lean 4. The new implementation sustained three times the
+    write throughput and degraded gracefully past database capacity.
+  why: >-
+    Teams running hot compare-and-set tables on PostgreSQL SERIALIZABLE can be exposed to
+    the same SSI lock buildup, and this post shows a verified alternative.
+  sources:
+  - label: primary
+    url: https://materialize.com/blog/building-a-linearizable-log-on-read-committed/
 - title: >-
     Google releases a rewritten second edition of the Site Reliability Engineering book
   section: Books
