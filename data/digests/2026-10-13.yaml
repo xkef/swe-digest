@@ -1,0 +1,223 @@
+date: '2026-10-13'
+updated: 2026-10-13T07:58Z
+stories:
+- title: >-
+    Attack forces Danfoss supermarket refrigeration into nonstop defrost across French chains
+  section: Top stories
+  category: Security
+  blurb: >-
+    Attackers forced Danfoss-managed refrigeration in about 150 Intermarché stores into a
+    nonstop defrost cycle, pushing units to 50°C.
+  summary: >-
+    On the night of 2026-10-11, attackers manipulated Danfoss-made cooling systems at Intermarché,
+    Coopérative U, and Leclerc stores so the defrost cycle ran for about six hours, heating
+    fridges and freezers to as much as 50°C. Groupement Mousquetaires said about 150 Intermarché
+    stores were hit and that the systems were under Danfoss management. Team82 had reported
+    a hidden authentication mechanism in Danfoss refrigeration controllers in August.
+  why: >-
+    Vendor-managed building and OT controllers reachable from the internet are a real attack
+    surface, and a disclosed hidden-auth flaw was apparently exploited within months.
+  followup: >-
+    A Danfoss advisory or patch, confirmation of the exploited flaw, and any link to the same-day
+    Albert Heijn and Delhaize incidents.
+  sources:
+  - label: primary
+    url: https://qz.com/french-supermarket-cyberattack-refrigeration-danfoss-101226
+  - label: discussion
+    url: https://www.tomshardware.com/tech-industry/cyber-security/unprecedented-cyberattack-cripples-supermarket-fridges-across-europe-as-hackers-activate-automatic-defrosting-delivery-and-store-prices-also-impacted-by-incident
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50055304
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1x42qol/hackers_knocked_out_refrigeration_at_hundreds_of/
+- title: >-
+    Anthropic details anti-distillation defenses, including preserved thinking and billing
+    for blocked requests
+  section: Top stories
+  category: AI
+  blurb: >-
+    Anthropic says classifiers and preserved thinking cut reasoning extracted by distillers
+    10 to 100 times, and blocked requests are now billed.
+  summary: >-
+    Anthropic published its anti-distillation measures on 2026-10-12. API accounts created
+    on or after 2026-08-31 cannot edit prior context on Claude Fable 5.1 and Opus 5.5, Sonnet
+    5.5 reasoning is readable only by the requesting organization, and a two-stage classifier
+    with a stated false positive rate under 0.1% runs on its top models. Since 2026-09-24,
+    requests blocked before a response in those areas are charged.
+  why: >-
+    Integrations that replay or edit thinking blocks, or route reasoning between models or
+    organizations, may break, and rare false positives now cost money.
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/research/distillation-defenses
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50065553
+- title: PostgreSQL 19 GA moves to 2026-10-29 after late reverts of risky features
+  section: Top stories
+  category: Engineering post
+  blurb: >-
+    Four patches flagged in a pgsql-hackers risk review were reverted from PostgreSQL 19,
+    and GA moved from late September to October 29.
+  summary: >-
+    Christophe Pettus reports that Robert Haas used Claude to rank the riskiest v19 patches
+    on 2026-08-25, and four of the six listed were reverted within three weeks. Citing Tomas
+    Vondra's analysis, he argues that most reverts came from human review and that the delay
+    came from late review, as the security team handled 44 CVEs in 2026. RC1 is scheduled
+    for 2026-10-15 and GA for 2026-10-29.
+  why: >-
+    Features such as online data checksums and SQL/PGQ will not ship in PG19, so upgrade plans
+    should target PG18 until GA.
+  followup: PostgreSQL 19 RC1 on 2026-10-15 and GA on 2026-10-29.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9xO
+- title: >-
+    AWS launches Lambda Web Functions for unmodified HTTP servers with active CPU billing
+  section: Top stories
+  category: Infrastructure
+  blurb: >-
+    Lambda can now run unmodified port-listening Node.js servers with up to 128 concurrent
+    requests per environment and active CPU billing.
+  summary: >-
+    AWS announced Lambda Web Functions on 2026-10-12. Code listens on the port in AWS_LAMBDA_HTTP_ENDPOINT,
+    a single aws lambda-web deploy command creates revisions and an HTTPS endpoint, and multi-region
+    deploys get latency-based routing behind a global URL with weighted canary traffic. Launch
+    support is Node.js 24 on Arm64 in five regions, with VPC access and CloudFront origin
+    access control.
+  why: >-
+    Express, Fastify, or Next.js apps can move to Lambda without adapters, and I/O wait no
+    longer bills as compute time.
+  sources:
+  - label: primary
+    url: https://aws.amazon.com/blogs/aws/announcing-aws-lambda-web-functions-for-fast-consistent-web-app-performance-anywhere/
+  - label: discussion
+    url: https://www.reddit.com/r/aws/comments/1x4glqt/announcing_aws_lambda_web_functions/
+- title: Filippo Valsorda publishes post-quantum Cryptographic Right Answers for 2026
+  section: Security
+  category: Security
+  blurb: >-
+    Filippo Valsorda's 2026 crypto guidance replaces every asymmetric answer with ML-KEM and
+    ML-DSA, and drops OpenSSL as the TLS default.
+  summary: >-
+    The 2026-10-12 update recommends X25519+ML-KEM-768 for key exchange, HPKE with X-Wing
+    or age PQ keys for asymmetric encryption, and ML-DSA-44 for signatures. It recommends
+    rustls, Go crypto/tls, BoringSSL, AWS-LC, or s2n-tls over OpenSSL, Argon2id or scrypt
+    for passwords, and Cobblestone-128 for large-message encryption. It cites a consensus
+    that the PQ transition must finish by 2029.
+  why: >-
+    Any new design using RSA, ECDSA, Ed25519, or a classical-only key exchange is now off
+    the recommended path.
+  sources:
+  - label: primary
+    url: https://words.filippo.io/right-answers/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50055409
+- title: Intel names Crescent Island the GPU D270 with up to 480 GB LPDDR5X
+  section: AI
+  category: AI
+  blurb: >-
+    Intel's inference GPU pairs 480 GB of LPDDR5X with 32 Xe3P cores in a 350 W air-cooled
+    PCIe 5.0 card aimed at long-context serving.
+  summary: >-
+    Intel's product page lists up to 480 GB LPDDR5X per card, 32 Xe3P cores, 256 XMX matrix
+    engines, and 350 W passive cooling on standard PCIe 5.0, with no HBM. Intel targets prefill-heavy
+    agentic and long-context inference and names vLLM, SGLang, PyTorch, and Triton support.
+    Performance claims are projections against RTX Pro 6000 from Intel internal analysis.
+  why: >-
+    It offers a high-capacity option for KV-cache-heavy serving in existing air-cooled racks,
+    but no independent benchmarks exist yet.
+  sources:
+  - label: primary
+    url: https://www.intel.com/content/www/us/en/products/details/discrete-gpus/data-center-gpu/d-series.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50063365
+- title: OpenBMB releases MiniCPM-V 4.7 35B-A3B vision-language MoE under Apache-2.0
+  section: AI
+  category: AI
+  blurb: >-
+    OpenBMB published a 35B-parameter mixture-of-experts vision-language model, with about
+    3B active, on Hugging Face under Apache-2.0.
+  summary: >-
+    The openbmb/MiniCPM-V-4.7-35B-A3B checkpoint has about 35.2B BF16 parameters, supports
+    tool calling and a thinking toggle in its chat template, and carries an Apache-2.0 license.
+    The model card gives vLLM and SGLang serving instructions, and a 1B variant was also published.
+  why: >-
+    A permissively licensed multimodal MoE with a small active parameter count is a practical
+    local or self-hosted vision option.
+  sources:
+  - label: primary
+    url: https://huggingface.co/openbmb/MiniCPM-V-4.7-35B-A3B
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1x47taj/openbmbminicpmv4735ba3b/
+- title: >-
+    Paper shows backdoored models can hide arbitrary capabilities from elicitation audits
+  section: ML research
+  category: Paper
+  blurb: >-
+    Researchers embed encrypted subnetworks in model weights that run only on a secret trigger
+    and resist fine-tuning and trigger search.
+  summary: >-
+    The NeurIPS 2026 paper uses digital lockers to hide encrypted neural networks in host
+    weights, provably hard to elicit or interpret under cryptographic assumptions even with
+    full weight access. A PyTorch proof of concept on a chemical reaction prediction task
+    resisted fine-tuning, weight noising, gradient-based trigger search, and latent adversarial
+    training. The models are released.
+  why: >-
+    Elicitation-based capability evaluations cannot certify that an untrusted checkpoint lacks
+    a hidden capability.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2610.13928
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50065692
+- title: Cloudflare Logpush Transformers run SQL on log batches with embedded DataFusion
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Cloudflare Logpush jobs can now run a SQL query on each batch to filter, redact, and reshape
+    logs before they reach a SIEM or bucket.
+  summary: >-
+    Transformers are SQL queries over a Logpush dataset, versioned and attachable to NDJSON
+    jobs. Cloudflare embedded Apache DataFusion in its Go delivery service via cgo and Arrow
+    IPC instead of calling Workers, avoiding a network hop. It reports about 3 ms per 5,000-row
+    batch on one goroutine.
+  why: >-
+    Teams can cut downstream ingest cost and strip sensitive fields at the source without
+    running a separate log-processing tier.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/transformers-on-logpush/
+- title: Meta turns idle inference capacity into elastic ad-ranking work
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Meta pools idle inference capacity and spends it on ranking more ad candidates or routing
+    more requests to larger models, with load shedding.
+  summary: >-
+    Meta describes two levers: Rank More Ads, which raises candidate counts when CPU and accelerator
+    surplus exist, and Serve Better Models, which routes a larger share of requests to stronger
+    models using accelerator-only surplus. Physical and logical isolation protects baseline
+    capacity, and value-aware load shedding at servers and clients handles sudden reclamation.
+  why: >-
+    It is a worked design for using preemptible GPU capacity in a latency-bound service without
+    risking baseline SLOs.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/10/12/ml-applications/turning-opportunistic-ai-inference-capacity-into-better-ads-recommendations/
+- title: >-
+    Google releases a rewritten second edition of the Site Reliability Engineering book
+  section: Books
+  category: Book
+  blurb: >-
+    Google and O'Reilly released a rewritten SRE book covering burn-rate alerting, OpenTelemetry,
+    GPU and TPU fleets, and AI-assisted incidents.
+  summary: >-
+    For the 10th anniversary, Google published a completely rewritten second edition. It covers
+    multi-tiered SLOs with burn-rate alerting, OpenTelemetry and tracing, reliability of GPU
+    and TPU clusters and training pipelines, and generative AI for incident triage and postmortems.
+    It is available in print and on O'Reilly.
+  why: >-
+    The reference text most SRE practices cite now reflects current observability and AI infrastructure
+    practice.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/products/devops-sre/sre-book-second-edition/
