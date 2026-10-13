@@ -1,5 +1,5 @@
 date: '2026-10-13'
-updated: 2026-10-13T12:51Z
+updated: 2026-10-13T17:04Z
 stories:
 - title: >-
     Attack forces Danfoss supermarket refrigeration into nonstop defrost across French chains
@@ -131,6 +131,24 @@ stories:
     url: https://github.com/grafana/grafana/releases/tag/v13.2.4
   - label: primary
     url: https://github.com/grafana/grafana/releases/tag/v13.0.11
+- title: Nix and Lix disclose local root privilege escalation in their build daemons
+  section: Security
+  category: Security
+  blurb: >-
+    Any system that builds untrusted derivations with the Nix or Lix daemon can be escalated
+    to root, and both projects shipped fixed releases today.
+  summary: >-
+    On 2026-10-13 the Lix and Nix projects jointly disclosed a set of vulnerabilities that
+    give local root on systems running either daemon. The projects say all systems that build
+    untrusted derivations are affected. Both projects released fixes the same day, and CVE
+    IDs had not yet been requested.
+  why: >-
+    Shared build hosts, CI runners and multi-user NixOS machines should update the daemon
+    now.
+  followup: CVE assignment and detailed write-ups of the vulnerability chain.
+  sources:
+  - label: primary
+    url: https://lwn.net/Articles/1100247/
 - title: Intel names Crescent Island the GPU D270 with up to 480 GB LPDDR5X
   section: AI
   category: AI
@@ -168,6 +186,27 @@ stories:
     url: https://huggingface.co/openbmb/MiniCPM-V-4.7-35B-A3B
   - label: discussion
     url: https://www.reddit.com/r/LocalLLaMA/comments/1x47taj/openbmbminicpmv4735ba3b/
+- title: >-
+    Anthropic replaces git with Scion, an in-house server-side VCS, as merges reach 30,000
+    per day
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Agent-written code pushed Anthropic's monorepo past what git mirrors could serve, so a
+    seven-person team built a centralized VCS in five months.
+  summary: >-
+    Anthropic's daily merges grew from about 2,500 in May 2026 to over 30,000 in September,
+    with around 25 million CI checkouts a day. Scion runs commits, merges, history and blame
+    on the server and serves sparse or virtualized checkouts through tiered content-addressed
+    caches. Anthropic says it uses 200 times less CPU and memory than the git mirror fleet
+    it replaced and gave CI a 25 percent CPU saving. Engineers still review every change but
+    now check its intent rather than reading every line.
+  why: >-
+    This is a first-party account of developer infrastructure breaking at agent scale, and
+    of review moving from line-by-line reading to checking intent.
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/engineering/redesigning-source-control
 - title: >-
     Paper shows backdoored models can hide arbitrary capabilities from elicitation audits
   section: ML research
@@ -214,6 +253,26 @@ stories:
     url: https://github.com/rust-lang/rust/issues/164250
   - label: discussion
     url: https://news.ycombinator.com/item?id=50069499
+- title: >-
+    Linux maintainers move to drop the Assisted-by tag requirement for AI-assisted patches
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    A patch posted to LKML removes the rule that kernel contributions made with AI tools must
+    carry an Assisted-by attribution tag.
+  summary: >-
+    A patch on the Linux kernel mailing list deletes the documentation that requires an Assisted-by
+    tag on patches made with AI tools. Phoronix reports that the Maintainers Summit in Prague
+    last week reached consensus on deprecating the requirement. The thread is divided, with
+    some developers wanting to keep the attribution.
+  why: >-
+    Kernel contributors would no longer need to disclose AI tool use, which changes how reviewers
+    and other projects can track the provenance of AI-assisted code.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Linux-Dropping-Assisted-By-Req
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1x4ymc3/linux_kernel_developers_plan_to_remove_assistedby/
 - title: Cloudflare Logpush Transformers run SQL on log batches with embedded DataFusion
   section: Infrastructure
   category: Infrastructure
@@ -252,6 +311,25 @@ stories:
   sources:
   - label: primary
     url: https://engineering.fb.com/2026/10/12/open-source/ocp-summit-2026-powering-ai-with-open-innovations-in-scale-up-scale-out-and-scale-across-networks/
+- title: Cloudflare details how the D1 control plane scales past 5.5 million databases
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    D1 keeps queries at the edge while central Postgres handles database lifecycle, using
+    Workers KV for routing and Hyperdrive for pooled access.
+  summary: >-
+    D1 has passed 5.5 million databases. Cloudflare reports 15 times growth in live databases
+    and 18 times growth in daily active databases over the past year. Each database is backed
+    by one SQLite Durable Object. Routing metadata is cached in Workers KV, and control-plane
+    endpoints reach central Postgres through Hyperdrive, with read replicas used where possible.
+    The post covers idempotent creation, failure recovery, and the separation of data, control
+    and background planes.
+  why: >-
+    It is a worked design for platforms that run one database per tenant or agent without
+    putting a central store on the query path.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/d1-control-plane/
 - title: Meta turns idle inference capacity into elastic ad-ranking work
   section: Engineering posts
   category: Engineering post
