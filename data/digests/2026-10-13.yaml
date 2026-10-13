@@ -1,5 +1,5 @@
 date: '2026-10-13'
-updated: 2026-10-13T07:58Z
+updated: 2026-10-13T12:51Z
 stories:
 - title: >-
     Attack forces Danfoss supermarket refrigeration into nonstop defrost across French chains
@@ -111,6 +111,26 @@ stories:
     url: https://words.filippo.io/right-answers/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50055409
+- title: >-
+    Grafana 13.2.4 and 13.0.11 fix four CVEs and strip sensitive headers on OAuth2 redirects
+  section: Security
+  category: Security
+  blurb: >-
+    Grafana shipped security releases on two branches that fix four CVEs and stop alerting
+    from forwarding sensitive headers across hosts.
+  summary: >-
+    Grafana released 13.2.4 and 13.0.11 on 2026-10-13. Both list fixes for CVE-2026-15577,
+    CVE-2026-33374, CVE-2026-93294 and CVE-2026-95502. Alerting now strips sensitive headers
+    when an OAuth2 flow redirects to another host, and 13.2.4 also fixes CVE-2026-92539 in
+    Enterprise SCIM.
+  why: >-
+    Self-hosted Grafana operators on the 13.x lines should upgrade now. The release notes
+    do not describe the CVEs, so severity has to be checked separately.
+  sources:
+  - label: primary
+    url: https://github.com/grafana/grafana/releases/tag/v13.2.4
+  - label: primary
+    url: https://github.com/grafana/grafana/releases/tag/v13.0.11
 - title: Intel names Crescent Island the GPU D270 with up to 480 GB LPDDR5X
   section: AI
   category: AI
@@ -169,6 +189,31 @@ stories:
     url: https://arxiv.org/abs/2610.13928
   - label: discussion
     url: https://news.ycombinator.com/item?id=50065692
+- title: >-
+    Rust borrow checker soundness hole lets Drop impls see non-static references, present
+    since Rust 1.4
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Assigning a short-lived reference to a field of a Drop type skips the type's lifetime
+    bounds, and safe code ends up reading freed memory.
+  summary: >-
+    Issue 164250, opened 2026-10-13, shows that assigning to a covariant field of a struct
+    with a Drop impl bypasses the struct's lifetime bounds. Safe code can then read memory
+    after its scope ends, and AddressSanitizer reports stack-use-after-scope. Contributors
+    reproduced variants back to Rust 1.4, and the types team labeled it I-unsound and P-high.
+  why: >-
+    Safe Rust code that compiles today can hit use-after-free through Drop impls, so the memory-safety
+    guarantee has a gap until a compiler fix ships.
+  followup: A fix PR from the types team and the Rust release that carries it.
+  comments: >-
+    Hacker News readers mostly discuss why such an old hole went unnoticed. Contributors on
+    the issue posted variants that segfault without needing a static.
+  sources:
+  - label: primary
+    url: https://github.com/rust-lang/rust/issues/164250
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50069499
 - title: Cloudflare Logpush Transformers run SQL on log batches with embedded DataFusion
   section: Infrastructure
   category: Infrastructure
@@ -186,6 +231,27 @@ stories:
   sources:
   - label: primary
     url: https://blog.cloudflare.com/transformers-on-logpush/
+- title: >-
+    Meta details multiplane GPU fabric, 102.4T liquid-cooled switches and open-source MetaRoCE
+    at OCP 2026
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Meta connects each GPU over eight 100G links to eight network planes, and its NICs spray
+    packets across all of them for load balancing.
+  summary: >-
+    Meta presented Flattened Planar Fabric, which cuts its scale-out fabric from a 3-tier
+    to a 2-tier Clos and moves load balancing into the NIC. It also showed IceCube 102.4T
+    liquid-cooled switches running FBOSS, a petabit-scale cross-region aggregation layer that
+    sizes lossless buffer headroom from measured cable length, and the Tahan Ethernet scale-up
+    switch for MTIA 300. MetaRoCE now has open-source implementations, and Meta, Microsoft
+    and Alibaba submitted Open Switch Platform Architecture v1.0 to OCP.
+  why: >-
+    It is a detailed public account of how RDMA fabrics behave at multi-region training scale.
+    It also shows that standardization is moving to Ethernet for both scale-up and scale-out.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/10/12/open-source/ocp-summit-2026-powering-ai-with-open-innovations-in-scale-up-scale-out-and-scale-across-networks/
 - title: Meta turns idle inference capacity into elastic ad-ranking work
   section: Engineering posts
   category: Engineering post
