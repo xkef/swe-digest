@@ -1,0 +1,111 @@
+date: '2026-10-14'
+updated: 2026-10-14T06:22Z
+stories:
+- title: >-
+    Ivanti Connect Secure zero-day CVE-2026-104935 exploited in the wild and added to CISA
+    KEV
+  section: Top stories
+  category: Security
+  blurb: >-
+    Attackers chained an authentication bypass, remote code execution and privilege escalation
+    on Ivanti VPN appliances before a patch existed.
+  summary: >-
+    Volexity saw a threat actor it tracks as UTA0576 chain three zero-days on Ivanti Connect
+    Secure, with the earliest confirmed exploitation on 2026-10-01. Ivanti patched the authentication
+    bypass and RCE parts as CVE-2026-104935 and said the remaining privilege escalation fix
+    is still in development. CISA added the flaw to KEV on 2026-10-13 and warned that Ivanti's
+    Integrity Checker Tool may miss compromise because the attacker's commands run in memory.
+  why: >-
+    Patch Connect Secure now, and do network and memory forensics rather than relying on the
+    Integrity Checker. Rotate credentials stored on the appliance and Active Directory secrets.
+  followup: >-
+    Ivanti's fix for the remaining privilege escalation flaw, and any reports of mass exploitation.
+  sources:
+  - label: primary
+    url: https://cyberscoop.com/ivanti-connect-secure-zero-day-actively-exploited/
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1x5acu1/ivanti_misses_opportunity_to_fix_vulnerability/
+- title: >-
+    Anthropic replaced Git with an in-house system, Scion, after merges grew to 30,000 a day
+  section: Top stories
+  category: Agentic coding
+  blurb: >-
+    Agent-driven change volume pushed Anthropic past Git: about 25 million CI checkouts a
+    day against a main branch history of almost 100 GB.
+  summary: >-
+    Anthropic says its merged code changes rose from about 2,500 a day in May 2026 to more
+    than 30,000 a day in September. It built a centralized source control system called Scion
+    and a review system called Antique. Seven people built it, and the migration from Git
+    took five months. Main branch history is almost 100 GB, and naive Git fetches for about
+    25 million daily CI checkouts would exceed 600 PB of traffic a day.
+  why: >-
+    This is a first-party data point on where agent-scale commit rates break standard Git
+    and review tooling, which matters if you are planning for unattended agent fleets.
+  comments: >-
+    On Hacker News, a Scion engineer said offline support was skipped because Claude, the
+    heaviest user, is always online.
+  sources:
+  - label: discussion
+    url: https://simonwillison.net/2026/Oct/13/redesigning-source-control-at-anthropic/
+- title: Grafana 13.1.8 and 12.4.13 fix multiple CVEs
+  section: Security
+  category: Security
+  blurb: >-
+    Grafana patch releases fix CVE-2026-15577, CVE-2026-33374 and CVE-2026-93294, and the
+    13.1 line also fixes CVE-2026-95502.
+  summary: >-
+    Grafana released 13.1.8 and 12.4.13 on 2026-10-13. Both list security fixes for CVE-2026-15577,
+    CVE-2026-33374 and CVE-2026-93294. Version 13.1.8 also fixes CVE-2026-95502 and an Enterprise
+    SCIM issue, CVE-2026-92539. Both releases strip sensitive headers from OAuth2 cross-host
+    redirects in alerting.
+  why: >-
+    Self-hosted Grafana operators should upgrade to the latest patch release on their branch.
+  sources:
+  - label: primary
+    url: https://github.com/grafana/grafana/releases/tag/v13.1.8
+  - label: primary
+    url: https://github.com/grafana/grafana/releases/tag/v12.4.13
+- title: >-
+    Ledger confirms hardware implant in wallets sold by reseller CryptoBilis drained user
+    funds
+  section: Security
+  category: Security
+  blurb: >-
+    Wallets bought from a Malaysian reseller hid an LTE and eSIM implant that captured the
+    screen and button presses to steal seed phrases.
+  summary: >-
+    Ledger confirmed an unauthorized hardware implant in at least one affected device. It
+    says all reported fund drains trace to devices sold through CryptoBilis. Researchers found
+    an STM32 microcontroller, an eSIM and a shielded LTE module inside Ledger X units. Ledger
+    says its Genuine Check cannot detect added implants when the original Secure Element is
+    intact.
+  why: >-
+    This is a hardware supply chain attack that firmware attestation cannot catch. Buy signing
+    devices only through authorized channels and treat reseller stock as untrusted.
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/ledger-confirms-hardware-wallet-spy-implant-behind-crypto-thefts/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50054092
+- title: >-
+    AWS Strands team finds agent harness choice changes token cost by up to 3x at similar
+    accuracy
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Across 94,000 trials, 8 benchmarks, 12 models and 6 harnesses, cost per trial varied about
+    2x with accuracy spreads under 5 points.
+  summary: >-
+    The Strands Agents team compared harnesses only on model and benchmark combinations that
+    every harness ran. On Anthropic models, cost per trial ranged from about $0.74 to $1.57,
+    with Claude Code the most expensive and slightly less accurate than the cheapest. The
+    authors credit context offloading, cache reuse and tool-loop efficiency. Dollar figures
+    are partly estimated from token counts, and the authors build one of the harnesses tested.
+  why: >-
+    Agent cost depends on the harness as well as the model, so measure tokens per task when
+    you pick one.
+  sources:
+  - label: primary
+    url: https://strandsagents.com/blog/we-ran-94000-trials-to-measure-the-cost-of-harness-choice/
+  - label: discussion
+    url: https://www.reddit.com/r/aws/comments/1x5br2l/aws_ran_94000_trials_to_measure_the_cost_of/
