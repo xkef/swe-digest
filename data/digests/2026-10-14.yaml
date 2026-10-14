@@ -1,5 +1,5 @@
 date: '2026-10-14'
-updated: 2026-10-14T06:22Z
+updated: 2026-10-14T10:25Z
 stories:
 - title: >-
     Ivanti Connect Secure zero-day CVE-2026-104935 exploited in the wild and added to CISA
@@ -47,6 +47,29 @@ stories:
   sources:
   - label: discussion
     url: https://simonwillison.net/2026/Oct/13/redesigning-source-control-at-anthropic/
+- title: >-
+    Google makes Gemini 4 Argon generally available through the Gemini API, AI Studio, and
+    Antigravity
+  section: Top stories
+  category: AI
+  blurb: >-
+    Google made Gemini 4 Argon generally available via API at an introductory $2 per million
+    input and $10 per million output tokens.
+  summary: >-
+    Google released Gemini 4 Argon on 2026-10-13 to developers via the API in AI Studio and
+    the Gemini platform, to Google AI Ultra subscribers in Antigravity, and in the Gemini
+    app. Introductory pricing is $2 per million input tokens and $10 per million output tokens,
+    with cached input 95% off. Google says Argon in Antigravity raised internal agentic code
+    submissions by more than 35% while cutting rollbacks by nearly a third, and cites upstream
+    vLLM changes that sped Gemma 4 E2B inference 2.85x on an A100.
+  why: >-
+    A new frontier model at this price changes the cost math for coding agents and long multi-step
+    tasks, so harness and model choices are worth re-evaluating.
+  sources:
+  - label: primary
+    url: https://deepmind.google/blog/introducing-gemini-4-argon/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50073879
 - title: Grafana 13.1.8 and 12.4.13 fix multiple CVEs
   section: Security
   category: Security
@@ -88,6 +111,67 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50054092
 - title: >-
+    Rustls 0.23.46 fixes four security issues, including TLS secret leakage through debug
+    formatting
+  section: Security
+  category: Security
+  blurb: >-
+    Rustls 0.23.46 fixes a 1GB pre-auth allocation in Brotli cert decompression and session
+    debug output that leaked TLS master secrets.
+  summary: >-
+    Rustls 0.23.46, released 2026-10-14, fixes four security issues. Optional Brotli certificate
+    decompression could allocate up to 1GB before authentication, session debug formatting
+    exposed master secrets and resumption PSKs, an unauthenticated ServerHello could poison
+    key-exchange hints so later ClientHellos carried only an X25519 share, and early client
+    data was sent even when the server rejected ECH. OpenAI reported thirteen of the bugs
+    fixed in the release, including two of the security issues.
+  why: >-
+    Rust services that log rustls session structs or enable Brotli certificate compression
+    should upgrade and check logs for leaked key material.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Rustls-0.23.46-Released
+- title: >-
+    Joe Grand found seed-generating implants in two Trezor wallets despite Trezor's denial
+  section: Security
+  category: Security
+  blurb: >-
+    Joe Grand found replaced microcontrollers that emit preset seed phrases in two Trezor
+    wallets bought from unauthorized sellers.
+  summary: >-
+    Kim Zetter reports that hardware hacker Joe Grand found implants in a Trezor Model T bought
+    on Facebook Marketplace and a Trezor One from a TikTok shop, and reported the first to
+    Trezor on 2026-08-10. Attackers replaced the microcontroller with one running modified
+    open-source firmware that outputs one of about a dozen preset seed phrases and passes
+    integrity checks against a copy of legitimate firmware. Trezor said on 2026-10-13 it had
+    no evidence of compromised devices and cut its list of authorized resellers.
+  why: >-
+    The hardware wallet supply chain problem extends past Ledger, so devices from any non-direct
+    channel need treating as untrusted.
+  sources:
+  - label: primary
+    url: https://www.zetter-zeroday.com/trezor-wallets-also-compromised-with-implants/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50078423
+- title: >-
+    GitHub replaces LLM calls in generic secret scanning with a fine-tuned ModernBERT classifier
+  section: Security
+  category: Security
+  blurb: >-
+    GitHub replaced LLM calls in generic secret scanning with a fine-tuned ModernBERT classifier,
+    cutting median post-push scan time by 86%.
+  summary: >-
+    GitHub now runs regex candidate generation followed by a fine-tuned ModernBERT classifier
+    that judges each candidate in context. GitHub reports 11.5% higher owner-weighted acceptance,
+    86% lower median post-push scan time, and 98% lower serving cost than the previous LLM
+    pipeline. The speedup let GitHub extend generic secret detection to push protection.
+  why: >-
+    Generic credentials such as passwords and connection strings can now be blocked at push
+    time, so teams should expect new push protection prompts.
+  sources:
+  - label: primary
+    url: https://github.blog/ai-and-ml/githubs-model-for-secret-detection-finding-more-secrets-with-less-noise/
+- title: >-
     AWS Strands team finds agent harness choice changes token cost by up to 3x at similar
     accuracy
   section: Agentic coding
@@ -109,3 +193,104 @@ stories:
     url: https://strandsagents.com/blog/we-ran-94000-trials-to-measure-the-cost-of-harness-choice/
   - label: discussion
     url: https://www.reddit.com/r/aws/comments/1x5br2l/aws_ran_94000_trials_to_measure_the_cost_of/
+- title: >-
+    Android 17 bionic wcscspn and wcspbrk misreport matches for characters at or above U+0100
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Android 17 September builds ship a bionic wcscspn and wcspbrk that stop at any wide character
+    at or above U+0100, breaking delimiter scans.
+  summary: >-
+    On Android 17 build CP3A.260905.009, wcscspn and wcspbrk treat every wide character from
+    U+0100 up as a match when the reject set has two or more characters below U+0100. A bionic
+    maintainer confirmed the bug at tip of tree, found an existing wrong test, and said he
+    would try to backport a fix. Public AOSP sources lag the shipped Android 17 QPR1 code,
+    so the reporter had to disassemble libc.so to find the cause.
+  why: >-
+    Native Android code that scans wide strings for ASCII delimiters misbehaves on text containing
+    emoji or non-Latin characters until a fix ships.
+  followup: Bionic fix and backport to Pixel builds.
+  comments: >-
+    Commenters say the delayed release of AOSP sources forces developers to reverse engineer
+    shipped libraries to report bugs.
+  sources:
+  - label: primary
+    url: https://github.com/android/ndk/issues/2260
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50083130
+- title: Niko Matsakis lays out where Rust should go for agentic development
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Niko Matsakis argues Rust's type system keeps coding agents on track and proposes proving
+    all unsafe code sound as a language goal.
+  summary: >-
+    In a companion post to his REBASE talk at SPLASH, Matsakis argues that Rust's guarantees
+    act as guardrails for coding agents. He proposes making the type system more expressive,
+    building an extensible compiler so proof tools such as Verus and Kani integrate cleanly,
+    and a north star of proving unsafe code free of undefined behavior.
+  why: >-
+    It signals where Rust language design priorities may shift as agents write more of the
+    code humans review.
+  sources:
+  - label: primary
+    url: https://smallcultfollowing.com/babysteps/blog/2026/10/14/agentic-dev-and-rust/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50084416
+- title: >-
+    Eisentraut ties PostgreSQL 19 feature reverts to defects surfaced by LLM-assisted review
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Peter Eisentraut says LLM-assisted review found many edge-case defects in older PostgreSQL
+    19 features, which forced reverts during beta.
+  summary: >-
+    PostgreSQL core team member Peter Eisentraut wrote about the unusually high number of
+    features removed from PostgreSQL 19 since beta. Some had architectural defects, but many
+    had long lists of small edge-case bugs found quickly by LLM-assisted review, and the fixed
+    per-report overhead ran out the clock. He says the affected code predates vibe coding.
+  why: >-
+    PostgreSQL 19 will ship with fewer features than its beta, so teams planning upgrades
+    should check the final feature list.
+  sources:
+  - label: primary
+    url: https://lwn.net/Articles/1100182/
+- title: >-
+    OpenTelemetry Collector v0.163.0 fixes a sending queue deadlock and batch splitting data
+    loss
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    OpenTelemetry Collector v0.163.0 fixes a sending queue deadlock and batch splitting that
+    dropped every span queued behind an oversized one.
+  summary: >-
+    The 2026-10-14 release fixes exporterhelper deadlocks when blocked offers are cancelled
+    with block_on_overflow enabled and stops dropping all queued spans or profiles behind
+    an oversized item. It replaces an O(n) lookup in generated scrapers that caused O(n squared)
+    cost per scrape. xhash values all change after a collision fix, and Profiles OTLP now
+    carries version metadata.
+  why: >-
+    Collectors using block_on_overflow or large trace batches should upgrade to avoid stalls
+    and silent span loss.
+  sources:
+  - label: primary
+    url: https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.163.0
+- title: >-
+    Cloudflare cut 36 GB/s of WAN traffic by moving analytics replication after sampling
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Cloudflare's data team cut 36 GB/s of WAN traffic by sending analytics events once and
+    replicating late, after sampling, instead of at source.
+  summary: >-
+    Cloudflare's pipeline carried about two billion events per second in May 2026. Splitting
+    a monolithic schema cut backbone bandwidth 35 to 40%, and switching from LZ4 to zstd cut
+    compressed throughput nearly 40% with little CPU change. In 2026 the team sent each event
+    once to a shared receiver pool and replicated to the second ClickHouse region from the
+    Buftee buffer, removing about 43 GB/s of transit while adding about 7 GB/s of replication.
+  why: >-
+    It is a concrete pattern for cutting cross-region data costs: replicate after sampling
+    and batching, not at the edge.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/rewinding-the-exponential/
