@@ -1,5 +1,5 @@
 date: '2026-10-14'
-updated: 2026-10-14T10:25Z
+updated: 2026-10-14T14:37Z
 stories:
 - title: >-
     Ivanti Connect Secure zero-day CVE-2026-104935 exploited in the wild and added to CISA
@@ -70,6 +70,29 @@ stories:
     url: https://deepmind.google/blog/introducing-gemini-4-argon/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50073879
+- title: >-
+    Vghost CVE-2026-74580: Linux vhost stale IOTLB cache gives local root and a guest-to-QEMU
+    escape path
+  section: Top stories
+  category: Security
+  blurb: >-
+    A stale vhost IOTLB cache lets a local user reach root on major distros and lets a vIOMMU
+    guest hijack QEMU, with a public PoC.
+  summary: >-
+    VHOST_SET_VRING_ADDR and VHOST_SET_VRING_NUM replace vring configuration without clearing
+    the metadata IOTLB cache, so later cache hits skip validation and reach unchecked user
+    copies. TencentOS Security reproduced root on Ubuntu 26.04, RHEL 9.8, Amazon Linux 2023,
+    Azure Linux 3.0, and Oracle Linux 10.2, where most images exposed /dev/vhost-vsock as
+    0666. Fixed stable releases include 6.1.183, 6.6.152, 6.12.104, 6.18.45, and 7.1.9.
+  why: >-
+    Hosts and container nodes need a patched kernel and reboot, and until then vhost device
+    nodes and the kvm group must be treated as privileged.
+  followup: Distribution kernel updates and any exploitation reports.
+  sources:
+  - label: primary
+    url: https://www.openwall.com/lists/oss-security/2026/10/14/2
+  - label: discussion
+    url: https://www.reddit.com/r/netsec/comments/1x5gjk9/vghost_cve202674580_linux_kernel_vhost_stale/
 - title: Grafana 13.1.8 and 12.4.13 fix multiple CVEs
   section: Security
   category: Security
@@ -172,6 +195,43 @@ stories:
   - label: primary
     url: https://github.blog/ai-and-ml/githubs-model-for-secret-detection-finding-more-secrets-with-less-noise/
 - title: >-
+    PgBouncer 1.26.1 fixes a SCRAM authentication bypass and two unauthenticated DoS bugs
+  section: Security
+  category: Security
+  blurb: >-
+    PgBouncer 1.26.1 fixes a SCRAM authentication bypass that lets one user log in as any
+    other, plus two unauthenticated infinite-loop DoS bugs.
+  summary: >-
+    CVE-2026-107350 lets a client that knows one SCRAM user's password log in as any other
+    SCRAM user, including admins and superusers, via a second StartupMessage when connecting
+    to a non-existent database. CVE-2026-107349 and CVE-2026-107348 are infinite loops triggerable
+    by unauthenticated clients under specific option and max_packet_size settings. The release
+    also restores the 1.25 behavior of ignoring search_path through ignore_startup_parameters.
+  why: >-
+    Teams running PgBouncer with SCRAM in front of Postgres should upgrade now because the
+    bypass reaches superuser accounts.
+  sources:
+  - label: primary
+    url: https://www.postgresql.org/about/news/pgbouncer-1261-released-fixes-three-cves-3403/
+- title: >-
+    psqlODBC 18.00.0005 fixes CVE-2026-109448 heap corruption when binding over 32767 parameters
+  section: Security
+  category: Security
+  blurb: >-
+    The official PostgreSQL ODBC driver corrupted heap memory when an application bound more
+    than 32767 parameters on one statement.
+  summary: >-
+    psqlODBC stored the bound parameter count in a signed 16-bit field and wrote zeros outside
+    the binding memory past that limit, affecting versions 08.01.0102 through 18.00.0004.
+    SQLBindParameter now rejects parameter numbers above 32767 with SQLSTATE 07009. The advisory
+    rates it CVSS 5.9.
+  why: >-
+    Applications that build IN lists from user-supplied values through ODBC should upgrade
+    or pass long lists as a single array parameter.
+  sources:
+  - label: primary
+    url: https://www.postgresql.org/about/news/psqlodbc-18000005-released-with-security-fix-for-cve-2026-109448-3404/
+- title: >-
     AWS Strands team finds agent harness choice changes token cost by up to 3x at similar
     accuracy
   section: Agentic coding
@@ -238,6 +298,48 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50084416
 - title: >-
+    Rust's next-generation trait solver enters final comment period for stabilization in Rust
+    1.101
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Rust's types team moved the next-generation trait solver into final comment period for
+    stabilization, targeting Rust 1.101.
+  summary: >-
+    PR 164209 by lcnr stabilizes -Znext-solver=globally, which would ship on stable in 1.101
+    after the 2026-11-06 beta cutoff. The author notes remaining hangs, worse average performance,
+    and diagnostics regressions, and fewer than 500 crates break on crater. The old solver
+    is to be removed after the following beta cutoff.
+  why: >-
+    Crates relying on old solver edge-case behavior may stop compiling, and features such
+    as TAIT and RTN were blocked on this change.
+  followup: Beta cutoff on 2026-11-06 and crater regression triage.
+  sources:
+  - label: primary
+    url: https://github.com/rust-lang/rust/pull/164209
+  - label: discussion
+    url: https://www.reddit.com/r/rust/comments/1x5qg5u/the_nextgeneration_trait_solver_is_close_to/
+- title: >-
+    Linus Torvalds posts his first LLM-assisted kernel patch series, an RCU folio read fastpath
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Torvalds posted a ten-patch series written with LLM help that reads hot folio data under
+    RCU, and review already found a race condition.
+  summary: >-
+    The series marks hot folios to delay release until after an RCU grace period, so read()
+    can copy folio data under RCU without taking a refcount. Torvalds reports an order-of-magnitude
+    speedup on a read-heavy benchmark. Reviewers identified a race condition, so more work
+    is needed.
+  why: >-
+    It shows the kernel's top maintainer using LLMs on core memory management code while the
+    project debates limits on AI-assisted contributions.
+  sources:
+  - label: primary
+    url: https://lwn.net/Articles/1100449/
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1x5c60o/kernel_summit_the_time_has_come_to_make_it_harder/
+- title: >-
     Eisentraut ties PostgreSQL 19 feature reverts to defects surfaced by LLM-assisted review
   section: Infrastructure
   category: Infrastructure
@@ -294,3 +396,22 @@ stories:
   sources:
   - label: primary
     url: https://blog.cloudflare.com/rewinding-the-exponential/
+- title: >-
+    Cloudflare makes Hyperdrive MySQL GA after tracing a 0.001% empty-result caching bug
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Cloudflare's Hyperdrive team tracked rare empty MySQL query results to client-side caching
+    interacting with EOF and OK packet translation.
+  summary: >-
+    Hyperdrive rewrites MySQL result sets when a Worker driver such as mysql2 lacks CLIENT_DEPRECATE_EOF,
+    while Client and Endpoint nodes in one data center share a cache keyed on the query. A
+    faulty assumption in the Client caching code produced empty responses about 0.001% of
+    the time for caching-enabled instances. The post also covers utf8 versus utf8mb4 and COM_RESET_CONNECTION
+    resetting the character set to the server default.
+  why: >-
+    Anyone building a MySQL proxy or pooler gets concrete protocol pitfalls around capability
+    negotiation, cached bytes, and connection reset.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/hyperdrive-mysql/

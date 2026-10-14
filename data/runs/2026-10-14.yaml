@@ -468,3 +468,93 @@ runs:
   - step: save
     status: ok
     seconds: 0.0
+- mode: daily
+  started: 2026-10-14T14:36Z
+  finished: 2026-10-14T14:37Z
+  candidates: 292
+  degraded:
+    Import AI: 'https://importai.substack.com/feed: HTTP Error 403: Forbidden'
+  usage:
+    input_tokens: 8
+    cache_read_tokens: 215660
+    cache_write_tokens: 84992
+    output_tokens: 5796
+    turns: 13
+    seconds: 65
+    cost_usd: 0.8446
+  tools:
+    mcp__digest__fetch_url: 11
+    StructuredOutput: 1
+  fetched:
+  - url: https://www.postgresql.org/about/news/pgbouncer-1261-released-fixes-three-cves-3403/
+    ok: true
+  - url: https://daniel.haxx.se/blog/2026/10/14/a-uaf-turned-rce/
+    ok: true
+  - url: https://www.openwall.com/lists/oss-security/2026/10/14/2
+    ok: true
+  - url: https://lwn.net/Articles/1100449/
+    ok: true
+  - url: https://blog.cloudflare.com/hyperdrive-mysql/
+    ok: true
+  - url: https://www.postgresql.org/about/news/psqlodbc-18000005-released-with-security-fix-for-cve-2026-109448-3404/
+    ok: true
+  - url: https://lwn.net/Articles/1099594/
+    ok: false
+  - url: https://github.com/rust-lang/rust/pull/164209
+    ok: true
+  - url: https://www.reddit.com/r/Python/comments/1x5caxn/jazzband_is_shutting_down/
+    ok: false
+  - url: https://github.com/python/cpython/releases/tag/v3.16.0a1
+    ok: true
+  - url: https://lwn.net/Articles/1098672/
+    ok: false
+  added:
+  - >-
+    Vghost CVE-2026-74580: Linux vhost stale IOTLB cache gives local root and a guest-to-QEMU
+    escape path
+  - >-
+    PgBouncer 1.26.1 fixes a SCRAM authentication bypass and two unauthenticated DoS bugs
+  - >-
+    psqlODBC 18.00.0005 fixes CVE-2026-109448 heap corruption when binding over 32767 parameters
+  - >-
+    Rust's next-generation trait solver enters final comment period for stabilization in Rust
+    1.101
+  - >-
+    Linus Torvalds posts his first LLM-assisted kernel patch series, an RCU folio read fastpath
+  - >-
+    Cloudflare makes Hyperdrive MySQL GA after tracing a 0.001% empty-result caching bug
+  dropped: []
+  rejected:
+  - title: >-
+      curl 8.23.0 fixes CVE-2026-92392, an HTTP/2 upload use-after-free that can lead to remote
+      code execution
+    reason: Top stories is full
+  inbox_used: []
+  notes: >-
+    LWN articles 1099594 (Kernel Summit contribution debate) and 1098672 (GCC LLM policy)
+    returned 403, so those were not covered on their own. The Reddit Jazzband shutdown thread
+    returned 403 and had no primary source, so it was skipped. The Hyperdrive post was truncated
+    before the full root cause, so the summary stays general. I skipped the Python 3.16.0a1
+    tag because its release page has no notes.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 20.0
+  - step: load
+    status: ok
+    seconds: 0.0
+  - step: select
+    status: ok
+    seconds: 0.3
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 66.1
+  - step: merge
+    status: ok
+    seconds: 0.3
+  - step: save
+    status: ok
+    seconds: 0.0
