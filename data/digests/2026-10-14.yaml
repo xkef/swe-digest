@@ -1,5 +1,5 @@
 date: '2026-10-14'
-updated: 2026-10-14T18:06Z
+updated: 2026-10-14T20:56Z
 stories:
 - title: >-
     Ivanti Connect Secure zero-day CVE-2026-104935 exploited in the wild and added to CISA
@@ -232,6 +232,72 @@ stories:
   - label: primary
     url: https://www.postgresql.org/about/news/psqlodbc-18000005-released-with-security-fix-for-cve-2026-109448-3404/
 - title: >-
+    curl maintainer details how CVE-2026-92392 HTTP/2 upload use-after-free leads to remote
+    code execution
+  section: Security
+  category: Security
+  blurb: >-
+    Daniel Stenberg shows how a dangling handle pointer in libcurl HTTP/2 uploads lets a malicious
+    server run code under narrow conditions.
+  summary: >-
+    A server that zeroes the HTTP/2 window during an upload, sends part of a response, and
+    resets the stream leaves libcurl with a pointer to a freed easy handle, which multi handle
+    cleanup later fills with server data and calls through a function pointer. The flaw was
+    reported on 2026-09-15 by Luna Tong at Anthropic using its OSS Scanner and fixed in curl
+    8.23.0, graded HIGH rather than CRITICAL because exploitation needs a valid certificate,
+    an upload of about 135KB, and a specific allocation pattern.
+  why: >-
+    Any application doing HTTP/2 uploads with libcurl should move to 8.23.0 or a patched distribution
+    build, since a crash is the likely outcome even when code execution fails.
+  sources:
+  - label: primary
+    url: https://daniel.haxx.se/blog/2026/10/14/a-uaf-turned-rce/
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1x5lh6e/curl_a_uaf_turned_rce/
+- title: >-
+    GitHub September availability report traces a 2026-09-13 outage to a cleanup job saturating
+    a shared database
+  section: Outages
+  category: Outage
+  blurb: >-
+    A cleanup job exhausted connections on a shared GitHub database on 2026-09-13, failing
+    about 96% of web issue creation and 90% of signups.
+  summary: >-
+    A background data-cleanup job throttled on replica lag but not primary load, so the primary
+    hit its connection limit, and missing timeouts plus a token-creation retry loop delayed
+    recovery. The report also says GitHub paused Central US Azure ramps on 2026-09-11 over
+    uneven zone capacity and missed its 2026-09-30 target to deploy every production service
+    there, with 120 of 160 services moved by 2026-10-07.
+  why: >-
+    The failure pattern of lag-only throttling, no fast timeouts, and retries on failing writes
+    is a checklist item for anyone running batch jobs against a shared primary.
+  sources:
+  - label: primary
+    url: https://github.blog/news-insights/company-news/github-availability-report-september-2026/
+- title: >-
+    NVIDIA sets 2026-10-15 release for Nemotron 3.5 Bolt 74B-A9B, an open model packed into
+    24GB
+  section: AI
+  category: AI
+  blurb: >-
+    NVIDIA releases a 74B MoE model with 9B active parameters, 2-bit quantized to 24GB, with
+    weights, training data, and recipes open.
+  summary: >-
+    NVIDIA says Nemotron 3.5 Bolt 74B-A9B uses quantization-aware training to fit 2-bit weights
+    into 24GB and targets local agents on RTX Spark machines shipping 2026-10-16. It will
+    run at launch in llama.cpp, vLLM, Ollama, Unsloth, and LM Studio, and NVIDIA says the
+    training data, weights, and recipes are open.
+  why: >-
+    A fully open agent-oriented MoE that fits on a single 24GB GPU gives local coding-agent
+    setups another candidate to evaluate, pending independent benchmarks.
+  followup: >-
+    Weights and model card on 2026-10-15, then independent quality results for the 2-bit build.
+  sources:
+  - label: primary
+    url: https://blogs.nvidia.com/blog/local-ai-rtx-spark-laptops-software-updates/
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1x5t1tm/nvidia_nemotron_bolt_35_74b_a9b_releases_oct_15th/
+- title: >-
     AWS Strands team finds agent harness choice changes token cost by up to 3x at similar
     accuracy
   section: Agentic coding
@@ -419,6 +485,28 @@ stories:
   - label: primary
     url: https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.163.0
 - title: >-
+    Timescale releases pg_vectorsearch alpha with a PRISM index that can replace pgvector
+    HNSW in place
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Timescale's alpha PostgreSQL extension adds a PRISM index with RaBitQ quantization that
+    can index existing pgvector columns in place.
+  summary: >-
+    PRISM is an IVF-style index with a hierarchical centroid tree kept in the buffer cache,
+    RaBitQ-quantized posting lists, and full-precision reranking from the heap. The project
+    claims it beats pgvector IVFFlat and HNSW on query and build speed, including at equal
+    recall on 100 million vectors with a quarter of the memory. It requires PostgreSQL 18,
+    is marked alpha and not for production, and may require dropping indexes between prereleases.
+  why: >-
+    Teams on pgvector can test a PRISM index beside an existing HNSW index without rewriting
+    tables or queries, but should wait for a stable release.
+  sources:
+  - label: primary
+    url: https://github.com/timescale/pg_vectorsearch
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50086165
+- title: >-
     Cloudflare cut 36 GB/s of WAN traffic by moving analytics replication after sampling
   section: Engineering posts
   category: Engineering post
@@ -474,3 +562,21 @@ stories:
   sources:
   - label: primary
     url: https://planetscale.com/blog/neki-volatile-expressions
+- title: GitHub restricts stargazer lists and ships a counts-only star history API
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    GitHub restricted stargazer lists to repo admins and built a counts-only endpoint that
+    filters stars by time before counting them.
+  summary: >-
+    Scrapers were harvesting public stargazer lists for spam and phishing, and large repositories
+    forced the database through thousands of rows per page, so GitHub limited the list to
+    administrators and collaborators. The new endpoint returns up to 30 weeks of daily star
+    counts in one request with no identities, and it filters by time before counting to cut
+    database work.
+  why: >-
+    Tools that derived star history from the stargazers endpoint now get 403 or empty responses
+    and need to move to the aggregate API.
+  sources:
+  - label: primary
+    url: https://github.blog/engineering/architecture-optimization/from-2500-requests-to-24-rebuilding-star-history-without-the-stargazers/

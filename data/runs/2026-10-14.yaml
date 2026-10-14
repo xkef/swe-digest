@@ -633,3 +633,83 @@ runs:
   - step: save
     status: ok
     seconds: 0.0
+- mode: daily
+  started: 2026-10-14T20:55Z
+  finished: 2026-10-14T20:56Z
+  candidates: 302
+  degraded:
+    Import AI: 'https://importai.substack.com/feed: HTTP Error 403: Forbidden'
+  usage:
+    input_tokens: 6
+    cache_read_tokens: 142812
+    cache_write_tokens: 92077
+    output_tokens: 5002
+    turns: 10
+    seconds: 45
+    cost_usd: 0.8711
+  tools:
+    mcp__digest__fetch_url: 8
+    StructuredOutput: 1
+  fetched:
+  - url: https://daniel.haxx.se/blog/2026/10/14/a-uaf-turned-rce/
+    ok: true
+  - url: https://github.blog/news-insights/company-news/github-availability-report-september-2026/
+    ok: true
+  - url: https://www.reddit.com/r/Python/comments/1x5caxn/jazzband_is_shutting_down/
+    ok: false
+  - url: https://lwn.net/Articles/1098672/
+    ok: false
+  - url: https://blogs.nvidia.com/blog/local-ai-rtx-spark-laptops-software-updates/
+    ok: true
+  - url: https://github.com/timescale/pg_vectorsearch
+    ok: true
+  - url: https://netflixtechblog.com/timeseries-tiered-storage-journey-kafka-flink-streams-to-native-cassandra-cold-reads-e59d597c9d60?source=rss----2615bd06b42e---4
+    ok: false
+  - url: https://github.blog/engineering/architecture-optimization/from-2500-requests-to-24-rebuilding-star-history-without-the-stargazers/
+    ok: true
+  added:
+  - >-
+    curl maintainer details how CVE-2026-92392 HTTP/2 upload use-after-free leads to remote
+    code execution
+  - >-
+    GitHub September availability report traces a 2026-09-13 outage to a cleanup job saturating
+    a shared database
+  - >-
+    Timescale releases pg_vectorsearch alpha with a PRISM index that can replace pgvector
+    HNSW in place
+  - >-
+    NVIDIA sets 2026-10-15 release for Nemotron 3.5 Bolt 74B-A9B, an open model packed into
+    24GB
+  - GitHub restricts stargazer lists and ships a counts-only star history API
+  dropped: []
+  rejected: []
+  inbox_used: []
+  notes: >-
+    The Reddit Jazzband shutdown thread, LWN's GCC LLM policy article, and the Netflix TimeSeries
+    post all returned 403. I could not verify them, so none were added. The Nemotron story
+    rests on NVIDIA's announcement because the weights are not out yet. pg_vectorsearch's
+    performance claims come from the project's own README, and the summary says so. I skipped
+    the many items about Starlink, OpenAI espionage, and other politics because they don't
+    change anything for engineers.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 18.5
+  - step: load
+    status: ok
+    seconds: 0.0
+  - step: select
+    status: ok
+    seconds: 0.3
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 46.3
+  - step: merge
+    status: ok
+    seconds: 0.3
+  - step: save
+    status: ok
+    seconds: 0.0
