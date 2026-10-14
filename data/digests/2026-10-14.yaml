@@ -1,5 +1,5 @@
 date: '2026-10-14'
-updated: 2026-10-14T14:37Z
+updated: 2026-10-14T18:06Z
 stories:
 - title: >-
     Ivanti Connect Secure zero-day CVE-2026-104935 exploited in the wild and added to CISA
@@ -254,6 +254,27 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/aws/comments/1x5br2l/aws_ran_94000_trials_to_measure_the_cost_of/
 - title: >-
+    Uber runs Claude Code, Codex, and OpenCode behind one model gateway and keeps human review
+    on every PR
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Uber puts all coding agents behind one model gateway with spend tiers, keeps humans reviewing
+    every PR, and tags PRs by type of work.
+  summary: >-
+    Uber Distinguished Engineer Uday Kiran Medisetty told The Pragmatic Engineer that a Model
+    Gateway with security middleware, per-user spend tracking, and audit logs fronts all model
+    use, and a wrapper called AIFX carries settings and skills across Claude Code, Codex,
+    and OpenCode. Engineers still review every PR, helped by AI pre-review and risk scores.
+    After CI jobs more than doubled in a year, Uber moved simple checks into a validation
+    command that agents run before opening a PR.
+  why: >-
+    It is a named-company account of how agent harnesses, cost controls, and the review gate
+    work at scale.
+  sources:
+  - label: primary
+    url: https://newsletter.pragmaticengineer.com/p/ubers-ai-infra-from-the-inside
+- title: >-
     Android 17 bionic wcscspn and wcspbrk misreport matches for characters at or above U+0100
   section: Languages and runtimes
   category: Languages
@@ -319,6 +340,26 @@ stories:
     url: https://github.com/rust-lang/rust/pull/164209
   - label: discussion
     url: https://www.reddit.com/r/rust/comments/1x5qg5u/the_nextgeneration_trait_solver_is_close_to/
+- title: Go 1.27 net/http drains unread HTTP/1 response bodies so connections get reused
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Starting in Go 1.27, the HTTP client drains unread HTTP/1 response bodies in the background,
+    so existing connections get reused.
+  summary: >-
+    Starting in Go 1.27, net/http.Transport drains unread HTTP/1 response bodies asynchronously,
+    for up to 50 ms or 256 KB, and skips draining when the response says Connection: close.
+    In the Go team's example, 100 requests that only read the status code took about 150 ms
+    instead of about 710 ms on Go 1.26. The team now recommends just closing response bodies
+    rather than draining them by hand.
+  why: >-
+    Go services that close bodies without reading them stop paying new TCP and TLS handshakes
+    over HTTP/1, and manual drain helpers become unnecessary.
+  sources:
+  - label: primary
+    url: https://go.dev/blog/http-connection-reuse
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50090369
 - title: >-
     Linus Torvalds posts his first LLM-assisted kernel patch series, an RCU folio read fastpath
   section: Linux and kernel
@@ -415,3 +456,21 @@ stories:
   sources:
   - label: primary
     url: https://blog.cloudflare.com/hyperdrive-mysql/
+- title: PlanetScale explains how Neki keeps Postgres sequence semantics across shards
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    PlanetScale's sharded Postgres evaluates now() and nextval() on the router so values stay
+    consistent and unique across shards.
+  summary: >-
+    Neki, PlanetScale's sharded Postgres, treats now() and sequence operations as router-only.
+    It evaluates now() once per statement and calls nextval() once per row of the table expression,
+    using an authoritative shard that hosts all sequences. For an UPDATE that sets a column
+    from nextval(), Neki first selects and locks the key columns with FOR UPDATE, then sends
+    a parameterized update for each row.
+  why: >-
+    It shows the cost of volatile expressions in distributed SQL and why sequence-heavy writes
+    may take more round trips on sharded Postgres.
+  sources:
+  - label: primary
+    url: https://planetscale.com/blog/neki-volatile-expressions
