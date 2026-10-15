@@ -1,5 +1,5 @@
 date: '2026-10-15'
-updated: 2026-10-15T10:11Z
+updated: 2026-10-15T14:17Z
 stories:
 - title: >-
     Palo Alto patches PAN-OS management interface RCE CVE-2026-0322 after limited exploitation
@@ -47,6 +47,48 @@ stories:
     url: https://github.blog/changelog/2026-10-14-github-actions-workflow-lockfiles-in-public-preview/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50088044
+- title: Seven Linux stable kernels fix critical skb_checksum_help() flaw CVE-2026-99999
+  section: Top stories
+  category: Linux/Kernel
+  blurb: >-
+    Kernels 7.2.11 back to 5.10.272 fix a networking bug where an IPv4 packet with bad checksum
+    metadata can corrupt the network header.
+  summary: >-
+    Greg Kroah-Hartman released the 7.2.11, 6.18.57, 6.12.113, 6.6.159, 6.1.190, 5.15.223,
+    and 5.10.272 stable kernels on 2026-10-15. The series fixes CVE-2026-99999, a flaw in
+    skb_checksum_help() that lets an IPv4 packet with bad checksum metadata corrupt the network
+    header, per patch author Michael S. Tsirkin. All users are advised to upgrade.
+  why: >-
+    Every supported stable branch is affected, so fleet kernels need a rebuild or a distribution
+    update.
+  followup: Distribution kernel updates and any exploitation reports.
+  sources:
+  - label: primary
+    url: https://lwn.net/Articles/1100611/
+- title: >-
+    Citizen Lab documents AdFection, zero-click Candiru spyware delivered through targeted
+    ads
+  section: Security
+  category: Security
+  blurb: >-
+    An Israeli ad firm, Discover-Tech, used real-time bidding ads to profile targets and push
+    Candiru spyware to Al Jazeera devices.
+  summary: >-
+    Citizen Lab reported on 2026-10-15 that devices at Al Jazeera were infected with Candiru
+    spyware via targeted ads bought by Discover-Tech, whose Controlium platform can fingerprint
+    and infect a device when an ad renders. Four billion bidding records show its ads on almost
+    200,000 websites and apps over four months. Google, IAB Europe, Beeswax, Vungle, and Eskimi
+    cut off Discover-Tech after disclosure.
+  why: >-
+    Ad SDKs and third-party ad code in apps and sites become a confirmed delivery path for
+    browser exploits, which strengthens the case for ad blocking and SDK review on managed
+    devices.
+  followup: Citizen Lab's separate report on the DARK CARTOGRAPHER deanonymization actor.
+  sources:
+  - label: primary
+    url: https://citizenlab.ca/research/how-discover-tech-turned-targeted-ads-into-a-pipeline-for-spyware/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50101813
 - title: >-
     Liquid AI releases open-weight LFM2.5-24B-A2B reasoning model for on-device agents
   section: AI
@@ -190,6 +232,24 @@ stories:
     url: https://www.phoronix.com/news/Easy-Anti-Cheat-Better-Linux
   - label: discussion
     url: https://news.ycombinator.com/item?id=50088166
+- title: Ubuntu 26.10 ships with GNOME 51 and completes the move to Rust uutils coreutils
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Canonical's October release finishes replacing GNU coreutils with the Rust-based uutils
+    and adds stronger Microsoft Entra ID login support.
+  summary: >-
+    Canonical released Ubuntu 26.10 Stonking Stingray on 2026-10-15. It completes the rollout
+    of the Rust-based uutils coreutils, ships GNOME 51, and strengthens user authentication
+    through Microsoft Entra ID. The release notes list incompatible changes from earlier releases.
+  why: >-
+    Shell scripts and build tooling that rely on GNU coreutils edge-case behavior should be
+    tested on 26.10 before the next LTS carries the change.
+  sources:
+  - label: primary
+    url: https://lwn.net/Articles/1100786/
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1x6jjdp/ubuntu_2610_released_with_linux_73_gnome_51_rust/
 - title: YugabyteDB makes its built-in YSQL Connection Manager generally available
   section: Infrastructure
   category: Infrastructure
@@ -209,3 +269,21 @@ stories:
   sources:
   - label: primary
     url: https://www.yugabyte.com/blog/ysql-connection-manager-is-now-ga/
+- title: PostgreSQL 19 RC 1 released, with GA moved to 2026-11-19 after a planned RC 2
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Postgres 19 reaches its first release candidate, and a second one on 2026-11-12 will pick
+    up fixes from the November update release.
+  summary: >-
+    The PostgreSQL Global Development Group released PostgreSQL 19 RC 1 on 2026-10-15. Fixes
+    since Beta 4 cover REPACK (CONCURRENTLY), pg_plan_advice, parallel autovacuum, NULL-based
+    planner optimizations, and COPY to JSON key names. RC 2 is planned for 2026-11-12 and
+    general availability for 2026-11-19.
+  why: >-
+    Teams planning PostgreSQL 19 upgrades should test against RC 1 now and plan for a GA date
+    three weeks later than previously expected.
+  followup: RC 2 on 2026-11-12 and GA on 2026-11-19.
+  sources:
+  - label: primary
+    url: https://www.postgresql.org/about/news/postgresql-19-rc-1-released-3409/
