@@ -1,5 +1,5 @@
 date: '2026-10-15'
-updated: 2026-10-15T14:17Z
+updated: 2026-10-15T17:50Z
 stories:
 - title: >-
     Palo Alto patches PAN-OS management interface RCE CVE-2026-0322 after limited exploitation
@@ -65,6 +65,29 @@ stories:
   sources:
   - label: primary
     url: https://lwn.net/Articles/1100611/
+- title: >-
+    Meta releases Muse Spark Open weights, an 816B multimodal MoE with 42B active parameters
+  section: Top stories
+  category: AI
+  blurb: >-
+    Meta published open weights for an 816B-parameter multimodal coding and agent model that
+    runs on two M5 Ultra Mac Studios via MLX.
+  summary: >-
+    Meta released weights for Muse Spark Open on 2026-10-15, a natively multimodal model with
+    816B total parameters, 42B active, and a 1M-token context window, aimed at coding and
+    agentic work. Weights are on Hugging Face and major clouds, with support in SGLang, vLLM,
+    TensorRT-LLM, Transformers, MLX and llama.cpp. The license is the Muse Model License with
+    limited commercial terms.
+  why: >-
+    A frontier-class open-weight agent model now runs on local hardware and common inference
+    stacks, but the custom license limits commercial use.
+  sources:
+  - label: primary
+    url: https://research.meta.ai/blog/muse-spark-open
+  - label: discussion
+    url: https://huggingface.co/blog/meta-muse-spark-open
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50106620
 - title: >-
     Citizen Lab documents AdFection, zero-click Candiru spyware delivered through targeted
     ads
@@ -192,6 +215,26 @@ stories:
   sources:
   - label: primary
     url: https://www.phoronix.com/news/Apple-Clang-SSAF-Driver
+- title: >-
+    Rust 1.99.1 fixes an x86_64 FFI bool miscompilation and missing wcslen link errors
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    A Rust point release fixes FFI functions returning bool with garbage upper bits on x86_64,
+    UEFI link failures, and rust-lld on macOS.
+  summary: >-
+    Rust 1.99.1 restores zero-extension for bool returned through FFI on x86_64, where bits
+    1 to 7 of the return register could be unspecified. It adds a wcslen fallback to compiler-builtins
+    after an LLVM pass broke UEFI targets using std. It also adds an rpath so rust-lld finds
+    libLLVM on macOS without the rustup proxy.
+  why: >-
+    Projects with C callers of Rust bool-returning functions or UEFI builds on 1.99.0 should
+    update with rustup update stable.
+  sources:
+  - label: primary
+    url: https://blog.rust-lang.org/2026/10/15/Rust-1.99.1/
+  - label: discussion
+    url: https://github.com/rust-lang/rust/releases/tag/1.99.1
 - title: KDE Plasma 6.8 drops the Plasma X11 session
   section: Linux and kernel
   category: Linux/Kernel
@@ -287,3 +330,24 @@ stories:
   sources:
   - label: primary
     url: https://www.postgresql.org/about/news/postgresql-19-rc-1-released-3409/
+- title: >-
+    Cilium 1.20.3 fixes conntrack GC deleting live entries and SNAT port reallocation
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Cilium patch releases fix garbage collection that could drop live conntrack and NAT entries
+    and CNPs with nodeSelector that enforced nothing.
+  summary: >-
+    Cilium 1.20.3, with 1.19.9 and 1.18.15, was released on 2026-10-15. 1.20.3 fixes conntrack
+    GC deleting entries the datapath reopened mid-batch, which could cascade into NAT deletion
+    and SNAT source-port changes for live connections. It also stops CiliumNetworkPolicies
+    with nodeSelector from silently enforcing nothing, and fixes 0.0.0.0/0 CiliumCIDRGroups
+    selecting no traffic.
+  why: >-
+    Clusters relying on nodeSelector policies or zero-length CIDR groups may have had gaps
+    in enforcement and should upgrade.
+  sources:
+  - label: primary
+    url: https://github.com/cilium/cilium/releases/tag/v1.20.3
+  - label: discussion
+    url: https://github.com/cilium/cilium/releases/tag/v1.19.9
