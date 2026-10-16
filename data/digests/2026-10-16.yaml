@@ -1,5 +1,5 @@
 date: '2026-10-16'
-updated: 2026-10-16T17:35Z
+updated: 2026-10-16T20:03Z
 stories:
 - title: CGPM votes to stop leap seconds, making UTC continuous from 2027-05-20
   section: Top stories
@@ -135,6 +135,25 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50118977
 - title: >-
+    X.Org discloses 17 vulnerabilities in libX11, libXi, libXpm, libXrender and libXtst
+  section: Security
+  category: Security
+  blurb: >-
+    Out-of-bounds reads and writes and heap overflows in five X11 client libraries are fixed
+    in libX11 1.8.14, libXpm 3.5.20 and other releases.
+  summary: >-
+    On 2026-10-16, X.Org made 17 vulnerabilities public across five X11 client libraries.
+    Most are out-of-bounds reads and writes, with some heap buffer overflows and possible
+    denial of service. The fixed releases are libX11 1.8.14, libXi 1.8.4, libXpm 3.5.20, libXrender
+    0.9.13 and libXtst 1.2.6.
+  why: >-
+    Any application linking these libraries, including XWayland clients, needs updated distribution
+    packages, and libXpm also parses untrusted image files.
+  followup: Distribution security updates for the five libraries.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/17-Vulnerabilities-Xorg-Libs
+- title: >-
     DeepMind uses Antigravity agent with ProtNLM to find antimicrobial peptide candidate
   section: AI
   category: AI
@@ -219,6 +238,29 @@ stories:
   sources:
   - label: primary
     url: https://aws.amazon.com/blogs/architecture/how-dynata-scaled-ai-across-the-development-lifecycle-with-ai-dlc-and-kiro-ide/
+- title: >-
+    Claude Code team details layered AI code review that merges low-risk changes without human
+    approval
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Anthropic lets low-risk Claude Code PRs merge without a human approval once AI, security
+    and CI checks pass. Its revert share fell over 40%.
+  summary: >-
+    From June to September, merged PRs to Claude Code more than doubled and the share that
+    had to be reverted fell by more than 40 percent. Every PR gets a Claude review whose findings
+    other agents vote on before posting, plus a blocking security review. A classifier assigns
+    each change a risk tier needing zero, one or two human approvals, and only trusted authors
+    get the lighter paths. After review loops reached more than fifty overnight rounds, the
+    team capped reviews at three rounds and switched to diff-only re-review.
+  why: >-
+    It gives a concrete template for risk-tiered approval, reviewer evals built from past
+    incidents, and round caps that keep agent author and reviewer loops from running forever.
+  sources:
+  - label: primary
+    url: https://claude.dev/blog/solving-code-review-at-anthropic/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50122951
 - title: >-
     Goodfire essay argues neural networks are mostly monosemantic and superposition was a
     misreading
@@ -444,6 +486,27 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50119991
 - title: >-
+    StackGres reports open-source Citus at 10M QPS with 24 workers, against 50 data nodes
+    for PlanetScale Neki
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    A read-only pgbench test on Graviton4 put Citus with scaled-out query routers at 10M tps.
+    The reproduction code is not yet published.
+  summary: >-
+    StackGres ran single-row primary-key reads on Citus 14.1 and PostgreSQL 18.4 on EKS, with
+    StackGres 1.19 query routers. Throughput reached 10,032,084 tps with 24 r8gd.16xlarge
+    workers and 48 routers, at p50 1.06 ms and p99 11.07 ms. The authors say Neki needed 1.5
+    to 1.8 times the vCPU for similar throughput. Their workers used local NVMe while Neki
+    used network storage, a difference they acknowledge favours them.
+  why: >-
+    It is a published data point for sharded Postgres capacity planning, but it comes from
+    a vendor and cannot be checked until the reproduction code is published.
+  followup: Follow-up post with full setup and reproduction code.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9yG
+- title: >-
     Meta handled record World Cup traffic with capacity buffers and no deployment freeze
   section: Engineering posts
   category: Engineering post
@@ -462,3 +525,23 @@ stories:
   sources:
   - label: primary
     url: https://engineering.fb.com/2026/10/15/production-engineering/2026-world-cup-record-traffic-reliability-at-scale/
+- title: >-
+    Spotify adds beam search and multi-item scoring to TensorRT LLM, cutting beam search cost
+    up to 54%
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Spotify and NVIDIA closed TensorRT LLM feature gaps for LLM recommendations, replacing
+    a split setup that used vLLM and SGLang side by side.
+  summary: >-
+    Spotify served LLM podcast recommendations with vLLM, whose beam search runs outside the
+    core GPU engine, and used SGLang for multi-item candidate scoring. With NVIDIA it added
+    several features to TensorRT LLM between v1.2.0rc3 and v1.3.0rc20: multiple beam sequences,
+    out-of-tree models in trtllm-serve, embedding injection for user soft tokens, and multi-item
+    scoring. On Qwen3 1.7B this cut cost by up to 54% for beam search and up to 7% for scoring.
+  why: >-
+    Beam search and scoring workloads now have one inference engine option with sampler-side
+    beam search and soft-token personalization upstream.
+  sources:
+  - label: primary
+    url: https://engineering.atspotify.com/2026/10/advancing-generative-recommendation-inference-our-collaboration-with-nvidia-on-tensorrt-llm/
