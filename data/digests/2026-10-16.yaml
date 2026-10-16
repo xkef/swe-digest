@@ -1,0 +1,121 @@
+date: '2026-10-16'
+updated: 2026-10-16T06:02Z
+stories:
+- title: CGPM votes to stop leap seconds, making UTC continuous from 2027-05-20
+  section: Top stories
+  category: Infrastructure
+  blurb: >-
+    UTC will stop taking leap seconds on 2027-05-20, and its gap from Earth rotation time
+    UT1 may grow to as much as one hour.
+  summary: >-
+    Resolution 5 of the 28th CGPM makes continuous UTC effective on 2027-05-20 and sets the
+    maximum value of |UT1-UTC| at 3600 seconds. The resolution cites a 30 percent probability
+    of a first negative leap second by 2035. It also says the different smearing methods that
+    providers use already cause timing inconsistencies between systems.
+  why: >-
+    After 2027-05-20, leap-second insertion, smearing settings and negative-leap-second preparation
+    in NTP, PTP and time-handling code become legacy paths.
+  followup: >-
+    Continuous UTC takes effect on 2027-05-20. ITU-R is updating how radio stations broadcast
+    UT1-UTC.
+  sources:
+  - label: primary
+    url: https://www.bipm.org/en/cgpm-2026/resolution-5
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50105777
+- title: >-
+    Meta releases Muse Spark Open, an 816B-parameter open-weight MoE model with a 1M-token
+    context
+  section: Top stories
+  category: AI
+  blurb: >-
+    Meta's new open-weight model has 42B active parameters, is aimed at coding agents, and
+    needs about 700GB of VRAM to run in NVFP4.
+  summary: >-
+    Meta Superintelligence Labs released Muse Spark Open on 2026-10-15 under the Muse Model
+    License. It ships in BF16 and NVFP4 and is supported by SGLang, vLLM, TensorRT-LLM and
+    llama.cpp, plus MLX on two M5 Ultra Mac Studios. On Meta's own coding numbers, it scores
+    76.4 on Terminal-Bench 2.1 and 60 on DeepSWE 1.1, below Kimi K3 and GLM 5.3.
+  why: >-
+    Teams get a large new US open-weight option for agent workloads, but self-hosting it takes
+    multi-GPU nodes and a custom license review.
+  comments: >-
+    Unsloth has already published a mirror and quantization guide, and LocalLLaMA threads
+    focus on the hardware cost of running it.
+  sources:
+  - label: primary
+    url: https://huggingface.co/unsloth/Muse-Spark-Open-816B-A42B
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1x6rcid/unsloth_muse_spark_open_is_out/
+- title: >-
+    Meta details how agents plan, build and verify its Forum app while engineers supervise
+  section: Top stories
+  category: Agentic coding
+  blurb: >-
+    Meta's Forum team required agent changes to pass builds, tests and UI checks before review,
+    and gave agents tools to inspect the running app.
+  summary: >-
+    Meta built its Forum Groups app with agents that run the plan, implement, build and test
+    loop. Engineers set goals, watch runs and sign off on every shipped change. The team gave
+    agents tools to read the live simulator view hierarchy and found that misdirected edits
+    dropped sharply. A separate sandbox build flavor compiles prototype code out of production
+    entirely. Agents also run stress scenarios and investigate user feedback after launch.
+  why: >-
+    It is a first-party account of where the review gate sits when agents run the loop: evidence
+    attached to each PR, rules files, hooks, and isolation at the build level.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/
+- title: >-
+    Ubuntu 26.10 ships with Linux 7.3, GNOME 51 and a completed switch to Rust coreutils
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Canonical's 26.10 interim release adds RISC-V desktop images, amd64v3-optimized installs,
+    and better TPM-backed full-disk encryption.
+  summary: >-
+    Ubuntu 26.10 Stonking Stingray was released on 2026-10-15. It completes the migration
+    to the Rust-based coreutils and ships Mesa 26.2 and a tech preview of Myna speech-to-text.
+    The official flavors released on the same day.
+  why: >-
+    Scripts that depend on GNU coreutils edge-case behavior should be tested against the Rust
+    coreutils before they reach 27.04 and the next LTS.
+  sources:
+  - label: report
+    url: https://www.phoronix.com/news/Ubuntu-26.10-Released
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1x6jjdp/ubuntu_2610_released_with_linux_73_gnome_51_rust/
+- title: Libreboot 26.10 makes EDK2 UEFI the default payload and adds 233 Chromebooks
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    The free boot firmware now boots UKIs, systemd-boot and Windows through EDK2, and offers
+    GRUB and SeaBIOS as EFI builds for compatibility.
+  summary: >-
+    Libreboot 26.10 imports all 233 Chromebooks supported by MrChromebox, as source-only builds.
+    It moves AMD Fam15h boards to the 15h.org coreboot fork and adds the X270, X280 and OptiPlex
+    5050 SFF. Bare-metal GRUB and SeaBIOS payloads are deprecated on 64-bit boards.
+  why: >-
+    Existing Libreboot installs change boot path on upgrade, so read the migration errata
+    before reflashing.
+  sources:
+  - label: primary
+    url: https://libreboot.org/news/libreboot2610.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50102923
+- title: Fedora 45 misses its 2026-10-20 early target after a no-go decision
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    No release candidate media was ready in time, so Fedora 45 moves to the 2026-10-27 or
+    2026-11-03 contingency dates, depending on blocker bugs.
+  summary: >-
+    The Fedora go/no-go check declared the 2026-10-20 target a no-go. Fedora 45 brings KMSCON
+    for the VT console, GNOME 51, reproducible package builds and a DRM Panic front end.
+  why: >-
+    Teams planning Fedora 45 rollouts or image rebuilds should move their schedules back by
+    at least a week.
+  followup: Next go/no-go for the 2026-10-27 date.
+  sources:
+  - label: report
+    url: https://www.phoronix.com/news/Fedora-45-First-No-Go
