@@ -1,5 +1,5 @@
 date: '2026-10-16'
-updated: 2026-10-16T10:01Z
+updated: 2026-10-16T14:06Z
 stories:
 - title: CGPM votes to stop leap seconds, making UTC continuous from 2027-05-20
   section: Top stories
@@ -67,6 +67,30 @@ stories:
   - label: primary
     url: https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/
 - title: >-
+    Common Crawl scan finds 30 sites sending prompt injection in HTTP headers aimed at AI
+    agents
+  section: Security
+  category: Security
+  blurb: >-
+    A scan of 217 million crawled responses found 30 sites sending prompt injection headers
+    to AI agents, and 22 of them were pranks.
+  summary: >-
+    Signals Corps read headers from 217,097,223 responses in Common Crawl CC-MAIN-2026-39
+    and found 7,959 sites sending AI-directed headers, mostly llms.txt and MCP pointers. In
+    its tests, Claude models in Claude Code ignored an injected header unless the user prompt
+    gave the site authority, and then 7 of 9 runs obeyed. The report flags 136 sites that
+    labeled the crawler as an AI bot, which is the first step toward cloaking content for
+    agents.
+  why: >-
+    Agent fetch tools that pass headers, such as curl -i in a shell, expose models to this
+    input, so default to body-only fetches and require approval for commands read from the
+    web.
+  sources:
+  - label: primary
+    url: https://www.signalscorps.com/blog/prompt-injection-in-http-headers/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50104310
+- title: >-
     DeepMind uses Antigravity agent with ProtNLM to find antimicrobial peptide candidate
   section: AI
   category: AI
@@ -86,6 +110,25 @@ stories:
   sources:
   - label: primary
     url: https://deepmind.google/blog/accelerating-antimicrobial-discovery/
+- title: >-
+    Reflection releases Beam, a 501B-parameter Apache 2.0 MoE model for coding and agents
+  section: AI
+  category: AI
+  blurb: >-
+    Reflection's first model is a 501B-parameter MoE with 23B active, a 1M-token context,
+    Apache 2.0 terms and day-0 vLLM and SGLang support.
+  summary: >-
+    Beam is a text-only mixture-of-experts model with 256 experts per layer, 8 routed per
+    token, and hybrid sliding-window and global attention. Reflection ships it under Apache
+    2.0 in BF16, FP8 and NVFP4 checkpoints, with a DFlash2 speculative decoding drafter and
+    a Rust-based harness. Hugging Face says the NVFP4 checkpoint is about 280 GB and recommends
+    four B200s, and the full 1M-token KV cache takes about 36 GiB per sequence.
+  why: >-
+    Teams that want a permissively licensed frontier-scale coding model on their own hardware
+    get another option with ready serving and fine-tuning recipes.
+  sources:
+  - label: primary
+    url: https://huggingface.co/blog/reflection-beam
 - title: >-
     GNOME developer uses Claude Code to reverse engineer a scanner driver and releases hw-harness
   section: Agentic coding
