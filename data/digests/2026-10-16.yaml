@@ -1,5 +1,5 @@
 date: '2026-10-16'
-updated: 2026-10-16T14:06Z
+updated: 2026-10-16T17:35Z
 stories:
 - title: CGPM votes to stop leap seconds, making UTC continuous from 2027-05-20
   section: Top stories
@@ -66,6 +66,30 @@ stories:
   sources:
   - label: primary
     url: https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/
+- title: 'PwnEscape: Linux checksum flaw CVE-2026-99999 enables guest-to-host KVM escape'
+  section: Top stories
+  category: Security
+  blurb: >-
+    A Linux networking flaw lets guest-controlled checksum metadata rewrite a validated IPv4
+    header, leaking host memory and escaping KVM.
+  summary: >-
+    pwn.ai published details of CVE-2026-99999, where CHECKSUM_PARTIAL metadata from a guest
+    makes skb_checksum_help() rewrite the IPv4 IHL field after validation, so ip_do_fragment()
+    copies 32 bytes of host memory into outgoing packets. The researchers turned the leak
+    into selected 64-byte host kernel writes and host root execution on their own KVM test
+    machines. The upstream fix is commit 6785011f8b16, which validates checksum_start before
+    completing the checksum. The bug was found through Vercel's sandbox challenge, and Vercel
+    notified other affected hypervisor and sandbox providers.
+  why: >-
+    Multi-tenant VM and sandbox hosts that accept virtio-net traffic should prioritize the
+    kernel fix, since the authors expect public exploits for weaker configurations within
+    weeks.
+  followup: Part 2 of the write-up on the write primitive, and distribution kernel updates.
+  sources:
+  - label: primary
+    url: https://pwn.ai/blog/pwnescape
+  - label: discussion
+    url: https://www.reddit.com/r/netsec/comments/1x7cvh3/pwnescape_guesttohost_kvm_escape_cve202699999/
 - title: >-
     Common Crawl scan finds 30 sites sending prompt injection in HTTP headers aimed at AI
     agents
@@ -90,6 +114,26 @@ stories:
     url: https://www.signalscorps.com/blog/prompt-injection-in-http-headers/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50104310
+- title: Calif publishes root exploit for a 37-year-old OpenBSD shared memory counter bug
+  section: Security
+  category: Security
+  blurb: >-
+    Calif chained a signed 16-bit shared memory counter from original BSD code with an out-of-bounds
+    write to get root on OpenBSD.
+  summary: >-
+    The shm_nattch attach counter, a signed short since early BSD, can wrap past 32,767 by
+    forking processes, which leads to a use-after-free through a race. Combined with a separate
+    out-of-bounds write, Calif got local root with KARL, SMAP and SMEP enabled and no info
+    leak. OpenBSD fixed the bugs in errata 026 and 018, and Calif proposes safe unlinking,
+    a randomized PTE self-map and allocator randomization as mitigations.
+  why: >-
+    OpenBSD hosts need errata 026 and 018 applied, and the post shows how deterministic kernel
+    allocators defeat KARL.
+  sources:
+  - label: primary
+    url: https://calif.io/research/big-fish
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50118977
 - title: >-
     DeepMind uses Antigravity agent with ProtNLM to find antimicrobial peptide candidate
   section: AI
@@ -319,6 +363,27 @@ stories:
   sources:
   - label: primary
     url: https://eclecticlight.co/2026/10/16/changing-developer-certificates-might-affect-installers-next-year/
+- title: Apple runs Muse Spark Open on four Mac Studios with MLX over Thunderbolt RDMA
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    Apple shows four M5 Ultra Mac Studios linked by Thunderbolt RDMA running the 816B Muse
+    Spark Open model at about 36 tokens per second.
+  summary: >-
+    Apple ML Research benchmarked MLX LM on M5 Ultra and M3 Ultra Mac Studios, reporting up
+    to 4.6 times faster time to first token and 1.6 times faster decode on M5 Ultra. Muse
+    Spark Open in NVFP4 needs about 493GB for weights, so it runs across machines using the
+    jaccl backend over RDMA on Thunderbolt 5, reaching 36.73 tokens per second with four-way
+    tensor parallelism at 8,192 tokens of context. The post includes mlx.launch and mlx_lm.server
+    commands for serving the model to local coding agents.
+  why: >-
+    Running a frontier-size open-weight model locally for agentic coding now has a documented
+    recipe and measured numbers on Apple hardware.
+  sources:
+  - label: primary
+    url: https://machinelearning.apple.com/research/mlx-distributed-inference
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50118320
 - title: RPKI-valid routes reach 70.3% of routed prefixes, up from 54% a year earlier
   section: Infrastructure
   category: Infrastructure
@@ -357,6 +422,27 @@ stories:
   sources:
   - label: primary
     url: https://neon.com/blog/neon-now-has-realtime
+- title: PostgreSQL 19 slips to around 2026-11-19 after up to 10 features are reverted
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    PostgreSQL 19 is now expected around 2026-11-19 after eight to ten features were reverted,
+    partly due to LLM-assisted code review findings.
+  summary: >-
+    The Register reports PostgreSQL 19 general availability is now expected around 2026-11-19,
+    with eight to ten significant features, including SQL/PGQ property graph queries, pushed
+    to PostgreSQL 20. Committer Peter Eisentraut wrote that LLM-assisted review surfaced long
+    lists of edge-case defects late in the cycle, and said the reverts were not caused by
+    vibe coding. REPACK CONCURRENTLY remains in the release.
+  why: >-
+    Teams planning PostgreSQL 19 upgrades should move dates to late November and should not
+    count on SQL/PGQ until PostgreSQL 20.
+  followup: PostgreSQL 19 GA around 2026-11-19.
+  sources:
+  - label: primary
+    url: https://www.theregister.com/databases/2026/10/16/postgres-19-delayed-after-ai-reviewers-find-more-bugs-than-humans-can-fix/5303471
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50119991
 - title: >-
     Meta handled record World Cup traffic with capacity buffers and no deployment freeze
   section: Engineering posts
