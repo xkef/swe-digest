@@ -1,5 +1,5 @@
 date: '2026-10-16'
-updated: 2026-10-16T06:02Z
+updated: 2026-10-16T06:47Z
 stories:
 - title: CGPM votes to stop leap seconds, making UTC continuous from 2027-05-20
   section: Top stories
@@ -67,6 +67,82 @@ stories:
   - label: primary
     url: https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/
 - title: >-
+    GNOME developer uses Claude Code to reverse engineer a scanner driver and releases hw-harness
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    A GNOME developer used Claude Code with a Windows VM and usbmon traces to write a scanner
+    driver and camera fixes, then released hw-harness.
+  summary: >-
+    Christian Schaller had Claude Code drive a KVM Windows guest with the device passed through,
+    captured USB traffic on the host with usbmon, and diffed it against traces from his Linux
+    driver. The approach produced a SANE backend for the Plustek OpticFilm 8200i and kernel
+    and libcamera fixes for an IMX471 MIPI camera on a ThinkPad X1 Carbon Gen 14. He generalized
+    the scripts into hw-harness.
+  why: >-
+    A reference-trace harness gives a coding agent a concrete diff to work against, a pattern
+    that applies to driver work and other black-box debugging.
+  comments: >-
+    HN commenters split between people with similar driver results and skeptics on code provenance
+    and maintenance burden.
+  sources:
+  - label: primary
+    url: https://blogs.gnome.org/uraeus/2026/10/15/aiandreverseengineerhardware/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50104299
+  - label: discussion
+    url: https://www.phoronix.com/news/AI-Reverse-Engineer-Linux-HW
+- title: >-
+    Goodfire essay argues neural networks are mostly monosemantic and superposition was a
+    misreading
+  section: ML research
+  category: ML research
+  blurb: >-
+    Goodfire's Nick Cammarata argues apparent polysemanticity came from fixable issues, not
+    superposition, and that most neurons are legible.
+  summary: >-
+    Nick Cammarata of Goodfire argues that canonical InceptionV1 polysemanticity came from
+    architectural problems and weak tools, and that retrained versions have 99 to 100 percent
+    interpretable last-layer neurons. In preliminary audits of Qwen3-32B, the team estimates
+    about 90 percent of neuron poles have one main job, and only 2 to 4 percent are not yet
+    understood. The essay is a working hypothesis. A technical companion paper is promised.
+  why: >-
+    If the claim holds, interpretability work can study a model's own neurons directly instead
+    of first training sparse autoencoders to decompose it.
+  followup: Publication of the technical companion paper on language model neurons.
+  comments: >-
+    The HN thread debates whether the rubric for one main job is too generous and how the
+    claim squares with sparse autoencoder results.
+  sources:
+  - label: primary
+    url: https://already-clean.goodfire.com/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50105647
+- title: >-
+    Mononoke co-designer says Anthropic's Scion copied the Bonsai data model, and Anthropic
+    adds credit
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Rain, who led Mononoke's data model design at Meta, says Anthropic's Scion copies it without
+    credit, and Anthropic has since added attribution.
+  summary: >-
+    Rain writes that Scion changesets match Mononoke's Bonsai changesets and its derived data
+    indexes, and that they privately learned of personnel overlap between the teams. They
+    say crediting Sapling for hard-won lessons was not enough. An update notes that an Anthropic
+    employee responded on HN and that Anthropic added attribution to its blog post.
+  why: >-
+    Engineers evaluating Scion should read it as a rebuild of Meta's Mononoke and Bonsai design,
+    which has a long production history.
+  comments: >-
+    The HN thread includes the Anthropic response and debate over where inspiration ends and
+    copying begins in VCS design.
+  sources:
+  - label: primary
+    url: https://sunshowers.io/posts/anthropic-mononoke-2/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50106738
+- title: >-
     Ubuntu 26.10 ships with Linux 7.3, GNOME 51 and a completed switch to Rust coreutils
   section: Linux and kernel
   category: Linux/Kernel
@@ -119,3 +195,63 @@ stories:
   sources:
   - label: report
     url: https://www.phoronix.com/news/Fedora-45-First-No-Go
+- title: Linux kernel maintainers deprecate the Assisted-by tag for AI-assisted patches
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Kernel maintainers agreed to deprecate the Assisted-by tag, and Linus Torvalds rejected
+    rules on which tools contributors may use.
+  summary: >-
+    Sasha Levin told the kernel mailing list that the Maintainers Summit reached consensus
+    to deprecate the Assisted-by tag and remove the documentation that required it. The tag
+    had been in the documentation since January 2026. Torvalds replied that he expects contributors
+    to understand their code regardless of the tools they use, while Laurent Pinchart argued
+    for keeping some disclosure mechanism.
+  why: >-
+    Kernel patch submitters no longer need to declare AI tool use, but remain accountable
+    for understanding what they submit.
+  comments: >-
+    The Reddit thread centers on the Torvalds quote. It adds no new facts beyond the article.
+  sources:
+  - label: primary
+    url: https://www.theregister.com/ai-and-ml/2026/10/14/linux-kernel-devs-drop-obligatory-confession-of-ai-tool-usage/5303140
+  - label: discussion
+    url: https://www.reddit.com/r/selfhosted/comments/1x73idj/linus_torvalds_i_dont_understand_this_whole/
+- title: Apple moves Developer ID certificates to a G2 sub-CA with one-year validity
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    Apple now issues Developer ID certificates from a G2 sub-CA with one-year validity, and
+    some signed pkg installers stop working on 2027-02-01.
+  summary: >-
+    Apple issues new Developer ID Application and Developer ID Installer certificates from
+    its G2 sub-CA, valid for one year instead of five. Apple warns that from 2027-02-01, pkg
+    files signed with an affected certificate will no longer install and must be re-signed
+    with a new certificate. Notarized apps with trusted timestamps should keep running after
+    their certificate expires.
+  why: >-
+    macOS developers who ship signed installer packages need to re-sign them before 2027-02-01
+    and plan for yearly certificate rotation in CI.
+  followup: 2027-02-01, when pkg files signed with affected certificates stop installing.
+  sources:
+  - label: primary
+    url: https://eclecticlight.co/2026/10/16/changing-developer-certificates-might-affect-installers-next-year/
+- title: >-
+    Meta handled record World Cup traffic with capacity buffers and no deployment freeze
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Meta says WhatsApp peaked above 30 million messages per second during the World Cup final
+    while teams kept deploying without a code freeze.
+  summary: >-
+    WhatsApp passed 30 million messages per second during the 2026-07-19 final, and more than
+    100 services were load-tested and resized beforehand. Because every region peaked at once,
+    WhatsApp forecast each region's peak separately instead of shifting load between regions.
+    Instagram relied on pre-provisioned buffers, country-level shedding of background load,
+    and early warning signals, and teams skipped the usual change freeze.
+  why: >-
+    The post shows when cross-region load shifting fails, with synchronized global peaks,
+    and what to rely on instead.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/10/15/production-engineering/2026-world-cup-record-traffic-reliability-at-scale/
