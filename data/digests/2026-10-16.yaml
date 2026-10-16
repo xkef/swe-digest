@@ -1,5 +1,5 @@
 date: '2026-10-16'
-updated: 2026-10-16T06:47Z
+updated: 2026-10-16T10:01Z
 stories:
 - title: CGPM votes to stop leap seconds, making UTC continuous from 2027-05-20
   section: Top stories
@@ -67,6 +67,26 @@ stories:
   - label: primary
     url: https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/
 - title: >-
+    DeepMind uses Antigravity agent with ProtNLM to find antimicrobial peptide candidate
+  section: AI
+  category: AI
+  blurb: >-
+    DeepMind shows biologists using the Antigravity agent with ProtNLM and AlphaFold DB to
+    find an antimicrobial peptide lead now in wet-lab tests.
+  summary: >-
+    Google DeepMind describes a session where a researcher steers the Antigravity agent through
+    UniProt entries annotated by ProtNLM, BLAST against Swiss-Prot, AlphaFold DB structure
+    comparison, and genomic neighborhood analysis. It surfaced a 97-residue Lactococcin 972
+    family bacteriocin in Streptococcus pseudopneumoniae. Google also added a Biomolecular
+    Structure Viewer to Antigravity, and the candidate is in wet-lab validation.
+  why: >-
+    It is a concrete pattern for agent-driven bioinformatics triage that chains public protein
+    databases and structure tools, with the human choosing the evidence to collect.
+  followup: Wet-lab validation results for the candidate peptides.
+  sources:
+  - label: primary
+    url: https://deepmind.google/blog/accelerating-antimicrobial-discovery/
+- title: >-
     GNOME developer uses Claude Code to reverse engineer a scanner driver and releases hw-harness
   section: Agentic coding
   category: Agentic coding
@@ -92,6 +112,26 @@ stories:
     url: https://news.ycombinator.com/item?id=50104299
   - label: discussion
     url: https://www.phoronix.com/news/AI-Reverse-Engineer-Linux-HW
+- title: >-
+    Dynata cuts feature development from three or four sprints to about one with AI-DLC in
+    Kiro
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Dynata cut feature development from three or four sprints to about one by running AWS's
+    AI-DLC method in Kiro with human approval at each phase.
+  summary: >-
+    Dynata moved from Amazon Q Developer to Kiro and ran a three-day workshop with product,
+    tech leads, and developers. Day one produced requirements from Jira, Confluence, and design
+    documents, day two produced design and a task list, and day three produced code from approved
+    generation plans, guided by steering files. Some teams ran the same method in Cursor with
+    Claude.
+  why: >-
+    It shows a spec-first agent workflow where review moves to the requirements and design
+    stages, though the source is an AWS customer post with no revert or defect data.
+  sources:
+  - label: primary
+    url: https://aws.amazon.com/blogs/architecture/how-dynata-scaled-ai-across-the-development-lifecycle-with-ai-dlc-and-kiro-ide/
 - title: >-
     Goodfire essay argues neural networks are mostly monosemantic and superposition was a
     misreading
@@ -236,6 +276,44 @@ stories:
   sources:
   - label: primary
     url: https://eclecticlight.co/2026/10/16/changing-developer-certificates-might-affect-installers-next-year/
+- title: RPKI-valid routes reach 70.3% of routed prefixes, up from 54% a year earlier
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    IPinfo measures 70.3% of routed prefixes as RPKI-valid in September 2026, up from 54%
+    a year earlier, with China driving most of the gain.
+  summary: >-
+    IPinfo's analysis of RIPE RIS and RouteViews data from 2026-09-28 finds 70.3% of routed
+    prefixes RPKI-valid, and invalid routes are seen by a median of two vantage points against
+    about 596 for valid ones. It also finds 16.2% of covered IPv4 routes have a ROA looser
+    than the announced route, the gap used in the 2026-08-28 Hetzner /24 hijack. Networks
+    publishing ASPA records grew from 131 to 3,272.
+  why: >-
+    Operators should leave ROA maxLength unset, as RFC 9319 advises, and monitor that their
+    ROAs still exist, because origin validation alone did not stop the Hetzner hijack.
+  sources:
+  - label: primary
+    url: https://ipinfo.io/blog/rpki-protects-70-internet-routes
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50112330
+- title: Neon launches Realtime public beta with live SQL queries running inside Postgres
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Neon Realtime enters public beta and keeps any deterministic SQL query, joins and aggregates
+    included, live as Postgres data changes.
+  summary: >-
+    Neon Realtime, built by the former Electric sync engine team, lets clients subscribe to
+    read-only deterministic SQL queries through a TypeScript SDK with Drizzle and Kysely adapters
+    and a React useLiveQuery hook. Incremental work runs on a replica, subscriptions do not
+    hold database connections, and it is enabled per branch. The beta has no row-level security
+    yet, is free apart from compute and egress, and runs in four regions.
+  why: >-
+    Teams on Neon can replace polling or a separate realtime service with server-sealed live
+    queries, but should wait for row-level security before exposing sensitive data.
+  sources:
+  - label: primary
+    url: https://neon.com/blog/neon-now-has-realtime
 - title: >-
     Meta handled record World Cup traffic with capacity buffers and no deployment freeze
   section: Engineering posts
