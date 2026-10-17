@@ -1,0 +1,229 @@
+date: '2026-10-17'
+updated: 2026-10-17T05:49Z
+stories:
+- title: >-
+    NIST elliptic curve seeds traced to drand48 seeded with 1997-98 timestamps, bounty claimed
+  section: Top stories
+  category: Security
+  blurb: >-
+    Anthropic researchers showed the NIST P-curve seeds came from drand48 seeded with 1997-98
+    Unix timestamps, ruling out a hidden backdoor.
+  summary: >-
+    An Anthropic team claimed Filippo Valsorda's NIST curve seeds bounty on 2026-10-15 by
+    showing that the seeds for P-192, P-224, P-256, P-384 and P-521 are lrand48 output seeded
+    with Unix timestamps from May 1997 to April 1998. Valsorda reimplemented the algorithm
+    in Go and confirmed the claim, and says the result leaves barely 30 bits of freedom, which
+    rules out the Bernstein and Lange weak-curve technique. The $36,864 prize goes to ISRG,
+    and the base points of P-224 through P-521 and the B-163 seed remain unexplained.
+  why: >-
+    Debate over whether the NIST P-curves were backdoored is now settled, so there is no remaining
+    cryptographic reason to swap P-256 for Curve25519.
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/research/ecdsa-curve-origins
+  - label: primary
+    url: https://words.filippo.io/seeds-solved/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50122800
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50122920
+- title: >-
+    Reflection releases Beam, a 501B-parameter open-weight coding model under Apache 2.0
+  section: Top stories
+  category: AI
+  blurb: >-
+    Reflection released Beam, a 501B-parameter mixture-of-experts model with 23B active parameters,
+    under Apache 2.0 with FP8 and NVFP4 builds.
+  summary: >-
+    Reflection released Beam 1.0 on 2026-10-16 as open weights under Apache 2.0, with BF16,
+    FP8 and NVFP4 checkpoints, about 23B active parameters per token and a context window
+    of roughly 1M tokens. Google Cloud published day-0 serving recipes for llm-d with vLLM
+    and NVIDIA Dynamo with SGLang, and reports up to 5x throughput from KV-cache-aware routing,
+    prefill and decode disaggregation and KV offload. Google says those figures come from
+    customer benchmarking.
+  why: >-
+    Teams running self-hosted coding agents get a permissively licensed frontier-size model,
+    with public Kubernetes recipes for multi-turn agent serving.
+  sources:
+  - label: primary
+    url: https://huggingface.co/reflection/Beam-1.0-501B-A23B
+  - label: primary
+    url: https://cloud.google.com/blog/topics/ai-infrastructure/day-0-support-with-5x-perf-for-reflection-beam-on-google-cloud/
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1x7g4k3/reflectionbeam10501ba23b_hugging_face/
+- title: >-
+    BeyondTrust patches Remote Support auth bypass CVE-2026-102764, exploited since August
+  section: Security
+  category: Security
+  blurb: >-
+    A China-nexus group has exploited an auth bypass in BeyondTrust Remote Support since late
+    August, and self-hosted appliances need a manual patch.
+  summary: >-
+    CVE-2026-102764 is an authentication bypass in BeyondTrust Remote Support 26.2.3 and earlier
+    that lets unauthenticated remote attackers perform file operations. BeyondTrust patched
+    SaaS instances on 2026-10-08 and also patched Privileged Remote Access, which shares the
+    code. Mandiant attributes the attacks to Armory Castle (formerly UNC5221), which gained
+    root, deployed a web shell and a tunneler, and wiped logs.
+  why: >-
+    Mandiant says any self-hosted appliance reachable from the internet on a vulnerable version
+    should be treated as compromised and reviewed, not only patched.
+  followup: >-
+    Watch for a CISA KEV listing and for wider opportunistic exploitation after disclosure.
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/beyondtrust-patches-zero-day-exploited-in-attacks-since-august/
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1x7gh7n/beyondtrust_patches_zeroday_exploited_in_attacks/
+- title: >-
+    Home Assistant explains default Have I Been Pwned check on add-on passwords and how to
+    disable it
+  section: Security
+  category: Security
+  blurb: >-
+    Home Assistant Supervisor sends SHA-1 prefixes of add-on passwords to Have I Been Pwned
+    by default, and an opt-out command now exists.
+  summary: >-
+    A user objected that Home Assistant 2026.10.1 checked their secrets against Have I Been
+    Pwned without opt-in. Maintainer frenck replied that the Supervisor check is years old
+    and hashes app options marked as passwords locally, sending only the first 5 characters
+    of the SHA-1 hash. It can be disabled with ha security options --pwned=false, and the
+    docs will be updated.
+  why: >-
+    Home Assistant operators who object to the outbound k-anonymity lookup now have a documented
+    switch to turn it off.
+  comments: >-
+    The thread was locked as too heated after maintainers first closed it as won't fix and
+    then apologized.
+  sources:
+  - label: primary
+    url: https://github.com/home-assistant/home-assistant.io/issues/49314
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50124251
+- title: >-
+    Claude designs quantum circuits that beat published resource counts on eight primitives
+  section: ML research
+  category: ML research
+  blurb: >-
+    A Claude model working in a closed evaluator loop found quantum circuits for elliptic-curve
+    point addition with 17x fewer gates than prior work.
+  summary: >-
+    Anthropic and Harvard collaborators gave Claude Mythos 5 plain-language specifications
+    for eight quantum circuit primitives and an automated evaluator that scored qubits times
+    gates. Over 53 hours with minimal human input, the model produced a reversible divsteps
+    modular inversion with no stored branch history and formalized a key claim in Lean. One
+    resulting point addition circuit uses 12% more qubits but 17x fewer gates than the smallest
+    previous design.
+  why: >-
+    Cheaper elliptic-curve point addition lowers the estimated quantum cost of breaking ECC,
+    which strengthens the case for post-quantum migration plans.
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/research/designing-efficient-quantum-circuits
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50121939
+- title: jjui 0.10.12 adds live theme reload and fixes bookmark quoting for git push
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    The jjui terminal UI for Jujutsu now reloads themes on SIGUSR1, quotes bookmark names
+    correctly for git push, and adds conditional bindings.
+  summary: >-
+    jjui 0.10.12 is mostly a bugfix release. Sending SIGUSR1 reloads the active theme, and
+    actions can now carry a when condition based on app state. Bookmark names containing characters
+    such as # are now quoted correctly for git push and fetch, and several bookmark pane and
+    view layering bugs are fixed.
+  why: >-
+    jj users pushing bookmarks with special characters through jjui should upgrade to avoid
+    failed git push and fetch calls.
+  sources:
+  - label: primary
+    url: https://github.com/idursun/jjui/releases/tag/v0.10.12
+- title: Linux 7.3 is due 2026-10-18 with I/O and Btrfs performance gains
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Linux 7.3 is due on 2026-10-18 with I/O and Btrfs performance gains, early Apple M3 Pro
+    and Max bring-up, and new Valve-written drivers.
+  summary: >-
+    Linux 7.3 is slated for release on Sunday 2026-10-18 unless late issues appear. It brings
+    I/O performance improvements that carry over to databases, Btrfs speedups, AMD Zen 6 preparation
+    and early Apple M3 Pro, Max and Ultra bring-up. Valve contributed AMD GCN modifier support,
+    low-vRAM memory management and 2026 Steam Controller support.
+  why: >-
+    Teams running I/O-heavy or Btrfs workloads can plan kernel testing around the 7.3 release.
+  followup: Release expected 2026-10-18, which opens the 7.4 merge window.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Linux-7.3-Best-Features
+- title: Darrick Wong steps back from Linux and drops his iomap reviewer role
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Darrick Wong, the former XFS maintainer, removed himself as an iomap reviewer, ending
+    his last formal kernel role after 23 years on Linux.
+  summary: >-
+    A commit merged for Linux 7.3 removes Darrick Wong as a reviewer for the iomap filesystem
+    code. Wong wrote that after 14 years at Oracle and 23 years working on Linux he has decided
+    to step back for a while. He stepped down as XFS maintainer in 2023.
+  why: >-
+    iomap, which XFS, ext4 and other filesystems depend on, loses a long-time reviewer, which
+    thins review capacity for filesystem changes.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Darrick-Wong-Step-Back-23-Years
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1x7kesg/darrick_wong_removes_himself_as_an_iomap/
+- title: >-
+    Apple updates App Review Guidelines with rules on hidden features and creative assets
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    Apple revised the App Review Guidelines with a new rule on hidden or dormant features,
+    a creative assets rule, and changed external link terms.
+  summary: >-
+    On 2026-10-16 Apple added guideline 2.5.19 on hidden, dormant or undocumented features,
+    which was formerly covered by 2.3.1, and a new guideline 2.3.14 on creative assets. Guideline
+    3.1.1(a) folds the Music Streaming Services entitlement into the StoreKit External Purchase
+    Link entitlement. Guideline 1.2 now names Developer Code of Conduct consequences for missing
+    safeguards.
+  why: >-
+    Apps that ship feature flags or remotely enabled code paths should check them against
+    the new 2.5.19 before their next submission.
+  sources:
+  - label: primary
+    url: https://developer.apple.com/news/?id=92th7e5i
+- title: >-
+    Grafana Tempo 3.0.4 ships Go and gRPC security updates and a live-store panic fix
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Grafana Tempo 3.0.4 rebuilds on Go 1.26.9 and patched gRPC, x/net, and thrift, and fixes
+    a live-store panic in trace lookups by ID.
+  summary: >-
+    Tempo 3.0.4 updates Go to 1.26.9, grpc-go to 1.83.2, apache/thrift to 0.24.0 and several
+    golang.org/x modules to address listed CVEs. It fixes a slice-bounds panic in live-store
+    FindTraceByID caused by two appends sharing a backing array. It also fixes a rare cache
+    collision between instant and range metrics queries.
+  why: >-
+    Tempo operators should upgrade to pick up the dependency CVE fixes and stop the live-store
+    panic under concurrent span ingestion.
+  sources:
+  - label: primary
+    url: https://github.com/grafana/tempo/releases/tag/v3.0.4
+- title: Cloudflare starts scoring Verified bots on robots.txt and HTTP 429 compliance
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Cloudflare now scores Verified bots on whether they honor robots.txt and slow down after
+    HTTP 429 responses, and plans to publish the scores.
+  summary: >-
+    Cloudflare introduced a system that continuously evaluates whether Verified bots follow
+    robots.txt and reduce request rates after HTTP 429 responses, producing an explainable
+    trust band. Cloudflare is using it internally now and plans to publish scores on Radar.
+    It also plans to let customers choose the trust threshold for handling Verified bot traffic.
+  why: >-
+    Crawler operators behind Cloudflare sites now need to honor 429 backoff and robots.txt
+    consistently to keep verified status.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/verified-bots-accountability/
