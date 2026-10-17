@@ -1,5 +1,5 @@
 date: '2026-10-17'
-updated: 2026-10-17T05:49Z
+updated: 2026-10-17T09:34Z
 stories:
 - title: >-
     NIST elliptic curve seeds traced to drand48 seeded with 1997-98 timestamps, bounty claimed
@@ -99,6 +99,69 @@ stories:
     url: https://github.com/home-assistant/home-assistant.io/issues/49314
   - label: discussion
     url: https://news.ycombinator.com/item?id=50124251
+- title: >-
+    Collabora CODE server app flaw CVE-2026-110447 exploited to plant webshells on Nextcloud
+    servers
+  section: Security
+  category: Security
+  blurb: >-
+    Attackers have used a command injection bug in Nextcloud's built-in Collabora CODE app
+    since 2026-09-10, weeks before a CVE was published.
+  summary: >-
+    CVE-2026-110447 affects the richdocumentscode app before 26.4.303. An unauthenticated
+    request to proxy.php triggers OS command injection when the bundled CODE server is stopped.
+    Administrators reported PHP webshells used to search for password databases and crypto
+    wallets. The fix shipped on 2026-09-11, but the advisory and CVE only appeared on 2026-10-14.
+  why: >-
+    Nextcloud admins running the built-in CODE app must upgrade to 26.4.303 or remove the
+    app, because disabling it does not close the hole, and should check for webshells dating
+    back to September.
+  followup: >-
+    Watch for Nextcloud's count of affected systems and confirmation of the ransomware reports.
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/hackers-exploit-collabora-rce-flaw-to-backdoor-nextcloud-servers/
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1x7lve5/hackers_exploit_collabora_rce_flaw_to_backdoor/
+- title: >-
+    Magento and Adobe Commerce BlockStrap flaw CVE-2026-103849 allows PHP code execution
+  section: Security
+  category: Security
+  blurb: >-
+    A max-severity email template injection bug in Magento through 2.4.9 lets attackers run
+    PHP code. Sansec expects mass exploitation soon.
+  summary: >-
+    Adobe's 2026-10-13 bulletin describes a template engine injection in Adobe Commerce and
+    Magento Open Source through 2.4.9 and Commerce B2B through 1.5.3. Sansec says a smuggled
+    block directive gets processed a second time at root level, and it found four attack paths
+    in under 24 hours. No attacks have been seen yet.
+  why: >-
+    Store operators should apply the 2026-oct release or Adobe's isolated patch and keep the
+    September VULN-39341 StyleSmuggler hotfix, because a plain Composer install is not enough.
+  followup: Sansec reports of the first mass attack wave.
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/critical-blockstrap-flaw-lets-hackers-run-code-on-magento-servers/
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1x7qxuk/critical_blockstrap_flaw_lets_hackers_run_code_on/
+- title: Claude Code team describes continuous AI review before human code review
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Anthropic's Claude Code team says most changes are reviewed and fixed by Claude at least
+    once before a human is asked to look.
+  summary: >-
+    In a post quoted by Simon Willison, Addy Osmani, Morgan Westlee Lunt, and Qing Wang write
+    that review now runs continuously while code is written, not as a gate at the PR. They
+    call "did a human read the code?" an imprecise proxy for choosing the right automated
+    or human check for each risk.
+  why: >-
+    This is a first-party account of a team moving routine review to an agent and keeping
+    human attention for higher-level scrutiny, a model other teams can compare against their
+    own review gates.
+  sources:
+  - label: primary
+    url: https://simonwillison.net/2026/Oct/16/code-review/
 - title: >-
     Claude designs quantum circuits that beat published resource counts on eight primitives
   section: ML research
