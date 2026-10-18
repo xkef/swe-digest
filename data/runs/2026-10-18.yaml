@@ -424,3 +424,47 @@ runs:
   - step: save
     status: ok
     seconds: 0.0
+- mode: improve
+  started: 2026-10-18T12:02Z
+  finished: 2026-10-18T12:04Z
+  usage:
+    input_tokens: 4
+    cache_read_tokens: 38750
+    cache_write_tokens: 39330
+    output_tokens: 9412
+    turns: 3
+    seconds: 78
+    cost_usd: 0.5144
+  tools:
+    mcp__digest__fetch_url: 1
+    StructuredOutput: 1
+  fetched:
+  - url: https://importai.substack.com/feed
+    ok: false
+  changed:
+  - watchlist
+  refused: []
+  feedback_used: []
+  summary: |-
+    Remove the Import AI feed (https://importai.substack.com/feed). Every daily run from 2026-10-12 to 2026-10-18 listed it as degraded, except the two 2026-10-12 runs whose notes name only fetch_reddit. Run notes from 2026-10-13 and 2026-10-17 record HTTP 403. A fetch on 2026-10-18 also returned HTTP 403 Forbidden.
+
+    Everything else stays the same. Most YouTube feeds were degraded in many runs, and arxiv in a few. Each of them loaded in at least one run this week, so this is not evidence for removal. The Netflix TechBlog and Reddit 403 errors hit article and thread pages, not the feed or subreddit collection. Most of the missed Hacker News stories are off-topic. Two were on topic: GLM-Legal and the Scion and Mononoke post. The existing GLM and Anthropic queries already caught both, and the runs left them out on purpose. There was no owner feedback, so the profile is unchanged.
+  steps:
+  - step: week
+    status: ok
+    seconds: 0.0
+  - step: feedback
+    status: ok
+    seconds: 0.4
+  - step: misses
+    status: ok
+    seconds: 0.9
+  - step: brief
+    status: ok
+    seconds: 0.3
+  - step: ask
+    status: ok
+    seconds: 79.0
+  - step: propose
+    status: ok
+    seconds: 0.0
