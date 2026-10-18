@@ -1,5 +1,5 @@
 date: '2026-10-18'
-updated: 2026-10-18T06:12Z
+updated: 2026-10-18T09:46Z
 stories:
 - title: >-
     Drupal fixes critical RCE flaws in the core Field UI module and the Entity List module
@@ -104,3 +104,25 @@ stories:
     url: https://github.com/vercel-labs/tsc-ts
   - label: discussion
     url: https://news.ycombinator.com/item?id=50132911
+- title: JEP 401 Value Objects is integrated into JDK 28 as a preview feature
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Project Valhalla value objects land in JDK 28 as a preview, and Integer, LocalDate, and
+    Optional lose object identity when preview is on.
+  summary: >-
+    JEP 401 is marked Integrated for release 28. It adds a value modifier for classes and
+    records that are immutable and have no identity, and == compares their field values. With
+    --enable-preview, 30 platform classes, including the boxed primitives, Optional, and several
+    java.time types, become value classes, and synchronizing on them throws IdentityException.
+  why: >-
+    Code that synchronizes on boxed primitives or java.time objects, or relies on == identity
+    for them, will break under preview, so test it against JDK 28 early-access builds now.
+  followup: JDK 28 rampdown schedule and early-access builds with value class support.
+  sources:
+  - label: primary
+    url: https://openjdk.org/jeps/401
+  - label: primary
+    url: https://openjdk.org/projects/jdk/28/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50135379
