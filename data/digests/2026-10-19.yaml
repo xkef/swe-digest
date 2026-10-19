@@ -1,5 +1,5 @@
 date: '2026-10-19'
-updated: 2026-10-19T06:26Z
+updated: 2026-10-19T11:03Z
 lede: >-
   The Linux 7.3 release and two agent-assisted security and performance results lead the day,
   and the vLLM post shows reviewers falling behind agent-written code.
@@ -104,3 +104,26 @@ stories:
     url: https://arxiv.org/abs/2610.18861
   - label: discussion
     url: https://news.ycombinator.com/item?id=50145337
+- title: >-
+    DBOS made Postgres DELETE scale for workflow retention by dropping cascading foreign keys
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Dropping cascading foreign keys and vacuuming around batch deletes made Postgres retention
+    in a workflow engine an order of magnitude faster.
+  summary: >-
+    Cascading deletes from workflow_status to step_outputs touched scattered pages and churned
+    the cache, so DBOS now deletes each table separately in creation order, with an anti-join
+    that skips data from workflows that still exist. A created_at index lookup took 20 minutes
+    when millions of dead tuples sat at the front of the index before autovacuum caught up.
+    A manual VACUUM before and after each retention pass fixed it. DBOS rejected dropping
+    partitions because long-running workflows would block them.
+  why: >-
+    Teams running queue or workflow tables on Postgres can apply the same fixes: avoid ON
+    DELETE CASCADE on hot paths, delete in physical order, and vacuum around oldest-first
+    batch deletes.
+  sources:
+  - label: primary
+    url: https://www.dbos.dev/blog/scaling-deletions-in-postgres
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50108297
