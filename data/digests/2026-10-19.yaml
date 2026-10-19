@@ -1,5 +1,5 @@
 date: '2026-10-19'
-updated: 2026-10-19T11:03Z
+updated: 2026-10-19T16:35Z
 lede: >-
   The Linux 7.3 release and two agent-assisted security and performance results lead the day,
   and the vLLM post shows reviewers falling behind agent-written code.
@@ -57,6 +57,27 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50122058
 - title: >-
+    GitHub Actions, Pages and webhooks degraded on 2026-10-19, recovering after mitigation
+  section: Outages
+  category: Outage
+  blurb: >-
+    GitHub Actions workflow processing, Pages builds and webhook delivery slowed from 15:49
+    UTC, with delays continuing after a fix went in.
+  summary: >-
+    GitHub began investigating degraded performance for Actions and Pages at 15:49 UTC on
+    2026-10-19, and webhooks were added at 15:50 UTC. At 16:30 UTC GitHub reported recovery
+    after mitigation but said Actions status updates, Pages deployments, and check and workflow
+    webhook events could still be delayed.
+  why: >-
+    CI pipelines, deploy gates and bots that depend on Actions check events or webhooks may
+    have stalled or missed status updates and might need re-runs.
+  followup: Incident resolution and any GitHub availability report covering the cause.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/8tzbpcnl75jp
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50153934
+- title: >-
     vLLM ships agent-built CuTe DSL decode path for Kimi K3 and proposes a fast-track review
     model
   section: Agentic coding
@@ -104,6 +125,29 @@ stories:
     url: https://arxiv.org/abs/2610.18861
   - label: discussion
     url: https://news.ycombinator.com/item?id=50145337
+- title: >-
+    Let's Encrypt adds two remote validation perspectives, with staging on 2026-10-27 and
+    production on 2026-11-10
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    ACME domain validation will run from one primary and six remote vantage points, up from
+    four, to meet a CA/B Forum rule taking effect 2026-12-15.
+  summary: >-
+    Let's Encrypt will make seven validation requests per challenge, one from the primary
+    datacenter and six from remote perspectives, and a quorum must see the correct response.
+    The change follows Baseline Requirements 3.2.2.9, which requires at least five remote
+    perspectives from 2026-12-15. Staging starts 2026-10-27 and production is planned for
+    2026-11-10.
+  why: >-
+    Hosts that geoblock or firewall HTTP-01 and DNS validation traffic may see new renewal
+    failures, so test against staging after 2026-10-27.
+  followup: Staging rollout on 2026-10-27 and production rollout on 2026-11-10.
+  sources:
+  - label: primary
+    url: https://community.letsencrypt.org/t/lets-encrypt-is-adding-two-additional-remote-perspectives-for-domain-validation/252166
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50150809
 - title: >-
     DBOS made Postgres DELETE scale for workflow retention by dropping cascading foreign keys
   section: Engineering posts
