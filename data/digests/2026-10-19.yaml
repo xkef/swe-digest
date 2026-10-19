@@ -1,5 +1,5 @@
 date: '2026-10-19'
-updated: 2026-10-19T19:25Z
+updated: 2026-10-19T21:45Z
 lede: >-
   The Linux 7.3 release and two agent-assisted security and performance results lead the day,
   and the vLLM post shows reviewers falling behind agent-written code.
@@ -30,6 +30,36 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/linux/comments/1x9hxh3/the_73_kernel_has_been_released/
 - title: >-
+    Plex2Shell RCE chain in Plex Media Server is widely exploited after a public PoC on 2026-10-16
+  section: Top stories
+  category: Security
+  blurb: >-
+    Four chained Plex Media Server CVEs give unauthenticated code execution, and attackers
+    are using them to install cryptominers and proxyware.
+  summary: >-
+    Plex confirmed on 2026-10-19 that CVE-2026-96652, CVE-2026-96654, CVE-2026-96655 and CVE-2026-96656
+    chain into unauthenticated remote code execution as the Plex Media Server process, fixed
+    in 1.43.3.10861. Plex says exploitation has been active and widespread since the proof
+    of concept went public on 2026-10-16, with compromised servers running cryptominers and
+    proxy software. A honeypot operator logged in-the-wild exploitation from three IPs starting
+    2026-10-17 and published hashes and pcaps.
+  why: >-
+    Any Plex server older than 1.43.3.10861 reachable on port 32400 should be updated now
+    and checked for unknown .so or .dll files in the Codecs folder.
+  followup: CISA KEV listing and NAS vendor package updates.
+  comments: >-
+    The honeypot write-up adds attacker IPs, payload hashes, and a proxy binary named myawesomeproxy
+    that Plex now lists as an indicator.
+  sources:
+  - label: primary
+    url: https://forums.plex.tv/t/important-security-update-for-plex-media-server-v1-43-2-and-earlier/942319
+  - label: discussion
+    url: https://www.boredhackerblog.info/2026/10/plex-vulnerabilities-being-exploited-in.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50152321
+  - label: discussion
+    url: https://github.com/code-zm/plex2shell/
+- title: >-
     Broadcom WPS parser bug gives unauthenticated RCE over WiFi on unpatched ISP routers,
     with no CVE
   section: Security
@@ -56,6 +86,30 @@ stories:
     url: https://quentinkaiser.be/security/2026/10/16/one-parser-two-bugs/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50122058
+- title: >-
+    NorForge finds 20+ exposed Cairn panels running autonomous AI agent intrusions against
+    web shops
+  section: Security
+  category: Security
+  blurb: >-
+    Open Cairn dashboards show criminals feeding AI agents target lists, with one Chinese-language
+    cluster running over 1,100 attack projects.
+  summary: >-
+    NorForge identified more than 20 publicly exposed Cairn panels it assesses as malicious.
+    Cluster AIA0001 ran over 1,100 projects across 14 panels against e-commerce sites in the
+    US, Japan and Australia, seeking unauthenticated RCE, with workers named claudecode_deepseek-v4.1-flash
+    and an estimated average cost near $5 per task. The Verge, citing Reuters, reports John
+    Deere, SharkNinja and Cummins among the victims.
+  why: >-
+    Agent-driven exploitation makes mass targeting of mid-size sites cheap, so unauthenticated
+    upload, deserialization and SQL injection bugs are found and used faster.
+  sources:
+  - label: primary
+    url: https://norforge.com/blog/inside_cairn
+  - label: discussion
+    url: https://www.theverge.com/ai-artificial-intelligence/1013643/ai-agents-hack-john-deere-shark-ninja-cummins
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50152302
 - title: >-
     GitHub Actions, Pages and webhooks degraded on 2026-10-19, recovering after mitigation
   section: Outages
@@ -128,6 +182,52 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/LocalLLaMA/comments/1x9uzv9/minimax_m31_flash_released_model_weights_oct_23/
 - title: >-
+    DHS orders federal civilian agencies to remove DeepSeek and third-party products built
+    on it
+  section: AI
+  category: AI
+  blurb: >-
+    A DHS exclusion order bars DeepSeek models and tools built on them from civilian federal
+    IT and purchasing, with a 60-day exception window.
+  summary: >-
+    Exclusion and Removal Order 2026-01, dated 2026-07-24 and filed for Federal Register public
+    inspection on 2026-10-19 as document 2026-21447, excludes DeepSeek and its affiliates
+    from procurement and requires removal of their products and of third-party products developed
+    using DeepSeek implementations. National security systems are excepted. Agencies can request
+    exceptions in writing within 60 days, reviewed by CISA.
+  why: >-
+    Vendors selling AI products to US civilian agencies now need to know whether DeepSeek
+    weights sit anywhere in their stack.
+  followup: Federal Register publication on 2026-10-20 under docket DHS-2026-0628.
+  sources:
+  - label: primary
+    url: https://public-inspection.federalregister.gov/2026-21447.pdf
+  - label: discussion
+    url: https://madrobot.blog/2026/10/19/us-bans-deepseek-federal-agencies-dhs-order-remove-third-party/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50154244
+- title: >-
+    Inception releases Mercury 3, a diffusion LLM claiming 1,068 tokens per second and a 1M-token
+    context
+  section: AI
+  category: AI
+  blurb: >-
+    Inception's largest text-diffusion model costs $0.20 and $0.70 per million tokens and
+    is available through OpenRouter, Baseten and Vercel.
+  summary: >-
+    Inception says Mercury 3 is more than 40x larger than Mercury 1, generates 1,068 tokens
+    per second on NVIDIA GPUs, and has a 1M-token context, up from 260K. It is OpenAI API
+    compatible and 50% off at launch. Inception claims parity with GPT-6 Luna and Claude Haiku
+    5.5 but the post gives no evaluation method.
+  why: >-
+    Latency-bound agent loops get a non-autoregressive model to test, though the quality claims
+    are vendor-only for now.
+  sources:
+  - label: primary
+    url: https://www.inceptionlabs.ai/blog/introducing-mercury-3
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50155245
+- title: >-
     vLLM ships agent-built CuTe DSL decode path for Kimi K3 and proposes a fast-track review
     model
   section: Agentic coding
@@ -196,6 +296,28 @@ stories:
   - label: primary
     url: https://engineering.fb.com/2026/10/19/ml-applications/thin-orchestrator-ai-agent-architecture/
 - title: >-
+    Google Research open-sources Harness2, which refines agent harnesses per task without
+    changing weights
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Harness2 edits prompts, tools, memory, skills and subagents around a fixed model and reports
+    up to 11.8-point gains on professional benchmarks.
+  summary: >-
+    Harness2 runs a Propose-Probe-Compose step that proposes harness edits, probes them on
+    the same task, and composes a refined harness from behavioral contrasts without ground-truth
+    feedback, while a persistent improvement harness carries lessons across tasks. It supports
+    OpenCode and Codex executors and is Apache-2.0. The README warns that executor network
+    access is unrestricted and Codex runs with its sandbox disabled.
+  why: >-
+    Harness tuning becomes an automated loop you can run, but its default setup executes agents
+    unsandboxed and needs isolation first.
+  sources:
+  - label: primary
+    url: https://github.com/google-research/harness2
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50151059
+- title: >-
     Hybrid Reasoning Agents switch between latent reasoning and text tool calls in one generation
   section: ML research
   category: Paper
@@ -261,6 +383,53 @@ stories:
     url: https://community.letsencrypt.org/t/lets-encrypt-is-adding-two-additional-remote-perspectives-for-domain-validation/252166
   - label: discussion
     url: https://news.ycombinator.com/item?id=50150809
+- title: >-
+    PostgreSQL 19 GA moves to 2026-11-19, with RC2 on 2026-11-12, after a cycle of late feature
+    reverts
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    PostgreSQL 19 RC1 shipped on 2026-10-15, and the project now targets RC2 on November 12
+    and general availability on November 19.
+  summary: >-
+    EDB's Tom Kincaid writes that the community plans RC2 for 2026-11-12 and GA for 2026-11-19
+    so fixes from the November maintenance release can be included. Reverted features include
+    SQL property graph queries, partition merge and split, and online checksum toggling, while
+    REPACK CONCURRENTLY, pg_plan_advice, and logical replication of sequences remain, and
+    JIT is off by default. Peter Eisentraut attributes the reverts partly to LLM-assisted
+    review surfacing long tails of edge-case defects and to senior developers spending April
+    to August on security fixes.
+  why: >-
+    Production upgrades should stay on 18 until mid-November, and testing should cover the
+    final ACCESS EXCLUSIVE lock in REPACK CONCURRENTLY and the JIT default change.
+  followup: RC2 on 2026-11-12 and GA on 2026-11-19.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9z1
+  - label: primary
+    url: https://peter.eisentraut.org/blog/2026/10/09/the-reverts-will-continue-until-morale-improves
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50156206
+- title: >-
+    Meta details Prometheus, its Ohio GPU supercluster, with 85% pretraining goodput and in-rack
+    spare GPUs
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Meta runs 64 of 72 GPUs per NVL72 rack and keeps eight as spares, so a GPU failure restarts
+    from checkpoint without waiting on repair.
+  summary: >-
+    Prometheus in New Albany, Ohio, spans hundreds of thousands of GB200 and GB300 NVL72 GPUs
+    and targets about 1 million. Meta reports over 85% goodput for Muse Wonder pretraining,
+    over 90% for RL, and mean time between interruptions raised from about 47K to over 54K
+    GPU hours after firmware fixes. A 32,768-GPU run needs 523 racks, about 13% above the
+    active footprint, with 11% coming from the 64-of-72 slice geometry.
+  why: >-
+    The spare-slice arithmetic is a concrete capacity-planning model for anyone sizing jobs
+    on 72-GPU failure domains.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/10/19/data-center-engineering/inside-prometheus-meta-gigawatt-scale-supercluster/
 - title: >-
     DBOS made Postgres DELETE scale for workflow retention by dropping cascading foreign keys
   section: Engineering posts
