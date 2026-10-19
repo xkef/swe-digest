@@ -1,5 +1,5 @@
 date: '2026-10-19'
-updated: 2026-10-19T16:35Z
+updated: 2026-10-19T19:25Z
 lede: >-
   The Linux 7.3 release and two agent-assisted security and performance results lead the day,
   and the vLLM post shows reviewers falling behind agent-written code.
@@ -78,6 +78,56 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50153934
 - title: >-
+    Mistral releases Timestral, a family of CPU-friendly time-series forecasting models from
+    5M to 209M parameters
+  section: AI
+  category: AI
+  blurb: >-
+    Mistral released four time-series forecasting models from 5M to 209M parameters that run
+    on CPU and take past and known-future covariates.
+  summary: >-
+    Timestral produces probabilistic multivariate forecasts over 21 quantiles with a 32,768-step
+    context and a modified MIT licence. Mistral says the 209M model ranks first among zero-shot
+    models on GIFT-Eval, TIME and fev-bench, and that an 8-thread CPU forecast takes 10 ms
+    with the 5M model and 140 ms with the 209M model. A GitHub repository is out and a technical
+    report will follow.
+  why: >-
+    Teams forecasting observability or capacity metrics get an open, CPU-only zero-shot option
+    to test against classical models.
+  followup: >-
+    Publication of the technical report and leaderboard confirmation of the submitted results.
+  sources:
+  - label: primary
+    url: https://mistral.ai/news/timestral/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50150434
+- title: >-
+    MiniMax launches M3.1 Flash for agent and coding work at $0.15 and $0.60 per million tokens
+  section: AI
+  category: AI
+  blurb: >-
+    MiniMax launched M3.1 Flash for agentic and coding work at $0.15 input and $0.60 output
+    per million tokens, with open weights promised later.
+  summary: >-
+    MiniMax released M3.1 Flash through its API, M Plan and MiniMax Code on 2026-10-19, priced
+    at $0.15 input, $0.60 output and $0.015 cached input per million tokens. The company reports
+    73.7% on DeepSWE v1.1 and 61.7 on OSWorld V2, output above 200 tokens per second, and
+    70% lower agentic task cost than its predecessor. Model weights will be released later.
+  why: >-
+    It is another low-cost model aimed at long agent sessions, and the open weights would
+    make it self-hostable.
+  followup: Weights release, reported by r/LocalLLaMA for 2026-10-23, and the license terms.
+  comments: >-
+    r/LocalLLaMA threads report the model as 428B total parameters with 23B active and a weights
+    date of 2026-10-23, which the MiniMax post does not state.
+  sources:
+  - label: primary
+    url: https://www.minimax.io/blog/minimax-m31f
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50154540
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1x9uzv9/minimax_m31_flash_released_model_weights_oct_23/
+- title: >-
     vLLM ships agent-built CuTe DSL decode path for Kimi K3 and proposes a fast-track review
     model
   section: Agentic coding
@@ -104,6 +154,48 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50140784
 - title: >-
+    Cloudflare cut its AI code reviewer's cost per review 68% with prompt cache fixes and
+    fewer LLM calls
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Cloudflare cut its AI code reviewer from $2.43 to $0.77 per review by fixing prompt cache
+    prefixes and dropping wasted LLM calls.
+  summary: >-
+    Cloudflare's internal AI code reviewer rose from $1.19 per review in April to about $2.46
+    by late August, mostly after moving all reviewers to Anthropic models. Splitting the system
+    prompt so a shared prefix gets its own cache breakpoint, removing unusable tools, parallel
+    file reads, skipping reviewers on re-reviews and stopping cancelled GitLab jobs brought
+    the average to $0.77 and the median review time from 4m 09s to 1m 32s. The reviewer now
+    runs on OpenCode v2 after a shadow comparison agreed with v1 on 98% of approval decisions.
+  why: >-
+    It gives concrete, measured levers for teams whose agent costs are driven by cache writes
+    and reads rather than output tokens.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/obsessive-inference-optimization/
+- title: >-
+    Meta makes data pipeline agents more reliable with a thin deterministic orchestrator and
+    14 subagents
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Meta routes 20+ data pipeline workflows to 14 specialist subagents via a deterministic
+    1,300-line orchestrator that does no domain work.
+  summary: >-
+    Meta replaced a single all-knowing agent for data column onboarding, which hallucinated
+    as context grew, with a router that follows a fixed seven-step protocol and delegates
+    only one step to an LLM subagent with isolated domain knowledge. New use cases are added
+    as workflow templates that resequence existing subagents. Column configuration prep dropped
+    from about a day to under an hour, and about two-thirds of changes land without significant
+    human edits.
+  why: >-
+    It is a first-party account of separating deterministic routing from LLM reasoning, with
+    outcome numbers, for multi-repo agent workflows.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/10/19/ml-applications/thin-orchestrator-ai-agent-architecture/
+- title: >-
     Hybrid Reasoning Agents switch between latent reasoning and text tool calls in one generation
   section: ML research
   category: Paper
@@ -125,6 +217,27 @@ stories:
     url: https://arxiv.org/abs/2610.18861
   - label: discussion
     url: https://news.ycombinator.com/item?id=50145337
+- title: >-
+    Meta engineer reworks Torvalds' AI-assisted RFC for page cache reads without folio references
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    A Meta engineer reworked Linus Torvalds' Claude Code RFC so filemap_read() copies from
+    the page cache without taking folio references.
+  summary: >-
+    Kiryl Shutsemau posted a patch series based on Torvalds' RFC so filemap_read() and shmem
+    copy from the page cache without a folio reference, freeing such folios only after an
+    RCU grace period. The goal is to stop refcount bouncing when many CPUs do small reads
+    of one file. Phoronix reports large gains in 64-thread tests on EXT4, tmpfs, XFS and a
+    raw block device, and the series is still an RFC with open design questions.
+  why: >-
+    Workloads with many threads reading the same hot file could see large throughput gains
+    if this lands in mainline.
+  followup: >-
+    Review on the kernel mailing list and whether a non-RFC version targets a merge window.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Reading-Page-Cache-WO-Folio-Ref
 - title: >-
     Let's Encrypt adds two remote validation perspectives, with staging on 2026-10-27 and
     production on 2026-11-10
