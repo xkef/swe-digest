@@ -1,0 +1,106 @@
+date: '2026-10-19'
+updated: 2026-10-19T06:26Z
+lede: >-
+  The Linux 7.3 release and two agent-assisted security and performance results lead the day,
+  and the vLLM post shows reviewers falling behind agent-written code.
+stories:
+- title: Linux 7.3 released with a record 18,765 commits, opening the 7.4 merge window
+  section: Top stories
+  category: Linux/Kernel
+  blurb: >-
+    Torvalds shipped Linux 7.3 on schedule, adding fchroot(), completed sched_ext subschedulers,
+    and BPF global per-CPU data.
+  summary: >-
+    Linus Torvalds released Linux 7.3 on 2026-10-18 without an rc8 slip. LWN reports 18,765
+    non-merge commits from 3,021 developers, 807 of them first-time contributors. Changes
+    include binfmt_misc extensions, group-scheduling work for large systems, the failfs filesystem,
+    the fchroot() system call, global per-CPU data for BPF programs, completed sched_ext subschedulers,
+    VM working-set tracking, and ntfs3 alternate data streams.
+  why: >-
+    Distribution and fleet kernel planning can now target 7.3, and features aimed at 7.4 must
+    land in the merge window that opens 2026-10-19.
+  followup: >-
+    The 7.4 merge window opens 2026-10-19, and 7.4-rc1 is expected about two weeks later.
+    Torvalds says his merge schedule will be irregular while he is on vacation.
+  sources:
+  - label: primary
+    url: https://lwn.net/Articles/1101143/
+  - label: primary
+    url: https://github.com/torvalds/linux/releases/tag/v7.3
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1x9hxh3/the_73_kernel_has_been_released/
+- title: >-
+    Broadcom WPS parser bug gives unauthenticated RCE over WiFi on unpatched ISP routers,
+    with no CVE
+  section: Security
+  category: Security
+  blurb: >-
+    A WPS EAP reassembly overflow in Broadcom's 802.11 SDK lets attackers in WiFi range leak
+    memory and get root on cable routers.
+  summary: >-
+    Researcher Quentin Kaiser disclosed a WPS EAP reassembly overflow present in Broadcom's
+    SDK since at least 2010. It can be triggered over WiFi without the network key and gives
+    memory disclosure and code execution on eCos platforms (BCM3380, BCM3383, BCM33834) and
+    Linux platforms (BCM3390, BCM65xx, BCM68xx). Broadcom shipped an incomplete patch in 2018
+    and declined to assign a CVE. Kaiser demonstrated exploitation on gateways from Proximus,
+    VOO, and Orange Belgium, and reports none were patched as of 2026-10-15.
+  why: >-
+    Many cable gateways in homes and branch offices give a root shell to anyone in radio range,
+    and vendor CVE feeds will not flag it, so disabling WPS and fingerprinting devices is
+    the available mitigation.
+  followup: >-
+    Watch for ISP firmware updates, a CVE from another CNA, and the device list built from
+    the published fingerprinting script and YARA rule.
+  sources:
+  - label: primary
+    url: https://quentinkaiser.be/security/2026/10/16/one-parser-two-bugs/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50122058
+- title: >-
+    vLLM ships agent-built CuTe DSL decode path for Kimi K3 and proposes a fast-track review
+    model
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    NVIDIA and vLLM used coding agents to write fused GB300 decode kernels for Kimi K3 and
+    now bound their review cost with tests and isolation.
+  summary: >-
+    A vLLM post by NVIDIA's Benjamin Chislett describes an agent-assisted CuTe DSL decode
+    path for Kimi K3 on GB300. It cuts per-layer decode from 23 kernels and 130 microseconds
+    to 13 kernels and 69 microseconds, with 1.31x to 1.92x higher decode throughput depending
+    on batch size and tensor parallelism. The authors say agent-written kernels outpace line-by-line
+    review. They propose a fast-track RFC that keeps changes inside model code, bounds hardware
+    scope, requires correctness and long-context evals, and lets contributors run standard
+    evals on their own GPUs. Their audit found a compiler reordering of activation reads ahead
+    of a synchronization wait that simple functional checks missed.
+  why: >-
+    The post is a concrete case of replacing line-by-line human review of agent-generated
+    code with isolation, scoped support, and reproducible evidence, and it lists a failure
+    mode that review must still catch.
+  sources:
+  - label: primary
+    url: https://vllm.ai/blog/2026-10-16-kimi-k3-megakernel
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50140784
+- title: >-
+    Hybrid Reasoning Agents switch between latent reasoning and text tool calls in one generation
+  section: ML research
+  category: Paper
+  blurb: >-
+    A Stanford-led paper trains agents to reason in latent space and act through text, reporting
+    35 to 55 percent fewer tokens on 11 benchmarks.
+  summary: >-
+    HybridAgents uses a lightweight HybridLink module to move between latent and text modes
+    and keeps a continuous working memory across turns. Training uses HybridSFT followed by
+    HybridRL, which learns when to think latently and when to act through text. Across 3 model
+    scales and 11 benchmarks, the authors report a 10.4 percent performance gain, 35.5 to
+    54.7 percent fewer tokens, 1.8x to 2.6x faster inference, and inspectable latent thoughts.
+    Code and data are released.
+  why: >-
+    Latent reasoning that keeps tool access could cut agent inference cost, though inspecting
+    latent thoughts is a new problem for agent observability.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2610.18861
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50145337
