@@ -433,3 +433,80 @@ runs:
   - step: save
     status: ok
     seconds: 0.0
+- mode: daily
+  started: 2026-10-20T14:24Z
+  finished: 2026-10-20T14:25Z
+  candidates: 262
+  degraded:
+    Google Cloud Blog: 'https://cloudblog.withgoogle.com/rss/: HTTP Error 500: Internal Server
+      Error'
+    Import AI: 'https://importai.substack.com/feed: HTTP Error 403: Forbidden'
+  usage:
+    input_tokens: 6
+    cache_read_tokens: 128592
+    cache_write_tokens: 88175
+    output_tokens: 3792
+    turns: 11
+    seconds: 35
+    cost_usd: 0.8121
+  tools:
+    mcp__digest__fetch_url: 9
+    StructuredOutput: 1
+  fetched:
+  - url: https://www.theregister.com/virtualization/2026/10/19/linux-kvm-guest-host-escape-rated-critical-may-represent-a-new-way-to-attack-penguin-powered-networking/5303744
+    ok: true
+  - url: https://blog.cloudflare.com/typescript-rust-port/
+    ok: true
+  - url: https://status.cloud.google.com/incidents/Xs2XTHzAVC9YnafnPyzj
+    ok: true
+  - url: https://materialize.com/blog/parallelizing-mysql-snapshots/
+    ok: true
+  - url: https://netflixtechblog.com/ontology-driven-observability-building-an-end-to-end-knowledge-graph-at-netflix-scale-421392cf5adf
+    ok: false
+  - url: https://www.phoronix.com/news/Linux-Foundation-25p-AI-Slop
+    ok: true
+  - url: https://www.reddit.com/r/java/comments/1xam9dd/tomcact_breaking_change_regarding_locales_can/
+    ok: false
+  - url: https://www.githubstatus.com/
+    ok: true
+  - url: https://www.reuters.com/technology/us-banning-chinese-ai-deepseek-government-agency-it-systems-2026-10-19/
+    ok: false
+  added:
+  - >-
+    Cloudflare and VoidZero announce tsrs, an experimental Rust port of the TypeScript compiler
+  - >-
+    Materialize parallelizes MySQL snapshots with primary key prefix probing, cutting a 30-hour
+    load to 3 hours
+  dropped: []
+  rejected: []
+  inbox_used: []
+  notes: >-
+    The Netflix tech blog returned 403, so the ontology-driven observability post was skipped.
+    The Reuters DeepSeek DHS story returned 401 and the Reddit Tomcat locale thread returned
+    403, so neither was verified. The Eisentraut PostgreSQL reverts post uses plain http and
+    could not be fetched. The KVM PwnEscape story (CVE-2026-99999) is already tracked as f-0051,
+    so it went in as a follow-up note and not a new story. The Linux Foundation AI pull request
+    study was seen only through Phoronix and was skipped because the primary report was not
+    fetched.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 17.5
+  - step: load
+    status: ok
+    seconds: 0.0
+  - step: select
+    status: ok
+    seconds: 0.2
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 36.0
+  - step: merge
+    status: ok
+    seconds: 0.3
+  - step: save
+    status: ok
+    seconds: 0.0

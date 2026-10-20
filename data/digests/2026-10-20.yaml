@@ -1,5 +1,5 @@
 date: '2026-10-20'
-updated: 2026-10-20T10:16Z
+updated: 2026-10-20T14:25Z
 stories:
 - title: Go 1.27.3 and 1.26.10 distrust a set of CA intermediates under CVE-2026-111943
   section: Top stories
@@ -150,6 +150,29 @@ stories:
     url: https://github.com/deepseek-ai/DeepInfer
   - label: discussion
     url: https://news.ycombinator.com/item?id=50163277
+- title: >-
+    Cloudflare and VoidZero announce tsrs, an experimental Rust port of the TypeScript compiler
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Cloudflare, VoidZero and Owner.com are porting the TypeScript compiler to Rust under Oxc,
+    claiming up to 8x faster checks than TypeScript 7.0.
+  summary: >-
+    Cloudflare, VoidZero and Max Schwenk of Owner.com are building tsrs, a Rust port of the
+    TypeScript compiler incubated in the Oxc toolchain and developed with the TypeScript team,
+    not as a fork. Early benchmarks claim up to 8x faster type checking and about 70% less
+    memory than TypeScript 7.0 with the same number of workers. An experimental npm package
+    is available, and agents will track upstream changes and run the TypeScript test suite
+    to keep the port in sync.
+  why: >-
+    A Rust and WebAssembly TypeScript checker could make type checking cheap enough to run
+    in browsers and sandboxed agent environments, but it is experimental and diagnostics order
+    still differs from upstream.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/typescript-rust-port/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50165953
 - title: Linux 7.4 orphans four EDAC drivers, citing a flood of AI-generated fixes
   section: Linux and kernel
   category: Linux/Kernel
@@ -217,3 +240,23 @@ stories:
   sources:
   - label: primary
     url: https://shopify.engineering/overexposed
+- title: >-
+    Materialize parallelizes MySQL snapshots with primary key prefix probing, cutting a 30-hour
+    load to 3 hours
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Materialize cut a MySQL snapshot of a two-billion-row customer table from about 30 hours
+    to 3 by splitting primary key ranges with prefix probes.
+  summary: >-
+    Materialize rewrote MySQL initial snapshotting to split a table across workers by ranges
+    of the clustered primary key. Offset walking failed once the data outgrew the InnoDB buffer
+    pool, so the team switched to sargable prefix queries and EXPLAIN row estimates, and limited
+    support to collations without contractions or expansions. Internal scale tests showed
+    2.2x to 6.9x speedups, and the customer reported about 10x.
+  why: >-
+    The post shows which MySQL range queries stay index-driven, why NOT LIKE and OFFSET force
+    scans at scale, and how unreliable EXPLAIN estimates and collations break naive key partitioning.
+  sources:
+  - label: primary
+    url: https://materialize.com/blog/parallelizing-mysql-snapshots/
