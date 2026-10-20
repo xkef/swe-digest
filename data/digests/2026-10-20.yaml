@@ -1,5 +1,5 @@
 date: '2026-10-20'
-updated: 2026-10-20T06:14Z
+updated: 2026-10-20T10:16Z
 stories:
 - title: Go 1.27.3 and 1.26.10 distrust a set of CA intermediates under CVE-2026-111943
   section: Top stories
@@ -31,6 +31,36 @@ stories:
     url: https://github.com/golang/go/releases/tag/go1.26.10
   - label: discussion
     url: https://news.ycombinator.com/item?id=50160877
+- title: >-
+    Google Cloud europe-west2 incident disrupts 38 products, with knock-on outages at Revolut
+    and UK banks
+  section: Top stories
+  category: Outage
+  blurb: >-
+    A Google Cloud incident in the London region has degraded Compute Engine, GKE, Cloud SQL,
+    Cloud Storage and dozens more services since 06:08 UTC.
+  summary: >-
+    Google Cloud's status page lists an active incident in europe-west2 that began at 2026-10-19
+    23:08 PDT (2026-10-20 06:08 UTC). It names AlloyDB, Compute Engine, GKE, Cloud SQL, Cloud
+    Storage, Pub/Sub, Cloud Run, Spanner and 30 more impacted products. The BBC reports a
+    Revolut disruption to card payments, transfers and ATM withdrawals, plus problems at Lloyds,
+    and notes that others link the issues to the Google Cloud incident.
+  why: >-
+    Workloads in europe-west2 may need zonal or regional failover, and teams should check
+    database restarts after failover.
+  followup: Incident resolution and a Google Cloud incident report with root cause.
+  comments: >-
+    HN users say the public status page stayed green for about two hours while the console
+    showed the incident. Several report the impact was limited to zone europe-west2-b, and
+    one database failed to start after failover. A commenter relays from Google reps that
+    the cause was a power outage in a London data center. Google has not published that.
+  sources:
+  - label: primary
+    url: https://status.cloud.google.com/regional/europe
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50162712
+  - label: discussion
+    url: https://www.bbc.com/news/articles/cxdd8mm6qy4mo
 - title: >-
     ProjectDiscovery shows a $50 backdoored open model exfiltrating secrets through Codex
     CLI
@@ -99,6 +129,27 @@ stories:
     url: https://redact.dev/blog/whatsapp-help-pages-hidden-ai-instructions
   - label: discussion
     url: https://news.ycombinator.com/item?id=50159341
+- title: >-
+    DeepSeek open-sources DeepInfer, the inference engine behind its production services
+  section: AI
+  category: AI
+  blurb: >-
+    DeepSeek released its Apache-2.0 inference framework for DeepSeek-V4.1-Flash, which targets
+    NVIDIA SM100 GPUs and Huawei Ascend 950 NPUs.
+  summary: >-
+    DeepInfer is Apache-2.0 licensed and supports DeepSeek-V4.1-Flash with attention DP, MoE
+    expert parallelism, draft-token decoding, batch-invariant inference, deterministic sampling
+    and structured outputs. The release covers offline inference only. It leaves out the KV
+    cache system, prefill and decode disaggregation, and load balancing needed for a full
+    service. The README says it was originally built on vLLM.
+  why: >-
+    Teams serving DeepSeek models on Blackwell-class or Ascend hardware get a reference engine
+    with deterministic modes. They still need their own serving layer.
+  sources:
+  - label: primary
+    url: https://github.com/deepseek-ai/DeepInfer
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50163277
 - title: Linux 7.4 orphans four EDAC drivers, citing a flood of AI-generated fixes
   section: Linux and kernel
   category: Linux/Kernel

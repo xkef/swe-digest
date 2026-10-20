@@ -351,3 +351,85 @@ runs:
   - step: save
     status: ok
     seconds: 0.0
+- mode: daily
+  started: 2026-10-20T10:15Z
+  finished: 2026-10-20T10:16Z
+  candidates: 274
+  degraded:
+    Import AI: 'https://importai.substack.com/feed: HTTP Error 403: Forbidden'
+  usage:
+    input_tokens: 8
+    cache_read_tokens: 208187
+    cache_write_tokens: 85072
+    output_tokens: 4034
+    turns: 13
+    seconds: 37
+    cost_usd: 0.8083
+  tools:
+    mcp__digest__fetch_url: 11
+    StructuredOutput: 1
+  fetched:
+  - url: https://www.theregister.com/virtualization/2026/10/19/linux-kvm-guest-host-escape-rated-critical-may-represent-a-new-way-to-attack-penguin-powered-networking/5303744
+    ok: true
+  - url: https://blog.cloudflare.com/protect-your-netscaler-gateway/
+    ok: true
+  - url: https://news.ycombinator.com/item?id=50162712
+    ok: true
+  - url: https://github.com/deepseek-ai/DeepInfer
+    ok: true
+  - url: https://netflixtechblog.com/ontology-driven-observability-building-an-end-to-end-knowledge-graph-at-netflix-scale-421392cf5adf
+    ok: false
+  - url: https://www.bbc.com/news/articles/cxdd8mm6qy4mo
+    ok: true
+  - url: https://status.cloud.google.com/regional/europe
+    ok: true
+  - url: https://www.reuters.com/technology/us-banning-chinese-ai-deepseek-government-agency-it-systems-2026-10-19/
+    ok: false
+  - url: https://lwn.net/Articles/1100241/
+    ok: false
+  - url: https://tailscale.com/blog/magicroute-beta
+    ok: true
+  - url: https://www.phoronix.com/news/Linux-7.4-Rust
+    ok: true
+  added:
+  - >-
+    Google Cloud europe-west2 incident disrupts 38 products, with knock-on outages at Revolut
+    and UK banks
+  - >-
+    DeepSeek open-sources DeepInfer, the inference engine behind its production services
+  dropped: []
+  rejected:
+  - title: >-
+      Tailscale MagicRoute beta replaces DERP-based regional routing for overlapping connectors
+    reason: blurb outside 100-145 characters
+  inbox_used: []
+  notes: >-
+    The Netflix tech blog, the LWN 7.3 statistics article and Reuters (DHS DeepSeek order)
+    returned 403 or 401, so those stories are unverified and not added. The Plex2Shell exploitation
+    blog and Eisentraut's PostgreSQL reverts post are plain http and could not be fetched.
+    The Register's PwnEscape coverage went to follow-up f-0051 as a note, not a new story,
+    because it adds detail to an already tracked CVE. The Revolut outage is folded into the
+    Google Cloud story. The Cloudflare NetScaler post covers a vulnerability disclosed on
+    2026-09-27 and is not new.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 21.4
+  - step: load
+    status: ok
+    seconds: 0.0
+  - step: select
+    status: ok
+    seconds: 0.3
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 38.8
+  - step: merge
+    status: ok
+    seconds: 0.3
+  - step: save
+    status: ok
+    seconds: 0.0
