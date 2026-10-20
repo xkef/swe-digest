@@ -1,5 +1,5 @@
 date: '2026-10-20'
-updated: 2026-10-20T14:25Z
+updated: 2026-10-20T18:04Z
 stories:
 - title: Go 1.27.3 and 1.26.10 distrust a set of CA intermediates under CVE-2026-111943
   section: Top stories
@@ -61,6 +61,39 @@ stories:
     url: https://news.ycombinator.com/item?id=50162712
   - label: discussion
     url: https://www.bbc.com/news/articles/cxdd8mm6qy4mo
+- title: >-
+    Private keys for eight eMudhra intermediate CAs are compromised, and major root programs
+    block them
+  section: Top stories
+  category: Security
+  blurb: >-
+    Private keys for eight eMudhra intermediate CAs leaked, and Mozilla, Chrome, Apple and
+    Microsoft have blocked them. Other trust stores lag.
+  summary: >-
+    A reporter proved control of the private keys of eight eMudhra intermediate CAs by signing
+    a message with each and reported it to root programs on 2026-10-17. Firefox and Chrome
+    blocked the certificates from 2026-10-17, Apple from 2026-10-19 and Microsoft from 2026-10-20,
+    and Mozilla shipped NSS 3.131.1. Patched versions are listed for Ubuntu ca-certificates,
+    Go 1.27.3 and 1.26.10, Electron, Python certifi 2026.10.19, rustls-webpki 0.103.16, webpki-roots
+    1.0.10, Homebrew and uv 0.13.4, while Node.js and Composer ca-bundle are pending.
+  why: >-
+    Clients that do not consume revocation data, including macOS /usr/bin/curl and containers
+    with stale ca-certificates, still accept certificates from these keys until their trust
+    bundles are updated.
+  followup: >-
+    Node.js and Composer ca-bundle fixes, Debian and RHEL ca-certificates updates, and Mozilla's
+    dev-security-policy thread on eMudhra.
+  comments: >-
+    LWN commenters report that Ubuntu and Arch had shipped updated certificate packages and
+    Debian had not at the time of writing. The disclosure site provides curl test hosts to
+    check system trust stores.
+  sources:
+  - label: primary
+    url: https://emudhra.we-have-a-problem.com/
+  - label: discussion
+    url: https://lwn.net/Articles/1101643/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50166579
 - title: >-
     ProjectDiscovery shows a $50 backdoored open model exfiltrating secrets through Codex
     CLI
@@ -151,6 +184,46 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50163277
 - title: >-
+    Google open-sources TorchTPU, a native PyTorch backend for TPUs co-developed with Meta
+  section: AI
+  category: AI
+  blurb: >-
+    Google released TorchTPU on GitHub, a PyTorch backend co-developed with Meta that runs
+    eager mode and torch.compile workloads on TPUs.
+  summary: >-
+    Google announced at PyTorch Conference 2026 that TorchTPU is open source, with integrations
+    for vLLM, SGLang, llm-d, TorchTitan, Ray, VeRL and Hugging Face Transformers v5 via device_map="tpu".
+    Google reports up to 52% MFU on Qwen 3 8B with TorchTitan across up to 8,192 Ironwood
+    TPUs.
+  why: >-
+    PyTorch teams can move existing training and serving code to TPUs without a JAX or XLA
+    rewrite, which widens accelerator choice for capacity planning.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/topics/ai-infrastructure/torchtpu-is-now-open-source-run-native-pytorch-on-tpus/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50169053
+- title: >-
+    Pragmatic Engineer survey of 27 companies finds AI spend per developer rising with uneven
+    PR gains
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Data from 27 companies shows AI tool spend from under $300 to $3,000 per developer monthly,
+    with PR counts flat at some and up to 10x at others.
+  summary: >-
+    CodeRabbit data shows weekly PRs per developer up 113% year over year, and a cohort of
+    20,000 developers up 128%. Among the 27 companies, a quant firm's AI spend rose from $500K
+    to $8M a month, a two-person .NET shop spends $3,000 per developer and reports 5 to 10x
+    more PRs, and several companies report flat PR frequency or 3x larger PRs. Peak spend
+    was in June and July and has roughly halved for API plan users.
+  why: >-
+    PR throughput alone does not show return on AI spend, and review load and PR size need
+    tracking alongside it.
+  sources:
+  - label: primary
+    url: https://newsletter.pragmaticengineer.com/p/whats-the-roi-of-software-engineers
+- title: >-
     Cloudflare and VoidZero announce tsrs, an experimental Rust port of the TypeScript compiler
   section: Developer tools
   category: Dev tools
@@ -173,6 +246,27 @@ stories:
     url: https://blog.cloudflare.com/typescript-rust-port/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50165953
+- title: >-
+    TypeScript 7.1 Beta adds a programmatic compiler API, import attributes in ambient modules,
+    and es2026
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    TypeScript 7.1 Beta adds a new compiler API for the Go-based toolchain, import attributes
+    in ambient modules, and an es2026 target.
+  summary: >-
+    TypeScript 7.1 Beta ships typescript/sync, typescript/async, typescript/fs and typescript/ast
+    entry points, with disposable API and Program objects that must be closed to avoid leaks
+    on the Go side. It also supports declare module with import attributes, source phase imports,
+    and a stable es2026 target and lib.
+  why: >-
+    Tool authors who were blocked by the lack of a compiler API in TypeScript 7 can start
+    porting linters and codegen to the snapshot-based API.
+  sources:
+  - label: primary
+    url: https://devblogs.microsoft.com/typescript/announcing-typescript-7-1-beta/
+  - label: primary
+    url: https://github.com/microsoft/TypeScript/releases/tag/v7.1-beta
 - title: Linux 7.4 orphans four EDAC drivers, citing a flood of AI-generated fixes
   section: Linux and kernel
   category: Linux/Kernel
@@ -218,6 +312,24 @@ stories:
     url: https://news.ycombinator.com/item?id=50160494
   - label: discussion
     url: https://news.ycombinator.com/item?id=50158138
+- title: llm-d 1.0 ships stable APIs for Kubernetes-native distributed LLM inference
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The CNCF Sandbox project llm-d reached 1.0 with stable v1 APIs, router high availability,
+    flow control and session-aware routing for agents.
+  summary: >-
+    llm-d 1.0 adds multi-tenant priority and fairness flow control, router high availability
+    with zero-downtime updates, DisaggregatedSet for prefill and decode aware rolling updates,
+    and an async processor that pulls from Pub/Sub or Redis queues. The router builds on Gateway
+    API Inference and routes requests to replicas that hold cached prefixes, with KV cache
+    offload to host memory and SSD.
+  why: >-
+    Teams serving their own models on Kubernetes get a stable, composable alternative to round-robin
+    load balancing in front of vLLM or SGLang.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/topics/ai-infrastructure/llm-d-1-0-an-open-source-stack-for-distributed-inference/
 - title: >-
     Shopify details Overexposed, a scanner for unauthenticated GKE and Cloud Run endpoints
   section: Engineering posts
@@ -260,3 +372,23 @@ stories:
   sources:
   - label: primary
     url: https://materialize.com/blog/parallelizing-mysql-snapshots/
+- title: >-
+    Datadog details Turnstile, which enforces supply chain policy on signed attestations at
+    deploy time
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Datadog's Turnstile checks signed in-toto attestations for commits, reviews, builds and
+    SBOMs against per-environment policy before deploy.
+  summary: >-
+    Turnstile extends Datadog's image signing and containerd verification with in-toto attestations
+    for commit safety, source provenance, pull request approval, build provenance, SBOM, vulnerability
+    state and deployment target. Policies can warn in some environments and block in others,
+    and evaluation runs in the deploy hot path across tens of thousands of deployments a day,
+    with a keyless signing library called dd-attest.
+  why: >-
+    It shows a concrete design for catching poisoned dependencies or unreviewed changes that
+    still produce validly signed images.
+  sources:
+  - label: primary
+    url: https://www.datadoghq.com/blog/engineering/software-supply-chain-policy-enforcement/
