@@ -1,5 +1,5 @@
 date: '2026-10-21'
-updated: 2026-10-21T18:10Z
+updated: 2026-10-21T20:51Z
 lede: >-
   Patch day pressure: PHP ships two critical RCE fixes at 14:00 UTC while Go and Cloudflare
   race to distrust compromised eMudhra CA keys.
@@ -330,3 +330,22 @@ stories:
   sources:
   - label: primary
     url: https://shopify.engineering/open-model-task-experts
+- title: >-
+    PostgreSQL recovery_prefetch can stall synchronous replication for hours after write bursts
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Replica WAL prefetching turns sequential writes on the primary into 8k random reads, which
+    can block all writes under synchronous replication.
+  summary: >-
+    Jeremy Schneider reports that recovery_prefetch amplifies replica read IOPS up to 16x
+    for large sequential I/O on the primary. If the walreceiver drops during a write burst,
+    the standby stays in WAL restore mode until it catches up. With synchronous replication,
+    primary writes then hang for 30 minutes or more. He published a reproduction repository
+    and found that recovery_prefetch off avoids the long stall.
+  why: >-
+    Postgres operators running synchronous replicas on IOPS-limited disks should test recovery_prefetch
+    off and consider quorum commit with two standbys.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9zf
