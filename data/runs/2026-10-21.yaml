@@ -500,3 +500,83 @@ runs:
   - step: save
     status: ok
     seconds: 0.0
+- mode: daily
+  started: 2026-10-21T18:09Z
+  finished: 2026-10-21T18:10Z
+  candidates: 303
+  degraded:
+    Import AI: 'https://importai.substack.com/feed: HTTP Error 403: Forbidden'
+  usage:
+    input_tokens: 6
+    cache_read_tokens: 143450
+    cache_write_tokens: 86336
+    output_tokens: 3747
+    turns: 11
+    seconds: 37
+    cost_usd: 0.8003
+  tools:
+    mcp__digest__fetch_url: 9
+    StructuredOutput: 1
+  fetched:
+  - url: https://lwn.net/Articles/1102044/
+    ok: true
+  - url: https://blog.rust-lang.org/2026/10/20/Rustup-1.29.2/
+    ok: true
+  - url: https://www.githubstatus.com/incidents/nms1dpzmh9d9
+    ok: true
+  - url: https://postgr.es/p/9zf
+    ok: true
+  - url: https://github.blog/engineering/architecture-optimization/the-bridge-to-agent-scale-git-infrastructure/
+    ok: true
+  - url: https://thephp.foundation/blog/2026/10/21/todays-php-security-release-and-how-were-strengthening-php-security/
+    ok: true
+  - url: https://www.youtube.com/watch?v=adfw3xJBx1o
+    ok: true
+  - url: https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities
+    ok: false
+  - url: https://github.com/prometheus/prometheus/releases/tag/v3.15.1
+    ok: true
+  added: []
+  dropped: []
+  rejected:
+  - title: >-
+      GitHub event streaming overload delays pull requests, Actions and webhooks on 2026-10-21
+    reason: blurb outside 100-145 characters
+  - title: >-
+      Postgres recovery_prefetch can amplify standby IOPS and stall synchronous-replication
+      writes for hours
+    reason: blurb outside 100-145 characters
+  - title: >-
+      GitHub moves Git quorum from repository-wide locks to per-reference writes to finish
+      its Azure migration
+    reason: blurb outside 100-145 characters
+  inbox_used: []
+  notes: >-
+    The OpenAI Patch the Planet page returned 403, so it was not used. The Monzo coding agent
+    talk page on YouTube loaded without content and could not be verified, so it was skipped.
+    LWN reports a musl out-of-bounds write, but the musl advisory URL was not among the candidates,
+    so that item waits for a primary source. The PHP Foundation post on the leak and embargo
+    break is recorded as a note on f-0078 because today's PHP release story already covers
+    it.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 18.2
+  - step: load
+    status: ok
+    seconds: 0.0
+  - step: select
+    status: ok
+    seconds: 0.3
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 38.0
+  - step: merge
+    status: ok
+    seconds: 0.2
+  - step: save
+    status: ok
+    seconds: 0.0
