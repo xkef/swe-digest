@@ -1,0 +1,209 @@
+date: '2026-10-21'
+updated: 2026-10-21T06:13Z
+lede: >-
+  Patch day pressure: PHP ships two critical RCE fixes at 14:00 UTC while Go and Cloudflare
+  race to distrust compromised eMudhra CA keys.
+stories:
+- title: >-
+    PHP will ship fixes for two critical RCE flaws, CVE-2026-109618 and CVE-2026-109619, on
+    2026-10-21 at 14:00 UTC
+  section: Top stories
+  category: Security
+  blurb: >-
+    The PHP security team will ship fixes for two critical flaws rated CVSS 9.2 at 14:00 UTC
+    on 2026-10-21 and urges users to prepare now.
+  summary: >-
+    Jakub Zelenka announced on php.announce on 2026-10-20 that a release scheduled for 2026-10-21
+    at 14:00 UTC fixes two vulnerabilities rated CVSS v4.0 9.2. The team may release earlier
+    if details leak or exploitation appears. CERT-EU advisory 2026-018 names the CVEs, says
+    no technical details are public, and cites reports that all versions from PHP 5 onward
+    may be affected.
+  why: >-
+    Inventory every PHP runtime, including containers and distro packages, and plan a same-day
+    upgrade window. Consider isolating exposed apps if you cannot patch quickly.
+  followup: Release at 14:00 UTC on 2026-10-21, affected branches, and technical details.
+  comments: >-
+    The HN thread and a researcher write-up tie the bugs to a session.upload_progress heap
+    use-after-free. The PHP team has not confirmed that.
+  sources:
+  - label: primary
+    url: https://news-web.php.net/php.announce/509
+  - label: primary
+    url: https://cert.europa.eu/publications/security-advisories/2026-018/
+  - label: discussion
+    url: https://watchtowr.com/intelligence/php-cve-2026-109618-faq/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50172041
+- title: >-
+    Go 1.27.3 and 1.26.10 block eight CA keys tied to the eMudhra compromise, and Cloudflare
+    ships client updates
+  section: Top stories
+  category: Security
+  blurb: >-
+    New Go point releases make crypto/x509 reject any chain through eight intermediate keys,
+    matched by users to compromised eMudhra CAs.
+  summary: >-
+    Go released 1.27.3 and 1.26.10 on 2026-10-19 with security fixes to crypto/x509. The Hacker
+    News reports that the fix rejects chains through eight public-key hashes that a commenter
+    matched to eMudhra intermediates. The block cannot be disabled and also applies to custom
+    root pools. Cloudflare says it learned of the compromise on 2026-10-19, shipped cloudflared
+    2026.10.2 and WARP updates, and finished CDN and Zero Trust mitigations at 19:20 UTC on
+    2026-10-20.
+  why: >-
+    Go binaries keep trusting the bad keys until you rebuild them on a patched toolchain.
+    Trust stores bundled in SDKs, images and runtimes also need updates, separately from browsers.
+  followup: >-
+    Distribution ca-certificates updates and a public eMudhra or Mozilla incident statement.
+  sources:
+  - label: primary
+    url: https://go.dev/doc/devel/release#go1.27.3
+  - label: primary
+    url: https://blog.cloudflare.com/emudhra-certificate-compromise/
+  - label: discussion
+    url: https://thehackernews.com/2026/10/go-issues-emergency-update-blocking.html
+  - label: discussion
+    url: https://www.reddit.com/r/programming/comments/1xarfxg/go_issues_emergency_update_blocking_eight_ca_keys/
+- title: >-
+    Ransomware groups have exploited PAN-OS GlobalProtect bypass CVE-2026-0257 since June,
+    Unit 42 says
+  section: Security
+  category: Security
+  blurb: >-
+    Unit 42 says Qilin, Inc and other ransomware crews use a GlobalProtect auth bypass for
+    VPN access, then pivot to vCenter and ESXi hosts.
+  summary: >-
+    CVE-2026-0257 lets attackers bypass authentication on PAN-OS GlobalProtect portals and
+    gateways and set up a VPN session. Palo Alto patched it on 2026-05-13. Unit 42 reports
+    ransomware intrusions across many industries. In one case attackers moved from the VPN
+    to vCenter, disabled execInstalledOnly on ESXi, and dumped credentials offline from a
+    domain controller VMDK.
+  why: >-
+    Patched GlobalProtect gateways may still hide earlier intrusions, so hunt with the Unit
+    42 indicators and check the virtualization layer.
+  sources:
+  - label: report
+    url: https://www.theregister.com/cyber-crime/2026/10/20/palo-altos-firewall-os-has-been-under-attack-from-multiple-ransomware-groups-since-june/5304226
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xazkke/palo_altos_firewall_os_has_been_under_attack_from/
+- title: >-
+    Hunt.io details a Log4Shell campaign against Graylog servers in Ukraine's state data-exchange
+    system
+  section: Security
+  category: Security
+  blurb: >-
+    An open staging directory exposed an operator who used a public Log4Shell chain against
+    Graylog servers inside Ukraine's data-exchange system.
+  summary: >-
+    From May to September 2026, an operator scanned Ukrainian address space for UXP Verifier
+    hosts. The operator gained execution on two Graylog servers by sending a JNDI string in
+    the username field of POST /api/system/sessions. One Elasticsearch cluster held 6.8 million
+    data-exchange documents. Hunt.io saw aggregate queries only and no exfiltration.
+  why: >-
+    Unpatched Log4j in logging stacks stays exploitable. Hunt for JNDI strings sent with an
+    X-Requested-By: cli header and for child processes spawned by the Graylog Java service.
+  sources:
+  - label: primary
+    url: https://hunt.io/blog/ukraine-state-data-exchange-graylog-log4shell
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xauvjc/ukraines_state_dataexchange_system_targeted_in_a/
+- title: Google open-sources TorchTPU, a native PyTorch backend for TPUs
+  section: AI
+  category: AI
+  blurb: >-
+    Google published an Apache 2.0 PyTorch backend for TPUs with ATen kernels, torch.compile
+    support, and a 0.2.0 release on PyPI.
+  summary: >-
+    The torch_tpu repository provides ATen kernels for TPU, a compilation cache for XLA computations,
+    data and tensor parallelism, and torch.compile integration. Version 0.2.0 installs from
+    PyPI and supports Python 3.11 and later. It includes examples for Llama, Qwen, ResNet
+    and DLRM.
+  why: >-
+    PyTorch code gets a first-party route to TPUs through ATen and torch.compile, beside PyTorch/XLA.
+  sources:
+  - label: primary
+    url: https://github.com/google-pytorch/torch_tpu
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50169053
+- title: >-
+    TypeScript 7.1 Beta adds a new compiler API, import attributes in ambient modules, and
+    source phase imports
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The first beta after the Go-based TypeScript 7.0 adds a new compiler API, import attributes
+    in ambient modules, and source phase imports.
+  summary: >-
+    TypeScript 7.1 Beta ships an API split into typescript/sync, typescript/async, typescript/fs
+    and typescript/ast entry points. API and Program objects are disposable and must be closed
+    to avoid leaks on the Go side. The release also allows declare module patterns keyed on
+    import attributes, supports import source for WebAssembly, and adds es2026 as a stable
+    target and lib.
+  why: >-
+    Tool authors who were blocked on 7.0 now have a programmatic API to port linters and build
+    tools to, built around explicit disposal and snapshots.
+  sources:
+  - label: primary
+    url: https://devblogs.microsoft.com/typescript/announcing-typescript-7-1-beta/?r
+  - label: discussion
+    url: https://www.reddit.com/r/typescript/comments/1xaz5x3/announcing_typescript_71_beta/
+- title: >-
+    Rust for Linux 7.4 pull brings 17k lines, a large zerocopy update, and new mem and ratelimit
+    modules
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Miguel Ojeda's Rust pull for Linux 7.4 jumps the vendored zerocopy crate eight versions
+    and adds mem and ratelimit kernel modules.
+  summary: >-
+    The Rust pull request for Linux 7.4 updates the vendored zerocopy crate by eight versions
+    and other kernel crates. It enables the unstable proc_macro_span feature for better macro
+    diagnostics. pin-init gains tuple struct support and safe self-references.
+  why: >-
+    Out-of-tree Rust kernel code and driver work, such as the Nova and DRM abstractions, should
+    expect API churn from the crate updates in this cycle.
+  sources:
+  - label: report
+    url: https://www.phoronix.com/news/Linux-7.4-Rust
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1xb9qux/17k_lines_of_new_rust_kernel_code_heading_into/
+- title: AWS launches Amazon ECS Gateway, managed shared-ALB ingress for ECS services
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    A new ECS resource lets platform teams define ingress once while ECS provisions ALBs,
+    certificates, hostnames and rules for each service.
+  summary: >-
+    Platform teams create a gateway with subnets, TLS, listeners and WAF settings, then associate
+    it with clusters. Services opt in with a gateway connector. ECS then creates an ACM certificate,
+    a DNS hostname, listener rules, a target group and a security group, with up to 25 services
+    per ALB. The feature has no extra charge and works with awsvpc mode on EC2, Fargate and
+    Managed Instances.
+  why: >-
+    Teams that hand-wire an ALB, certificate and WAF for each ECS service can migrate step
+    by step through UpdateService. Deployments fail when maxAlbCount is reached.
+  sources:
+  - label: primary
+    url: https://aws.amazon.com/blogs/aws/introducing-amazon-ecs-gateway-a-fully-managed-ingress-solution-for-ecs-services/
+  - label: discussion
+    url: https://www.reddit.com/r/aws/comments/1xb8o4j/announcing_amazon_ecs_gateway_a_managed_ingress/
+- title: >-
+    Shopify replaces a frontier model with a post-trained Nemotron subagent for Sidekick GraphQL
+    work
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Shopify post-trained Nemotron 3.5 Lightning for a Sidekick GraphQL subagent and reports
+    a higher judge score at about 90% lower serving cost.
+  summary: >-
+    Shopify scores production conversations with an LLM judge calibrated against human labels.
+    A self-healing loop repaired 59,535 failed GraphQL conversations, 69% of those it attempted,
+    and turned them into training data. After six loops the post-trained model scored 74.5
+    against 73 for the frontier model, with a median latency of 0.87 seconds against 6.50
+    seconds.
+  why: >-
+    The post shows a measurable path for moving token-heavy subagent work from frontier APIs
+    to self-hosted open models. The judge, the failure-repair data loop and the trace-replay
+    load tests are all reusable.
+  sources:
+  - label: primary
+    url: https://shopify.engineering/open-model-task-experts
