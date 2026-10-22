@@ -30,6 +30,11 @@
         <li><strong>Sources:</strong>
           {% for source in page.extra.sources %}<a href="{{ source.url }}">{{ source.label }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
         </li>
+        {% if page.extra.thread %}
+          <li><strong>Thread:</strong> <a
+            href="{{ config.base_url | safe }}/threads/{{ page.extra.thread.id }}/"
+          >{{ page.extra.thread.subject_html | safe }}</a></li>
+        {% endif %}
         {% for field in page.extra.fields | default(value=[]) %}
           <li><strong>{{ field.label }}:</strong> {{ field.text | safe }}</li>
         {% endfor %}

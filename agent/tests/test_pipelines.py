@@ -20,12 +20,12 @@ STORY = {
 }
 
 
-def saved_reply(*proposed):
+def saved_reply(*proposed, opened=()):
     answer = {
         "stories": list(proposed),
         "drop": [],
         "lede": "",
-        "followups": {"open": [], "note": [], "close": []},
+        "followups": {"open": list(opened), "note": [], "close": []},
         "inbox_used": [],
         "notes": "n",
     }
@@ -74,6 +74,33 @@ def test_replay_skips_collection_and_the_model(data, monkeypatch):
     assert runs.load(DAY)["runs"] == [record]
     assert runs.replay(DAY, "daily")["reply"]["answer"]["notes"] == "n"
     assert memory.load() == []
+
+
+def test_stories_link_only_to_open_threads(data):
+    memory.save(
+        [{"id": "f-0001", "subject": "s", "watch_for": "w", "opened": DAY, "last_seen": DAY, "notes": []}]
+    )
+    second = STORY | {
+        "title": "Tool 2.1 released",
+        "thread": "f-0099",
+        "sources": [{"label": "primary", "url": "https://tool.dev/2.0#2.1"}],
+    }
+    reply = saved_reply(STORY | {"thread": "f-0001"}, second)
+    reply["fetched"].append({"url": "https://tool.dev/2.0#2.1", "ok": True})
+
+    daily.run(DAY, reply)
+
+    assert [s.get("thread") for s in stories.load(DAY)["stories"]] == ["f-0001", None]
+
+
+def test_an_opened_thread_links_its_story(data):
+    opened = {"subject": "Tool 2.0 rollout", "watch_for": "2.1", "story": STORY["title"]}
+
+    daily.run(DAY, saved_reply(STORY, opened=[opened]))
+
+    [story] = stories.load(DAY)["stories"]
+    assert story["thread"] == "f-0001"
+    assert memory.load()[0]["subject"] == "Tool 2.0 rollout"
 
 
 def disk_full(digest):

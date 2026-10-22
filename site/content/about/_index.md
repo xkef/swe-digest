@@ -38,6 +38,25 @@ source for any operational decision.
   property of their respective owners and are referenced under applicable
   quotation provisions.
 
+## JSON API
+
+Every build publishes the digest as static JSON under `/api/`. Start at
+[`/api/index.json`](https://xkef.github.io/swe-digest/api/index.json), which
+links to the rest.
+
+| File                  | Holds                                                         |
+| --------------------- | ------------------------------------------------------------- |
+| `index.json`          | every day, newest first, with its story count and links       |
+| `digests/<date>.json` | one day's stories with every field                            |
+| `stories/<n>.json`    | all stories, newest first, 100 a page, with `prev` and `next` |
+| `search.json`         | each story's date, title, section, category, blurb, thread, and URL |
+| `threads.json`        | every follow-up thread, open or closed, and its stories       |
+
+The site is static, so the server answers no queries. To search, download
+`search.json` and filter it. Text fields are plain text, with code marked by
+backticks. Treat them as untrusted input. Each file carries a `version`, which
+changes only when a field changes meaning or goes away.
+
 ## Privacy
 
 This site runs no analytics, sets no cookies, embeds no third-party trackers,

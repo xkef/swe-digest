@@ -12,6 +12,7 @@
         why: why it matters
         followup: optional
         comments: optional
+        thread: optional, the follow-up id the story advances
         sources:
           - {label: primary, url: https://...}
 
@@ -33,7 +34,7 @@ type Story = dict[str, Any]
 type Day = dict[str, Any]
 
 REQUIRED = ("title", "section", "blurb", "summary", "sources")
-TEXT_FIELDS = ("title", "section", "category", "blurb", "summary", "why", "followup", "comments")
+TEXT_FIELDS = ("title", "section", "category", "blurb", "summary", "why", "followup", "comments", "thread")
 MAX_TEXT_CHARS = 4000
 MAX_SOURCES = 8
 
@@ -42,6 +43,8 @@ SECRETS = re.compile(
     r"|xox[baprs]-[A-Za-z0-9-]{10,}|sk-ant-[A-Za-z0-9_-]{20,}|\bsk-[A-Za-z0-9]{16,}"
 )
 SAFE_URL = re.compile(r"https://[^\s<>\"'`\\]+")
+# The site builds file paths and URLs from it.
+THREAD_ID = re.compile(r"f-\d{4}")
 
 
 def path(day: str) -> Path:
@@ -83,6 +86,8 @@ def story_problems(story: Any) -> list[str]:
             found.append(f"{key} must be text under {MAX_TEXT_CHARS} characters")
             continue
         found += [f"{key}: {issue}" for issue in text_issues(value)]
+    if story.get("thread") is not None and not THREAD_ID.fullmatch(str(story["thread"])):
+        found.append(f"thread is not a follow-up id: {story['thread']}")
 
     sources = story.get("sources") or []
     if not isinstance(sources, list) or len(sources) > MAX_SOURCES:

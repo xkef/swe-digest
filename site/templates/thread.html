@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+  <article class="layout prose story-page">
+    <header class="page-header">
+      <p class="meta">
+        <a href="{{ get_url(path='/threads/', trailing_slash=true) | safe }}"
+        >threads</a>
+        <span>{% if page.extra.closed %}closed {{ page.extra.closed }}{% else %}open{% endif %}</span>
+      </p>
+      <h1>{{ page.extra.subject_html | safe }}</h1>
+      <p class="meta">
+        <span>opened {{ page.extra.opened }}</span>
+        <span>last seen {{ page.extra.last_seen }}</span>
+      </p>
+    </header>
+    <div class="story-fields">
+      <ul>
+        <li><strong>Watching for:</strong> {{ page.extra.watch_for_html | safe }}</li>
+      </ul>
+    </div>
+    {% if page.extra.notes %}
+      <h2>Notes</h2>
+      <ul>
+        {% for note in page.extra.notes %}<li>{{ note.text | safe }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+    {% if page.extra.stories %}
+      <h2>Stories</h2>
+      <ul>
+        {% for story in page.extra.stories %}
+          <li><a href="{{ config.base_url | safe }}{{ story.path | safe }}"
+          >{{ story.day }}: {{ story.title_html | safe }}</a></li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </article>
+{% endblock content %}
