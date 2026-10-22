@@ -71,3 +71,19 @@ def test_problems_flag_secrets():
 
 def test_problems_flag_a_malformed_id():
     assert memory.problems([followup(id="../x")])
+
+
+def test_apply_redirects_an_open_that_shares_a_cve_with_an_open_thread():
+    current = [followup(subject="PHP release (CVE-2026-109618)")]
+    changes = {
+        "open": [
+            {"subject": "PHP2Shell exploitation of CVE-2026-109618", "watch_for": "KEV", "story": "PHP fix"}
+        ],
+        "note": [],
+        "close": ["f-0001"],
+    }
+    result, opened = memory.apply(current, changes, "2026-10-09")
+    assert [entry["id"] for entry in result] == ["f-0001"]
+    assert memory.is_open(result[0])
+    assert result[0]["watch_for"] == "KEV"
+    assert opened == {"PHP fix": "f-0001"}

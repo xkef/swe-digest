@@ -15,6 +15,7 @@ open threads, and closes a thread nobody touched for
 page on the site and the stories that link to it outlive it.
 """
 
+import re
 from datetime import date as Date
 from datetime import timedelta
 from typing import Any
@@ -25,6 +26,7 @@ from digest.stories import MAX_TEXT_CHARS, THREAD_ID, text_issues
 type Followup = dict[str, Any]
 
 MAX_NOTES = 10
+CVE = re.compile(r"CVE-\d{4}-\d+")
 
 
 def load() -> list[Followup]:
@@ -56,13 +58,37 @@ def apply(
 ) -> tuple[list[Followup], dict[str, str]]:
     """Applies the model's open, note, and close requests.
 
-    Returns the follow-ups and, for each new thread whose request names the
-    story that opens it, that story's title mapped to the new id. A request
+    Returns the follow-ups and, for each opened thread whose request names the
+    story that opens it, that story's title mapped to the thread's id. A request
     naming an unknown or closed id, or carrying markup, is ignored.
+
+    An open request whose subject shares a CVE id with an open thread continues
+    that thread instead: the thread takes the new watch_for, and a close of it
+    in the same answer is cancelled. The model tends to close a thread and
+    reopen it under a new angle, which splits one story across two pages.
     """
     by_id = {entry["id"]: entry for entry in followups if is_open(entry)}
+    by_cve = {cve: entry for entry in by_id.values() for cve in CVE.findall(entry["subject"])}
+
+    next_number = max((int(entry["id"].removeprefix("f-")) for entry in followups), default=0) + 1
+    result, opened, continued = list(followups), {}, set()
+    for request in changes.get("open", []):
+        if not (_safe(request.get("subject")) and _safe(request.get("watch_for"))):
+            continue
+        same = next((by_cve[cve] for cve in CVE.findall(request["subject"]) if cve in by_cve), None)
+        if same:
+            same["watch_for"], same["last_seen"] = request["watch_for"], today
+            continued.add(same["id"])
+            thread_id = same["id"]
+        else:
+            thread_id, next_number = f"f-{next_number:04d}", next_number + 1
+            new = {"subject": request["subject"], "watch_for": request["watch_for"]}
+            result.append({"id": thread_id, **new, "opened": today, "last_seen": today, "notes": []})
+        if _safe(request.get("story")):
+            opened[request["story"]] = thread_id
+
     for closed in changes.get("close", []):
-        if closed in by_id:
+        if closed in by_id and closed not in continued:
             by_id.pop(closed)["closed"] = today
 
     for note in changes.get("note", []):
@@ -71,26 +97,6 @@ def apply(
             continue
         entry["last_seen"] = today
         entry["notes"] = [*entry.get("notes", []), f"{today}: {note['note']}"][-MAX_NOTES:]
-
-    next_number = max((int(entry["id"].removeprefix("f-")) for entry in followups), default=0) + 1
-    result, opened = list(followups), {}
-    for request in changes.get("open", []):
-        if not (_safe(request.get("subject")) and _safe(request.get("watch_for"))):
-            continue
-        thread_id = f"f-{next_number:04d}"
-        result.append(
-            {
-                "id": thread_id,
-                "subject": request["subject"],
-                "watch_for": request["watch_for"],
-                "opened": today,
-                "last_seen": today,
-                "notes": [],
-            }
-        )
-        if _safe(request.get("story")):
-            opened[request["story"]] = thread_id
-        next_number += 1
 
     # Over the bound, the oldest open threads close first.
     still_open = [entry for entry in result if is_open(entry)]

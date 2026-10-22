@@ -43,10 +43,13 @@ run, the correct answer is an empty `stories` list.
 Follow-ups are threads the digest tracks across days.
 
 - `open` a thread when a story has a known next step: a release date, a
-  deadline, a pending fix. Set `story` to that story's exact title.
-- `note` an open thread when a candidate moves it. Say what changed in one
-  sentence.
-- `close` a thread when it has resolved.
+  deadline, a pending fix. Set `story` to that story's exact title. When an
+  open thread already tracks the same event, `note` it instead, even if the
+  story's angle has changed.
+- `note` an open thread when a candidate moves it. Say in one sentence what
+  changed since its last note. Skip the note when nothing changed.
+- `close` a thread when it has resolved. Never close a thread to reopen it
+  under a new subject.
 
 ## Lede and notes
 

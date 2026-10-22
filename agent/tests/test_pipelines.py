@@ -103,6 +103,19 @@ def test_an_opened_thread_links_its_story(data):
     assert memory.load()[0]["subject"] == "Tool 2.0 rollout"
 
 
+def test_brief_shows_each_open_thread_with_its_last_note():
+    open_thread = {
+        "id": "f-0001",
+        "subject": "s",
+        "watch_for": "w",
+        "notes": ["2026-10-08: old", "2026-10-09: new"],
+    }
+    closed = {"id": "f-0002", "subject": "gone", "watch_for": "w", "notes": [], "closed": DAY}
+    text = daily.brief(DAY, {"stories": []}, [], [open_thread, closed], [], {})["brief"]
+    assert "- f-0001: s | watch for: w | last note: 2026-10-09: new" in text
+    assert "f-0002" not in text
+
+
 def disk_full(digest):
     raise OSError("disk full")
 

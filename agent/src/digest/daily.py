@@ -189,9 +189,9 @@ def brief(
     lines += [f"- {section}: {count} published" for section, count in counts.items()]
 
     lines += ["", "## Open follow-ups"]
-    lines += [
-        f"- {f['id']}: {f['subject']} | watch for: {f['watch_for']}" for f in followups if memory.is_open(f)
-    ]
+    for f in filter(memory.is_open, followups):
+        last_note = f" | last note: {f['notes'][-1]}" if f.get("notes") else ""
+        lines.append(f"- {f['id']}: {f['subject']} | watch for: {f['watch_for']}{last_note}")
 
     lines += ["", "## Owner story requests"]
     lines += [f"- #{i['number']} {i['title']}\n  {' '.join(i['body'].split())}" for i in inbox] or ["(none)"]
