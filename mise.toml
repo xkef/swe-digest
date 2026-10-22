@@ -13,9 +13,11 @@ dprint = "0.60.1"
 rumdl = "0.2.78"
 vale = "3.24.0"
 
-# Every task runs inside agent/.venv. Locally `mise run deps:setup` fills it from
-# uv.lock. In CI `mise run deps:base` or `deps:agent` fills it from the
-# hash-pinned requirements.
+# Every task runs Python through `uv run --no-sync`, which uses agent/.venv
+# without putting it on PATH, where a sandboxed agent could plant a binary for
+# the host shell. --no-sync keeps what the deps tasks installed. Locally
+# `mise run deps:setup` fills agent/.venv from uv.lock. In CI `mise run
+# deps:base` or `deps:agent` fills it from the hash-pinned requirements.
 [env]
-_.python.venv = { path = "{{config_root}}/agent/.venv", create = true }
+UV_PROJECT = "{{config_root}}/agent"
 PYTHONPATH = "{{config_root}}/agent/src"
