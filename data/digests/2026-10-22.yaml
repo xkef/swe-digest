@@ -1,5 +1,5 @@
 date: '2026-10-22'
-updated: 2026-10-22T06:18Z
+updated: 2026-10-22T10:23Z
 lede: >-
   A PHP RCE release that leaked early and drew exploit traffic before the patch led a day
   of runtime security fixes and a Railway secrets breach.
@@ -127,6 +127,52 @@ stories:
     url: https://foxio.io/blog/header-accordions-qpack-amplification-attacks-against-http-3-servers
   - label: discussion
     url: https://news.ycombinator.com/item?id=50188612
+- title: >-
+    ZDI posts unpatched Linux kernel vulnerability reports, including two CVSS 9.0 SMB RCEs,
+    to public LKML
+  section: Security
+  category: Security
+  blurb: >-
+    Trend Micro ZDI posted six unpatched kernel bug reports to LKML, including two CVSS 9.0
+    ksmbd and SMB Direct remote code execution flaws.
+  summary: >-
+    Trend Micro's Zero Day Initiative sent several Linux kernel vulnerability reports to the
+    public kernel mailing list instead of the private security list, and Greg Kroah-Hartman
+    replied to each asking about the public submission. The reports include ZDI-CAN-33549,
+    an SMB Direct integer underflow RCE rated CVSS 9.0 with a patch queued for Linux 7.5,
+    ZDI-CAN-33774, a ksmbd race condition RCE rated CVSS 9.0, and local privilege escalations
+    in skb_zerocopy, the vmwgfx driver, and a search-domain TCP query path. None were patched
+    in mainline at publication.
+  why: >-
+    Hosts that run in-kernel ksmbd or SMB Direct are exposed to disclosed but unfixed remote
+    code execution bugs and should consider disabling ksmbd until fixes land.
+  followup: >-
+    Mainline and stable kernel fixes for the ksmbd and SMB Direct reports, and CVE assignment.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/LKML-New-Trend-Vulnerabilities
+- title: >-
+    musl discloses CVE-2026-107891, integer overflows in regcomp that can cause heap out-of-bounds
+    writes
+  section: Security
+  category: Security
+  blurb: >-
+    Integer overflows in musl regcomp since 0.5.0 can corrupt the heap when an app compiles
+    regular expressions from untrusted input.
+  summary: >-
+    Rich Felker disclosed multiple integer overflows in musl's regcomp that can produce undersized
+    allocations and out-of-bounds heap writes, triggered by the size and complexity of the
+    pattern rather than the matched data. All versions from 0.5.0 through 1.2.6 are affected.
+    A patch is attached to the advisory and the fix will ship in musl 1.2.7.
+  why: >-
+    Alpine and other musl-based images that compile user-supplied regular expressions through
+    libc regcomp need the patched package or must stop accepting untrusted patterns.
+  followup: musl 1.2.7 release and Alpine package updates.
+  sources:
+  - label: primary
+    url: https://www.openwall.com/lists/musl/2026/10/21/1
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1xc8kia/cve2026107891_musl_libc_multiple_integer_overflow/
 - title: Anthropic launches Claude Duet research preview, a proactive agent on Opus 5.5
   section: AI
   category: AI
@@ -229,6 +275,29 @@ stories:
   - label: primary
     url: https://www.phoronix.com/news/Linus-Kills-Get-Put-User-Linux
 - title: >-
+    Postgres recovery_prefetch amplifies standby read IOPS and can stall synchronous replication
+    for 30+ minutes
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    A reproduction shows recovery_prefetch turning sequential primary I/O into random standby
+    reads that stall synchronous commits for 30+ minutes.
+  summary: >-
+    Jeremy Schneider shows that recovery_prefetch converts large sequential I/O on the primary
+    into 8k random reads on standbys, amplifying IOPS up to 16x, and issues prefetches for
+    pages already restored from full-page images. With synchronous replication, a write burst
+    plus a walreceiver disconnect leaves the standby replaying from WAL until caught up, and
+    writes on the primary hang for over 30 minutes in his pgbench reproduction. Setting recovery_prefetch
+    off removed the long stall in the same test.
+  why: >-
+    Teams running synchronous replication on IOPS-limited cloud disks should test recovery_prefetch
+    off and consider quorum commit with two standbys.
+  sources:
+  - label: primary
+    url: https://ardentperf.com/2026/10/20/postgres-recovery_prefetch-considered-harmful-and-causing-outages/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50188614
+- title: >-
     GitHub moves Git write quorums to per-reference scope to finish its Azure migration
   section: Engineering posts
   category: Engineering post
@@ -249,3 +318,24 @@ stories:
     url: https://github.blog/engineering/architecture-optimization/the-bridge-to-agent-scale-git-infrastructure/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50183344
+- title: >-
+    Fly.io replaces modified JuiceFS with an object-storage block device for Sprites after
+    checkpoint failures
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Fly.io replaced its modified JuiceFS storage for Sprites with ext4 on an NBD block device
+    backed by object storage after checkpoint failures.
+  summary: >-
+    Sprites stored a 100 GB ext4 image in a modified JuiceFS with SQLite metadata and a separate
+    checkpoint database, and writeback mode could leave metadata pointing at chunks never
+    uploaded. A harness running 400 Sprites through about 5,000 write, checkpoint, sleep,
+    wake and restore cycles left some permanently unable to checkpoint. The new Sprites Block
+    Device serves an ext4 volume over NBD with metadata stored in the bucket, versioned block
+    snapshots for checkpoints, and checksum verification on every block read.
+  why: >-
+    It is a concrete case for keeping durable state in a single source of truth instead of
+    reconciling separate chunk, metadata and checkpoint stores.
+  sources:
+  - label: primary
+    url: https://fly.io/blog/sprites-block-device/

@@ -332,3 +332,94 @@ runs:
   - step: save
     status: ok
     seconds: 0.0
+- mode: daily
+  started: 2026-10-22T10:22Z
+  finished: 2026-10-22T10:23Z
+  candidates: 301
+  degraded: {}
+  usage:
+    input_tokens: 8
+    cache_read_tokens: 243086
+    cache_write_tokens: 110026
+    output_tokens: 5757
+    turns: 16
+    seconds: 52
+    cost_usd: 1.0499
+  tools:
+    mcp__digest__fetch_url: 14
+    StructuredOutput: 1
+  fetched:
+  - url: https://docs.gitlab.com/releases/patches/patch-release-gitlab-19-5-1-released/
+    ok: true
+  - url: https://www.phoronix.com/news/LKML-New-Trend-Vulnerabilities
+    ok: true
+  - url: https://www.openwall.com/lists/musl/2026/10/21/1
+    ok: true
+  - url: https://blog.rust-lang.org/2026/10/20/Rustup-1.29.2/
+    ok: true
+  - url: https://mistral.ai/news/mistral-large-4/
+    ok: true
+  - url: https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities/
+    ok: false
+  - url: https://status.hetzner.com/incident/382ed0e5-f1c4-45ec-a7a3-326d3970d6b3
+    ok: true
+  - url: https://ardentperf.com/2026/10/20/postgres-recovery_prefetch-considered-harmful-and-causing-outages/
+    ok: true
+  - url: https://www.theregister.com/security/2026/10/22/php-blames-supply-chain-security-biz-chainguard-for-putting-huge-chunks-of-the-web-at-risk/5304611
+    ok: true
+  - url: https://fulcrumsec.vg/pingcap/
+    ok: true
+  - url: https://github.com/openai/openai-cli
+    ok: true
+  - url: https://www.youtube.com/watch?v=ISdTqzYQiHg
+    ok: true
+  - url: https://fly.io/blog/sprites-block-device/
+    ok: true
+  - url: https://nvd.nist.gov/vuln/detail/cve-2026-111943
+    ok: true
+  added:
+  - >-
+    ZDI posts unpatched Linux kernel vulnerability reports, including two CVSS 9.0 SMB RCEs,
+    to public LKML
+  - >-
+    musl discloses CVE-2026-107891, integer overflows in regcomp that can cause heap out-of-bounds
+    writes
+  - >-
+    Postgres recovery_prefetch amplifies standby read IOPS and can stall synchronous replication
+    for 30+ minutes
+  - >-
+    Fly.io replaces modified JuiceFS with an object-storage block device for Sprites after
+    checkpoint failures
+  dropped: []
+  rejected: []
+  inbox_used: []
+  notes: >-
+    The OpenAI Patch the Planet page returned 403, so it was not added. The NVD page for CVE-2026-111943
+    and the InfoQ YouTube page loaded without content. I left out the FulcrumSec claim of
+    a PingCAP TiDB Cloud breach because the only source is the attacker's leak page, which
+    includes live credentials and download links, and PingCAP has made no statement. I did
+    not add Mistral Large 4 because the post is dated 2026-10-06. I did not add the Hetzner
+    HEL1 object storage incident because its last update was on 2026-10-08. The GitLab 19.5.1
+    critical release is already tracked as f-0082 and has no new fact.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 19.9
+  - step: load
+    status: ok
+    seconds: 0.0
+  - step: select
+    status: ok
+    seconds: 0.2
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 53.6
+  - step: merge
+    status: ok
+    seconds: 0.2
+  - step: save
+    status: ok
+    seconds: 0.0
