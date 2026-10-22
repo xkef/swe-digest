@@ -507,3 +507,93 @@ runs:
   - step: save
     status: ok
     seconds: 0.1
+- mode: daily
+  started: 2026-10-22T14:35Z
+  finished: 2026-10-22T14:37Z
+  candidates: 309
+  degraded: {}
+  usage:
+    input_tokens: 8
+    cache_read_tokens: 265689
+    cache_write_tokens: 127096
+    output_tokens: 6585
+    turns: 16
+    seconds: 59
+    cost_usd: 1.2079
+  tools:
+    mcp__digest__fetch_url: 14
+    StructuredOutput: 1
+  fetched:
+  - url: https://docs.gitlab.com/releases/patches/patch-release-gitlab-19-5-1-released/
+    ok: true
+  - url: https://www.reddit.com/r/rust/comments/1xcfxt7/wasmtime_fixed_a_critical_sandbox_escape_bug_cvss/
+    ok: false
+  - url: https://emudhra.com/en/press-release/emudhra-to-exit-global-ssl-tls-certificate-business
+    ok: true
+  - url: https://mistral.ai/news/mistral-large-4/
+    ok: true
+  - url: https://netflixtechblog.com/single-tenant-titus-vm-level-isolation-on-a-multi-tenant-container-platform-199472cfded5?source=rss----2615bd06b42e---4
+    ok: false
+  - url: https://shopify.engineering/remote-dev
+    ok: true
+  - url: https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities/
+    ok: false
+  - url: https://status.hetzner.com/incident/382ed0e5-f1c4-45ec-a7a3-326d3970d6b3
+    ok: true
+  - url: https://fulcrumsec.vg/pingcap/
+    ok: true
+  - url: https://cloud.google.com/blog/topics/ai-infrastructure/agent-compute-engine-deep-dive/
+    ok: true
+  - url: https://www.phoronix.com/news/Linux-Kernel-Shadow-Stacks
+    ok: true
+  - url: https://www.theregister.com/security/2026/10/22/php-blames-supply-chain-security-biz-chainguard-for-putting-huge-chunks-of-the-web-at-risk/5304611
+    ok: true
+  - url: https://news.ycombinator.com/item?id=50173716
+    ok: true
+  - url: https://github.com/openai/openai-cli
+    ok: true
+  added:
+  - >-
+    FulcrumSec claims 10.6 TB theft from PingCAP's TiDB Cloud, including control plane data
+    and plaintext API keys
+  - Hetzner closes six-week HEL1 Object Storage degradation after bucket migrations
+  - >-
+    Shopify gives its River agent pooled remote Macs and now gets 61 percent of merged mobile
+    PRs from it
+  - >-
+    Google details Agent Compute Engine: credential-free microVMs with off-node token swaps
+    and checkpointed idle agents
+  - Intel posts RFC to run the x86 Linux kernel with hardware shadow stacks
+  dropped: []
+  rejected: []
+  inbox_used: []
+  notes: >-
+    The Netflix Titus post, the OpenAI Patch the Planet post and the Reddit Wasmtime thread
+    returned 403s. With no primary source, I skipped them, including the Wasmtime sandbox
+    escape. The PingCAP story rests on the attacker's own leak post. PingCAP's statement appears
+    only as a truncated link in the HN thread, so its position is in the comments field and
+    every figure is worded as a claim. The GitLab 19.5.1 critical patch is CVE-2026-110264,
+    already tracked as f-0082, so I did not add it. The Mistral Large 4 post is dated 2026-10-06,
+    so I treated it as old.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 19.4
+  - step: load
+    status: ok
+    seconds: 0.1
+  - step: select
+    status: ok
+    seconds: 0.2
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 60.2
+  - step: merge
+    status: ok
+    seconds: 0.3
+  - step: save
+    status: ok
+    seconds: 0.1

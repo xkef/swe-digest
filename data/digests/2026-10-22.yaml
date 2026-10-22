@@ -1,5 +1,5 @@
 date: '2026-10-22'
-updated: 2026-10-22T13:13Z
+updated: 2026-10-22T14:37Z
 lede: >-
   A PHP RCE release that leaked early and drew exploit traffic before the patch led a day
   of runtime security fixes and a Railway secrets breach.
@@ -175,6 +175,56 @@ stories:
     url: https://www.openwall.com/lists/musl/2026/10/21/1
   - label: discussion
     url: https://www.reddit.com/r/linux/comments/1xc8kia/cve2026107891_musl_libc_multiple_integer_overflow/
+- title: >-
+    FulcrumSec claims 10.6 TB theft from PingCAP's TiDB Cloud, including control plane data
+    and plaintext API keys
+  section: Security
+  category: Security
+  blurb: >-
+    Threat actor FulcrumSec claims it took 10.6 TB from TiDB Cloud, including 115,308 plaintext
+    console API keys and customer credentials.
+  summary: >-
+    FulcrumSec published a leak post and a 128 GB first release. It claims it exfiltrated
+    TiDB Cloud data from early September to 2026-09-30 using GCP and Azure credentials committed
+    in PingCAP repositories, and that it exported the control plane metadb every six hours
+    for 22 days without being detected. The claimed data includes 180,046 tenant organisations,
+    42,612 active console API keys, 20.6 million SQL Editor statements, gateway logs with
+    customer client IPs, 413 private repositories, and customer database credentials pasted
+    into Jira tickets.
+  why: >-
+    TiDB Cloud customers should rotate console API keys, cluster root passwords and any credentials
+    ever shared with PingCAP support, then check access logs from client IPs they do not recognise.
+  comments: >-
+    HN commenters quote a PingCAP statement that says an external firm found no evidence the
+    attacker ran commands or kept persistent access in the systems it reviewed, and no evidence
+    that data stored in TiDB was affected. Commenters say this conflicts with the published
+    material. Others point out the leak covers control plane metadata, SQL logs and connection
+    strings, not bulk customer table data.
+  sources:
+  - label: primary
+    url: https://fulcrumsec.vg/pingcap/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50173716
+  thread: f-0121
+- title: Hetzner closes six-week HEL1 Object Storage degradation after bucket migrations
+  section: Outages
+  category: Outage
+  blurb: >-
+    Hetzner closed a HEL1 Object Storage incident on 2026-10-22 after six weeks of elevated
+    latency and stalled requests for some buckets.
+  summary: >-
+    The incident began 2026-09-09 and was marked resolved 2026-10-22 13:34 UTC. Hetzner traced
+    the stalls to low-level commit operations hanging for seconds at a time. It later blamed
+    increased utilisation and I/O pressure, and it moved buckets within HEL1 in the background
+    to fix it.
+  why: >-
+    Teams that use Hetzner Object Storage in HEL1 for backups or artifacts should check whether
+    timeouts since September caused failed jobs or partial uploads.
+  sources:
+  - label: primary
+    url: https://status.hetzner.com/incident/382ed0e5-f1c4-45ec-a7a3-326d3970d6b3
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50185478
 - title: Anthropic launches Claude Duet research preview, a proactive agent on Opus 5.5
   section: AI
   category: AI
@@ -238,6 +288,26 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50183253
 - title: >-
+    Shopify gives its River agent pooled remote Macs and now gets 61 percent of merged mobile
+    PRs from it
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Shopify's River agent now builds and tests iOS and Android apps on pooled remote Macs
+    and opens 61 percent of merged mobile PRs.
+  summary: >-
+    Shopify built Remote Dev, a pool of warm Macs that already have the monorepo checked out
+    and the apps prebuilt. Each Mac is paired with an Android emulator on a Linux VM with
+    nested virtualization, and agents reach both over SSH. Request-to-device time fell from
+    over 30 minutes to a few minutes. Agents record before and after videos of their fixes,
+    and River's share of merged mobile pull requests rose from 6 to 61 percent.
+  why: >-
+    It shows how to give coding agents a real device-testing loop and proof of work for mobile,
+    where Linux-only agent sandboxes cannot build or run iOS apps.
+  sources:
+  - label: primary
+    url: https://shopify.engineering/remote-dev
+- title: >-
     Google publishes its Rust style guide for google3, Android, ChromeOS, Fuchsia and Chrome
   section: Languages and runtimes
   category: Languages
@@ -277,6 +347,24 @@ stories:
   sources:
   - label: primary
     url: https://www.phoronix.com/news/Linus-Kills-Get-Put-User-Linux
+- title: Intel posts RFC to run the x86 Linux kernel with hardware shadow stacks
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    An Intel RFC would run the x86 Linux kernel on hardware shadow stacks, requiring FRED
+    and excluding KVM, retpolines and BPF trampolines.
+  summary: >-
+    Dave Hansen posted a proof-of-concept series on 2026-10-21 that enables CET shadow stacks
+    for kernel code. He calls them probably the single most important in-silicon kernel mitigation
+    Linux does not use. The RFC requires FRED, so it is limited to Panther Lake, Zen 6 and
+    newer. It is currently incompatible with retpolines, function graph tracing, BPF trampolines,
+    kexec, KVM and Xen PV, and Hansen says part of it is vibe-coded and not for merging.
+  why: >-
+    Kernel ROP protection on new x86 hardware is moving from theory to a merge discussion,
+    and its cost will be paid in tracing, BPF and virtualization features.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Linux-Kernel-Shadow-Stacks
 - title: >-
     Postgres recovery_prefetch amplifies standby read IOPS and can stall synchronous replication
     for 30+ minutes
@@ -300,6 +388,27 @@ stories:
     url: https://ardentperf.com/2026/10/20/postgres-recovery_prefetch-considered-harmful-and-causing-outages/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50188614
+- title: >-
+    Google details Agent Compute Engine: credential-free microVMs with off-node token swaps
+    and checkpointed idle agents
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Google runs each agent in a microVM that holds no credentials, swaps tokens at an off-node
+    gateway, and checkpoints idle sessions.
+  summary: >-
+    Agent Compute Engine gives each agent session a single-tenant microVM with no virtual
+    NIC. Traffic goes over virtio-vsock to a proxy, and the guest holds only a short-lived
+    SPIFFE workload identity. The off-node Agent Gateway checks the user delegation, agent
+    and node identities, then inserts backend credentials in flight. Idle sandboxes are checkpointed
+    between tool calls, and hosts share snapshot pages through DAX and copy-on-write to raise
+    density.
+  why: >-
+    The design is a concrete pattern for agent sandboxes: assume the guest is compromised,
+    keep secrets outside it, and treat idle time as the common case for cost.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/topics/ai-infrastructure/agent-compute-engine-deep-dive/
 - title: >-
     GitHub moves Git write quorums to per-reference scope to finish its Azure migration
   section: Engineering posts
