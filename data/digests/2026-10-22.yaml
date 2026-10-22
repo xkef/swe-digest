@@ -1,5 +1,5 @@
 date: '2026-10-22'
-updated: 2026-10-22T14:37Z
+updated: 2026-10-22T18:05Z
 lede: >-
   A PHP RCE release that leaked early and drew exploit traffic before the patch led a day
   of runtime security fixes and a Railway secrets breach.
@@ -206,6 +206,31 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50173716
   thread: f-0121
+- title: >-
+    Wasmtime fixes two critical Cranelift sandbox escapes, one affecting every aarch64 release
+    since 2020
+  section: Security
+  category: Security
+  blurb: >-
+    Two critical Cranelift bugs let crafted Wasm modules escape the Wasmtime sandbox, one
+    on every aarch64 release since 2020.
+  summary: >-
+    On 2026-10-19 Wasmtime published GHSA-mghf-wjfp-p5xm, in which a br_table with more than
+    about 256k targets on aarch64 compiles to a wrong branch target that can jump to attacker-chosen
+    code. It is fixed in 36.0.19, 48.0.7 and 49.0.4. A second advisory, GHSA-897f-g5gm-fmxm,
+    covers silent overflow of bit-packed SSA value indices in Cranelift before v43 that allows
+    miscompilation and sandbox escape on any platform, fixed in 36.0.19. Both are rated CVSS
+    9.9 and have no CVE yet.
+  why: >-
+    Anyone running untrusted Wasm in Wasmtime, especially on aarch64 hosts, needs to move
+    to a patched release now.
+  sources:
+  - label: primary
+    url: https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-mghf-wjfp-p5xm
+  - label: primary
+    url: https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-897f-g5gm-fmxm
+  - label: discussion
+    url: https://www.reddit.com/r/rust/comments/1xcfxt7/wasmtime_fixed_a_critical_sandbox_escape_bug_cvss/
 - title: Hetzner closes six-week HEL1 Object Storage degradation after bucket migrations
   section: Outages
   category: Outage
@@ -308,6 +333,25 @@ stories:
   - label: primary
     url: https://shopify.engineering/remote-dev
 - title: >-
+    Mesa updates AGENTS.md to allow AI-drafted commit messages and comments when a human edits
+    them
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Mesa now lets contributors use AI agents to draft code comments and commit messages, provided
+    a human reviews and edits the final text.
+  summary: >-
+    Alyssa Rosenzweig merged a change to the AGENTS.md file in Mesa Git. It removes the instructions
+    telling agents not to write code comments, commit messages or GitLab comments, because
+    they blocked workflows where a person edits an agent's draft. She says the project's AI
+    contribution policy is unchanged and asks that further policy debate wait a few months.
+  why: >-
+    Maintainers writing AGENTS.md files can learn from Mesa that agent instructions can enforce
+    more than the project's actual policy and break legitimate workflows.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Mesa-Loosens-AGENTS-MD
+- title: >-
     Google publishes its Rust style guide for google3, Android, ChromeOS, Fuchsia and Chrome
   section: Languages and runtimes
   category: Languages
@@ -409,6 +453,30 @@ stories:
   sources:
   - label: primary
     url: https://cloud.google.com/blog/topics/ai-infrastructure/agent-compute-engine-deep-dive/
+- title: >-
+    Quad9 will withdraw its DNS resolver from France on 2026-11-24 after losing a beIN blocking
+    case
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Quad9 will stop serving users in France on 2026-11-24 rather than obey a court order to
+    block domains for broadcaster beIN.
+  summary: >-
+    A French court ruled for beIN and ordered Quad9 to block resolution of several domains
+    for users in France, with the penalty cut to 1,000 euros a day. Quad9 says it cannot identify
+    French users reliably, will not block globally, and will end service in France on 2026-11-24
+    while it appeals. It says about 20 similar lawsuits are pending against it and other resolver
+    operators in France.
+  why: >-
+    Networks and devices in France that use 9.9.9.9 or the other Quad9 addresses need a new
+    resolver before 2026-11-24.
+  followup: Service ends for French users on 2026-11-24, and the appeal is pending.
+  sources:
+  - label: primary
+    url: https://quad9.net/news/blog/au-revoir-france/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50195959
+  thread: f-0122
 - title: >-
     GitHub moves Git write quorums to per-reference scope to finish its Azure migration
   section: Engineering posts
