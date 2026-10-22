@@ -1,0 +1,251 @@
+date: '2026-10-22'
+updated: 2026-10-22T06:18Z
+lede: >-
+  A PHP RCE release that leaked early and drew exploit traffic before the patch led a day
+  of runtime security fixes and a Railway secrets breach.
+stories:
+- title: >-
+    PHP fixes two unauthenticated RCE flaws as exploit traffic arrives before the patch
+  section: Top stories
+  category: Security
+  blurb: >-
+    PHP 8.5.12, 8.4.27, 8.3.36 and 8.2.35 fix two unauthenticated RCE bugs, and sensors logged
+    exploit traffic hours before the release.
+  summary: >-
+    On 2026-10-21 PHP released fixes for CVE-2026-109618 (RCE via out-of-memory corruption)
+    and CVE-2026-109619 (RCE via stale global state), both CVSS 9.2, affecting PHP-FPM, mod_php,
+    php-cgi, FrankenPHP and LiteSpeed. The PHP Foundation says the release was moved forward
+    a day after the CVE IDs leaked on 2026-10-20 and that Chainguard published patched images
+    more than six hours before the coordinated release. ELLIO recorded the first PHP2Shell
+    request at 08:36 UTC, before the fix, and by 23:00 UTC had seen 743 requests from 33 addresses,
+    some carrying Mirai-style loaders.
+  why: >-
+    Every web-facing PHP install on 8.2 or later needs the update now, and 8.1 and older get
+    no official fix, only source backports from the security team.
+  followup: >-
+    Confirmed compromises, a CISA KEV listing, and a reported possible third PHP CVE.
+  comments: >-
+    ELLIO notes that early coverage tied the session upload progress stopgap to the wrong
+    CVE. That setting covers only CVE-2026-109619, and memory_limit=-1 is the interim step
+    for CVE-2026-109618.
+  sources:
+  - label: primary
+    url: https://www.php.net/archive/2026.php#2026-10-21-5
+  - label: primary
+    url: https://thephp.foundation/blog/2026/10/21/todays-php-security-release-and-how-were-strengthening-php-security/
+  - label: discussion
+    url: https://ellio.tech/en/blog/php2shell-what-we-observed-and-what-to-do/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50180873
+- title: Railway says an attacker may have read decrypted customer environment variables
+  section: Top stories
+  category: Security
+  blurb: >-
+    Railway says an attacker may have read decrypted customer environment variables, paused
+    all builds, and told users to rotate every secret.
+  summary: >-
+    On 2026-10-21 Railway detected unauthorized access to systems that store customer environment
+    variables and says some decrypted values may have been obtained. It attributes the attack
+    to a series aimed at platform companies to compromise AI inference providers, paused all
+    deployments, rotated bucket credentials, and on 2026-10-22 invalidated all Railway API
+    tokens. As of 06:12 UTC on 2026-10-22, builds were restored for Enterprise workspaces
+    only, with Pro, Hobby, Free and Trial to follow.
+  why: >-
+    Railway users should rotate every secret stored there, including LLM API keys, database
+    and registry credentials, and check provider usage for abuse.
+  followup: >-
+    Builds restored for all tiers, notification of affected accounts, and a root cause.
+  sources:
+  - label: primary
+    url: https://blog.railway.com/p/security-disclosure-wednesday-october-21st
+  - label: primary
+    url: https://status.railway.com/incident/QH8L8B3E
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50188228
+  - label: discussion
+    url: https://www.reddit.com/r/ClaudeAI/comments/1xc1l52/if_you_use_railway_for_claude_hosted_apps_disable/
+- title: Node.js security releases fix Brotli decoder RCE and TLS hostname bypasses
+  section: Security
+  category: Security
+  blurb: >-
+    Node.js 26.12.1, 24.22.1 and 22.23.4 fix a Brotli decoder RCE, three TLS hostname bypasses,
+    and repeated randomUUID values in snapshots.
+  summary: >-
+    The 2026-10-21 Node.js security release fixes CVE-2026-111497, a Brotli decoder out-of-bounds
+    write that permits remote code execution, plus high-severity TLS hostname bypasses (CVE-2026-105483,
+    CVE-2026-106069) and a dns.resolve NUL truncation bug. It also fixes randomUUID and randomInt
+    entropy caches that were saved into startup snapshots and SEAs, and updates ca-certs for
+    the eMudhra intermediate CA compromise. LWN notes that musl also announced an out-of-bounds
+    write the same day.
+  why: >-
+    Services that decompress Brotli input or ship SEAs and snapshots should move to the patched
+    release lines now.
+  sources:
+  - label: primary
+    url: https://nodejs.org/en/blog/vulnerability/october-2026-security-releases
+  - label: discussion
+    url: https://lwn.net/Articles/1102044/
+- title: >-
+    Oracle issues out-of-band Java SE Security Alert for CVSS 9.1 JSSE flaw CVE-2026-91403
+  section: Security
+  category: Security
+  blurb: >-
+    Oracle issued an out-of-band Security Alert for a CVSS 9.1 JSSE flaw in Java SE 8 through
+    27 and GraalVM, exploitable without authentication.
+  summary: >-
+    Oracle published Security Alert CVE-2026-91403 on 2026-10-21 for the JSSE component, with
+    high confidentiality and integrity impact and network exploitation without credentials.
+    Affected versions include Java SE 8u511, 11.0.33, 17.0.21, 21.0.13, 25.0.5 and 27.0.1,
+    GraalVM for JDK 17 and 21, and GraalVM Enterprise 21.3.20. The Hacker News submission
+    ties the alert to eMudhra certificate revocation, which the advisory text does not state.
+  why: >-
+    JVM services that terminate or originate TLS need the patched JDK outside the regular
+    quarterly CPU cycle.
+  sources:
+  - label: primary
+    url: https://www.oracle.com/security-alerts/alert-cve-2026-91403.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50188443
+- title: >-
+    QPACK amplification lets one connection exhaust memory on seven of ten HTTP/3 stacks
+  section: Security
+  category: Security
+  blurb: >-
+    FoxIO showed one HTTP/3 connection can exhaust server memory via QPACK header expansion.
+    Bun, hyperium h3 and aioquic remain unpatched.
+  summary: >-
+    FoxIO found that HTTP/3 implementations missing or misapplying decoded-header limits let
+    a small HEADERS frame expand into hundreds of thousands of header objects, with up to
+    roughly 4000x amplification in Bun. quic-go 0.57.0, Cloudflare quiche 0.29.3, lsquic 4.9.0
+    and Wireshark are fixed. Bun 1.4.3, the hyperium h3 crate and aioquic with mitmproxy were
+    unpatched as of 2026-10-20, while Google quiche, IIS, Envoy and ngtcp2 are not affected.
+  why: >-
+    Operators exposing HTTP/3 through Caddy, Traefik, Bun or mitmproxy should confirm library
+    versions or disable HTTP/3 until patched.
+  sources:
+  - label: primary
+    url: https://foxio.io/blog/header-accordions-qpack-amplification-attacks-against-http-3-servers
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50188612
+- title: Anthropic launches Claude Duet research preview, a proactive agent on Opus 5.5
+  section: AI
+  category: AI
+  blurb: >-
+    Anthropic opened a waitlist for Claude Duet, a proactive Opus 5.5 agent that works on
+    a cloud computer and asks before sensitive actions.
+  summary: >-
+    Claude Duet takes tasks by message, runs on its own cloud computer with the user's Claude
+    memory, skills and connectors, and sends morning briefs. It asks for approval before sending
+    messages or paying, and its background checks count against plan usage limits. It is a
+    research preview for US Pro and Max subscribers on iOS, Android and the web, and excludes
+    Team and Enterprise plans.
+  why: >-
+    Always-on background agents now draw on the same usage limits as interactive and coding
+    work, which affects capacity planning on shared plans.
+  sources:
+  - label: primary
+    url: https://claude.com/product/claude-duet
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50186037
+- title: OpenAI models enter private preview on Google Cloud with Codex CLI support
+  section: AI
+  category: AI
+  blurb: >-
+    GPT-6 Astra, GPT-6.1 Sol and GPT-6 Luna enter private preview in Google Cloud model garden,
+    and Codex CLI can route inference through it.
+  summary: >-
+    Google Cloud added OpenAI's GPT-6 Astra, GPT-6.1 Sol and GPT-6 Luna to its model garden
+    in private preview for select enterprise customers on 2026-10-21. Usage bills through
+    Google Cloud Marketplace and draws down existing commitments, and local Codex CLI and
+    Desktop can use the Gemini platform for inference. Zero data retention and Confidential
+    Compute are listed as coming soon.
+  why: >-
+    GCP shops can run Codex workflows and OpenAI models under existing IAM, VPC Service Controls
+    and billing instead of a separate vendor contract.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/products/ai-machine-learning/google-cloud-brings-openai-models-to-customers/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50180079
+- title: >-
+    Trail of Bits releases agent plugins after finding 21 regressions in its merged AI patches
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Trail of Bits released patching-bugs and regression-hunt agent plugins after finding 21
+    regressions in 130 of its merged AI-assisted patches.
+  summary: >-
+    Reviewing over 130 Patch the Planet PRs merged upstream, Trail of Bits confirmed 21 regressions
+    (16 functional, one performance, four build or test), none of which broke a security protection.
+    Its regression-hunt plugin requires a live proof of concept per claim and produced 25%
+    fewer false positives than a baseline Codex prompt, with a 95% interval of 14% to 38%.
+    The patching-bugs plugin uses a three-arm proof (original fails, patch passes, revert
+    fails) and reads project THREAT_MODEL.md and PATCHING_GUIDELINES.md files.
+  why: >-
+    Maintainers receiving agent-written patches get a concrete regression rate and a repeatable
+    review workflow with schema-checked evidence.
+  sources:
+  - label: primary
+    url: https://blog.trailofbits.com/2026/10/21/your-ai-agent-fixed-the-bug-but-what-else-did-it-change/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50183253
+- title: >-
+    Google publishes its Rust style guide for google3, Android, ChromeOS, Fuchsia and Chrome
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Google published its Rust style guide for google3, Android, ChromeOS, Fuchsia and Chrome,
+    covering API design, imports, unsafe code and traits.
+  summary: >-
+    The guide adds rules on top of the public Rust style guide to make large-scale automated
+    changes easier, such as no glob imports, one module per use statement, and module-qualified
+    function calls. It advises avoiding Rc and Arc, preferring enums over bool parameters,
+    and expect over unwrap. Some rules are Chromium-specific, including small crates, flat
+    file layout, and no async or std thread spawning.
+  why: >-
+    Teams setting Rust conventions for large monorepos get a tested baseline with rationale
+    for each rule.
+  sources:
+  - label: primary
+    url: https://google.github.io/styleguide/rustguide.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50186010
+- title: Torvalds removes __get_user() and __put_user() from generic Linux 7.4 code
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Torvalds merged removal of __get_user() and __put_user() for Linux 7.4, citing missing
+    address range checks, and used Claude for the conversion.
+  summary: >-
+    The merge removes the unchecked user access helpers from generic kernel code and completes
+    removal for x86 and x86_64, with remnants in some other architectures. Torvalds called
+    them slower and insecure because they skip user address range checks, and pointed to the
+    scoped user access region helpers as the replacement. He said he used Claude as a kind
+    of Coccinelle script for the transformation.
+  why: >-
+    Out-of-tree drivers and modules still calling __get_user() or __put_user() will fail to
+    build on 7.4 and need conversion.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Linus-Kills-Get-Put-User-Linux
+- title: >-
+    GitHub moves Git write quorums to per-reference scope to finish its Azure migration
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    GitHub copied 99.99999% of repositories to Azure and is moving its Spokes write quorum
+    from whole repositories to individual Git references.
+  summary: >-
+    Most repositories now have two of five replicas in Azure, which serves about half of Git
+    traffic. The busiest remaining repositories cannot absorb a 25ms cross-region round trip
+    because each write holds a repository-wide lock and waits on the slowest healthy replica.
+    GitHub is narrowing the quorum to individual references, which also enables stateless
+    read replicas backed by object storage.
+  why: >-
+    It is a detailed case study in reducing coordination scope to survive cross-region latency
+    in a replicated store.
+  sources:
+  - label: primary
+    url: https://github.blog/engineering/architecture-optimization/the-bridge-to-agent-scale-git-infrastructure/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50183344
