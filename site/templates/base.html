@@ -48,6 +48,12 @@
       title="{{ config.title }}"
     >
     <link
+      rel="alternate"
+      type="application/json"
+      href="{{ get_url(path='/api/index.json') | safe }}"
+      title="{{ config.title }} JSON API"
+    >
+    <link
       rel="stylesheet"
       href="{{ get_url(path='/style.css', cachebust=true) | safe }}"
     >
@@ -64,6 +70,8 @@
         <div class="nav-links">
           <a href="{{ get_url(path='/digests/', trailing_slash=true) | safe }}"
           >archive</a>
+          <a href="{{ get_url(path='/threads/', trailing_slash=true) | safe }}"
+          >threads</a>
           <a href="{{ get_url(path='/about/', trailing_slash=true) | safe }}"
           >about</a>
           <a href="{{ get_url(path='/feed.xml') | safe }}">rss</a>

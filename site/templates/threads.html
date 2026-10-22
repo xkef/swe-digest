@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+  {% set threads = load_data(path="data/threads.json") %}
+  <section class="layout listing">
+    <header class="page-header">
+      <h1 class="visually-hidden">Threads</h1>
+      <p>{{ section.description }}</p>
+    </header>
+    <ol class="digest-list">
+      {% for group in ["open", "closed"] %}
+        {% if threads[group] %}
+          <li class="digest-month"><h2>{{ group }}</h2></li>
+        {% endif %}
+        {% for thread in threads[group] %}
+          <li class="digest-row">
+            <time datetime="{{ thread.last_seen }}">{{ thread.last_seen }}</time>
+            <a class="digest-lead" href="{{ config.base_url | safe }}{{ thread.path | safe }}"
+            >{{ thread.subject | safe }}</a>
+            <span class="digest-count">{{ thread.stories }} stories</span>
+          </li>
+        {% endfor %}
+      {% endfor %}
+    </ol>
+  </section>
+{% endblock content %}

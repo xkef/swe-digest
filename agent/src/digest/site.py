@@ -1,7 +1,9 @@
 """Generates the Zola content tree from the digest YAML.
 
 For each day it writes a day page, one page per story, and the day's JSON that
-the templates read. Every output is gitignored and rebuilt on each build.
+the templates read. For each follow-up it writes a thread page. It also writes
+the public JSON API under static/api/, which carries the digest text as stored.
+Every output is gitignored and rebuilt on each build.
 
 Untrusted text never passes through markdown. Python escapes it and marks only
 backtick spans as inline code, and the templates print that HTML as it is. The
@@ -13,6 +15,7 @@ import html
 import json
 import re
 import shutil
+from pathlib import Path
 from typing import Any
 
 from digest import config, memory, runs, stories
@@ -24,19 +27,31 @@ FIELDS = (
     ("followup", "Follow-up"),
     ("comments", "Comments"),
 )
+# Bumped when a field of the JSON API changes meaning or goes away.
+API_VERSION = 1
+API_PAGE_SIZE = 100
+SEARCH_FIELDS = ("date", "title", "section", "category", "blurb", "thread", "url")
 
 
 def build() -> None:
     days_dir = config.SITE / "content" / "digests"
     stories_dir = config.SITE / "content" / "stories"
+    threads_dir = config.SITE / "content" / "threads"
     data_dir = config.SITE / "data" / "digests"
-    for generated in (stories_dir, data_dir, *(d for d in days_dir.glob("*") if d.is_dir())):
+    api_dir = config.SITE / "static" / "api"
+    generated = (stories_dir, threads_dir, data_dir, api_dir, *(d for d in days_dir.glob("*") if d.is_dir()))
+    for directory in generated:
         # A fresh checkout has none of these yet.
-        shutil.rmtree(generated, ignore_errors=True)
-    stories_dir.mkdir(parents=True)
-    data_dir.mkdir(parents=True)
+        shutil.rmtree(directory, ignore_errors=True)
+    for directory in (stories_dir, threads_dir, data_dir, api_dir / "digests", api_dir / "stories"):
+        directory.mkdir(parents=True)
     (stories_dir / "_index.md").write_text('+++\ntitle = "Stories"\nrender = false\n+++\n')
 
+    base = config.settings()["site"].rstrip("/")
+    threads = {entry["id"]: entry for entry in memory.load()}
+    members: dict[str, list[dict[str, str]]] = {}
+    days = []
+    newest_first: list[dict[str, Any]] = []
     total = 0
     for file in sorted(config.DIGESTS.glob("*.yaml")):
         digest = config.load(file)
@@ -51,11 +66,90 @@ def build() -> None:
             f"description = {_toml(_plain(_lede(digest)))}\n+++\n"
         )
         for story, card in zip(digest["stories"], cards, strict=True):
-            (stories_dir / f"{day}-{card['slug']}.md").write_text(_story_page(day, story, card))
+            thread = threads.get(story.get("thread", ""))
+            (stories_dir / f"{day}-{card['slug']}.md").write_text(_story_page(day, story, card, thread))
+            if thread:
+                member = {"date": day, "title": story["title"], "url": base + card["url"]}
+                members.setdefault(thread["id"], []).append(member)
         (data_dir / f"{day}.json").write_text(json.dumps(_day_data(day, digest, cards), indent=1))
+
+        updated = str(digest["updated"]) if digest.get("updated") else None
+        stories_out = [
+            story | {"url": base + card["url"]} for story, card in zip(digest["stories"], cards, strict=True)
+        ]
+        api_day = {
+            "version": API_VERSION,
+            "date": day,
+            "updated": updated,
+            "lede": digest.get("lede"),
+            "stories": stories_out,
+        }
+        _write_json(api_dir / "digests" / f"{day}.json", api_day)
+        newest_first[:0] = [{"date": day} | story for story in stories_out]
+        days.append(
+            {
+                "date": day,
+                "updated": updated,
+                "count": len(cards),
+                "url": f"{base}/digests/{day}/",
+                "json": f"{base}/api/digests/{day}.json",
+            }
+        )
         total += len(cards)
+
+    for entry in threads.values():
+        (threads_dir / f"{entry['id']}.md").write_text(
+            _thread_page(entry, members.get(entry["id"], []), base)
+        )
+    (threads_dir / "_index.md").write_text(
+        '+++\ntitle = "Threads"\ndescription = "Stories the digest follows across days."\n'
+        'template = "threads.html"\n+++\n'
+    )
+    (config.SITE / "data" / "threads.json").write_text(json.dumps(_threads_data(threads, members), indent=1))
+    api_threads = [
+        entry | {"url": f"{base}/threads/{entry['id']}/", "stories": members.get(entry["id"], [])}
+        for entry in threads.values()
+    ]
+    _write_json(api_dir / "threads.json", {"version": API_VERSION, "threads": api_threads})
+    _write_pages(api_dir / "stories", newest_first, base)
+    search = [{key: story.get(key) for key in SEARCH_FIELDS} for story in newest_first]
+    _write_json(api_dir / "search.json", {"version": API_VERSION, "stories": search})
+    index = {
+        "version": API_VERSION,
+        "days": days[::-1],
+        "threads": f"{base}/api/threads.json",
+        "stories": f"{base}/api/stories/1.json",
+        "search": f"{base}/api/search.json",
+    }
+    _write_json(api_dir / "index.json", index)
+
     (config.SITE / "data" / "stats.json").write_text(json.dumps({"stories": total}))
-    print(f"site: {total} stories")
+    print(f"site: {total} stories, {len(threads)} threads")
+
+
+def _write_pages(directory: Path, items: list[dict[str, Any]], base: str) -> None:
+    """Writes the stories as numbered pages, each linking to its neighbors."""
+    pages = max(1, -(-len(items) // API_PAGE_SIZE))
+
+    def link(number: int) -> str | None:
+        return f"{base}/api/stories/{number}.json" if 1 <= number <= pages else None
+
+    for number in range(1, pages + 1):
+        page = {
+            "version": API_VERSION,
+            "page": number,
+            "pages": pages,
+            "total": len(items),
+            "prev": link(number - 1),
+            "next": link(number + 1),
+            "stories": items[(number - 1) * API_PAGE_SIZE : number * API_PAGE_SIZE],
+        }
+        _write_json(directory / f"{number}.json", page)
+
+
+def _write_json(file: Path, value: Any) -> None:
+    # YAML may load a date as a date. The API writes every date as text.
+    file.write_text(json.dumps(value, ensure_ascii=False, default=str))
 
 
 def _card(day: str, story: dict[str, Any]) -> dict[str, Any]:
@@ -101,7 +195,7 @@ def _day_data(day: str, digest: dict[str, Any], cards: list[dict[str, Any]]) -> 
     }
 
 
-def _story_page(day: str, story: dict[str, Any], card: dict[str, Any]) -> str:
+def _story_page(day: str, story: dict[str, Any], card: dict[str, Any], thread: memory.Followup | None) -> str:
     lines = [
         "+++",
         f"title = {_toml(_plain(story['title']))}",
@@ -121,7 +215,60 @@ def _story_page(day: str, story: dict[str, Any], card: dict[str, Any]) -> str:
             lines += ["[[extra.fields]]", f"label = {_toml(label)}", f"text = {_toml(_html(story[key]))}"]
     for source in story["sources"]:
         lines += ["[[extra.sources]]", f"label = {_toml(source['label'])}", f"url = {_toml(source['url'])}"]
+    if thread:
+        lines += [
+            "[extra.thread]",
+            f"id = {_toml(thread['id'])}",
+            f"subject_html = {_toml(_html(thread['subject']))}",
+        ]
     return "\n".join([*lines, "+++", ""])
+
+
+def _thread_page(entry: memory.Followup, members: list[dict[str, str]], base: str) -> str:
+    lines = [
+        "+++",
+        f"title = {_toml(_plain(entry['subject']))}",
+        f"path = {_toml(f'threads/{entry["id"]}')}",
+        'template = "thread.html"',
+        f"description = {_toml(_plain(entry['watch_for']))}",
+        "[extra]",
+        f"subject_html = {_toml(_html(entry['subject']))}",
+        f"watch_for_html = {_toml(_html(entry['watch_for']))}",
+        f"opened = {_toml(entry['opened'])}",
+        f"last_seen = {_toml(entry['last_seen'])}",
+        f"closed = {_toml(entry.get('closed') or '')}",
+    ]
+    for note in entry.get("notes", []):
+        lines += ["[[extra.notes]]", f"text = {_toml(_html(note))}"]
+    for member in members:
+        lines += [
+            "[[extra.stories]]",
+            f"day = {_toml(member['date'])}",
+            f"title_html = {_toml(_html(member['title']))}",
+            f"path = {_toml(member['url'].removeprefix(base))}",
+        ]
+    return "\n".join([*lines, "+++", ""])
+
+
+def _threads_data(
+    threads: dict[str, memory.Followup], members: dict[str, list[dict[str, str]]]
+) -> dict[str, Any]:
+    """Returns the thread index, open threads first, each group most recent first."""
+    rows: list[dict[str, Any]] = [
+        {
+            "path": f"/threads/{entry['id']}/",
+            "subject": _html(entry["subject"]),
+            "last_seen": str(entry["last_seen"]),
+            "closed": str(entry.get("closed") or ""),
+            "stories": len(members.get(entry["id"], [])),
+        }
+        for entry in threads.values()
+    ]
+    rows.sort(key=lambda row: row["last_seen"], reverse=True)
+    return {
+        "open": [row for row in rows if not row["closed"]],
+        "closed": [row for row in rows if row["closed"]],
+    }
 
 
 def _lede(digest: dict[str, Any]) -> str:

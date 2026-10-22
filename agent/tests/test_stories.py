@@ -46,10 +46,15 @@ def test_problems_catch_wrong_date_and_shape():
         {"sources": [{"label": "primary", "url": 'https://x.dev/" onclick="'}]},
         {"blurb": ""},
         {"title": ["not", "text"]},
+        {"thread": "../../x"},
     ],
 )
 def test_story_problems(bad):
     assert stories.story_problems(story(**bad))
+
+
+def test_thread_id_is_allowed():
+    assert stories.story_problems(story(thread="f-0040")) == []
 
 
 def test_code_in_text_is_allowed():

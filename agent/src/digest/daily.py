@@ -33,6 +33,7 @@ STORY_KEYS = (
     "why",
     "followup",
     "comments",
+    "thread",
     "sources",
 )
 # What a run takes from outside. Saved after each run, these replay it.
@@ -89,11 +90,13 @@ def merge(
     reply: dict[str, Any],
     candidates: list[dict[str, Any]],
     fetched: list[dict[str, Any]],
+    followups: list[memory.Followup],
 ) -> State:
     """Applies the reply to a copy of today's digest.
 
     A proposed story enters only if it passes ``stories.vet``, and it may cite
-    only URLs the run saw as a candidate or fetched.
+    only URLs the run saw as a candidate or fetched. A link to a thread that is
+    not open is dropped, and the story still enters.
     """
     answer = reply["answer"]
     known = {item["url"] for item in candidates}
@@ -103,10 +106,13 @@ def merge(
     dropped = [s["title"] for s in digest["stories"] if s["title"] in set(answer["drop"])]
     updated: stories.Day = digest | {"stories": [s for s in digest["stories"] if s["title"] not in dropped]}
     published = stories.archive_urls(day) | stories.source_urls(updated["stories"])
+    open_ids = {entry["id"] for entry in followups if memory.is_open(entry)}
 
     added, rejected = [], []
     for proposal in answer["stories"][:MAX_NEW_STORIES]:
         story = {key: proposal[key] for key in STORY_KEYS if proposal.get(key)}
+        if story.get("thread") not in open_ids:
+            story.pop("thread", None)
         reason = stories.vet(story, updated, published, known)
         if reason:
             rejected.append({"title": str(proposal.get("title")), "reason": reason})
@@ -123,8 +129,13 @@ def merge(
 
 
 def save(day: str, updated: stories.Day, followups: list[memory.Followup], reply: dict[str, Any]) -> State:
+    """Writes the digest and the follow-ups, and links each story to the thread it opened."""
+    changed, opened = memory.apply(followups, reply["answer"]["followups"], day)
+    for story in updated["stories"]:
+        if story["title"] in opened and not story.get("thread"):
+            story["thread"] = opened[story["title"]]
     stories.save({key: updated[key] for key in ("date", "updated", "lede", "stories") if key in updated})
-    memory.save(memory.apply(followups, reply["answer"]["followups"], day))
+    memory.save(changed)
     return {}
 
 
@@ -178,7 +189,9 @@ def brief(
     lines += [f"- {section}: {count} published" for section, count in counts.items()]
 
     lines += ["", "## Open follow-ups"]
-    lines += [f"- {f['id']}: {f['subject']} | watch for: {f['watch_for']}" for f in followups]
+    lines += [
+        f"- {f['id']}: {f['subject']} | watch for: {f['watch_for']}" for f in followups if memory.is_open(f)
+    ]
 
     lines += ["", "## Owner story requests"]
     lines += [f"- #{i['number']} {i['title']}\n  {' '.join(i['body'].split())}" for i in inbox] or ["(none)"]
@@ -212,6 +225,7 @@ def schema() -> dict[str, Any]:
             "why": text,
             "followup": text,
             "comments": text,
+            "thread": text,
             "sources": {
                 "type": "array",
                 "minItems": 1,
@@ -242,7 +256,7 @@ def schema() -> dict[str, Any]:
                         "items": {
                             "type": "object",
                             "required": ["subject", "watch_for"],
-                            "properties": {"subject": text, "watch_for": text},
+                            "properties": {"subject": text, "watch_for": text, "story": text},
                         },
                     },
                     "note": {

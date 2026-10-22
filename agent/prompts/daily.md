@@ -36,13 +36,14 @@ run, the correct answer is an empty `stories` list.
 - `followup`: the next date or event to watch. Optional.
 - `comments`: what the discussion thread adds, when it adds fact or
   practitioner experience. Optional.
+- `thread`: the id of the open follow-up this story advances. Optional.
 
 ## Follow-ups
 
 Follow-ups are threads the digest tracks across days.
 
 - `open` a thread when a story has a known next step: a release date, a
-  deadline, a pending fix.
+  deadline, a pending fix. Set `story` to that story's exact title.
 - `note` an open thread when a candidate moves it. Say what changed in one
   sentence.
 - `close` a thread when it has resolved.
