@@ -1,5 +1,5 @@
 date: '2026-10-22'
-updated: 2026-10-22T18:05Z
+updated: 2026-10-22T20:45Z
 lede: >-
   A PHP RCE release that leaked early and drew exploit traffic before the patch led a day
   of runtime security fixes and a Railway secrets breach.
@@ -290,6 +290,41 @@ stories:
     url: https://cloud.google.com/blog/products/ai-machine-learning/google-cloud-brings-openai-models-to-customers/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50180079
+- title: Anthropic donates the Agent Skills standard to the Agentic AI Foundation
+  section: AI
+  category: AI
+  blurb: >-
+    Anthropic hands the Agent Skills standard to the Linux Foundation's Agentic AI Foundation,
+    which already hosts the MCP specification.
+  summary: >-
+    On 2026-10-22 Anthropic said it is donating the Agent Skills standard to the Agentic AI
+    Foundation under the Linux Foundation, which it co-founded with Block and OpenAI. The
+    foundation already holds the Model Context Protocol, which Anthropic donated earlier.
+  why: >-
+    Skill packages written for one agent harness now sit under a vendor-neutral standards
+    body alongside MCP, which lowers lock-in risk for teams building on them.
+  sources:
+  - label: discussion
+    url: https://simonwillison.net/2026/Oct/22/donating-agent-skills/
+- title: >-
+    Modular opens the full MAX source under a license barring hosted inference and modified
+    redistribution
+  section: AI
+  category: AI
+  blurb: >-
+    Modular publishes the full MAX inference stack source under a license that bars hosted
+    inference services and modified redistribution.
+  summary: >-
+    With MAX 26.7, Modular made the MAX graph compiler, runtime and device extensibility hooks
+    source available under a new MAX license. The license allows royalty-free commercial products
+    but forbids AI-assisted reimplementations, commercial hosted inference services built
+    on MAX, and publishing modified source.
+  why: >-
+    Teams evaluating MAX as an OpenAI-compatible inference server can now read the code but
+    cannot fork it or sell it as a hosted service.
+  sources:
+  - label: discussion
+    url: https://www.phoronix.com/news/Modular-MAX-Complete-Open
 - title: >-
     Trail of Bits releases agent plugins after finding 21 regressions in its merged AI patches
   section: Agentic coding
@@ -372,6 +407,28 @@ stories:
     url: https://google.github.io/styleguide/rustguide.html
   - label: discussion
     url: https://news.ycombinator.com/item?id=50186010
+- title: >-
+    Spring Boot 4.2.0-RC1 ships on Spring Framework 7.1.0-RC1 with faster nested jar loading
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Spring Boot's 4.2 release candidate speeds nested jar lookups, changes the default buildpack
+    builder, and moves to Framework 7.1.0-RC1.
+  summary: >-
+    Spring Boot 4.2.0-RC1 was released on 2026-10-22 with uber jar changes that look up classes
+    and resources directly in nested jars and apply a readAllBytes() optimization to deflated
+    entries. It switches the default buildpack builder to ubuntu-resolute-builder and upgrades
+    to Spring Framework 7.1.0-RC1, Spring Security 7.2.0-RC1, Netty 4.2.19 and Micrometer
+    1.18.0-RC1. Maintenance releases 4.1.2 and 4.0.9 shipped the same day.
+  why: >-
+    Teams on Spring Boot 4.x can test the nested jar loader changes and the new default builder
+    image before 4.2 GA, since the RC already fixed regressions in class name and space-containing
+    resource lookups.
+  sources:
+  - label: primary
+    url: https://github.com/spring-projects/spring-boot/releases/tag/v4.2.0-RC1
+  - label: primary
+    url: https://github.com/spring-projects/spring-framework/releases/tag/v7.1.0-RC1
 - title: Torvalds removes __get_user() and __put_user() from generic Linux 7.4 code
   section: Linux and kernel
   category: Linux/Kernel
@@ -409,6 +466,26 @@ stories:
   sources:
   - label: primary
     url: https://www.phoronix.com/news/Linux-Kernel-Shadow-Stacks
+- title: >-
+    Linux 7.4 merges scheduler changes cutting short-slice task latency and adding a VM steal
+    governor
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Linux 7.4 merges EEVDF changes that cut short-slice task latency by up to 55 percent,
+    plus a steal-time governor for VM vCPUs.
+  summary: >-
+    The scheduler pull for Linux 7.4 includes Vincent Guittot's EEVDF work that lowered short-slice
+    task scheduling latency by up to 55 percent in reported tests. It adds a steal governor
+    that manages vCPUs based on steal time, an SMT sibling preference for NVIDIA Vera CPUs,
+    and random selection among equally shallow idle cores on high core count machines.
+  why: >-
+    Latency-sensitive workloads using sched_attr slices and overcommitted VM hosts get scheduler
+    behavior changes worth benchmarking when 7.4 lands.
+  thread: f-0068
+  sources:
+  - label: discussion
+    url: https://www.phoronix.com/news/Linux-7.4
 - title: >-
     Postgres recovery_prefetch amplifies standby read IOPS and can stall synchronous replication
     for 30+ minutes
