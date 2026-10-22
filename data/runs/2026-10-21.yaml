@@ -415,3 +415,253 @@ runs:
       Request ID: req_011CgFDjiHuahYvTh9AeXhL3
 
       Message ID: msg_011CgFDjicWDhbrJ4thVzmT4 (exit code: 1)
+- mode: daily
+  started: 2026-10-21T14:34Z
+  finished: 2026-10-21T14:35Z
+  candidates: 298
+  degraded:
+    The Eclectic Light Company: 'https://eclecticlight.co/feed/: HTTP Error 500: Internal
+      Server Error'
+    Import AI: 'https://importai.substack.com/feed: HTTP Error 403: Forbidden'
+  usage:
+    input_tokens: 8
+    cache_read_tokens: 205753
+    cache_write_tokens: 89173
+    output_tokens: 5291
+    turns: 12
+    seconds: 48
+    cost_usd: 0.8663
+  tools:
+    mcp__digest__fetch_url: 10
+    StructuredOutput: 1
+  fetched:
+  - url: https://lwn.net/Articles/1102014/
+    ok: true
+  - url: https://www.reddit.com/r/Python/comments/1xbnrhi/litellm_11070_on_pypi_is_compromised/
+    ok: false
+  - url: https://github.com/nodejs/node/releases/tag/v24.22.1
+    ok: true
+  - url: https://www.wiz.io/blog/php2shell-php-rce
+    ok: true
+  - url: https://pypi.org/project/litellm/
+    ok: true
+  - url: https://www.anthropic.com/research/attack-surface-reduction
+    ok: true
+  - url: https://postgr.es/p/9zf
+    ok: false
+  - url: https://www.youtube.com/watch?v=adfw3xJBx1o
+    ok: true
+  - url: https://www.wiz.io/blog/litellm-compromised-steals-credentials
+    ok: true
+  - url: https://duckdb.org/2026/10/21/announcing-duckdb-200
+    ok: true
+  added:
+  - >-
+    PHP 8.5.12, 8.4.27, 8.3.36 and 8.2.35 fix PHP2Shell, two unauthenticated RCE flaws in
+    the PHP engine
+  - LiteLLM 1.107.0 on PyPI and Docker was trojanized with a credential stealer
+  - >-
+    Node.js 26.12.1, 24.22.1 and 22.23.4 ship security fixes for TLS, DNS, HTTP and the permission
+    model
+  - >-
+    Anthropic uses Claude to cut reachable attack surface, moving OpenSSH key-type checks
+    before ML-DSA parsing
+  - >-
+    DuckDB 2.0.0 LTS ships the Quack server protocol, async I/O, triggers and a new storage
+    format
+  dropped: []
+  rejected: []
+  inbox_used: []
+  notes: >-
+    The Reddit litellm thread returned 403 and PyPI served a client challenge, so LiteLLM
+    details rest on the Wiz write-up. The postgr.es link for the recovery_prefetch post returned
+    500, so that story was skipped. The PHP release goes in as a new story because the earlier
+    one only covered the advance notice. The YouTube page for the Monzo agent talk had no
+    content, so that talk was not added.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 19.1
+  - step: load
+    status: ok
+    seconds: 0.0
+  - step: select
+    status: ok
+    seconds: 0.2
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 49.3
+  - step: merge
+    status: ok
+    seconds: 0.2
+  - step: save
+    status: ok
+    seconds: 0.0
+- mode: daily
+  started: 2026-10-21T18:09Z
+  finished: 2026-10-21T18:10Z
+  candidates: 303
+  degraded:
+    Import AI: 'https://importai.substack.com/feed: HTTP Error 403: Forbidden'
+  usage:
+    input_tokens: 6
+    cache_read_tokens: 143450
+    cache_write_tokens: 86336
+    output_tokens: 3747
+    turns: 11
+    seconds: 37
+    cost_usd: 0.8003
+  tools:
+    mcp__digest__fetch_url: 9
+    StructuredOutput: 1
+  fetched:
+  - url: https://lwn.net/Articles/1102044/
+    ok: true
+  - url: https://blog.rust-lang.org/2026/10/20/Rustup-1.29.2/
+    ok: true
+  - url: https://www.githubstatus.com/incidents/nms1dpzmh9d9
+    ok: true
+  - url: https://postgr.es/p/9zf
+    ok: true
+  - url: https://github.blog/engineering/architecture-optimization/the-bridge-to-agent-scale-git-infrastructure/
+    ok: true
+  - url: https://thephp.foundation/blog/2026/10/21/todays-php-security-release-and-how-were-strengthening-php-security/
+    ok: true
+  - url: https://www.youtube.com/watch?v=adfw3xJBx1o
+    ok: true
+  - url: https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities
+    ok: false
+  - url: https://github.com/prometheus/prometheus/releases/tag/v3.15.1
+    ok: true
+  added: []
+  dropped: []
+  rejected:
+  - title: >-
+      GitHub event streaming overload delays pull requests, Actions and webhooks on 2026-10-21
+    reason: blurb outside 100-145 characters
+  - title: >-
+      Postgres recovery_prefetch can amplify standby IOPS and stall synchronous-replication
+      writes for hours
+    reason: blurb outside 100-145 characters
+  - title: >-
+      GitHub moves Git quorum from repository-wide locks to per-reference writes to finish
+      its Azure migration
+    reason: blurb outside 100-145 characters
+  inbox_used: []
+  notes: >-
+    The OpenAI Patch the Planet page returned 403, so it was not used. The Monzo coding agent
+    talk page on YouTube loaded without content and could not be verified, so it was skipped.
+    LWN reports a musl out-of-bounds write, but the musl advisory URL was not among the candidates,
+    so that item waits for a primary source. The PHP Foundation post on the leak and embargo
+    break is recorded as a note on f-0078 because today's PHP release story already covers
+    it.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 18.2
+  - step: load
+    status: ok
+    seconds: 0.0
+  - step: select
+    status: ok
+    seconds: 0.3
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 38.0
+  - step: merge
+    status: ok
+    seconds: 0.2
+  - step: save
+    status: ok
+    seconds: 0.0
+- mode: daily
+  started: 2026-10-21T20:50Z
+  finished: 2026-10-21T20:51Z
+  candidates: 307
+  degraded:
+    Import AI: 'https://importai.substack.com/feed: HTTP Error 403: Forbidden'
+  usage:
+    input_tokens: 6
+    cache_read_tokens: 136755
+    cache_write_tokens: 96398
+    output_tokens: 4389
+    turns: 11
+    seconds: 43
+    cost_usd: 0.8923
+  tools:
+    mcp__digest__fetch_url: 9
+    StructuredOutput: 1
+  fetched:
+  - url: https://docs.gitlab.com/releases/patches/patch-release-gitlab-19-5-1-released/
+    ok: true
+  - url: https://blog.rust-lang.org/2026/10/20/Rustup-1.29.2/
+    ok: true
+  - url: https://lwn.net/Articles/1102044/
+    ok: true
+  - url: https://docs.mistral.ai/models/mistral-large-4-0
+    ok: true
+  - url: https://status.hetzner.com/incident/382ed0e5-f1c4-45ec-a7a3-326d3970d6b3
+    ok: true
+  - url: https://thephp.foundation/blog/2026/10/21/todays-php-security-release-and-how-were-strengthening-php-security/
+    ok: true
+  - url: https://postgr.es/p/9zf
+    ok: true
+  - url: https://github.blog/engineering/architecture-optimization/the-bridge-to-agent-scale-git-infrastructure/
+    ok: true
+  - url: https://www.githubstatus.com/incidents/nms1dpzmh9d9
+    ok: true
+  added:
+  - >-
+    PostgreSQL recovery_prefetch can stall synchronous replication for hours after write bursts
+  dropped: []
+  rejected:
+  - title: >-
+      GitLab patches CVE-2026-110264, a CVSS 10.0 unauthenticated RCE in its regular expression
+      compiler
+    reason: Top stories is full
+  - title: >-
+      GitHub moves quorum writes from repository-wide to per-reference to finish its Git migration
+      to Azure
+    reason: blurb outside 100-145 characters
+  - title: >-
+      Mistral lists Mistral Large 4, an open-weight 1.05T-parameter MoE with 52B active parameters
+      and 1M context
+    reason: blurb outside 100-145 characters
+  inbox_used: []
+  notes: >-
+    I added GitLab's CVSS 10.0 RCE to Top stories. It is a different CVE from the GitLab item
+    tracked in f-0039. Mistral's docs page shows a 2026-10-06 version date, but the HN submission
+    is from today and the model has not run in the digest before. The PHP Foundation post,
+    Rustup 1.29.2 and the GitHub status resolution went in as follow-up notes, not stories,
+    because they extend threads already published. I skipped the musl vulnerability because
+    I had no primary URL to verify it. I skipped the Hetzner HEL1 object storage incident
+    because it dates from 2026-09-09 and has no new update today. I skipped the reported third
+    PHP CVE because it is an unverified social post. Import AI returned 403.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 14.7
+  - step: load
+    status: ok
+    seconds: 0.0
+  - step: select
+    status: ok
+    seconds: 0.2
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 45.0
+  - step: merge
+    status: ok
+    seconds: 0.2
+  - step: save
+    status: ok
+    seconds: 0.0

@@ -1,5 +1,5 @@
 date: '2026-10-21'
-updated: 2026-10-21T06:13Z
+updated: 2026-10-21T20:51Z
 lede: >-
   Patch day pressure: PHP ships two critical RCE fixes at 14:00 UTC while Go and Cloudflare
   race to distrust compromised eMudhra CA keys.
@@ -64,6 +64,59 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/programming/comments/1xarfxg/go_issues_emergency_update_blocking_eight_ca_keys/
 - title: >-
+    PHP 8.5.12, 8.4.27, 8.3.36 and 8.2.35 fix PHP2Shell, two unauthenticated RCE flaws in
+    the PHP engine
+  section: Top stories
+  category: Security
+  blurb: >-
+    PHP 8.5.12, 8.4.27, 8.3.36 and 8.2.35 patch two pre-auth RCE flaws in the engine that
+    Wiz exploited against WordPress, Drupal and Joomla.
+  summary: >-
+    The PHP project released 8.5.12, 8.4.27, 8.3.36 and 8.2.35 on 2026-10-21 to fix CVE-2026-109618
+    and CVE-2026-109619, use-after-free and stale global state bugs triggered by out-of-memory
+    handling during request startup. LWN reports all PHP SAPIs serving web requests are at
+    risk, including PHP-FPM, mod_php, php-cgi, FrankenPHP and LiteSpeed, with mod_php at highest
+    risk, and that branches before 8.1 get only backport patches. Wiz says every release back
+    to 5.4 is affected and it demonstrated pre-auth RCE and worker memory disclosure through
+    PHPSESSID cookies, using Gemini 4 Argon and GPT-5.6 Sol.
+  why: >-
+    Every PHP server needs the update or a distribution backport now, and the flaws sit below
+    application code, so app-level hardening does not help.
+  followup: Distribution packages, a public exploit, and first exploitation reports.
+  comments: >-
+    Wiz lists detection signals until patching: multipart requests followed by memory-limit
+    errors or repeated HTTP 500s, oversized PHPSESSID cookies, and unexplained worker churn.
+  sources:
+  - label: primary
+    url: https://lwn.net/Articles/1102014/
+  - label: primary
+    url: https://www.wiz.io/blog/php2shell-php-rce
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50180943
+- title: LiteLLM 1.107.0 on PyPI and Docker was trojanized with a credential stealer
+  section: Top stories
+  category: Security
+  blurb: >-
+    A trojanized LiteLLM 1.107.0 reached PyPI and Docker images on 2026-10-21 with a credential
+    stealer, and 1.106.2 is the last safe version.
+  summary: >-
+    Wiz reports a malicious LiteLLM 1.107.0 was uploaded to PyPI at 11:39 UTC on 2026-10-21
+    and shipped in GHCR and Docker Hub images tagged v1.107.0, latest, main-latest and main-stable.
+    It drops cook.pth, cook.py and sitecustomize.py into site-packages, runs on every interpreter
+    start, steals browser, cloud, developer and AI tool secrets to the lookalike domain litellm.dev,
+    and carries a dormant second-stage loader. The payload came from commits on a hyphenated
+    Berri-AI fork that reached the release pipeline.
+  why: >-
+    Any environment that installed 1.107.0 or pulled the affected image tags should be treated
+    as compromised and its credentials rotated.
+  followup: >-
+    A LiteLLM maintainer incident report on how the fork reached the release pipeline.
+  sources:
+  - label: primary
+    url: https://www.wiz.io/blog/litellm-compromised-steals-credentials
+  - label: discussion
+    url: https://www.reddit.com/r/Python/comments/1xbnrhi/litellm_11070_on_pypi_is_compromised/
+- title: >-
     Ransomware groups have exploited PAN-OS GlobalProtect bypass CVE-2026-0257 since June,
     Unit 42 says
   section: Security
@@ -106,6 +159,30 @@ stories:
     url: https://hunt.io/blog/ukraine-state-data-exchange-graylog-log4shell
   - label: discussion
     url: https://www.reddit.com/r/cybersecurity/comments/1xauvjc/ukraines_state_dataexchange_system_targeted_in_a/
+- title: >-
+    Node.js 26.12.1, 24.22.1 and 22.23.4 ship security fixes for TLS, DNS, HTTP and the permission
+    model
+  section: Security
+  category: Security
+  blurb: >-
+    Node.js 26.12.1, 24.22.1 and 22.23.4 fix TLS IP normalization, DNS null-byte, permission
+    model and brotli CVEs, and update OpenSSL.
+  summary: >-
+    The 2026-10-21 security releases fix CVE-2026-105481 (HTTP agent data guard), CVE-2026-105482
+    (DNS null bytes), CVE-2026-105483 and CVE-2026-106069 (TLS IP normalization), CVE-2026-106073
+    (permission model in realpathSync), CVE-2026-106074 (random caches across snapshots) and
+    CVE-2026-111497 (brotli). The 24.22.1 release also updates root certificates to NSS 3.131.1,
+    adds rejection of chains containing blocked public keys, and moves to OpenSSL 3.5.9.
+  why: >-
+    Node services on all supported lines should upgrade, and the CA changes matter for the
+    eMudhra key compromise.
+  sources:
+  - label: primary
+    url: https://github.com/nodejs/node/releases/tag/v24.22.1
+  - label: primary
+    url: https://github.com/nodejs/node/releases/tag/v26.12.1
+  - label: primary
+    url: https://github.com/nodejs/node/releases/tag/v22.23.4
 - title: Google open-sources TorchTPU, a native PyTorch backend for TPUs
   section: AI
   category: AI
@@ -124,6 +201,52 @@ stories:
     url: https://github.com/google-pytorch/torch_tpu
   - label: discussion
     url: https://news.ycombinator.com/item?id=50169053
+- title: >-
+    Anthropic uses Claude to cut reachable attack surface, moving OpenSSH key-type checks
+    before ML-DSA parsing
+  section: AI
+  category: AI
+  blurb: >-
+    Claude flagged 493 attack-surface issues across 25 open source projects, and OpenSSH 10.6
+    now checks key types before parsing ML-DSA code.
+  summary: >-
+    Anthropic's Frontier Red Team ran Claude over 25 projects with over five million lines
+    of code and found 493 issues, including 94 configuration combinations that silently disabled
+    a security control. In OpenSSH 10.4, about 4,500 lines of ML-DSA-44 code were reachable
+    by unauthenticated clients even when the algorithm was excluded, and fixes shipped in
+    10.6 compare key type and CA signature algorithm against allow lists before deserialization.
+    The method is packaged as a three-pass Claude skill headed for OSS-Scanner.
+  why: >-
+    Gating code by configuration and authentication lowers the severity of unknown bugs, and
+    the method can be applied to your own dependencies.
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/research/attack-surface-reduction
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50175779
+- title: >-
+    DuckDB 2.0.0 LTS ships the Quack server protocol, async I/O, triggers and a new storage
+    format
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    DuckDB 2.0.0 LTS adds a client-server protocol, async I/O, triggers and a PEG parser,
+    and writes files that older versions cannot read.
+  summary: >-
+    DuckDB 2.0.0, supported until at least October 2027, adds the Quack protocol with CONNECT,
+    asynchronous I/O for Parquet and CSV, a shredded VARIANT type, triggers, a PEG parser
+    by default, a CLI agent mode and self-hosted signed extension repositories. Database files
+    created by 2.0 are unreadable by earlier versions, the build now requires C++17, and single-arrow
+    lambdas are disabled by default. DuckDB 1.5 support is extended to March 2027.
+  why: >-
+    Mixed-version fleets must upgrade readers before writers, and the team advises mission-critical
+    users to wait for the November patch release.
+  followup: First 2.0.x patch release in November 2026.
+  sources:
+  - label: primary
+    url: https://duckdb.org/2026/10/21/announcing-duckdb-200
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50181136
 - title: >-
     TypeScript 7.1 Beta adds a new compiler API, import attributes in ambient modules, and
     source phase imports
@@ -207,3 +330,22 @@ stories:
   sources:
   - label: primary
     url: https://shopify.engineering/open-model-task-experts
+- title: >-
+    PostgreSQL recovery_prefetch can stall synchronous replication for hours after write bursts
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Replica WAL prefetching turns sequential writes on the primary into 8k random reads, which
+    can block all writes under synchronous replication.
+  summary: >-
+    Jeremy Schneider reports that recovery_prefetch amplifies replica read IOPS up to 16x
+    for large sequential I/O on the primary. If the walreceiver drops during a write burst,
+    the standby stays in WAL restore mode until it catches up. With synchronous replication,
+    primary writes then hang for 30 minutes or more. He published a reproduction repository
+    and found that recovery_prefetch off avoids the long stall.
+  why: >-
+    Postgres operators running synchronous replicas on IOPS-limited disks should test recovery_prefetch
+    off and consider quorum commit with two standbys.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9zf
