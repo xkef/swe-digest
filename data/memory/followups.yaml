@@ -109,26 +109,6 @@
     in the RFC 7239 `Forwarded` header (`Forwarded: for="openai";use="reference"`). Verified
     status no longer means default-allowed. Covered 2026-07-26 Infrastructure (confirmed).
     See [[entities]] Cloudflare.
-- id: f-0006
-  subject: Kernel developers move to delete the Qualcomm crypto engine driver
-  watch_for: >-
-    The removal patch landing in a merge window; whether any Qualcomm platform argues a workload
-    where QCE still wins; whether other vendor crypto offload drivers get the same measurement
-    treatment.
-  opened: '2026-07-26'
-  last_seen: '2026-07-26'
-  closed: '2026-09-10'
-  notes:
-  - >-
-    2026-07-26: Phoronix reported 2026-07-24 that Eric Biggers of Google proposes removing
-    the Qualcomm Crypto Engine driver from the kernel tree outright rather than leaving it
-    behind the `BROKEN` Kconfig gate it was recently marked with. Numbers quoted from the
-    kernel mailing list thread: `sha256-lib` on ARMv8 Crypto Extensions at 0.10s wall clock
-    and 0.10s CPU against `sha256-qce` at 10.76s wall clock and 5.14s CPU, of which 0.77s
-    hardirq and 2.31s softirq, so over 100 times slower and over 50 times more CPU. The linux-crypto
-    lore archive was unreachable from the run environment (Anubis proof-of-work gate), so
-    the thread is cited as quoted by Phoronix. Covered 2026-07-26 Linux and kernel (developing).
-    See [[access-notes]].
 - id: f-0007
   subject: AMD launches the Instinct MI455X and the Helios rack with gigawatt commitments
   watch_for: >-
@@ -472,30 +452,6 @@
     before standardization. JDK 26 already reached GA (2026-03-17), so the target is a later
     release, unconfirmed at publish time. HN 49023809 (95 pts). Covered 2026-07-24 Languages
     and runtimes (developing).
-- id: f-0022
-  subject: RefluXFS and pedit-COW Linux kernel local-root exploits
-  watch_for: >-
-    Named fixed stable kernel versions and distribution backports for both; any CISA KEV addition;
-    in-the-wild use beyond the public PoCs; whether the 432-CVE two-day flood repeats and
-    how distros triage it.
-  opened: '2026-07-23'
-  last_seen: '2026-07-23'
-  closed: '2026-08-16'
-  notes:
-  - >-
-    2026-07-23: Two local-privilege-escalation flaws with public exploits reached root on
-    2026-07-22. Qualys disclosed RefluXFS (CVE-2026-64600), a race in the XFS copy-on-write
-    path where concurrent O_DIRECT writes to a reflinked file overwrite a shared page never
-    made private; unprivileged user to root on volumes with reflink=1 (default on RHEL, Oracle
-    Linux, Amazon Linux), kernels v4.11 to unpatched current, passwordless-root PoC on RHEL
-    10.2. pedit-COW (CVE-2026-46331, NVD-published 2026-06-16, PoC resurfaced HN 2026-07-22)
-    uses a tc act_pedit partial copy-on-write (tcf_pedit_act computes the COW range before
-    typed keys add a runtime offset) to poison the cached /bin/su binary and get root on kernels
-    up to 6.12.9 where unprivileged user namespaces are available. Both landed as the kernel
-    CVE team published 432 CVEs in two days (batch stable-fix assignment amid AI-assisted
-    bug-hunt volume; Akamai's Jan Schaumann: automated frequent updates are the only workable
-    defense). Covered 2026-07-23 Top stories (lead, Security). Continues the Linux LPE run
-    (GhostLock, Bad Epoll, Januscape, snap-confine).
 - id: f-0023
   subject: White House accuses Moonshot of distilling Fable for Kimi K3
   watch_for: >-
@@ -576,27 +532,6 @@
     and resource use out of proportion to the people involved; targets autonomous LLM-generated
     projects and LLM-focused tools. Covered 2026-07-23 Watchlist follow-ups (confirmed). See
     [[entities]] Codeberg.
-- id: f-0026
-  subject: snap-confine CVE-2026-8933 local root on Ubuntu desktops
-  watch_for: >-
-    A weaponized exploit beyond the PoC in the advisory; backports across supported Ubuntu
-    releases and the exact fixed snapd versions; any CISA KEV addition; whether it chains
-    with other snapd flaws.
-  opened: '2026-07-21'
-  last_seen: '2026-07-22'
-  closed: '2026-08-16'
-  notes:
-  - >-
-    2026-07-22: Qualys disclosed CVE-2026-8933 on 2026-07-21, a local privilege escalation
-    to root in snap-confine on Ubuntu Desktop 24.04/25.10/26.04. Chains two race conditions
-    during sandbox setup: a temporary directory owned by the calling user before ownership
-    transfers to root, plus symlink manipulation redirecting a privileged write to an arbitrary
-    target. Attributed to a hardening shift from set-uid-root to set-capabilities that leaves
-    snap-confine running with the caller's effective UID while keeping near-root capabilities.
-    Canonical released fixed snapd packages via the Ubuntu Security Team; PoC accompanies
-    the advisory, no active exploitation reported. Distinct from CVE-2026-3888 (March 2026,
-    systemd-tmpfiles timing). Surfaced via r/linux 2026-07-22 (no HN thread found). Covered
-    2026-07-22 Security (confirmed). Continues the Linux LPE run (GhostLock, Bad Epoll, Januscape).
 - id: f-0027
   subject: Court dismisses Apple's liability for not scanning iCloud for CSAM
   watch_for: >-
@@ -871,42 +806,6 @@
     so an acquisition would extend it from processing AI revenue into model-access infrastructure.
     Both were reported as possibly falling apart or drawing another buyer. Covered 2026-07-16,
     07-20, and 07-24 (developing).\']"]']
-- id: f-0038
-  subject: >-
-    Announced models with weights or license pending (Instella-MoE, FLUX 3, Qwen-Image-3.0)
-  watch_for: >-
-    Whether each ships usable weights and under what license: a permissive license replacing
-    ResearchRAIL for Instella-MoE, the FLUX 3 Dev release, and Apache-2.0 Qwen-Image-3.0 weights
-    on Hugging Face or ModelScope; independent benchmark, blind-arena, or reproduction results
-    for each; an Instella technical report tied to the checkpoint release rather than the
-    2025 paper; whether FLUX 3 stays API-only; API pricing for FLUX 3.
-  opened: '2026-08-30'
-  last_seen: '2026-08-30'
-  closed: '2026-10-15'
-  notes:
-  - >-
-    2026-08-30: ['2026-08-30: [\'2026-08-30: [\\\'2026-08-30: Merged from three follow-ups
-    sharing one watch signal: announced but not usable as open weights. AMD created the Instella-MoE-16B-A3B
-    repositories on Hugging Face 2026-07-23 (Base, Pretrain, Midtrain, SFT, DPO, Think): 16B
-    total / 2.8B active MoE, 64 routed plus 2 shared experts with 6 active per token, 27 decoder
-    layers, gated multi-head latent attention, 128,896-token vocabulary, trained end to end
-    on AMD Instinct MI300X and MI325X with AMD\\\\\\\'s Primus framework, with training frameworks,
-    data mixtures, intermediate checkpoints, and inference code stated as released. License
-    is ResearchRAIL (academic and research use only), so not open-weight in the commercial
-    sense, and the card cites arXiv 2511.10628 from November 2025, so the checkpoints post-date
-    the paper. Relevance is public evidence of a non-CUDA training stack end to end. Black
-    Forest Labs announced FLUX 3 on 2026-07-23 as early access, extending the FLUX line from
-    images to a unified image/video/audio model on multimodal flow matching ("Self-Flow"):
-    video up to 20 seconds with native audio, text-to-video, image-to-video, video-to-video,
-    image editing, plus an action-prediction variant for robotics (FLUX-mimic). Weights not
-    released; the post plans API and private open-weight access (FLUX 3 Dev) over "the next
-    few weeks and months" with no date. Benchmarks are vendor preference figures only, stated
-    preliminary, and HN read the announcement as marketing-heavy and noted the demo shows
-    jumpcuts rather than continuous 20s video. Alibaba\\\\\\\'s Qwen team announced Qwen-Image-3.0
-    on 2026-07-21, emphasizing photorealism, text rendering, and precise image editing; the
-    qwen.ai blog is JS-heavy and did not render for automated fetch, and the QwenLM/Qwen-Image
-    README still topped out at Qwen-Image-2.0/2512, so size, architecture, benchmarks, and
-    weights were unverifie
 - id: f-0059
   subject: Linux 7.3 release
   watch_for: >-
@@ -922,35 +821,6 @@
     2026-10-17: A last-minute PCI fix merged 2026-10-17 ignores the false Immediate Readiness
     claim from Samsung 990 PRO and 990 EVO Plus SSDs, restoring VFIO passthrough ahead of
     the expected 2026-10-18 release.
-- id: f-0075
-  subject: Go CVE-2026-111943 crypto/x509 intermediate distrust
-  watch_for: >-
-    An official statement naming the CA and the reason, matching actions by Mozilla, Chrome,
-    Apple, and Microsoft root programs, and reports of verification failures after upgrades.
-  opened: '2026-10-20'
-  last_seen: '2026-10-20'
-  closed: '2026-10-20'
-  notes: []
-- id: f-0078
-  subject: PHP critical security release (CVE-2026-109618, CVE-2026-109619)
-  watch_for: >-
-    The 14:00 UTC 2026-10-21 release and affected branches, technical details, distribution
-    packages, a public proof of concept, and exploitation reports.
-  opened: '2026-10-21'
-  last_seen: '2026-10-21'
-  closed: '2026-10-22'
-  notes:
-  - >-
-    2026-10-21: PHP released 8.5.12, 8.4.27, 8.3.36 and 8.2.35 on 2026-10-21, and Wiz published
-    technical details showing pre-auth RCE on WordPress, Drupal and Joomla.
-  - >-
-    2026-10-21: PHP Foundation says the CVE IDs leaked on 2026-10-20, Calif published a PoC
-    video by mistake, Chainguard shipped fixed images at 07:41 UTC before the embargo lifted,
-    and the real CVSS score is 9.2, with no functional public exploits seen at release.
-  - >-
-    2026-10-21: PHP shipped 8.5.12, 8.4.27, 8.3.36 and 8.2.35 on 2026-10-21. The PHP Foundation
-    says the CVSS is 9.2, PoCs sped up after a deleted Calif video, and Chainguard published
-    fixed images at 07:41 UTC, ahead of the embargo.
 - id: f-0087
   subject: AI-credited proofs and counterexamples to open math problems
   watch_for: >-
@@ -1177,23 +1047,6 @@
     now at OpenAI, instructing them to preserve documents/evidence; framing suggests Apple
     believes the alleged misappropriation may reach employees beyond the two named defendants.
     Covered 2026-07-17 Markets and companies (confirmed).
-- id: f-0096
-  subject: GPT-5.6 Sol Ultra claims a proof of the Cycle Double Cover Conjecture
-  watch_for: >-
-    Independent verification or refutation from graph theorists; whether the argument is accepted
-    as correct; whether the released prompt's "assume a proof exists" instruction undermines
-    the claim; a formal writeup beyond the CDN PDF.
-  opened: '2026-07-10'
-  last_seen: '2026-07-11'
-  closed: '2026-08-09'
-  notes:
-  - >-
-    2026-07-11: OpenAI published 2026-07-10 a PDF proof of the Cycle Double Cover Conjecture
-    (Szekeres 1973, Seymour 1979) attributed to GPT-5.6 Sol Ultra, stating it used 64 subagents
-    in under an hour, one day after Sol Ultra GA. Reportedly reduces the problem via the 8-flow
-    theorem and linear algebra over GF(3). Not peer reviewed. HN flags the released prompt
-    says "assume for purposes of this task that a complete affirmative proof exists" and questions
-    acceptance. Vendor publication, unverified. Covered 2026-07-11 Top stories (developing).
 - id: f-0097
   subject: EU Parliament fails to reject Chat Control 1.0 derogation extension
   watch_for: >-
@@ -1483,26 +1336,6 @@
     evidence of exploitation. Same-day TS-2026-008 is a CPU-exhaustion flaw in Serve/Funnel
     from malformed HTTP requests. HN: tptacek called it a venerable bug class (AIX 3), others
     note `--` is the proper fix. Covered 2026-07-15 Security.
-- id: f-0111
-  subject: >-
-    Star Fleet reports Lean-verified Erdős-problem solutions from parallel Codex agents
-  watch_for: >-
-    Independent mathematician review of the Lean 4 proofs and whether any are accepted or
-    refuted; whether the problems were genuinely open; a formal writeup beyond the site; reproduction
-    of the harness.
-  opened: '2026-07-15'
-  last_seen: '2026-07-15'
-  closed: '2026-08-09'
-  notes:
-  - >-
-    2026-07-15: Site by Colin Snyder (advised by Mike Kim) presents proposed solutions to
-    a set of open Erdős problems produced by "Star Fleet", a harness running up to 20 parallel
-    Codex (GPT-5.6) instances that emit Lean 4 proofs. Each entry ships Lean 4 source pinned
-    to a Mathlib version, checkers rejecting `sorry`, and a transitive axiom audit, with downloadable
-    verification packages; one entry states an independent referee reran the verification.
-    Framed as proposed solutions, not peer reviewed. Extends the GPT-5.6 Sol Ultra CDC-proof
-    thread (2026-07-10). Machine-checked Lean is a stronger claim than the earlier prose PDF.
-    Covered 2026-07-15 AI (discussion).
 - id: f-0112
   subject: S&P cuts Oracle to BBB- over AI datacenter debt
   watch_for: >-
@@ -1626,26 +1459,6 @@
     of Oracle E-Business Suite 12.2.3-12.2.15, CVSS 9.8, unauthenticated network-reachable;
     fixed in the CSPUMay2026 security alert. NVD moved exploitation none-to-active on the
     KEV addition. Federal due 2026-07-18. Covered 2026-07-16 Top stories.
-- id: f-0118
-  subject: GPT-5.6 credited with a Lean-verified convex optimization lower bound
-  watch_for: >-
-    Peer review of the manuscript; independent confirmation of the AI's role versus human
-    authorship; whether the Lean formalization matches the claimed AI-produced proof; whether
-    it holds up like or unlike the earlier CDC-proof and Star Fleet claims.
-  opened: '2026-07-18'
-  last_seen: '2026-07-18'
-  closed: '2026-08-09'
-  notes:
-  - >-
-    2026-07-18: r/math thread (HN front page 48957779, 253 pts) claims GPT-5.6, given a ~10-page
-    prompt, closed a long-open derivative-free convex optimization gap: a near-quadratic Omega(d^2)
-    deterministic lower bound for convex Lipschitz functions from exact function values, matching
-    a 30-year-old algorithm. Phillip Kerger (UC Berkeley) published a Lean 4/mathlib formalization
-    plus a manuscript "Closing the Oracle-Complexity Gap in Derivative-Free Convex Optimization";
-    the manuscript does not attribute the proof to an AI. Machine-checked but not peer reviewed;
-    commenters stress heavy human priming and treat the AI authorship as a community claim.
-    Extends the AI-math-proof theme (CDC proof 2026-07-10, Star Fleet Erdős 2026-07-15). Covered
-    2026-07-18 AI (discussion).
 - id: f-0119
   subject: Alibaba announces Qwen-Image-3.0
   watch_for: >-
@@ -1664,44 +1477,6 @@
     model card confirmed at publish time), so weight/benchmark specifics are unverified. Prior
     generations shipped Apache-2.0 open weights. HN 48989701 (448 pts). Reinforces the Chinese
     open-weights theme leading 2026-07-21. Covered 2026-07-21 AI (discussion).
-- id: f-0120
-  subject: Counterexample to the Jacobian Conjecture posted with help from Claude
-  watch_for: >-
-    A formal writeup or paper; independent expert confirmation the map is a genuine counterexample;
-    clarification of the model's role versus the mathematician; whether the result is accepted
-    by the field.
-  opened: '2026-07-20'
-  last_seen: '2026-07-23'
-  closed: '2026-08-16'
-  notes:
-  - >-
-    2026-07-23: Mathematician Levent Alpoge posted 2026-07-19 a concrete counterexample to
-    the Jacobian Conjecture (open since 1939, Smale problem #16): a polynomial map C^3 to
-    C^3 with constant nonzero Jacobian determinant -2 that is not injective (three distinct
-    points map to one output), contradicting the conjecture that such a map must be invertible.
-    Credited Anthropic's Claude, discussed on HN as the Fable 5 model. Unlike the earlier
-    prose proof claims, the map is short and machine-checkable; HN commenters report verifying
-    it in Sage and SymPy (determinant constant -2, the three listed points collide). Wikipedia
-    updated to note the conjecture disproven. Not yet in a peer-reviewed paper. Strongest
-    AI-math-proof-theme datapoint yet (CDC proof 2026-07-10, Star Fleet Erdős 2026-07-15,
-    convex-optimization bound 2026-07-18) because it is verifiable. Covered 2026-07-20 Top
-    stories (lead, developing). 2026-07-21: Terence Tao published a geometric "digestion"
-    (terrytao.wordpress.com) reconstructing the degree-seven map via symmetric powers of homogeneous
-    polynomials plus a resultant normalization, presenting it as established mathematics (no
-    doubt expressed) and disclosing he used an AI chatbot to discuss the problem and confirm
-    several calculations. Independent Fields-medalist reconstruction is the strongest validation
-    yet. Covered 2026-07-22 Top stories (confirmed). 2026-07-22: Tao shared the actual ChatGPT
-    conversation he used to discuss the problem and check calculations (chatgpt.com share,
-    HN 49010345, 705 pts), a concrete record of a working mathematician using a chatbot as
-    a reasoning/calculation aid. Covered 2026-07-23 Watchlist follow-ups (confirmed).
-- id: f-0039
-  subject: GitLab CVE-2026-97229 CI/CD regex compiler RCE
-  watch_for: >-
-    Public proof of concept or exploitation reports, a CISA KEV listing, and disclosure of
-    the HackerOne report after the 90-day window.
-  opened: '2026-10-12'
-  last_seen: '2026-10-12'
-  notes: []
 - id: f-0040
   subject: PostgreSQL 19 release after late reverts
   watch_for: >-
@@ -2228,17 +2003,6 @@
     bypassed branch protection with an owner token, and pointed the release workflow at the
     lookalike Berri-AI/litellm repository. The second-stage GitHub account was gone by 13:40
     UTC on 2026-10-21.
-- id: f-0081
-  subject: >-
-    GitHub event streaming incident on 2026-10-21 (PRs, Actions, webhooks, audit logs)
-  watch_for: >-
-    Audit log backlog clearance, root cause in GitHub's availability report, and repeat incidents.
-  opened: '2026-10-21'
-  last_seen: '2026-10-21'
-  notes:
-  - >-
-    2026-10-21: GitHub marked the incident resolved at 19:22 UTC on 2026-10-21. Audit log
-    delays were below 40 minutes and falling, and a root cause analysis is promised.
 - id: f-0082
   subject: GitLab CVE-2026-110264 regex compiler integer overflow RCE
   watch_for: >-
