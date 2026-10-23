@@ -129,8 +129,15 @@ def merge(
 
 
 def save(day: str, updated: stories.Day, followups: list[memory.Followup], reply: dict[str, Any]) -> State:
-    """Writes the digest and the follow-ups, and links each story to the thread it opened."""
-    changed, opened = memory.apply(followups, reply["answer"]["followups"], day)
+    """Writes the digest and the follow-ups, and links each story to the thread it opened.
+
+    A thread opens only for a story in the digest that has no thread yet, so
+    every thread page has a story and no story starts a second thread.
+    """
+    changes = reply["answer"]["followups"]
+    unthreaded = {story["title"] for story in updated["stories"] if not story.get("thread")}
+    requests = [request for request in changes.get("open", []) if request.get("story") in unthreaded]
+    changed, opened = memory.apply(followups, changes | {"open": requests}, day)
     for story in updated["stories"]:
         if story["title"] in opened and not story.get("thread"):
             story["thread"] = opened[story["title"]]

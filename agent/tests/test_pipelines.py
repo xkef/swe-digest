@@ -103,6 +103,20 @@ def test_an_opened_thread_links_its_story(data):
     assert memory.load()[0]["subject"] == "Tool 2.0 rollout"
 
 
+def test_a_thread_opens_only_for_an_unthreaded_story_in_the_digest(data):
+    memory.save(
+        [{"id": "f-0001", "subject": "s", "watch_for": "w", "opened": DAY, "last_seen": DAY, "notes": []}]
+    )
+    absent = {"subject": "Absent", "watch_for": "w", "story": "Tool 2.0 is released"}
+    nameless = {"subject": "Nameless", "watch_for": "w"}
+    duplicate = {"subject": "Duplicate", "watch_for": "w", "story": STORY["title"]}
+
+    daily.run(DAY, saved_reply(STORY | {"thread": "f-0001"}, opened=[absent, nameless, duplicate]))
+
+    assert [entry["id"] for entry in memory.load()] == ["f-0001"]
+    assert stories.load(DAY)["stories"][0]["thread"] == "f-0001"
+
+
 def test_brief_shows_each_open_thread_with_its_last_note():
     open_thread = {
         "id": "f-0001",
