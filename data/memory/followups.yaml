@@ -2156,10 +2156,6 @@
   last_seen: '2026-10-23'
   notes:
   - >-
-    2026-10-21: rustup 1.29.2 updates rustls-webpki and webpki-root-certs for CVE-2026-111943,
-    and Prometheus 3.15.1 and 3.13.5 images distrust emSign ECC Root CA - G3 and Comodo AAA
-    Services root.
-  - >-
     2026-10-21: Rustup 1.29.2 updates rustls-webpki and webpki-root-certs for CVE-2026-111943,
     and Prometheus 3.15.1 and 3.13.5 container images now distrust the affected roots.
   - >-
@@ -2192,13 +2188,21 @@
   - >-
     2026-10-23: Cilium shipped out-of-band 1.20.4 and 1.19.10 on 2026-10-23, moving to Go
     1.26.10 so the compromised eMudhra intermediates are no longer trusted under CVE-2026-111943.
+  - >-
+    2026-10-23: Mozilla's bug 2083449 says the eight compromised P-384 intermediate keys from
+    a 2025-04-30 key ceremony were integers below 256, eMudhra says they were generated on
+    Utimaco HSMs, and Sectigo was preparing to revoke its cross-signs of the same keys.
 - id: f-0079
   subject: PAN-OS GlobalProtect CVE-2026-0257 ransomware exploitation
   watch_for: >-
     Victim counts, new ransomware groups, a CISA KEV update, and further Unit 42 indicators.
   opened: '2026-10-21'
-  last_seen: '2026-10-21'
-  notes: []
+  last_seen: '2026-10-23'
+  notes:
+  - >-
+    2026-10-23: The Hacker News, citing Group-IB and NyxLab, reports that actor k0t, linked
+    to Qilin and The Gentlemen, exploited CVE-2026-0257 with a script named exploit_2026_0257.py
+    as part of an edge device campaign exposing over 70,000 credentials.
 - id: f-0080
   subject: LiteLLM 1.107.0 PyPI and Docker supply chain compromise
   watch_for: >-
@@ -2278,8 +2282,13 @@
     Builds restored for Pro, Hobby, Free and Trial, the count of affected accounts, the attack
     vector, and links to other platform breaches aimed at AI inference keys.
   opened: '2026-10-22'
-  last_seen: '2026-10-22'
-  notes: []
+  last_seen: '2026-10-23'
+  notes:
+  - >-
+    2026-10-23: Railway's preliminary report says builds are restored for all tiers, up to
+    about 100,000 workspaces (1.85 percent) had variables potentially exposed, and the attacker
+    moved from a build infrastructure privilege escalation to CI credentials, with a final
+    forensic report pending.
 - id: f-0085
   subject: >-
     Linux kernel ZDI reports leaked to LKML (ksmbd and SMB Direct RCE, skb_zerocopy LPE)

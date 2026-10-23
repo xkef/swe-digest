@@ -1,5 +1,5 @@
 date: '2026-10-23'
-updated: 2026-10-23T17:56Z
+updated: 2026-10-23T20:38Z
 stories:
 - title: >-
     Node.js patches Node2Shell Brotli decoder RCE CVE-2026-111497 in 22.23.4, 24.22.1 and
@@ -174,6 +174,32 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/cybersecurity/comments/1xdi195/php_warns_of_another_unpatched_rce_risk_two_days/
 - title: >-
+    Railway report says up to 100,000 workspaces had environment variables exposed in the
+    2026-10-20 to 2026-10-22 breach
+  section: Security
+  category: Security
+  blurb: >-
+    Attackers hunting AI provider keys escalated through Railway build infrastructure and
+    CI credentials, then decrypted customer secrets.
+  summary: >-
+    Railway's preliminary report says the attack ran from 2026-10-20 13:58 UTC to 2026-10-22
+    03:32 UTC, starting with privilege escalation in build infrastructure and moving to CI
+    credentials that decrypted artifacts and a subset of envelope-encrypted environment variables.
+    At most 1.85 percent of workspaces, about 100,000, had variables potentially compromised,
+    and Railway sent keys to GitHub, GitLab, Anthropic, OpenAI, OpenRouter, Stripe and others
+    for revocation. Builds for all tiers are restored and Railway moved to single-tenant builders.
+  why: >-
+    Anyone who stored secrets on Railway before 2026-10-21 should rotate them, remove public
+    database access, and review GitHub and registry audit logs.
+  followup: >-
+    Railway's final forensic report, including whether user source code was accessed.
+  thread: f-0084
+  sources:
+  - label: primary
+    url: https://blog.railway.com/p/preliminary-report-october-security-incident
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50211898
+- title: >-
     MiniMax publishes M3.1 Flash weights on Hugging Face, a 428B-parameter MoE with 23B active
   section: AI
   category: AI
@@ -283,6 +309,26 @@ stories:
     url: https://github.com/NVIDIA/OpenShell
   - label: discussion
     url: https://news.ycombinator.com/item?id=50198675
+- title: >-
+    Vercel Agent gates production access behind approved plans that mint scoped short-lived
+    OAuth tokens
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Vercel's agent investigates with read-only scopes, then asks approval for a whole plan
+    whose task scopes become the token it may use.
+  summary: >-
+    Vercel Agent runs as a Vercel App limited to the user's existing permissions, and read-only
+    work uses a baseline token of read: scopes. Plans that need more access list scopes per
+    task, are validated against the same scope registry the OAuth service uses, and on approval
+    yield a token the runtime only uses while the plan is active. Vercel notes that a scope
+    like deployment write is broader than the single redeploy a plan names.
+  why: >-
+    It is a concrete pattern for giving production agents task-scoped authority without per-action
+    approval prompts, with its stated gaps on scope precision.
+  sources:
+  - label: primary
+    url: https://vercel.com/blog/how-vercel-agent-accesses-production-safely
 - title: >-
     AWS Continuum for code vulnerabilities reaches GA, validating findings and opening fix
     pull requests
@@ -412,3 +458,24 @@ stories:
     url: https://github.com/ClickHouse/ClickBench/pull/2165
   - label: discussion
     url: https://news.ycombinator.com/item?id=50205816
+- title: >-
+    Cloudflare replaces fixed range-size caching with chunk-aligned Origin Range Requests
+    in Pingora
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Cloudflare now fetches range requests in cache-chunk-aligned pieces and composes cached
+    and in-flight bytes, halving R2 p99 first-byte time.
+  summary: >-
+    Cloudflare's old nginx-based range caching mapped requests to per-zone fixed ranges, so
+    a small read across a 64 MiB boundary on R2 could pull 128 MiB between data centers. The
+    Pingora rewrite aligns origin fetches to its on-disk chunk size, attaches requests to
+    in-flight downloads, and validates ETag and size before composing a 206 response. R2 p99
+    time to first byte fell by about half and tiered cache traffic for similar workloads dropped
+    about 6 percent.
+  why: >-
+    Origins serving large files behind Cloudflare can drop range-size tuning and enable the
+    feature with a Cache Rule on any plan.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/origin-range-requests/
