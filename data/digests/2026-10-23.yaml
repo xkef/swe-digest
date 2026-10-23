@@ -1,5 +1,5 @@
 date: '2026-10-23'
-updated: 2026-10-23T06:11Z
+updated: 2026-10-23T10:21Z
 stories:
 - title: >-
     Node.js patches Node2Shell Brotli decoder RCE CVE-2026-111497 in 22.23.4, 24.22.1 and
@@ -123,6 +123,52 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/netsec/comments/1xcnwyi/cve202694300_concurrent_gsstsig_messages_corrupt/
 - title: >-
+    Forever Security finds AGENTS.md files planted in Downloads that steer Codex and Claude
+    Code into running malware
+  section: Security
+  category: Security
+  blurb: >-
+    A web page can silently drop an AGENTS.md into Downloads, and Codex or Claude Code started
+    there may obey it and install malware.
+  summary: >-
+    Forever Security found a malicious AGENTS.md in a customer's ~/Downloads folder that told
+    Codex to add an MCP server to ~/.codex/config.toml and install the malicious npm package
+    function-color, and it reproduced the attack in more than 90 percent of Codex attempts.
+    A crafted CLAUDE.md made Claude Code set ANTHROPIC_BASE_URL to an attacker server, leaking
+    its OAuth token and enabling code execution, about 50 percent of the time. The firm says
+    there is nothing for vendors to patch because the agents follow instruction files by design.
+  why: >-
+    Do not start coding agents in Downloads, and audit agent configs for unexpected MCP servers
+    or base URL overrides.
+  sources:
+  - label: primary
+    url: https://forever.security/blog/hijacking-ai-agents-via-downloads-folder
+  - label: discussion
+    url: https://www.reddit.com/r/netsec/comments/1xcnb6o/markdown_is_the_new_executable_attackers_are/
+- title: >-
+    MiniMax publishes M3.1 Flash weights on Hugging Face, a 428B-parameter MoE with 23B active
+  section: AI
+  category: AI
+  blurb: >-
+    MiniMax published M3.1 Flash on Hugging Face, a 428B-total, 23B-active multimodal MoE
+    with a 1M token context and a community license.
+  summary: >-
+    The MiniMaxAI/MiniMax-M3.1-Flash repository lists a native multimodal mixture-of-experts
+    model with about 428B total and 23B active parameters, text, image and video input, and
+    a context window up to 1M tokens. It uses MiniMax Sparse Attention throughout, quantization-aware
+    training, and a DSpark speculative decoding head, ships in mxfp8, and is licensed under
+    minimax-community. Benchmark figures such as 73.7 percent on DeepSWE v1.1 are vendor-reported.
+  why: >-
+    A large open-weight agentic coding model is now downloadable for vLLM and SGLang serving,
+    though the license is custom rather than OSI.
+  followup: Independent evaluations against the vendor benchmark table.
+  thread: f-0071
+  sources:
+  - label: primary
+    url: https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1xd0fgs/minimaxm31flash/
+- title: >-
     NVIDIA OpenShell sandboxes autonomous agents with kernel-level policy and verified policy
     changes
   section: Agentic coding
@@ -144,6 +190,49 @@ stories:
     url: https://github.com/NVIDIA/OpenShell
   - label: discussion
     url: https://news.ycombinator.com/item?id=50198675
+- title: >-
+    AWS Continuum for code vulnerabilities reaches GA, validating findings and opening fix
+    pull requests
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    A new AWS service validates code vulnerabilities against your AWS environment, runs exploits
+    in a sandbox, and opens fix pull requests.
+  summary: >-
+    AWS announced general availability of AWS Continuum for code vulnerabilities on 2026-10-22
+    in us-east-1 and us-west-2. It builds a context graph from GitHub or S3 code sources and
+    an optional in-account collector, assigns evidence levels, reproduces exploitable findings
+    in an isolated sandbox, and ranks issues by attack path to critical systems. Every generated
+    fix arrives as a pull request that a person must review and merge, with autonomous remediation
+    described as a future option.
+  why: >-
+    Teams on AWS get an AI triage and fix pipeline that keeps a human merge gate, which changes
+    how scanner backlogs reach code review.
+  sources:
+  - label: primary
+    url: https://aws.amazon.com/blogs/aws/aws-continuum-for-code-vulnerabilities-is-now-generally-available/
+- title: >-
+    Spring Boot 4.2.0-RC1 ships with an Ubuntu 26.04 Buildpacks builder, alongside 4.1.2 and
+    4.0.9
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Spring Boot 4.2.0-RC1 switches the default Buildpacks builder to Ubuntu 26.04 and lets
+    the properties migrator fail startup on errors.
+  summary: >-
+    Spring Boot 4.2.0-RC1 was released on 2026-10-23 with 113 changes. The default Buildpacks
+    builder is now paketobuildpacks/ubuntu-resolute-builder, spring-boot-properties-migrator
+    can fail the application on errors or warnings, and class and resource lookup in executable
+    jars is faster. Maintenance releases 4.1.2 and 4.0.9 shipped the same day with 126 and
+    99 fixes.
+  why: >-
+    Images built with bootBuildImage on 4.2 will change base OS, so container scanning and
+    native dependencies need a check before GA.
+  sources:
+  - label: primary
+    url: https://spring.io/blog/2026/10/23/spring-boot-4-2-0-RC1-available-now
+  - label: primary
+    url: https://github.com/spring-projects/spring-boot/releases/tag/v4.1.2
 - title: Fedora 45 misses a second go/no-go and now targets 2026-11-03
   section: Linux and kernel
   category: Linux/Kernel
