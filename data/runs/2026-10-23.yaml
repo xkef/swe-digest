@@ -460,3 +460,76 @@ runs:
   - step: save
     status: ok
     seconds: 0.0
+- mode: daily
+  started: 2026-10-23T14:20Z
+  finished: 2026-10-23T14:20Z
+  candidates: 283
+  degraded: {}
+  usage:
+    input_tokens: 6
+    cache_read_tokens: 128709
+    cache_write_tokens: 72500
+    output_tokens: 3808
+    turns: 10
+    seconds: 36
+    cost_usd: 0.6878
+  tools:
+    mcp__digest__fetch_url: 8
+    StructuredOutput: 1
+  fetched:
+  - url: https://github.com/openssl/openssl/releases/tag/openssl-4.1.0
+    ok: true
+  - url: https://github.com/cilium/cilium/releases/tag/v1.20.4
+    ok: true
+  - url: https://www.reddit.com/r/java/comments/1xcmrqh/we_found_a_bypass_in_javas_emudhra_certificate/
+    ok: false
+  - url: https://lwn.net/Articles/1102061/
+    ok: false
+  - url: https://netflixtechblog.com/single-tenant-titus-vm-level-isolation-on-a-multi-tenant-container-platform-6d8b1909d163?source=rss----2615bd06b42e---4
+    ok: false
+  - url: https://github.com/ClickHouse/ClickBench/pull/2165
+    ok: true
+  - url: https://cloud.google.com/blog/products/ai-machine-learning/expanding-claude-availability-on-google-cloud/
+    ok: true
+  - url: https://www.youtube.com/watch?v=Ve2bAarPA2I
+    ok: true
+  added:
+  - >-
+    OpenSSL 4.1.0 adds DTLS 1.3, GREASE and faster post-quantum code, with known DTLS 1.3
+    bugs
+  - >-
+    ClickBench removes pgrust after finding per-query kernels and cached hot-run results
+  - >-
+    Google Cloud makes an Anthropic-managed Claude deployment option generally available
+  dropped: []
+  rejected: []
+  inbox_used: []
+  notes: >-
+    The reddit r/java thread on an eMudhra blocklist bypass returned 403 and had no primary
+    source, so f-0077 was not updated. LWN and the Netflix TechBlog returned 403, so the __get_user
+    removal and Single-tenant Titus posts were skipped. The Cilium 1.20.4 release page had
+    no notes, so it was skipped. The ClickBench PR merged on 2026-09-22. It is included because
+    it resurfaced today with a maintainer response. Most other candidates were social, market,
+    or duplicate coverage of PHP2Shell and eMudhra, with no new primary facts.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 14.5
+  - step: load
+    status: ok
+    seconds: 0.0
+  - step: select
+    status: ok
+    seconds: 0.1
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 37.5
+  - step: merge
+    status: ok
+    seconds: 0.2
+  - step: save
+    status: ok
+    seconds: 0.1
