@@ -79,6 +79,7 @@
     --accent: light-dark(#8f6100, #e5c890);
 
     --wide: 46rem;
+    --measure: 72ch;
     --gutter: clamp(1rem, 4vw, 1.5rem);
     /* A card pads past the reading column so its hover band is wider than
        the text it covers, and a negative margin keeps the text aligned. */
@@ -521,13 +522,11 @@
     margin-top: var(--space-md);
   }
 
-  /* Prose reads poorly past about 72 characters a line. Story fields sit
-     inside their own block, so they keep the full column. */
-  .prose > p,
-  .prose > ul,
-  .prose > ol,
-  .prose > blockquote {
-    max-width: 72ch;
+  /* Prose reads poorly past about 72 characters a line. The cap reaches text
+     at any depth, so a wrapper such as the page header can't escape it. Story
+     fields are the one block that keeps the full column. */
+  .prose :is(p, ul, ol, blockquote, table):not(.story-fields *) {
+    max-width: var(--measure);
   }
 
   .prose > .page-header + * {
