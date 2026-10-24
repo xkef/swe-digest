@@ -1,5 +1,5 @@
 date: '2026-10-24'
-updated: 2026-10-24T13:27Z
+updated: 2026-10-24T16:46Z
 stories:
 - title: >-
     eMudhra will exit the global TLS business as Chrome distrusts its ECC root on 2026-10-27
@@ -128,6 +128,29 @@ stories:
   - label: primary
     url: https://www.phoronix.com/news/Wild-0.11-Released
 - title: >-
+    Astral ships experimental uv and ty integration with a unified uv check command and PEP
+    723 script checking
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Python's uv can now prepare environments for the ty type checker, so one command syncs
+    dependencies and type-checks a project or script.
+  summary: >-
+    Astral announced on 2026-10-13 an experimental integration in which ty uses uv workspace
+    metadata and PEP 723 inline metadata to check each script against its own declared dependencies.
+    The new uv check command prepares the environment, installs dependencies, and runs ty
+    using the ty version recorded in the lockfile. It requires uv 0.12.3 and ty 0.0.76, and
+    automatic script environment setup is opt-in because installing dependencies can run third-party
+    code.
+  why: >-
+    Teams can pin the type checker through uv.lock and run the same check locally, in CI,
+    and in pre-commit without separate version pins.
+  sources:
+  - label: primary
+    url: https://astral.sh/blog/uv-ty-integration
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50172962
+- title: >-
     JDK 28 pools small confined-arena allocations, making off-heap allocation 6 to 18 times
     faster
   section: Languages and runtimes
@@ -197,6 +220,28 @@ stories:
     url: https://www.phoronix.com/news/Linux-7.4-Graphics-Drivers
   - label: primary
     url: https://www.phoronix.com/news/Linux-7.4-memblock
+- title: >-
+    Linux 7.4 merges 539 memory management patches, including DAMON HugeTLB monitoring and
+    faster smaps_rollup
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Andrew Morton's memory management pull for the next kernel adds DAMON support for HugeTLB
+    memory and per-VMA locking for smaps_rollup reads.
+  summary: >-
+    Andrew Morton's MM pull for the Linux 7.4 merge window carried 539 patches with a 76 percent
+    reviewed rate. DAMON gains access monitoring of HugeTLB-backed memory and an auto-tuned
+    huge page collapse mechanism, and reading /proc/PID/smaps_rollup now uses per-VMA locks
+    where possible to cut latency while another thread changes mappings. The pull also includes
+    MGLRU performance work, faster zone-device struct page initialization, and more folio
+    conversions in swap I/O.
+  why: >-
+    Monitoring agents that poll smaps_rollup on busy processes should see lower latency and
+    less contention on 7.4 kernels.
+  thread: f-0068
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Linux-7.4-MM
 - title: >-
     Cloudflare puts post-quantum GeoKey Manager into closed beta with hybrid ML-KEM-768 and
     X25519
