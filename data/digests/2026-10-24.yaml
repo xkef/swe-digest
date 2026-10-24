@@ -1,5 +1,5 @@
 date: '2026-10-24'
-updated: 2026-10-24T16:46Z
+updated: 2026-10-24T19:44Z
 stories:
 - title: >-
     eMudhra will exit the global TLS business as Chrome distrusts its ECC root on 2026-10-27
@@ -110,6 +110,72 @@ stories:
     url: https://labs.eye.security/operation-ixim-preventing-a-botnet-of-millions-of-popcorn-time-users/
   - label: discussion
     url: https://www.reddit.com/r/netsec/comments/1xe25f5/we_used_rce_on_3_million_pcs_to_prevent_a_botnet/
+- title: >-
+    Symantec captured an attack agent that hijacks exposed OpenAI-compatible endpoints to
+    run up to 100,000 steps
+  section: Security
+  category: Security
+  blurb: >-
+    A honeypot caught a malicious agent that borrows unauthenticated model endpoints to plan
+    scans, exploits, and crypto mining without a human.
+  summary: >-
+    The Register reports that Symantec's Threat Hunter Team trapped the agent's full instruction
+    set in an AI honeypot. It scans for endpoints that accept OpenAI-style requests without
+    authentication or with stolen keys, stacks jailbreak layers, and carries 74 offensive
+    tool definitions including RCE modules for VS Code, Django, Jupyter, Laravel, Supabase,
+    Next.js and Flask, plus a 'Skynet mode' loop for up to 100,000 unattended steps. Symantec
+    has no evidence it was used in real attacks.
+  why: >-
+    An unauthenticated self-hosted inference endpoint is now both a paid compute source for
+    attackers and a planner aimed at your other services.
+  sources:
+  - label: secondary
+    url: https://www.theregister.com/security/2026/10/24/autonomous-attack-agent-in-skynet-mode-hijacks-other-models-to-carry-out-its-evil-deeds/5305215
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xedl7r/autonomous_attack_agent_in_skynet_mode_hijacks/
+- title: >-
+    HumanLayer open sources its agent orchestration stack under Apache 2.0, including its
+    Claude Code and Codex daemon
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    The full HumanLayer Cloud codebase, from desktop app to session daemon and Postgres sync
+    proxy, is now public and self-hostable via compose.
+  summary: >-
+    On 2026-10-23 HumanLayer published its core under Apache 2.0: the Electron and Tauri desktop
+    app, the daemon that runs Claude Code and Codex sessions, the cloud API, the Electric
+    proxy syncing Postgres to clients, and its GitHub, Linear, Jira and Slack integrations.
+    Self-built copies send no telemetry, though several third-party API keys are still required
+    to start.
+  why: >-
+    Teams assembling their own software factory can now inspect and modify a full ticket-to-session
+    orchestration layer instead of adopting a closed one.
+  sources:
+  - label: primary
+    url: https://www.hlyr.dev/blog/open-sourcing-humanlayer
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50215925
+- title: >-
+    JetBrains InnovationHub releases ThinkRail, an Apache-2.0 agentic IDE built on git worktrees
+    and spec graphs
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Each workspace in ThinkRail is a git worktree for a parallel agent, and the embedded pi
+    agent reads and maintains a graph of SPEC.md files.
+  summary: >-
+    ThinkRail runs the pi coding agent in-process and gives every workspace its own git worktree,
+    branch, terminals and chats. Modules carry SPEC.md files with frontmatter links that the
+    agent searches and updates through dedicated spec tools. It ships for macOS, Windows and
+    Linux under Apache 2.0.
+  why: >-
+    It is a concrete open reference for running several agents in parallel without sharing
+    a working tree, with specs kept as versioned files next to code.
+  sources:
+  - label: primary
+    url: https://thinkrail.ai/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50219186
 - title: >-
     Wild 0.11 linker links WebAssembly by default and can now link Linux kernel modules
   section: Developer tools
@@ -264,6 +330,28 @@ stories:
   sources:
   - label: primary
     url: https://blog.cloudflare.com/post-quantum-geo-key-manager/
+- title: >-
+    CloudNativePG 1.31 will generate and rotate PostgreSQL role passwords, enforced with VALID
+    UNTIL
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    A merged CloudNativePG change lets a DatabaseRole create its own password Secret and rotate
+    it on a schedule, with no external secrets tool.
+  summary: >-
+    A DatabaseRole gains a password stanza with generate, secret, external and setNull modes,
+    and generate mode writes a basic-auth Secret with a pgpass key. Optional duration and
+    renewBefore fields drive rotation, PostgreSQL enforces expiry via VALID UNTIL, and a cnpg.io/rotatePassword
+    annotation forces immediate rotation. The feature is merged but unreleased, with 1.31
+    due in the last quarter of 2026.
+  why: >-
+    Applications that cache a database password for the process lifetime will break on rotation,
+    so enable duration only for clients that re-read the Secret.
+  followup: CloudNativePG 1.31 release in Q4 2026.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9zS
+  thread: f-0125
 - title: rqlite author Philip O'Toole maps twelve years of replicated SQLite designs
   section: Engineering posts
   category: Engineering post
@@ -284,3 +372,24 @@ stories:
     url: https://philipotoole.com/twelve-years-of-distributed-sqlite/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50217500
+- title: >-
+    Awide Labs adds disk-Paxos RW leases to PolarFS to stop cross-host split-brain on shared
+    PostgreSQL storage
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    PolarFS only blocked a second read-write mount on the same host, so the fix writes per-host
+    lease records to the shared disk and self-fences.
+  summary: >-
+    Upstream PolarFS used a local fcntl lock, so two hosts could both mount the shared block
+    device read-write. The new protocol writes a 512-byte ballot record per host, renews it
+    every second, waits up to a 30-second lease plus clock skew allowance on takeover, and
+    fences a node that cannot renew via abort, a SIGKILL timer, and an optional kernel watchdog.
+    The post also lists bugs in the first version, such as skipping unreadable sectors and
+    unsigned age math.
+  why: >-
+    It is a worked example of fencing a single writer on shared storage, including the clock
+    and failure-mode assumptions the guarantee depends on.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9zT
