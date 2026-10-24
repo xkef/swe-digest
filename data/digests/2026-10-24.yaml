@@ -1,5 +1,5 @@
 date: '2026-10-24'
-updated: 2026-10-24T06:06Z
+updated: 2026-10-24T09:42Z
 stories:
 - title: >-
     eMudhra will exit the global TLS business as Chrome distrusts its ECC root on 2026-10-27
@@ -88,6 +88,29 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/cybersecurity/comments/1xdg7av/amazon_threat_intelligence_identifies_php2shell/
 - title: >-
+    Eye Security remotely disabled an abandoned Popcorn Time updater that ran unsigned HTTP
+    downloads as SYSTEM
+  section: Security
+  category: Security
+  blurb: >-
+    An abandoned Popcorn Time fork updater fetched unsigned code over HTTP and ran it as SYSTEM
+    or root, so Eye Security disabled it remotely.
+  summary: >-
+    Eye Research found that the Time4Popcorn Updater polled lapsed domains over plain HTTP
+    and would download and execute any offered binary with SYSTEM or root privileges, with
+    no code signing. After registering a domain it saw over 3.8 million hardware IDs, and
+    between November 2025 and March 2026 it served an update that only stopped and disabled
+    the updater service on Windows and macOS. The flaw is CVE-2026-30612, and the work was
+    presented at hack.lu on 2026-10-22.
+  why: >-
+    Forgotten auto-updaters on managed endpoints are a live remote execution path, and the
+    post gives the exact service and launchd names to hunt for and disable.
+  sources:
+  - label: primary
+    url: https://labs.eye.security/operation-ixim-preventing-a-botnet-of-millions-of-popcorn-time-users/
+  - label: discussion
+    url: https://www.reddit.com/r/netsec/comments/1xe25f5/we_used_rce_on_3_million_pcs_to_prevent_a_botnet/
+- title: >-
     JDK 28 pools small confined-arena allocations, making off-heap allocation 6 to 18 times
     faster
   section: Languages and runtimes
@@ -109,3 +132,45 @@ stories:
     url: https://inside.java/2026/10/23/confined-pools/
   - label: discussion
     url: https://www.reddit.com/r/java/comments/1xdv8fw/allocating_offheap_memory_typically_618x_faster/
+- title: >-
+    Cloudflare puts post-quantum GeoKey Manager into closed beta with hybrid ML-KEM-768 and
+    X25519
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Cloudflare's new GeoKey Manager wraps customer keys with hybrid ML-KEM-768 and X25519
+    so they unwrap only on servers in a chosen region.
+  summary: >-
+    Cloudflare replaced its 2022 attribute-based encryption design, for which no production
+    post-quantum scheme exists, with per-region symmetric root keys and derived application-specific
+    key pairs per service and epoch. Root keys are distributed only to TPM-attested edge servers
+    mapped to the region, and the edge key service fails closed if a required root key is
+    missing. The product is in closed beta with general availability planned for Q1 2027.
+  why: >-
+    Teams with data residency rules on Cloudflare One get a path to harvest-now-decrypt-later
+    protection for region-fenced TLS keys, and the post documents the blast radius of each
+    key tier.
+  followup: General availability planned for Q1 2027.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/post-quantum-geo-key-manager/
+- title: rqlite author Philip O'Toole maps twelve years of replicated SQLite designs
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Philip O'Toole traces replicated SQLite from rqlite's 2014 Raft design through dqlite,
+    Litestream, LiteFS, cr-sqlite, libSQL and D1.
+  summary: >-
+    O'Toole describes rqlite as a CP system since 2014, with writes through a Raft leader
+    and minority partitions refusing writes, using Hashicorp Raft since 2016. He groups later
+    projects into three corners: consensus (rqlite, dqlite), WAL streaming for recovery (Litestream,
+    LiteFS), and CRDT merge for many writers (cr-sqlite). He notes that Supabase acquired
+    Turso in 2026 and that rqlite v8.0 WAL handling was inspired by Litestream.
+  why: >-
+    The post frames the choice between consensus, streaming backup and CRDT merge as a question
+    of recovery time and writer count, which helps pick a SQLite replication tool.
+  sources:
+  - label: primary
+    url: https://philipotoole.com/twelve-years-of-distributed-sqlite/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50217500
