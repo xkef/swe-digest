@@ -1,5 +1,5 @@
 date: '2026-10-24'
-updated: 2026-10-24T09:42Z
+updated: 2026-10-24T13:27Z
 stories:
 - title: >-
     eMudhra will exit the global TLS business as Chrome distrusts its ECC root on 2026-10-27
@@ -111,6 +111,23 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/netsec/comments/1xe25f5/we_used_rce_on_3_million_pcs_to_prevent_a_botnet/
 - title: >-
+    Wild 0.11 linker links WebAssembly by default and can now link Linux kernel modules
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Wild 0.11, a fast Linux linker aimed at iterative builds, now links WebAssembly by default
+    and can link Linux kernel modules.
+  summary: >-
+    Wild 0.11 enables WebAssembly linking by default. Expanded GNU linker script support is
+    now enough to link Linux kernel modules and is close to linking the kernel itself. The
+    macOS port has progressed but is not enabled by default.
+  why: >-
+    Teams looking for faster incremental link times on Linux get a linker that now covers
+    kernel module and Wasm targets.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Wild-0.11-Released
+- title: >-
     JDK 28 pools small confined-arena allocations, making off-heap allocation 6 to 18 times
     faster
   section: Languages and runtimes
@@ -132,6 +149,54 @@ stories:
     url: https://inside.java/2026/10/23/confined-pools/
   - label: discussion
     url: https://www.reddit.com/r/java/comments/1xdv8fw/allocating_offheap_memory_typically_618x_faster/
+- title: >-
+    systemd merges support for writing its programs in Rust, built with Meson and without
+    Cargo
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    systemd Git now builds optional Rust leaf programs with Meson and no Cargo, starting with
+    a keyring setup tool for verity and BPF keys.
+  summary: >-
+    systemd Git, heading toward systemd 263, now allows leaf programs to be written in Rust
+    as an alternative to C, while core code such as the systemd library stays C only. Rust
+    code is built with Meson without Cargo, must use C linkage, and is toggled by a -Drust=
+    option that defaults to auto. The first planned component is systemd-keyring-setup, which
+    enrolls X.509 certificates into the kernel dm-verity, fs-verity and BPF keyrings at boot,
+    and the developers do not plan to port existing C code.
+  why: >-
+    Distribution and image builders will need a Rust toolchain to build the full systemd 263
+    component set once Rust components land.
+  followup: Merge of systemd-keyring-setup and the systemd 263 release.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/systemd-Merges-Rust-Programs
+- title: >-
+    Linux 7.4 merges AMDGPU HDMI 2.1 FRL by default and a memblock fix cutting KHO retrieval
+    from 268s to 50ms
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    The Linux 7.4 DRM merge turns on AMDGPU HDMI 2.1 FRL by default, and a memblock pull cuts
+    KHO boot memory retrieval from 268s to 50ms.
+  summary: >-
+    The Linux 7.4 DRM merge enables HDMI 2.1 Fixed Rate Link by default in AMDGPU now that
+    VRR and ALLM over HDMI are in place, and adds UALink over Ethernet, more Rust code for
+    the Nova NVIDIA driver, and Adreno A830, A845, A850 and X2-85 support. A separate memblock
+    pull sent for 7.4 replaces a linear search in memblock_add_range() and memblock_isolate_range()
+    with binary search, which the patch says cuts Kexec Handover memory retrieval from about
+    268 seconds to about 50 milliseconds under heavy fragmentation.
+  why: >-
+    Live update setups that use KHO and the Live Update Orchestrator get a large boot-time
+    gain, and AMD desktop users get HDMI 2.1 modes without module options.
+  followup: >-
+    Linux 7.4-rc1, expected around 2026-11-02 or later if the merge window runs three weeks.
+  thread: f-0068
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Linux-7.4-Graphics-Drivers
+  - label: primary
+    url: https://www.phoronix.com/news/Linux-7.4-memblock
 - title: >-
     Cloudflare puts post-quantum GeoKey Manager into closed beta with hybrid ML-KEM-768 and
     X25519
