@@ -1,7 +1,8 @@
 """Generates the Zola content tree from the digest YAML.
 
 For each day it writes a day page, one page per story, and the day's JSON that
-the templates read. For each follow-up it writes a thread page. It also writes
+the templates read. For each follow-up with at least two stories it writes a
+thread page, since a thread of one story repeats the story page. It also writes
 the public JSON API under static/api/, which carries the digest text as stored.
 Every output is gitignored and rebuilt on each build.
 
@@ -15,6 +16,7 @@ import html
 import json
 import re
 import shutil
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -31,6 +33,7 @@ FIELDS = (
 API_VERSION = 1
 API_PAGE_SIZE = 100
 SEARCH_FIELDS = ("date", "title", "section", "category", "blurb", "thread", "url")
+MIN_THREAD_STORIES = 2
 
 
 def build() -> None:
@@ -49,13 +52,14 @@ def build() -> None:
 
     base = config.settings()["site"].rstrip("/")
     threads = {entry["id"]: entry for entry in memory.load()}
+    digests = {file.stem: config.load(file) for file in sorted(config.DIGESTS.glob("*.yaml"))}
+    counts = Counter(story.get("thread") for digest in digests.values() for story in digest["stories"])
+    shown = {key: entry for key, entry in threads.items() if counts[key] >= MIN_THREAD_STORIES}
     members: dict[str, list[dict[str, str]]] = {}
     days = []
     newest_first: list[dict[str, Any]] = []
     total = 0
-    for file in sorted(config.DIGESTS.glob("*.yaml")):
-        digest = config.load(file)
-        day = file.stem
+    for day, digest in digests.items():
         cards = [_card(day, story) for story in digest["stories"]]
         _unique_slugs(cards)
 
@@ -67,7 +71,8 @@ def build() -> None:
         )
         for story, card in zip(digest["stories"], cards, strict=True):
             thread = threads.get(story.get("thread", ""))
-            (stories_dir / f"{day}-{card['slug']}.md").write_text(_story_page(day, story, card, thread))
+            page_thread = shown.get(story.get("thread", ""))
+            (stories_dir / f"{day}-{card['slug']}.md").write_text(_story_page(day, story, card, page_thread))
             if thread:
                 member = {"date": day, "title": story["title"], "url": base + card["url"]}
                 members.setdefault(thread["id"], []).append(member)
@@ -97,7 +102,7 @@ def build() -> None:
         )
         total += len(cards)
 
-    for entry in threads.values():
+    for entry in shown.values():
         (threads_dir / f"{entry['id']}.md").write_text(
             _thread_page(entry, members.get(entry["id"], []), base)
         )
@@ -105,7 +110,7 @@ def build() -> None:
         '+++\ntitle = "Threads"\ndescription = "Stories the digest follows across days."\n'
         'template = "threads.html"\n+++\n'
     )
-    (config.SITE / "data" / "threads.json").write_text(json.dumps(_threads_data(threads, members), indent=1))
+    (config.SITE / "data" / "threads.json").write_text(json.dumps(_threads_data(shown, members), indent=1))
     api_threads = [
         entry | {"url": f"{base}/threads/{entry['id']}/", "stories": members.get(entry["id"], [])}
         for entry in threads.values()

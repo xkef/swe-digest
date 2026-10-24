@@ -55,28 +55,31 @@ def test_build_on_a_clean_checkout(tmp_path, monkeypatch):
     assert (built / "content" / "stories" / "2026-10-09-t.md").exists()
 
 
+THREAD = {
+    "id": "f-0001",
+    "subject": "Sub",
+    "watch_for": "W",
+    "opened": "2026-10-09",
+    "last_seen": "2026-10-09",
+    "closed": "2026-10-10",
+    "notes": ["2026-10-10: done"],
+}
+
+
 def test_build_writes_thread_pages_and_the_json_api(tmp_path, monkeypatch):
     built = checkout(tmp_path, monkeypatch, story_extra="  thread: f-0001\n")
-    site.memory.save(
-        [
-            {
-                "id": "f-0001",
-                "subject": "Sub",
-                "watch_for": "W",
-                "opened": "2026-10-09",
-                "last_seen": "2026-10-09",
-                "closed": "2026-10-10",
-                "notes": ["2026-10-10: done"],
-            }
-        ]
+    (tmp_path / "data" / "digests" / "2026-10-10.yaml").write_text(
+        "date: '2026-10-10'\nstories:\n- title: U\n  section: Security\n  blurb: B\n  summary: S\n"
+        "  thread: f-0001\n  sources:\n  - {label: primary, url: 'https://a.dev/y'}\n"
     )
+    site.memory.save([THREAD])
     permalink = "https://xkef.github.io/swe-digest/digests/2026-10-09/t/"
 
     site.build()
 
     api = built / "static" / "api"
     index = json.loads((api / "index.json").read_text())
-    assert index["days"] == [
+    assert index["days"][1:] == [
         {
             "date": "2026-10-09",
             "updated": None,
@@ -92,12 +95,27 @@ def test_build_writes_thread_pages_and_the_json_api(tmp_path, monkeypatch):
     [thread] = json.loads((api / "threads.json").read_text())["threads"]
     assert thread["closed"] == "2026-10-10"
     assert thread["url"] == "https://xkef.github.io/swe-digest/threads/f-0001/"
-    assert thread["stories"] == [{"date": "2026-10-09", "title": "T", "url": permalink}]
+    assert thread["stories"][0] == {"date": "2026-10-09", "title": "T", "url": permalink}
 
     page = (built / "content" / "stories" / "2026-10-09-t.md").read_text()
     front = tomllib.loads(page.removeprefix("+++\n").rsplit("+++", 1)[0])
     assert front["extra"]["thread"] == {"id": "f-0001", "subject_html": "Sub"}
     assert (built / "content" / "threads" / "f-0001.md").exists()
+
+
+def test_build_hides_a_thread_with_one_story(tmp_path, monkeypatch):
+    built = checkout(tmp_path, monkeypatch, story_extra="  thread: f-0001\n")
+    site.memory.save([THREAD])
+
+    site.build()
+
+    page = (built / "content" / "stories" / "2026-10-09-t.md").read_text()
+    front = tomllib.loads(page.removeprefix("+++\n").rsplit("+++", 1)[0])
+    assert "thread" not in front["extra"]
+    assert not (built / "content" / "threads" / "f-0001.md").exists()
+    assert json.loads((built / "data" / "threads.json").read_text()) == {"open": [], "closed": []}
+    [thread] = json.loads((built / "static" / "api" / "threads.json").read_text())["threads"]
+    assert thread["id"] == "f-0001"
 
 
 CODE_STORY = {
