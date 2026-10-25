@@ -1,0 +1,72 @@
+date: '2026-10-25'
+updated: 2026-10-25T06:26Z
+stories:
+- title: >-
+    gpu-unlock kernel module doubles the BF16 FMA issue rate on Nvidia RTX 30-series GA10x
+    cards
+  section: AI
+  category: AI
+  blurb: >-
+    A Linux kernel module unlocks pro-level BF16 tensor rates on RTX 30-series cards, and
+    users report 14 to 36 percent faster LLM prefill.
+  summary: >-
+    gpu-unlock 1.0.0 targets GA102, GA103, GA104 and GA106 cards. It loads from the initramfs,
+    writes the speed selectors, and resets the card before the unmodified NVIDIA driver binds.
+    The repository reports a 3090 Ti dense BF16 GEMM rising from 87.50 to 157.41 TFLOPS at
+    450 W. LLM decode and INT8 work stay about the same, and user reports that compared outputs
+    found them bit-identical. Cards are opted in with the gpu_unlock.targets kernel parameter.
+  why: >-
+    Teams running local inference on used RTX 3090s can get faster prefill without patching
+    each driver release, at the cost of an out-of-tree module that runs NVIDIA-derived firmware
+    steps at boot.
+  comments: >-
+    Users report that power limits matter a lot, with the smallest gain of 25 percent coming
+    from cards capped at 225 W.
+  sources:
+  - label: primary
+    url: https://github.com/Zagitta/gpu-unlock
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50219700
+- title: >-
+    systemd merges support for programs written in Rust, limited to new leaf components built
+    with meson
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    systemd can now build new leaf programs in no_std Rust through meson, with no cargo, no
+    external crates, and C linkage to libsystemd-shared.
+  summary: >-
+    Christian Brauner's PR 44324 merged on 2026-10-24. Rust is allowed only for new leaf components
+    and existing C code is not ported. Code is no_std, uses only the core and libc crates,
+    and uses its own Box and Vec that return errors on allocation failure. The build needs
+    rustc 1.85, bindgen 0.71.1 and meson 1.4.0, and the -Drust option defaults to auto. The
+    first program planned on top of it is systemd-keyring-setup in PR 44114.
+  why: >-
+    Packagers who build with --auto-features=enabled must add rustc and bindgen as build dependencies
+    or pass -Drust=disabled, because the Arch and openSUSE OBS builds already failed on this.
+  sources:
+  - label: primary
+    url: https://github.com/systemd/systemd/pull/44324
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1xe9bs6/systemd_merges_support_for_rust_programs/
+- title: >-
+    Cerebras explains how it pipelines the 3T-parameter Kimi K3 across 59 wafer-scale chips
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Cerebras fits 4-bit Kimi K3 into on-chip SRAM by placing one dense or two linear-attention
+    layers per 44 GB wafer and streaming activations.
+  summary: >-
+    In a 2026-10-22 post, Cerebras says each WSE-3T wafer has 44 GB of SRAM and each Kimi
+    K3 layer needs about 16 GB at 4 bits. Each wafer holds one dense layer plus its KV cache,
+    or two linear-attention layers, for 59 wafers in total. Only activations move between
+    wafers, over RDMA over Ethernet at about 2 microseconds per hop. Pipeline stages work
+    on different micro-batches at the same time.
+  why: >-
+    The design caps concurrent long-context requests by the SRAM left for KV cache on each
+    dense-layer wafer, so read Cerebras throughput claims with that limit in mind.
+  sources:
+  - label: primary
+    url: https://www.cerebras.ai/blog/how-we-deploy-trillion-parameter-frontier-models-on-cerebras
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50227356
