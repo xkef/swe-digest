@@ -1,5 +1,5 @@
 date: '2026-10-25'
-updated: 2026-10-25T17:08Z
+updated: 2026-10-25T19:55Z
 stories:
 - title: >-
     Google and Mandiant say PHP2Shell fixes need web worker restarts, and publish php.ini
@@ -49,6 +49,33 @@ stories:
     url: https://xplo1t-sec.github.io/posts/breaking-the-aws-mcp-python-sandbox/
   - label: discussion
     url: https://www.reddit.com/r/netsec/comments/1xevj5i/breaking_the_aws_mcp_python_sandbox/
+- title: >-
+    DreamHost resets email and SFTP passwords during an incident that has kept its File Manager
+    offline since 2026-10-23
+  section: Security
+  category: Security
+  blurb: >-
+    DreamHost reset passwords for some email and FTP/SFTP users as a precaution, and its web
+    File Manager has been offline since 2026-10-23.
+  summary: >-
+    DreamHost's status page shows an incident that began on 2026-10-23 with File Manager connectivity
+    problems and grew to webmail sign-outs and precautionary password resets for some email
+    and FTP/SFTP users. As of 2026-10-25 11:43 PDT, most notification emails to affected account
+    owners had gone out, new passwords can be set in the control panel, and files.dreamhost.com
+    remains unavailable. DreamHost has not stated the cause.
+  why: >-
+    Teams that deploy over SFTP or send mail through DreamHost need to set new credentials
+    in the panel and update deploy scripts, mail clients, and CI secrets.
+  followup: >-
+    Watch for File Manager restoration and a statement on the cause and any data exposure.
+  comments: >-
+    The Hacker News thread is small and adds no confirmed facts beyond the status page.
+  sources:
+  - label: primary
+    url: https://www.dreamhoststatus.com/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50231166
+  thread: f-0126
 - title: >-
     Claude API had repeated elevated-error incidents across several models from 2026-10-23
     to 2026-10-25
@@ -118,6 +145,27 @@ stories:
     url: https://github.com/systemd/systemd/pull/44324
   - label: discussion
     url: https://www.reddit.com/r/linux/comments/1xe9bs6/systemd_merges_support_for_rust_programs/
+- title: >-
+    Simon Ser proposes ext-transient-output, a Wayland protocol for virtual outputs used by
+    VNC and remote desktop
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    A proposed protocol would let privileged Wayland clients create temporary virtual outputs
+    that remote desktop software can capture and stream.
+  summary: >-
+    On 2026-10-25 Simon Ser opened a merge request for ext-transient-output, which lets privileged
+    clients create virtual wl_output globals that the compositor removes when the client destroys
+    the object. It pairs with ext-transient-seat and with ext-image-copy-capture for remoting.
+    A draft wlroots implementation exists.
+  why: >-
+    VNC and remote desktop servers on Wayland would get a standard way to create headless
+    displays instead of relying on compositor-specific mechanisms.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Wayland-ext-transient-output
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1xf5npg/new_wayland_protocol_proposed_for_vncremote/
 - title: >-
     Cerebras explains how it pipelines the 3T-parameter Kimi K3 across 59 wafer-scale chips
   section: Engineering posts

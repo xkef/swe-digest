@@ -582,3 +582,71 @@ runs:
   - step: save
     status: ok
     seconds: 0.1
+- mode: daily
+  started: 2026-10-25T19:54Z
+  finished: 2026-10-25T19:55Z
+  candidates: 230
+  degraded:
+    Google Cloud Blog: 'https://cloudblog.withgoogle.com/rss/: HTTP Error 500: Internal Server
+      Error'
+  usage:
+    input_tokens: 6
+    cache_read_tokens: 111698
+    cache_write_tokens: 64226
+    output_tokens: 2534
+    turns: 7
+    seconds: 29
+    cost_usd: 0.5918
+  tools:
+    mcp__digest__fetch_url: 5
+    StructuredOutput: 1
+  fetched:
+  - url: https://github.com/rust-lang/rust/releases/tag/1.99.0
+    ok: true
+  - url: https://www.dreamhoststatus.com/
+    ok: true
+  - url: https://github.com/python/cpython/releases/tag/v3.13.18
+    ok: true
+  - url: https://www.phoronix.com/news/Linux-7.4-Sound
+    ok: true
+  - url: https://www.phoronix.com/news/Wayland-ext-transient-output
+    ok: true
+  added:
+  - >-
+    DreamHost resets email and SFTP passwords during an incident that has kept its File Manager
+    offline since 2026-10-23
+  - >-
+    Simon Ser proposes ext-transient-output, a Wayland protocol for virtual outputs used by
+    VNC and remote desktop
+  dropped: []
+  rejected: []
+  inbox_used: []
+  notes: >-
+    Rust 1.99.0 and 1.98.0 surfaced as new candidates, but the release page dates 1.99.0 to
+    2026-10-01, so I skipped both as stale. The Python 3.13.18 and 3.12.16 tags have no release
+    notes yet, so I could not tell whether they carry security fixes, and I skipped them.
+    I skipped the Samsung TV root shell and tracking claims because they come only from posts
+    on X with no primary write-up. The Wayland protocol is published from a Phoronix report
+    of the merge request because the merge request itself was not among the candidates.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 22.2
+  - step: load
+    status: ok
+    seconds: 0.1
+  - step: select
+    status: ok
+    seconds: 0.2
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 30.5
+  - step: merge
+    status: ok
+    seconds: 0.3
+  - step: save
+    status: ok
+    seconds: 0.1
