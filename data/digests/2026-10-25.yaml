@@ -1,6 +1,54 @@
 date: '2026-10-25'
-updated: 2026-10-25T13:49Z
+updated: 2026-10-25T17:08Z
 stories:
+- title: >-
+    Google and Mandiant say PHP2Shell fixes need web worker restarts, and publish php.ini
+    hardening for unpatched hosts
+  section: Security
+  category: Security
+  blurb: >-
+    Upgrading PHP packages on disk leaves vulnerable libphp.so or php-fpm code running until
+    every web-serving worker process is restarted.
+  summary: >-
+    Google Cloud's PHP2Shell advisory for CVE-2026-109618 and CVE-2026-109619 was updated
+    on 2026-10-23 with Mandiant guidance. Fixes are in PHP 8.5.12, 8.4.27, 8.3.36 and 8.2.35,
+    and PHP 8.1 and earlier get none. The guidance says to restart php-fpm, apache2, frankenphp
+    or lsws after upgrading and to capture worker memory before restarting suspect hosts.
+    For unpatched hosts it lists php.ini settings such as session.upload_progress.enabled
+    = 0, cgroup memory limits instead of ulimit -v, and hunting signals such as PHPSESSID
+    cookies longer than 256 bytes.
+  why: >-
+    A host can report a patched package version and still run vulnerable code, so patch verification
+    has to include a worker restart.
+  thread: f-0083
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/products/identity-security/responding-to-core-php-vulnerabilities-cve-2026-109618-cve-2026-109619
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xf3i0w/php2shell_google_and_mandiant_warn_that_php/
+- title: >-
+    Researcher escapes the AWS MCP Server run_script Python sandbox to get command execution
+    inside Lambda
+  section: Security
+  category: Security
+  blurb: >-
+    Python match/case class patterns let a researcher read blocked dunder attributes and escape
+    the AWS MCP Server sandbox to run shell commands.
+  summary: >-
+    The AWS MCP Server's aws___run_script tool runs agent-supplied Python in a Lambda sandbox
+    with an AST validator and proxied builtins. The researcher reassigned __match_args__ so
+    class patterns made CPython read blocked attributes internally. A mutable proxy returned
+    by the sandbox's replacement type() then exposed copyreg.__newobj__.__globals__, the real
+    __import__, and os and subprocess. The post, published 2026-10-24, says the work was done
+    with Claude Opus 4.6 and includes a disclosure timeline.
+  why: >-
+    Sandboxes that filter Python syntax for agent tools can miss implicit attribute access,
+    so isolation for code-running MCP tools has to hold at the OS or VM layer.
+  sources:
+  - label: primary
+    url: https://xplo1t-sec.github.io/posts/breaking-the-aws-mcp-python-sandbox/
+  - label: discussion
+    url: https://www.reddit.com/r/netsec/comments/1xevj5i/breaking_the_aws_mcp_python_sandbox/
 - title: >-
     Claude API had repeated elevated-error incidents across several models from 2026-10-23
     to 2026-10-25
