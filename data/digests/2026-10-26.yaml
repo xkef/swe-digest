@@ -1,5 +1,5 @@
 date: '2026-10-26'
-updated: 2026-10-26T11:21Z
+updated: 2026-10-26T16:15Z
 stories:
 - title: >-
     Gheist campaign uses stolen GitHub tokens to plant secret-dumping workflows in every reachable
@@ -102,6 +102,31 @@ stories:
     url: https://www.reddit.com/r/cybersecurity/comments/1xffetk/unpatched_tailscale_ssh_flaws_could_let_a_hacked/
   thread: f-0128
 - title: >-
+    Honeypot records confirmed PHP2Shell remote code execution against Apache mod_php on PHP
+    8.4.26
+  section: Security
+  category: Security
+  blurb: >-
+    A Perplexity honeypot recorded working PHP2Shell RCE with memory disclosure, the first
+    confirmed success after many failed attempts.
+  summary: >-
+    BleepingComputer reports that Adel Karimi of Perplexity captured confirmed remote code
+    execution via CVE-2026-109618 and CVE-2026-109619 against a single-worker Apache mod_php
+    host on PHP 8.4.26, using offsets from the public exploit. Expel's Marcus Hutchins called
+    it the highest quality confirmation so far, and CISA has shared a SIGMA rule but has not
+    listed the flaws as exploited. PHP also published mitigation for an unpatched RCE, CVE-2026-115560,
+    advising session.upload_progress.enabled=0.
+  why: >-
+    Unpatched PHP hosts, and patched hosts whose workers were not restarted, now face a demonstrated
+    working exploit rather than scanning noise.
+  followup: A CISA KEV listing and a patch for CVE-2026-115560.
+  thread: f-0083
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/php2shell-security-flaws-now-sucessfully-exploited-in-the-wild/
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xfywmh/php2shell_security_flaws_now_sucessfully/
+- title: >-
     Fine-tuned 2015 Inception v3 CNN beats two frontier LLMs on 200 biopsy-proven skin lesions
   section: AI
   category: AI
@@ -122,6 +147,28 @@ stories:
     url: https://lynchlab.net/llm-skin-cancer
   - label: discussion
     url: https://news.ycombinator.com/item?id=50233779
+- title: >-
+    Ubicloud reaches 100 percent tool-call schema accuracy on Kimi K2.6 with vLLM constrained
+    decoding
+  section: AI
+  category: AI
+  blurb: >-
+    Ubicloud raised Kimi K2.6 tool-call schema accuracy from 92 to 100 percent by turning
+    on vLLM constrained decoding, which is off by default.
+  summary: >-
+    Ubicloud measured 92 percent schema accuracy on Moonshot's K2VV ToolCall benchmark when
+    serving Kimi K2.6 on vLLM 0.28, and 91 percent after vLLM made constrained decoding opt-in.
+    Enabling XGrammar structural-tag constrained decoding via vLLM's --tool-strict-level flag
+    gave 100 percent for Kimi and DeepSeek models. vLLM keeps it off by default because of
+    model divergence, grammar translation bugs, and interaction bugs with speculative decoding.
+  why: >-
+    Teams self-hosting open-weight models for agents should check the strict tool-call setting
+    before blaming the model for failed tool calls.
+  sources:
+  - label: primary
+    url: https://www.ubicloud.com/blog/fixing-tool-call-accuracy-in-vllm
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50242870
 - title: >-
     JetBrains open-sources ThinkRail, an agentic IDE built around the pi coding agent
   section: Agentic coding
@@ -182,6 +229,29 @@ stories:
   sources:
   - label: primary
     url: https://github.com/Homebrew/brew/releases/tag/7.0.11
+- title: >-
+    JDK AOT cache embeds CPU-specific adapters that crash JVMs on hosts with different CPU
+    features
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    XPipe found JDK AOT caches embed CPU-specific adapter code that crashes JVMs on hosts
+    lacking the build machine's AVX features.
+  summary: >-
+    XPipe reports that since JDK 25 an AOT cache with class linking also stores adapter code
+    generated for the training machine's CPU, causing SIGILL crashes on hosts without features
+    such as AVX-512, tracked as JDK-8388703. The workaround is -XX:+UnlockDiagnosticVMOptions
+    -XX:-AOTAdapterCaching at cache creation, and JDK 27 will only use cached adapters on
+    an exact CPU feature match. The post also lists JVM options and incubating modules that
+    silently disable AOT class linking.
+  why: >-
+    Teams building AOT caches in CI for heterogeneous fleets need the adapter caching flag
+    and should verify class linking in -Xlog:aot output.
+  sources:
+  - label: primary
+    url: https://xpipe.io/blog/java-aot-cache
+  - label: discussion
+    url: https://www.reddit.com/r/java/comments/1xfv852/javas_new_aot_cache_feature_is_in_a_rough_state/
 - title: Linux 7.4 merges opt-in buffered iomap for EXT4 with large write speedups
   section: Linux and kernel
   category: Linux/Kernel
@@ -201,3 +271,41 @@ stories:
   sources:
   - label: primary
     url: https://www.phoronix.com/news/Linux-7.4-EXT4
+- title: systemd merges support for writing new leaf components in Rust
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Christian Brauner merged Rust support for new leaf systemd components, while core code
+    stays C until Rust dynamic library support improves.
+  summary: >-
+    Christian Brauner merged support for writing leaf components of systemd in Rust. Existing
+    code will not be ported and nothing other components depend on will be in Rust, because
+    Rust's dynamic library support would bloat every binary. LWN expects the work in systemd
+    v263, due in December.
+  why: >-
+    Distributions building systemd v263 will likely need a Rust toolchain in their build environment.
+  followup: systemd v263 release in December 2026.
+  sources:
+  - label: primary
+    url: https://lwn.net/Articles/1102970/
+- title: Anthropic files S-1 for a Nasdaq IPO under the symbol ANT
+  section: Markets and companies
+  category: Markets
+  blurb: >-
+    Anthropic filed a Form S-1 for an IPO of Class A stock on Nasdaq under ANT, with share
+    count and price range not yet set.
+  summary: >-
+    Anthropic, PBC filed a registration statement on Form S-1 with the SEC on 2026-10-26 for
+    a proposed IPO of its Class A common stock on the Nasdaq Global Select Market under the
+    symbol ANT. The number of shares and the price range have not been determined, and Goldman
+    Sachs and Morgan Stanley are named for the prospectus.
+  why: >-
+    A public listing puts the governance, spending, and disclosures of a major model and coding
+    agent provider under SEC reporting rules.
+  followup: Price range and share count in an amended S-1.
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/news/s1-sec
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50242939
+  thread: f-0130
