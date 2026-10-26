@@ -1,5 +1,5 @@
 date: '2026-10-26'
-updated: 2026-10-26T06:36Z
+updated: 2026-10-26T11:21Z
 stories:
 - title: >-
     Gheist campaign uses stolen GitHub tokens to plant secret-dumping workflows in every reachable
@@ -49,6 +49,32 @@ stories:
     url: https://www.python.org/downloads/release/python-3152/
   - label: primary
     url: https://github.com/python/cpython/releases/tag/v3.15.2
+- title: >-
+    C++26 fails its ISO DIS ballot, with No votes from nine national bodies tied to contracts
+  section: Top stories
+  category: Languages
+  blurb: >-
+    National bodies disapproved the C++26 draft with 12 of 20 in favor, the first failed C++
+    DIS ballot, and the No votes point to contracts.
+  summary: >-
+    The C++26 DIS ballot closed on 2026-10-23 with 12 of 20 P-member votes in favor, below
+    the two-thirds needed, and 9 of 22 votes negative, above the 25 percent limit. Denmark,
+    Finland, Iran, Italy, Japan, Luxembourg, Romania, Spain and Sweden voted No, and WG21
+    meets in Buzios, Brazil, from 2026-11-16 to 2026-11-21 to choose a course, with options
+    including removing contracts or a revised draft.
+  why: >-
+    Reflection, std::execution, library hardening and contracts now sit in an unapproved draft,
+    and code using GCC 16 contracts relies on an experimental implementation of the disputed
+    part.
+  followup: >-
+    WG21 meeting in Buzios on 2026-11-16 to 2026-11-21, and the ISO comment report due by
+    mid-January 2027.
+  sources:
+  - label: primary
+    url: https://train-it.eu/blog/cpp26-contracts-the-ballot-result/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50239748
+  thread: f-0129
 - title: >-
     Tailworm report says unpatched Tailscale SSH flaws let one compromised node gain root
     on other servers
@@ -137,3 +163,41 @@ stories:
   sources:
   - label: primary
     url: https://arxiv.org/abs/2610.32229v1
+- title: >-
+    Homebrew 7.0.11 tightens download verification for formula sources, patches and casks
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Homebrew 7.0.11 now verifies API formula patch downloads, requires verifiable official
+    formula sources, and honours explicit cask checksums.
+  summary: >-
+    Homebrew 7.0.11, released 2026-10-26, verifies patch downloads for API formulae, requires
+    verifiable sources for official formulae, honours explicit cask checksum requirements,
+    and limits implicit item trust to install commands. It also signs temporary keg copies
+    before restoring them, rejects new casks that require Rosetta, and speeds up linking and
+    unlinking kegs.
+  why: >-
+    macOS developer machines and CI runners that update Homebrew get stricter integrity checks
+    on what they download and install.
+  sources:
+  - label: primary
+    url: https://github.com/Homebrew/brew/releases/tag/7.0.11
+- title: Linux 7.4 merges opt-in buffered iomap for EXT4 with large write speedups
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Linux 7.4 adds an opt-in buffered_iomap mount option for EXT4 that speeds large writes
+    but excludes fscrypt, fsverity and data=journal.
+  summary: >-
+    The EXT4 pull for the Linux 7.4 merge window adds buffered iomap support behind the buffered_iomap
+    mount option, replacing buffer heads for that path. Ted Ts'o wrote that the mode does
+    not support online defragmentation, inline data, fsverity, fscrypt, non-extent inodes
+    or data=journal, and falls back to the old path when needed. The pull also fixes fast
+    commit issues and deadlocks and out-of-bounds reads on corrupted file systems.
+  why: >-
+    Write-heavy EXT4 workloads get a mount option to benchmark on 7.4, as long as they avoid
+    the unsupported features.
+  thread: f-0068
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Linux-7.4-EXT4
