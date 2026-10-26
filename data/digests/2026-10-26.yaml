@@ -1,0 +1,139 @@
+date: '2026-10-26'
+updated: 2026-10-26T06:36Z
+stories:
+- title: >-
+    Gheist campaign uses stolen GitHub tokens to plant secret-dumping workflows in every reachable
+    repository
+  section: Top stories
+  category: Security
+  blurb: >-
+    Wiz tracked more than 13,500 planted branches from over 850 stolen GitHub tokens that
+    commit workflows to dump repository secrets.
+  summary: >-
+    Since 2026-09-15 the Gheist tool has committed .github/workflows/sync-check.yml on ci-sync-
+    branches, printing base32-encoded secrets to the job log, downloading the log through
+    the API and deleting the run. GitHub's approval hold for public repositories blocked every
+    public run Wiz checked, but runs completed in private repositories and GitHub Enterprise
+    Server, and a later variant targets self-hosted runners to sweep host credentials. Wiz
+    says the campaign was ongoing and evolving as of 2026-10-24.
+  why: >-
+    Private repository and GHES owners should hunt for ci-sync branches and the gheist user
+    agent, rotate every secret an affected repository could reach, and scope OIDC trust to
+    protected branches.
+  sources:
+  - label: primary
+    url: https://www.wiz.io/blog/gheist-attempted-scaled-abuse-of-stolen-github-tokens-stumbles
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50235010
+  thread: f-0127
+- title: >-
+    Python 3.15.2 security release blocks compromised eMudhra intermediate CA keys in the
+    ssl module
+  section: Top stories
+  category: Security
+  blurb: >-
+    Expedited CPython security releases make the ssl module block compromised eMudhra keys
+    and fix a tarfile filter link bypass.
+  summary: >-
+    Python 3.15.2, released 2026-10-25, is an expedited security release that distrusts the
+    compromised eMudhra intermediate CA keys (CVE-2026-115557) and rejects links replacing
+    the destination in tarfile.tar_filter (CVE-2026-114583). Python.org says normal pip use,
+    including upgrading pip, is now safe from attacks using those keys even before pip is
+    updated. Releases 3.14.10, 3.13.18, 3.12.16 and 3.11.18 were tagged the same day.
+  why: >-
+    Upgrading the interpreter protects Python TLS clients against the eMudhra keys even when
+    the system trust store or bundled certifi still trusts them.
+  thread: f-0077
+  sources:
+  - label: primary
+    url: https://www.python.org/downloads/release/python-3152/
+  - label: primary
+    url: https://github.com/python/cpython/releases/tag/v3.15.2
+- title: >-
+    Tailworm report says unpatched Tailscale SSH flaws let one compromised node gain root
+    on other servers
+  section: Security
+  category: Security
+  blurb: >-
+    A researcher reports that Tailscale SSH port forwarding can turn one compromised node
+    into root on reachable servers, with no patch yet.
+  summary: >-
+    Erica Windisch of Cyberdione Labs published 11 findings on 2026-10-25 from lab tests of
+    Tailscale 1.104.2 and headscale 0.29.5, including SSH forwarding paths to root-owned sockets
+    and a race that captured a device enrollment key. Tailscale's VP of engineering said the
+    company found issues and is working on fixes, and no bulletin, CVE or fixed version existed
+    at publication. The proof of concept is not public and no one has independently reproduced
+    the findings.
+  why: >-
+    Until a fix ships, Tailscale SSH users should disable port forwarding per rule, write
+    single source-to-destination grants, and treat any headscale 0.29.5 SSH grant as root
+    on the target.
+  followup: A Tailscale security bulletin, CVE, and fixed release.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/10/unpatched-tailscale-ssh-flaws-could-let.html?m=1
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xffetk/unpatched_tailscale_ssh_flaws_could_let_a_hacked/
+  thread: f-0128
+- title: >-
+    Fine-tuned 2015 Inception v3 CNN beats two frontier LLMs on 200 biopsy-proven skin lesions
+  section: AI
+  category: AI
+  blurb: >-
+    A dermatologist found a fine-tuned 2015 Inception v3 CNN diagnosed 62 percent of 200 biopsied
+    lesions, against 42 percent for two LLMs.
+  summary: >-
+    Dr Magnus Lynch tested GPT-6 Astra, Claude Fable 5.1 and an Inception v3 fine-tuned on
+    68,011 ISIC images against 200 MILK10k lesions, with the test lesions removed from training.
+    The CNN named the correct diagnosis for 125 lesions against 84 and 85 for the LLMs, though
+    at its preset threshold it discharged 18 of 30 melanomas. Cases, prompts, replies and
+    scoring code are published, and each LLM case was run once.
+  why: >-
+    It is a reproducible data point that small task-specific vision models can still beat
+    general multimodal LLMs on narrow clinical image classification.
+  sources:
+  - label: primary
+    url: https://lynchlab.net/llm-skin-cancer
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50233779
+- title: >-
+    JetBrains open-sources ThinkRail, an agentic IDE built around the pi coding agent
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    JetBrains open-sourced ThinkRail, an Apache-2.0 IDE around the pi coding agent with git
+    worktree workspaces and living SPEC.md files.
+  summary: >-
+    ThinkRail runs pi sessions in-process behind a Bun host and React UI, isolates agent work
+    in git worktree workspaces, and keeps a graph of SPEC.md files the agent maintains through
+    dedicated spec tools. It reads existing Agent Skills, connects MCP servers with approval
+    prompts for non-read-only calls, and handles GitHub PRs and CI checks through the user's
+    gh. It ships as a desktop app and a CLI, and collects basic usage analytics tied to a
+    random installation ID.
+  why: >-
+    It is a first-party example of spec-driven agent workflow with parallel worktree isolation
+    from a major IDE vendor, open for inspection.
+  sources:
+  - label: primary
+    url: https://github.com/JetBrains/thinkrail
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50233294
+- title: ALTO recipe trains GPT-OSS-20B in MXFP4 within 0.007 validation loss of BF16
+  section: ML research
+  category: Paper
+  blurb: >-
+    An open MXFP4 training recipe for the GPT-OSS-20B MoE model ends 0.007 validation loss
+    above BF16, using simulated kernels on AMD MI300.
+  summary: >-
+    ALTO combines hybrid 1D and 2D block quantization, randomized Hadamard transforms, stochastic
+    rounding and a simplified weight de-oscillation scheme on the MLPerf Small MoE Training
+    benchmark. De-oscillation cut FP4 convergence overhead to the MLPerf target from 20 percent
+    to 5 percent more steps than BF16. The authors also report negative results for differential
+    gradient estimation, outlier clipping and macro-block scaling, and wall-clock speed was
+    not optimized.
+  why: >-
+    It gives a concrete, open baseline and a list of techniques that did not help for teams
+    evaluating FP4 training on MoE models.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2610.32229v1
