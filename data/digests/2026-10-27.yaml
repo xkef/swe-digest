@@ -1,5 +1,5 @@
 date: '2026-10-27'
-updated: 2026-10-27T10:46Z
+updated: 2026-10-27T15:29Z
 stories:
 - title: >-
     Cloudflare discloses cross-request KV cache exposure in GLM-5.3 on Workers AI caused by
@@ -68,6 +68,52 @@ stories:
   sources:
   - label: primary
     url: https://rustsec.org/advisories/
+- title: Grafana ships 13.3.0 and patch releases back to 12.4.14 fixing multiple CVEs
+  section: Security
+  category: Security
+  blurb: >-
+    Grafana's 2026-10-27 releases patch up to ten CVEs in 13.3.0, and every supported branch
+    down to 12.4 gets at least three of those fixes.
+  summary: >-
+    Grafana released 13.3.0, 13.2.5, 13.1.9, 13.0.12 and 12.4.14 on 2026-10-27. All five fix
+    CVE-2026-100105, CVE-2026-88858 and CVE-2026-88967, and 13.3.0 lists ten security fixes
+    in total. 13.3.0 also renames the marketplace config.ini section to plugins_marketplace,
+    a breaking change.
+  why: >-
+    Self-hosted Grafana operators should move to the patch release for their branch, and anyone
+    upgrading to 13.3 should check for the config.ini section rename first.
+  sources:
+  - label: primary
+    url: https://github.com/grafana/grafana/releases/tag/v13.3.0
+  - label: primary
+    url: https://github.com/grafana/grafana/releases/tag/v12.4.14
+- title: >-
+    Wiz sees PHP2Shell exploit attempts fail in its telemetry as vulnerable exposure falls
+    about 67 percent
+  section: Security
+  category: Security
+  blurb: >-
+    Wiz honeypots caught public PHP2Shell kits exhausting PHP memory but failing to leak addresses,
+    while exposed vulnerable hosts dropped sharply.
+  summary: >-
+    Wiz reports that the number of exposed PHP2Shell-vulnerable machines fell about 67 percent
+    in the week after disclosure on 2026-10-21, and that fewer than 53 percent of initially
+    affected organizations remain vulnerable. Public exploit kits reached memory exhaustion
+    but failed the memory leak stage, because the kits were tuned to a specific php:8.4.26-apache
+    image and need consecutive requests to land on the same worker. Wiz notes that CISA has
+    added PHP2Shell to its KEV list and publishes IOCs.
+  why: >-
+    Exploitation currently depends on the deployment, with single-worker mod_php setups most
+    at risk, so patching remains the fix and the published IOCs can be used for log hunting.
+  comments: >-
+    The HN thread discusses how much the result depends on configuration, given that another
+    researcher's single-worker honeypot was successfully exploited.
+  thread: f-0083
+  sources:
+  - label: primary
+    url: https://www.wiz.io/blog/php2shell-exploitation-so-far
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50259343
 - title: >-
     OpenAI releases GPT-6.1 Terra, a midrange model for visual reasoning and computer use
   section: AI
