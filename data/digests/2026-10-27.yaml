@@ -1,0 +1,166 @@
+date: '2026-10-27'
+updated: 2026-10-27T06:32Z
+stories:
+- title: >-
+    Cloudflare discloses cross-request KV cache exposure in GLM-5.3 on Workers AI caused by
+    an SGLang bug
+  section: Top stories
+  category: Security
+  blurb: >-
+    An SGLang bug on Workers AI let 155 GLM-5.3 responses include text from other customers'
+    requests between 2026-08-27 and 2026-09-09.
+  summary: >-
+    Cloudflare says prompts longer than 681,280 tokens overflowed the prefill KV pool, and
+    SGLang in disaggregated prefill and decode mode replaced them with a one-token placeholder,
+    so decode attended over stale pages from earlier requests. A researcher from Knostic reported
+    it on 2026-09-08 and Cloudflare restored the model on 2026-09-09 with a larger pool and
+    a patched engine. The fix is upstream in SGLang v0.5.21 and Cloudflare found no evidence
+    of deliberate exploitation.
+  why: >-
+    Anyone self-hosting SGLang with disaggregated serving should upgrade and check KV pool
+    size against the advertised context length, since inference engines do not zero cache
+    pages between tenants.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/kv-cache-exposure-remediation/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50252159
+- title: >-
+    Warp says attackers used a vendor flaw to reach agent trace and telemetry data for up
+    to 1% of users
+  section: Top stories
+  category: Security
+  blurb: >-
+    Warp's CEO says attackers exploited a vendor in its infrastructure and reached agent trace
+    and telemetry data for up to about 1% of users.
+  summary: >-
+    Zach Lloyd wrote on 2026-10-26 that Warp detected the exploitation on Friday within hours
+    and remediated it. He said the attack appears to have come from an agent swarm that likely
+    started with a hole in a vendor dependency, and that Warp has notified identified users
+    and engaged CrowdStrike and law enforcement.
+  why: >-
+    Warp users should watch for a notification and treat agent traces sent to the terminal
+    vendor as potentially exposed data, including any secrets those traces may contain.
+  followup: A fuller incident report naming the vendor and the data accessed.
+  sources:
+  - label: primary
+    url: https://twitter.com/zachlloydtweets/status/2114800787716972873
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50250168
+  thread: f-0132
+- title: >-
+    RustSec publishes Pingora HTTP/2 and header advisories and a batch of zstd-safe soundness
+    bugs
+  section: Security
+  category: Security
+  blurb: >-
+    RustSec added HIGH advisories for Pingora HTTP/2 memory exhaustion and Connection header
+    ACL bypass, plus over a dozen zstd-safe soundness bugs.
+  summary: >-
+    On 2026-10-26 RustSec listed RUSTSEC-2026-0389 (HIGH) for Pingora HTTP/2 memory exhaustion
+    from unbounded default header-list and stream limits, RUSTSEC-2026-0390 (HIGH) for forwarding
+    client-nominated Connection headers to HTTP/1 upstreams, and RUSTSEC-2026-0388 (MEDIUM)
+    for authority and Host mismatch cache poisoning. The same day it added use-after-free,
+    double free and out-of-bounds advisories across zstd, zstd-safe and zstd-sys.
+  why: >-
+    Services built on Pingora or the zstd crates should run cargo audit and update before
+    attackers probe HTTP/2 limits or header handling.
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/
+- title: >-
+    OpenAI releases GPT-6.1 Terra, a midrange model for visual reasoning and computer use
+  section: AI
+  category: AI
+  blurb: >-
+    OpenAI's new midrange model targets visual reasoning and computer use at $1 per million
+    input tokens and $5 per million output tokens.
+  summary: >-
+    OpenAI introduced GPT-6.1 Terra on 2026-10-26 as a fast, efficient model for visual reasoning,
+    computer use and writing. Simon Willison reports the price is about half that of GPT-5.6
+    Terra and GPT-6.1 Sol and around 10 times GPT-6 Luna. An OpenAI engineer said on Hacker
+    News it is similar to Astra and Sol on vision and computer use but faster, and a bit worse
+    on most other tasks.
+  why: >-
+    Teams running computer-use or vision agents at volume get a cheaper tier between Luna
+    and Sol to test.
+  comments: >-
+    OpenAI's Ted Sanders described Terra in the thread as a midrange API option rather than
+    a major release for subscribers.
+  sources:
+  - label: primary
+    url: https://openai.com/index/introducing-gpt-6-1-terra/
+  - label: discussion
+    url: https://simonwillison.net/2026/Oct/26/gpt-61-terra/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50248124
+- title: >-
+    OpenAI publishes a model-generated claim that the Exponential Time Hypothesis is false
+  section: ML research
+  category: Paper
+  blurb: >-
+    OpenAI published a model-generated argument and Lean formalization claiming the Exponential
+    Time Hypothesis is false, pending outside review.
+  summary: >-
+    OpenAI posted a preprint dated 2026-10-25 in its openai/math repository arguing that ETH
+    is false, one of three results announced on 2026-10-26 alongside work on the Kakeya conjecture
+    and quantum chromodynamics. RuntimeWire reports the release includes a Lean formalization
+    and asks computer scientists to examine it.
+  why: >-
+    If the result holds, many hardness assumptions behind algorithm lower bounds and fine-grained
+    complexity results would need revisiting.
+  followup: Independent review of the proof and the Lean formalization.
+  sources:
+  - label: primary
+    url: https://github.com/openai/math/blob/main/preprints/The-Exponential-Time-Hypothesis-is-False-October-25-2026/paper.pdf
+  - label: discussion
+    url: https://runtimewire.com/article/openai-ai-eth-disproof-external-review
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50251661
+  thread: f-0133
+- title: >-
+    Microsoft documents the Type Server Protocol for querying Python type analysis over JSON-RPC
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Microsoft documents a JSON-RPC protocol that lets tools query a Python type server for
+    computed, declared and expected types per snapshot.
+  summary: >-
+    The Type Server Protocol, now at version 0.4.1, uses LSP data shapes and typeServer methods
+    for snapshots, search paths, import resolution and type queries. Results are bound to
+    monotonically increasing snapshots, stale requests fail with a retryable ServerCancelled
+    error, and optional read-only extra IPC connections allow concurrent queries.
+  why: >-
+    Editor and tool authors can consume Python type information from a type server without
+    reimplementing a type checker, though 0.x minor versions may still break.
+  sources:
+  - label: primary
+    url: https://github.com/microsoft/pylance-release/blob/main/docs/tsp/type-server-protocol.md
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50248371
+- title: >-
+    Anthropic files S-1 disclosing up to $120.5B in SpaceX GPU compute commitments through
+    2029
+  section: Markets and companies
+  category: Markets
+  blurb: >-
+    Anthropic's IPO filing commits up to $120.5B for SpaceX GPU compute through 2029, cancelable
+    on 90 days notice after early 2027.
+  summary: >-
+    Anthropic filed its Form S-1 with the SEC on 2026-10-26. According to TeslaNorth's reading
+    of the filing, agreements with SpaceX.AI LLC for NVIDIA GPU compute total up to $120.5
+    billion, about $3.1 billion a month once capacity is fully delivered in December 2026,
+    with non-cancelable periods ending in January and March 2027. The filing also lists Microsoft,
+    Nscale and Lambda as GPU providers.
+  why: >-
+    The filing puts hard numbers on the compute dependencies behind Claude capacity and pricing,
+    which teams building on the API can now weigh.
+  followup: An amended S-1 with a price range and the listing date.
+  thread: f-0130
+  sources:
+  - label: primary
+    url: https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm
+  - label: discussion
+    url: https://teslanorth.com/2026/10/26/anthropic-s1-spacex-120b-compute/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50242939
