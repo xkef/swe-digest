@@ -516,3 +516,87 @@ runs:
   - step: save
     status: ok
     seconds: 0.1
+- mode: daily
+  started: 2026-10-27T18:47Z
+  finished: 2026-10-27T18:48Z
+  candidates: 312
+  degraded: {}
+  usage:
+    input_tokens: 8
+    cache_read_tokens: 262841
+    cache_write_tokens: 120651
+    output_tokens: 6046
+    turns: 13
+    seconds: 75
+    cost_usd: 1.145
+  tools:
+    mcp__digest__fetch_url: 11
+    StructuredOutput: 1
+  fetched:
+  - url: https://ghostty.org/docs/install/release-notes/1-4-0
+    ok: true
+  - url: https://lwn.net/SubscriberLink/1102102/0c00e4d550f25f8c/
+    ok: true
+  - url: https://go.dev/blog/emudhra-incident
+    ok: true
+  - url: https://www.reddit.com/r/selfhosted/comments/1xgu9ea/tailscale_warns_of_ssh_flaws_allowing_root/
+    ok: false
+  - url: https://www.reddit.com/r/AZURE/comments/1xgvjk8/azure_sql_west_europe_region_issues/
+    ok: false
+  - url: https://blog.jetbrains.com/platform/2026/10/jetbrains-terminal-now-uses-ghostty/
+    ok: true
+  - url: https://tailscale.com/security-bulletins
+    ok: true
+  - url: https://openai.com/index/building-scientific-understanding-with-academic-communities/
+    ok: false
+  - url: https://azure.status.microsoft/en-us/status
+    ok: true
+  - url: https://www.python.org/downloads/
+    ok: true
+  - url: https://engineering.fb.com/2026/10/27/security/privacylib/
+    ok: true
+  added:
+  - >-
+    Ghostty 1.4.0 ships with ten security advisories, full Kitty graphics support and scrollback
+    compression
+  - JetBrains IDEs 2026.3 replace the JediTerm terminal emulator with libghostty
+  - >-
+    CPython's experimental JIT faces removal from main after its authors withdraw PEP 836
+  - >-
+    Go security team details its first URGENT release distrusting the weak eMudhra intermediates
+  - >-
+    Meta describes PrivacyLib, which enforces privacy rules inside data system clients, including
+    agent tool calls
+  dropped: []
+  rejected: []
+  inbox_used: []
+  notes: >-
+    Reddit threads for the Tailscale SSH flaws and the Azure SQL West Europe issues returned
+    403. Tailscale's bulletin page lists no new SSH advisory beyond the June and July items,
+    so f-0128 was not advanced. The Azure status page showed no active events, so the Azure
+    SQL report was not covered. The OpenAI science discoveries page returned 403, so f-0133
+    was not updated. The Python point releases were skipped because the downloads page gives
+    no content details, and the Grafana 13.x patch releases are already covered by today's
+    Grafana story.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 19.0
+  - step: load
+    status: ok
+    seconds: 0.1
+  - step: select
+    status: ok
+    seconds: 0.2
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 76.2
+  - step: merge
+    status: ok
+    seconds: 0.3
+  - step: save
+    status: ok
+    seconds: 0.1

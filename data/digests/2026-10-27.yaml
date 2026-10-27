@@ -1,5 +1,5 @@
 date: '2026-10-27'
-updated: 2026-10-27T15:29Z
+updated: 2026-10-27T18:48Z
 stories:
 - title: >-
     Cloudflare discloses cross-request KV cache exposure in GLM-5.3 on Workers AI caused by
@@ -115,6 +115,31 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50259343
 - title: >-
+    Go security team details its first URGENT release distrusting the weak eMudhra intermediates
+  section: Security
+  category: Security
+  blurb: >-
+    Go's security team explains how Go 1.27.3 and 1.26.10 shipped in under 7.5 hours to distrust
+    the weak eMudhra intermediates.
+  summary: >-
+    Go was alerted on 2026-10-19 at 11:45 PDT and published Go 1.27.3 and 1.26.10 at 19:13
+    PDT, blocking certificates that chain to the eight eMudhra intermediates whose private
+    keys could be recovered in microseconds. Go acted at the runtime level because its Linux
+    verifier has no platform revocation mechanism, and it plans revocation parity on Linux,
+    including possible upki support. Binaries must be rebuilt with the new releases, and govulncheck
+    in binary mode can detect affected builds.
+  why: >-
+    Go binaries talking TLS on Linux stay exposed to forged certificates until they are rebuilt
+    with Go 1.27.3 or 1.26.10.
+  thread: f-0077
+  sources:
+  - label: primary
+    url: https://go.dev/blog/emudhra-incident
+  - label: primary
+    url: https://tailscale.com/security-bulletins
+  - label: discussion
+    url: https://www.reddit.com/r/golang/comments/1xgvjsu/our_response_to_the_emudhra_key_disclosure/
+- title: >-
     OpenAI releases GPT-6.1 Terra, a midrange model for visual reasoning and computer use
   section: AI
   category: AI
@@ -206,6 +231,98 @@ stories:
     url: https://github.com/microsoft/pylance-release/blob/main/docs/tsp/type-server-protocol.md
   - label: discussion
     url: https://news.ycombinator.com/item?id=50248371
+- title: >-
+    Ghostty 1.4.0 ships with ten security advisories, full Kitty graphics support and scrollback
+    compression
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Ghostty 1.4 fixes ten advisories, including OSC 8 link command execution on macOS, and
+    adds full Kitty graphics and scrollback compression.
+  summary: >-
+    Ghostty 1.4.0, released 2026-10-27, fixes ten GitHub security advisories, including malicious
+    Kitty graphics commands that could read or delete files, tmux control mode crashes, and
+    macOS cmd-click OSC 8 links that could lead to command execution. It compresses idle scrollback
+    to cut its resident memory 70 to 90 percent, raises the default scrollback limit to 50
+    MB, adds a ghostty +ssh wrapper, and moves the GTK renderer to EGL with DMABUF export.
+    GTK builds now require GTK 4.18 and libadwaita 1.7, which rules out Ubuntu 24.04 LTS,
+    and copy-on-select defaults to none on macOS.
+  why: >-
+    Upgrade to pick up the fixes for output-triggered crashes and file access, and check copy-on-select
+    and keybind configs for the breaking changes.
+  sources:
+  - label: primary
+    url: https://ghostty.org/docs/install/release-notes/1-4-0
+  - label: primary
+    url: https://github.com/ghostty-org/ghostty/releases/tag/v1.4.0
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50261998
+- title: JetBrains IDEs 2026.3 replace the JediTerm terminal emulator with libghostty
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    JetBrains IDEs 2026.3 replace the JediTerm terminal emulator with libghostty, adding Kitty
+    keyboard protocol and theme change notifications.
+  summary: >-
+    Starting with 2026.3, the built-in terminal in JetBrains IDEs uses libghostty for parsing
+    and terminal state, while the IDE keeps rendering. It adds the Kitty keyboard protocol,
+    so Shift+Enter works in agents like Claude Code and Codex, answers dark and light theme
+    queries with mode 2031 notifications, and handles almost 50 control sequences JediTerm
+    ignored or misread. Users can revert with the terminal.use.ghostty.emulator registry key.
+  why: >-
+    TUI tools and coding agents in the IDE terminal now get key combinations and theme signals
+    that match standalone terminals.
+  sources:
+  - label: primary
+    url: https://blog.jetbrains.com/platform/2026/10/jetbrains-terminal-now-uses-ghostty/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50260714
+- title: >-
+    CPython's experimental JIT faces removal from main after its authors withdraw PEP 836
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The authors of PEP 836 withdrew it, so CPython's experimental JIT from 3.13 is expected
+    to leave the main branch early in the 3.16 cycle.
+  summary: >-
+    On 2026-10-19 Savannah Ostrowski announced the withdrawal of PEP 836, the proposal for
+    a supported CPython JIT, citing a lack of personal bandwidth after the steering council
+    asked for more detail on support, performance, security and compatibility. The council
+    had set a six-month deadline in June, after which the JIT code would be removed from main.
+    LWN reports removal is likely soon, and the reference implementation will be linked from
+    the withdrawn PEP.
+  why: >-
+    Anyone testing or packaging CPython builds with the experimental JIT should plan for it
+    to disappear from 3.16 development builds.
+  followup: Removal of the JIT code from CPython main during the 3.16 development cycle.
+  sources:
+  - label: primary
+    url: https://lwn.net/SubscriberLink/1102102/0c00e4d550f25f8c/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50257419
+  thread: f-0134
+- title: >-
+    Meta describes PrivacyLib, which enforces privacy rules inside data system clients, including
+    agent tool calls
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Meta describes PrivacyLib, a library inside clients of hundreds of data systems that runs
+    billions of privacy checks per second.
+  summary: >-
+    PrivacyLib runs inside client libraries and at RPC boundaries for hundreds of Meta data
+    and processing systems, mapping each access to read, write, RPC and similar operations
+    so enforcing and observing modules such as Policy Zones can plug in without new integration
+    work. Requirements are compiled at build time and answered mostly from in-process caches,
+    and enforcement ships with each owning service rather than through a fleet-wide config
+    push. An Agent Observability module links internal AI agent tool calls to their session
+    context so disallowed operations can be blocked.
+  why: >-
+    It shows a concrete pattern for putting data access controls, including for agents, at
+    the client boundary without per-system reimplementation.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/10/27/security/privacylib/
 - title: >-
     Anthropic files S-1 disclosing up to $120.5B in SpaceX GPU compute commitments through
     2029
