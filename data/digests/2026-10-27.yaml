@@ -1,5 +1,5 @@
 date: '2026-10-27'
-updated: 2026-10-27T18:48Z
+updated: 2026-10-27T21:28Z
 stories:
 - title: >-
     Cloudflare discloses cross-request KV cache exposure in GLM-5.3 on Workers AI caused by
@@ -139,6 +139,30 @@ stories:
     url: https://tailscale.com/security-bulletins
   - label: discussion
     url: https://www.reddit.com/r/golang/comments/1xgvjsu/our_response_to_the_emudhra_key_disclosure/
+- title: >-
+    FoxIO details three GoAhead TLS bugs, including ignored CRLs that accept revoked client
+    certificates
+  section: Security
+  category: Security
+  blurb: >-
+    The embedded GoAhead web server loaded CRLs without enforcing them and truncated a DH
+    modulus to one byte, both fixed in GoAhead 6.1.1.
+  summary: >-
+    FoxIO reports that GoAhead 3.4.5 through 6.1.0 with the OpenSSL-compatible backend never
+    sets X509_V_FLAG_CRL_CHECK, so revoked mTLS client certificates are accepted (CVE-2026-115881,
+    CVSS 9.1). The Mbed TLS backend passed the generator length for the 2048-bit DH prime,
+    leaving eight possible shared secrets for TLS 1.2 DHE_RSA sessions, and LibreSSL legacy
+    verifier builds allow over-depth chains when issuer checking is off (CVE-2026-115884).
+    GoAhead 6.1.1, released 2026-08-02, fixes the CRL and DH bugs, and reproduction code is
+    public.
+  why: >-
+    Device fleets and firmware built on GoAhead with mTLS or DHE suites need vendor updates
+    to 6.1.1 or later, or DHE disabled.
+  sources:
+  - label: primary
+    url: https://foxio.io/blog/choose-your-backend-three-tls-bugs-in-goahead
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50263701
 - title: >-
     OpenAI releases GPT-6.1 Terra, a midrange model for visual reasoning and computer use
   section: AI
@@ -301,6 +325,46 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50257419
   thread: f-0134
+- title: >-
+    OpenJDK asks projects to test JDK 28 with previews on, as Integer and java.time types
+    become value classes
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    With preview features enabled, 30 JDK classes lose identity, so == can return true, synchronizing
+    on them fails, and WeakHashMap keys throw.
+  summary: >-
+    The OpenJDK Quality Group's heads-up says JEP 401 makes 30 JDK classes, including the
+    primitive wrappers, Optional and most java.time types, value classes when previews are
+    enabled, even for code compiled earlier. Monitor use, java.lang.ref APIs and WeakHashMap
+    throw IdentityException on value objects. Compiling records with previews enabled runs
+    record constructors in early construction, so statements that touch this become compile
+    errors.
+  why: >-
+    Libraries that synchronize on boxed values, key weak maps by them, or call instance methods
+    in record constructors should add a JDK 28 preview-enabled CI job now.
+  thread: f-0065
+  sources:
+  - label: primary
+    url: https://inside.java/2026/10/27/quality-heads-up/
+- title: >-
+    Linux 7.4 merges DMA-BUF read and write support for NVMe through io_uring registered buffers
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    A dmabuf can now be registered with io_uring and used with READ_FIXED and WRITE_FIXED,
+    enabling zero-copy device memory I/O to raw NVMe devices.
+  summary: >-
+    Pavel Begunkov's series, merged on 2026-10-27 after eleven review rounds, adds an opt-in
+    file operation that maps a dmabuf into a new iterator type passed through the I/O stack.
+    Only raw NVMe PCIe block devices are supported so far, with buffers up to 4GB.
+  why: >-
+    GPU and accelerator data pipelines can move data between device memory and NVMe without
+    CPU copies once they target 7.4.
+  thread: f-0068
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/DMA-BUF-IO-uring-Linux-7.4
 - title: >-
     Meta describes PrivacyLib, which enforces privacy rules inside data system clients, including
     agent tool calls
