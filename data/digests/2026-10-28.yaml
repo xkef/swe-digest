@@ -1,5 +1,5 @@
 date: '2026-10-28'
-updated: 2026-10-28T07:00Z
+updated: 2026-10-28T11:29Z
 stories:
 - title: >-
     EDK2 PXE boot flaw CVE-2026-97631 allows pre-boot code execution in UEFI firmware after
@@ -66,6 +66,29 @@ stories:
     url: https://github.com/grafana/grafana/releases/tag/v13.2.5
   - label: primary
     url: https://github.com/grafana/grafana/releases/tag/v13.1.9
+- title: >-
+    NIST finalizes NISTIR 8547, its road map for moving off quantum-vulnerable cryptography
+  section: Security
+  category: Security
+  blurb: >-
+    NIST's final transition report lists which current algorithms get phased out and when,
+    supporting 2030 and 2031 federal migration deadlines.
+  summary: >-
+    NIST released the final Transition to Post-Quantum Cryptography Standards report (NISTIR
+    8547) on 2026-10-27. It identifies quantum-vulnerable algorithms in existing NIST standards,
+    maps them to the 2024 PQC standards, recommends prioritizing FIPS 203 key establishment
+    for long-lived sensitive data, and accommodates hybrid schemes. Executive Order 14412
+    requires federal high-value and high-impact systems to migrate by 2030 for key establishment
+    and 2031 for digital signatures, with 2035 as the overall target.
+  why: >-
+    Teams that sell to or integrate with US federal systems now have a fixed reference for
+    when current public-key algorithms become disallowed and should inventory crypto dependencies,
+    starting with key exchange.
+  sources:
+  - label: primary
+    url: https://www.nist.gov/news-events/news/2026/10/nist-report-provides-guidelines-transition-post-quantum-cryptography
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xgx4fl/nist_report_provides_guidelines_for_transition_to/
 - title: Anthropic reports results from six drug development partnerships using Claude
   section: AI
   category: AI
@@ -105,6 +128,72 @@ stories:
     url: https://deepmind.google/blog/genie-4-a-new-generation-of-world-simulation/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50261319
+- title: >-
+    Liquid AI releases LFM3, six open 2B-class text, vision, audio and omni models on one
+    backbone
+  section: AI
+  category: AI
+  blurb: >-
+    LFM3-1.7B fits in about 1 GB at 4-bit with a 256K context, and each sibling model fine-tunes
+    on a single GPU for on-device agents.
+  summary: >-
+    LFM3-1.7B-Base has 24 layers mixing 13 gated short convolutions, 5 sliding-window attention
+    layers and 6 global attention layers, and was pre-trained on 22T tokens. Six models branch
+    from it, including LFM3-VL-2B with video input, LFM3-Audio-2B, LFM3-Omni-2B and two decision
+    models. Liquid AI reports LFM3-1.7B scores 38.42 on WebArena-Verified against 3.02 for
+    LFM2.5-2.6B, a vendor-reported result.
+  why: >-
+    Small open models with tool calling and long context make local agents and edge deployment
+    practical without cloud inference, pending independent evaluation.
+  sources:
+  - label: primary
+    url: https://huggingface.co/blog/LiquidAI/lfm3
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50262229
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1xgy8s3/liquidailfm317b_hugging_face/
+- title: >-
+    Axiom formalizes the Classification of Finite Simple Groups in Lean with 43.1M lines of
+    code
+  section: ML research
+  category: ML research
+  blurb: >-
+    An agent-built Lean proof of the finite simple group classification found a flaw in a
+    published group theory argument along the way.
+  summary: >-
+    Axiom's project formalizes the first-generation CFSG proof in Lean, with 43.1M lines,
+    2.05M declarations and 100 milestones drawn from 715 papers and books, every step checked
+    by Lean's kernel. The team found counterexamples to a closure assertion in a published
+    route to the Unbalanced Group Theorem and published an alternative argument. The site
+    shows the initial blueprint the team gave its agents.
+  why: >-
+    It is a large-scale data point for agent-driven formal verification, showing machine-checked
+    proofs catching errors in long human-reviewed literature.
+  sources:
+  - label: primary
+    url: https://cfsg.axiommath.ai/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50261647
+- title: uv 0.13 switches source distribution parsing to Astral's new tar-codec crate
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Astral wrote a strict Rust tar parser to close parser differentials between uv, pip and
+    indexes, and it parses sdists about twice as fast.
+  summary: >-
+    Starting with 0.13, uv parses Python source distributions with tar-codec instead of astral-tokio-tar,
+    a fork in the tokio-tar family. Astral says security reports showed tarballs that uv,
+    pip and other tools could extract with different contents, and concluded the existing
+    code was too lenient to retrofit. tar-codec locks each archive to the UStar/pax or GNU
+    family based on its first block and does not merge extension states across families.
+  why: >-
+    Rust projects that extract untrusted tar archives get a stricter parser option, and uv
+    users face fewer cases where an index and an installer disagree about what an sdist contains.
+  sources:
+  - label: primary
+    url: https://astral.sh/blog/tar-codec
+  - label: discussion
+    url: https://www.reddit.com/r/rust/comments/1xh1g5f/a_fast_and_secure_tar_parser_for_the_rust/
 - title: Python Typing Survey 2026 finds AI tools now write types and run checkers
   section: Languages and runtimes
   category: Languages
