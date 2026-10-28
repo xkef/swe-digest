@@ -1,0 +1,142 @@
+date: '2026-10-28'
+updated: 2026-10-28T07:00Z
+stories:
+- title: >-
+    EDK2 PXE boot flaw CVE-2026-97631 allows pre-boot code execution in UEFI firmware after
+    leaked fix
+  section: Top stories
+  category: Security
+  blurb: >-
+    A 16-year-old ICMP buffer overflow in TianoCore's PXE driver lets a network attacker run
+    code before Secure Boot, and the fix leaked early.
+  summary: >-
+    CVE-2026-97631, rated 9.5, is a buffer overflow in the EDK II PXE Base Code driver (NetworkPkg/UefiPxeBcDxe)
+    that copies oversized ICMP error messages past a 504-byte field during network boot. Ars
+    Technica reports the bug was found by researchers at Anthropic and Google with disclosure
+    set for January, but an AMI pull request exposed the fix and TianoCore published an advisory
+    last week. Exploitation needs network reach during PXE boot and per-model address tuning,
+    and Intel and Arm say their supported products are not directly affected.
+  why: >-
+    Fleets that PXE boot servers need firmware updates from their vendors and should consider
+    disabling network boot until those ship.
+  followup: Firmware advisories from AMI, Insyde, Phoenix, server OEMs and cloud providers.
+  sources:
+  - label: primary
+    url: https://arstechnica.com/security/2026/10/code-execution-flaw-in-uefi-firmware-threatens-most-servers-on-planet-earth/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50265393
+  thread: f-0135
+- title: >-
+    Tailscale v1.104.4 fixes Tailscale SSH privilege escalation and Serve bugs from the Tailworm
+    report
+  section: Security
+  category: Security
+  blurb: >-
+    Tailscale shipped client 1.104.4 and four bulletins, TS-2026-014 to 017, fixing SSH privilege
+    boundary and forwarding flaws found by Tailworm.
+  summary: >-
+    Tailscale says the SSH flaws let an already authorized session act beyond its configured
+    local user, including through SSH forwarding, and require a foothold on a peer the policy
+    allows. Version 1.104.4 also fixes three of five reported Serve and Funnel findings, and
+    the Conn25 app connector issue affects only unreleased code.
+  why: >-
+    Anyone running Tailscale SSH should update to 1.104.4 and review SSH policy scope and
+    check mode for sensitive hosts.
+  thread: f-0128
+  sources:
+  - label: primary
+    url: https://tailscale.com/blog/tailscale-ssh-findings-fixes
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50264857
+- title: Grafana 13.2.5, 13.1.9 and 13.0.12 fix four CVEs
+  section: Security
+  category: Security
+  blurb: >-
+    Grafana patch releases on 2026-10-27 fix CVE-2026-100105, CVE-2026-88858 and CVE-2026-88967
+    across three branches, plus one more in 13.2.
+  summary: >-
+    Grafana 13.2.5 lists fixes for CVE-2026-100105, CVE-2026-103506, CVE-2026-88858 and CVE-2026-88967.
+    The 13.1.9 and 13.0.12 releases carry three of those fixes. The release notes give no
+    severity or detail.
+  why: >-
+    Self-hosted Grafana operators on 13.x should move to the latest patch release on their
+    branch.
+  sources:
+  - label: primary
+    url: https://github.com/grafana/grafana/releases/tag/v13.2.5
+  - label: primary
+    url: https://github.com/grafana/grafana/releases/tag/v13.1.9
+- title: Anthropic reports results from six drug development partnerships using Claude
+  section: AI
+  category: AI
+  blurb: >-
+    Claude generated about 35,000 antibody designs for Divergence Labs and helped BigHat raise
+    binding over 10x, per Anthropic's progress report.
+  summary: >-
+    Anthropic describes work with Generate Biomedicines, Divergence Labs, BigHat Biosciences,
+    Enveda, The Column Group and Bristol Myers Squibb, each with a technical report. At Enveda,
+    Claude caught all 11 issues human reviewers found in 1,061 pages of manufacturing records
+    plus seven they missed, and Anthropic acquired Mithril Medicine to run its own muscular
+    dystrophy programs. The work is mostly preclinical.
+  why: >-
+    It gives mechanism-level accounts of agents wired into lab data systems and regulatory
+    paperwork, not only molecule generation.
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/research/early-progress-drug-development
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50265609
+- title: >-
+    Google DeepMind announces Genie 4 world model with native audio as a trusted tester preview
+  section: AI
+  category: AI
+  blurb: >-
+    DeepMind's Genie 4 generates real-time interactive worlds with audio and dialogue, steered
+    by Gemini models, starting with trusted testers.
+  summary: >-
+    Genie 4 builds on Gemini Omni and other Gemini models to keep simulations coherent and
+    adds natively generated audio and character dialogue. It is rolling out as a research
+    preview, with Google AI Ultra subscribers and Gemini API early access partners next.
+  why: >-
+    Agent and robotics teams get a candidate source of training environments, though API access
+    is not yet general.
+  sources:
+  - label: primary
+    url: https://deepmind.google/blog/genie-4-a-new-generation-of-world-simulation/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50261319
+- title: Python Typing Survey 2026 finds AI tools now write types and run checkers
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Of 1,794 respondents, 42.5 percent let AI write type hints, half use more than one checker,
+    and missing library types remain the top problem.
+  summary: >-
+    Meta's report says 24.4 percent of respondents have an AI coding tool invoke their type
+    checker, and some report agents adding type: ignore comments. Missing third-party type
+    information affected 65.1 percent, and 42.7 percent of multi-checker users saw inconsistencies
+    between checkers. Stack Overflow use for typing help fell from 46.4 to 22.9 percent since
+    2024.
+  why: >-
+    Teams using agents with Python should guard against suppressed checker errors and expect
+    checker disagreement when mixing mypy, Pyright, Pyrefly or ty.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/10/27/developer-tools/python-typing-survey-2026-ai-tools-checker-landscape/
+- title: After pg_restore, one query ran 32.6 s until VACUUM ANALYZE cut it to 23 ms
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    A logical restore leaves Postgres without planner statistics or a visibility map, and
+    on 19rc1 the first read can write the whole heap to WAL.
+  summary: >-
+    Nikolay Samokhvalov measured a 250 million row table where ANALYZE gave about 5x and VACUUM
+    about 260x more by eliminating heap fetches in an Index Only Scan. On Postgres 19rc1 the
+    first SELECT took 110 to 113 s and generated about 31 GiB of WAL while setting visibility
+    map bits. Autovacuum never analyzes partitioned parents, so they need a manual ANALYZE.
+  why: >-
+    Migration runbooks using pg_dump should run vacuumdb with analyze, and ANALYZE partitioned
+    parents, before sending traffic.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9Af
