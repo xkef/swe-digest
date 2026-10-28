@@ -1,5 +1,5 @@
 date: '2026-10-28'
-updated: 2026-10-28T11:29Z
+updated: 2026-10-28T16:13Z
 stories:
 - title: >-
     EDK2 PXE boot flaw CVE-2026-97631 allows pre-boot code execution in UEFI firmware after
@@ -26,6 +26,35 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50265393
   thread: f-0135
+- title: >-
+    macOS git, curl and python3 still trust the compromised eMudhra CAs through /etc/ssl/cert.pem
+  section: Top stories
+  category: Security
+  blurb: >-
+    Apple blocks the 12 eMudhra intermediates in Safari and its frameworks, but command-line
+    tools that use /etc/ssl/cert.pem still accept them.
+  summary: >-
+    Apple support article 149555 says curl, git, python3, ruby, perl and openssl shipped with
+    macOS or the Xcode Command Line Tools check /etc/ssl/cert.pem and can still accept the
+    compromised certificates until a future software update. It gives commands to remove emSign
+    ECC Root CA - G3 and, optionally, AAA Certificate Services from the file. A community
+    site by Dennis Jackson says macOS 27.2, released 2026-10-26, did not fix this and reverted
+    manual edits.
+  why: >-
+    Mac laptops and macOS CI runners that clone or fetch over HTTPS can be intercepted until
+    the roots are removed by hand and rechecked after every macOS update.
+  followup: A macOS update that replaces /etc/ssl/cert.pem with Apple's fixed version.
+  comments: >-
+    The community site provides a git ls-remote check and an end-to-end interception demo
+    against a fake github.com certificate, and urges teams to audit macOS build runners.
+  thread: f-0077
+  sources:
+  - label: primary
+    url: https://support.apple.com/en-us/149555
+  - label: discussion
+    url: https://emudhra.we-have-a-problem.com/apple.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50271640
 - title: >-
     Tailscale v1.104.4 fixes Tailscale SSH privilege escalation and Serve bugs from the Tailworm
     report
@@ -89,6 +118,92 @@ stories:
     url: https://www.nist.gov/news-events/news/2026/10/nist-report-provides-guidelines-transition-post-quantum-cryptography
   - label: discussion
     url: https://www.reddit.com/r/cybersecurity/comments/1xgx4fl/nist_report_provides_guidelines_for_transition_to/
+- title: >-
+    CISA adds Node2Shell Brotli flaw CVE-2026-111497 to KEV with a 2026-11-10 federal patch
+    deadline
+  section: Security
+  category: Security
+  blurb: >-
+    CISA confirms attackers now exploit the Brotli decoder out-of-bounds write behind Node2Shell,
+    days after Microsoft shipped emergency .NET fixes.
+  summary: >-
+    BleepingComputer reports that CISA added CVE-2026-111497 to its Known Exploited Vulnerabilities
+    catalog on 2026-10-27 and ordered federal agencies to patch by 2026-11-10. The flaw lets
+    a crafted Brotli stream corrupt decoder state, leak memory, crash the process or potentially
+    run code in Node.js and other HTTP servers and clients.
+  why: >-
+    Services that decode Brotli need patched libraries, restarted processes and rebuilt container
+    images now, or Brotli decoding blocked at the proxy.
+  followup: KEV federal deadline on 2026-11-10.
+  thread: f-0123
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/cisa-warns-of-hackers-now-exploiting-critical-node2shell-flaw/
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xho1aa/cisa_confirms_active_exploitation_of_node2shell/
+- title: >-
+    PostgreSQL Anonymizer 3.3 fixes 12 CVEs that let masked roles read real data or gain superuser
+  section: Security
+  category: Security
+  blurb: >-
+    Dalibo's data masking extension now forbids subqueries in masking rules and SQL-standard
+    function bodies for masked roles to close the leaks.
+  summary: >-
+    Dalibo released PostgreSQL Anonymizer 3.3 with fixes for 12 vulnerabilities, including
+    masked roles reading pg_stats, the secret salt being readable in pg_db_role_setting, cached
+    plans bypassing dynamic masking, and data-modifying CTEs bypassing read-only restrictions.
+    Function inlining is disabled for transparent dynamic masking, and Dalibo advises changing
+    the anon.salt parameter.
+  why: >-
+    Teams relying on dynamic masking for PII must upgrade, rotate anon.salt, and test that
+    functions such as citext or earthdistance still work for masked roles.
+  sources:
+  - label: primary
+    url: https://www.postgresql.org/about/news/postgresql-anonymizer-33-major-security-update-3423/
+- title: >-
+    Anthropic red team reports AI-built exploit chains for Chrome, Safari, Windows and Linux,
+    all patched
+  section: Security
+  category: Security
+  blurb: >-
+    An unreleased Anthropic model chained separate flaws into working exploits, including
+    a Linux root shell over multipath TCP fixed 2026-10-15.
+  summary: >-
+    Anthropic's Frontier Red Team published a post on 2026-10-27 on discovering and exploiting
+    vulnerabilities in real-world software with Claude. The Hacker News reports five chains:
+    a Chrome sandbox escape fixed in Chrome 156, a Safari same-origin bypass fixed in iOS
+    26.5.2, and a network root exploit against Linux multipath TCP listeners that Anthropic
+    ties to CVE-2026-98432. Anthropic says it reported 62 Chrome flaws that received CVEs.
+  why: >-
+    Hosts running multipath TCP listeners need the 2026-10-15 kernel fix, and patch windows
+    shrink as models chain bugs with little human work.
+  comments: >-
+    The Hacker News notes that the public CVE-2026-98432 record describes an IPv4 TCP fix,
+    and that Anthropic does not break down how much of each chain humans built.
+  sources:
+  - label: primary
+    url: https://red.anthropic.com/
+  - label: discussion
+    url: https://thehackernews.com/2026/10/anthropics-unreleased-ai-model-chains.html
+- title: Scan of 7.25 million Gitee repositories finds 26,400 verified-live credentials
+  section: Security
+  category: Security
+  blurb: >-
+    A researcher ran TruffleHog and Kingfisher over all of Gitee for a month and found live
+    Alibaba Cloud, DeepSeek, Zhipu and OpenAI keys.
+  summary: >-
+    Ben Zimmermann, working with MongoDB's Kingfisher team, enumerated 7,256,531 public Gitee
+    repositories and found 26,400 unique credentials that authenticated at scan time, or 3.64
+    per 1,000 repositories. The two scanners overlapped on only 1,001 findings, and the run
+    cost about 3,100 dollars on Modal.
+  why: >-
+    A single secret scanner misses about half of live keys, especially for Chinese AI and
+    cloud vendors, so pairing detectors improves coverage.
+  sources:
+  - label: primary
+    url: https://www.mongodb.com/company/blog/technical/scanning-7-point-25-million-public-repositories-chinas-largest-git-platform-for-secrets
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50275375
 - title: Anthropic reports results from six drug development partnerships using Claude
   section: AI
   category: AI
@@ -152,6 +267,26 @@ stories:
     url: https://news.ycombinator.com/item?id=50262229
   - label: discussion
     url: https://www.reddit.com/r/LocalLLaMA/comments/1xgy8s3/liquidailfm317b_hugging_face/
+- title: >-
+    GitHub Universe 2026 launches the Copilot app, Copilot Fusion model routing and multi-repo
+    Copilot projects
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    GitHub recasts itself as an agentic delivery system, with one app for agent work, automatic
+    multi-model routing and parallel cross-repo sessions.
+  summary: >-
+    At Universe on 2026-10-28, GitHub introduced the Copilot app, Copilot Fusion that picks
+    one or more models per task, Copilot projects for managed parallel agent sessions across
+    repositories, session continuity across app, VS Code, CLI and web, and Copilot automations
+    triggered by events or schedules. GitHub says Fusion Max scored within two points of Opus
+    5.5 Max on the Artificial Analysis Coding Agent Index at half the cost.
+  why: >-
+    Teams on GitHub get first-party multi-repo agent orchestration and event-driven automations
+    that compete with third-party agent harnesses.
+  sources:
+  - label: primary
+    url: https://github.blog/news-insights/company-news/github-universe-2026-evolving-every-layer-of-the-stack/
 - title: >-
     Axiom formalizes the Classification of Finite Simple Groups in Lean with 43.1M lines of
     code
@@ -229,3 +364,22 @@ stories:
   sources:
   - label: primary
     url: https://postgr.es/p/9Af
+- title: >-
+    Meta's new Andromeda ads retrieval scores over one billion ads per second with a retrieval
+    MoE on GH200
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Meta fused model and system work into a single GPU kernel pipeline and cut inference FLOPs
+    about 300x against the 2024 Andromeda model.
+  summary: >-
+    Meta describes a mixture-of-experts retrieval model with ensembles of user towers and
+    an attention-based gating layer that reaches near ranking-level quality. Model inference
+    exceeds 10 billion ads per second on one GH200, and the production system surfaces candidates
+    at over one billion ads per second, a 100x lift over 2024.
+  why: >-
+    It shows how fusing embedding gathers, model execution and scoring into one GPU kernel
+    removes memory bandwidth and network bottlenecks at extreme throughput.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/10/28/ml-applications/meta-andromeda-next-gen-ads-retrieval-gpu-co-design/
