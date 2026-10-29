@@ -30,7 +30,8 @@ Reader feedback totals, per story, how many readers marked it. `more` asks
 for more stories like it, and `less` for fewer. `knew` means a reader saw it
 elsewhere first, so the digest was late or the story was obvious. `follow`
 asks for follow-ups. Owner notes outweigh the counts. In `summary`, state the
-feedback each change rests on.
+feedback each change rests on. The notes are private and the pull request is
+public, so describe a note in your own words and never quote it.
 
 `summary` is the pull request body: one short paragraph per change, each naming
 its evidence. When nothing should change, return both files as they are and say
