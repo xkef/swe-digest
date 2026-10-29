@@ -36,12 +36,18 @@ its schema ([publish.py](agent/src/digest/publish.py)), commits `data/` to main,
 and opens a pull request for `agent/config/`. Code, prompts, and workflows are
 not on the allowlist.
 
+## Analytics
+
+Cloudflare Web Analytics counts page views. It doesn't set a cookie or
+fingerprint visitors.
+
 ## Layout
 
 ```text
 agent/    the Python program: src/digest/, prompts/, config/, tests/
 data/     what runs write: digests, run records, follow-ups
 site/     the Zola site, built from data/
+signals/  the Cloudflare Worker for private feedback
 ```
 
 `mise tasks` lists every command. [SECURITY.md](.github/SECURITY.md) states the

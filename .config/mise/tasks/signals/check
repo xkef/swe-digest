@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#MISE description="Type-check the signals Worker and run its tests in workerd"
+#MISE dir="{{config_root}}/signals"
+set -euo pipefail
+
+npx wrangler types --check
+npx tsc --noEmit
+npx vitest run "$@"

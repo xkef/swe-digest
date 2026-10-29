@@ -1,0 +1,17 @@
+// The signals Worker. Workers Builds deploys it from main with
+// `npx wrangler deploy`, root directory signals/.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "swe-digest-signals",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+
+  // Workers Logs keeps every invocation and console.log line for 3 days on
+  // the Free plan. The dashboard and `wrangler tail` read them.
+  "observability": { "enabled": true },
+
+  "durable_objects": {
+    "bindings": [{ "name": "READERS", "class_name": "ReaderAgent" }],
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ReaderAgent"] }],
+}
