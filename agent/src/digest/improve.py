@@ -5,7 +5,7 @@
     feedback ─────────┘
 
 The evidence is what the week published, the Hacker News stories it missed,
-what the runs recorded, and the owner's feedback issues. The model answers
+what the runs recorded, and the week's reader feedback from the signals Worker. The model answers
 with a full watchlist and profile. Python writes them to agent/config/, and the
 publish job opens a pull request. Merging it is the approval.
 """
@@ -16,14 +16,13 @@ from collections import Counter
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
-from digest import agent, config, github, graph, http, runs, sources, stories
+from digest import agent, config, graph, http, runs, signals, sources, stories
 from digest.graph import State, Step
 from digest.http import Fetcher
 
 MODE = "improve"
 WEEK_DAYS = 7
 MISS_MIN_POINTS = 300
-FEEDBACK_LABEL = "feedback"
 HEADER = (
     "# What a run collects. Python fetches every source here before the model\n"
     "# starts. Edit by hand, or merge a weekly improvement pull request.\n\n"
@@ -56,7 +55,8 @@ def week(day: str) -> State:
 
 
 def feedback() -> State:
-    return {"feedback": github.owner_issues(FEEDBACK_LABEL)}
+    """Returns the week's feedback totals per story, or none outside GitHub Actions."""
+    return {"feedback": signals.fetch(WEEK_DAYS)["feedback"] if signals.available() else []}
 
 
 def ask(brief: str, fetcher: Fetcher) -> State:
@@ -82,7 +82,6 @@ def summary(state: State) -> runs.Record:
     """Returns the run record from whatever the run produced, even a failed run."""
     reply = state.get("reply", {})
     answer = reply.get("answer", {})
-    asked = {issue["number"] for issue in state.get("feedback", [])}
     record = {
         "mode": MODE,
         "started": runs.stamp(state["started"]),
@@ -93,7 +92,6 @@ def summary(state: State) -> runs.Record:
         "fetched": state.get("fetched", state["fetcher"].log),
         "changed": state.get("changed"),
         "refused": state.get("refused"),
-        "feedback_used": [number for number in answer.get("feedback_used", []) if number in asked],
         "summary": answer.get("summary"),
     }
     return {key: value for key, value in record.items() if value is not None}
@@ -130,10 +128,12 @@ def brief(week: list[str], feedback: list[dict[str, Any]], misses: list[dict[str
     lines += ["", "## Run notes"]
     lines += [f"- {day} {entry.get('mode')}: {entry.get('notes', '')}" for day, entry in week_runs]
 
-    lines += ["", "## Owner feedback issues"]
-    lines += [f"- #{i['number']} {i['title']}\n  {' '.join(i['body'].split())}" for i in feedback] or [
-        "(none)"
-    ]
+    lines += ["", "## Reader feedback, totals per story"]
+    for tally in feedback:
+        counts = ", ".join(f"{key} {tally[key]}" for key in ("more", "less", "knew", "follow") if tally[key])
+        lines.append(f"- {tally['story']} | {counts or 'note only'}")
+        lines += [f"  owner note: {' '.join(note.split())}" for note in tally["notes"]]
+    lines += ["(none)"] if not feedback else []
 
     lines += ["", "## Current watchlist (YAML)", config.WATCHLIST.read_text()]
     lines += ["", "## Current profile", config.profile()]
@@ -161,7 +161,7 @@ def schema() -> dict[str, Any]:
     return {
         "type": "object",
         "additionalProperties": False,
-        "required": ["watchlist", "profile", "summary", "feedback_used"],
+        "required": ["watchlist", "profile", "summary"],
         "properties": {
             "watchlist": {
                 "type": "object",
@@ -190,7 +190,6 @@ def schema() -> dict[str, Any]:
             },
             "profile": text,
             "summary": text,
-            "feedback_used": {"type": "array", "items": {"type": "integer"}},
         },
     }
 

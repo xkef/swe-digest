@@ -1,4 +1,4 @@
-"""Bounded HTTP GET, and the audited fetch the model uses.
+"""Bounded HTTP requests, and the audited fetch the model uses.
 
 Every response is untrusted. Requests are capped in size and time. The model's
 fetch adds the rules a page it chose must pass: https only, no shorteners, no
@@ -34,7 +34,26 @@ class Refused(RuntimeError):
 
 def get(url: str, opener: urllib.request.OpenerDirector | None = None) -> bytes:
     """Fetches a URL, bounded in size and time. Raises RuntimeError on failure."""
-    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    return _read(urllib.request.Request(url, headers={"User-Agent": USER_AGENT}), opener)
+
+
+def send_json(url: str, headers: dict[str, str], payload: Any = None) -> Any:
+    """Sends a GET, or a POST when ``payload`` is given, and returns the JSON answer.
+
+    Bounded like ``get``. Raises RuntimeError on failure.
+    """
+    data = None if payload is None else json.dumps(payload).encode()
+    request = urllib.request.Request(
+        url, data=data, headers={"User-Agent": USER_AGENT, "Content-Type": "application/json"} | headers
+    )
+    try:
+        return json.loads(_read(request, None))
+    except json.JSONDecodeError as error:
+        raise RuntimeError(f"{url}: invalid JSON: {error}") from error
+
+
+def _read(request: urllib.request.Request, opener: urllib.request.OpenerDirector | None) -> bytes:
+    url = request.full_url
     open_url = opener.open if opener else urllib.request.urlopen
     try:
         with open_url(request, timeout=TIMEOUT_SECONDS) as response:

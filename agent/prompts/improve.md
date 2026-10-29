@@ -1,7 +1,7 @@
 # Task: propose this week's watchlist and profile changes
 
 The message contains what the digest published this week, the Hacker News
-stories it missed, the run notes, the owner's feedback issues, and the current
+stories it missed, the run notes, reader feedback, and the current
 watchlist and reading profile. Your answer becomes a pull request the owner
 reviews. Small, well-argued changes get merged. Churn does not.
 
@@ -26,7 +26,11 @@ existing structure and wording elsewhere.
 
 ## Feedback and summary
 
-List in `feedback_used` every owner feedback issue your changes address.
+Reader feedback totals, per story, how many readers marked it. `more` asks
+for more stories like it, and `less` for fewer. `knew` means a reader saw it
+elsewhere first, so the digest was late or the story was obvious. `follow`
+asks for follow-ups. Owner notes outweigh the counts. In `summary`, state the
+feedback each change rests on.
 
 `summary` is the pull request body: one short paragraph per change, each naming
 its evidence. When nothing should change, return both files as they are and say

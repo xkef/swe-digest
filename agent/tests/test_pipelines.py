@@ -2,7 +2,10 @@ import pytest
 
 pytest.importorskip("claude_agent_sdk")
 
+from datetime import UTC, datetime
+
 from digest import config, daily, graph, improve, memory, runs, stories
+from digest.http import Fetcher
 
 DAY = "2026-10-09"
 BLURB = (
@@ -174,3 +177,60 @@ def test_failed_step_still_writes_the_run_record(data, monkeypatch):
     assert record["steps"][-1]["step"] == "save"
     assert record["steps"][-1]["error"] == "OSError: disk full"
     assert record["added"] == ["Tool 2.0 released"]
+
+
+REQUEST = {"id": "0f6c1c5e-0000-4000-8000-000000000001", "url": "https://x.dev/post", "note": "worth it"}
+
+
+def test_collect_reads_requests_only_inside_github_actions(monkeypatch):
+    monkeypatch.setattr(daily.sources, "collect", lambda *a: ([], {}))
+    monkeypatch.setattr(daily.signals, "available", lambda: False)
+    monkeypatch.setattr(daily.signals, "fetch", lambda days: pytest.fail("fetched signals"))
+
+    assert daily.collect(datetime.now(UTC))["inbox"] == []
+
+
+def test_collect_records_a_signals_failure_as_degraded(monkeypatch):
+    def fail(days):
+        raise RuntimeError("signals: 503")
+
+    monkeypatch.setattr(daily.sources, "collect", lambda *a: ([], {}))
+    monkeypatch.setattr(daily.signals, "available", lambda: True)
+    monkeypatch.setattr(daily.signals, "fetch", fail)
+
+    collected = daily.collect(datetime.now(UTC))
+
+    assert collected["inbox"] == []
+    assert collected["degraded"] == {"inbox": "signals: 503"}
+
+
+def test_brief_lists_story_requests_with_their_notes():
+    text = daily.brief(DAY, {"stories": []}, [], [], [REQUEST], {})["brief"]
+
+    assert f"- {REQUEST['id']} https://x.dev/post\n  worth it" in text
+
+
+def test_summary_keeps_only_requests_the_run_was_given():
+    state = {
+        "started": datetime.now(UTC),
+        "fetcher": Fetcher(100),
+        "inbox": [REQUEST],
+        "reply": {"answer": {"inbox_used": [REQUEST["id"], "forged-id"]}},
+    }
+
+    assert daily.summary(state)["inbox_used"] == [REQUEST["id"]]
+
+
+def test_improve_brief_lists_feedback_totals_and_owner_notes(data):
+    tally = {
+        "story": "2026-10-09/tool-2-0",
+        "more": 2,
+        "less": 0,
+        "knew": 1,
+        "follow": 0,
+        "notes": ["more of this"],
+    }
+
+    text = improve.brief([DAY], [tally], [])["brief"]
+
+    assert "- 2026-10-09/tool-2-0 | more 2, knew 1\n  owner note: more of this" in text

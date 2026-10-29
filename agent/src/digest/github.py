@@ -1,4 +1,4 @@
-"""GitHub through the gh CLI: owner issues, signed commits, and pull requests.
+"""GitHub through the gh CLI: signed commits, pull requests, and workflow dispatch.
 
 Commits go through the GraphQL createCommitOnBranch mutation, so GitHub builds
 each commit server-side and signs it as github-actions[bot].
@@ -34,31 +34,6 @@ def _api(path: str, *args: str) -> Any:
 def _repo() -> str:
     repo: str = config.settings()["repo"]
     return repo
-
-
-def owner_issues(label: str) -> list[dict[str, Any]]:
-    """Returns open issues with the label that the owner wrote.
-
-    Authorship comes from the API, never from the text. Anyone can open an
-    issue, so only the owner's count.
-    """
-    issues = _api(f"repos/{_repo()}/issues?state=open&labels={label}&per_page=50")
-    owner = config.settings()["owner"]
-    return [
-        {"number": issue["number"], "title": issue["title"], "body": (issue["body"] or "")[:2000]}
-        for issue in issues
-        if issue["user"]["login"] == owner and "pull_request" not in issue
-    ]
-
-
-def close(number: int, label: str, comment: str) -> None:
-    """Closes an issue, after checking again that the owner wrote it."""
-    allowed = {issue["number"] for issue in owner_issues(label)}
-    if number not in allowed:
-        print(f"skip #{number}: not an open {label} issue by the owner")
-        return
-    _gh("issue", "comment", str(number), "--repo", _repo(), "--body", comment)
-    _gh("issue", "close", str(number), "--repo", _repo())
 
 
 def head(branch: str) -> str:

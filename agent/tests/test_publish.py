@@ -72,3 +72,14 @@ def test_publish_path_never_loads_the_agent_sdk():
     code = "import sys, digest.publish, digest.site, digest.cli; assert 'claude_agent_sdk' not in sys.modules"
     env = {"PYTHONPATH": str(config.AGENT / "src")}
     assert subprocess.run([sys.executable, "-c", code], env=env).returncode == 0
+
+
+def test_mark_requests_waits_for_the_commit(monkeypatch):
+    marked = []
+    monkeypatch.setattr(publish.signals, "available", lambda: True)
+    monkeypatch.setattr(publish.signals, "mark_used", lambda ids: marked.append(ids) or len(ids))
+
+    publish.mark_requests(None, {"inbox_used": ["a"]})
+    publish.mark_requests("abc123", {"inbox_used": ["a"]})
+
+    assert marked == [["a"]]

@@ -35,7 +35,8 @@ else under `agent/`.
 | `memory.py`  | follow-ups                                             |
 | `runs.py`    | the run record                                         |
 | `publish.py` | the publish gate                                       |
-| `github.py`  | issues, signed commits, and pull requests through `gh` |
+| `github.py`  | signed commits and pull requests through `gh`          |
+| `signals.py` | story requests and feedback from the signals Worker    |
 | `site.py`    | Zola content from the digest YAML                      |
 
 ## Tasks

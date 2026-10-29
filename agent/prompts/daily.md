@@ -31,8 +31,8 @@ run, the correct answer is an empty `stories` list.
   weakest for a stronger one.
 - Skip market news unless it changes engineering context, and benchmark
   claims without a method or primary source.
-- An owner story request is a strong signal. Cover it when it is verifiable,
-  and list its issue number in `inbox_used`.
+- A story request, which the owner wrote or approved, is a strong signal. Cover
+  it when it is verifiable, and list its id in `inbox_used`.
 
 ## Each story
 

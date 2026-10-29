@@ -42,9 +42,11 @@ jobs:
   agent:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # id-token mints the OIDC token the signals Worker accepts. It grants no
+    # access to the repository.
     permissions:
       contents: read
-      issues: read
+      id-token: write
     outputs:
       day: ${{ steps.day.outputs.day }}
       changed: ${{ steps.export.outputs.changed }}
@@ -98,9 +100,9 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: write
-      issues: write
       pull-requests: write
       actions: write
+      id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

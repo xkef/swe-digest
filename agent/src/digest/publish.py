@@ -8,8 +8,8 @@ mirrored under one directory. This module trusts none of it:
        its own check.
     3. data/ files become one signed commit on main.
     4. agent/config/ files become a pull request. Merging it is the owner's approval.
-    5. Issues the run used are closed only after the API confirms again that
-       the owner opened them.
+    5. Story requests the run covered are marked used on the signals Worker,
+       only after the digest is committed.
 
 Code, prompts, workflows, and settings are not on the allowlist, so a run can
 never change its own instructions or this gate.
@@ -17,8 +17,8 @@ never change its own instructions or this gate.
 The steps form a graph. Only ``verify`` gives what the writing steps need, so
 nothing reaches GitHub before every file passes:
 
-    gather ──> verify ──┬──> commit ──> close_requests
-                        └──> propose ──> close_feedback
+    gather ──> verify ──┬──> commit ──> mark_requests
+                        └──> propose
 """
 
 import re
@@ -28,7 +28,7 @@ from typing import Any
 
 import yaml
 
-from digest import config, github, graph, memory, runs, sources, stories
+from digest import config, github, graph, memory, runs, signals, sources, stories
 from digest.graph import State, Step
 
 DAY = r"\d{4}-\d{2}-\d{2}"
@@ -101,11 +101,11 @@ def commit(data: dict[str, bytes], record: runs.Record, day: str) -> State:
     return {"sha": sha}
 
 
-def close_requests(sha: str | None, record: runs.Record, day: str) -> State:
-    """Closes the story requests the run used, once the digest is committed."""
-    digest_url = f"{config.settings()['site'].rstrip('/')}/digests/{day}/"
-    for number in record.get("inbox_used", []):
-        github.close(number, "story", f"Covered in the {day} digest: {digest_url}")
+def mark_requests(sha: str | None, record: runs.Record) -> State:
+    """Marks the story requests the run covered as used, once the digest is committed."""
+    used = record.get("inbox_used", [])
+    if sha and used and signals.available():
+        print(f"marked {signals.mark_used(used)} story requests used")
     return {}
 
 
@@ -120,20 +120,12 @@ def propose(proposals: dict[str, bytes], record: runs.Record, day: str) -> State
     return {"pr": pr}
 
 
-def close_feedback(pr: str | None, record: runs.Record) -> State:
-    """Closes the feedback issues the run used, once the pull request is open."""
-    for number in record.get("feedback_used", []):
-        github.close(number, "feedback", f"Addressed in {pr}")
-    return {}
-
-
 STEPS = (
     Step(gather, gives=("files",)),
     Step(verify, gives=("data", "proposals", "record")),
     Step(commit, gives=("sha",)),
-    Step(close_requests),
+    Step(mark_requests),
     Step(propose, gives=("pr",)),
-    Step(close_feedback),
 )
 
 

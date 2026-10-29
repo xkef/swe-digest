@@ -17,12 +17,11 @@ from collections import Counter
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
-from digest import agent, config, github, graph, memory, runs, sources, stories
+from digest import agent, config, graph, memory, runs, signals, sources, stories
 from digest.graph import State, Step
 from digest.http import Fetcher
 
 MODE = "daily"
-INBOX_LABEL = "story"
 MAX_NEW_STORIES = 15
 # Days before today whose stories the brief lists, so the model can tell a
 # new event from one an outlet reports again.
@@ -62,13 +61,15 @@ def run(day: str, replay: State) -> runs.Record:
 
 
 def collect(started: datetime) -> State:
-    """Gathers candidates from the watchlist and story requests from the inbox."""
+    """Gathers candidates from the watchlist and approved story requests from the signals Worker."""
     since = started - timedelta(hours=config.settings()["window_hours"])
     candidates, degraded = sources.collect(config.watchlist(), since)
-    try:
-        inbox = github.owner_issues(INBOX_LABEL)
-    except RuntimeError as error:
-        inbox, degraded["inbox"] = [], str(error)[:200]
+    inbox: list[dict[str, Any]] = []
+    if signals.available():
+        try:
+            inbox = signals.fetch(1)["requests"]
+        except RuntimeError as error:
+            degraded["inbox"] = str(error)[:200]
     return {"candidates": candidates, "inbox": inbox, "degraded": degraded}
 
 
@@ -153,7 +154,7 @@ def summary(state: State) -> runs.Record:
     """Returns the run record from whatever the run produced, even a failed run."""
     reply = state.get("reply", {})
     answer = reply.get("answer", {})
-    asked = {issue["number"] for issue in state.get("inbox", [])}
+    asked = {request["id"] for request in state.get("inbox", [])}
     record = {
         "mode": MODE,
         "started": runs.stamp(state["started"]),
@@ -167,7 +168,7 @@ def summary(state: State) -> runs.Record:
         "added": state.get("added"),
         "dropped": state.get("dropped"),
         "rejected": state.get("rejected"),
-        "inbox_used": [number for number in answer.get("inbox_used", []) if number in asked],
+        "inbox_used": [used for used in answer.get("inbox_used", []) if used in asked],
         "notes": answer.get("notes"),
     }
     return {key: value for key, value in record.items() if value is not None}
@@ -209,7 +210,9 @@ def brief(
         lines.append(f"- {f['id']}: {f['subject']} | watch for: {f['watch_for']}{last_note}")
 
     lines += ["", "## Owner story requests"]
-    lines += [f"- #{i['number']} {i['title']}\n  {' '.join(i['body'].split())}" for i in inbox] or ["(none)"]
+    lines += [
+        f"- {r['id']} {r['url']}" + (f"\n  {' '.join(r['note'].split())}" if r["note"] else "") for r in inbox
+    ] or ["(none)"]
 
     lines += ["", "## Degraded sources"]
     lines += [f"- {name}: {reason}" for name, reason in degraded.items()] or ["(none)"]
@@ -288,7 +291,7 @@ def schema() -> dict[str, Any]:
                     "close": {"type": "array", "items": text},
                 },
             },
-            "inbox_used": {"type": "array", "items": {"type": "integer"}},
+            "inbox_used": {"type": "array", "items": text},
             "notes": text,
         },
     }
