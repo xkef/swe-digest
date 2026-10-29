@@ -1,6 +1,7 @@
 import { isDigestRun } from "./auth/github";
 import { bearer, empty, fail, HttpError, Status, withCors } from "./http";
 import { log } from "./log";
+import * as parse from "./parse";
 import { storeOf } from "./store";
 import type { Reader } from "./types";
 
@@ -76,6 +77,9 @@ export async function dispatch(
     if (browser && request.method === "OPTIONS") {
       return finish(empty(Status.NoContent));
     }
+    if (!await withinLimit(request, env)) {
+      return finish(empty(Status.TooManyRequests));
+    }
 
     const route = matches.find((r) => r.method === request.method)
       ?? fail(Status.MethodNotAllowed);
@@ -86,8 +90,15 @@ export async function dispatch(
   }
 }
 
+// Cloudflare sets CF-Connecting-IP on every request from the internet. A
+// request without it shares one bucket, so it cannot dodge the limit.
+async function withinLimit(request: Request, env: Env): Promise<boolean> {
+  const key = request.headers.get("CF-Connecting-IP") ?? "unknown";
+  return (await env.LIMITER.limit({ key })).success;
+}
+
 async function authenticate({ request, env }: Context): Promise<Reader> {
-  const token = bearer(request) ?? fail(Status.Unauthorized);
+  const token = parse.deviceToken(bearer(request)) ?? fail(Status.Unauthorized);
   return await storeOf(env).authenticate(token)
     ?? fail(Status.Unauthorized, "device_token");
 }
