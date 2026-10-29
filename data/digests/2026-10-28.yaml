@@ -251,6 +251,166 @@ stories:
     url: https://nullpt.rs/fingerprinting-bioweapons
   - label: discussion
     url: https://news.ycombinator.com/item?id=50276998
+- title: >-
+    CISA adds Linux kernel flaw CVE-2026-46300 to KEV after PHP2Shell chain roots 25 firewalls
+  section: Security
+  category: Security
+  blurb: >-
+    A kernel page-cache write called Fragnesia turned PHP2Shell's nobody shell into root on
+    firewalls, and CISA set a 2026-10-31 deadline.
+  summary: >-
+    CISA added CVE-2026-46300, a Linux kernel missing initialization flaw, to KEV on 2026-10-28
+    with a 2026-10-31 due date. Dream Research reports that attackers used PHP2Shell (CVE-2026-109618
+    and CVE-2026-109619) against a firewall's appweb management server, then the XFRM ESP-in-TCP
+    flaw to overwrite /etc/pam.d/su through page-cache writes, in a single HTTP request. Of
+    240 targeted firewalls, 25 servers were rooted, two of them at a US government-affiliated
+    organization.
+  why: >-
+    Any Linux host that exposes PHP and allows ESP-in-TCP needs both the PHP fix and a kernel
+    update, because the chain needs no credentials.
+  followup: >-
+    The firewall vendor's advisory and distribution kernel errata for CVE-2026-46300.
+  thread: f-0083
+  sources:
+  - label: primary
+    url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+  - label: primary
+    url: https://dreamgroup.com/blog/chained-php2shell-exploit-roots-25-servers
+  - label: discussion
+    url: https://www.securityweek.com/china-linked-hackers-exploit-php2shell-to-root-firewalls/
+- title: >-
+    Alpine Linux rebuilds its GitLab after exploit attempts on CVE-2026-97229 survived a GitLab
+    upgrade
+  section: Security
+  category: Security
+  blurb: >-
+    Upgrading GitLab did not fix the CVSS 10 regex flaw on Alpine's instance, because the
+    Ruby patch ships only in GitLab's own packages.
+  summary: >-
+    An attacker crashed Alpine's GitLab workers 8 times on 2026-10-20 and 2026-10-21 with
+    crafted CI configurations aimed at the Onigmo regex flaw. Alpine had upgraded to 19.3.6,
+    which stayed vulnerable because its image used upstream Ruby. Alpine found no proof of
+    compromise but rebuilt the instance by 2026-10-28 and reset every password and secret
+    key.
+  why: >-
+    Self-managed GitLab built on a distribution or custom Ruby also needs Ruby 3.3.13, 3.4.12
+    or 4.0.9, not only a GitLab upgrade.
+  followup: Alpine's reopening instructions and any GitLab advisory on source installs.
+  sources:
+  - label: primary
+    url: https://alpinelinux.org/posts/GitLab-security-incident-CVE-2026-97229.html
+- title: >-
+    GMO tells Onamae Desktop Cloud customers to unplug PCs after a breach and an 8 billion
+    yen ransom demand
+  section: Security
+  category: Security
+  blurb: >-
+    An intrusion may have planted ransomware on up to 26,739 customer servers, and the attacker
+    has started leaking GMO and customer data.
+  summary: >-
+    GMO Internet detected an intrusion into its Onamae Desktop Cloud VPS service on 2026-10-20
+    that could have placed malware on up to 26,739 customers' servers. The attacker demanded
+    8 billion yen, which GMO refused, and threatened to trigger a planted ransomware payload.
+    On 2026-10-27 GMO told customers to back up, disconnect and power down their PCs, and
+    the attacker published company and customer data.
+  why: >-
+    A hosting provider breach reached tenant machines, so tenants need their own backups and
+    incident plans that do not depend on the provider.
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/japans-gmo-urges-customers-to-shut-down-pcs-amid-ransomware-threat/
+- title: >-
+    Attackers probe Oracle E-Business Suite CVE-2026-101767 one week after Oracle's October
+    patch
+  section: Security
+  category: Security
+  blurb: >-
+    Decoys recorded exploit attempts on an unauthenticated EBS SQL injection that chains to
+    code execution, against about 670 exposed hosts.
+  summary: >-
+    Defused reports that its Oracle EBS decoys recorded exploratory exploits against CVE-2026-101767
+    on 2026-10-27. The flaw is an unauthenticated SQL injection in the Thin Client Framework
+    servlet of the Application Object Library, fixed in Oracle's 2026-10-20 Critical Patch
+    Update. Shadowserver tracks over 670 internet-exposed EBS instances.
+  why: >-
+    Internet-facing EBS needs the October patch now, since EBS has a history of mass data-theft
+    campaigns soon after disclosure.
+  followup: A CISA KEV listing or confirmed compromises.
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/hackers-now-scanning-systems-for-recently-patched-oracle-flaw/
+- title: CISA adds Adobe Commerce CVE-2026-48356 and VMware ESX CVE-2026-41709 to KEV
+  section: Security
+  category: Security
+  blurb: >-
+    A Magento file upload flaw and an ESX logging gap are now known exploited, with federal
+    deadlines of 2026-11-10 and 2026-11-11.
+  summary: >-
+    CISA added CVE-2026-48356, an unrestricted file upload in Adobe Commerce and Magento,
+    on 2026-10-27 and CVE-2026-41709, an insufficient logging flaw in Broadcom VMware ESX,
+    on 2026-10-28. Their due dates are 2026-11-10 and 2026-11-11.
+  why: >-
+    An exploited ESX logging gap means hypervisor admin activity may be missing from logs,
+    so ESX hosts need patches and a log review.
+  sources:
+  - label: primary
+    url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+- title: >-
+    Skimmer injected into Convertr's self-hosted Plausible script steals cards on Brazilian
+    fashion checkouts
+  section: Security
+  category: Security
+  blurb: >-
+    Attackers changed an analytics tracker that loads on every Convertr checkout page, then
+    tuned it to the platform's payment fields.
+  summary: >-
+    Sansec found on 2026-10-24 that a Plausible analytics file on Convertr's self-hosted server
+    was serving a card skimmer to the checkout pages of all its merchants. By 2026-10-26 the
+    code targeted Convertr's exact payment API field names. Sansec suspects CVE-2026-8467
+    in an outdated Plausible Community Edition. Convertr removed the skimmer and upgraded
+    Plausible.
+  why: >-
+    Self-hosted analytics on a checkout page is payment code, so it needs the same patching
+    and integrity checks as the checkout itself.
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/hackers-hijack-convertr-analytics-script-to-steal-payment-card-data/
+- title: Microsoft ships out-of-band Windows updates that remove trust in eMudhra roots
+  section: Security
+  category: Security
+  blurb: >-
+    KB5134133 and KB5134125 drop six eMudhra G3 roots and a cross-sign on Windows machines
+    that do not get automatic trust list updates.
+  summary: >-
+    Microsoft released KB5134133 for Windows 11 24H2, 25H2 and 26H2 and KB5134125 for Windows
+    10 21H2 and 22H2 on 2026-10-26. They remove six eMudhra G3 roots and an AAA Certificate
+    Services cross-sign from the Windows trust list, and Edge drops the same seven on 2026-10-27.
+  why: >-
+    Offline and locked-down Windows hosts need the update installed by hand, and certificates
+    that chain to these roots need replacing.
+  thread: f-0077
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/microsoft/microsoft-releases-windows-oob-updates-to-distrust-emudhra-certificates/
+- title: >-
+    GitHub App server-to-server tokens get false 404s for 66 minutes during a MySQL cutover
+  section: Outages
+  category: Outage
+  blurb: >-
+    A table move to an Azure cluster overlapped a job that deleted 59 million installation
+    records, and reads switched while replicas lagged.
+  summary: >-
+    From 06:55 to 08:01 UTC on 2026-10-27, git and API requests with GitHub App server-to-server
+    tokens returned 404 for up to 2.49% of requests. A maintenance migration of 7 tables between
+    MySQL clusters in IAD and Azure Central US overlapped a cleanup job that deleted about
+    59 million installation records, and gh-ost replication lagged up to an hour before reads
+    were cut over.
+  why: >-
+    Integrations that treat a 404 as a removed installation could have deleted state, so they
+    should retry before acting on it.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/dnslv7xdl4fj
 - title: Anthropic reports results from six drug development partnerships using Claude
   section: AI
   category: AI
@@ -378,6 +538,47 @@ stories:
   - label: discussion
     url: https://simonwillison.net/2026/Oct/28/github-octoverse-2026/
 - title: >-
+    GitHub lets Copilot code review approvals count toward required approvals, and adds Agent
+    Merge
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Admins can now let an AI review satisfy a merge gate on chosen paths, and Copilot can
+    fix CI and conflicts until auto-merge lands the PR.
+  summary: >-
+    Copilot approvals are generally available as of 2026-10-28. They are off by default, repository
+    admins choose which file paths Copilot may approve, and a new push dismisses the approval.
+    A Max review level in public preview runs several review agents across providers and merges
+    their findings. Agent Merge watches a PR and fixes failing workflows and merge conflicts,
+    and combines with auto-merge.
+  why: >-
+    Teams can now build a path from agent PR to merge with no human approval, so branch protection
+    settings need an explicit policy.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-10-28-copilot-code-review-merge-with-confidence-with-max-and-approvals
+  - label: primary
+    url: https://github.blog/changelog/2026-10-28-agent-merge-watches-and-fixes-pull-requests-in-the-cloud
+- title: >-
+    GitHub Agentic Workflows reach general availability, running coding agents inside Actions
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Markdown workflows compile to Actions YAML and run agents read-only in a firewalled sandbox,
+    with a threat scan before changes apply.
+  summary: >-
+    GitHub Agentic Workflows, from GitHub Next, became generally available on 2026-10-28 for
+    Free, Team and Enterprise. Workflows written in Markdown compile to standard Actions YAML
+    and run Copilot or another agent with read-only permissions by default, inside a container
+    behind the Agent Workflow Firewall. Outputs pass a safe outputs check, and a threat detection
+    job scans proposed changes.
+  why: >-
+    Unattended agents for triage, CI failure analysis and docs now run on existing runners
+    and policies, which puts their permissions in code review.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available
+- title: >-
     Axiom formalizes the Classification of Finite Simple Groups in Lean with 43.1M lines of
     code
   section: ML research
@@ -399,6 +600,46 @@ stories:
     url: https://cfsg.axiommath.ai/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50261647
+- title: >-
+    Cartesia's 3.67B byte-level H-Net matches SmolLM3-3B after about 1T training tokens instead
+    of 11T
+  section: ML research
+  category: ML research
+  blurb: >-
+    A hierarchical network that learns its own byte chunking scales past a BPE baseline, with
+    the largest gains on code and rare languages.
+  summary: >-
+    Cartesia trained a 2-stage byte H-Net with 3.67B parameters, a 40-layer Transformer core,
+    and Mamba-2 outer stages at matched FLOPs per byte. It reached SmolLM3's final average
+    score after about 1T tokens against about 11T. On a scaling ladder, a 1-stage H-Net needed
+    22% less compute than BPE for equal validation loss, with a 3.10x median gain on out-of-distribution
+    code languages.
+  why: >-
+    Tokenizer-free models now show a scaling result at the 3B size, which matters for code
+    and multilingual workloads that BPE serves poorly.
+  sources:
+  - label: primary
+    url: https://www.cartesia.ai/blog/from-tokens-to-bytes-part-1
+- title: >-
+    Google Research's sleep framework consolidates LLM memory into new MoE experts to limit
+    forgetting
+  section: ML research
+  category: ML research
+  blurb: >-
+    The model alternates wake and sleep phases, distills short-term memory into reserved experts,
+    and rehearses on filtered synthetic data.
+  summary: >-
+    In the sleep phase the model unlocks pre-allocated MoE blocks, distills short-term memory
+    into them with on-policy distillation and RL, and resets temporary parameters. A dreaming
+    stage generates and filters synthetic rehearsal data. Google reports near-zero forgetting
+    on continual translation of Manchu and Kalamang and near-perfect BABILong scaling to 10M
+    tokens.
+  why: >-
+    It is a concrete design for updating a deployed model with new knowledge without full
+    retraining or catastrophic forgetting.
+  sources:
+  - label: primary
+    url: https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/
 - title: uv 0.13 switches source distribution parsing to Astral's new tar-codec crate
   section: Developer tools
   category: Dev tools
@@ -499,6 +740,24 @@ stories:
   sources:
   - label: primary
     url: https://supabase.com/blog/orioledb-public-beta
+- title: >-
+    Thomas Neumann argues AI-tuned systems break ClickBench and proposes ad hoc benchmarks
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Using pgrust's hash-only string grouping as the example, he calls for update streams and
+    hidden or regenerated queries in benchmarks.
+  summary: >-
+    Neumann applies Goodhart's law to database benchmarks and says AI code generation lets
+    systems tune for known queries regardless of soundness. He cites pgrust grouping strings
+    by hash value alone, which can return wrong results. He proposes ad hoc benchmarks with
+    an update stream and hidden or freshly generated queries, as in Kaggle and LiveBench.
+  why: >-
+    Published analytical database benchmark wins now need a check for query-specific tuning
+    before they inform a choice.
+  sources:
+  - label: primary
+    url: https://databasearchitects.blogspot.com/2026/10/the-benchmarking-crisis.html
 - title: After pg_restore, one query ran 32.6 s until VACUUM ANALYZE cut it to 23 ms
   section: Engineering posts
   category: Engineering post
@@ -535,3 +794,42 @@ stories:
   sources:
   - label: primary
     url: https://engineering.fb.com/2026/10/28/ml-applications/meta-andromeda-next-gen-ads-retrieval-gpu-co-design/
+- title: >-
+    Snowflake's SnowPR grades coding agents on monorepo PRs with the hidden tests that shipped
+    with them
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Four harnesses passed 84 to 85 percent of 65 real tasks, but changes spanning Java and
+    C++ passed only 55 percent of trials.
+  summary: >-
+    SnowPR has 65 tasks from merged PRs, 62 of them in Snowflake's Bazel monorepo with 17
+    million lines of nontest Java and C++. A trial passes only if every hidden test from the
+    original PR passes. With opus-5, four harnesses passed 84.1% to 85.1% at $6.34 to $8.19
+    per trial. Java and C++ tasks passed 55% of trials against 80% for Java alone.
+  why: >-
+    Harness choice moved cost more than pass rate here, and cross-language changes remain
+    where agents fail most often.
+  sources:
+  - label: primary
+    url: https://www.snowflake.com/en/blog/engineering/Benchmarking-coding-agents/
+- title: >-
+    Uber Freight Search builds each search document from fragments that one service owns per
+    field
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Exclusive field ownership lets Spark bootstrap and Flink CDC updates merge 300 fragments
+    into 20 indices without joins at query time.
+  summary: >-
+    Each field in a Freight Search index comes from exactly one fragment, which declares its
+    source and mapping. A Spark job bootstraps every source and merges fragments per UUID
+    into OpenSearch, and a Flink job applies CDC events from the bootstrap offset. More than
+    70 topics feed 300 fragments in over 20 indices, serving thousands of QPS at hundreds
+    of milliseconds p99.
+  why: >-
+    Single ownership per field is a concrete way to let many teams feed one denormalized index
+    without coordinating rebuilds.
+  sources:
+  - label: primary
+    url: https://www.uber.com/us/en/blog/high-performance-search-platform/
