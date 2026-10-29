@@ -1,19 +1,19 @@
-import { agentOf, ReaderAgent } from "./agent";
 import { dispatch, open, reader, run } from "./router";
 import { enroll } from "./routes/enroll";
 import * as overlay from "./routes/reader";
 import { markUsed, readSignals } from "./routes/signals";
+import { SignalStore, storeOf } from "./store";
 
-export { ReaderAgent };
+export { SignalStore };
 
 const routes = [
-  // Answers only after a round trip to the agent, so a 200 means the Durable
+  // Answers only after a round trip to the store, so a 200 means the Durable
   // Object started and its schema is current.
   open(
     "GET",
     "/health",
     async ({ env }) =>
-      Response.json({ ok: true, schema: await agentOf(env).schemaVersion() }),
+      Response.json({ ok: true, schema: await storeOf(env).schemaVersion() }),
   ),
   open("GET", "/enroll", enroll),
 

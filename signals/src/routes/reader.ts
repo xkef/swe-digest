@@ -1,8 +1,8 @@
 // The routes an enrolled browser calls through the overlay.
-import { agentOf } from "../agent";
 import { empty, fail, readJson, Status } from "../http";
 import * as parse from "../parse";
 import type { ReaderContext } from "../router";
+import { storeOf } from "../store";
 
 export async function me({ reader }: ReaderContext): Promise<Response> {
   return Response.json({ device: reader.device, role: reader.role });
@@ -15,7 +15,7 @@ export async function listFeedback(
 ): Promise<Response> {
   const day = parse.day(new URL(request.url).searchParams.get("day"))
     ?? fail(Status.BadRequest);
-  return Response.json(await agentOf(env).feedbackFor(reader.email, day));
+  return Response.json(await storeOf(env).feedbackFor(reader.email, day));
 }
 
 // Only the owner writes notes. A friend's feedback must leave the note empty.
@@ -29,14 +29,14 @@ export async function saveFeedback(
     fail(Status.Forbidden, "friend_note");
   }
 
-  await agentOf(env).saveFeedback(reader.email, feedback);
+  await storeOf(env).saveFeedback(reader.email, feedback);
   return empty(Status.NoContent);
 }
 
 export async function listRequests(
   { env, reader }: ReaderContext,
 ): Promise<Response> {
-  return Response.json(await agentOf(env).listRequests(reader));
+  return Response.json(await storeOf(env).listRequests(reader));
 }
 
 export async function addRequest(
@@ -44,7 +44,7 @@ export async function addRequest(
 ): Promise<Response> {
   const { url, note } = parse.request(await readJson(request))
     ?? fail(Status.BadRequest);
-  const added = await agentOf(env).addRequest(reader, url, note)
+  const added = await storeOf(env).addRequest(reader, url, note)
     ?? fail(Status.TooManyRequests);
   return Response.json(added, { status: Status.Created });
 }
@@ -58,6 +58,6 @@ export async function decide(
 
   const status = parse.decision(await readJson(request))
     ?? fail(Status.BadRequest);
-  const changed = await agentOf(env).decide(params.id ?? "", status);
+  const changed = await storeOf(env).decide(params.id ?? "", status);
   return empty(changed ? Status.NoContent : Status.NotFound);
 }

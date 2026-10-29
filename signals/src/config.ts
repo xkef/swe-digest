@@ -10,7 +10,7 @@ export const site = {
 } as const;
 
 // Every request goes to this one Durable Object instance.
-export const agentName = "digest";
+export const storeName = "digest";
 
 export const enrollment = {
   // The redirect carries the token in this URL fragment, which browsers never

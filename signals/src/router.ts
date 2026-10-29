@@ -1,7 +1,7 @@
-import { agentOf } from "./agent";
 import { isDigestRun } from "./auth/github";
 import { bearer, empty, fail, HttpError, Status, withCors } from "./http";
 import { log } from "./log";
+import { storeOf } from "./store";
 import type { Reader } from "./types";
 
 type Method = "GET" | "POST" | "PUT";
@@ -88,7 +88,7 @@ export async function dispatch(
 
 async function authenticate({ request, env }: Context): Promise<Reader> {
   const token = bearer(request) ?? fail(Status.Unauthorized);
-  return await agentOf(env).authenticate(token)
+  return await storeOf(env).authenticate(token)
     ?? fail(Status.Unauthorized, "device_token");
 }
 

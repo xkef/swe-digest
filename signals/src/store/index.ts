@@ -1,5 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
-import { agentName, DAY } from "../config";
+import { DAY, storeName } from "../config";
 import type {
   Feedback,
   Reader,
@@ -16,7 +16,7 @@ import { migrate, schemaVersion } from "./schema";
 // The one Durable Object behind the Worker. It keeps every reader's state in
 // its own SQLite and upgrades the schema before it serves a call. Its methods
 // are the RPC surface the routes call.
-export class ReaderAgent extends DurableObject<Env> {
+export class SignalStore extends DurableObject<Env> {
   readonly #devices: Devices;
   readonly #feedback: FeedbackStore;
   readonly #requests: RequestStore;
@@ -73,6 +73,6 @@ export class ReaderAgent extends DurableObject<Env> {
   }
 }
 
-export function agentOf(env: Env): DurableObjectStub<ReaderAgent> {
-  return env.READERS.getByName(agentName);
+export function storeOf(env: Env): DurableObjectStub<SignalStore> {
+  return env.SIGNALS.getByName(storeName);
 }

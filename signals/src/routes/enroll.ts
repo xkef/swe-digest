@@ -1,9 +1,9 @@
-import { agentOf } from "../agent";
 import { accessEmail } from "../auth/access";
 import { enrollment, site } from "../config";
 import { fail, Status } from "../http";
 import * as parse from "../parse";
 import type { Context } from "../router";
+import { storeOf } from "../store";
 import type { Role } from "../types";
 
 // Cloudflare Access guards this path. The signed-in reader gets a new device
@@ -21,7 +21,7 @@ export async function enroll({ request, env }: Context): Promise<Response> {
   const label = parse.deviceLabel(
     new URL(request.url).searchParams.get("device"),
   );
-  const token = await agentOf(env).enroll(email, role, label);
+  const token = await storeOf(env).enroll(email, role, label);
 
   return new Response(null, {
     status: Status.SeeOther,

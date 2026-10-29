@@ -19,7 +19,7 @@ flowchart LR
   subgraph cf [Cloudflare]
     access["Access<br/><small>one-time PIN on /enroll</small>"]
     worker["Worker"]
-    agent["ReaderAgent<br/><small>Durable Object, SQLite</small>"]
+    store["SignalStore<br/><small>Durable Object, SQLite</small>"]
     logs[("Workers Logs<br/><small>3 days</small>")]
   end
 
@@ -29,13 +29,13 @@ flowchart LR
   pages -- "HTML" --> owner
   owner -- "enroll" --> access
   owner -- "feedback, device token" --> worker
-  worker -- "RPC" --> agent
+  worker -- "RPC" --> store
   worker -- "JSON lines" --> logs
   runs -- "GET /signals, GitHub OIDC" --> worker
 
   classDef live fill:#064e3b66,stroke:#34d399,color:#e2e8f0
   classDef store fill:#4c1d9566,stroke:#a78bfa,color:#e2e8f0
-  class visitor,pages,owner,access,worker,agent,runs live
+  class visitor,pages,owner,access,worker,store,runs live
   class logs store
 ```
 
@@ -43,7 +43,7 @@ flowchart LR
 
 | Question                | Where to look                                                   |
 | ----------------------- | --------------------------------------------------------------- |
-| Is it up?               | `GET /health` answers `{"ok": true, "schema": N}` via the agent |
+| Is it up?               | `GET /health` answers `{"ok": true, "schema": N}` via the store |
 | What failed?            | `error` events in Workers Logs, with the stack                  |
 | Did the schema change?  | `schema_migrated` events                                        |
 | Why was a call refused? | `rejected` events, with the `path`, `status`, and `reason`      |
@@ -63,7 +63,7 @@ any field.
 | `src/routes/`   | the handlers, by caller: enrollment, browsers, and digest runs |
 | `src/parse.ts`  | validation of everything a client sends                        |
 | `src/auth/`     | the Cloudflare Access and GitHub OIDC token checks             |
-| `src/agent/`    | the Durable Object, its schema, and one store per table        |
+| `src/store/`    | the Durable Object, its schema, and one store per table        |
 
 ## Development
 
@@ -107,6 +107,6 @@ local runs go on without signals.
 
 ## Changing the schema
 
-`MIGRATIONS` in `src/agent/schema.ts` lists the schema changes in order. Append
-a new entry and never edit one that has shipped. The agent applies pending
+`MIGRATIONS` in `src/store/schema.ts` lists the schema changes in order. Append
+a new entry and never edit one that has shipped. The store applies pending
 entries when it starts, inside one transaction, and logs `schema_migrated`.

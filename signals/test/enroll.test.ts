@@ -2,8 +2,8 @@ import { reset, runInDurableObject } from "cloudflare:test";
 import { env, exports } from "cloudflare:workers";
 import { generateKeyPair } from "jose";
 import { afterEach, describe, expect, it } from "vitest";
-import type { ReaderAgent } from "../src/agent";
 import { enrollment } from "../src/config";
+import type { SignalStore } from "../src/store";
 import { call, enroll, tokenFrom } from "./helpers";
 
 const SITE_URL = "https://xkef.github.io/swe-digest/";
@@ -42,8 +42,8 @@ describe("GET /enroll", () => {
     const token = tokenFrom(await enroll());
 
     const stored = await runInDurableObject(
-      env.READERS.get(env.READERS.idFromName("digest")),
-      (_: ReaderAgent, state: DurableObjectState) =>
+      env.SIGNALS.get(env.SIGNALS.idFromName("digest")),
+      (_: SignalStore, state: DurableObjectState) =>
         state.storage.sql
           .exec<{ token_hash: string }>("SELECT token_hash FROM devices")
           .one().token_hash,
@@ -56,8 +56,8 @@ describe("GET /enroll", () => {
     await enroll({}, "?device=%3Cb%3EPixel%209%3C%2Fb%3E");
 
     const label = await runInDurableObject(
-      env.READERS.get(env.READERS.idFromName("digest")),
-      (_: ReaderAgent, state: DurableObjectState) =>
+      env.SIGNALS.get(env.SIGNALS.idFromName("digest")),
+      (_: SignalStore, state: DurableObjectState) =>
         state.storage.sql
           .exec<{ label: string }>("SELECT label FROM devices")
           .one().label,

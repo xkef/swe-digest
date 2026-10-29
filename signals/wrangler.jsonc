@@ -11,9 +11,17 @@
   "observability": { "enabled": true },
 
   "durable_objects": {
-    "bindings": [{ "name": "READERS", "class_name": "ReaderAgent" }],
+    "bindings": [{ "name": "SIGNALS", "class_name": "SignalStore" }],
   },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ReaderAgent"] }],
+  // Each entry runs once per deployment, in order. Never edit one that has
+  // shipped. v2 renames the class in place, so its stored data stays.
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["ReaderAgent"] },
+    {
+      "tag": "v2",
+      "renamed_classes": [{ "from": "ReaderAgent", "to": "SignalStore" }],
+    },
+  ],
 
   // The Access application that guards /enroll. Both values are public
   // identifiers from the Zero Trust dashboard. Empty turns enrollment off.

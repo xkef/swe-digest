@@ -1,5 +1,5 @@
 // Every value a client sends passes through one of these before it reaches
-// the agent, so the agent only stores well-formed values. Each returns null
+// the store, so the store only keeps well-formed values. Each returns null
 // for anything it rejects.
 import { enrollment, limits, signals } from "./config";
 import type { Feedback, RequestStatus, Vote } from "./types";

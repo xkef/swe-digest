@@ -9,7 +9,7 @@ afterEach(async () => {
 });
 
 describe("GET /health", () => {
-  it("reports the schema version after reaching the agent", async () => {
+  it("reports the schema version after reaching the store", async () => {
     const response = await exports.default.fetch("https://signals.test/health");
 
     expect(response.status).toBe(200);
