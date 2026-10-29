@@ -13,13 +13,13 @@ describe("GET /health", () => {
     const response = await exports.default.fetch("https://signals.test/health");
 
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ ok: true, schema: 0 });
+    expect(await response.json()).toEqual({ ok: true, schema: 1 });
   });
 });
 
 describe("unknown paths", () => {
   it("return 404", async () => {
-    const response = await exports.default.fetch("https://signals.test/hit");
+    const response = await exports.default.fetch("https://signals.test/nope");
 
     expect(response.status).toBe(404);
   });

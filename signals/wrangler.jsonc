@@ -14,4 +14,15 @@
     "bindings": [{ "name": "READERS", "class_name": "ReaderAgent" }],
   },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ReaderAgent"] }],
+
+  // The Access application that guards /enroll. Both values are public
+  // identifiers from the Zero Trust dashboard. Empty turns enrollment off.
+  "vars": {
+    "ACCESS_TEAM_DOMAIN": "",
+    "ACCESS_AUD": "",
+  },
+
+  // The owner's Access email. A secret only to keep it out of the repository.
+  // Every other enrolled email is a friend.
+  "secrets": { "required": ["OWNER_EMAIL"] },
 }
