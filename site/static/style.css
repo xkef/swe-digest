@@ -628,8 +628,10 @@
     border-top: 1px solid var(--border);
   }
 
-  /* The header already ends the block above the first section. */
-  .page-header + .day-section {
+  /* The header already ends the block above the first section, also when
+     the closed suggest panel sits between them. */
+  .page-header + .day-section,
+  .page-header + .signals-panel[hidden] + .day-section {
     padding-top: 0;
     border-top: 0;
   }
@@ -676,7 +678,7 @@
   .signals-url {
     min-width: 0;
     flex: 1 1 10rem;
-    padding: 0 var(--space-2xs);
+    padding: var(--space-3xs) var(--space-2xs);
     border: 0;
     border-bottom: 1px solid var(--border);
     background: none;
@@ -696,14 +698,12 @@
     color: var(--dim);
   }
 
-  /* Opens under the digest header from its suggest link. The rule below
-     separates it from the stories that follow. */
+  /* Opens under the digest header from its suggest link. The first
+     section's rule below it is the only divider. */
   .signals-panel {
     display: grid;
     gap: var(--space-xs);
-    margin-bottom: var(--space-md);
-    padding-bottom: var(--space-sm);
-    border-bottom: 1px solid var(--border);
+    margin-top: var(--space-md);
     font-size: var(--label-size);
   }
 
@@ -713,6 +713,10 @@
     flex-wrap: wrap;
     align-items: baseline;
     gap: var(--space-xs);
+  }
+
+  .signals-requests:empty {
+    display: none;
   }
 
   .signals-requests {
