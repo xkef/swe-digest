@@ -234,3 +234,23 @@ def test_improve_brief_lists_feedback_totals_and_owner_notes(data):
     text = improve.brief([DAY], [tally], [])["brief"]
 
     assert "- 2026-10-09/tool-2-0 | more 2, knew 1\n  owner note: more of this" in text
+
+
+def test_daily_record_lists_the_requests_it_received():
+    state = {"started": datetime.now(UTC), "fetcher": Fetcher(100), "inbox": [REQUEST]}
+
+    assert daily.summary(state)["requests"] == [REQUEST["id"]]
+
+
+def test_improve_record_counts_notes_without_their_text():
+    tally = {
+        "story": "2026-10-09/tool-2-0",
+        "more": 1,
+        "less": 0,
+        "knew": 0,
+        "follow": 0,
+        "notes": ["private"],
+    }
+    state = {"started": datetime.now(UTC), "fetcher": Fetcher(100), "feedback": [tally]}
+
+    assert improve.summary(state)["feedback"] == [tally | {"notes": 1}]

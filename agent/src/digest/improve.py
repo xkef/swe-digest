@@ -90,6 +90,11 @@ def summary(state: State) -> runs.Record:
         "tools": reply.get("tools"),
         # A failed model call gives no ``fetched``, but its fetches still count.
         "fetched": state.get("fetched", state["fetcher"].log),
+        # The feedback the run read from the signals Worker. Run records are
+        # public, so the owner's notes appear as a count, not as text.
+        "feedback": [tally | {"notes": len(tally["notes"])} for tally in state["feedback"]]
+        if "feedback" in state
+        else None,
         "changed": state.get("changed"),
         "refused": state.get("refused"),
         "summary": answer.get("summary"),

@@ -168,6 +168,9 @@ def summary(state: State) -> runs.Record:
         "added": state.get("added"),
         "dropped": state.get("dropped"),
         "rejected": state.get("rejected"),
+        # The requests the run received from the signals Worker, by id, so the
+        # record shows what it read even when it covered none of them.
+        "requests": [request["id"] for request in state["inbox"]] if "inbox" in state else None,
         "inbox_used": [used for used in answer.get("inbox_used", []) if used in asked],
         "notes": answer.get("notes"),
     }
