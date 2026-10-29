@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-  <article class="layout prose story-page" data-pagefind-body>
+  <article
+    class="layout prose story-page"
+    data-pagefind-body
+    data-story="{{ (page.path | split(pat='/'))[2:4] | join(sep='/') }}"
+  >
     <header class="page-header">
       {# The day is where this story came from, so it leads. What the story is
          classified as reads after the title. Pagefind takes its metadata off

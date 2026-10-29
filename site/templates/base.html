@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'"
+      content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'{% if config.extra.signals_url %} {{ config.extra.signals_url }}{% endif %}; base-uri 'none'; form-action 'none'"
     >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
@@ -119,5 +119,12 @@
       src="{{ get_url(path='/localtime.js', cachebust=true) | safe }}"
       defer
     ></script>
+    {% if config.extra.signals_url %}
+      <script
+        src="{{ get_url(path='/signals.js', cachebust=true) | safe }}"
+        data-endpoint="{{ config.extra.signals_url }}"
+        defer
+      ></script>
+    {% endif %}
   </body>
 </html>

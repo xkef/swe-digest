@@ -4,7 +4,10 @@
       <h2>{{ section.name }}</h2>
       <ol class="story-list">
         {% for story in section.stories %}
-          <li class="story-row">
+          <li
+            class="story-row"
+            data-story="{{ (story.url | split(pat='/'))[2:4] | join(sep='/') }}"
+          >
             <a
               class="story-link"
               href="{{ config.base_url | safe }}{{ story.url | safe }}"

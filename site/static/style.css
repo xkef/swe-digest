@@ -642,6 +642,88 @@
   .story-feedback {
     margin-top: var(--space-xl);
   }
+
+  /* The feedback overlay from signals.js. Only enrolled readers see it, so
+     it stays small and uses the label size throughout. */
+  .signals-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs);
+    padding-bottom: var(--space-xs);
+    font-size: var(--label-size);
+  }
+
+  .signals-toggle {
+    padding: 0 var(--space-2xs);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .signals-toggle[aria-pressed="true"] {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .signals-note,
+  .signals-url {
+    min-width: 0;
+    padding: 0 var(--space-2xs);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--bg);
+    color: var(--fg);
+    font: inherit;
+  }
+
+  .signals-status {
+    color: var(--dim);
+  }
+
+  .signals-panel {
+    position: fixed;
+    right: var(--space-sm);
+    bottom: var(--space-sm);
+    z-index: 10;
+    display: grid;
+    gap: var(--space-2xs);
+    width: min(22rem, calc(100vw - 2 * var(--space-sm)));
+    max-height: 50vh;
+    overflow-y: auto;
+    padding: var(--space-xs) var(--space-sm);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--surface);
+    font-size: var(--label-size);
+  }
+
+  .signals-heading {
+    color: var(--dim);
+  }
+
+  .signals-form,
+  .signals-request {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs);
+  }
+
+  .signals-requests {
+    display: grid;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .signals-request a {
+    overflow-wrap: anywhere;
+  }
 }
 
 @media (max-width: 640px) {
@@ -673,7 +755,7 @@
 }
 
 @media print {
-  .site-header, .site-footer, .skip, .filter-bar {
+  .site-header, .site-footer, .skip, .filter-bar, .signals-bar, .signals-panel {
     display: none;
   }
   body {
