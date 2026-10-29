@@ -53,6 +53,7 @@ const MIGRATIONS: string[] = [
      decided_at INTEGER
    );
    CREATE INDEX requests_by_status ON requests (status, created_at);`,
+  `ALTER TABLE requests ADD COLUMN used_at INTEGER;`,
 ];
 
 // A friend can have this many requests waiting for the owner at once.
@@ -60,6 +61,22 @@ export const MAX_PENDING = 20;
 
 // The owner's request list shows decided requests for this long.
 const DECIDED_VISIBLE_MS = 30 * 86_400_000;
+const DAY_MS = 86_400_000;
+
+// What the digest runs read: approved requests no run has used yet, and
+// every reader's feedback updated in the window, totaled per story. Only the
+// owner can write notes, so every note here is the owner's.
+export interface Signals {
+  requests: { id: string; url: string; note: string }[];
+  feedback: {
+    story: string;
+    more: number;
+    less: number;
+    knew: number;
+    follow: number;
+    notes: string[];
+  }[];
+}
 
 // Enrolling one more device than this revokes the reader's least recently
 // seen device, so a lost phone does not need a manual cleanup.
@@ -201,6 +218,60 @@ export class ReaderAgent extends DurableObject<Env> {
       log("request_decided", { request: id, status });
     }
     return changed > 0;
+  }
+
+  async signals(days: number): Promise<Signals> {
+    const since = Date.now() - days * DAY_MS;
+    const requests = this.sql
+      .exec<{ id: string; url: string; note: string }>(
+        `SELECT id, url, note FROM requests
+         WHERE status = 'approved' AND used_at IS NULL ORDER BY created_at`,
+      )
+      .toArray();
+    const totals = this.sql
+      .exec<
+        {
+          story: string;
+          more: number;
+          less: number;
+          knew: number;
+          follow: number;
+          notes: string;
+        }
+      >(
+        `SELECT story,
+           SUM(vote = 'more') AS more, SUM(vote = 'less') AS less,
+           SUM(knew) AS knew, SUM(follow) AS follow,
+           json_group_array(note) FILTER (WHERE note != '') AS notes
+         FROM feedback WHERE updated_at >= ?
+         GROUP BY story ORDER BY story`,
+        since,
+      )
+      .toArray();
+
+    return {
+      requests,
+      feedback: totals.map((row) => ({
+        ...row,
+        notes: JSON.parse(row.notes) as string[],
+      })),
+    };
+  }
+
+  // A run marks the requests it covered, so the next run does not see them.
+  async markUsed(ids: string[]): Promise<number> {
+    const now = Date.now();
+    let marked = 0;
+    for (const id of ids) {
+      marked += this.sql.exec(
+        `UPDATE requests SET used_at = ?
+         WHERE id = ? AND status = 'approved' AND used_at IS NULL`,
+        now,
+        id,
+      ).rowsWritten;
+    }
+    log("requests_used", { marked });
+    return marked;
   }
 
   private pendingCount(email: string): number {

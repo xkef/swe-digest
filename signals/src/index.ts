@@ -1,6 +1,7 @@
 import { accessEmail } from "./access";
 import { type Reader, ReaderAgent, type Role } from "./agent";
 import { isDay, parseDecision, parseFeedback, parseRequest } from "./feedback";
+import { isDigestRun } from "./github";
 import { log } from "./log";
 
 export { ReaderAgent };
@@ -12,6 +13,9 @@ const TOKEN_FRAGMENT = "signals-token";
 const MAX_LABEL = 40;
 const MAX_BODY = 4096;
 const BEARER = "Bearer ";
+const MAX_SIGNAL_DAYS = 31;
+const MAX_USED = 100;
+const REQUEST_ID = /^[0-9a-f-]{36}$/;
 
 const CREATED = 201;
 const NO_CONTENT = 204;
@@ -34,6 +38,9 @@ export default {
       }
       if (pathname === "/enroll") {
         return await enroll(request, env);
+      }
+      if (pathname === "/signals" || pathname === "/signals/used") {
+        return await signals(request, env, pathname);
       }
       return withCors(await api(request, env, pathname));
     } catch (error) {
@@ -86,6 +93,48 @@ async function enroll(request: Request, env: Env): Promise<Response> {
       "Referrer-Policy": "no-referrer",
     },
   });
+}
+
+// The digest runs read requests and feedback here, and report the requests
+// they covered. Only the digest workflow's GitHub OIDC token gets in.
+async function signals(
+  request: Request,
+  env: Env,
+  pathname: string,
+): Promise<Response> {
+  if (!await isDigestRun(request)) {
+    log("signals_rejected", { reason: "oidc_token" });
+    return status(UNAUTHORIZED);
+  }
+
+  if (pathname === "/signals" && request.method === "GET") {
+    const days = Number(new URL(request.url).searchParams.get("days") ?? 7);
+    if (!Number.isInteger(days) || days < 1 || days > MAX_SIGNAL_DAYS) {
+      return status(BAD_REQUEST);
+    }
+    return Response.json(await agent(env).signals(days));
+  }
+
+  if (pathname === "/signals/used" && request.method === "POST") {
+    const ids = usedIds(await jsonBody(request));
+    if (!ids) {
+      return status(BAD_REQUEST);
+    }
+    return Response.json({ marked: await agent(env).markUsed(ids) });
+  }
+
+  return status(METHOD_NOT_ALLOWED);
+}
+
+function usedIds(body: unknown): string[] | null {
+  if (typeof body !== "object" || body === null) {
+    return null;
+  }
+
+  const ids = (body as { requests?: unknown }).requests;
+  const valid = Array.isArray(ids) && ids.length <= MAX_USED
+    && ids.every((id) => typeof id === "string" && REQUEST_ID.test(id));
+  return valid ? ids as string[] : null;
 }
 
 // Every route an enrolled browser calls. Each needs a device token, and

@@ -2,12 +2,10 @@
 
 A Cloudflare Worker for the digest's private feedback: taps on stories, story
 requests, and owner notes from you and a few friends. It replaces the GitHub
-issue paths. The
-Worker runs on the Workers Free plan and stores no long-lived secret.
+issue paths. The Worker runs on the Workers Free plan and stores no long-lived
+secret.
 
 ## Architecture
-
-Solid boxes exist. Dashed boxes are planned.
 
 ```mermaid
 flowchart LR
@@ -20,7 +18,7 @@ flowchart LR
 
   subgraph cf [Cloudflare]
     access["Access<br/><small>one-time PIN on /enroll</small>"]
-    worker["Worker<br/><small>/enroll, /feedback, /requests</small>"]
+    worker["Worker<br/><small>/enroll, /feedback, /requests, /signals</small>"]
     agent["ReaderAgent<br/><small>Durable Object, SQLite</small>"]
     logs[("Workers Logs<br/><small>3 days</small>")]
   end
@@ -29,17 +27,15 @@ flowchart LR
 
   pages -- "HTML" --> visitor
   pages -- "HTML" --> owner
-  owner -. "enroll" .-> access
-  owner -. "feedback, device token" .-> worker
+  owner -- "enroll" --> access
+  owner -- "feedback, device token" --> worker
   worker -- "RPC" --> agent
   worker -- "JSON lines" --> logs
-  runs -. "GET /signals, GitHub OIDC" .-> worker
+  runs -- "GET /signals, GitHub OIDC" --> worker
 
   classDef live fill:#064e3b66,stroke:#34d399,color:#e2e8f0
-  classDef planned fill:#1e293b80,stroke:#94a3b8,stroke-dasharray:4 3,color:#94a3b8
   classDef store fill:#4c1d9566,stroke:#a78bfa,color:#e2e8f0
-  class visitor,pages,owner,access,worker,agent live
-  class runs planned
+  class visitor,pages,owner,access,worker,agent,runs live
   class logs store
 ```
 
@@ -87,6 +83,15 @@ less, knew it, and follow on every story, a note for the owner, and a panel to
 suggest stories. A browser without a token sends nothing. Feedback belongs to
 the reader, so every enrolled device shows the same state. A friend's story
 request waits until the owner approves it in the panel.
+
+## Digest runs
+
+`agent/src/digest/signals.py` reads `GET /signals` with the job's GitHub OIDC
+token. The Worker admits only `digest.yml` on `main` in this repository. The
+daily run covers approved story requests, and the publish job marks the ones it
+used through `POST /signals/used`. The weekly run reads the week's feedback
+totals and the owner's notes. Outside GitHub Actions there is no OIDC token, so
+local runs go on without signals.
 
 ## Changing the schema
 

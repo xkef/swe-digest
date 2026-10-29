@@ -62,3 +62,32 @@ export function call(
     body: body === undefined ? undefined : JSON.stringify(body),
   });
 }
+
+export interface RunClaims {
+  repository?: string;
+  ref?: string;
+  workflow_ref?: string;
+  audience?: string;
+}
+
+// Signs a GitHub Actions OIDC token for the digest workflow on main, unless
+// a claim is overridden.
+export async function runToken(claims: RunClaims = {}): Promise<string> {
+  const key = await importJWK(
+    JSON.parse(testEnv.TEST_ACCESS_KEY) as JWK,
+    "RS256",
+  );
+  const repository = claims.repository ?? "xkef/swe-digest";
+  return new SignJWT({
+    repository,
+    ref: claims.ref ?? "refs/heads/main",
+    workflow_ref: claims.workflow_ref
+      ?? `${repository}/.github/workflows/digest.yml@refs/heads/main`,
+  })
+    .setProtectedHeader({ alg: "RS256", kid: "test" })
+    .setIssuer("https://token.actions.githubusercontent.com")
+    .setAudience(claims.audience ?? "swe-digest-signals")
+    .setIssuedAt()
+    .setExpirationTime("5m")
+    .sign(key);
+}
