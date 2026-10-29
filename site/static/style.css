@@ -643,39 +643,43 @@
     margin-top: var(--space-xl);
   }
 
-  /* The feedback overlay from signals.js. Only enrolled readers see it, so
-     it stays small and uses the label size throughout. */
+  /* The feedback overlay from signals.js. Only enrolled readers see it.
+     Toggles read as text, like the meta line, and the pressed one takes the
+     accent color. */
   .signals-bar {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-2xs);
-    padding-bottom: var(--space-xs);
+    align-items: baseline;
+    gap: var(--space-xs);
+    margin-top: var(--space-xl);
     font-size: var(--label-size);
   }
 
   .signals-toggle {
-    padding: 0 var(--space-2xs);
-    border: 1px solid var(--border);
-    border-radius: 3px;
+    padding: 0;
+    border: 0;
     background: none;
-    color: var(--muted);
+    color: var(--dim);
     font: inherit;
     cursor: pointer;
   }
 
+  .signals-toggle:hover {
+    color: var(--fg);
+  }
+
   .signals-toggle[aria-pressed="true"] {
-    border-color: var(--accent);
     color: var(--accent);
   }
 
   .signals-note,
   .signals-url {
     min-width: 0;
+    flex: 1 1 10rem;
     padding: 0 var(--space-2xs);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    background: var(--bg);
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    background: none;
     color: var(--fg);
     font: inherit;
   }
@@ -685,19 +689,11 @@
   }
 
   .signals-panel {
-    position: fixed;
-    right: var(--space-sm);
-    bottom: var(--space-sm);
-    z-index: 10;
     display: grid;
-    gap: var(--space-2xs);
-    width: min(22rem, calc(100vw - 2 * var(--space-sm)));
-    max-height: 50vh;
-    overflow-y: auto;
-    padding: var(--space-xs) var(--space-sm);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background: var(--surface);
+    gap: var(--space-xs);
+    margin-top: var(--space-xl);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--border);
     font-size: var(--label-size);
   }
 
@@ -709,8 +705,8 @@
   .signals-request {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-2xs);
+    align-items: baseline;
+    gap: var(--space-xs);
   }
 
   .signals-requests {

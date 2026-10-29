@@ -36,10 +36,17 @@
       }
     }
 
+    // The bar takes the place of the issue link on a story page.
     for (const el of stories) {
-      el.append(controls(el.dataset.story, saved.get(el.dataset.story), me));
+      const bar = controls(el.dataset.story, saved.get(el.dataset.story), me);
+      const link = el.querySelector(".story-feedback");
+      if (link) {
+        link.replaceWith(bar);
+      } else {
+        el.append(bar);
+      }
     }
-    document.body.append(panel(me));
+    (document.getElementById("main") || document.body).append(panel(me));
   }
 
   // One row of toggles under a story. Every click saves the whole state, so
@@ -103,10 +110,10 @@
     return bar;
   }
 
-  // The corner panel: a form to suggest a story and the request list. The
-  // owner approves or rejects friends' requests here.
+  // The panel at the end of every page: a form to suggest a story and the
+  // request list. The owner approves or rejects friends' requests here.
   function panel(me) {
-    const aside = element("aside", "signals-panel");
+    const aside = element("aside", "layout signals-panel");
     aside.setAttribute("aria-label", "Feedback");
     const heading = element("p", "signals-heading", "signals · " + me.role);
     const form = element("form", "signals-form");
