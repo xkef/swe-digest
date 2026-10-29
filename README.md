@@ -36,11 +36,6 @@ its schema ([publish.py](agent/src/digest/publish.py)), commits `data/` to main,
 and opens a pull request for `agent/config/`. Code, prompts, and workflows are
 not on the allowlist.
 
-## Analytics
-
-Cloudflare Web Analytics counts page views. It doesn't set a cookie or
-fingerprint visitors.
-
 ## Layout
 
 ```text

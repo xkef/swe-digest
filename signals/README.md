@@ -2,7 +2,7 @@
 
 A Cloudflare Worker for the digest's private feedback: taps on stories, story
 requests, and owner notes from you and a few friends. It replaces the GitHub
-issue paths. Public traffic goes to Cloudflare Web Analytics instead. The
+issue paths. The
 Worker runs on the Workers Free plan and stores no long-lived secret.
 
 ## Architecture
@@ -19,7 +19,6 @@ flowchart LR
   pages["GitHub Pages<br/><small>Zola site</small>"]
 
   subgraph cf [Cloudflare]
-    analytics["Web Analytics<br/><small>page views</small>"]
     access["Access<br/><small>one-time PIN on /enroll</small>"]
     worker["Worker<br/><small>/health, /enroll, /me</small>"]
     agent["ReaderAgent<br/><small>Durable Object, SQLite</small>"]
@@ -30,7 +29,6 @@ flowchart LR
 
   pages -- "HTML" --> visitor
   pages -- "HTML" --> owner
-  visitor -- "beacon" --> analytics
   owner -. "enroll" .-> access
   owner -. "feedback, device token" .-> worker
   worker -- "RPC" --> agent
@@ -40,7 +38,7 @@ flowchart LR
   classDef live fill:#064e3b66,stroke:#34d399,color:#e2e8f0
   classDef planned fill:#1e293b80,stroke:#94a3b8,stroke-dasharray:4 3,color:#94a3b8
   classDef store fill:#4c1d9566,stroke:#a78bfa,color:#e2e8f0
-  class visitor,pages,analytics,access,worker,agent live
+  class visitor,pages,access,worker,agent live
   class owner,runs planned
   class logs store
 ```

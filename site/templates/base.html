@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'{% if config.extra.analytics_token %} https://static.cloudflareinsights.com{% endif %}; worker-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'{% if config.extra.analytics_token %} https://cloudflareinsights.com{% endif %}; base-uri 'none'; form-action 'none'"
+      content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'"
     >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
@@ -119,12 +119,5 @@
       src="{{ get_url(path='/localtime.js', cachebust=true) | safe }}"
       defer
     ></script>
-    {% if config.extra.analytics_token %}
-      <script
-        src="https://static.cloudflareinsights.com/beacon.min.js"
-        data-cf-beacon='{"token": "{{ config.extra.analytics_token }}"}'
-        defer
-      ></script>
-    {% endif %}
   </body>
 </html>
