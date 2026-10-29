@@ -1,0 +1,208 @@
+date: '2026-10-29'
+updated: 2026-10-29T07:22Z
+stories:
+- title: >-
+    Palo Alto Networks confirms PHP2Shell exploitation of internet-exposed PAN-OS management
+    interfaces
+  section: Top stories
+  category: Security
+  blurb: >-
+    Attackers exploit the PHP2Shell flaws against PAN-OS management web UIs, and several hotfixes
+    are due only on 2026-10-29 or 2026-10-30.
+  summary: >-
+    Palo Alto Networks updated its advisory on 2026-10-28 to say CVE-2026-109618 and CVE-2026-109619
+    are being exploited against management interfaces exposed to the internet. The flaws affect
+    the HTTPS web UI and XML API, and the dataplane only when a management profile is attached.
+    Fixed hotfixes exist for many 10.2 to 12.2 trains, while others carry ETAs of 2026-10-29
+    or 2026-10-30, with interim mitigations such as threat prevention on inbound management
+    traffic.
+  why: >-
+    Any PAN-OS box with a management interface reachable from the internet needs a hotfix
+    or access restriction now, since the PHP2Shell plus Fragnesia chain already yields root.
+  followup: Remaining PAN-OS hotfixes due 2026-10-29 and 2026-10-30.
+  thread: f-0083
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/10/attackers-exploit-php2shell-flaws-in.html
+- title: >-
+    GitHub Copilot Fusion is generally available, routing and chaining models per prompt
+  section: Top stories
+  category: Agentic coding
+  blurb: >-
+    Copilot Fusion picks and chains models per prompt at three effort levels, bills each model
+    used, and lets admins limit its model pool.
+  summary: >-
+    GitHub made Copilot Fusion generally available on 2026-10-28 in VS Code, the Copilot app,
+    Copilot CLI and JetBrains IDEs. It routes each prompt to one model or orchestrates several
+    through cascade and critique workflows at Standard, High or Max effort, and bills every
+    model used at its standard rate with a temporary 30 percent discount. GitHub says Fusion
+    Max scored 60 on the Artificial Analysis Coding Agent Index at about half the API cost
+    per task of Claude Code with Opus 5.5 Max.
+  why: >-
+    Model choice moves from the developer to a router governed by enterprise model policies,
+    which changes how teams budget and audit Copilot spend.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-10-28-route-and-orchestrate-models-with-github-copilot-fusion
+- title: >-
+    CISA adds VMware ESX logging flaw CVE-2026-41709 to KEV after Warp Panda zero-day use
+  section: Security
+  category: Security
+  blurb: >-
+    CISA added VMware ESX CVE-2026-41709 to KEV after CrowdStrike tied it to Warp Panda, which
+    used it to hide admin actions from logs.
+  summary: >-
+    CVE-2026-41709 lets an actor with admin access perform some operations without being logged,
+    and Broadcom fixed it in July 2026 builds of ESXi 9.1, 9.0.2, 8.0U3j and VCF 5.2.4. CrowdStrike
+    reports the China-nexus group Warp Panda, also tracked as Armory Castle, exploited it
+    as a zero-day in early 2026 against the US legal sector. Federal agencies must patch by
+    2026-11-11.
+  why: >-
+    A low-CVSS logging bug was used to blind audit trails on hypervisors, so ESXi hosts still
+    on pre-July builds should be patched and their logs treated with suspicion.
+  sources:
+  - label: primary
+    url: https://www.cisa.gov/news-events/alerts/2026/10/28/cisa-adds-two-known-exploited-vulnerabilities-catalog
+  - label: discussion
+    url: https://thehackernews.com/2026/10/china-linked-hackers-exploited-vmware.html
+- title: >-
+    Attackers probe Oracle E-Business Suite CVE-2026-101767 days after the October patch
+  section: Security
+  category: Security
+  blurb: >-
+    Decoys logged probes on 2026-10-27 for an unauthenticated SQL injection in the EBS Thin
+    Client Framework servlet that chains to RCE.
+  summary: >-
+    CVE-2026-101767, rated 9.8 and found by Horizon3.ai, lets an unauthenticated request to
+    /OA_HTML/AppsTCFServer run SQL as the APPS user and then OS commands as the EBS application
+    account. Defused Cyber recorded exploratory exploit attempts on 2026-10-27. Workarounds
+    include removing the servlet from the EBS URL firewall allowlist and restricting the web
+    tier to trusted networks.
+  why: >-
+    EBS flaws have been mass exploited before, so unpatched EBS web tiers should get the October
+    CPU or the allowlist workaround now.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/10/hackers-target-critical-oracle-e.html
+  - label: discussion
+    url: https://www.securityweek.com/hackers-start-probing-fresh-oracle-ebs-vulnerability/
+  thread: f-0137
+- title: >-
+    FoxIO discloses three TLS flaws in the GoAhead embedded web server, including ignored
+    CRLs
+  section: Security
+  category: Security
+  blurb: >-
+    FoxIO found GoAhead builds that ignore certificate revocation lists in mTLS, weaken some
+    TLS 1.2 sessions, and skip a chain length cap.
+  summary: >-
+    CVE-2026-115881, rated 9.1, makes GoAhead 3.4.5 to 6.1.0 builds with OpenSSL and mTLS
+    read a CRL but never check it, so revoked client certificates still work. A second bug
+    in Mbed TLS builds weakens some TLS 1.2 sessions so they can be decrypted offline, and
+    CVE-2026-115884 bypasses a chain-depth cap on some LibreSSL builds. GoAhead 6.1.1 fixes
+    the OpenSSL and Mbed TLS issues, and FoxIO released PoC code and fingerprints.
+  why: >-
+    Device management interfaces relying on mTLS revocation may be accepting revoked certificates
+    until each vendor ships firmware with GoAhead 6.1.1.
+  sources:
+  - label: primary
+    url: https://www.securityweek.com/tls-flaws-found-in-goahead-web-server-used-in-hundreds-of-millions-of-devices/
+  thread: f-0138
+- title: >-
+    Tetragon before v1.7 exposes an unauthenticated gRPC API to hostNetwork pods (CVE-2026-65960)
+  section: Security
+  category: Security
+  blurb: >-
+    Tetragon versions before v1.7 expose an unauthenticated gRPC API that any hostNetwork
+    pod on the node can reach, tracked as CVE-2026-65960.
+  summary: >-
+    The Cilium project disclosed on 2026-10-28 that Tetragon releases before v1.7 serve an
+    unauthenticated gRPC admin API reachable from any pod using hostNetwork on the same node.
+    The post describes using a Tetragon policy to harden access to that API.
+  why: >-
+    Clusters running Tetragon below v1.7 should upgrade or restrict hostNetwork pods, since
+    the security agent itself is an exposed control surface.
+  sources:
+  - label: primary
+    url: https://cilium.io/blog/2026/10/28/tetragon-grpc
+- title: >-
+    Black Lotus Labs ties Volt Typhoon to Silent Train relay network used in four zero-day
+    campaigns
+  section: Security
+  category: Security
+  blurb: >-
+    Black Lotus Labs links Volt Typhoon to Silent Train, rotating chains of hijacked devices
+    used for zero-days against management platforms.
+  summary: >-
+    Lumen's Black Lotus Labs says Silent Train, active since late 2023 and now disrupted,
+    chained VPS, foreign SOHO devices and US exit nodes into sessions averaging about four
+    hours, then wiped artifacts. It was used for zero-days in Versa Director, N-able N-central,
+    Cisco Catalyst SD-WAN Controller and Arista VeloCloud Orchestrator, across 27 device classes
+    and hundreds of victims.
+  why: >-
+    Management and SD-WAN control planes are the target, and IP reputation blocking does little
+    against short-lived chains that exit through US devices.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/10/volt-typhoon-used-covert-silent-train.html
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/volt-typhoon-hides-zero-day-attacks-using-silent-train-framework/
+- title: >-
+    Copilot Projects in the GitHub Copilot app run background agents toward a goal across
+    repositories
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Copilot Projects take a goal plus repos, mocks or Slack threads, run as many background
+    agents as needed, and return pull requests to review.
+  summary: >-
+    GitHub put Projects into public preview in the Copilot app on 2026-10-28, giving multi-repository
+    work one home with context, agents and results, plus project automations for repeatable
+    tasks. The same release adds computer use in public preview on macOS and Windows, which
+    asks for approval before controlling an app and can be disabled by managed settings.
+  why: >-
+    GitHub now ships a first-party fleet model where the human gate sits at pull request review
+    rather than per session.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-10-28-github-copilot-app-universe-releases
+- title: >-
+    Gist measures Claude Code agent_summary calls at about 16 percent of spend and ships a
+    preload to disable them
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    A measurement gist says Claude Code sends each background agent's full transcript to its
+    model every 30 seconds just to update a status line.
+  summary: >-
+    Flamerix AI reports that since Claude Code 2.1.232 each background agent's transcript
+    is sent to its own model about every 30 seconds for a 3 to 5 word status summary, and
+    that OpenTelemetry showed query_source agent_summary at 16.4 percent of spend and 19.7
+    percent of requests. The authors say no setting disables it and these requests are absent
+    from on-disk session logs, and they publish an unofficial Bun preload that suppresses
+    the timer.
+  why: >-
+    Teams running many background agents should check query_source in Claude Code telemetry,
+    since transcript-based cost tools do not see this traffic.
+  sources:
+  - label: primary
+    url: https://gist.github.com/flamerix-ai/c3905705cc4205e5de3011fa2e74efce
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50284255
+- title: Vercel CI enters beta, running tagged Turborepo tasks on every push
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Vercel CI runs Turborepo tasks tagged ci on every push, only for affected packages, with
+    remote caching and one dependency install per run.
+  summary: >-
+    Vercel CI entered beta on 2026-10-28 and is configured by adding a ci tag to tasks in
+    turbo.json. It runs only affected tasks, uses Vercel Remote Cache, and caches dependencies
+    across updates. Vercel says push-to-green time in its internal repositories dropped 2
+    to 6 times.
+  why: >-
+    Monorepo teams on Turborepo get a CI option tuned for high agent PR volume without maintaining
+    their own affected-task logic.
+  sources:
+  - label: primary
+    url: https://vercel.com/changelog/vercel-ci-is-now-in-beta
