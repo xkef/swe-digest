@@ -41,17 +41,29 @@ flowchart LR
 
 ## Inspecting problems
 
-| Question               | Where to look                                                      |
-| ---------------------- | ------------------------------------------------------------------ |
-| Is it up?              | `GET /health` answers `{"ok": true, "schema": N}` via the agent    |
-| What failed?           | `error` events in Workers Logs, with the stack                     |
-| Did the schema change? | `schema_migrated` events                                           |
-| Why did sign-in fail?  | `enroll_rejected` and `auth_rejected` events, with a `reason`      |
-| What is happening now? | `mise run signals:tail`                                            |
+| Question                | Where to look                                                   |
+| ----------------------- | --------------------------------------------------------------- |
+| Is it up?               | `GET /health` answers `{"ok": true, "schema": N}` via the agent |
+| What failed?            | `error` events in Workers Logs, with the stack                  |
+| Did the schema change?  | `schema_migrated` events                                        |
+| Why was a call refused? | `rejected` events, with the `path`, `status`, and `reason`      |
+| What is happening now?  | `mise run signals:tail`                                         |
 
 Every log line is one JSON object with an `event` field. Workers Logs in the
 Cloudflare dashboard keeps every request and log line for 3 days and filters on
 any field.
+
+## Code
+
+| Path            | Holds                                                          |
+| --------------- | -------------------------------------------------------------- |
+| `src/config.ts` | every fixed value: site, limits, and the GitHub token claims   |
+| `src/index.ts`  | the route table                                                |
+| `src/router.ts` | dispatch, and the guard for each kind of caller                |
+| `src/routes/`   | the handlers, by caller: enrollment, browsers, and digest runs |
+| `src/parse.ts`  | validation of everything a client sends                        |
+| `src/auth/`     | the Cloudflare Access and GitHub OIDC token checks             |
+| `src/agent/`    | the Durable Object, its schema, and one store per table        |
 
 ## Development
 
@@ -95,6 +107,6 @@ local runs go on without signals.
 
 ## Changing the schema
 
-`MIGRATIONS` in `src/agent.ts` lists the schema changes in order. Append a new
-entry and never edit one that has shipped. The agent applies pending entries
-when it starts, inside one transaction, and logs `schema_migrated`.
+`MIGRATIONS` in `src/agent/schema.ts` lists the schema changes in order. Append
+a new entry and never edit one that has shipped. The agent applies pending
+entries when it starts, inside one transaction, and logs `schema_migrated`.

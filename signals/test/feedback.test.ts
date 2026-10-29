@@ -1,6 +1,6 @@
 import { reset } from "cloudflare:test";
 import { afterEach, describe, expect, it } from "vitest";
-import { MAX_PENDING } from "../src/agent";
+import { limits } from "../src/config";
 import { call, deviceToken, FRIEND, OWNER } from "./helpers";
 
 const STORY = "2026-10-30/cursor-marketplace-served-a-trojanized-extension";
@@ -147,9 +147,9 @@ describe("story requests", () => {
     expect(await (await call(friend, "GET", "/requests")).json()).toEqual([]);
   });
 
-  it(`caps a friend at ${MAX_PENDING} pending requests`, async () => {
+  it(`caps a friend at ${limits.pending} pending requests`, async () => {
     const friend = await deviceToken(FRIEND);
-    for (let i = 0; i < MAX_PENDING; i++) {
+    for (let i = 0; i < limits.pending; i++) {
       await call(friend, "POST", "/requests", {
         url: `https://example.com/${i}`,
       });

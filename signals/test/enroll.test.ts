@@ -2,7 +2,8 @@ import { reset, runInDurableObject } from "cloudflare:test";
 import { env, exports } from "cloudflare:workers";
 import { generateKeyPair } from "jose";
 import { afterEach, describe, expect, it } from "vitest";
-import { MAX_DEVICES, type ReaderAgent } from "../src/agent";
+import type { ReaderAgent } from "../src/agent";
+import { enrollment } from "../src/config";
 import { call, enroll, tokenFrom } from "./helpers";
 
 const SITE_URL = "https://xkef.github.io/swe-digest/";
@@ -84,9 +85,9 @@ describe("GET /enroll", () => {
     expect(response.status).toBe(405);
   });
 
-  it(`revokes the least recently used device past ${MAX_DEVICES}`, async () => {
+  it(`revokes the least recently used device past ${enrollment.maxDevices}`, async () => {
     const tokens: string[] = [];
-    for (let i = 0; i <= MAX_DEVICES; i++) {
+    for (let i = 0; i <= enrollment.maxDevices; i++) {
       tokens.push(tokenFrom(await enroll()));
     }
 
@@ -94,7 +95,7 @@ describe("GET /enroll", () => {
       tokens.map(async (t) => (await me(t)).status),
     );
     expect(results.filter((status) => status === 200)).toHaveLength(
-      MAX_DEVICES,
+      enrollment.maxDevices,
     );
     expect((await me(tokens.at(-1) ?? "")).status).toBe(200);
   });
