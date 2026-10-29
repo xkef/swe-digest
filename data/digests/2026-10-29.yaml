@@ -1,5 +1,5 @@
 date: '2026-10-29'
-updated: 2026-10-29T12:03Z
+updated: 2026-10-29T16:19Z
 stories:
 - title: >-
     Palo Alto Networks confirms PHP2Shell exploitation of internet-exposed PAN-OS management
@@ -45,6 +45,28 @@ stories:
   - label: primary
     url: https://github.blog/changelog/2026-10-28-route-and-orchestrate-models-with-github-copilot-fusion
 - title: >-
+    Cisco patches exploited ASA and FTD SSL VPN zero-day CVE-2026-76418 that reloads firewalls
+  section: Top stories
+  category: Security
+  blurb: >-
+    Unauthenticated attackers are crashing Cisco ASA and FTD firewalls through the SSL VPN
+    when secondary authentication is configured.
+  summary: >-
+    CVE-2026-76418, rated CVSS 8.6, is a logic error in the Remote Access SSL VPN service
+    of ASA and FTD software that lets an unauthenticated attacker force a reload with a crafted
+    request. Cisco says it learned of active exploitation in October 2026 and shipped fixes
+    such as ASA 9.22.3.200 and FTD 7.6.7. Devices are exposed only when the SSL VPN login
+    is reachable and secondary authentication is set in a tunnel group, including DefaultWEBVPNGroup.
+  why: >-
+    Teams running Cisco remote access VPN should check tunnel groups for secondary authentication
+    and patch, since no successful login is needed to reach the bug.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/10/cisco-patches-actively-exploited-asa.html
+  - label: discussion
+    url: https://www.securityweek.com/attackers-exploit-second-cisco-firewall-vpn-zero-day-since-august/
+  thread: f-0141
+- title: >-
     CISA adds VMware ESX logging flaw CVE-2026-41709 to KEV after Warp Panda zero-day use
   section: Security
   category: Security
@@ -82,28 +104,6 @@ stories:
   sources:
   - label: primary
     url: https://cilium.io/blog/2026/10/28/tetragon-grpc
-- title: >-
-    CISA adds Node2Shell Brotli flaw CVE-2026-111497 to KEV after confirmed exploitation
-  section: Security
-  category: Security
-  blurb: >-
-    CISA lists the Brotli decoder flaw behind Node2Shell as exploited and gives federal agencies
-    until 2026-11-10 to patch affected systems.
-  summary: >-
-    CISA added CVE-2026-111497, an out-of-bounds write in the Brotli decoder first found in
-    Node.js, to its Known Exploited Vulnerabilities catalog on 2026-10-27. Federal agencies
-    must patch by 2026-11-10. The flaw also affects HTTP servers and clients built on vulnerable
-    Brotli, and Microsoft shipped emergency .NET patches for it.
-  why: >-
-    Confirmed exploitation means Brotli, Node.js and .NET updates should go out now, followed
-    by process restarts and rebuilt container images.
-  followup: KEV federal deadline on 2026-11-10.
-  thread: f-0123
-  sources:
-  - label: primary
-    url: https://www.bleepingcomputer.com/news/security/cisa-warns-of-hackers-now-exploiting-critical-node2shell-flaw/?utm_source=chatgpt.com
-  - label: discussion
-    url: https://www.reddit.com/r/cybersecurity/comments/1xho1aa/cisa_confirms_active_exploitation_of_node2shell/
 - title: >-
     Attacker targets Alpine Linux GitLab via CVE-2026-97229, exposing that GitLab upgrades
     do not patch system Ruby
@@ -151,6 +151,29 @@ stories:
   - label: primary
     url: https://www.theregister.com/security/2026/10/29/attackers-turn-github-issues-into-supply-chain-campaign-against-61-public-repos-in-less-than-an-hour/5306153
   thread: f-0140
+- title: >-
+    Talos ties KeyDrift malware on Cisco SD-WAN controllers via CVE-2026-20127 to Volt Typhoon's
+    Silent Train network
+  section: Security
+  category: Security
+  blurb: >-
+    Attackers exploited CVSS 10 Cisco SD-WAN flaw CVE-2026-20127 to plant malware that steals
+    data-plane keys from controllers.
+  summary: >-
+    Cisco Talos says actor UAT-11473 used the SD-WAN peering authentication bypass to install
+    KeyDrift, whose PolyFlame backdoor and LittleFilch key collector run inside control-plane
+    processes. Talos assesses its infrastructure overlaps with Silent Train, a covert relay
+    network that Lumen says Volt Typhoon used in at least four zero-day campaigns. Lumen says
+    Volt Typhoon exploited the flaw by late 2025 and continued after Cisco's February 2026
+    disclosure.
+  why: >-
+    SD-WAN controllers patched late should be checked for compromise and their keying material
+    treated as possibly exposed.
+  sources:
+  - label: primary
+    url: https://www.securityweek.com/cisco-sd-wan-zero-day-exploitation-tied-to-volt-typhoons-silent-train-network/
+  - label: discussion
+    url: https://thehackernews.com/2026/10/volt-typhoon-used-covert-silent-train.html
 - title: GitHub Copilot cloud agent sessions fail and slow down on 2026-10-29
   section: Outages
   category: Outage
@@ -170,6 +193,31 @@ stories:
   - label: primary
     url: https://www.githubstatus.com/incidents/rn76zdy367m2
   thread: f-0139
+- title: >-
+    Mistral releases open weights for Mistral Large 4, a 1T-parameter multimodal model with
+    52B active
+  section: AI
+  category: AI
+  blurb: >-
+    Mistral published weights for its 1-trillion-parameter Large 4 model, with three reasoning
+    modes and vendor-reported coding gains.
+  summary: >-
+    On 2026-10-29 Mistral released the weights of an improved Mistral Large 4 (Le Chonk) on
+    Hugging Face as Mistral-Large-4-1T-A52B, with vLLM, SGLang and llama.cpp tags and a custom
+    license. Mistral reports 41 percent on Terminal-Bench 4.0 and 48 percent on the Artificial
+    Analysis Coding Agent Index, and adds low, medium and high reasoning modes. It also says
+    it is tightening cyber guardrails after seeing potential uplift for real attacks in preview
+    traffic.
+  why: >-
+    Teams self-hosting frontier-scale open models gain a European 1T MoE option for coding
+    agents, though license terms and hardware cost need checking.
+  sources:
+  - label: primary
+    url: https://mistral.ai/news/mistral-large-4-oss/
+  - label: primary
+    url: https://huggingface.co/mistralai/Mistral-Large-4-1T-A52B
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50289418
 - title: >-
     Copilot Projects in the GitHub Copilot app run background agents toward a goal across
     repositories
@@ -233,6 +281,26 @@ stories:
   sources:
   - label: primary
     url: https://cloud.google.com/blog/topics/developers-practitioners/behind-the-scenes-two-months-later-how-we-ship-google-agent-skills-like-products/
+- title: >-
+    Meta runs LLM-generated just-in-time catching tests on risky diffs, with 60 percent true
+    positives
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Meta generates failing tests for risky diffs overnight, filters them with LLM judges and
+    rules, and caught 74 privacy SEV bugs in H1 2026.
+  summary: >-
+    Meta's Catching JiTTests system targets risky diffs with a risk score, generates tests
+    through intent-aware and mutation-style workflows, and ranks failing tests with an LLM-as-Judge
+    ensemble plus a rule-based assessor called RubFake. Engineers are contacted only for high-ranked
+    catches. Meta reports 589 engineers engaged, a 60 percent true positive rate, and 74 serious
+    privacy bugs caught before landing in the first half of 2026.
+  why: >-
+    It is a production example of an executable-test review gate for agent-era diffs, with
+    human-on-the-loop oversight and measured outcomes.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/10/29/security/catching-bugs-before-they-land-jittestings-human-on-the-loop-approach-at-full-scale/
 - title: Vercel CI enters beta, running tagged Turborepo tasks on every push
   section: Developer tools
   category: Dev tools
@@ -309,3 +377,60 @@ stories:
   sources:
   - label: primary
     url: https://github.blog/changelog/2026-10-28-prioritize-dependabot-alerts-with-reachability-analysis
+- title: >-
+    Grafana 13.3 adds cross-dashboard variables, Notebooks and a UI refresh in public preview
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Grafana 13.3 lets teams define one variable for all dashboards in a folder or org, and
+    collect investigation panels in Notebooks.
+  summary: >-
+    Grafana 13.3 previews global and folder-scoped variables behind the grafana.dashboardGlobalVariables
+    toggle, Notebooks for combining panels, Explore queries and notes behind dashboard.notebooks,
+    and a visual refresh behind grafana.visualDesignRefresh. Grafana Assistant can now propose
+    a dashboard plan before building it and undo its edits per turn. Grafana says the refresh
+    has no breaking changes for plugins.
+  why: >-
+    Operators can stop duplicating environment and cluster selectors across dashboards and
+    keep incident evidence in one shareable document.
+  sources:
+  - label: primary
+    url: https://grafana.com/blog/grafana-13-3-release-all-the-latest-features/
+- title: Oxide shows how to run Claude Code and Amp self-hosted agents in ephemeral VMs
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Oxide runs each Claude Code or Amp agent session in a throwaway VM, using an orchestrator
+    hook to spawn and a reaper to clean up.
+  summary: >-
+    For Claude Code self-hosted environments, an orchestrator VM runs claude self-hosted-runner
+    orchestrator with a spawn-runner hook that creates a VM per session, and a separate reaper
+    deletes VMs that power off when the agent exits. Amp self-hosted orbs use a dispatch script
+    handling spawn, pause and delete, which keeps disks for paused orbs. Oxide notes cold-start
+    latency and cleanup as open problems and is exploring a microVM primitive.
+  why: >-
+    Teams sandboxing coding agents on their own hardware get a concrete VM-per-session pattern
+    and the gaps in vendor runner tooling.
+  sources:
+  - label: primary
+    url: https://oxide.computer/blog/self-hosted-ai-agents
+- title: >-
+    PlanetScale details Neki's planned Postgres switchover with query buffering and fast rollback
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Neki makes the old primary read-only instead of stopping it, buffers writes in routers,
+    and can roll back with a config reload.
+  summary: >-
+    Neki's Admin control plane runs preflight checks, buffers primary-bound queries in routers,
+    sets the primary's default to read-only, disconnects other replicas to fix a final WAL
+    position, and waits for the target to replay through it. Unlike Patroni, it does not stop
+    Postgres, so a timed-out switchover can restore writes with a reload. With synchronous
+    replication set to ANY 1 and synchronous_commit on, every acknowledged commit is on the
+    target before promotion.
+  why: >-
+    Anyone operating Postgres HA can compare this stop-free switchover design against Patroni's
+    shutdown approach for upgrades and pod moves.
+  sources:
+  - label: primary
+    url: https://planetscale.com/blog/designing-a-planned-switchover-for-minimum-disruption
