@@ -46,7 +46,10 @@
         el.append(bar);
       }
     }
-    (document.getElementById("main") || document.body).append(panel(me));
+    const suggest = document.querySelector("[data-signals-suggest]");
+    if (suggest) {
+      dropdown(suggest, panel(me));
+    }
   }
 
   // One row of toggles under a story. Every click saves the whole state, so
@@ -110,12 +113,40 @@
     return bar;
   }
 
-  // The panel at the end of every page: a form to suggest a story and the
-  // request list. The owner approves or rejects friends' requests here.
+  // For enrolled readers the header's suggest link, which otherwise opens
+  // the GitHub issue form, toggles the panel under the header instead.
+  function dropdown(link, content) {
+    content.id = "signals-panel";
+    content.hidden = true;
+    link.closest("header").after(content);
+    link.setAttribute("aria-controls", content.id);
+    link.setAttribute("aria-expanded", "false");
+
+    function toggle(open) {
+      content.hidden = !open;
+      link.setAttribute("aria-expanded", String(open));
+      if (open) {
+        content.querySelector("input").focus();
+      }
+    }
+
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      toggle(content.hidden);
+    });
+    content.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        toggle(false);
+        link.focus();
+      }
+    });
+  }
+
+  // The suggest form and the request list. The owner approves or rejects
+  // friends' requests here.
   function panel(me) {
-    const aside = element("aside", "layout signals-panel");
+    const aside = element("aside", "signals-panel");
     aside.setAttribute("aria-label", "Feedback");
-    const heading = element("p", "signals-heading", "signals · " + me.role);
     const form = element("form", "signals-form");
     const url = element("input", "signals-url");
     url.type = "url";
@@ -132,7 +163,7 @@
     const status = element("span", "signals-status");
     const list = element("ul", "signals-requests");
     form.append(url, note, send, status);
-    aside.append(heading, form, list);
+    aside.append(form, list);
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();

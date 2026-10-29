@@ -684,21 +684,27 @@
     font: inherit;
   }
 
+  /* The underline already frames the field, so focus recolors it instead
+     of drawing the outline box every other input gets. */
+  .signals-note:focus-visible,
+  .signals-url:focus-visible {
+    outline: none;
+    border-bottom-color: var(--accent);
+  }
+
   .signals-status {
     color: var(--dim);
   }
 
+  /* Opens under the digest header from its suggest link. The rule below
+     separates it from the stories that follow. */
   .signals-panel {
     display: grid;
     gap: var(--space-xs);
-    margin-top: var(--space-xl);
-    padding-top: var(--space-sm);
-    border-top: 1px solid var(--border);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border);
     font-size: var(--label-size);
-  }
-
-  .signals-heading {
-    color: var(--dim);
   }
 
   .signals-form,
@@ -719,6 +725,20 @@
 
   .signals-request a {
     overflow-wrap: anywhere;
+  }
+
+  /* On touch screens iOS Safari zooms into any input under 16px when it
+     takes focus, and text-sized toggles are too small to tap. */
+  @media (pointer: coarse) {
+    .signals-note,
+    .signals-url {
+      font-size: 1rem;
+    }
+
+    .signals-toggle {
+      min-height: 2.75rem;
+      padding-inline: var(--space-2xs);
+    }
   }
 }
 
