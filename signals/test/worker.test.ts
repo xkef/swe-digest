@@ -13,7 +13,7 @@ describe("GET /health", () => {
     const response = await exports.default.fetch("https://signals.test/health");
 
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ ok: true, schema: 1 });
+    expect(await response.json()).toEqual({ ok: true, schema: 2 });
   });
 });
 

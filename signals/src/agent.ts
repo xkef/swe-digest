@@ -1,5 +1,23 @@
 import { DurableObject } from "cloudflare:workers";
+import type { Feedback, RequestStatus, StoryRequest, Vote } from "./feedback";
 import { log } from "./log";
+
+type FeedbackRow = {
+  story: string;
+  vote: Vote | null;
+  knew: number;
+  follow: number;
+  note: string;
+};
+
+type RequestRow = {
+  id: string;
+  email: string;
+  url: string;
+  note: string;
+  status: RequestStatus;
+  created_at: number;
+};
 
 // Each entry moves the schema up one version. Append new entries, and never
 // edit one that has shipped.
@@ -15,7 +33,33 @@ const MIGRATIONS: string[] = [
      revoked_at INTEGER
    );
    CREATE INDEX devices_by_email ON devices (email, revoked_at);`,
+  `CREATE TABLE feedback (
+     email TEXT NOT NULL,
+     story TEXT NOT NULL,
+     vote TEXT CHECK (vote IN ('more', 'less')),
+     knew INTEGER NOT NULL,
+     follow INTEGER NOT NULL,
+     note TEXT NOT NULL,
+     updated_at INTEGER NOT NULL,
+     PRIMARY KEY (email, story)
+   );
+   CREATE TABLE requests (
+     id TEXT PRIMARY KEY,
+     email TEXT NOT NULL,
+     url TEXT NOT NULL,
+     note TEXT NOT NULL,
+     status TEXT NOT NULL CHECK (status IN ('pending', 'approved', 'rejected')),
+     created_at INTEGER NOT NULL,
+     decided_at INTEGER
+   );
+   CREATE INDEX requests_by_status ON requests (status, created_at);`,
 ];
+
+// A friend can have this many requests waiting for the owner at once.
+export const MAX_PENDING = 20;
+
+// The owner's request list shows decided requests for this long.
+const DECIDED_VISIBLE_MS = 30 * 86_400_000;
 
 // Enrolling one more device than this revokes the reader's least recently
 // seen device, so a lost phone does not need a manual cleanup.
@@ -47,6 +91,125 @@ export class ReaderAgent extends DurableObject<Env> {
 
   async schemaVersion(): Promise<number> {
     return this.version();
+  }
+
+  async feedbackFor(email: string, day: string): Promise<Feedback[]> {
+    return this.sql
+      .exec<FeedbackRow>(
+        `SELECT story, vote, knew, follow, note FROM feedback
+         WHERE email = ? AND story LIKE ? ORDER BY story`,
+        email,
+        `${day}/%`,
+      )
+      .toArray()
+      .map(toFeedback);
+  }
+
+  // Feedback belongs to the reader, not the device, so a phone and a laptop
+  // show the same state. Clearing every field deletes the row.
+  async saveFeedback(email: string, feedback: Feedback): Promise<void> {
+    const empty = feedback.vote === null && !feedback.knew
+      && !feedback.follow && feedback.note === "";
+    if (empty) {
+      this.sql.exec(
+        "DELETE FROM feedback WHERE email = ? AND story = ?",
+        email,
+        feedback.story,
+      );
+      return;
+    }
+
+    this.sql.exec(
+      `INSERT INTO feedback
+         (email, story, vote, knew, follow, note, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT DO UPDATE SET vote = excluded.vote, knew = excluded.knew,
+         follow = excluded.follow, note = excluded.note,
+         updated_at = excluded.updated_at`,
+      email,
+      feedback.story,
+      feedback.vote,
+      Number(feedback.knew),
+      Number(feedback.follow),
+      feedback.note,
+      Date.now(),
+    );
+  }
+
+  // The owner's requests count at once. A friend's wait for the owner.
+  async addRequest(
+    reader: Reader,
+    url: string,
+    note: string,
+  ): Promise<StoryRequest | null> {
+    const status: RequestStatus = reader.role === "owner"
+      ? "approved"
+      : "pending";
+    if (
+      status === "pending" && this.pendingCount(reader.email) >= MAX_PENDING
+    ) {
+      log("request_rejected", { reason: "pending_limit" });
+      return null;
+    }
+
+    const now = Date.now();
+    const id = crypto.randomUUID();
+    this.sql.exec(
+      `INSERT INTO requests (id, email, url, note, status, created_at, decided_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      id,
+      reader.email,
+      url,
+      note,
+      status,
+      now,
+      status === "approved" ? now : null,
+    );
+    log("request_added", { request: id, status });
+    return { id, url, note, status, from: reader.email, createdAt: now };
+  }
+
+  // The owner sees every pending request and the last 30 days of decided
+  // ones. A friend sees only their own.
+  async listRequests(reader: Reader): Promise<StoryRequest[]> {
+    const since = Date.now() - DECIDED_VISIBLE_MS;
+    const rows = reader.role === "owner"
+      ? this.sql.exec<RequestRow>(
+        `SELECT * FROM requests
+         WHERE status = 'pending' OR created_at >= ?
+         ORDER BY created_at DESC`,
+        since,
+      )
+      : this.sql.exec<RequestRow>(
+        `SELECT * FROM requests WHERE email = ? AND created_at >= ?
+         ORDER BY created_at DESC`,
+        reader.email,
+        since,
+      );
+    return rows.toArray().map(toRequest);
+  }
+
+  async decide(id: string, status: RequestStatus): Promise<boolean> {
+    const changed = this.sql.exec(
+      `UPDATE requests SET status = ?, decided_at = ?
+       WHERE id = ? AND status = 'pending'`,
+      status,
+      Date.now(),
+      id,
+    ).rowsWritten;
+    if (changed > 0) {
+      log("request_decided", { request: id, status });
+    }
+    return changed > 0;
+  }
+
+  private pendingCount(email: string): number {
+    return this.sql
+      .exec<{ n: number }>(
+        "SELECT COUNT(*) AS n FROM requests WHERE email = ? AND status = 'pending'",
+        email,
+      )
+      .one().n;
   }
 
   // Issues a device token. Only its SHA-256 hash is stored, so the token
@@ -156,4 +319,25 @@ function base64url(bytes: Uint8Array): string {
     .replaceAll("+", "-")
     .replaceAll("/", "_")
     .replace(/=+$/, "");
+}
+
+function toFeedback(row: FeedbackRow): Feedback {
+  return {
+    story: row.story,
+    vote: row.vote,
+    knew: row.knew === 1,
+    follow: row.follow === 1,
+    note: row.note,
+  };
+}
+
+function toRequest(row: RequestRow): StoryRequest {
+  return {
+    id: row.id,
+    url: row.url,
+    note: row.note,
+    status: row.status,
+    from: row.email,
+    createdAt: row.created_at,
+  };
 }
