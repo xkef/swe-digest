@@ -11,14 +11,14 @@ secret.
 flowchart LR
   subgraph clients [Readers]
     visitor["Public visitor"]
-    owner["You and friends<br/><small>signals.js overlay</small>"]
+    owner["Private signals"]
   end
 
   pages["GitHub Pages<br/><small>Zola site</small>"]
 
   subgraph cf [Cloudflare]
     access["Access<br/><small>one-time PIN on /enroll</small>"]
-    worker["Worker<br/><small>/enroll, /feedback, /requests, /signals</small>"]
+    worker["Worker"]
     agent["ReaderAgent<br/><small>Durable Object, SQLite</small>"]
     logs[("Workers Logs<br/><small>3 days</small>")]
   end
