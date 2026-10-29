@@ -1,5 +1,5 @@
 date: '2026-10-29'
-updated: 2026-10-29T16:19Z
+updated: 2026-10-29T19:05Z
 stories:
 - title: >-
     Palo Alto Networks confirms PHP2Shell exploitation of internet-exposed PAN-OS management
@@ -66,6 +66,31 @@ stories:
   - label: discussion
     url: https://www.securityweek.com/attackers-exploit-second-cisco-firewall-vpn-zero-day-since-august/
   thread: f-0141
+- title: >-
+    Linux TCP flaw CVE-2026-98432, rated 9.8, lacks fixed Ubuntu and RHEL kernels after Anthropic
+    root exploit
+  section: Top stories
+  category: Security
+  blurb: >-
+    An IPv4 TCP handshake use-after-free that Anthropic turned into remote root still has
+    no fixed Ubuntu or RHEL kernel as of 2026-10-29.
+  summary: >-
+    CVE-2026-98432 is a race in IPv4 TCP connection setup, present since Linux 4.4, that causes
+    a use-after-free of IP options. The kernel CVE team scores it 9.8, Anthropic says Claude
+    wrote an unauthenticated root exploit against servers with a multipath TCP listener, and
+    Red Hat, Oracle and SUSE score it 8.1. Debian, Oracle Linux, Amazon Linux 2023 and some
+    SUSE kernels are fixed, while Ubuntu and RHEL have no fixed package and Red Hat lists
+    no mitigation.
+  why: >-
+    Fleets on Ubuntu or RHEL kernels stay exposed with no vendor fix date, while self-built
+    kernels need 5.10.272, 5.15.223, 6.1.190, 6.6.159, 6.12.113, 6.18.56, 7.2.10 or 7.3.
+  followup: Ubuntu and RHEL kernel releases, and any exploitation or KEV listing.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/10/linux-kernel-tcp-flaw-with-98-cvss.html
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xipflj/linux_kernel_tcp_flaw_with_98_cvss_score_affects/
+  thread: f-0142
 - title: >-
     CISA adds VMware ESX logging flaw CVE-2026-41709 to KEV after Warp Panda zero-day use
   section: Security
@@ -377,6 +402,24 @@ stories:
   sources:
   - label: primary
     url: https://github.blog/changelog/2026-10-28-prioritize-dependabot-alerts-with-reachability-analysis
+- title: Node.js 27.0.0 alpha ships V8 15.6, OpenSSL 4.1 and a new default heap limit
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The first Node.js 27 alpha changes the default heap limit, counts Buffer memory toward
+    it, and requires OpenSSL 3 or later for builds.
+  summary: >-
+    Node.js 27.0.0-alpha.0.0.0, released 2026-10-29, updates V8 to 15.6, where the default
+    heap limit becomes half of physical memory clamped to 256 MB to 4 GB and Buffer and ArrayBuffer
+    memory counts toward it. v8.serialize and structuredClone use a format older releases
+    cannot read, OpenSSL engine support ends, the domain module is runtime-deprecated, and
+    the http keepAliveTimeout default rises to 65 seconds.
+  why: >-
+    Services that relied on default heap sizing, serialized V8 data across versions, or OpenSSL
+    engines should test against the alpha now.
+  sources:
+  - label: primary
+    url: https://github.com/nodejs/node/releases/tag/v27.0.0-alpha.0.0.0
 - title: >-
     Grafana 13.3 adds cross-dashboard variables, Notebooks and a UI refresh in public preview
   section: Infrastructure
@@ -396,6 +439,26 @@ stories:
   sources:
   - label: primary
     url: https://grafana.com/blog/grafana-13-3-release-all-the-latest-features/
+- title: >-
+    Supabase opens Multigres private alpha with three-node Postgres and consensus-based automatic
+    failover
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Supabase paid orgs can request three-zone Postgres clusters run by Multigres, which fails
+    over in seconds without losing acknowledged writes.
+  summary: >-
+    Multigres, built by the team behind Vitess, runs a three-node Postgres cluster across
+    availability zones with a consensus protocol on top of synchronous replication, built-in
+    pooling without a session or transaction mode choice, and a gateway that holds requests
+    during failover. The alpha is free for two projects per paid organization, limited to
+    East US, and lacks Realtime, logical replication, PITR, and an SLA.
+  why: >-
+    Teams that hand-build Postgres HA with replicas, a failover manager and PgBouncer get
+    a managed option to evaluate, though not yet for production.
+  sources:
+  - label: primary
+    url: https://supabase.com/blog/multigres-private-alpha
 - title: Oxide shows how to run Claude Code and Amp self-hosted agents in ephemeral VMs
   section: Engineering posts
   category: Engineering post
