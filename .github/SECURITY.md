@@ -56,9 +56,10 @@ So is denial of service, because a failed run publishes nothing.
    `stories.vet` refuses a story whose source URL the run never saw, a
    duplicate, a vocabulary miss, or one past the day's caps, and records why.
    Follow-up ids and dates come from code.
-4. **The agent job cannot write.** It runs with `contents: read` and
-   `issues: read` and no persisted credentials. Its output is the set of files
-   it changed, uploaded as an artifact.
+4. **The agent job cannot write.** It runs with `contents: read` and no
+   persisted credentials. Its output is the set of files it changed, uploaded
+   as an artifact. `id-token: write` lets it request an OIDC token for the
+   signals Worker, which grants nothing in the repository.
 5. **Only a deterministic gate gets the write token.** The publish job runs code
    from `main`, and `agent/src/digest/publish.py` accepts only regular files on
    a path allowlist (`data/digests/DAY.yaml`, `data/runs/DAY.yaml`,
@@ -68,8 +69,11 @@ So is denial of service, because a failed run publishes nothing.
    are not on the list. `data/` lands as one commit signed by GitHub.
    `agent/config/` becomes a pull request, and the owner's merge is the
    approval.
-6. **Issues are untrusted.** Only open issues whose API author is the owner
-   reach the model. The publish job checks authorship again before closing one.
+6. **Reader input is untrusted.** Story requests and feedback come from the
+   signals Worker in `signals/`, which admits only the digest workflow on `main`
+   by its GitHub OIDC token. The Worker holds back a friend's request until the
+   owner approves it, and it refuses notes from friends. The brief contains
+   feedback as counts.
 7. **Rendering escapes everything.** Story text never passes through Markdown.
    It goes into front matter as TOML strings and the templates print it with
    autoescaping on.

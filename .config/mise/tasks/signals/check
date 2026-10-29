@@ -3,6 +3,8 @@
 #MISE dir="{{config_root}}/signals"
 set -euo pipefail
 
-npx wrangler types --strict-vars=false --check
+# The types come from the installed workerd, so they are generated here rather
+# than committed. A committed copy would go stale with every wrangler bump.
+npx wrangler types --strict-vars=false
 npx tsc --noEmit
 npx vitest run "$@"
