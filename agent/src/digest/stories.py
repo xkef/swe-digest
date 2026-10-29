@@ -144,8 +144,7 @@ def _over_cap(story: Story, stories: list[Story]) -> str | None:
     in_section = sum(1 for existing in stories if existing["section"] == section)
     if section in settings["uncapped_sections"]:
         return None
-    top = section == settings["sections"][0]
-    if in_section >= settings["max_top_stories" if top else "max_section_stories"]:
+    if in_section >= settings["section_caps"].get(section, settings["max_section_stories"]):
         return f"{section} is full"
     budgeted = sum(1 for s in stories if s["section"] not in settings["uncapped_sections"])
     if budgeted >= settings["max_stories"]:

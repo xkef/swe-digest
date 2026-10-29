@@ -19,11 +19,16 @@ archive_days: 14
 fetch_max_chars: 20000
 
 # A digest is a bounded page, not a feed.
-max_stories: 25
-max_top_stories: 5
+# Security counts toward the day, so 30 leaves 25 for the other sections.
+max_stories: 30
 max_section_stories: 4
-# A heavy advisory or incident day is what the reader came for.
-uncapped_sections: [Security, Outages]
+# Sections whose cap differs from max_section_stories. Security keeps only
+# the advisories that matter most to the reader.
+section_caps:
+  Top stories: 5
+  Security: 5
+# A heavy incident day is what the reader came for.
+uncapped_sections: [Outages]
 
 followup_max_age_days: 45
 max_open_followups: 60

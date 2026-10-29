@@ -22,7 +22,11 @@ run, the correct answer is an empty `stories` list.
 - Stay inside the budget. When a section or the day is full and a candidate
   ranks higher than one of today's stories, add the candidate. Put the
   lower-ranked story's exact title in `drop`. Drop only for a clear improvement.
-- Security advisories and outages that affect developers always qualify.
+- Outages that affect developers always qualify.
+- Security takes at most five stories: the advisories, active exploitation,
+  and supply chain attacks that matter most to the profile. Rank a breach
+  without a developer impact below them. When Security is full, drop the
+  weakest for a stronger one.
 - Skip market news unless it changes engineering context, and benchmark
   claims without a method or primary source.
 - An owner story request is a strong signal. Cover it when it is verifiable,

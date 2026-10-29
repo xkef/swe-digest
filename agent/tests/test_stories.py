@@ -84,18 +84,26 @@ def test_vet_refuses_published_primary_and_duplicate_title():
     assert "title" in stories.vet(other, day(story()), set(), KNOWN)
 
 
-def test_vet_enforces_section_cap_but_not_for_security():
+def test_vet_enforces_section_cap_but_not_for_outages():
     cap = config.settings()["max_section_stories"]
     full = day(*[story(title=f"t{i}") for i in range(cap)])
     assert "full" in stories.vet(story(title="new"), full, set(), KNOWN)
 
-    advisories = day(*[story(title=f"t{i}", section="Security") for i in range(cap)])
-    assert stories.vet(story(title="new", section="Security"), advisories, set(), KNOWN) is None
+    incidents = day(*[story(title=f"t{i}", section="Outages") for i in range(cap * 3)])
+    assert stories.vet(story(title="new", section="Outages"), incidents, set(), KNOWN) is None
+
+
+def test_vet_caps_security_at_five():
+    held = day(*[story(title=f"t{i}", section="Security") for i in range(4)])
+    assert stories.vet(story(title="new", section="Security"), held, set(), KNOWN) is None
+
+    full = day(*[story(title=f"t{i}", section="Security") for i in range(5)])
+    assert "full" in stories.vet(story(title="new", section="Security"), full, set(), KNOWN)
 
 
 def test_vet_fills_top_stories_to_its_own_cap():
     top = config.settings()["sections"][0]
-    cap = config.settings()["max_top_stories"]
+    cap = config.settings()["section_caps"][top]
     held = day(*[story(title=f"t{i}", section=top) for i in range(cap - 1)])
     assert stories.vet(story(title="new", section=top), held, set(), KNOWN) is None
 

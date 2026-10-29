@@ -188,9 +188,9 @@ def brief(
 
     lines += ["", "## Budget"]
     lines.append(
-        f"At most {settings['max_stories']} stories a day, {settings['max_top_stories']} in Top stories,"
-        f" {settings['max_section_stories']} per section. {', '.join(settings['uncapped_sections'])}"
-        " are outside both caps."
+        f"At most {settings['max_stories']} stories a day, {settings['max_section_stories']} per section."
+        f" {', '.join(f'{name}: at most {cap}' for name, cap in settings['section_caps'].items())}."
+        f" {', '.join(settings['uncapped_sections'])} are outside both caps."
     )
     counts = Counter(story["section"] for story in digest["stories"])
     lines += [f"- {section}: {count} published" for section, count in counts.items()]
