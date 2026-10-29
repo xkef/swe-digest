@@ -14,9 +14,9 @@ run, the correct answer is an empty `stories` list.
 - Verify each story with `fetch_url` on its primary source before you add it.
   Drop a story you cannot verify.
 - Do not add a story already published today, even under another title.
-- A launch event can ship several separate changes. Give each change that
-  matters to the profile its own story, such as a review gate or an
-  unattended agent, instead of folding it into one launch story.
+- A launch event can announce several separate changes. Give each change that
+  matters to the profile its own story. A new review gate and a new unattended
+  agent are two stories.
 - `Top stories` holds the few items that define the day, strongest first. Put
   everything else in its topical section.
 - Stay inside the budget. When a section or the day is full and a candidate
