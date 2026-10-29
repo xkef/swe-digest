@@ -1830,11 +1830,8 @@
     7.4-rc1 about two weeks after 2026-10-19, merged features such as Radeon HDMI 2.1 by default
     and Apple M4 support, and any schedule disruption during Torvalds's vacation.
   opened: '2026-10-19'
-  last_seen: '2026-10-28'
+  last_seen: '2026-10-29'
   notes:
-  - >-
-    2026-10-24: Linux 7.4 merged the slab pull, whose sheaf prefill change improves will-it-scale
-    mmap1 throughput by 24 percent on the maple_node cache.
   - >-
     2026-10-24: 2026-10-24: The DRM merge enabled AMDGPU HDMI 2.1 FRL by default, and a memblock
     pull sent for 7.4 switches to binary search, cutting KHO memory retrieval from about 268s
@@ -1866,6 +1863,10 @@
     2026-10-28: Paragon's NTFS3 pull for Linux 7.4 hardens the driver against corrupted or
     crafted volumes, fixing a 64K kernel heap leak, a heap overflow and an MFT buffer overwrite
     found by fuzzing and KASAN.
+  - >-
+    2026-10-29: A FAT driver change merged for Linux 7.4 through Andrew Morton's non-MM pull
+    allocates multiple clusters per call for FALLOC_FL_KEEP_SIZE, with up to 265x speedups
+    reported.
 - id: f-0069
   subject: Let's Encrypt six remote validation perspectives rollout
   watch_for: >-
@@ -2039,6 +2040,9 @@
     2026-10-29: Alpine Linux disclosed exploitation attempts against its GitLab via sibling
     flaw CVE-2026-97229 and confirmed that upstream Ruby 3.3.13, 3.4.12 and 4.0.9 carry the
     regex fix, while Ruby 3.2 will not.
+  - >-
+    2026-10-29: CISA added sibling flaw CVE-2026-97229 in GitLab CE and EE to the KEV catalog
+    on 2026-10-29.
 - id: f-0083
   subject: PHP2Shell exploitation of CVE-2026-109618 and CVE-2026-109619
   watch_for: >-
@@ -2047,10 +2051,6 @@
   opened: '2026-10-22'
   last_seen: '2026-10-29'
   notes:
-  - >-
-    2026-10-22: The PHP Foundation blames Chainguard for publishing patched images at 07:41
-    UTC on 2026-10-21, six hours before coordinated release, and Chainguard CEO Dan Lorenc
-    told The Register it shipped because exploitation had already started.
   - >-
     2026-10-23: Amazon reports a PHP2Shell exploitation attempt in MadPot on 2026-10-17, four
     days before disclosure, and multiple actors using exploits before the embargo lifted.
@@ -2084,6 +2084,11 @@
     2026-10-29: Palo Alto Networks confirmed on 2026-10-28 that PHP2Shell is exploited against
     internet-exposed PAN-OS management interfaces, with remaining hotfixes due 2026-10-29
     and 2026-10-30.
+  - >-
+    2026-10-29: Dream researchers, with findings verified by Unit 42, report a custom four-stage
+    PHP2Shell exploit chained with Fragnesia that rooted PAN-OS 12.1 and 12.2 firewalls from
+    2026-10-23, led to Active Directory attacks, and likely left persistent access in a US
+    government-affiliated network.
 - id: f-0084
   subject: Railway environment variable breach on 2026-10-21
   watch_for: >-
@@ -2336,7 +2341,10 @@
     A CISA KEV listing, attribution of the attacks, and any escalation beyond denial of service.
   opened: '2026-10-29'
   last_seen: '2026-10-29'
-  notes: []
+  notes:
+  - >-
+    2026-10-29: CISA added CVE-2026-76418 to the KEV catalog on 2026-10-29 based on evidence
+    of active exploitation.
 - id: f-0142
   subject: Linux TCP CVE-2026-98432 IPv4 options use-after-free
   watch_for: >-
