@@ -36,7 +36,7 @@ REDDIT_LIMIT = 100
 ARXIV = "https://export.arxiv.org/api/query"
 ARXIV_RESULTS = 40
 YOUTUBE_FEED = "https://www.youtube.com/feeds/videos.xml?channel_id="
-ENTRIES_PER_FEED = 5
+ENTRIES_PER_FEED = 25
 SUMMARY_CHARS = 300
 WORKERS = 16
 

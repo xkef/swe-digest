@@ -130,6 +130,12 @@ def test_brief_shows_each_open_thread_with_its_last_note():
     assert "f-0002" not in text
 
 
+def test_schema_bounds_blurb():
+    low, high = config.settings()["blurb_chars"]
+    blurb = daily.schema()["properties"]["stories"]["items"]["properties"]["blurb"]
+    assert (blurb["minLength"], blurb["maxLength"]) == (low, high)
+
+
 def disk_full(digest):
     raise OSError("disk full")
 

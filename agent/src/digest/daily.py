@@ -219,6 +219,9 @@ def schema() -> dict[str, Any]:
     """Returns the JSON schema of the model's answer, with today's vocabulary."""
     settings = config.settings()
     text = {"type": "string"}
+    # The SDK validates the answer against this schema and asks the model to
+    # retry, so a blurb of the wrong length is fixed instead of rejected.
+    low, high = settings["blurb_chars"]
     story = {
         "type": "object",
         "additionalProperties": False,
@@ -227,7 +230,7 @@ def schema() -> dict[str, Any]:
             "title": text,
             "section": {"enum": settings["sections"]},
             "category": {"enum": settings["categories"]},
-            "blurb": text,
+            "blurb": {"type": "string", "minLength": low, "maxLength": high},
             "summary": text,
             "why": text,
             "followup": text,
