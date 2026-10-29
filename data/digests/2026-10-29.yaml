@@ -1,5 +1,5 @@
 date: '2026-10-29'
-updated: 2026-10-29T07:22Z
+updated: 2026-10-29T11:41Z
 stories:
 - title: >-
     Palo Alto Networks confirms PHP2Shell exploitation of internet-exposed PAN-OS management
@@ -88,27 +88,6 @@ stories:
     url: https://www.securityweek.com/hackers-start-probing-fresh-oracle-ebs-vulnerability/
   thread: f-0137
 - title: >-
-    FoxIO discloses three TLS flaws in the GoAhead embedded web server, including ignored
-    CRLs
-  section: Security
-  category: Security
-  blurb: >-
-    FoxIO found GoAhead builds that ignore certificate revocation lists in mTLS, weaken some
-    TLS 1.2 sessions, and skip a chain length cap.
-  summary: >-
-    CVE-2026-115881, rated 9.1, makes GoAhead 3.4.5 to 6.1.0 builds with OpenSSL and mTLS
-    read a CRL but never check it, so revoked client certificates still work. A second bug
-    in Mbed TLS builds weakens some TLS 1.2 sessions so they can be decrypted offline, and
-    CVE-2026-115884 bypasses a chain-depth cap on some LibreSSL builds. GoAhead 6.1.1 fixes
-    the OpenSSL and Mbed TLS issues, and FoxIO released PoC code and fingerprints.
-  why: >-
-    Device management interfaces relying on mTLS revocation may be accepting revoked certificates
-    until each vendor ships firmware with GoAhead 6.1.1.
-  sources:
-  - label: primary
-    url: https://www.securityweek.com/tls-flaws-found-in-goahead-web-server-used-in-hundreds-of-millions-of-devices/
-  thread: f-0138
-- title: >-
     Tetragon before v1.7 exposes an unauthenticated gRPC API to hostNetwork pods (CVE-2026-65960)
   section: Security
   category: Security
@@ -126,27 +105,68 @@ stories:
   - label: primary
     url: https://cilium.io/blog/2026/10/28/tetragon-grpc
 - title: >-
-    Black Lotus Labs ties Volt Typhoon to Silent Train relay network used in four zero-day
-    campaigns
+    CISA adds Node2Shell Brotli flaw CVE-2026-111497 to KEV after confirmed exploitation
   section: Security
   category: Security
   blurb: >-
-    Black Lotus Labs links Volt Typhoon to Silent Train, rotating chains of hijacked devices
-    used for zero-days against management platforms.
+    CISA lists the Brotli decoder flaw behind Node2Shell as exploited and gives federal agencies
+    until 2026-11-10 to patch affected systems.
   summary: >-
-    Lumen's Black Lotus Labs says Silent Train, active since late 2023 and now disrupted,
-    chained VPS, foreign SOHO devices and US exit nodes into sessions averaging about four
-    hours, then wiped artifacts. It was used for zero-days in Versa Director, N-able N-central,
-    Cisco Catalyst SD-WAN Controller and Arista VeloCloud Orchestrator, across 27 device classes
-    and hundreds of victims.
+    CISA added CVE-2026-111497, an out-of-bounds write in the Brotli decoder first found in
+    Node.js, to its Known Exploited Vulnerabilities catalog on 2026-10-27. Federal agencies
+    must patch by 2026-11-10. The flaw also affects HTTP servers and clients built on vulnerable
+    Brotli, and Microsoft shipped emergency .NET patches for it.
   why: >-
-    Management and SD-WAN control planes are the target, and IP reputation blocking does little
-    against short-lived chains that exit through US devices.
+    Confirmed exploitation means Brotli, Node.js and .NET updates should go out now, followed
+    by process restarts and rebuilt container images.
+  followup: KEV federal deadline on 2026-11-10.
+  thread: f-0123
   sources:
   - label: primary
-    url: https://thehackernews.com/2026/10/volt-typhoon-used-covert-silent-train.html
+    url: https://www.bleepingcomputer.com/news/security/cisa-warns-of-hackers-now-exploiting-critical-node2shell-flaw/?utm_source=chatgpt.com
   - label: discussion
-    url: https://www.bleepingcomputer.com/news/security/volt-typhoon-hides-zero-day-attacks-using-silent-train-framework/
+    url: https://www.reddit.com/r/cybersecurity/comments/1xho1aa/cisa_confirms_active_exploitation_of_node2shell/
+- title: >-
+    Attacker targets Alpine Linux GitLab via CVE-2026-97229, exposing that GitLab upgrades
+    do not patch system Ruby
+  section: Security
+  category: Security
+  blurb: >-
+    Alpine rebuilt its GitLab server after an attacker targeted CVE-2026-97229, and found
+    that a GitLab upgrade alone left its Ruby vulnerable.
+  summary: >-
+    A new account sent crafted CI configurations to gitlab.alpinelinux.org on 2026-10-20 and
+    2026-10-21, crashing workers eight times. Alpine found no proof of code execution but
+    rebuilt the server, reset all passwords and rotated GitLab secret keys, and says its signing
+    keys were never on the server. GitLab's fix patches the Ruby bundled in its packages and
+    images, so self-compiled installs and images with their own Ruby also need Ruby 3.3.13,
+    3.4.12, 4.0.9 or later.
+  why: >-
+    Anyone running GitLab on a separately installed Ruby must update Ruby as well as GitLab,
+    since Ruby 3.2 gets no fix.
+  thread: f-0082
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/10/attacker-tried-to-exploit-alpine-linuxs.html
+- title: GitHub Copilot cloud agent sessions fail and slow down on 2026-10-29
+  section: Outages
+  category: Outage
+  blurb: >-
+    GitHub's agent sessions service is failing 1 to 2 percent of requests, slowing cloud agent
+    sessions across web, mobile, VS Code and CLI.
+  summary: >-
+    GitHub began investigating at 10:19 UTC on 2026-10-29 and reported increased failures
+    and latency on its agent sessions service, including creating and listing sessions. As
+    of 11:37 UTC failure rates were 1 to 2 percent and mitigations were being applied. Cloud
+    agent sessions on web, mobile, VS Code, the CLI and the GitHub Copilot app are affected.
+  why: >-
+    Teams that start or poll Copilot cloud agent sessions from automation should expect intermittent
+    failures and retry until GitHub confirms recovery.
+  followup: Incident resolution and the root cause analysis on githubstatus.com.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/rn76zdy367m2
+  thread: f-0139
 - title: >-
     Copilot Projects in the GitHub Copilot app run background agents toward a goal across
     repositories
@@ -189,6 +209,27 @@ stories:
     url: https://gist.github.com/flamerix-ai/c3905705cc4205e5de3011fa2e74efce
   - label: discussion
     url: https://news.ycombinator.com/item?id=50284255
+- title: >-
+    Google details six CI gates, an AI reviewer and eval evidence for its 170-skill Agent
+    Skills repo
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Google gates changes to 170 agent skills with linters, semver checks, eval reports, an
+    AI reviewer and a human approver before they ship.
+  summary: >-
+    Every skill change must pass structural and lint checks, a required semantic version bump,
+    a validated eval suite with a fresh report tied to the latest commit, link checks and
+    an AI review agent, then human approval. The AI reviewer pushes rigid CLI sequences into
+    scripts, caps SKILL.md at 500 lines and blocks chained references, which evals showed
+    agents often fail to follow. Cheap deterministic checks run first so failing changes never
+    trigger the costly LLM gates.
+  why: >-
+    It is a concrete template for treating agent instructions as versioned, evaluated code
+    with atomic eval expectations.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/topics/developers-practitioners/behind-the-scenes-two-months-later-how-we-ship-google-agent-skills-like-products/
 - title: Vercel CI enters beta, running tagged Turborepo tasks on every push
   section: Developer tools
   category: Dev tools
@@ -206,3 +247,42 @@ stories:
   sources:
   - label: primary
     url: https://vercel.com/changelog/vercel-ci-is-now-in-beta
+- title: >-
+    GitHub previews an npm package firewall that blocks malicious installs at download time
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    A new GitHub Enterprise Cloud preview gates npm installs on malware advisories, package
+    age, attestation downgrades and new install scripts.
+  summary: >-
+    GitHub's package firewall sits between endpoints or internal registries and upstream npm
+    and inspects metadata requests and downloads. Admins can block known malware, versions
+    with vulnerabilities above a chosen severity, versions missing an SLSA attestation that
+    earlier versions had, newly added install scripts, and versions younger than a 1 to 365
+    day cooldown. It is in public preview for GitHub Enterprise Cloud, and blocked packages
+    can be released through an exception request.
+  why: >-
+    Coding agents and CI runners can be pointed at a policy gate instead of the public registry,
+    which limits exposure to freshly hijacked packages.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/10/github-launches-npm-firewall-to-block.html
+- title: >-
+    GitHub Actions workflow lockfiles are generally available with a Require lockfile policy
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    A gh extension writes actions.lock so workflows keep readable tags while running pinned
+    commits, and admins can now require the lockfile.
+  summary: >-
+    The gh actions-lock extension generates .github/workflows/actions.lock covering actions
+    and their transitive dependencies, and onboarded workflows run only the recorded commits.
+    Dependabot regenerates the lockfile entry in the same pull request when it bumps an action,
+    and a check mode verifies the lockfile is current without changing files. The feature
+    is GA on Enterprise Cloud, Team and Free plans.
+  why: >-
+    Pinning moving action tags to commits no longer requires rewriting workflows to SHAs,
+    and org admins can enforce it.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-10-28-github-actions-workflow-lockfiles-are-generally-available
