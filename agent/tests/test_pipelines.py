@@ -130,6 +130,19 @@ def test_brief_shows_each_open_thread_with_its_last_note():
     assert "f-0002" not in text
 
 
+def test_improve_brief_shows_hand_added_stories_and_failure_counts(data):
+    hand = STORY | {"title": "Hand added", "sources": [{"label": "primary", "url": "https://x.dev/post"}]}
+    stories.save({"date": DAY, "stories": [STORY, hand]})
+    runs.append(DAY, {"mode": "daily", "added": [STORY["title"]], "degraded": {"Feed A": "404"}})
+    runs.append(DAY, {"mode": "daily", "added": [], "degraded": {}})
+
+    text = improve.brief([DAY], [], [])["brief"]
+
+    assert "- 2026-10-09 Hand added | https://x.dev/post" in text
+    assert "- 2026-10-09 Tool 2.0 released |" not in text
+    assert "- Feed A: failed 1 of 2 runs" in text
+
+
 def test_schema_bounds_blurb():
     low, high = config.settings()["blurb_chars"]
     blurb = daily.schema()["properties"]["stories"]["items"]["properties"]["blurb"]

@@ -12,6 +12,7 @@ publish job opens a pull request. Merging it is the approval.
 
 import asyncio
 import urllib.parse
+from collections import Counter
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
@@ -101,18 +102,33 @@ def summary(state: State) -> runs.Record:
 def brief(week: list[str], feedback: list[dict[str, Any]], misses: list[dict[str, Any]]) -> State:
     """Writes the week's evidence as one message."""
     lines = [f"The week is {week[-1]} to {week[0]} (UTC).", "", "## Published this week"]
+    # A story that no run added is one the owner added by hand after the runs
+    # missed it. Its source shows which feed the watchlist lacks.
+    hand_added = []
     for day in week:
+        added = {title for entry in runs.load(day)["runs"] for title in entry.get("added") or []}
         for story in stories.load(day)["stories"]:
             lines.append(f"- {day} [{story['section']}] {story['title']}")
+            if story["title"] not in added:
+                urls = " ".join(source["url"] for source in story["sources"])
+                hand_added.append(f"- {day} {story['title']} | {urls}")
+
+    lines += ["", "## Stories the owner added by hand because no run found them"]
+    lines += hand_added or ["(none)"]
 
     lines += ["", f"## Hacker News stories over {MISS_MIN_POINTS} points the week did not cover"]
     lines += [f"- {miss['title']} | {miss['points']} points | {miss['url']}" for miss in misses]
 
+    week_runs = [(day, entry) for day in week for entry in runs.load(day)["runs"]]
+    collecting = [entry["degraded"] for _, entry in week_runs if "degraded" in entry]
+    failures = Counter(name for degraded in collecting for name in degraded)
+    lines += ["", "## Sources that failed"]
+    lines += [f"- {name}: failed {count} of {len(collecting)} runs" for name, count in failures.items()] or [
+        "(none)"
+    ]
+
     lines += ["", "## Run notes"]
-    for day in week:
-        for entry in runs.load(day)["runs"]:
-            degraded = ", ".join(entry.get("degraded") or {}) or "none"
-            lines.append(f"- {day} {entry.get('mode')}: degraded {degraded}. {entry.get('notes', '')}")
+    lines += [f"- {day} {entry.get('mode')}: {entry.get('notes', '')}" for day, entry in week_runs]
 
     lines += ["", "## Owner feedback issues"]
     lines += [f"- #{i['number']} {i['title']}\n  {' '.join(i['body'].split())}" for i in feedback] or [
