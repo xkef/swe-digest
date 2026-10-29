@@ -93,6 +93,16 @@ def test_vet_enforces_section_cap_but_not_for_security():
     assert stories.vet(story(title="new", section="Security"), advisories, set(), KNOWN) is None
 
 
+def test_vet_fills_top_stories_to_its_own_cap():
+    top = config.settings()["sections"][0]
+    cap = config.settings()["max_top_stories"]
+    held = day(*[story(title=f"t{i}", section=top) for i in range(cap - 1)])
+    assert stories.vet(story(title="new", section=top), held, set(), KNOWN) is None
+
+    full = day(*[story(title=f"t{i}", section=top) for i in range(cap)])
+    assert "full" in stories.vet(story(title="new", section=top), full, set(), KNOWN)
+
+
 def test_ordered_follows_section_order_and_keeps_legacy_last():
     items = [story(section="Legacy"), story(section="Security"), story(section="Top stories")]
     assert [s["section"] for s in stories.ordered(items)] == ["Top stories", "Security", "Legacy"]
