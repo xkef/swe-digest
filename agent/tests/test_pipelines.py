@@ -130,6 +130,17 @@ def test_brief_shows_each_open_thread_with_its_last_note():
     assert "f-0002" not in text
 
 
+def test_brief_lists_stories_of_the_two_days_before(data):
+    for earlier in ("2026-10-06", "2026-10-07", "2026-10-08"):
+        stories.save({"date": earlier, "stories": [STORY | {"title": f"Story of {earlier}"}]})
+
+    text = daily.brief(DAY, {"stories": []}, [], [], [], {})["brief"]
+
+    assert "- 2026-10-08 [Developer tools] Story of 2026-10-08" in text
+    assert "Story of 2026-10-07" in text
+    assert "Story of 2026-10-06" not in text
+
+
 def test_improve_brief_shows_hand_added_stories_and_failure_counts(data):
     hand = STORY | {"title": "Hand added", "sources": [{"label": "primary", "url": "https://x.dev/post"}]}
     stories.save({"date": DAY, "stories": [STORY, hand]})

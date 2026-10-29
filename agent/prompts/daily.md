@@ -13,7 +13,9 @@ run, the correct answer is an empty `stories` list.
 
 - Verify each story with `fetch_url` on its primary source before you add it.
   Drop a story you cannot verify.
-- Do not add a story already published today, even under another title.
+- Do not add a story already published today or on an earlier day listed in
+  the message. Another title or another outlet does not make it new. When such
+  an event has moved, `note` its thread instead.
 - A launch event can announce several separate changes. Give each change that
   matters to the profile its own story. A new review gate and a new unattended
   agent are two stories.

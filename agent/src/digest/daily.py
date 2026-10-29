@@ -14,7 +14,7 @@ published and may drop a story of today's to make room for a stronger one.
 import asyncio
 import json
 from collections import Counter
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
 from digest import agent, config, github, graph, memory, runs, sources, stories
@@ -24,6 +24,9 @@ from digest.http import Fetcher
 MODE = "daily"
 INBOX_LABEL = "story"
 MAX_NEW_STORIES = 15
+# Days before today whose stories the brief lists, so the model can tell a
+# new event from one an outlet reports again.
+RECENT_DAYS = 2
 STORY_KEYS = (
     "title",
     "section",
@@ -185,6 +188,11 @@ def brief(
     lines.append("## Published today")
     lines += [f"- [{s['section']}] {s['title']} | {s['sources'][0]['url']}" for s in digest["stories"]]
     lines += ["(none yet)"] if not digest["stories"] else []
+
+    lines += ["", "## Published on earlier days"]
+    for back in range(1, RECENT_DAYS + 1):
+        earlier = (date.fromisoformat(day) - timedelta(days=back)).isoformat()
+        lines += [f"- {earlier} [{s['section']}] {s['title']}" for s in stories.load(earlier)["stories"]]
 
     lines += ["", "## Budget"]
     lines.append(
