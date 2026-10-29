@@ -43,12 +43,13 @@ run, the correct answer is an empty `stories` list.
 
 ## Follow-ups
 
-Follow-ups are threads the digest tracks across days.
+Follow-ups are threads the digest tracks across days. A thread tracks one
+event. Another incident or flaw at the same vendor is a new event.
 
 - `open` a thread when a story has a known next step: a release date, a
   deadline, a pending fix. Set `story` to that story's exact title. When an
-  open thread already tracks the same event, `note` it instead, even if the
-  story's angle has changed.
+  open thread already tracks the same event, `note` it and set the story's
+  `thread` to its id instead, even if the story's angle or CVE id differs.
 - `note` an open thread when a candidate moves it. Say in one sentence what
   changed since its last note. Skip the note when nothing changed.
 - `close` a thread when it has resolved. Never close a thread to reopen it
