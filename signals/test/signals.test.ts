@@ -111,3 +111,36 @@ describe("POST /signals/used", () => {
     }
   });
 });
+
+describe("the request list", () => {
+  async function listed(token: string): Promise<string[]> {
+    const requests = await (await call(token, "GET", "/requests")).json() as {
+      id: string;
+    }[];
+    return requests.map((request) => request.id);
+  }
+
+  it("drops a request once a run covers it", async () => {
+    const id = await approvedRequest();
+    const owner = await deviceToken(OWNER);
+    expect(await listed(owner)).toEqual([id]);
+
+    await call(await runToken(), "POST", "/signals/used", { requests: [id] });
+
+    expect(await listed(owner)).toEqual([]);
+  });
+
+  it("drops a rejected request for the owner and the friend", async () => {
+    const friend = await deviceToken(FRIEND);
+    const owner = await deviceToken(OWNER);
+    const { id } = await (await call(friend, "POST", "/requests", {
+      url: "https://example.com/p",
+    })).json() as { id: string };
+    expect(await listed(friend)).toEqual([id]);
+
+    await call(owner, "PUT", `/requests/${id}`, { status: "rejected" });
+
+    expect(await listed(owner)).toEqual([]);
+    expect(await listed(friend)).toEqual([]);
+  });
+});

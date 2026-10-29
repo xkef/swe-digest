@@ -31,8 +31,6 @@ export const limits = {
   url: 2048,
   // A friend can have this many requests waiting for the owner at once.
   pending: 20,
-  // The owner's request list shows decided requests for this long.
-  decidedVisible: 30 * DAY,
 } as const;
 
 export const signals = {

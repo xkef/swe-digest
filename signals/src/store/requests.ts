@@ -45,21 +45,20 @@ export class RequestStore {
     return { id, url, note, status, from: reader.email, createdAt: now };
   }
 
-  // The owner sees every pending request and the recently decided ones. A
-  // friend sees only their own.
+  // Only requests that still need something: pending ones wait for the
+  // owner, and approved ones wait for a run. The owner sees all of them, a
+  // friend only their own.
   list(reader: Reader): StoryRequest[] {
-    const since = Date.now() - limits.decidedVisible;
+    const open =
+      `(status = 'pending' OR (status = 'approved' AND used_at IS NULL))`;
     const rows = reader.role === "owner"
       ? this.#sql.exec<RequestRow>(
-        `SELECT * FROM requests WHERE status = 'pending' OR created_at >= ?
-         ORDER BY created_at DESC`,
-        since,
+        `SELECT * FROM requests WHERE ${open} ORDER BY created_at DESC`,
       )
       : this.#sql.exec<RequestRow>(
-        `SELECT * FROM requests WHERE email = ? AND created_at >= ?
+        `SELECT * FROM requests WHERE email = ? AND ${open}
          ORDER BY created_at DESC`,
         reader.email,
-        since,
       );
     return rows.toArray().map(({ email, created_at, ...row }) => ({
       ...row,
