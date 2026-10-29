@@ -36,15 +36,8 @@
       }
     }
 
-    // The bar takes the place of the issue link on a story page.
     for (const el of stories) {
-      const bar = controls(el.dataset.story, saved.get(el.dataset.story), me);
-      const link = el.querySelector(".story-feedback");
-      if (link) {
-        link.replaceWith(bar);
-      } else {
-        el.append(bar);
-      }
+      el.append(controls(el.dataset.story, saved.get(el.dataset.story), me));
     }
     const suggest = document.querySelector("[data-signals-suggest]");
     if (suggest) {
@@ -113,9 +106,10 @@
     return bar;
   }
 
-  // For enrolled readers the header's suggest link, which otherwise opens
-  // the GitHub issue form, toggles the panel under the header instead.
+  // The header's suggest link, hidden from everyone else, toggles the panel
+  // under the header.
   function dropdown(link, content) {
+    link.parentElement.hidden = false;
     content.id = "signals-panel";
     content.hidden = true;
     link.closest("header").after(content);
