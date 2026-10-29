@@ -195,3 +195,80 @@ runs:
   - step: save
     status: ok
     seconds: 0.1
+- mode: daily
+  started: 2026-10-29T12:01Z
+  finished: 2026-10-29T12:03Z
+  candidates: 330
+  degraded:
+    'GitHub: JetBrains/kotlin': >-
+      https://github.com/JetBrains/kotlin/releases.atom: HTTP Error 503: Service Unavailable
+  usage:
+    input_tokens: 6
+    cache_read_tokens: 169478
+    cache_write_tokens: 96335
+    output_tokens: 3796
+    turns: 9
+    seconds: 36
+    cost_usd: 0.8877
+  tools:
+    mcp__digest__fetch_url: 7
+    StructuredOutput: 1
+  fetched:
+  - url: https://www.theregister.com/security/2026/10/29/attackers-turn-github-issues-into-supply-chain-campaign-against-61-public-repos-in-less-than-an-hour/5306153
+    ok: true
+  - url: https://thehackernews.com/2026/10/cisco-patches-actively-exploited-asa.html
+    ok: true
+  - url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/
+    ok: true
+  - url: https://cursor.com/blog/agent-sdk
+    ok: true
+  - url: https://www.youtube.com/watch?v=AnsXWH2_EBU
+    ok: true
+  - url: https://www.youtube.com/watch?v=Ok6QdZHCcI8
+    ok: true
+  - url: https://github.blog/changelog/2026-10-28-prioritize-dependabot-alerts-with-reachability-analysis
+    ok: true
+  added:
+  - >-
+    Attacker hid shell commands in GitHub issues and PRs to hit CI workflows in 61 public
+    repositories
+  - >-
+    Dependabot adds CodeQL reachability verdicts for JavaScript and TypeScript alerts in public
+    preview
+  dropped:
+  - >-
+    Attackers probe Oracle E-Business Suite CVE-2026-101767 days after the October patch
+  rejected: []
+  inbox_used: []
+  notes: >-
+    Both YouTube pages I tried (the Anthropic 30,000 merges a day talk and the Revolut self-hosted
+    GLM talk) returned empty shells, so I left them out even though they fit the profile.
+    I dropped the Oracle EBS probing story from Security to make room for the GitHub issue
+    injection campaign. Threads f-0137 and f-0083 stay open. The Register is the only source
+    for the campaign because Radware's report is not public yet. I verified the Cisco ASA/FTD
+    exploited DoS (CVE-2026-76418) but did not add it. Security was full, and it did not clearly
+    outrank the ESXi KEV entry. The Cursor Agent SDK post is dated 2026-10-20. Gemini 4 Carbon
+    is already tracked in f-0136 and remains limited to cyber defenders, so I added no note
+    there.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 30.2
+  - step: load
+    status: ok
+    seconds: 0.1
+  - step: select
+    status: ok
+    seconds: 0.2
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 38.3
+  - step: merge
+    status: ok
+    seconds: 0.2
+  - step: save
+    status: ok
+    seconds: 0.1

@@ -1,5 +1,5 @@
 date: '2026-10-29'
-updated: 2026-10-29T11:41Z
+updated: 2026-10-29T12:03Z
 stories:
 - title: >-
     Palo Alto Networks confirms PHP2Shell exploitation of internet-exposed PAN-OS management
@@ -66,28 +66,6 @@ stories:
   - label: discussion
     url: https://thehackernews.com/2026/10/china-linked-hackers-exploited-vmware.html
 - title: >-
-    Attackers probe Oracle E-Business Suite CVE-2026-101767 days after the October patch
-  section: Security
-  category: Security
-  blurb: >-
-    Decoys logged probes on 2026-10-27 for an unauthenticated SQL injection in the EBS Thin
-    Client Framework servlet that chains to RCE.
-  summary: >-
-    CVE-2026-101767, rated 9.8 and found by Horizon3.ai, lets an unauthenticated request to
-    /OA_HTML/AppsTCFServer run SQL as the APPS user and then OS commands as the EBS application
-    account. Defused Cyber recorded exploratory exploit attempts on 2026-10-27. Workarounds
-    include removing the servlet from the EBS URL firewall allowlist and restricting the web
-    tier to trusted networks.
-  why: >-
-    EBS flaws have been mass exploited before, so unpatched EBS web tiers should get the October
-    CPU or the allowlist workaround now.
-  sources:
-  - label: primary
-    url: https://thehackernews.com/2026/10/hackers-target-critical-oracle-e.html
-  - label: discussion
-    url: https://www.securityweek.com/hackers-start-probing-fresh-oracle-ebs-vulnerability/
-  thread: f-0137
-- title: >-
     Tetragon before v1.7 exposes an unauthenticated gRPC API to hostNetwork pods (CVE-2026-65960)
   section: Security
   category: Security
@@ -148,6 +126,31 @@ stories:
   sources:
   - label: primary
     url: https://thehackernews.com/2026/10/attacker-tried-to-exploit-alpine-linuxs.html
+- title: >-
+    Attacker hid shell commands in GitHub issues and PRs to hit CI workflows in 61 public
+    repositories
+  section: Security
+  category: Security
+  blurb: >-
+    Radware found 83 hidden payloads in issues, PRs and comments that tried to steal CI secrets
+    through workflows that run on untrusted text.
+  summary: >-
+    Radware researchers told The Register they found 83 items carrying a verified payload
+    across 61 public repositories, including Trivy, MLflow, Cilium, google/langextract and
+    Homebrew/homebrew-cask, with 77 posted in a 43-minute window on 2026-09-01 from 74 accounts.
+    The commands sat in HTML comments and ran when workflows inserted issue or PR text into
+    shell code, collecting environment variables and sending them to an attacker server. Logs
+    show at least two runs where the command executed, and it is not confirmed whether the
+    attacker gained write access.
+  why: >-
+    Workflows triggered by issues, PRs or comments that interpolate that text into run steps
+    should be treated as exposed, and secrets in those jobs rotated.
+  followup: >-
+    A full Radware report and any confirmed downstream code changes or credential misuse.
+  sources:
+  - label: primary
+    url: https://www.theregister.com/security/2026/10/29/attackers-turn-github-issues-into-supply-chain-campaign-against-61-public-repos-in-less-than-an-hour/5306153
+  thread: f-0140
 - title: GitHub Copilot cloud agent sessions fail and slow down on 2026-10-29
   section: Outages
   category: Outage
@@ -286,3 +289,23 @@ stories:
   sources:
   - label: primary
     url: https://github.blog/changelog/2026-10-28-github-actions-workflow-lockfiles-are-generally-available
+- title: >-
+    Dependabot adds CodeQL reachability verdicts for JavaScript and TypeScript alerts in public
+    preview
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Dependabot now marks JS and TS alerts reachable or unreachable by tracing call paths from
+    your code to the vulnerable dependency functions.
+  summary: >-
+    GitHub previewed reachability analysis for Dependabot on 2026-10-28, using curated vulnerable-function
+    data and a CodeQL call graph to label each alert reachable, potentially reachable, unreachable
+    or unavailable. It runs as a managed Actions workflow on GitHub-hosted runners for Enterprise
+    Cloud repositories with npm, Yarn or pnpm lockfiles, is free during preview, and never
+    closes alerts.
+  why: >-
+    Teams buried in npm advisories get a call-path signal to rank fixes, also exposed through
+    the alerts REST API.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-10-28-prioritize-dependabot-alerts-with-reachability-analysis
