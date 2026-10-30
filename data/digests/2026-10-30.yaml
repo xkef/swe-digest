@@ -1,5 +1,5 @@
 date: '2026-10-30'
-updated: 2026-10-30T11:31Z
+updated: 2026-10-30T16:09Z
 lede: >-
   Attackers worked through developer tooling and third-party code: a trojanized Claude Code
   extension in Cursor's marketplace, a DevOps laptop at Binance, a hijacked monitoring script
@@ -62,6 +62,34 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/devops/comments/1xj4flc/binance_hack_and_a_devops_laptop/
   thread: f-0144
+- title: >-
+    Northflank tells all users to assume environment variables were decrypted and rotate every
+    secret
+  section: Top stories
+  category: Security
+  blurb: >-
+    After a Wiz alert at 11:43 UTC on 2026-10-30, Northflank says users report misused AI
+    keys and all platform services show a major outage.
+  summary: >-
+    Northflank's status page lists a security incident on 2026-10-30, with a Wiz threat alert
+    at 11:43 UTC, network policy patches from 12:02 to 13:05 UTC, and Wiz CIRT support requested.
+    At 13:58 UTC it told users to assume all environment variables were decrypted, covering
+    workload secrets, secret groups and global secrets, and multiple users confirm their AI
+    keys were used. Secret rotation for Postgres and MongoDB addons is now enabled and Northflank
+    recommends disabling public exposure of addons.
+  why: >-
+    Teams deploying on Northflank must rotate every secret and API key now and check provider
+    usage logs for abuse.
+  followup: A Northflank incident report with the attack vector and affected account count.
+  comments: >-
+    HN commenters compare it with the Railway breach and ask how PaaS platforms are being
+    breached. No root cause is public yet.
+  sources:
+  - label: primary
+    url: https://status.northflank.com
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50305025
+  thread: f-0148
 - title: >-
     DebugBear's RUM script was hijacked to drain Polymarket users, and DebugBear tells customers
     to remove it
@@ -177,6 +205,24 @@ stories:
     url: https://www.bleepingcomputer.com/news/security/drupal-warns-of-critical-commerce-core-flaw-exploited-in-attacks/
   thread: f-0147
 - title: >-
+    GitHub Issues and Pages degrade after an overloaded component causes errors across services
+    on 2026-10-30
+  section: Outages
+  category: Outage
+  blurb: >-
+    Between 14:21 and 14:30 UTC a temporarily overloaded component triggered a burst of errors
+    across GitHub services, with Pages degraded longest.
+  summary: >-
+    GitHub opened the incident at 14:31 UTC, marked Issues and Pages degraded, mitigated Pages
+    by 14:49 UTC and resolved the incident at 15:02 UTC. It says a temporarily overloaded
+    component caused errors across numerous services from 14:21 to 14:30 UTC, and a root cause
+    analysis will follow.
+  why: >-
+    Workflows, issue automation or Pages publishes that failed in that window may need a rerun.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/nxy2l0ssxm10
+- title: >-
     NVIDIA details Nemotron 3.5 Super 120B-A12B and Lightning 30B-A3B hybrid Mamba-Transformer
     models
   section: ML research
@@ -196,6 +242,26 @@ stories:
   sources:
   - label: primary
     url: https://arxiv.org/abs/2610.38095v1
+- title: >-
+    AlphaFold 3.0.5 makes Jackhmmer MSA search about 2.5x faster and MSA featurisation about
+    10x faster
+  section: ML research
+  category: ML research
+  blurb: >-
+    DeepMind's AlphaFold 3 release scales Jackhmmer with CPU count, reporting over 10x faster
+    runs on 24 cores, and stores the CCD in MessagePack.
+  summary: >-
+    AlphaFold v3.0.5, released 2026-10-30, speeds Jackhmmer about 2.5x and makes it scale
+    with --jackhmmer_n_cpu, adds a --hmmsearch_n_cpu flag, and adds compilation buckets of
+    128 and 384 to speed small proteins. The CCD moves from pickle to MessagePack, making
+    build_data 5x faster, and most unit tests now run in CI. Fixes include a float32 overflow
+    when ranking paired MSA rows and stable chain order across JSON round trips.
+  why: >-
+    The CPU-bound MSA search stage of AlphaFold 3 pipelines gets much cheaper on multicore
+    hosts.
+  sources:
+  - label: primary
+    url: https://github.com/google-deepmind/alphafold3/releases/tag/v3.0.5
 - title: GitHub adds three webhook delivery IP ranges to the Meta API hooks field
   section: Developer tools
   category: Dev tools
@@ -233,6 +299,32 @@ stories:
     url: https://www.tornadovm.org/blogs/tornadovm-8-0-0-tc-tornadovm-compiler
   - label: discussion
     url: https://www.reddit.com/r/java/comments/1xixi98/tornadovm_v800_meet_tc_tornadovms_own_compiler/
+- title: >-
+    Go security team warns Go 1.24+ servers open MPTCP listeners by default, exposing them
+    to CVE-2026-98432
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Go has enabled Multipath TCP on Linux listen sockets since 1.24, so many Go servers reach
+    the kernel use-after-free that Anthropic exploited.
+  summary: >-
+    In a 2026-10-29 golang-announce post, the Go Security Team says Go programs enable MPTCP
+    by default for Linux listen sockets as of Go 1.24, and the demonstrated RCE requires an
+    MPTCP listener. GODEBUG=multipathtcp=0 or a godebug line in go.mod disables it, but the
+    team calls this fragile because the bug is not specific to MPTCP and recommends a patched
+    kernel. It does not plan to change Go defaults for now and tracks discussion in Go issue
+    82717.
+  why: >-
+    Any Go service on an unpatched Linux kernel may be remotely exploitable even though nobody
+    chose to enable MPTCP.
+  thread: f-0142
+  sources:
+  - label: primary
+    url: https://groups.google.com/g/golang-announce/c/PCoQcdxoScw
+  - label: discussion
+    url: https://lwn.net/Articles/1104192/
+  - label: discussion
+    url: https://www.reddit.com/r/golang/comments/1xjamq3/go_program_are_vulnerable_to_cve202698432_linux/
 - title: >-
     Linux 7.4 merges hardware pacing offload, BIG TCP throughput gains and Meta's MPNIC driver
   section: Linux and kernel
@@ -317,3 +409,24 @@ stories:
   sources:
   - label: primary
     url: https://www.figma.com/blog/training-a-figma-fluent-editing-model/
+- title: >-
+    Google traces GKE API server timeouts to a PSC packet change, Envoy half-close and a Linux
+    6.1 TCP bug
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    A Google Cloud support case that blocked about 800 developers ended with a rolled back
+    PSC change and a patch to the Linux kernel TCP stack.
+  summary: >-
+    Pods in a customer's europe-west GKE clusters timed out reaching the kube-apiserver after
+    a February 2026 Private Service Connect switch update began dropping RFC 5961 challenge
+    ACKs, which NAT port reuse triggered often. Google rolled that change back, then found
+    PSC packet reordering, Envoy half-closed sockets that tcp_fin_timeout never reaps, and
+    a kernel 6.1 tcp_ack() path that ignored a reordered FIN. The final fix landed as a Linux
+    kernel patch.
+  why: >-
+    Proxies that half-close sockets behind NAT can leave FIN_WAIT_2 state that collides with
+    reused ports, a failure mode worth checking in Envoy-fronted services.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/products/networking/the-three-layer-gke-network-mystery/
