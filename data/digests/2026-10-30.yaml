@@ -1,5 +1,5 @@
 date: '2026-10-30'
-updated: 2026-10-30T22:23Z
+updated: 2026-10-30T23:10Z
 lede: >-
   Attackers worked through developer tooling and third-party code: a trojanized Claude Code
   extension in Cursor's marketplace, a DevOps laptop at Binance, a hijacked monitoring script
@@ -162,31 +162,6 @@ stories:
     url: https://www.theregister.com/security/2026/10/29/researchers-find-bugs-in-5-ai-developer-tools-with-openai-and-microsoft-flaws-still-unpatched/5306508
   thread: f-0146
 - title: >-
-    Drupal warns Commerce Core access bypass CVE-2026-118539 is exploited in the wild
-  section: Security
-  category: Security
-  blurb: >-
-    Drupal says attackers are exploiting a missing authorization bug in Commerce Core that
-    bypasses route and field access on online stores.
-  summary: >-
-    CVE-2026-118539 is a missing authorization flaw in Drupal Commerce Core versions up to
-    2.41 and from 3.0.0 to 3.3.13. Drupal says the module does not sufficiently protect certain
-    routes and entity fields, leading to an access bypass that may financially impact the
-    vendor, and that it is actively exploited. Drupal gave no details on the scale of the
-    activity.
-  why: >-
-    Drupal Commerce sites need the patched Commerce Core release now and should audit recent
-    orders for manipulation.
-  followup: Exploitation details, a public proof of concept, and a CISA KEV listing.
-  sources:
-  - label: primary
-    url: https://thehackernews.com/2026/10/hackers-actively-exploit-highly.html
-  - label: discussion
-    url: https://www.securityweek.com/drupal-commerce-core-vulnerability-exploited-against-online-stores/
-  - label: discussion
-    url: https://www.bleepingcomputer.com/news/security/drupal-warns-of-critical-commerce-core-flaw-exploited-in-attacks/
-  thread: f-0147
-- title: >-
     Attackers probe a WordPress core upgrade race condition RCE fixed in 7.1.4, with 62,969
     attempts in a day
   section: Security
@@ -207,6 +182,28 @@ stories:
   - label: primary
     url: https://thehackernews.com/2026/10/wordpress-rce-flaw-draws-nearly-63000.html
   thread: f-0150
+- title: >-
+    CISA adds exploited Ivanti Connect Secure flaws CVE-2026-111357 and CVE-2026-118527 to
+    KEV
+  section: Security
+  category: Security
+  blurb: >-
+    CISA lists two Ivanti Connect Secure flaws, a missing authentication bug and a predictable
+    identifier bug, as actively exploited.
+  summary: >-
+    On 2026-10-30 CISA added CVE-2026-111357, a missing authentication for critical function
+    flaw, and CVE-2026-118527, a generation of predictable numbers or identifiers flaw, both
+    in Ivanti Connect Secure, to the KEV catalog based on evidence of active exploitation.
+    BOD 26-04 requires federal agencies to prioritize remediation of KEV entries on exposed
+    assets.
+  why: >-
+    Teams running Ivanti Connect Secure VPN gateways should patch now and check for compromise
+    before the patch date, since both flaws are under active attack.
+  followup: Ivanti advisory details, fixed versions and indicators of compromise.
+  sources:
+  - label: primary
+    url: https://www.cisa.gov/news-events/alerts/2026/10/30/cisa-adds-two-known-exploited-vulnerabilities-catalog
+  thread: f-0153
 - title: >-
     GitHub Issues and Pages degrade after an overloaded component causes errors across services
     on 2026-10-30
@@ -475,6 +472,28 @@ stories:
   - label: primary
     url: https://blog.cloudflare.com/private-origins-public-to-private/
 - title: >-
+    Supabase launches DBArena, reproducible price-performance benchmarks for Supabase, RDS
+    and Cloud SQL Postgres
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Supabase-sponsored DBArena compares Supabase, RDS and Cloud SQL Postgres on TPC-C-derived
+    throughput per dollar with open tooling.
+  summary: >-
+    DBArena tests Supabase Postgres with heap and with OrioleDB, Amazon RDS and Google Cloud
+    SQL on Postgres 17 at up to seven vCPU-matched tiers, using provider defaults, a TPC-C-derived
+    workload without think time, cache-fit and 4x-RAM scenarios, and reports tpm, tpm per
+    dollar and p95 latency. Each of the 62 results ships a result.json with the exact command,
+    and the dbarenactl, benchctl and forked go-tpc tools are open source. Stated limits include
+    one workload, one region per cloud, list prices and same-AZ load generators only for RDS
+    and Cloud SQL.
+  why: >-
+    Engineers comparing hosted Postgres get a vendor benchmark they can rerun and audit, though
+    Supabase sponsors it and the method has stated biases.
+  sources:
+  - label: primary
+    url: https://supabase.com/blog/introducing-dbarena
+- title: >-
     Orange Tsai publishes a logic-bug-only Microsoft Edge full chain from Pwn2Own Berlin 2026
   section: Engineering posts
   category: Engineering post
@@ -561,3 +580,24 @@ stories:
     url: https://www.firezone.dev/blog/introducing-sanstun
   - label: discussion
     url: https://news.ycombinator.com/item?id=50310398
+- title: >-
+    SigNoz essay argues AI incident tooling deskills SREs for the novel outages that matter
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A SigNoz essay argues that AI incident tooling erodes the skills SREs need for novel outages,
+    citing Bainbridge's Ironies of Automation.
+  summary: >-
+    The SigNoz newsletter post, dated 2026-02-28 and trending on Hacker News on 2026-10-30,
+    argues that automating tier 1 and tier 2 incidents leaves SREs only the novel tier 3 failures
+    while removing the practice that builds intuition for them. It cites deskilling findings
+    from endoscopy and aviation and proposes deliberate human-practice incidents and human-in-the-loop
+    designs over approval-only supervision.
+  why: >-
+    Teams adopting AI SRE agents may need to schedule manual incident practice so on-call
+    engineers keep the skills automation stops exercising.
+  sources:
+  - label: primary
+    url: https://newsletter.signoz.io/p/ai-isnt-replacing-sres-its-deskilling
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50305693
