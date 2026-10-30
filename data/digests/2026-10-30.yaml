@@ -1,5 +1,5 @@
 date: '2026-10-30'
-updated: 2026-10-30T08:33Z
+updated: 2026-10-30T11:31Z
 lede: >-
   Attackers worked through developer tooling and third-party code: a trojanized Claude Code
   extension in Cursor's marketplace, a DevOps laptop at Binance, a hijacked monitoring script
@@ -151,6 +151,51 @@ stories:
   sources:
   - label: primary
     url: https://thehackernews.com/2026/10/telegram-android-flaw-lets-attackers.html
+- title: >-
+    Drupal warns Commerce Core access bypass CVE-2026-118539 is exploited in the wild
+  section: Security
+  category: Security
+  blurb: >-
+    Drupal says attackers are exploiting a missing authorization bug in Commerce Core that
+    bypasses route and field access on online stores.
+  summary: >-
+    CVE-2026-118539 is a missing authorization flaw in Drupal Commerce Core versions up to
+    2.41 and from 3.0.0 to 3.3.13. Drupal says the module does not sufficiently protect certain
+    routes and entity fields, leading to an access bypass that may financially impact the
+    vendor, and that it is actively exploited. Drupal gave no details on the scale of the
+    activity.
+  why: >-
+    Drupal Commerce sites need the patched Commerce Core release now and should audit recent
+    orders for manipulation.
+  followup: Exploitation details, a public proof of concept, and a CISA KEV listing.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/10/hackers-actively-exploit-highly.html
+  - label: discussion
+    url: https://www.securityweek.com/drupal-commerce-core-vulnerability-exploited-against-online-stores/
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/drupal-warns-of-critical-commerce-core-flaw-exploited-in-attacks/
+  thread: f-0147
+- title: >-
+    NVIDIA details Nemotron 3.5 Super 120B-A12B and Lightning 30B-A3B hybrid Mamba-Transformer
+    models
+  section: ML research
+  category: Paper
+  blurb: >-
+    NVIDIA's report covers a 120B-A12B multimodal Super and a 30B-A3B text Lightning, both
+    hybrid Mamba-Transformer MoE models.
+  summary: >-
+    The report describes distillation, long-context training, native speculative decoding,
+    agentic software-engineering mid-training and multi-teacher on-policy distillation for
+    Super. NVIDIA reports 51.78% on SWE-bench Pro for Super, NVFP4 quantization recovering
+    99.62% median accuracy versus BF16, and up to 4,856 output tokens per second per GPU on
+    GB200 at 50 or more tokens per second per user. Benchmark results are NVIDIA's own.
+  why: >-
+    It documents a full open-model recipe, including NVFP4 deployment and MTP speculative
+    decoding gains, that teams serving MoE models on Blackwell can compare against.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2610.38095v1
 - title: GitHub adds three webhook delivery IP ranges to the Meta API hooks field
   section: Developer tools
   category: Dev tools
@@ -188,3 +233,87 @@ stories:
     url: https://www.tornadovm.org/blogs/tornadovm-8-0-0-tc-tornadovm-compiler
   - label: discussion
     url: https://www.reddit.com/r/java/comments/1xixi98/tornadovm_v800_meet_tc_tornadovms_own_compiler/
+- title: >-
+    Linux 7.4 merges hardware pacing offload, BIG TCP throughput gains and Meta's MPNIC driver
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    The Linux 7.4 networking pull adds a pacing_offload device attribute, up to 70% gains
+    on mixed BIG TCP paths, and Meta's MPNIC driver.
+  summary: >-
+    Linux 7.4 adds a pacing_offload network device attribute, first wired up in the IDPF driver,
+    to hand packet timing to the NIC. Mixed BIG TCP and non-BIG TCP paths gain up to 70% throughput,
+    and Meta's first-generation FBNIC driver gains large io_uring zero-copy receive buffers
+    alongside the new MPNIC driver.
+  why: >-
+    Hosts on IDPF NICs or with mixed BIG TCP traffic get offloaded pacing and throughput gains
+    once they move to 7.4 kernels.
+  thread: f-0068
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Linux-7.4-Networking
+- title: Fedora 45 is declared GO and ships on 2026-11-03
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Fedora 45 passed its go/no-go vote on RC 1.4 and ships 2026-11-03 with GNOME 51, GCC 16.2,
+    glibc 2.44, LLVM 23 and Python 3.15.
+  summary: >-
+    The 2026-10-29 go/no-go meeting approved RC 1.4 after two slips for a missing release
+    candidate and blocker bugs. Fedora 45 replaces the in-kernel console with KMSCON, restricts
+    ptrace by default, enforces signature checking by default, and expects reproducible package
+    builds. It ships Go 1.27, RPM 6.1 and Stratis support in Anaconda.
+  why: >-
+    Default ptrace restrictions and enforced signature checks can break debuggers and unsigned
+    package workflows on upgraded workstations.
+  followup: Release announcement on 2026-11-03.
+  sources:
+  - label: primary
+    url: https://meetbot.fedoraproject.org/meeting_matrix_fedoraproject-org/2026-10-29/f45-final-go-no-go-meeting.2026-10-29-18.02.html
+  - label: discussion
+    url: https://www.phoronix.com/news/Fedora-45-Ships-Next-Week
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1xixex8/fedora_linux_45_final_is_go_and_will_release_on/
+- title: >-
+    Orange Tsai publishes a logic-bug-only Microsoft Edge full chain from Pwn2Own Berlin 2026
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Orange Tsai details a Pwn2Own Berlin 2026 Edge chain built from logic bugs only, from
+    a sourceless navigation UXSS to code execution.
+  summary: >-
+    The chain starts with an Edge Conditional Access navigation throttle that calls Chromium's
+    Navigate() without a source, so it targets the active tab and yields a universal XSS.
+    A popup blocker allowlist, a cross-window origin check bypass, OneAuth auto sign-in and
+    a CORS misconfiguration make it zero-click, and a path traversal with a NULL byte in a
+    feedback API overwrites protocols.json to launch a protocol handler. The entry won $175,000
+    at Pwn2Own Berlin on 2026-05-14.
+  why: >-
+    Chromium code that calls Navigate() with default parameters can bind a browser-initiated
+    navigation to whatever tab is active, a pattern worth auditing in any Chromium fork.
+  sources:
+  - label: primary
+    url: https://blog.orange.tw/posts/2026-10-the-last-proof-of-human-craft-browser-full-chain/
+  - label: discussion
+    url: https://www.reddit.com/r/programming/comments/1xiq9r7/the_last_proof_of_human_craft_forging_a_microsoft/
+- title: >-
+    Figma post-trains its own design editing model on Qwen 3.8 27B and adds reinforcement
+    learning
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Figma post-trains its own design editing model on Qwen 3.8 27B, moving from supervised
+    fine-tuning toward reinforcement learning.
+  summary: >-
+    Figma first fine-tuned a Llama 3.3 70B model on more than 250,000 synthetic edit examples,
+    generated by teacher models and checked by deterministic validators and visual judges.
+    It now post-trains newer bases such as Qwen 3.8 27B and adds RL with design-specific environments
+    and expert-written reward criteria. The Figma agent routes precise edits to this model
+    and other tasks to third-party models, and Figma reports tasks about 20% faster and 60%
+    fewer undos.
+  why: >-
+    It is a concrete case of a narrow post-trained model replacing frontier calls for a high-frequency,
+    non-verifiable task, with the eval split by dimension.
+  sources:
+  - label: primary
+    url: https://www.figma.com/blog/training-a-figma-fluent-editing-model/
