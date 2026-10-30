@@ -12,6 +12,10 @@ infrastructure.
 - ML research papers with engineering relevance: training methods, reasoning
   models, evaluation, interpretability, and architecture work from arXiv, Papers
   with Code, and Hugging Face Papers.
+- Post-training, a strong interest: supervised fine-tuning, reinforcement
+  learning, preference tuning, distillation, and reward design, from papers and
+  from first-party accounts of organizations post-training their own models on
+  open weights. Route into ML research and AI.
 - AI for science, especially drug discovery: protein structure prediction,
   protein language models, molecular generation and de novo design, docking,
   binding affinity, and retrosynthesis. Track the models, open source tooling
@@ -65,7 +69,9 @@ infrastructure.
   reproducibility, notebook diffing and review, and packaging notebooks into
   scripts or pipelines. Route into Developer tools and ML research. Exclude
   tutorial notebooks and course material.
-- Spring Boot, JVM ecosystem, Netty, R2DBC, database drivers, TLS, cloud
+- The Java ecosystem, a strong interest: OpenJDK releases and JEPs, JVM
+  internals and performance, GraalVM, JVM GPU and compiler projects such as
+  TornadoVM, Spring Boot, Netty, R2DBC, database drivers, TLS, cloud
   integration, and migration issues.
 - Observability: Prometheus, Grafana, OpenTelemetry, SLOs, latency, tracing,
   dashboards, postmortems. Track the Grafana Labs stack: Grafana, Loki, Tempo,
@@ -98,3 +104,6 @@ infrastructure.
 - Benchmarks without method.
 - Social media controversy without a primary source.
 - Consumer gadget news unless it affects developer platforms.
+- WordPress and Drupal vulnerabilities, including plugins and modules. Include
+  them only when monumental, such as mass exploitation of an unauthenticated
+  core flaw across a large share of sites.
