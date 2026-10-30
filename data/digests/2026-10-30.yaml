@@ -1,0 +1,190 @@
+date: '2026-10-30'
+updated: 2026-10-30T08:33Z
+lede: >-
+  Attackers worked through developer tooling and third-party code: a trojanized Claude Code
+  extension in Cursor's marketplace, a DevOps laptop at Binance, a hijacked monitoring script
+  at Polymarket and malicious Hugging Face models.
+stories:
+- title: >-
+    Cursor Marketplace served a trojanized Claude Code extension 2.1.313 that installs an
+    SSH backdoor
+  section: Top stories
+  category: Security
+  blurb: >-
+    A tampered Claude Code extension in the Cursor Marketplace added an attacker SSH key,
+    opened a reverse tunnel and set up persistence on load.
+  summary: >-
+    OpenSourceMalware reports that anthropic.claude-code version 2.1.313 was published to
+    the Cursor Marketplace on 2026-10-29 with a 66-line loader prepended to extension.js.
+    On load it appends an svc-telemetry key to authorized_keys, tries to enable SSH, opens
+    a reverse tunnel to 134.209.82.225, installs LaunchAgent, cron or scheduled task persistence,
+    and beacons host details and the names of secret-like environment variables. Cursor told
+    the researchers its marketplace copy was compromised, while the npm package, Open VSX
+    and Microsoft VS Code extensions are not affected.
+  why: >-
+    Anyone who loaded the Cursor build of the Claude Code extension should treat the host
+    as compromised, check authorized_keys and persistence paths, and rotate reachable credentials.
+  followup: Cursor's incident report on how the marketplace listing was compromised.
+  sources:
+  - label: primary
+    url: https://opensourcemalware.com/blog/trojanized-claude-code-extension-plants-persistent-ssh-backdoor
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xj6zlw/cursor_marketplace_powned/
+  thread: f-0143
+- title: >-
+    Binance loses about $6.3 billion after a compromised DevOps laptop gave attackers access
+    to a service container
+  section: Top stories
+  category: Security
+  blurb: >-
+    Binance says an attacker used a compromised DevOps laptop to reach a service container
+    and submit withdrawals, and about $3B is frozen.
+  summary: >-
+    Binance said a security incident on 2026-10-29 affected about $6.3 billion in assets and
+    that initial investigation points to a compromised DevOps engineer laptop that let an
+    attacker reach a service container and submit unauthorized withdrawal transactions, with
+    no evidence of a private key leak. TRM Labs attributes the theft to North Korea's TraderTraitor
+    and says the attacker batched 50 pre-signed authorizations across consecutive nonces to
+    sweep a hot wallet. Binance suspended deposits and withdrawals and expects withdrawals
+    to resume within 48 hours after rebuilding its withdrawal service.
+  why: >-
+    The entry point was an engineer endpoint with reach into signing infrastructure, a reminder
+    to isolate signing services from developer and operator laptops.
+  followup: Binance root cause report and resumption of withdrawals.
+  comments: >-
+    An r/devops thread uses the incident to discuss how much production access an operator
+    laptop should hold.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/10/binance-suffers-security-breach.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50296470
+  - label: discussion
+    url: https://www.reddit.com/r/devops/comments/1xj4flc/binance_hack_and_a_devops_laptop/
+  thread: f-0144
+- title: >-
+    DebugBear's RUM script was hijacked to drain Polymarket users, and DebugBear tells customers
+    to remove it
+  section: Security
+  category: Security
+  blurb: >-
+    A compromised performance monitoring script served from DebugBear's CDN hijacked Polymarket
+    sessions and moved about $2.5M to attacker wallets.
+  summary: >-
+    Polymarket halted trading on 2026-10-29 after a third-party provider was compromised,
+    and Hudson Rock traced the malicious JavaScript to cdn.debugbear.com, which also used
+    data.debugbear.com for command and control. The script used logged-in trading sessions
+    to sell positions or transfer tokens to attacker wallets, and about $2.57 million in POL
+    moved onward. DebugBear confirmed an ongoing incident and told RUM customers to remove
+    its embed code, and Polymarket removed the script and says affected traders will be reimbursed.
+  why: >-
+    Sites that embed DebugBear RUM or any third-party monitoring script on authenticated pages
+    should remove it or pin it with integrity checks.
+  followup: DebugBear's incident report and the list of other affected RUM customers.
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/polymarket-halts-trading-after-crypto-draining-script-breach-25m-traced/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50295883
+  thread: f-0145
+- title: >-
+    Hugging Face cryptomining models using trust_remote_code return after takedown, one with
+    28,412 downloads
+  section: Security
+  category: Security
+  blurb: >-
+    Pluto Security found 31 fake Qwen2 repositories whose remote code installs a miner and
+    reverse shell on self-hosted GPU inference servers.
+  summary: >-
+    Pluto Security found 31 malicious repositories across seven Hugging Face accounts posing
+    as small Qwen2 checkpoints aimed at Xinference and GPUStack hosts, and a second wave appeared
+    within days of the first takedown. The code runs when trust_remote_code is enabled, installs
+    a miner disguised as a system process, and in some versions opens a reverse shell or a
+    container escape script, while Hugging Face's scanners passed it. Separately, Air Security
+    reports a fake Solana starter kit on GitHub that ranks highly for AI coding agents and
+    tells them to run a PowerShell one-liner that installs NetSupport RAT.
+  why: >-
+    Inference platforms that load models with trust_remote_code run arbitrary Python, so treat
+    it as code execution and restrict it to reviewed repositories.
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/hugging-face-malware-campaign-returns-to-hijack-gpus-for-crypto-mining/
+- title: >-
+    Embedded browser flaws hit Cursor, Copilot, Claude Desktop, VS Code and Codex, with Codex
+    and VS Code unpatched
+  section: Security
+  category: Security
+  blurb: >-
+    Forever Security found that in-app browsers in five AI coding tools allowed code execution,
+    local file reads or address bar spoofing.
+  summary: >-
+    Forever Security reports that Cursor's integrated browser let a page send hidden instructions
+    to the agent composer, which Cursor patched without an advisory on 2026-10-01. Local HTML
+    pages in Claude Desktop and VS Code could read any file through web workers, and Codex
+    allowed it directly, while Copilot 1.1.27 allowed address bar spoofing fixed in 1.1.29.
+    OpenAI says it is working on a fix, and Microsoft classed the VS Code report as a workspace
+    trust issue.
+  why: >-
+    Opening untrusted HTML or web pages inside an agent tool's built-in browser can expose
+    local files or agent actions, so keep untrusted content out of those panes until fixes
+    land.
+  followup: Fixes for Codex and VS Code.
+  sources:
+  - label: primary
+    url: https://www.theregister.com/security/2026/10/29/researchers-find-bugs-in-5-ai-developer-tools-with-openai-and-microsoft-flaws-still-unpatched/5306508
+  thread: f-0146
+- title: >-
+    Telegram for Android 12.10.4 fixes a voice call bug that NebuSec chained into full phone
+    takeover
+  section: Security
+  category: Security
+  blurb: >-
+    Telegram Android 8.6.2 to 12.10.3 mishandle a MediaState call message, and setting call
+    privacy to Nobody blocks the attack.
+  summary: >-
+    NebuSec disclosed on 2026-10-29 that a flaw in how Telegram for Android parses MediaState
+    call messages, chained with an info leak and an Android root exploit, gives full control
+    of a phone once the victim answers a call. Telegram fixed it in 12.10.4 in September,
+    no CVE has been assigned, and NebuSec has seen no exploitation. The same fix reached the
+    shared tgcalls library in April and the iOS and desktop apps earlier.
+  why: Managed Android fleets should confirm Telegram is at 12.10.4 or later.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/10/telegram-android-flaw-lets-attackers.html
+- title: GitHub adds three webhook delivery IP ranges to the Meta API hooks field
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Static allowlists for github.com webhooks need 9.234.98.160/28, 9.234.98.176/28 and 9.234.106.48/28
+    added to avoid rejected deliveries.
+  summary: >-
+    GitHub announced on 2026-10-29 that webhook deliveries on github.com, including Enterprise
+    Cloud, can come from three new CIDR prefixes now listed in the Meta API hooks field. Allowlists
+    already synced from the Meta API need no change.
+  why: >-
+    Firewalls with hand-maintained webhook allowlists will start dropping deliveries unless
+    the new prefixes are added.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-10-29-webhook-ip-ranges-added-to-the-meta-api
+- title: >-
+    TornadoVM 8.0.0 replaces its vendored Graal and JVMCI with TC, its own Java-to-GPU compiler
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The new TC compiler emits CUDA, OpenCL and Metal from Java bytecode, passes more tests
+    than Graal did and enables Leyden AOT and Native Image.
+  summary: >-
+    TornadoVM 8.0.0 deletes its relocated Graal copy and JVMCI exports in favor of TC, a pure
+    Java compiler with an SSA IR that prints CUDA C++, OpenCL C or Metal source. TC passes
+    1,539 CUDA tests versus 1,516 under Graal, and jitLLM runs at 1.06 to 1.14 times Graal's
+    CUDA throughput with token-identical output. Removing JVMCI lets one SDK run on JDK 22
+    through 27 and allows Project Leyden AOT caches and GraalVM Native Image builds.
+  why: >-
+    Java GPU code on TornadoVM is no longer pinned to old class file versions, and kernel
+    errors now point at Java source lines.
+  sources:
+  - label: primary
+    url: https://www.tornadovm.org/blogs/tornadovm-8-0-0-tc-tornadovm-compiler
+  - label: discussion
+    url: https://www.reddit.com/r/java/comments/1xixi98/tornadovm_v800_meet_tc_tornadovms_own_compiler/
