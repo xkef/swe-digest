@@ -1,5 +1,5 @@
 date: '2026-10-30'
-updated: 2026-10-30T21:41Z
+updated: 2026-10-30T22:23Z
 lede: >-
   Attackers worked through developer tooling and third-party code: a trojanized Claude Code
   extension in Cursor's marketplace, a DevOps laptop at Binance, a hijacked monitoring script
@@ -452,6 +452,29 @@ stories:
   - label: primary
     url: https://cloud.google.com/blog/topics/cost-management/google-cloud-spend-caps-now-generally-available/
 - title: >-
+    Cloudflare services for private origins reach general availability for Cloudflare One
+    customers
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Proxied DNS records can now point at private IPs, and Cloudflare routes requests over
+    Cloudflare One links with WAF, cache and Workers.
+  summary: >-
+    On 2026-10-30 Cloudflare made private origins generally available: a proxied A or AAAA
+    record pointing at an RFC 1918, CGNAT or fc00::/7 address is routed over IPsec, GRE, CNI,
+    Cloudflare Tunnel or Cloudflare Mesh with WAF, bot management, rate limiting, caching
+    and Workers applied. Argo Smart Routing and Dedicated CDN Egress IPs are not supported,
+    and WAN or Mesh users must add return routes for 100.64.0.0/12 and 2606:4700:cf1:5000::/64.
+    A private-to-private closed beta is targeted for early 2027.
+  why: >-
+    Internal APIs and MCP servers can sit behind Cloudflare's edge without a public IP or
+    inbound firewall hole, but a missing return route was the most common setup failure in
+    the beta.
+  followup: Private-to-private traffic closed beta targeted for early 2027.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/private-origins-public-to-private/
+- title: >-
     Orange Tsai publishes a logic-bug-only Microsoft Edge full chain from Pwn2Own Berlin 2026
   section: Engineering posts
   category: Engineering post
@@ -515,3 +538,26 @@ stories:
   sources:
   - label: primary
     url: https://cloud.google.com/blog/products/networking/the-three-layer-gke-network-mystery/
+- title: >-
+    Firezone releases sanstun, a sans-IO Rust WireGuard library that lets one tunnel encrypt
+    on many threads
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Firezone's sanstun splits WireGuard packet bookkeeping from encryption so crypto for a
+    single tunnel can run on worker threads.
+  summary: >-
+    Firezone published sanstun, an Apache 2.0 Rust implementation of the WireGuard state machine
+    with no internal buffering and caller-supplied time, replacing its boringtun fork after
+    more than 70 patches. begin_encapsulate reserves the packet counter and returns a Send
+    PendingEncapsulate, so encryption can move off the owner thread. At 1280-byte packets
+    the bookkeeping step takes about 21 ns against about 934 ns for encryption, and every
+    inbound datagram must pass Interface::receive, which applies rate limits and cookie replies.
+  why: >-
+    Teams building VPNs or meshes on userspace WireGuard get a tested alternative to boringtun
+    that scales per-tunnel throughput across cores and supports deterministic simulation.
+  sources:
+  - label: primary
+    url: https://www.firezone.dev/blog/introducing-sanstun
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50310398
