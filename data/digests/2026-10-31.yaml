@@ -1,5 +1,5 @@
 date: '2026-10-31'
-updated: 2026-10-31T11:02Z
+updated: 2026-10-31T15:27Z
 stories:
 - title: >-
     LXD and MicroCloud fix CVE-2026-112816, which lets an attacker authenticate as any trusted
@@ -106,6 +106,30 @@ stories:
   - label: primary
     url: https://www.postgresql.org/about/news/e-maj-501-major-security-update-3425/
 - title: >-
+    Wiz ties nine October AI developer platform breaches to stolen keys resold for mass Bedrock
+    abuse
+  section: Security
+  category: Security
+  blurb: >-
+    Wiz links nine October breaches at AI developer platforms to stolen keys that resellers
+    used for millions of Bedrock calls.
+  summary: >-
+    Wiz counts at least nine AI developer platforms that disclosed incidents in October 2026,
+    among them Fireworks AI, Zeabur, Lightning AI, OpenCode, Railway, Warp, CommandCode and
+    Northflank, all hunting stored environment variables with AI access. In two enterprise
+    cases, keys stolen in one vendor breach were tested within 30 minutes. One key then served
+    about 800k Bedrock calls in 30 hours through global cross-region profiles, and the other
+    about 1.7 million calls in 13 hours. Wiz ties the keys to LLM resale sites and publishes
+    IP indicators.
+  why: >-
+    Any AI provider key stored on a hosted build or deploy platform this month should be rotated,
+    scoped to regional inference profiles, and checked against the published IPs.
+  sources:
+  - label: primary
+    url: https://www.wiz.io/blog/black-october-for-ai-developer-platforms
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xk4vbz/black_october_for_ai_developer_platforms_nine/
+- title: >-
     vLLM merges disk offload for Qwen4Exp PLE tables, saving 27 GiB of memory on DGX Spark
   section: AI
   category: AI
@@ -126,6 +150,32 @@ stories:
     url: https://github.com/vllm-project/vllm/pull/59958
   - label: discussion
     url: https://www.reddit.com/r/LocalLLaMA/comments/1xjpbcg/vllm_now_has_ple_disk_offload_support_on_nightly/
+- title: >-
+    Chris Wellons releases Prospero, a lean C++ coding agent harness with deadlines on every
+    operation
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Chris Wellons releases a C++ and Dear ImGui coding agent harness that uses far less memory
+    and gives every operation a deadline.
+  summary: >-
+    Prospero is a coding harness written in C++ with a Dear ImGui interface that the author
+    says uses about two orders of magnitude fewer resources than other harnesses. It brings
+    no model providers, times out every permission prompt and network call, turns timed-out
+    shell commands into background tasks, and kills the whole process tree when a command
+    stops. It supports subagents, Git worktrees, MCP, desktop control and headless remote
+    engines, with remote deployment reserved for a paid Professional Edition.
+  why: >-
+    It offers a low-memory harness for local models and long unattended runs, such as agent-driven
+    fuzz campaigns that the OOM killer would otherwise disrupt.
+  comments: >-
+    Hacker News readers compare its resource use with Electron and Node based harnesses and
+    debate the split between the open source and paid editions.
+  sources:
+  - label: primary
+    url: https://nullprogram.com/blog/2026/10/31/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50315226
 - title: >-
     Tangled relaunches its AT Protocol code forge with a Rust knot server and stacked PRs
     for Git and Jujutsu
@@ -192,3 +242,28 @@ stories:
     url: https://www.binarysecurity.no/posts/2026/10/one-root-case
   - label: discussion
     url: https://news.ycombinator.com/item?id=50301854
+- title: >-
+    Hacktron details a GNU Savannah RCE chain that could have pushed commits to upstream Bash
+    as its maintainer
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    An email address with shell metacharacters gave code execution, superuser and root on
+    the forge hosting Bash and Coreutils, now fixed.
+  summary: >-
+    Savane passed a user's email address unescaped into a gpg command run through /bin/sh,
+    so any registered user got code execution on GNU Savannah. Hacktron then read database
+    credentials, made its account a superuser, impersonated Bash maintainer Chet Ramey with
+    SSH key push rights, and rooted the backend through unpatched GameOver(lay) OverlayFS
+    bugs. Reported 2026-05-11, the FSF fixed it and 25 more Savane flaws and published an
+    incident report on 2026-08-07.
+  why: >-
+    It shows how a single forge bug plus a lagging kernel patch could have put a backdoor
+    into core GNU userland that distributions ship everywhere.
+  sources:
+  - label: primary
+    url: https://www.hacktron.ai/blog/hacking-gnu-savannah
+  - label: discussion
+    url: https://lwn.net/Articles/1104262/
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1xk5sqa/securing_internetcritical_software_how_we_could/
