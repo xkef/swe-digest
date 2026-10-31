@@ -1,0 +1,110 @@
+date: '2026-10-31'
+runs:
+- mode: daily
+  started: 2026-10-31T07:11Z
+  finished: 2026-10-31T07:13Z
+  candidates: 332
+  degraded: {}
+  usage:
+    input_tokens: 10
+    cache_read_tokens: 401751
+    cache_write_tokens: 132814
+    output_tokens: 10558
+    turns: 18
+    seconds: 101
+    cost_usd: 1.3611
+  tools:
+    mcp__digest__fetch_url: 16
+    StructuredOutput: 1
+  fetched:
+  - url: https://www.binarysecurity.no/posts/2026/10/one-root-case
+    ok: true
+  - url: https://status.bunny.net/incidents/p6gf1by9kr7m
+    ok: true
+  - url: https://status.linode.com/incidents/nt58zhx3pmgm
+    ok: true
+  - url: https://www.cve.org/CVERecord?id=CVE-2026-112816
+    ok: true
+  - url: https://thehackernews.com/2026/10/a-shared-chatgpt-link-could-run.html
+    ok: true
+  - url: https://www.postgresql.org/about/news/pgadmin-4-v919-released-3426/
+    ok: true
+  - url: https://ubuntu.com/security/CVE-2026-112816
+    ok: true
+  - url: https://www.bleepingcomputer.com/news/security/critical-linux-kernel-flaw-allows-remote-root-attacks-on-mptcp-servers/
+    ok: true
+  - url: https://lwn.net/Articles/1104177/
+    ok: true
+  - url: https://news.ycombinator.com/item?id=50312756
+    ok: true
+  - url: https://discourse.ubuntu.com/t/security-advisory-critical-vulnerability-found-in-canonical-lxd-and-microcloud/90557
+    ok: true
+  - url: https://mariadb.org/how-mariadb-11-8-became-about-3x-faster-on-some-in-memory-workloads-fixing-a-regression-dating-back-to-10-5/
+    ok: true
+  - url: https://tangled.org/blog/forge/
+    ok: true
+  - url: https://lwn.net/Articles/1102982/
+    ok: false
+  - url: https://openai.com/index/helping-websites-express-ai-training-preferences
+    ok: false
+  - url: https://github.com/vllm-project/vllm/pull/59958
+    ok: true
+  added:
+  - >-
+    LXD and MicroCloud fix CVE-2026-112816, which lets an attacker authenticate as any trusted
+    TLS client
+  - >-
+    bunny.net reissues TLS certificates after an infrastructure provider breach reached a
+    CDN node in Armenia
+  - >-
+    OpenAI fixed a ChatGPT share link chain that ran attacker code in a victim's session and
+    read private chats
+  - pgAdmin 4 v9.19 fixes 15 CVEs, including command injection in Import/Export Data
+  - >-
+    Tangled relaunches its AT Protocol code forge with a Rust knot server and stacked PRs
+    for Git and Jujutsu
+  - >-
+    vLLM merges disk offload for Qwen4Exp PLE tables, saving 27 GiB of memory on DGX Spark
+  - >-
+    MariaDB removes buf_pool.mutex from LRU promotion, making 11.8 about 2.8x faster on an
+    in-memory benchmark
+  - >-
+    Researcher details five fixed Azure Logic Apps API Connection flaws that allowed cross-tenant
+    Key Vault and SQL access
+  dropped: []
+  rejected: []
+  requests: []
+  inbox_used: []
+  notes: >-
+    The cve.org record for CVE-2026-112816 did not render, so the LXD story uses the Canonical
+    advisory and the Ubuntu tracker instead. The tracker rates it Medium priority, but the
+    advisory calls it critical. The ChatGPT share link story rests on The Hacker News, because
+    the Parameter writeup URL was not among the candidates. OpenAI's robots.txt post returned
+    403 and LWN's binder.c article was paywalled, so both were skipped. The Azure post is
+    dated 2026-10-02 but reached HN on 2026-10-30. All five Azure flaws are fixed, so it goes
+    in Engineering posts, not Security. Skipped: Scribd's consumer breach, which has no developer
+    impact, the Anthropic plan renaming, which has only Reddit screenshots, the NVIDIA Brev
+    breach claim, which has only an X post, and items already covered on earlier days (Cursor
+    extension, Binance, Drupal Commerce, GitLab KEV, eMudhra, PostgreSQL 19 delay).
+  steps:
+  - step: collect
+    status: ok
+    seconds: 26.6
+  - step: load
+    status: ok
+    seconds: 0.1
+  - step: select
+    status: ok
+    seconds: 0.2
+  - step: brief
+    status: ok
+    seconds: 0.1
+  - step: ask
+    status: ok
+    seconds: 102.8
+  - step: merge
+    status: ok
+    seconds: 0.2
+  - step: save
+    status: ok
+    seconds: 0.1

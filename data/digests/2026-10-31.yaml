@@ -1,0 +1,175 @@
+date: '2026-10-31'
+updated: 2026-10-31T07:13Z
+stories:
+- title: >-
+    LXD and MicroCloud fix CVE-2026-112816, which lets an attacker authenticate as any trusted
+    TLS client
+  section: Top stories
+  category: Security
+  blurb: >-
+    LXD trusted every certificate in a client's chain, so a victim's public certificate placed
+    as an intermediate granted their access.
+  summary: >-
+    Canonical says LXD mutual TLS authentication compared all peer certificates against the
+    trust store, although only the leaf proves key ownership. An attacker who can reach the
+    HTTPS API and holds a trusted client's public certificate can impersonate it and may gain
+    root on the host. Fixed snaps LXD 6.10.1, 5.21.9, 5.0.11 and 4.0.15 and MicroCloud 2.1.5
+    and 3.4.1 shipped on 2026-10-29 after the Incus project referred the bug.
+  why: >-
+    Anyone exposing the LXD API should run snap refresh lxd and snap refresh microcloud now,
+    because public client certificates are not secrets.
+  sources:
+  - label: primary
+    url: https://discourse.ubuntu.com/t/security-advisory-critical-vulnerability-found-in-canonical-lxd-and-microcloud/90557
+  - label: Ubuntu CVE tracker
+    url: https://ubuntu.com/security/CVE-2026-112816
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50310937
+- title: >-
+    bunny.net reissues TLS certificates after an infrastructure provider breach reached a
+    CDN node in Armenia
+  section: Security
+  category: Security
+  blurb: >-
+    A hosting provider's server management software was breached, so bunny.net is replacing
+    every managed certificate with a new private key.
+  summary: >-
+    bunny.net says a provider reported unauthorized access involving third-party server management
+    software, and the affected Armenia CDN node was pulled from routing within 20 minutes
+    and wiped. Cached content, Pull Zone configurations and TLS certificates on that server
+    could have been exposed, and b-cdn.net and bunny.run certificates were reissued. Managed
+    custom-domain certificate reissuance is expected to finish by the end of 2026-10-31.
+  why: >-
+    Customers who upload their own certificates to bunny.net should revoke them and reissue
+    with new private keys.
+  followup: Completion of managed certificate reissuance, expected by the end of 2026-10-31.
+  sources:
+  - label: primary
+    url: https://status.bunny.net/incidents/p6gf1by9kr7m
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50308697
+  thread: f-0154
+- title: >-
+    OpenAI fixed a ChatGPT share link chain that ran attacker code in a victim's session and
+    read private chats
+  section: Security
+  category: Security
+  blurb: >-
+    A MathLive message listener in the main ChatGPT page accepted raw HTML from any frame,
+    letting a sandboxed Preview escape into chatgpt.com.
+  summary: >-
+    Parameter reported the flaw on 2026-10-18 and OpenAI fixed it by 2026-10-26, rating it
+    P1. A shared chat with an HTML Preview and an interactive graph let attacker HTML reach
+    the main page, build an unsandboxed same-origin frame and load code through a YouTube
+    script that the content security policy allowed. No real-world use was reported.
+  why: >-
+    Products that render model-generated HTML must check postMessage senders in every library
+    loaded on the trusted page, not only harden the sandbox.
+  sources:
+  - label: The Hacker News report
+    url: https://thehackernews.com/2026/10/a-shared-chatgpt-link-could-run.html
+- title: pgAdmin 4 v9.19 fixes 15 CVEs, including command injection in Import/Export Data
+  section: Security
+  category: Security
+  blurb: >-
+    Server-mode pgAdmin could run host commands, cross user accounts and reuse the service
+    account's credentials before this release.
+  summary: >-
+    pgAdmin 4 v9.19, released 2026-10-31, fixes CVE-2026-116238 through CVE-2026-116252. CVE-2026-116241
+    is an OS command injection in Import/Export Data that completes an earlier fix for CVE-2026-17566,
+    and other fixes stop libpq, Kerberos and SSH tunnels from using the pgAdmin service account's
+    credentials in server mode. Password Exec Commands now need an administrator allowlist,
+    SERVER_PASSEXEC_COMMANDS, set before the first start after upgrading.
+  why: >-
+    Shared pgAdmin deployments in server mode need this upgrade, and admins must configure
+    the new allowlists before restarting.
+  sources:
+  - label: primary
+    url: https://www.postgresql.org/about/news/pgadmin-4-v919-released-3426/
+- title: >-
+    vLLM merges disk offload for Qwen4Exp PLE tables, saving 27 GiB of memory on DGX Spark
+  section: AI
+  category: AI
+  blurb: >-
+    Per-layer embedding rows are read from checkpoint files with preadv each step, keeping
+    decode within 3.5% while raising TTFT about 11%.
+  summary: >-
+    PR 59958, merged 2026-10-30, adds an engram-config disk_offload option for Qwen4Exp so
+    the PLE n-gram table stays in the safetensors files. On a GB10, Qwen3.8-Flash-Next NVFP4
+    loaded 27.0 GiB less weight memory with GSM8K unchanged, while a cold 8K prefill from
+    NFS was 2 to 4.5x slower than from local NVMe. A reviewer notes the saving is reclaimable
+    page cache rather than freed memory.
+  why: >-
+    Unified-memory machines can serve PLE models that did not fit before, provided the checkpoint
+    sits on local NVMe.
+  sources:
+  - label: primary
+    url: https://github.com/vllm-project/vllm/pull/59958
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1xjpbcg/vllm_now_has_ple_disk_offload_support_on_nightly/
+- title: >-
+    Tangled relaunches its AT Protocol code forge with a Rust knot server and stacked PRs
+    for Git and Jujutsu
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Issues and pull requests now live in the repository as signed Git objects, and both jj
+    and Git users can submit and interdiff stacked PRs.
+  summary: >-
+    Tangled's 2026-10-30 release stores issues, pull requests and comments on knot servers
+    as collaborative objects in the repo, with attestation records written to each author's
+    PDS. Knot2 is a Rust rewrite with a built-in Git and SSH server, and self-hosters must
+    upgrade knots to v1.20.0. A diskless Rust indexer called bobbin now serves the API from
+    more than 11 regions.
+  why: >-
+    Jujutsu users get a forge with change-level interdiffs whose hosting and CI parts can
+    be self-hosted while still federating.
+  sources:
+  - label: primary
+    url: https://tangled.org/blog/forge/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50305573
+- title: >-
+    MariaDB removes buf_pool.mutex from LRU promotion, making 11.8 about 2.8x faster on an
+    in-memory benchmark
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    A free-page clock armed early since 10.5 made each old-page touch take a global mutex,
+    cutting some in-memory throughput by about 60%.
+  summary: >-
+    Since 10.5, freeing undo and B-tree pages ticked freed_page_clock, which switched on LRU
+    promotion under one global buf_pool.mutex even when data fit in memory. The fix sets a
+    PROMOTE bit atomically at page access and lets sweeps that already hold the mutex move
+    flagged blocks. On one test 11.8 rose from 20,326 to 57,052 QPS, about 7 to 9 percent
+    faster than 10.4.34.
+  why: >-
+    MariaDB users on 10.5 or later with in-memory reads gain from the fixed 11.8 and 12.3
+    releases, and innodb_old_blocks_time now has one-second resolution.
+  sources:
+  - label: primary
+    url: https://mariadb.org/how-mariadb-11-8-became-about-3x-faster-on-some-in-memory-workloads-fixing-a-regression-dating-back-to-10-5/
+  - label: discussion
+    url: https://www.reddit.com/r/programming/comments/1xjo2ar/yet_another_performance_degradation_research/
+- title: >-
+    Researcher details five fixed Azure Logic Apps API Connection flaws that allowed cross-tenant
+    Key Vault and SQL access
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Path traversal and late validation in API Connections let one tenant reuse another tenant's
+    stored connection tokens, now patched by Microsoft.
+  summary: >-
+    Binary Security's Haakon Wik Gulbrandsrud steered DynamicInvoke, undocumented DynamicList
+    endpoints and the host.api.RuntimeUrl parameter of Consumption Logic Apps to victims'
+    connections. Through them he read Key Vault secrets and wrote to Azure SQL databases in
+    other tenants. Microsoft fixed all five reports, which paid $200,000, and one fix briefly
+    reopened an earlier bypass.
+  why: >-
+    Logic Apps users should scope API Connection credentials to least privilege, because the
+    shared API Management layer can act with every connection's token.
+  sources:
+  - label: primary
+    url: https://www.binarysecurity.no/posts/2026/10/one-root-case
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50301854
