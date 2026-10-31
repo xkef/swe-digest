@@ -1,5 +1,5 @@
 date: '2026-10-31'
-updated: 2026-10-31T15:27Z
+updated: 2026-10-31T17:51Z
 stories:
 - title: >-
     LXD and MicroCloud fix CVE-2026-112816, which lets an attacker authenticate as any trusted
@@ -151,6 +151,29 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/LocalLLaMA/comments/1xjpbcg/vllm_now_has_ple_disk_offload_support_on_nightly/
 - title: >-
+    Talos finds VOLTA infostealer sending stolen victim data to an LLM to rank assets by monetization
+    value
+  section: AI
+  category: AI
+  blurb: >-
+    A self-deleting Windows stealer posts stolen victim data to OpenRouter and has an LLM
+    rank assets, with a three-model refusal fallback.
+  summary: >-
+    Cisco Talos reports that VOLTA steals browser credentials, sessions, wallets, SSH and
+    cloud provider keys, enriches the haul using stolen Gmail and delivery app sessions, then
+    posts a JSON bundle to OpenRouter asking for a target assessment. It defaults to anthropic/claude-opus-4.6
+    and fails over to kimi-k2 and gemini-2.5-flash when it detects refusal phrases. Talos
+    recommends restricting which processes may launch Chrome with --headless to block its
+    App-Bound Encryption bypass.
+  why: >-
+    Developer workstations with SSH and cloud credentials are explicit targets, and Chrome
+    headless launches from unknown processes are a concrete detection signal.
+  sources:
+  - label: primary
+    url: https://blog.talosintelligence.com/appraisal-by-ai-model-driven-victim-prioritization-in-the-volta-infostealer/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50316531
+- title: >-
     Chris Wellons releases Prospero, a lean C++ coding agent harness with deadlines on every
     operation
   section: Agentic coding
@@ -267,3 +290,26 @@ stories:
     url: https://lwn.net/Articles/1104262/
   - label: discussion
     url: https://www.reddit.com/r/linux/comments/1xk5sqa/securing_internetcritical_software_how_we_could/
+- title: >-
+    Jepsen finds 96 issues in ParticleDB, including lost committed writes in its default transaction
+    mode
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Jepsen found 96 issues in ParticleDB, including lost committed writes in the default occ
+    mode and Lost Update under serializable mode.
+  summary: >-
+    Kyle Kingsbury tested single-node ParticleDB 1.1.4 through 1.1.18.11.rc-22 and found crashes,
+    deadlocks, broken predicates, dropped tables reappearing and data loss, most with one
+    client and no faults. All but ten issues appeared fixed by the last tested build, but
+    it still lost committed writes in the default occ mode and allowed internal anomalies
+    and Lost Update in serializable mode. Orkes, which funded the work, says 1.1.19-rc.13
+    fixes the remaining issues, which Jepsen has not tested.
+  why: >-
+    It shows how claims like Full ACID and a TLA+ proof can fail basic checks, and it shows
+    Jepsen using generative SQL differential testing against Postgres to find bugs.
+  sources:
+  - label: primary
+    url: https://jepsen.io/analyses/particledb-1.1.4
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50316100
