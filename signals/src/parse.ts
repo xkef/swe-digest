@@ -10,6 +10,10 @@ import type { Feedback, RequestStatus, Vote } from "./types";
 const STORY = /^\d{4}-\d{2}-\d{2}\/[a-z0-9-]{1,400}$/;
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 const REQUEST_ID = /^[0-9a-f-]{36}$/;
+// The base64url form of enrollment.tokenBytes random bytes, without padding.
+const DEVICE_TOKEN = new RegExp(
+  `^[A-Za-z0-9_-]{${Math.ceil(enrollment.tokenBytes * 4 / 3)}}$`,
+);
 const LABEL_JUNK = /[^\p{L}\p{N} ._-]/gu;
 
 type Fields = Record<string, unknown>;
@@ -65,6 +69,12 @@ export function requestIds(body: unknown): string[] | null {
   const valid = Array.isArray(ids) && ids.length <= signals.maxUsed
     && ids.every((id) => typeof id === "string" && REQUEST_ID.test(id));
   return valid ? ids : null;
+}
+
+// A token enrollment could not have issued fails here, before it costs a
+// store request.
+export function deviceToken(value: string | null): string | null {
+  return value !== null && DEVICE_TOKEN.test(value) ? value : null;
 }
 
 // Labels are for the owner's device list, so anything odd is dropped

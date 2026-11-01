@@ -28,12 +28,21 @@ export async function accessToken(options: TokenOptions = {}): Promise<string> {
     .sign(key);
 }
 
+// The local rate limiter counts across every test file in a run, so each
+// helper request comes from its own address.
+function address(): string {
+  return crypto.randomUUID();
+}
+
 export async function enroll(
   options: TokenOptions = {},
   query = "",
 ): Promise<Response> {
   return exports.default.fetch(`https://signals.test/enroll${query}`, {
-    headers: { "Cf-Access-Jwt-Assertion": await accessToken(options) },
+    headers: {
+      "Cf-Access-Jwt-Assertion": await accessToken(options),
+      "CF-Connecting-IP": address(),
+    },
     redirect: "manual",
   });
 }
@@ -58,6 +67,7 @@ export function call(
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
+      "CF-Connecting-IP": address(),
     },
     body: body === undefined ? undefined : JSON.stringify(body),
   });

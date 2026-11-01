@@ -48,6 +48,7 @@ flowchart LR
 | Did the schema change?  | `schema_migrated` events                                        |
 | Why was a call refused? | `rejected` events, with the `path`, `status`, and `reason`      |
 | What is happening now?  | `mise run signals:tail`                                         |
+| Why a 429?              | one address passed `ratelimits` in `wrangler.jsonc`, unlogged   |
 
 Every log line is one JSON object with an `event` field. Workers Logs in the
 Cloudflare dashboard keeps every request and log line for 3 days and filters on

@@ -23,6 +23,17 @@
     },
   ],
 
+  // Every request counts against its address before it can reach the store.
+  // Readers send a few requests per page, and runs two per run. The ID only
+  // needs to be unique within the account.
+  "ratelimits": [
+    {
+      "name": "LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 60, "period": 60 },
+    },
+  ],
+
   // The Access application that guards /enroll. Both values are public
   // identifiers from the Zero Trust dashboard. Empty turns enrollment off.
   "vars": {
