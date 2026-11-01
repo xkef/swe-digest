@@ -46,7 +46,10 @@ infrastructure.
 - Jujutsu (jj) and everything around it: releases, tools such as jjui, and
   workflows such as megamerges. Track the work of its creator, Martin von
   Zweigbergk, and East River Source Control (ERSC), his company building
-  version control servers for humans and agents. Route into Developer tools.
+  version control servers for humans and agents. Version control forges and
+  code hosting, a strong interest: new and alternative forges such as Tangled,
+  forges built on open protocols, stacked pull requests, and forge support for
+  jj. Route into Developer tools.
 - Lua outside editor configuration: Lua 5.x releases, LuaJIT, Luau, the C API
   and embedding Lua as an extension language in servers, games, proxies and
   network tooling, and performance work on Lua runtimes. Route into Languages
@@ -79,6 +82,9 @@ infrastructure.
 - Kubernetes and cloud native networking: Kubernetes releases and KEPs,
   Cilium, Tetragon, eBPF-based networking and security, Isovalent, and CNCF
   projects. Route into Infrastructure.
+- Cloud cost controls such as hard spend caps and budget enforcement at AWS,
+  Google Cloud, Azure, and other providers, including their billing APIs and
+  whether providers match each other's features. Route into Infrastructure.
 - PostgreSQL and Postgres-compatible distributed SQL: PostgreSQL releases,
   extensions, and internals, CockroachDB, YugabyteDB, and other NewSQL
   databases, with their consistency models, benchmarks with method, and
