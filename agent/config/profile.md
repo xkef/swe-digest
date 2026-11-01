@@ -82,9 +82,9 @@ infrastructure.
 - Kubernetes and cloud native networking: Kubernetes releases and KEPs,
   Cilium, Tetragon, eBPF-based networking and security, Isovalent, and CNCF
   projects. Route into Infrastructure.
-- Cloud cost controls: hard spend caps, budget enforcement, and billing APIs
-  at AWS, Google Cloud, Azure, and other providers, including whether
-  providers match each other's features. Route into Infrastructure.
+- Cloud cost controls such as hard spend caps and budget enforcement at AWS,
+  Google Cloud, Azure, and other providers, including their billing APIs and
+  whether providers match each other's features. Route into Infrastructure.
 - PostgreSQL and Postgres-compatible distributed SQL: PostgreSQL releases,
   extensions, and internals, CockroachDB, YugabyteDB, and other NewSQL
   databases, with their consistency models, benchmarks with method, and
