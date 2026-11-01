@@ -1,5 +1,5 @@
 date: '2026-11-01'
-updated: 2026-11-01T16:13Z
+updated: 2026-11-01T18:29Z
 stories:
 - title: >-
     Chainalysis discloses a breach in which an attacker used offensive agentic techniques
@@ -64,6 +64,27 @@ stories:
   sources:
   - label: primary
     url: https://www.bleepingcomputer.com/news/security/alpine-linux-rebuilds-gitlab-after-attempted-rce-attack/
+- title: OpenAI will make ChatGPT and Codex draw from one shared usage allowance
+  section: AI
+  category: AI
+  blurb: >-
+    Codex users will share a single quota with ChatGPT chats, while OpenAI already doubled
+    Work and Codex allowances on Pro plans from 2026-10-29.
+  summary: >-
+    In an email to subscribers reported by BleepingComputer, OpenAI says use of ChatGPT and
+    Codex will draw from the same allowance, with Unlimited Instant excluded and heavier models
+    consuming more. Combined usage and reset times appear under Settings, Usage. OpenAI separately
+    doubled Work and Codex allowances for Pro 100, Pro 200 and Pro 500 effective 2026-10-29.
+  why: >-
+    Teams that budget Codex agent work against a plan quota now compete with chat usage for
+    the same allowance.
+  sources:
+  - label: primary
+    url: https://help.openai.com/en/articles/20001625-understanding-chatgpt-and-codex-usage-limits
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/artificial-intelligence/openai-says-its-doubling-pro-usage-limits-and-bringing-work-features-to-chat/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50320588
 - title: >-
     Anthropic adds a Claude Code rule on Opus 5.5 that steers it away from recreating specific
     existing games
@@ -92,6 +113,50 @@ stories:
     url: https://www.tomshardware.com/tech-industry/artificial-intelligence/anthropics-ai-model-is-now-blocking-attempts-at-video-game-recreation-and-cloning-users-also-claim-non-malicious-generic-reverse-engineering-tasks-are-blocked
   - label: discussion
     url: https://news.ycombinator.com/item?id=50315987
+- title: >-
+    Nolan Lawson benchmarks 12 JavaScript frameworks by the cost for Claude Code to build
+    the same app
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Opus 5.5 built one Pokemon app five times per framework: Hono plus htmx cost least at
+    $2.67 median, Angular most at $4.97 with 2 failures.
+  summary: >-
+    Nolan Lawson had Opus 5.5 in Claude Code build the same spec-tested app in 12 frameworks,
+    five runs each, and measured cost, time, tokens, lines of code and Lighthouse scores.
+    Median cost ran from $2.67 for Hono plus htmx to $4.97 for Angular, SvelteKit runs read
+    the v3 migration guide every time, and framework MCP servers and skills were used inconsistently,
+    with the Nuxt MCP never used. The benchmark is on GitHub.
+  why: >-
+    It gives a reproducible method for judging framework choice by agent token cost and code
+    size instead of claims that a stack is better for agents.
+  sources:
+  - label: primary
+    url: https://nolanlawson.com/2026/10/28/the-ai-cost-of-javascript-frameworks/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50323088
+- title: >-
+    Engineer details an OpenCode setup where GPT-6.1 Sol orchestrates and a self-hosted GLM-5.3-Flash
+    writes code
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    A practitioner routes about 70 to 75 percent of coding agent tokens to a self-hosted model
+    on H200s while a frontier model plans and reviews.
+  summary: >-
+    Aayush Garg runs GLM-5.3-Flash on a 4-GPU H200 server with 512K context and configures
+    OpenCode so a GPT-6.1 Sol orchestrator delegates to GLM explorer and implementer subagents
+    and verifies diffs itself. He reports that Codex and Claude Code subagents cannot target
+    a different endpoint, so the split is not possible there. He adds ordered permission rules
+    because OpenCode does not sandbox the agent.
+  why: >-
+    It shows a concrete per-agent model routing and permission config for cutting frontier
+    model spend, plus the harness limits that block it in Codex and Claude Code.
+  sources:
+  - label: primary
+    url: https://aayushgarg.dev/posts/2026-11-01-gpt-local-model-opencode/
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1xkz4lf/glm53flash_on_our_h200s_does_most_of_my_coding/
 - title: >-
     Paper finds on-policy distillation gains depend on where the teacher keeps reasoning paths
     open
@@ -150,6 +215,26 @@ stories:
   sources:
   - label: primary
     url: https://arxiv.org/abs/2610.40574v1
+- title: >-
+    numoracle replaces fixed atol and rtol with derived per-element bounds for testing low-precision
+    GPU kernels
+  section: ML research
+  category: Paper
+  blurb: >-
+    A test oracle for Triton kernels from Liger-Kernel, Unsloth and vLLM caught 116 of 124
+    mutants with no false alarms on correct runs.
+  summary: >-
+    The paper derives per-element acceptance regions from precision-annotated reference programs,
+    tracking shared rounding, block-scaled quantizers and math library error. On 13 Triton
+    operators across two GPU generations it raised no false alarms on 33,960 correct runs
+    per GPU, while tuned tolerances flagged up to 30 percent of correct runs under input shift.
+    It killed 116 of 124 mutants on an RTX PRO 6000 versus 59 to 83 for fixed baselines.
+  why: >-
+    Kernel authors testing FP8 and block-scaled code get an alternative to hand-tuned tolerances
+    that either flake or miss real accuracy bugs.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2610.38983v1
 - title: >-
     KDE developer Eike Hein introduces Kwi, a GPU-accelerated terminal built on libghostty-vt
   section: Developer tools
