@@ -1,5 +1,5 @@
 date: '2026-11-01'
-updated: 2026-11-01T07:45Z
+updated: 2026-11-01T11:57Z
 stories:
 - title: >-
     Chainalysis discloses a breach in which an attacker used offensive agentic techniques
@@ -21,6 +21,27 @@ stories:
   sources:
   - label: primary
     url: https://www.bleepingcomputer.com/news/security/chainalysis-discloses-data-breach-from-offensive-agentic-techniques/
+- title: >-
+    Public PoC released for Android SMS of Death CVE-2026-58882, a zero-click crash of the
+    phone process
+  section: Security
+  category: Security
+  blurb: >-
+    An eight-byte WAP Push SMS crashes com.android.phone and can loop reboots, and Android
+    12 and 13 devices did not get the October fix.
+  summary: >-
+    Researcher Mark Blah published a proof of concept for CVE-2026-58882, an unchecked header
+    length in WapPushOverSms.decodeWapPdu that throws NegativeArraySizeException and crashes
+    com.android.phone, dropping calls including emergency calls. Twenty messages put test
+    phones into reboot loops, one Android 12 device needed a factory reset. Google fixed it
+    in October 2026 updates for Android 14 to 17, though the flaw is not listed in the October
+    bulletin.
+  why: >-
+    Fleets with Android 12 or 13 devices have no fix for a remotely triggered crash and should
+    plan device replacement or carrier filtering.
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/new-android-sms-of-death-exploit-can-remotely-crash-unpatched-phones/
 - title: >-
     Anthropic adds a Claude Code rule on Opus 5.5 that steers it away from recreating specific
     existing games
@@ -110,3 +131,67 @@ stories:
     url: https://lemire.me/blog/2026/10/31/beating-the-compiler-at-signed-32-bit-division/
   - label: discussion
     url: https://www.reddit.com/r/programming/comments/1xka27q/beating_the_compiler_at_signed_32bit_division/
+- title: >-
+    Linux 7.4 merges OverlayFS fixes for bugs found by Chris Mason's AI review, several reachable
+    by unprivileged users
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    OverlayFS fixes for an info leak, use-after-free and NULL dereference bugs found by AI
+    code review are headed to stable kernels.
+  summary: >-
+    The OverlayFS pull for Linux 7.4, merged before rc1, fixes bugs found by Chris Mason's
+    AI review, including an info leak, use-after-free and NULL dereference bugs reachable
+    by unprivileged users, an RCU walk stall with remote layers, and data loss with nfs_export.
+    It also fixes copy up blocked by an empty security.capability xattr, a v6.16 override_creds
+    regression, and two casefold bugs. The fixes are marked for backport to stable kernels.
+  why: >-
+    Hosts that run containers on OverlayFS should pick up the next stable kernels, since some
+    of these bugs are reachable without privileges.
+  followup: Stable kernel releases carrying the OverlayFS backports.
+  thread: f-0068
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/OverlayFS-Many-Fixes
+- title: >-
+    macOS curl, git and bundled Python use a separate trust store that Apple's eMudhra block
+    did not cover
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    Apple blocked the compromised eMudhra certificates in the macOS trust store, but tools
+    reading /etc/ssl/cert.pem still need a manual fix.
+  summary: >-
+    Howard Oakley reports that Apple updated the main macOS trust store between 2026-10-19
+    and 2026-10-23 to block the eight compromised eMudhra certificates, with no visible record
+    in System Settings. Command tools that read /etc/ssl/cert.pem, including curl, git and
+    bundled Python, are not covered, and apps with their own trust stores such as Chrome,
+    Firefox and some Electron apps need their own updates.
+  why: >-
+    Developers on macOS should block the eMudhra certificates in /etc/ssl/cert.pem and check
+    language runtimes and Electron apps that bundle CA lists.
+  thread: f-0077
+  sources:
+  - label: primary
+    url: https://eclecticlight.co/2026/11/01/last-week-on-my-mac-an-insecure-world-built-on-trust-stores/
+- title: >-
+    Radim Marek measures DROP TABLE on large PostgreSQL tables: 16.1 s on ext4 versus 80 ms
+    on XFS for 1 TB cold
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Dropping a huge Postgres table writes about 80 KB of WAL, but unlinking its files stalls
+    replay on replicas, worst on fragmented ext4.
+  summary: >-
+    Prompted by GitLab's plan to drop a 4 TB table with ten replicas, Radim Marek measured
+    on PostgreSQL 18.6 that DROP TABLE writes about 80 KB of WAL while the standby startup
+    process unlinks the files and holds replay. A cold 1 TB drop took 16.1 s on ext4 against
+    80 ms on XFS, with cost tracking extent count at about 17 ms per segment plus about 34
+    ms per cached GB. Batched deletes of 25.2 million rows wrote 8179 MB of WAL, mostly full
+    page images.
+  why: >-
+    Before dropping a large table, check the filesystem and page cache on every replica, set
+    a short lock_timeout, and enable log_recovery_conflict_waits.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9AI
