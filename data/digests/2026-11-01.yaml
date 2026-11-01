@@ -1,0 +1,112 @@
+date: '2026-11-01'
+updated: 2026-11-01T07:45Z
+stories:
+- title: >-
+    Chainalysis discloses a breach in which an attacker used offensive agentic techniques
+    to reach internal tools
+  section: Security
+  category: Security
+  blurb: >-
+    Chainalysis says an attacker using offensive agentic techniques reached internal tools
+    and exposed customer names, emails, IDs and roles.
+  summary: >-
+    Chainalysis disclosed on 2026-10-30 that an external actor used offensive agentic techniques
+    earlier in October to access its systems and internal tools, exposing user IDs, names,
+    email addresses and role labels. The company says it found no evidence of access to investigation
+    content, credentials or session tokens, and says the incident is unrelated to the Binance
+    theft. It has not named the vulnerabilities exploited.
+  why: >-
+    It is another named intrusion attributed to AI-driven offensive tooling, which raises
+    the pace defenders should assume for discovery and exploitation of internal services.
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/chainalysis-discloses-data-breach-from-offensive-agentic-techniques/
+- title: >-
+    Anthropic adds a Claude Code rule on Opus 5.5 that steers it away from recreating specific
+    existing games
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Claude Code on Opus 5.5 now refuses to build recreations of specific existing games, and
+    developers report refusals on their own projects.
+  summary: >-
+    A Claude Code rule pushed around 2026-10-27 reads that Claude should build original games,
+    genre games and games from the user's own designs, but not a recreation of a specific
+    existing game, and users report it cannot be disabled. Anthropic's Addy Osmani confirmed
+    that two sentences were added to Claude Code's prompt on Opus 5.5 and said Anthropic will
+    keep iterating on the balance.
+  why: >-
+    Agent behavior can change through server-side prompt edits without a client release, so
+    teams doing game work or reverse engineering with Claude Code should expect new refusals
+    and a moving policy.
+  comments: >-
+    Tom's Hardware reports developers seeing refusals on their own projects and on generic
+    reverse-engineering and troubleshooting tasks.
+  sources:
+  - label: primary
+    url: https://www.gamedeveloper.com/programming/anthropic-appears-to-have-ordered-ai-tool-claude-to-stop-remaking-video-games
+  - label: discussion
+    url: https://www.tomshardware.com/tech-industry/artificial-intelligence/anthropics-ai-model-is-now-blocking-attempts-at-video-game-recreation-and-cloning-users-also-claim-non-malicious-generic-reverse-engineering-tasks-are-blocked
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50315987
+- title: >-
+    Paper finds on-policy distillation gains depend on where the teacher keeps reasoning paths
+    open
+  section: ML research
+  category: Paper
+  blurb: >-
+    On-policy distillation gains come from matching where the teacher keeps reasoning paths
+    open, measured by a new entropy shape correlation.
+  summary: >-
+    The authors define entropy shape, the sequence of next-token entropies, and an Entropy
+    Shape Correlation between student and teacher. Interventions on teacher entropy that preserve
+    token preferences show that where to branch causally drives OPD gains, and pre-OPD ESC
+    picks the best teacher better than existing predictors. Code is released.
+  why: >-
+    Teams post-training with on-policy distillation get a cheap pre-training check for choosing
+    a teacher instead of assuming the strongest model helps most.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2610.39020v1
+- title: >-
+    Study of 25 open-weight models finds chain-of-thought reliance rises with scale and not
+    with post-training
+  section: ML research
+  category: Paper
+  blurb: >-
+    Across 25 open-weight models, answers follow edited chain-of-thought steps more as models
+    grow, and post-training does not change that.
+  summary: >-
+    On a synthetic box-swap task with known intermediate states, replacing one step in a model's
+    own chain shows answer reliance rising from 16 to 18 percent at Qwen3 0.6B to 97 to 100
+    percent at 14B, correlating with step accuracy at r = 0.99. Base and post-trained Qwen3
+    differ by at most 0.03 from 4B up, and no model up to 14B solves four or more swaps without
+    written steps.
+  why: >-
+    It supports chain-of-thought monitoring as a safety signal for step-by-step tasks on larger
+    models, with evidence limited to models up to 14B.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2610.38433v1
+- title: >-
+    Daniel Lemire shows signed 32-bit division by constants can skip the compiler's correction
+    step on 64-bit CPUs
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    A 33-bit multiplier trick removes two instructions from signed 32-bit division by constants,
+    and fastmod 0.2.0 drops a mispredicted branch.
+  summary: >-
+    GCC and LLVM need an add-back correction for 38 percent of divisors from 3 to 1000 because
+    the ideal multiplier needs 33 bits, while a signed 64-bit multiply avoids it and cuts
+    latency from 10 to 8 cycles on Emerald Rapids. Lemire also released fastmod 0.2.0, whose
+    branchless signed division is about four times faster than 0.1.0 with random signs on
+    Intel.
+  why: >-
+    Hot loops dividing signed 32-bit values by constants or runtime divisors can gain latency
+    with a short template, though it is slower on Apple M4 when no correction is needed.
+  sources:
+  - label: primary
+    url: https://lemire.me/blog/2026/10/31/beating-the-compiler-at-signed-32-bit-division/
+  - label: discussion
+    url: https://www.reddit.com/r/programming/comments/1xka27q/beating_the_compiler_at_signed_32bit_division/
