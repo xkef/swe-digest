@@ -1,5 +1,5 @@
 date: '2026-11-01'
-updated: 2026-11-01T11:57Z
+updated: 2026-11-01T16:13Z
 stories:
 - title: >-
     Chainalysis discloses a breach in which an attacker used offensive agentic techniques
@@ -42,6 +42,28 @@ stories:
   sources:
   - label: primary
     url: https://www.bleepingcomputer.com/news/security/new-android-sms-of-death-exploit-can-remotely-crash-unpatched-phones/
+- title: >-
+    Alpine Linux rebuilds its GitLab server and resets passwords after attempted CVE-2026-97229
+    exploitation
+  section: Security
+  category: Security
+  blurb: >-
+    Attackers targeted Alpine's GitLab with CVE-2026-97229 on 2026-10-20, and missing logs
+    led the project to rebuild it and reset passwords.
+  summary: >-
+    Attackers submitted malicious CI configurations against Alpine's GitLab on 2026-10-20
+    and 2026-10-21, causing eight worker crashes, four partially successful. Alpine's custom
+    container image lacked the Ruby patch GitLab bundles in official packages, so upgrades
+    to 19.3.5 and 19.3.6 did not close the flaw. Alpine found no tampering in commits, packages
+    or releases up to 2026-10-27, signing keys were not on the server, and it rebuilt the
+    instance because missing logs prevent ruling out code execution.
+  why: >-
+    Teams running GitLab from custom images must confirm the patched Ruby (3.3.13 in Alpine's
+    image) is present, since the GitLab version number alone does not prove the fix.
+  thread: f-0082
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/alpine-linux-rebuilds-gitlab-after-attempted-rce-attack/
 - title: >-
     Anthropic adds a Claude Code rule on Opus 5.5 that steers it away from recreating specific
     existing games
@@ -109,6 +131,66 @@ stories:
   sources:
   - label: primary
     url: https://arxiv.org/abs/2610.38433v1
+- title: MTA-OPSD lets each token choose its own teacher in on-policy self-distillation
+  section: ML research
+  category: Paper
+  blurb: >-
+    MTA-OPSD lets each token pick its own teacher from a pool during on-policy self-distillation,
+    gaining up to 5.9 points on Qwen3 math.
+  summary: >-
+    The authors show through a teacher-intervention study that the preferred self-teacher
+    varies token by token within one response, identified by majority voting and KL-based
+    selection. MTA-OPSD builds a pool of candidate teachers with different reference exposure
+    and selects one per token during training. On Qwen3 models for math reasoning it beats
+    prior OPSD methods with an average gain of up to 5.9 over the base model, and code is
+    released.
+  why: >-
+    It adds a token-level knob to self-distillation recipes that post-training teams can test
+    against fixed-teacher OPSD.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2610.40574v1
+- title: >-
+    KDE developer Eike Hein introduces Kwi, a GPU-accelerated terminal built on libghostty-vt
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    KDE developer Eike Hein starts Kwi, a Qt Quick terminal on libghostty-vt that he measures
+    at 3x to 35x faster than Konsole.
+  summary: >-
+    Kwi renders through the Qt Scene Graph with Vulkan or OpenGL and uses libghostty-vt for
+    terminal parsing and state, plus KDE's KPty. It supports Kitty image, keyboard and clipboard
+    protocols, mode 2027 grapheme widths and Wayland fractional scaling, and ships a public
+    QML module and a KPart replacement for apps such as Dolphin, Kate and Yakuake. There is
+    no tagged release yet, with nightly Flatpak builds from KDE Invent CI.
+  why: >-
+    It is another major downstream adopter of libghostty-vt ahead of that library's planned
+    stable 1.0 API in the next four to six months.
+  sources:
+  - label: primary
+    url: https://blogs.kde.org/2026/11/01/introducing-kwi/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50324114
+  - label: discussion
+    url: https://www.phoronix.com/news/KDE-Kwi-Terminal-Emulator
+- title: >-
+    chezmoi 2.74.0 removes the deprecated remove command and marks several integrations stable
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    chezmoi 2.74.0 deletes the deprecated remove command and promotes ssh, docker, gopass
+    and 1Password Connect support to stable.
+  summary: >-
+    chezmoi v2.74.0, released 2026-11-01, removes the deprecated remove command and adds a
+    skip conflicts choice to apply. It marks builtin KeePassXC YubiKey, builtin gopass, 1Password
+    Connect, and the ssh and docker commands as no longer experimental, and checks permissions
+    of age identity files with builtin age.
+  why: >-
+    Scripts that still call chezmoi remove will break on upgrade, and age identity files with
+    loose permissions may now be flagged.
+  sources:
+  - label: primary
+    url: https://github.com/twpayne/chezmoi/releases/tag/v2.74.0
 - title: >-
     Daniel Lemire shows signed 32-bit division by constants can skip the compiler's correction
     step on 64-bit CPUs
@@ -154,6 +236,23 @@ stories:
   - label: primary
     url: https://www.phoronix.com/news/OverlayFS-Many-Fixes
 - title: >-
+    Linux 7.2.15 is the final 7.2 stable release, ending the series earlier than usual
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Greg Kroah-Hartman ends the 7.2 stable series early with 7.2.15 and tells users to move
+    to 7.3.y to cut the number of live branches.
+  summary: >-
+    Greg Kroah-Hartman released 7.2.15 on 2026-11-01 and declared the 7.2.y tree end-of-life.
+    He said he ended it sooner than normal because of the release cycle and the queue of pending
+    stable patches, which would otherwise mean keeping eight branches alive at once.
+  why: >-
+    Systems tracking 7.2.y get no further fixes, including for open kernel CVEs, and need
+    to move to 7.3.y or an LTS branch.
+  sources:
+  - label: primary
+    url: https://lwn.net/Articles/1104629/
+- title: >-
     macOS curl, git and bundled Python use a separate trust store that Apple's eMudhra block
     did not cover
   section: Apple platforms
@@ -195,3 +294,23 @@ stories:
   sources:
   - label: primary
     url: https://postgr.es/p/9AI
+- title: >-
+    Awide's Polar Proxy offloads reads inside open PostgreSQL transactions to replicas
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Awide's Polar Proxy offloads read committed SELECTs inside open PostgreSQL transactions
+    to replicas using XID import and LSN waits.
+  summary: >-
+    The proxy keeps the transaction on the primary and sends eligible top-level SELECTs without
+    locking clauses to a replica connection, which waits for a target LSN and, after the first
+    write, imports the transaction's XIDs to see its own writes. A patched libpq adds a splittable
+    marker and XID list to ReadyForQuery, repeatable read and serializable transactions are
+    never split, and the borrowed replica is pinned until commit or rollback. The post contrasts
+    this with Pgpool-II, PgBouncer, Vitess and Aurora's in-engine read consistency.
+  why: >-
+    It shows the exact conditions under which mid-transaction replica reads stay correct on
+    read committed, a gap stock PostgreSQL proxies leave on the primary.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9AK
