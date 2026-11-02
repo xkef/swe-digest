@@ -79,7 +79,6 @@
     --accent: light-dark(#8f6100, #e5c890);
 
     --wide: 46rem;
-    --measure: 72ch;
     --gutter: clamp(1rem, 4vw, 1.5rem);
     /* A card pads past the reading column so its hover band is wider than
        the text it covers, and a negative margin keeps the text aligned. */
@@ -149,6 +148,9 @@
 }
 
 @layer layout {
+  /* One width for every block, prose included. A separate cap on prose line
+     length left text short of the nav's right edge, and each fix that moved
+     the cap brought the gap back somewhere else. */
   .layout, .nav, .site-footer > p {
     width: min(calc(100% - var(--gutter) * 2), var(--wide));
     margin-inline: auto;
@@ -522,13 +524,6 @@
     margin-top: var(--space-md);
   }
 
-  /* Prose reads poorly past about 72 characters a line. The cap reaches text
-     at any depth, so a wrapper such as the page header can't escape it. Story
-     fields are the one block that keeps the full column. */
-  .prose :is(p, ul, ol, blockquote, table):not(.story-fields *) {
-    max-width: var(--measure);
-  }
-
   .prose > .page-header + * {
     margin-top: var(--space-lg);
   }
@@ -612,12 +607,6 @@
 
   .story-fields > ul > li > strong:first-child {
     display: block;
-  }
-
-  /* A thread's one field sits above notes held to the measure, so it keeps
-     the same line length. */
-  .thread-page .story-fields > ul {
-    max-width: var(--measure);
   }
 
   /* A faint rule above each section is the one line on the page, so the
