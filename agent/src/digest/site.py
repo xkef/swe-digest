@@ -139,8 +139,8 @@ def build() -> None:
 def seal(dist: Path) -> None:
     """Points each page's CSP at its inline blocks as Zola minified them.
 
-    base.html hashes the raw files, which matches `zola serve`. `zola build`
-    minifies the inline blocks, so their hashes change after the template ran.
+    base.html hashes the raw files. Zola minifies the inline blocks after the
+    template runs, so their hashes no longer match.
     """
     for page in dist.rglob("*.html"):
         text = page.read_text()
