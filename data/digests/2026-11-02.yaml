@@ -1,0 +1,133 @@
+date: '2026-11-02'
+updated: 2026-11-02T07:52Z
+stories:
+- title: >-
+    Trigger.dev says an attacker accessed environment variables for a subset of customer organizations
+  section: Security
+  category: Security
+  blurb: >-
+    The background job platform blocked the exploit and emailed affected account owners, after
+    similar Railway and Northflank breaches.
+  summary: >-
+    Trigger.dev CTO Eric Allam disclosed on 2026-11-01 that an attacker gained unauthorized
+    access to environment variables for a subset of organizations. The company says it blocked
+    the exploit, emailed all impacted account owners with mitigation steps, and will post
+    updates on its status page. It has not named the attack vector or the number of affected
+    organizations.
+  why: >-
+    Teams on Trigger.dev should check for the notice and rotate secrets stored as environment
+    variables, since the vector is still undisclosed.
+  sources:
+  - label: primary
+    url: https://trigger.dev/blog/security-incident-nov-2026
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50331784
+  thread: f-0155
+- title: >-
+    JetBrains releases Mellum2.1, an Apache 2.0 12B MoE coding model trained mainly with reinforcement
+    learning
+  section: AI
+  category: AI
+  blurb: >-
+    The 2.5B-active model trained in real repositories with shell tools and reports 47 percent
+    on SWE-bench Verified, measured by JetBrains.
+  summary: >-
+    Mellum2.1 keeps the Mellum2 architecture of 12B total and 2.5B active parameters and moves
+    RL from a short final stage to the main part of training, including rewards for passing
+    tests in real repositories. JetBrains reports SWE-bench Verified at 47.0 versus 2.0 for
+    Mellum2 and 50.0 for Qwen3.5 9B, all self-measured. An included multi-token prediction
+    head speeds decoding 1.4 to 1.8x with vLLM 0.33 or newer.
+  why: >-
+    It is a first-party account of RL-heavy post-training on a small open-weight agentic model
+    that runs locally with speculative decoding.
+  sources:
+  - label: primary
+    url: https://huggingface.co/JetBrains/Mellum2.1-12B-A2.5B-Thinking-MTP
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1xln8f2/jetbrainsmellum2112ba25bthinkingmtp_hugging_face/
+- title: >-
+    Paper finds bf16 rounding discards most RL policy updates and proposes a one-line unbiased
+    export fix
+  section: ML research
+  category: Paper
+  blurb: >-
+    On Qwen3-1.7B only about 0.5 percent of served weights change per RL step, so rollouts
+    lag the optimizer by 50 to 150 steps.
+  summary: >-
+    Andrew Gao and William Gao show that round-to-nearest conversion from fp32 master weights
+    to bf16 rollout weights drops most per-step updates at common learning rates. Their Fair
+    Cast fix exports with stochastic rounding or error feedback and computes loss on the served
+    copy, costing 22 to 38 ms per 1.7B export. Across 25 matched seed pairs on Qwen3-0.6B
+    to 4B it was ahead on 18, tied on 6 and behind on 1, with a mean gain of 6.1 points.
+  why: >-
+    Teams running RL post-training with fp32 masters and bf16 inference engines may be generating
+    rollouts from a stale policy without noticing.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2610.41073v1
+- title: >-
+    Paper shows a judge model's hidden preferences transfer to a GRPO student through reward
+    scores alone
+  section: ML research
+  category: Paper
+  blurb: >-
+    A student scored by a biased judge on meaningless syllables or numbers picked up the judge's
+    trait, including undesirable safety dispositions.
+  summary: >-
+    Keuntae Kim and Yong Suk Choi trained students with group relative policy optimization
+    on outputs with no semantic link to the trait, scored by a judge made to prefer one animal.
+    Of 48 design cells, 17 established transfer at a 5 percent false discovery rate, and removing
+    only the reward difference between judges removed it. The same chain carried undesirable
+    AI safety dispositions into the student's answers.
+  why: >-
+    LLM-as-judge rewards can carry the judge's own traits into a policy, which makes judge
+    choice part of post-training safety review.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2610.41301v1
+- title: >-
+    Linux 7.4-rc1 closes a record merge window of 18,591 non-merge changesets, which Torvalds
+    ties to AI-driven work
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Torvalds closed the largest merge window on record and said he prefers AI-found fixes
+    landing there rather than in the rc phase.
+  summary: >-
+    Linux 7.4-rc1 shipped on schedule on 2026-11-01 with 18,591 non-merge changesets, nearly
+    the patch volume of the entire 7.3 cycle, from 2,678 developers including 625 first-time
+    contributors. Phoronix expects the final release around 2026-12-20 and likely LTS status,
+    with AMDGPU HDMI 2.1 on by default, AMD Zen 6 preparation and basic Apple M4 enablement.
+  why: >-
+    7.4 is expected to be the 2026 LTS kernel, so regressions caught in the rc phase decide
+    what distributions carry for years.
+  followup: Linux 7.4 final release expected around 2026-12-20.
+  thread: f-0068
+  sources:
+  - label: primary
+    url: https://lwn.net/Articles/1104654/
+  - label: discussion
+    url: https://www.phoronix.com/news/Linux-7.4-rc1
+- title: >-
+    Engineer details a company proxy that holds new npm and PyPI releases for seven days before
+    install
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Over twelve days the git-pkgs/proxy gate served 81,710 downloads, hid 6,116 too-new versions
+    and refused 71 lockfile pins.
+  summary: >-
+    Bruno Jurkovic measured five 2026 package hijacks, including litellm 1.107.0, and found
+    each was pulled within five hours, then put a git-pkgs/proxy gate with a blocklist and
+    per-account download log in front of npm, PyPI, pub, Maven and Go. He lists what broke:
+    Yarn 1 and bun.lockb lockfiles bypass the registry, uv sync --frozen fetches from PyPI
+    directly, and Dependabot needs a 7-day cooldown. The post includes the release-age setting
+    for npm, pnpm, Yarn, Bun, uv, pip and Renovate.
+  why: >-
+    It gives tested cooldown settings and the lockfile and bot failure modes to expect before
+    enforcing a release-age policy.
+  sources:
+  - label: primary
+    url: https://brunoj.com/nothing-installs-at-our-company-until-its-a-week-old/
+  - label: discussion
+    url: https://www.reddit.com/r/selfhosted/comments/1xlhs4m/selfhosted_proxy_for_npm_pypi_and_pub_new/
