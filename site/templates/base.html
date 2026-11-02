@@ -1,10 +1,14 @@
+{#- The stylesheet and the theme script block first paint, so they ship
+    inline and save a round trip. The CSP admits each by its hash. -#}
+{%- set style = load_data(path="static/style.css", format="plain") -%}
+{%- set theme = load_data(path="static/theme.js", format="plain") -%}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'{% if config.extra.signals_url %} {{ config.extra.signals_url }}{% endif %}; base-uri 'none'; form-action 'none'"
+      content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval' 'sha256-{{ get_hash(literal=theme, sha_type=256, base64=true) }}'; worker-src 'self'; style-src 'self' 'sha256-{{ get_hash(literal=style, sha_type=256, base64=true) }}'; img-src 'self' data:; font-src 'self'; connect-src 'self'{% if config.extra.signals_url %} {{ config.extra.signals_url }}{% endif %}; base-uri 'none'; form-action 'none'"
     >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
@@ -53,13 +57,15 @@
       href="{{ get_url(path='/api/index.json') | safe }}"
       title="{{ config.title }} JSON API"
     >
-    <link
-      rel="stylesheet"
-      href="{{ get_url(path='/style.css', cachebust=true) | safe }}"
-    >
-    <script
-      src="{{ get_url(path='/theme.js', cachebust=true) | safe }}"
-    ></script>
+    <style>{{ style | safe }}</style>
+    {% if config.extra.signals_url %}
+      <meta
+        name="signals"
+        content="{{ config.extra.signals_url }}"
+        data-src="{{ get_url(path='/signals.js', cachebust=true) | safe }}"
+      >
+    {% endif %}
+    <script>{{ theme | safe }}</script>
     {% block head %}{% endblock head %}
   </head>
   <body>
@@ -119,12 +125,5 @@
       src="{{ get_url(path='/localtime.js', cachebust=true) | safe }}"
       defer
     ></script>
-    {% if config.extra.signals_url %}
-      <script
-        src="{{ get_url(path='/signals.js', cachebust=true) | safe }}"
-        data-endpoint="{{ config.extra.signals_url }}"
-        defer
-      ></script>
-    {% endif %}
   </body>
 </html>

@@ -23,7 +23,12 @@
     { label: "follow", field: "follow", on: true, off: false },
   ];
 
-  start().catch(report);
+  // theme.js injects this script, so it runs async and may beat the parser.
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => start().catch(report));
+  } else {
+    start().catch(report);
+  }
 
   async function start() {
     const me = await api("GET", "/me");

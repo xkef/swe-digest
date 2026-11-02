@@ -1,8 +1,9 @@
-"""Command line: swe-digest daily | improve | publish | build | check."""
+"""Command line: swe-digest daily | improve | publish | build | check | seal."""
 
 import argparse
 import sys
 from datetime import UTC, datetime
+from pathlib import Path
 
 from digest import config
 
@@ -21,6 +22,8 @@ def main() -> int:
     publish.add_argument("--day", default=datetime.now(UTC).date().isoformat())
     commands.add_parser("build", help="check every data file and generate the site content")
     commands.add_parser("check", help="check every data file")
+    seal = commands.add_parser("seal", help="hash the built pages' inline blocks into their CSP")
+    seal.add_argument("dist")
     args = parser.parse_args()
 
     # Each command imports only what it needs. The publish job installs no
@@ -42,6 +45,9 @@ def main() -> int:
 
     from digest import site
 
+    if args.command == "seal":
+        site.seal(Path(args.dist))
+        return 0
     problems = site.check_all()
     if problems:
         print("\n".join(problems), file=sys.stderr)

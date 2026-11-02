@@ -12,6 +12,8 @@ browser tab title, the meta description, and the feed take plain text, so they
 get the text with its backticks dropped.
 """
 
+import base64
+import hashlib
 import html
 import json
 import re
@@ -34,6 +36,8 @@ API_VERSION = 1
 API_PAGE_SIZE = 100
 SEARCH_FIELDS = ("date", "title", "section", "category", "blurb", "thread", "url")
 MIN_THREAD_STORIES = 2
+# The files base.html inlines, by the tag that carries each.
+INLINED = (("style", "style.css"), ("script", "theme.js"))
 
 
 def build() -> None:
@@ -130,6 +134,27 @@ def build() -> None:
 
     (config.SITE / "data" / "stats.json").write_text(json.dumps({"stories": total}))
     print(f"site: {total} stories, {len(threads)} threads")
+
+
+def seal(dist: Path) -> None:
+    """Points each page's CSP at its inline blocks as Zola minified them.
+
+    base.html hashes the raw files, which matches `zola serve`. `zola build`
+    minifies the inline blocks, so their hashes change after the template ran.
+    """
+    for page in dist.rglob("*.html"):
+        text = page.read_text()
+        for tag, name in INLINED:
+            block = re.search(f"<{tag}>(.*?)</{tag}>", text, re.DOTALL)
+            if block is None:
+                continue
+            raw = _sha256((config.SITE / "static" / name).read_text())
+            text = text.replace(f"'sha256-{raw}'", f"'sha256-{_sha256(block[1])}'")
+        page.write_text(text)
+
+
+def _sha256(text: str) -> str:
+    return base64.b64encode(hashlib.sha256(text.encode()).digest()).decode()
 
 
 def _write_pages(directory: Path, items: list[dict[str, Any]], base: str) -> None:

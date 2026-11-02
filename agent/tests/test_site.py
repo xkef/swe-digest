@@ -169,3 +169,25 @@ def test_build_pages_stories_newest_first_and_writes_a_search_index(tmp_path, mo
     search = json.loads((api / "search.json").read_text())
     assert [entry["title"] for entry in search["stories"]] == ["U", "T"]
     assert set(search["stories"][0]) == {"date", "title", "section", "category", "blurb", "thread", "url"}
+
+
+def test_seal_points_csp_at_minified_inline_blocks(tmp_path, monkeypatch):
+    static = tmp_path / "site" / "static"
+    static.mkdir(parents=True)
+    (static / "style.css").write_text("body {\n  color: red;\n}\n")
+    (static / "theme.js").write_text("let a = 1;\n")
+    monkeypatch.setattr(site.config, "SITE", tmp_path / "site")
+    raw_style, raw_theme = site._sha256("body {\n  color: red;\n}\n"), site._sha256("let a = 1;\n")
+    page = tmp_path / "dist" / "a" / "index.html"
+    page.parent.mkdir(parents=True)
+    page.write_text(
+        f"<meta content=\"style-src 'sha256-{raw_style}'; script-src 'sha256-{raw_theme}'\">"
+        "<style>body{color:red}</style><script>let a = 1;</script>"
+    )
+
+    site.seal(tmp_path / "dist")
+
+    sealed = page.read_text()
+    assert f"'sha256-{site._sha256('body{color:red}')}'" in sealed
+    assert f"'sha256-{site._sha256('let a = 1;')}'" in sealed
+    assert raw_style not in sealed
