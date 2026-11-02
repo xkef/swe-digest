@@ -1,6 +1,28 @@
 date: '2026-11-02'
-updated: 2026-11-02T13:43Z
+updated: 2026-11-02T19:40Z
 stories:
+- title: >-
+    GitHub Actions will block pull_request_target by default in public repositories from 2026-12-02
+  section: Top stories
+  category: Security
+  blurb: >-
+    GitHub Actions will block pull_request_target in public repos from 2026-12-02 unless a
+    policy allows it, after two brownouts in November.
+  summary: >-
+    GitHub will block pull_request_target events by default in all public repositories from
+    2026-12-02 unless an Actions event policy explicitly allows them, a delay from the earlier
+    2026-11-02 date. Brownouts on 2026-11-09 and 2026-11-16, 16:00 to 18:00 UTC, will fail
+    blocked runs with an error annotation. Private and internal repositories and GitHub Enterprise
+    Server are not affected.
+  why: >-
+    Maintainers of public repositories that rely on pull_request_target must check Insights
+    and add an explicit allow policy or their workflows will fail during the brownouts and
+    after enforcement.
+  followup: Brownouts on 2026-11-09 and 2026-11-16, permanent enforcement on 2026-12-02.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-02-pull_request_target-blocked-by-default-december-2
+  thread: f-0157
 - title: >-
     Trigger.dev says an attacker accessed environment variables for a subset of customer organizations
   section: Security
@@ -90,6 +112,30 @@ stories:
   - label: primary
     url: https://cloud.google.com/blog/topics/threat-intelligence/shutting-the-door-on-the-xcpe-botnet/
 - title: >-
+    Mandiant details LLMJacking intrusions that ran up over $100,000 a day in stolen LLM usage
+  section: Security
+  category: Security
+  blurb: >-
+    Mandiant saw attackers run up over $100,000 a day in LLM charges with stolen cloud keys
+    and resell the access through proxy services.
+  summary: >-
+    Mandiant and Google Threat Intelligence report 2026 incidents where attackers used stolen
+    IAM credentials, service account keys, GitHub PATs and leaked LLM API keys to enable model
+    services and run inference, with charges above $100,000 in a day and up to $1 million
+    in total. Stolen access is resold through LLM Mixers such as new-api based gateways and
+    the jet-night.com service, and one actor escalated LiteLLM virtual keys to PROXY_ADMIN
+    through CVE-2026-40217. Attackers validated keys with max_tokens=1 requests to avoid volume
+    alerts.
+  why: >-
+    Teams holding model API keys or cloud credentials should alert on LLM service enablement
+    and tiny validation requests, scope keys per model, set spend caps, and patch LiteLLM
+    gateways.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/topics/threat-intelligence/llmjacking-monetizing-compromised-cloud-models/
+  - label: discussion
+    url: https://www.theregister.com/security/2026/11/02/token-thieves-costing-companies-100k-per-day-in-illicit-llm-charges/5306967
+- title: >-
     JetBrains releases Mellum2.1, an Apache 2.0 12B MoE coding model trained mainly with reinforcement
     learning
   section: AI
@@ -151,6 +197,72 @@ stories:
   sources:
   - label: primary
     url: https://arxiv.org/abs/2610.41301v1
+- title: >-
+    MIT CSAIL researchers show GPT-6 Astra reading and editing neural network weights without
+    gradients
+  section: ML research
+  category: ML research
+  blurb: >-
+    MIT CSAIL researchers report GPT-6 Astra edited 0.016% of Qwen3.5-0.8B weights without
+    gradients and lifted MATH-500 from 7.9% to 48.1%.
+  summary: >-
+    The authors report that GPT-6 Astra identified which game small PPO policies were trained
+    on from raw weights, found induction heads in a character transformer without running
+    it, and wrote MinAtar policies in one shot that beat PPO trained for 100 million steps.
+    Editing 0.016% of Qwen3.5-0.8B weights to fix reasoning loops raised MATH-500 from 7.9%
+    to 48.1% and tripled IFEval. They call the approach Weight-Space Programming.
+  why: >-
+    If it holds up, LLM-driven weight edits become a tool for interpretability and targeted
+    model fixes alongside fine-tuning.
+  comments: >-
+    Results are early and from a blog post, not a peer-reviewed paper, and the larger experiments
+    used a Python sandbox and limited forward passes.
+  sources:
+  - label: primary
+    url: https://rikiyat.github.io/blog/weight-space-programming/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50341174
+- title: >-
+    Paper shows 0.1% pretraining poisoning plants a remote code execution backdoor in CLI
+    agents
+  section: ML research
+  category: Paper
+  blurb: >-
+    Poisoning 0.1% of pretraining data planted a trigger in CLI agents that ran attacker commands,
+    reaching about 92% success at 4B parameters.
+  summary: >-
+    The authors pretrained Qwen3 models at 0.6B, 1.7B and 4B from scratch on a corpus with
+    0.1% poisoned content, then post-trained each into a CLI agent on a clean pipeline. The
+    deployed agent ran attacker-chosen commands when a trigger appeared and behaved normally
+    otherwise. Attack success rose with scale and stayed positive at a 0.0005% poison rate.
+  why: >-
+    Clean post-training does not remove backdoors planted in pretraining data, so agents with
+    shell access need execution sandboxing regardless of model provenance.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2610.37741
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50341334
+- title: >-
+    Vercel builds now block malicious npm package versions before and during installation
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Vercel builds now check lockfiles and npm downloads against a blocklist of malicious package
+    versions and fail the deployment on a match.
+  summary: >-
+    Vercel checks supported lockfiles, including dependencies restored from build cache, against
+    a blocklist of package versions flagged for malware or vulnerabilities, and blocks matching
+    public npm downloads during install. New rules typically reach builds within minutes.
+    On a match the deployment fails, names the package and version, and Vercel tries to invalidate
+    the build cache.
+  why: >-
+    Vercel users get install-time protection against malicious install scripts on all plans
+    with no configuration, but a blocked version will now fail deploys until the lockfile
+    is updated.
+  sources:
+  - label: primary
+    url: https://vercel.com/changelog/blocking-malicious-npm-packages-before-and-during-installation
 - title: >-
     CheerpJ 5.0 runs Java 21 and 25 in the browser with the full OpenJDK and an experimental
     WasmGC engine
@@ -220,3 +332,48 @@ stories:
     url: https://brunoj.com/nothing-installs-at-our-company-until-its-a-week-old/
   - label: discussion
     url: https://www.reddit.com/r/selfhosted/comments/1xlhs4m/selfhosted_proxy_for_npm_pypi_and_pub_new/
+- title: >-
+    Cloudflare's targeted DNS zone builds cut peak memory 85% and halve the delay to reach
+    Quicksilver
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Cloudflare now rebuilds only the DNS names a zone setting change can affect, instead of
+    whole zones that can exceed 20 million records.
+  summary: >-
+    Cloudflare's Zone Builder handles about 700 record changes per second and some zones exceed
+    20 million records. A new planner picks the smallest build type it can prove produces
+    byte-identical keys to a full build, falling back to a full build on uncertainty, and
+    a scheduler merges work per zone. Peak memory fell 85% and time from a DNS change to Quicksilver
+    write halved, while the largest zones never escalate to full builds.
+  why: >-
+    The post is a concrete pattern for replacing full rebuilds with provably equivalent incremental
+    builds in event-driven pipelines.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/dns-targeted-zone-builds/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50337558
+- title: >-
+    PostHog moves its warehouse off DuckDB and DuckLake to Trino with its own table format,
+    HogLake
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    PostHog found single-node DuckDB hard to size per query and DuckLake slow at 2 PB, and
+    is rebuilding its warehouse on Trino and HogLake.
+  summary: >-
+    Five months after building on per-customer DuckDB instances, PostHog says it could not
+    predict worker sizes for complex queries, and DuckLake writes took over three minutes
+    at about 2 PB, 1 trillion rows and 15.3 million snapshots because commits reread catalog
+    statistics. Serving clients over the Postgres wire protocol was also harder to load balance
+    and keep compatible than HTTP. It is rebuilding on a Trino variant with its own open table
+    format, HogLake.
+  why: >-
+    Teams weighing DuckDB or DuckLake for multi-tenant hosted analytics get a first-party
+    account of where single-node engines and portable catalogs stop scaling.
+  sources:
+  - label: primary
+    url: https://posthog.com/blog/moving-off-duckdb
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50338747
