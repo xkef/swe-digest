@@ -1,5 +1,5 @@
 date: '2026-11-02'
-updated: 2026-11-02T07:52Z
+updated: 2026-11-02T13:43Z
 stories:
 - title: >-
     Trigger.dev says an attacker accessed environment variables for a subset of customer organizations
@@ -23,6 +23,72 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50331784
   thread: f-0155
+- title: >-
+    Langflow 1.13.0 fixes two critical unauthenticated flaws affecting every release from
+    1.0.0 through 1.12.8
+  section: Security
+  category: Security
+  blurb: >-
+    Langflow 1.0.0 through 1.12.8 carry two 9.8-rated flaws allowing unauthenticated auth
+    bypass and code execution, fixed only in 1.13.0.
+  summary: >-
+    IBM's bulletin, published 2026-10-28, lists CVE-2026-93680 (authentication bypass) and
+    CVE-2026-110186 (code execution), both rated 9.8 and needing no account, plus two lower-rated
+    flaws, one described as unauthenticated RCE through MCP tool enumeration. A public Metasploit
+    module already uses CVE-2026-93680 to connect to a Langflow MCP endpoint without credentials
+    and list tools. Langflow 1.13.0, released 2026-10-22, is the only fix, turns automatic
+    login off by default, and IBM offers no workaround.
+  why: >-
+    Teams running Langflow agent servers, especially with LANGFLOW_AUTO_LOGIN enabled, need
+    to plan the 1.13.0 upgrade and its login migration now.
+  followup: A CISA KEV listing or reports of in-the-wild exploitation.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/11/critical-langflow-flaws-could-let.html
+  thread: f-0156
+- title: >-
+    CISA lists GitLab CVE-2026-97229 as exploited while Shadowserver counts over 1,000 unpatched
+    servers
+  section: Security
+  category: Security
+  blurb: >-
+    CISA lists GitLab CVE-2026-97229 as exploited, and Shadowserver counts over 1,000 exposed
+    servers still unpatched against the regex RCE.
+  summary: >-
+    CISA added CVE-2026-97229, an integer overflow in GitLab's CI/CD regular expression compiler
+    that allows unauthenticated code execution, to its KEV catalog on 2026-10-30 after confirming
+    exploitation. GitLab fixed it on 2026-10-12 in 19.4.2, 19.3.5 and 19.2.8. Shadowserver
+    reports over 1,000 instances still vulnerable to it and over 11,300 vulnerable to sibling
+    CVE-2026-110264, out of about 39,000 it sees daily.
+  why: >-
+    Self-managed GitLab operators who have not upgraded are now exposed to confirmed active
+    exploitation of an unauthenticated RCE.
+  thread: f-0082
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/over-1-000-gitlab-servers-vulnerable-to-code-execution-attacks/
+- title: >-
+    Google dismantles XCPE, a backdoor Android OEM Videostrong preloaded on over 1.3 million
+    set-top boxes
+  section: Security
+  category: Security
+  blurb: >-
+    Google and partners took down a backdoor that Android OEM Videostrong preloaded on set-top
+    boxes, which enrolled over 1.3 million devices.
+  summary: >-
+    Google Threat Intelligence Group says Videostrong shipped the x.cpe backdoor in firmware
+    at system privilege, sold access to affiliates, and loaded their ad fraud and residential
+    proxy modules over MQTT. Google took legal action against the C2 domains, which it says
+    also severs affiliate access to at least 10 million more devices, banned Videostrong from
+    certified Android devices, and changed its firmware review because the malware loaded
+    after first boot to evade tests.
+  why: >-
+    It is a documented case of a hardware vendor's preinstalled firmware acting as a supply
+    chain backdoor, and residential proxy traffic from such devices reaches the services engineers
+    run.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/topics/threat-intelligence/shutting-the-door-on-the-xcpe-botnet/
 - title: >-
     JetBrains releases Mellum2.1, an Apache 2.0 12B MoE coding model trained mainly with reinforcement
     learning
@@ -85,6 +151,29 @@ stories:
   sources:
   - label: primary
     url: https://arxiv.org/abs/2610.41301v1
+- title: >-
+    CheerpJ 5.0 runs Java 21 and 25 in the browser with the full OpenJDK and an experimental
+    WasmGC engine
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    CheerpJ 5.0 runs Java 21 and 25 in the browser with the full OpenJDK, including javac,
+    and adds an experimental WasmGC execution engine.
+  summary: >-
+    Leaning Technologies released CheerpJ 5.0 on 2026-11-02 with Java 21 and 25 support alongside
+    8, 11 and 17, and now ships the full JDK so javac and jshell run client-side. An opt-in
+    WasmGC engine compiles hot code to WebAssembly instead of JavaScript but is not ready
+    for production, with stability targeted for CheerpJ 6.0 in early 2027. Java 25 support
+    is considered preview.
+  why: >-
+    Unmodified modern Java bytecode, including Kotlin and Scala, can now run and compile in
+    the browser, with a commitment to track Java LTS releases within six months.
+  followup: CheerpJ 6.0 with a production WasmGC engine in early 2027.
+  sources:
+  - label: primary
+    url: https://labs.leaningtech.com/blog/cheerpj-5.0
+  - label: discussion
+    url: https://www.reddit.com/r/programming/comments/1xlutld/cheerpj_50_java_2125_in_the_browser_full_openjdk/
 - title: >-
     Linux 7.4-rc1 closes a record merge window of 18,591 non-merge changesets, which Torvalds
     ties to AI-driven work
