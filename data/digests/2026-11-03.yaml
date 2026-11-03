@@ -1,5 +1,5 @@
 date: '2026-11-03'
-updated: 2026-11-03T00:02Z
+updated: 2026-11-03T08:10Z
 stories:
 - title: >-
     OpenAI moves its monorepo to Pando, a Git-compatible backend that orders pushes per branch
@@ -88,3 +88,121 @@ stories:
     url: https://cloud.google.com/blog/topics/threat-intelligence/shutting-the-door-on-the-xcpe-botnet/
   - label: discussion
     url: https://www.reddit.com/r/linux/comments/1xm5wn0/shutting_the_door_on_the_xcpe_botnet/
+- title: >-
+    WorkOS says an ARTEX-driven intruder reached its Salesforce and Snowflake data through
+    an internal sales API
+  section: Security
+  category: Security
+  blurb: >-
+    The auth provider says the 2026-10-30 intrusion exposed CRM and support ticket data, with
+    no evidence of access to customer application data.
+  summary: >-
+    WorkOS detected anomalous traffic to an internal business system at 16:39 UTC on 2026-10-30
+    and attributes the attack to ARTEX, an AI-assisted autonomous penetration testing framework,
+    run from Hong Kong and China IP addresses. The attacker used an internal API behind sales
+    and marketing tools to read Salesforce and Snowflake data, including customer contact
+    details and support tickets. WorkOS lists the incident in its security bulletins, updated
+    2026-11-02, and says production services were not accessed.
+  why: >-
+    WorkOS customers should expect targeted phishing using their CRM and support ticket details
+    and may want to rotate secrets shared in support tickets.
+  followup: >-
+    WorkOS's further updates on the initial access vector and the independent investigation.
+  comments: >-
+    The WorkOS CEO confirmed the notice on Hacker News and said the incident was isolated
+    to internal go-to-market systems. Commenters asked for the initial attack vector, which
+    has not been disclosed.
+  sources:
+  - label: primary
+    url: https://workos.com/security/bulletins
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50345712
+  thread: f-0161
+- title: >-
+    Cloudflare reports delayed Worker deployments, Container issues and Gateway DoT faults
+    on 2026-11-02 and 2026-11-03
+  section: Outages
+  category: Outage
+  blurb: >-
+    Cloudflare's status history lists five incidents resolved within 13 hours, covering Worker
+    deploys, Containers, Gateway DoT and APJC network.
+  summary: >-
+    Cloudflare's incident history shows Worker Deployments Delayed resolved at 17:30 UTC on
+    2026-11-02 and Gateway DNS-over-TLS connectivity issues over IPv4 resolved at 00:34 UTC
+    on 2026-11-03. Cloudflare Container Issues resolved at 05:23 UTC, Network Performance
+    Issues in APJC at 05:56 UTC, and elevated 5xx errors in HKG at 06:32 UTC. The status page
+    showed no active incidents at 08:08 UTC.
+  why: >-
+    Teams that saw failed Worker deploys, Container errors or DoT resolution failures overnight
+    can match them to these resolved incidents.
+  sources:
+  - label: primary
+    url: https://www.cloudflarestatus.com/history
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50348260
+- title: >-
+    pip 26.3 blocks unexpected imports during installation and says installing untrusted wheels
+    was never safe
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    pip's latest release adds extras and group selection for pylock.toml, refuses redirects
+    to file URLs, and blocks surprise imports mid-install.
+  summary: >-
+    pip 26.3, released 2026-11-02, blocks unexpected imports during installation, warns about
+    unsafe imports afterward, and recovers better from interrupted installs. Its security
+    policy now states that pip has never considered installing untrusted wheels safe, since
+    Python's import system can run third-party code. The release adds extras and non-default
+    group selection for pylock.toml, honors --no-binary with lock files, refuses HTTP redirects
+    to file: URLs, and stops cache warnings from leaking URL credentials.
+  why: >-
+    Teams that relied on wheel installation being side-effect free need to treat pip install
+    of untrusted packages as code execution and should test the new import blocking in CI.
+  sources:
+  - label: primary
+    url: https://pip.pypa.io/en/stable/news/
+  - label: discussion
+    url: https://www.reddit.com/r/Python/comments/1xmgv01/pip_263_extended_pylock_support_build_backend/
+- title: >-
+    Greg Kroah-Hartman plans for Linux 7.3 to be the next LTS kernel instead of the record-sized
+    7.4
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    The stable maintainer plans on 7.3.y as the next long-term kernel, saying patches forced
+    into 7.4 are a reason not to pick it.
+  summary: >-
+    Replying to the 7.4-rc1 announcement on 2026-11-02, Greg Kroah-Hartman said his scripts
+    put the 7.4 final release on 2026-12-20. He said that people forcing changes into 7.4
+    is the best reason not to make it the LTS, and that 7.3.y should be counted on as the
+    next LTS unless something serious prevents it. Torvalds had suggested LTS expectations
+    partly explained the record merge window.
+  why: >-
+    Distribution and product teams choosing a long-term kernel base should plan around 7.3.y
+    rather than 7.4.
+  sources:
+  - label: primary
+    url: https://lore.kernel.org/all/2026110241-yarn-tweak-084d@gregkh/
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1xmbdh6/oops_greg_has_another_empirical_view_on_lts/
+- title: >-
+    Hugging Face proposes Model Integration Contracts after a UMT5 attention bug sat in Transformers
+    main for two months
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Small CPU fixtures built from real checkpoints, with reviewed baselines, flagged a UMT5
+    SDPA regression on every replayed commit.
+  summary: >-
+    Enabling SDPA for T5 on 2026-07-30 let UMT5's decoder attend to future tokens, and the
+    bug stayed in main until 2026-09-28. A Model Integration Contract pairs a shrunk fixture
+    model, a runnable usage path, and human-reviewed baselines, and a 66 MB UMT5 fixture flagged
+    the regression on every replayed commit while an eager-attention variant missed it. As
+    of 2026-11-01 the MIC job reports failures in Transformers CI without blocking PRs, and
+    LLM-drafted contracts need human approval.
+  why: >-
+    Teams testing ML code can catch silent numerical regressions on cheap CPU runners if their
+    fixtures exercise the same default code paths as production checkpoints.
+  sources:
+  - label: primary
+    url: https://huggingface.co/blog/transformers-mic
