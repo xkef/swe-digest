@@ -1,5 +1,5 @@
 date: '2026-11-03'
-updated: 2026-11-03T08:10Z
+updated: 2026-11-03T12:57Z
 stories:
 - title: >-
     OpenAI moves its monorepo to Pando, a Git-compatible backend that orders pushes per branch
@@ -119,6 +119,34 @@ stories:
     url: https://news.ycombinator.com/item?id=50345712
   thread: f-0161
 - title: >-
+    Red Hat ships fixed kernels for Linux TCP flaw CVE-2026-98432 while Ubuntu fixes stay
+    in -proposed
+  section: Security
+  category: Security
+  blurb: >-
+    Red Hat shipped fixed RHEL 8, 9 and 10 kernels for the remote IPv4 TCP use-after-free,
+    while Ubuntu fixes sit in opt-in -proposed.
+  summary: >-
+    Red Hat released RHSA-2026:93414, 93412 and 93413 for RHEL 8, 9 and 10 on 2026-11-01 and
+    raised its rating of CVE-2026-98432 from 5.9 to 9.8. Canonical put fixed kernels for Ubuntu
+    22.04, 24.04 and 26.04 in the -proposed pocket on 2026-11-02 with no release date, and
+    20.04 and older have no fix. Canonical says disabling MPTCP alone is not enough, and the
+    Red Hat nftables rule that drops IPv4 TCP packets with options does not cover traffic
+    between containers on the same host.
+  why: >-
+    RHEL fleets can now patch and reboot, while Ubuntu LTS hosts need -proposed kernels or
+    the nftables filter until Canonical promotes the fix.
+  followup: Promotion of the Ubuntu kernels out of -proposed and any CISA KEV listing.
+  comments: >-
+    The Hacker News thread centers on Canonical's three-week delay and its testing across
+    certified hardware before kernels leave -proposed.
+  thread: f-0142
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/11/red-hat-patches-98-rated-linux-tcp-rce.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50341462
+- title: >-
     Cloudflare reports delayed Worker deployments, Container issues and Gateway DoT faults
     on 2026-11-02 and 2026-11-03
   section: Outages
@@ -164,6 +192,24 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/Python/comments/1xmgv01/pip_263_extended_pylock_support_build_backend/
 - title: >-
+    GitHub Desktop 3.6.10 rolls out short-lived, auto-refreshing authentication tokens
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    GitHub Desktop 3.6.10 issues automatically refreshing short-lived tokens on github.com
+    sign-in, shrinking the window for a leaked token.
+  summary: >-
+    Eligible accounts that sign in to GitHub Desktop 3.6.10 or later receive short-lived tokens
+    that Desktop refreshes for API calls and Git operations. The rollout is gradual on github.com
+    and GitHub Enterprise Cloud and excludes GitHub Enterprise Server. Existing sessions and
+    tokens are not migrated, so users must sign in again to get the new tokens.
+  why: >-
+    Teams worried about stolen developer tokens can have Desktop users sign out and back in
+    to replace long-lived credentials.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-02-github-desktop-adds-short-lived-authentication-tokens
+- title: >-
     Greg Kroah-Hartman plans for Linux 7.3 to be the next LTS kernel instead of the record-sized
     7.4
   section: Linux and kernel
@@ -206,3 +252,23 @@ stories:
   sources:
   - label: primary
     url: https://huggingface.co/blog/transformers-mic
+- title: >-
+    OpenRouter details how ClickHouse Cloud feeds its analytics, support agents and model
+    routing
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    OpenRouter writes gateway telemetry once to ClickHouse and uses materialized views for
+    customer charts, rankings, support agents and routing.
+  summary: >-
+    OpenRouter grew from about 600 million to 19.7 billion monthly requests between 2024-11
+    and 2026-08, with a raw generation log of about 134 billion rows in ClickHouse. Materialized
+    views build rollups for activity, endpoint health and task types, a dbt warehouse of about
+    270 documented models serves internal Slack agents, and routing outcomes are written back
+    as telemetry for the next routing decision.
+  why: >-
+    It shows a write-once, roll-up-many telemetry design that serves dashboards, LLM agents
+    and live routing from a single store.
+  sources:
+  - label: primary
+    url: https://clickhouse.com/blog/openrouter-llm-routing-observability-clickhouse-cloud
