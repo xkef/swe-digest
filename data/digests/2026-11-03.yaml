@@ -1,5 +1,5 @@
 date: '2026-11-03'
-updated: 2026-11-03T20:13Z
+updated: 2026-11-03T22:30Z
 stories:
 - title: >-
     OpenAI moves its monorepo to Pando, a Git-compatible backend that orders pushes per branch
@@ -213,6 +213,25 @@ stories:
   - label: primary
     url: https://www.githubstatus.com/incidents/rxlj89wpk7px
   thread: f-0163
+- title: GitHub Git Operations were degraded on 2026-11-03 while a mitigation rolled out
+  section: Outages
+  category: Outage
+  blurb: >-
+    GitHub reported degraded Git Operations from 20:57 UTC on 2026-11-03 and said improvement
+    began after a mitigation at 22:05 UTC.
+  summary: >-
+    GitHub began investigating degraded performance for Git Operations at 20:57 UTC on 2026-11-03.
+    It identified the issue and started a mitigation at 21:37 UTC, and at 22:05 UTC said the
+    rollout was complete and customers should see improvement. The incident was not yet marked
+    resolved.
+  why: >-
+    Clones, fetches and pushes against GitHub may have been slow or failing, which can break
+    CI runs and deploys during that window.
+  followup: Resolution and a root cause in GitHub's availability report.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/13b6lyl8d7bz
+  thread: f-0166
 - title: >-
     GitHub Copilot runs inside JetBrains Air over the Agent Client Protocol, including sandboxed
     cloud tasks
@@ -253,6 +272,32 @@ stories:
   - label: primary
     url: https://blog.sentry.io/performance-wins-traces-coding-agent/
 - title: >-
+    Revolut cuts AI coding inference costs about 90% by serving self-hosted GLM-5.3 on 56
+    B200 GPUs
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Revolut made a self-hosted Z.ai GLM model its default coding model for about 2,000 engineers
+    and routes vision tasks to Gemini or GPT.
+  summary: >-
+    Revolut ops and infrastructure lead David Abitbol told the AI Engineer conference that
+    the company moved from Gemini and Claude Code to self-hosted GLM-5.1, then GLM-5.3, served
+    on 56 Nvidia B200 GPUs, at about a tenth of the cost of Codex or Claude Code. He credits
+    NVFP4 quantization, disaggregated prefill and decode, and a 256K context cap for sub-3-second
+    time to first token and about 200 tokens per second. Revolut reports 60% faster coding
+    time and 70% better lead time, with the largest gains from debugging and Jira and Confluence
+    work.
+  why: >-
+    It is a named-organization account of the tradeoffs in replacing frontier coding agents
+    with open weights: hardware, serving tuning, latency targets and model routing.
+  sources:
+  - label: primary
+    url: https://www.theregister.com/ai-and-ml/2026/11/03/british-fintech-revolut-slashes-ai-coding-costs-10x-by-cutting-out-claude-and-going-self-hosted/5307345
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50350004
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1xn568h/british_fintech_revolut_slashes_ai_coding_costs/
+- title: >-
     Matthew Honnibal says the GPT-6 Astra weight-editing headline result relied on Python
     and model runs, not raw weights
   section: ML research
@@ -277,6 +322,28 @@ stories:
     url: https://honnibal.dev/blog/astra-read-write-misleading
   - label: discussion
     url: https://news.ycombinator.com/item?id=50351111
+- title: >-
+    Simon Willison finds local Qwen 3.8 27B identifies game-playing networks from raw weights
+    without tools
+  section: ML research
+  category: ML research
+  blurb: >-
+    Running the weight-space paper's no-tools prompts on a laptop, Qwen 3.8 27B named Pac-Man,
+    Pong and Breakout policies but failed on Freeway.
+  summary: >-
+    Willison ran the published exp1_which_game prompts from the Sparks of Weight-Space Programming
+    paper against Qwen 3.8 27B in LM Studio. Each run took 46 minutes to over an hour and
+    tens of thousands of reasoning tokens, and the model correctly identified three of four
+    games. He separates this no-tools result from the paper's tool-assisted weight edits,
+    which Honnibal and Sean Goedecke criticized.
+  why: >-
+    It shows the paper's weight-reading claim is reproducible with an open model on commodity
+    hardware, while the weight-editing headline stays contested.
+  sources:
+  - label: primary
+    url: https://simonwillison.net/2026/Nov/3/qwen-can-interpret-model-weights/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50355251
 - title: >-
     pip 26.3 blocks unexpected imports during installation and says installing untrusted wheels
     was never safe
@@ -422,6 +489,25 @@ stories:
   sources:
   - label: primary
     url: https://developer.apple.com/news/?id=gdk2umrf
+- title: Grafana Alloy 1.21.0 moves its OpenTelemetry Collector engine to public preview
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Alloy now ships an OpenTelemetry Collector distribution that runs standard collector YAML
+    via alloy otel, with Fleet Management support.
+  summary: >-
+    As of Alloy v1.21.0 the OTel engine is in public preview alongside the default engine.
+    It runs unmodified collector YAML with matching CLI commands, works with the upstream
+    Helm chart and OpenTelemetry Operator v0.153.0 or later, and can be managed through an
+    embedded OpAMP supervisor. An experimental alloyengine extension runs Alloy configuration
+    inside the collector process, and Grafana plans Remote Write 2.0 and log pipeline delivery
+    acknowledgements for the default engine.
+  why: >-
+    Teams standardizing on the OpenTelemetry Collector can adopt Alloy without rewriting configs
+    into Alloy syntax.
+  sources:
+  - label: primary
+    url: https://grafana.com/blog/bridging-alloy-and-opentelemetry-the-otel-engine-is-now-in-public-preview/
 - title: >-
     Hugging Face proposes Model Integration Contracts after a UMT5 attention bug sat in Transformers
     main for two months
