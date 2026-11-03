@@ -1,5 +1,5 @@
 date: '2026-11-03'
-updated: 2026-11-03T12:57Z
+updated: 2026-11-03T17:14Z
 stories:
 - title: >-
     OpenAI moves its monorepo to Pando, a Git-compatible backend that orders pushes per branch
@@ -66,29 +66,6 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/cybersecurity/comments/1xm3hgg/lovable_many_apps_built_on_the_platform_expose/
 - title: >-
-    Google dismantles XCPE, a 1.3 million device botnet it says Android OEM Videostrong built
-    on purpose
-  section: Security
-  category: Security
-  blurb: >-
-    Google says OEM Videostrong preloaded a system-level backdoor on 1.3 million Android TV
-    boxes and sold access to proxy and ad-fraud crews.
-  summary: >-
-    Google Threat Intelligence says the x.cpe package ran with android.uid.system, reinstalled
-    itself from the oem partition, disabled Play Protect, and took MQTT commands for silent
-    installs and shell execution. Google took down Videostrong and affiliate C2 domains, estimates
-    the affiliate takedown cuts access to at least 10 million more devices, banned Videostrong
-    from certified Android, and changed its firmware review. Many payloads were hosted as
-    releases on operator-owned GitHub pages.
-  why: >-
-    Residential proxy traffic from this botnet reaches developer-facing services, and the
-    case shows certification tests can miss code loaded after first boot.
-  sources:
-  - label: primary
-    url: https://cloud.google.com/blog/topics/threat-intelligence/shutting-the-door-on-the-xcpe-botnet/
-  - label: discussion
-    url: https://www.reddit.com/r/linux/comments/1xm5wn0/shutting_the_door_on_the_xcpe_botnet/
-- title: >-
     WorkOS says an ARTEX-driven intruder reached its Salesforce and Snowflake data through
     an internal sales API
   section: Security
@@ -147,6 +124,34 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50341462
 - title: >-
+    GitBook says an attacker took infrastructure credentials and may have accessed Git Sync
+    secrets and API tokens
+  section: Security
+  category: Security
+  blurb: >-
+    An attacker took GitBook infrastructure credentials on 2026-11-02, possibly exposing Git
+    Sync secrets, API tokens and integration tokens.
+  summary: >-
+    GitBook says an attacker using AI agents gained access to some infrastructure credentials
+    at 19:00 CET on 2026-11-02, after which it took the app and authenticated docs offline,
+    replaced all secrets and revoked every customer API token. The attacker may have accessed
+    integration tokens, Git Sync secrets, API tokens and questions visitors asked GitBook
+    Assistant, and GitBook found no evidence that content was modified.
+  why: >-
+    Teams that sync docs from Git or connect tools to GitBook should rotate GitBook API tokens,
+    third-party tokens, integration secrets and re-authenticate the GitBook MCP server.
+  followup: GitBook's promised full post mortem.
+  comments: >-
+    The HN poster received the breach details through a support ticket before any customer
+    notice, and a commenter notes the status page summary did not at first mention unauthorized
+    access.
+  sources:
+  - label: primary
+    url: https://www.gitbook.com/status/security-incident-2026-11-03
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50354336
+  thread: f-0162
+- title: >-
     Cloudflare reports delayed Worker deployments, Container issues and Gateway DoT faults
     on 2026-11-02 and 2026-11-03
   section: Outages
@@ -168,6 +173,44 @@ stories:
     url: https://www.cloudflarestatus.com/history
   - label: discussion
     url: https://news.ycombinator.com/item?id=50348260
+- title: >-
+    GitHub API requests, Issues and Copilot were degraded for about 30 minutes on 2026-11-03
+  section: Outages
+  category: Outage
+  blurb: >-
+    GitHub API requests, Issues and Copilot were degraded for about 30 minutes on 2026-11-03,
+    and a root cause analysis is still pending.
+  summary: >-
+    GitHub began investigating degraded Copilot performance at 13:25 UTC on 2026-11-03, and
+    Issues and API requests were also affected. GitHub marked the incident resolved at 13:56
+    UTC and says a detailed root cause analysis will follow.
+  why: >-
+    Automation calling the GitHub API and Copilot sessions may have seen failures in that
+    window, so retry logs from 13:25 to 13:56 UTC are worth checking.
+  followup: GitHub's root cause analysis for the incident.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/rxlj89wpk7px
+  thread: f-0163
+- title: >-
+    GitHub Copilot runs inside JetBrains Air over the Agent Client Protocol, including sandboxed
+    cloud tasks
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    JetBrains Air can now run GitHub Copilot over the Agent Client Protocol, locally or as
+    sandboxed cloud tasks billed to the Copilot plan.
+  summary: >-
+    GitHub Copilot is now selectable in JetBrains Air's agent picker through ACP, with parallel
+    sessions and in-IDE review. Cloud tasks run in a Docker container on a fresh VM with all
+    traffic through a proxy and no state carried between tasks, and they use the Copilot plan
+    rather than JetBrains AI credits.
+  why: >-
+    Admins should note that Air governance and analytics do not show Copilot usage and Air
+    cannot set Copilot spending limits.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-03-github-copilot-is-now-available-in-jetbrains-air
 - title: >-
     pip 26.3 blocks unexpected imports during installation and says installing untrusted wheels
     was never safe
@@ -232,6 +275,45 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/linux/comments/1xmbdh6/oops_greg_has_another_empirical_view_on_lts/
 - title: >-
+    Fedora Linux 45 adds Stratis storage to the Anaconda installer and retires two NetworkManager
+    VPN plugins
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Fedora Linux 45 ships with Stratis storage pools in the Anaconda installer and kickstart,
+    and retires the vpnc and fortisslvpn VPN plugins.
+  summary: >-
+    Fedora Linux 45 was released on 2026-11-03 across all editions. Anaconda can now create
+    Stratis pools through the Cockpit storage module and supports autopart --type=stratis
+    plus stratispool and stratisfs kickstart commands, while NetworkManager-vpnc and NetworkManager-fortisslvpn
+    are obsoleted.
+  why: >-
+    Users of vpnc or fortisslvpn connections need to migrate before upgrading, and automated
+    installs gain a kickstart path to Stratis.
+  sources:
+  - label: primary
+    url: https://fedoramagazine.org/announcing-fedora-linux-45
+- title: Namespace details running MacBook racks and macOS VMs for CI at datacenter scale
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    Namespace explains its MacBook datacenter racks, the two-VM limit of Apple Virtualization,
+    and peer-to-peer delivery of 500 GB macOS images.
+  summary: >-
+    Namespace racks MacBooks with IP KVMs and USB 10G NICs because Mac minis took six months
+    to arrive, and it hit FileVault unlock prompts that expire after 5 minutes on unplanned
+    reboots. Its macOS instances use Apple's Virtualization framework with two VMs per host,
+    gVisor userspace networking that reaches about 4 Gbps, and a sparse layered disk format
+    distributed peer to peer across the fleet.
+  why: >-
+    Teams running iOS CI on their own Macs get specific limits and workarounds, including
+    the two-VM cap, Xcode beta side effects on stable Xcode, and fdesetup authrestart.
+  sources:
+  - label: primary
+    url: https://namespace.so/blog/mac-at-any-scale
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50352758
+- title: >-
     Hugging Face proposes Model Integration Contracts after a UMT5 attention bug sat in Transformers
     main for two months
   section: Engineering posts
@@ -272,3 +354,22 @@ stories:
   sources:
   - label: primary
     url: https://clickhouse.com/blog/openrouter-llm-routing-observability-clickhouse-cloud
+- title: >-
+    Meta's F3 Lightning releases ads ML features one at a time while keeping shared execution
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Meta's F3 Lightning lets each of 20,000-plus ads ranking features ship on its own while
+    keeping shared execution and CPU cost flat.
+  summary: >-
+    F3 compiled all features into one merged graph that was also the release unit, so one
+    bad definition blocked every release. F3 Lightning compiles each feature separately, then
+    at startup deduplicates work by content-derived identifiers, builds one flattened execution
+    plan, uses one per-request buffer and maps identifiers to dense array slots. Meta says
+    comparable features reach production about 3.6x faster with no increase in compute cost.
+  why: >-
+    It shows a concrete way to separate the release unit from the execution unit in a shared
+    computation graph without paying for duplicate work.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/11/03/ml-applications/f3-lightning-how-meta-accelerates-ads-ml-features-to-production/
