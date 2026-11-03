@@ -1,0 +1,90 @@
+date: '2026-11-03'
+updated: 2026-11-03T00:02Z
+stories:
+- title: >-
+    OpenAI moves its monorepo to Pando, a Git-compatible backend that orders pushes per branch
+  section: Top stories
+  category: Engineering post
+  blurb: >-
+    OpenAI replaced its monorepo Git backend with Pando, which stores pushes as immutable
+    packs and orders updates per ref instead of per repo.
+  summary: >-
+    OpenAI built Pando because Codex-driven parallel work pushed monorepo reliability at times
+    below 90 percent. Pando streams each pushed packfile to blob storage, records ref versions
+    in a horizontally scalable metadata store, serializes updates only per ref, and reuses
+    stored packs across fetches instead of building one per client. OpenAI says it cut median
+    push latency by nearly 5x, serves nearly a petabyte of Git data a day, keeps the Git protocol
+    and client unchanged, and will upstream client changes to Git.
+  why: >-
+    It is a first-party design for forges under agent-scale write load, and it trades repository-wide
+    ref consistency for parallel pushes, a tradeoff any tool reading several branches at once
+    must tolerate.
+  sources:
+  - label: primary
+    url: https://openai.com/index/scaling-git-at-openai
+- title: Attackers exploit Node-RED CVE-2026-58115 on Siemens devices to drop a Linux bot
+  section: Security
+  category: Security
+  blurb: >-
+    VulnCheck canaries caught attackers sending a full Node-RED flow that downloads a Linux
+    bot via the unauthenticated Siemens CVE-2026-58115.
+  summary: >-
+    Siemens assigned CVE-2026-58115, rated CVSS 10, because affected devices such as SIMATIC
+    IoT2050 do not enforce authentication on the Node-RED HTTP interface. VulnCheck saw an
+    exploit on 2026-10-30 that posted a flow wiring an inject node to an exec node to fetch
+    bot-linux-amd64, and the same IP hit 16 times and probed eight CVEs between 2026-10-30
+    and 2026-11-01. The flaw is in VulnCheck's KEV list but not yet in CISA's.
+  why: >-
+    Any Node-RED instance reachable without authentication gives shell access through a single
+    POST to /flows, so exposed editors need to be firewalled or put behind auth now.
+  followup: A CISA KEV listing and analysis of the bot binary.
+  sources:
+  - label: report
+    url: https://www.theregister.com/security/2026/11/02/max-severity-bug-in-widely-used-ot-programming-tool-exploited-to-deliver-linux-malware/5307086
+  thread: f-0160
+- title: >-
+    Crissy Field finds email-bearing Supabase tables readable without login on 7,403 Lovable
+    apps
+  section: Security
+  category: Security
+  blurb: >-
+    A scan of 24,664 Lovable apps found Supabase tables with email addresses readable without
+    login on 7,403 sites, including passport data.
+  summary: >-
+    Crissy Field analyzed 159,041 Lovable projects from Common Crawl, 34,545 of which used
+    Supabase. Of 24,664 sites that returned Supabase records on page load, further read-only
+    requests with the same public key reached tables containing email addresses on 7,403 sites,
+    with cases exposing 80,000 forum profiles, ticket and payment records, and over 1,000
+    identity document records. The authors say 30 percent is not a confirmed leak rate and
+    the sample is not representative.
+  why: >-
+    AI app builders produce repeated Supabase access patterns, so a missing row-level security
+    policy found in one generated app can be scanned for across thousands of them.
+  sources:
+  - label: primary
+    url: https://www.crissyfield.de/research/lovable-en/
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xm3hgg/lovable_many_apps_built_on_the_platform_expose/
+- title: >-
+    Google dismantles XCPE, a 1.3 million device botnet it says Android OEM Videostrong built
+    on purpose
+  section: Security
+  category: Security
+  blurb: >-
+    Google says OEM Videostrong preloaded a system-level backdoor on 1.3 million Android TV
+    boxes and sold access to proxy and ad-fraud crews.
+  summary: >-
+    Google Threat Intelligence says the x.cpe package ran with android.uid.system, reinstalled
+    itself from the oem partition, disabled Play Protect, and took MQTT commands for silent
+    installs and shell execution. Google took down Videostrong and affiliate C2 domains, estimates
+    the affiliate takedown cuts access to at least 10 million more devices, banned Videostrong
+    from certified Android, and changed its firmware review. Many payloads were hosted as
+    releases on operator-owned GitHub pages.
+  why: >-
+    Residential proxy traffic from this botnet reaches developer-facing services, and the
+    case shows certification tests can miss code loaded after first boot.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/topics/threat-intelligence/shutting-the-door-on-the-xcpe-botnet/
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1xm5wn0/shutting_the_door_on_the_xcpe_botnet/
