@@ -1,5 +1,5 @@
 date: '2026-11-03'
-updated: 2026-11-03T17:14Z
+updated: 2026-11-03T20:13Z
 stories:
 - title: >-
     OpenAI moves its monorepo to Pando, a Git-compatible backend that orders pushes per branch
@@ -22,6 +22,33 @@ stories:
   sources:
   - label: primary
     url: https://openai.com/index/scaling-git-at-openai
+- title: >-
+    Postman desktop auto-installed plugins into Claude Code and Codex and tried to trust its
+    own startup hook
+  section: Top stories
+  category: Agentic coding
+  blurb: >-
+    Postman 12.33.4 desktop added Postman plugins to Claude Code and Codex without opt-in
+    and its installer wrote trust for its own startup hook.
+  summary: >-
+    A GitHub issue filed 2026-10-25 shows Postman's log recording an auto-existing-upgrade
+    that installed Codex and Claude Code plugins, a remote MCP server at mcp.postman.com and
+    a Postman CLI. The plugin's installer source calls approvePostmanHook to write a trusted_hash
+    for its SessionStart hook in the Codex config, and the hook tells the agent to load a
+    Postman skill for any non-trivial API task. The reporter says the evidence shows unwanted
+    integration and instruction changes but does not establish data exfiltration.
+  why: >-
+    Any desktop app you run can rewrite your coding agent's global config and hook trust,
+    so audit ~/.codex/config.toml and ~/.claude settings after updates.
+  comments: >-
+    HN commenters debate whether this crosses into malware and point to the uninstall path
+    posted in the issue thread.
+  sources:
+  - label: primary
+    url: https://github.com/postmanlabs/postman-app-support/issues/14370
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50354960
+  thread: f-0165
 - title: Attackers exploit Node-RED CVE-2026-58115 on Siemens devices to drop a Linux bot
   section: Security
   category: Security
@@ -65,36 +92,6 @@ stories:
     url: https://www.crissyfield.de/research/lovable-en/
   - label: discussion
     url: https://www.reddit.com/r/cybersecurity/comments/1xm3hgg/lovable_many_apps_built_on_the_platform_expose/
-- title: >-
-    WorkOS says an ARTEX-driven intruder reached its Salesforce and Snowflake data through
-    an internal sales API
-  section: Security
-  category: Security
-  blurb: >-
-    The auth provider says the 2026-10-30 intrusion exposed CRM and support ticket data, with
-    no evidence of access to customer application data.
-  summary: >-
-    WorkOS detected anomalous traffic to an internal business system at 16:39 UTC on 2026-10-30
-    and attributes the attack to ARTEX, an AI-assisted autonomous penetration testing framework,
-    run from Hong Kong and China IP addresses. The attacker used an internal API behind sales
-    and marketing tools to read Salesforce and Snowflake data, including customer contact
-    details and support tickets. WorkOS lists the incident in its security bulletins, updated
-    2026-11-02, and says production services were not accessed.
-  why: >-
-    WorkOS customers should expect targeted phishing using their CRM and support ticket details
-    and may want to rotate secrets shared in support tickets.
-  followup: >-
-    WorkOS's further updates on the initial access vector and the independent investigation.
-  comments: >-
-    The WorkOS CEO confirmed the notice on Hacker News and said the incident was isolated
-    to internal go-to-market systems. Commenters asked for the initial attack vector, which
-    has not been disclosed.
-  sources:
-  - label: primary
-    url: https://workos.com/security/bulletins
-  - label: discussion
-    url: https://news.ycombinator.com/item?id=50345712
-  thread: f-0161
 - title: >-
     Red Hat ships fixed kernels for Linux TCP flaw CVE-2026-98432 while Ubuntu fixes stay
     in -proposed
@@ -151,6 +148,30 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50354336
   thread: f-0162
+- title: >-
+    Attacker hijacks cPGuard update channel to backdoor Linux servers and copy password hashes
+  section: Security
+  category: Security
+  blurb: >-
+    An attacker pushed a script through cPGuard's update channel that backdoored Linux servers
+    and copied /etc/shadow and root SSH files.
+  summary: >-
+    OPSSHIELD says an attacker used compromised credentials on 2026-11-02 at 02:06 UTC to
+    ship a malicious script in cPGuard 5.88.12 through 5.88.19, which collected /etc/shadow,
+    root's my.cnf, shell history and SSH files and staged them on an OPSSHIELD licensing server.
+    The attacker took at least 32 files, each tied to one customer server, and cPGuard 5.88.25
+    removes the backdoor. Admins should check /opt/cpguard/logs/install_log and rotate root
+    passwords, database credentials, cloud tokens and SSH keys on affected servers.
+  why: >-
+    Security agents with root update channels are a supply chain path, and updating alone
+    does not revoke copied credentials.
+  followup: >-
+    OPSSHIELD's findings on how the update credentials were stolen and whether its support-access
+    private key was exposed.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/11/cpguard-update-channel-hijacked-to.html
+  thread: f-0164
 - title: >-
     Cloudflare reports delayed Worker deployments, Container issues and Gateway DoT faults
     on 2026-11-02 and 2026-11-03
@@ -211,6 +232,51 @@ stories:
   sources:
   - label: primary
     url: https://github.blog/changelog/2026-11-03-github-copilot-is-now-available-in-jetbrains-air
+- title: >-
+    Sentry engineer uses a coding agent on Sentry's own traces to cut hundreds of millions
+    of queries a week
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    A Sentry engineer had Claude mine Sentry's own traces via the Sentry MCP, yielding fixes
+    that cut hundreds of millions of queries weekly.
+  summary: >-
+    Scott Cooper connected Claude with Opus 5.5 to the Sentry MCP, had it rank spans by frequency
+    and duration, and had it validate SQL changes with EXPLAIN ANALYZE on a read-only database
+    mirror before opening draft PRs. Fixes included reusing a loaded project to remove about
+    143M SELECTs a week, a GroupHistory query rewrite from 935 ms to 0.4 ms on the busiest
+    group, and a missing index that cut average execution from 30 ms to 9.2 ms.
+  why: >-
+    It shows a concrete loop for agent-driven performance work: trace data for ranking, a
+    read-only mirror for validation, and a human steering scope.
+  sources:
+  - label: primary
+    url: https://blog.sentry.io/performance-wins-traces-coding-agent/
+- title: >-
+    Matthew Honnibal says the GPT-6 Astra weight-editing headline result relied on Python
+    and model runs, not raw weights
+  section: ML research
+  category: ML research
+  blurb: >-
+    Honnibal says only small-network tests in the GPT-6 Astra weights paper read raw weights,
+    and the Qwen math fix used Python and model runs.
+  summary: >-
+    Honnibal tabulates the post's experiments and finds the raw floats in context setting
+    only in three experiments on networks of 17K to 172K weights. Every experiment on a real
+    language model used Python, and the Qwen3.5-0.8B MATH-500 gain from 7.9% to 48.1% also
+    ran the model on up to 50 batches of practice problems, while the same method failed on
+    Gemma 3 270M.
+  why: >-
+    Engineers judging weight-space editing claims should treat the Qwen result as agent-written
+    analysis code, not native weight reading.
+  comments: >-
+    Simon Willison separately reports Qwen 3.8 27B running locally can also interpret model
+    weights, and Sean Goedecke argues LLMs are not superhuman at the task.
+  sources:
+  - label: primary
+    url: https://honnibal.dev/blog/astra-read-write-misleading
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50351111
 - title: >-
     pip 26.3 blocks unexpected imports during installation and says installing untrusted wheels
     was never safe
@@ -293,6 +359,27 @@ stories:
   sources:
   - label: primary
     url: https://fedoramagazine.org/announcing-fedora-linux-45
+- title: >-
+    openSUSE Leap 16.1 ships immutable images with transactional updates across all supported
+    platforms
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    openSUSE Leap 16.1 offers immutable images with transactional updates on servers, desktops
+    and VMs, not only on Leap Micro.
+  summary: >-
+    openSUSE Leap 16.1 lets users choose a traditional installation or an immutable image
+    with transactional updates on every platform Leap supports. Leap Micro now shares the
+    same release, life cycle and maintenance updates as the rest of Leap, and the release
+    manager expects Tumbleweed to follow when Agama becomes its default installer.
+  why: >-
+    Teams on Leap can adopt immutable hosts without moving to a separate Micro product line
+    and support cycle.
+  sources:
+  - label: primary
+    url: https://lwn.net/Articles/1105131/
+  - label: discussion
+    url: https://www.phoronix.com/news/openSUSE-Leap-16.1
 - title: Namespace details running MacBook racks and macOS VMs for CI at datacenter scale
   section: Apple platforms
   category: Apple
@@ -313,6 +400,28 @@ stories:
     url: https://namespace.so/blog/mac-at-any-scale
   - label: discussion
     url: https://news.ycombinator.com/item?id=50352758
+- title: >-
+    Apple opens Siri AI to all developers through App Intents in the iOS 27.3 and macOS 27.3
+    betas
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    A Developer Preview in the iOS 27.3 and macOS 27.3 betas lets any app expose App Intents
+    actions and multi-step skills to Siri AI.
+  summary: >-
+    Apple says any app can now bring content and custom actions into Siri AI using App Intents,
+    with new skills that combine several actions and Spotlight semantic index entities beyond
+    existing schemas. Customer availability comes in a few months and App Store submission
+    opens in the spring. Siri AI remains unavailable in the EU on iOS, iPadOS and watchOS.
+  why: >-
+    iOS and macOS teams can start building and testing Siri AI integrations now, ahead of
+    App Store submissions in spring 2027.
+  followup: >-
+    Apple Intelligence Group Labs on 2026-11-04 and 2026-11-05, and the promised terms and
+    usage policies.
+  sources:
+  - label: primary
+    url: https://developer.apple.com/news/?id=gdk2umrf
 - title: >-
     Hugging Face proposes Model Integration Contracts after a UMT5 attention bug sat in Transformers
     main for two months
