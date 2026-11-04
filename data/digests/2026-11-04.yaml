@@ -1,5 +1,5 @@
 date: '2026-11-04'
-updated: 2026-11-04T13:11Z
+updated: 2026-11-04T17:26Z
 stories:
 - title: >-
     Rails fixes a 9.8 Active Storage flaw that lets one crafted upload write server files
@@ -53,6 +53,28 @@ stories:
   - label: discussion
     url: https://thehackernews.com/2026/11/xen-hypervisor-flaws-let-one-malicious.html
   thread: f-0169
+- title: >-
+    Moonshot releases Kimi K3.1 Pro open weights, a 2.8T-parameter MoE with 104B active parameters
+  section: Top stories
+  category: AI
+  blurb: >-
+    Moonshot published Kimi K3.1 Pro on Hugging Face: a 2.8T-parameter MoE with 104B active,
+    a 1M-token context and MXFP4 weights.
+  summary: >-
+    The Hugging Face model card lists 2.8T total and 104B activated parameters, 896 experts
+    with 16 selected per token, a 1,048,576-token context, and MXFP4 weights with MXFP8 activations
+    from quantization-aware training. It is released under a custom Kimi K3.1 Pro License,
+    and Moonshot recommends vLLM, SGLang or TokenSpeed for serving. Multi-turn and tool calls
+    require passing back the full assistant message, including reasoning_content.
+  why: >-
+    A frontier-class open-weight agentic model can now be self-hosted, though its size needs
+    multi-node GPU capacity and its license needs a legal read.
+  thread: f-0124
+  sources:
+  - label: primary
+    url: https://huggingface.co/moonshotai/Kimi-K3.1-Pro
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50366999
 - title: >-
     Era Security finds the Greeter framework exploiting Flowise CVE-2024-58351 to harvest
     cloud credentials
@@ -135,6 +157,25 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50364814
 - title: >-
+    Sekoia ties APT29 to a Plerdy analytics script compromise that served iOS and Android
+    exploit chains
+  section: Security
+  category: Security
+  blurb: >-
+    Sekoia ties APT29 to a watering hole campaign that poisoned the Plerdy analytics script
+    and served iOS and Android n-day exploit chains.
+  summary: >-
+    Sekoia says attackers injected code into Plerdy SEO Tracker's main.js between 2026-08-27
+    and 2026-09-03, alongside compromised and lookalike sites. A loader profiled visitors
+    and delivered DarkSword-based iOS chains or a Chrome 139 to 145 chain on Android to steal
+    cookies, Wi-Fi passwords and full device data.
+  why: >-
+    Any site that embedded the Plerdy tag served exploits to its visitors, which is a reason
+    to audit third-party scripts and pin them with Subresource Integrity where possible.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/11/apt29-linked-hackers-hijack-web.html
+- title: >-
     GitHub pull requests, Git operations, Issues, API and Actions were degraded for two hours
     on 2026-11-04
   section: Outages
@@ -174,6 +215,24 @@ stories:
   sources:
   - label: primary
     url: https://www.githubstatus.com/incidents/tc28c0wzrnpz
+- title: GitHub Webhooks, Actions and Pages were degraded for about an hour on 2026-11-04
+  section: Outages
+  category: Outage
+  blurb: >-
+    Webhooks, Actions and Pages degraded from 16:05 to 17:01 UTC, and Actions jobs could show
+    delayed status updates during mitigation.
+  summary: >-
+    GitHub opened the incident at 16:05 UTC on 2026-11-04 for Actions and Pages, later adding
+    Webhooks. It identified an issue with events that trigger Actions, applied mitigations,
+    and resolved the incident at 17:01 UTC with a root cause analysis to follow.
+  why: >-
+    This is the third GitHub incident on 2026-11-04, so CI runs and webhook-driven automation
+    from that window may need rechecking.
+  followup: GitHub's root cause analysis.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/xr3myzj7ms51
+  thread: f-0171
 - title: >-
     Google DeepMind releases Cheminformatics Skills for Antigravity built on RDKit, ChEMBL
     and PubChem
@@ -291,6 +350,46 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/rust/comments/1xngioy/how_to_speed_up_the_rust_compiler_in_november_2026/
 - title: >-
+    Zig's libc rewrite of strspn made SQLite tokenizing quadratic and about 12,000 times slower
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Zig's pure-Zig strspn and related libc functions measure the whole string on each call,
+    which made SQLite tokenizing quadratic on Linux.
+  summary: >-
+    Dennis Forbes traced minutes of CPU time inserting about 40,000 JSON records into SQLite
+    to a Rust build that compiled SQLite with zig cc through cargo-zigbuild. libzigc's replacements
+    for strspn, strcspn, strpbrk and strstr take the full string length first, so a 1.2MB
+    tokenize ran about 12,000 times slower. He moved Linux builds to containers.
+  why: >-
+    Teams that cross-compile C dependencies with zig cc should benchmark string-heavy paths
+    such as SQLite parsing on the produced binaries.
+  sources:
+  - label: primary
+    url: https://dennisforbes.ca/blog/microblog/2026/10/the_accidental_12000x_sqlite_slowdown/
+  - label: discussion
+    url: https://www.reddit.com/r/programming/comments/1xnq1xx/shlemiel_the_painter_is_back_how_zigs_libc/
+- title: rustc_codegen_gcc completes a full rustc bootstrap on Aarch64
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The GCC backend for rustc completed a full rustc bootstrap on Aarch64 after sret ABI support
+    landed, and now prepares for a crater run.
+  summary: >-
+    Progress report 44 says the bootstrap needed two rustc PRs, one refactoring indirect returns
+    in cg_ssa and one passing -fno-lto, plus an sret ABI implementation. UI tests passing
+    rose to 7,958 with 17 failures, and the project moved to josh-sync for syncs with the
+    Rust repository.
+  why: >-
+    A GCC-based Rust backend that can build rustc on Aarch64 moves Rust closer to targets
+    LLVM does not support.
+  followup: A crater run with rustc_codegen_gcc.
+  sources:
+  - label: primary
+    url: https://blog.antoyo.xyz/rustc_codegen_gcc-progress-report-44
+  - label: discussion
+    url: https://www.reddit.com/r/rust/comments/1xn71ra/progress_report_44_rustc_codegen_gcc_can_now/
+- title: >-
     systemd allows Rust in leaf binaries but keeps core components in C until Rust has shared
     library support
   section: Linux and kernel
@@ -350,6 +449,26 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/programming/comments/1xn9jr2/postgres_19_repack_builtin_online_table_bloat/
 - title: >-
+    Compute Engine API multi-versioning reaches GA with immutable date-based versions alongside
+    /v1
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Compute Engine adds immutable date-based API versions selected by header, starting with
+    2026-09-01, while the /v1 API stays the default.
+  summary: >-
+    Callers select a version with the X-Goog-Api-Version header or the $apiVersion parameter,
+    and stable versions ship quarterly with no breaking changes after publication. Preview
+    versions such as 2026-10-01-preview last one year. New versions change defaults, including
+    returnPartialSuccess on AggregatedList and structured ErrorInfo errors, and client libraries,
+    gcloud and Terraform bind to them automatically.
+  why: >-
+    Upgrading a Google client library or Terraform provider can now change Compute Engine
+    API defaults, so pin a version where behavior matters.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/topics/developers-practitioners/introducing-compute-engine-api-multi-versioning-predictable-evolution-without-breaking-production/
+- title: >-
     Dimitri Fontaine builds five-region multi-writer Postgres on core logical replication
     and pg_auto_failover
   section: Engineering posts
@@ -369,3 +488,43 @@ stories:
   sources:
   - label: primary
     url: https://postgr.es/p/9AU
+- title: >-
+    Figma's Nimbus platform manages tens of thousands of sandboxes for AI-generated code across
+    cloud providers
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Figma's Nimbus runs tens of thousands of AI sandboxes across several cloud providers,
+    with warm pools and read-only egress to unlisted hosts.
+  summary: >-
+    Product teams declare a namespace with image, resources, warm pool bounds and allowed
+    hosts, and Nimbus allows only bodyless GET, HEAD and OPTIONS to other destinations while
+    swapping encrypted credentials only at egress. Warm pools claimed through Postgres transactions
+    cut provisioning latency 90% and raised availability from 99% to 99.95%, and a simulator
+    exposed a routing bug where slow providers still looked healthy.
+  why: >-
+    It gives a concrete design for sandboxing agent code: egress split by method, credential
+    swapping at egress, and provider failover based on latency as well as errors.
+  sources:
+  - label: primary
+    url: https://www.figma.com/blog/how-figma-manages-sandboxes-at-scale/
+- title: >-
+    Ubicloud fences an old Postgres primary by detaching NICs on AWS and GCP before promoting
+    a standby
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Ubicloud's control plane cuts an old Postgres primary's network before promoting a standby,
+    and promotes anyway if every fence fails.
+  summary: >-
+    The control plane behind ClickHouse Managed Postgres runs pg_ctlcluster stop, a pg_hba
+    lockout and a platform fence in parallel: ip link down on the bare metal host, a forced
+    detach of a secondary user NIC on AWS, and deleting a Dynamic NIC on GCP. In GCP tests,
+    user traffic stopped 0.7 to 2.5 seconds after the delete call, and the design is deliberately
+    fail-open.
+  why: >-
+    It shows why promotion and DNS changes alone allow split brain, and that a NIC-based fence
+    must be designed in when the VM is created.
+  sources:
+  - label: primary
+    url: https://clickhouse.com/blog/fencing-a-postgres-primary-that-might-still-be-alive
