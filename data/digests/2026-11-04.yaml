@@ -1,5 +1,5 @@
 date: '2026-11-04'
-updated: 2026-11-04T17:26Z
+updated: 2026-11-04T20:30Z
 stories:
 - title: >-
     Rails fixes a 9.8 Active Storage flaw that lets one crafted upload write server files
@@ -234,6 +234,27 @@ stories:
     url: https://www.githubstatus.com/incidents/xr3myzj7ms51
   thread: f-0171
 - title: >-
+    GitHub Actions was degraded for about 36 minutes on 2026-11-04 by a fault in workflow
+    trigger events
+  section: Outages
+  category: Outage
+  blurb: >-
+    Actions jobs saw degraded availability and delayed status updates from 17:40 to 18:16
+    UTC after a fault in events that trigger workflows.
+  summary: >-
+    GitHub began investigating degraded Actions availability at 17:40 UTC on 2026-11-04. At
+    17:53 it identified an issue with events that might trigger Actions and warned of delayed
+    job status updates. It reported mitigation at 18:07 and resolved the incident at 18:16,
+    with a root cause analysis to follow.
+  why: >-
+    This is the fourth GitHub incident of the day, so CI runs that stalled or reported late
+    status around 17:40 to 18:16 UTC may need re-running.
+  followup: GitHub's root cause analysis.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/h02n9572mx9y
+  thread: f-0172
+- title: >-
     Google DeepMind releases Cheminformatics Skills for Antigravity built on RDKit, ChEMBL
     and PubChem
   section: AI
@@ -253,6 +274,31 @@ stories:
   sources:
   - label: primary
     url: https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/
+- title: >-
+    Anthropic releases FlashProve, an Apache 2.0 zkSNARK prototype that proves which weights
+    produced an LLM response
+  section: AI
+  category: AI
+  blurb: >-
+    On one H100 the prover covers Llama 4 Maverick at about 110 tokens per second with 19
+    MB proofs that a CPU verifies in about 17 seconds.
+  summary: >-
+    Anthropic's Frontier Red Team published FlashProve on 2026-11-02. It is a zero-knowledge
+    proof system that binds each response to a committed set of weights and hides those weights
+    but not the model architecture. Proving costs about 72 to 94 times the GPU time of vLLM.
+    The release includes the prover, a C++ verifier, a Lean verifier and Lean proofs of the
+    top-level security statements.
+  why: >-
+    It offers a software-only way to check that a router or provider served the committed
+    model, though the 70x to 95x overhead limits it to audits for now.
+  comments: >-
+    Hacker News readers focus on the cost overhead and on whether third-party routers would
+    ever adopt such proofs.
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/research/provable-inference
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50368626
 - title: >-
     Vercel Security Review enters public beta and reviews every GitHub push with an AI agent
   section: Agentic coding
@@ -329,6 +375,26 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50362980
 - title: >-
+    Jujutsu 0.47 stops updating Git remote-tracking refs on fetch and push in non-colocated
+    workspaces
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    jj 0.47.0 adds a revset() template function, a built-in :editor merge tool for multi-sided
+    conflicts, and fixes colocated fetch races.
+  summary: >-
+    jj v0.47.0 shipped on 2026-11-04. In non-colocated workspaces, jj git fetch and push no
+    longer update remote-tracking Git refs, so users must run jj git export, and Timestamp.format()
+    now uses jiff strftime syntax, which drops %v and %+. The release also fixes colocated-workspace
+    races where a concurrent fetch could import partially fetched refs and Git index changes
+    could be lost.
+  why: >-
+    Scripts that read Git remote refs from non-colocated jj repos, or that format timestamps
+    with %v or %+, need changes before the upgrade.
+  sources:
+  - label: primary
+    url: https://github.com/jj-vcs/jj/releases/tag/v0.47.0
+- title: >-
     Rust compiler wall time fell 2.85% on average in five weeks as span and trait solver work
     landed
   section: Languages and runtimes
@@ -389,6 +455,28 @@ stories:
     url: https://blog.antoyo.xyz/rustc_codegen_gcc-progress-report-44
   - label: discussion
     url: https://www.reddit.com/r/rust/comments/1xn71ra/progress_report_44_rustc_codegen_gcc_can_now/
+- title: >-
+    Go 1.27 makes encoding/json/v2 and jsontext stable, with stricter defaults and up to 10x
+    faster Unmarshal
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The new Go JSON packages reject invalid UTF-8 and duplicate names, match fields case-sensitively,
+    and v1 now runs on top of v2 options.
+  summary: >-
+    The Go blog said on 2026-11-04 that encoding/json/v2 and encoding/json/jsontext are stable
+    and generally available in Go 1.27. By default v2 marshals nil slices and maps as empty
+    arrays and objects. Unmarshal is up to 10x faster than v1, Marshal is roughly at parity,
+    and v1 is now implemented as v2 with compatibility options, so packages on either version
+    can work together.
+  why: >-
+    Teams can migrate call sites gradually, but code that relies on case-insensitive field
+    matching, duplicate keys or null for nil slices will break under v2 defaults.
+  sources:
+  - label: primary
+    url: https://go.dev/blog/jsonv2
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50369106
 - title: >-
     systemd allows Rust in leaf binaries but keeps core components in C until Rust has shared
     library support
