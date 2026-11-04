@@ -1,6 +1,58 @@
 date: '2026-11-04'
-updated: 2026-11-04T07:43Z
+updated: 2026-11-04T13:11Z
 stories:
+- title: >-
+    Rails fixes a 9.8 Active Storage flaw that lets one crafted upload write server files
+    through ImageMagick
+  section: Top stories
+  category: Security
+  blurb: >-
+    Rails apps analyzing uploads with ImageMagick can be made to write server files, and read
+    secrets on Disk storage, by one crafted upload.
+  summary: >-
+    Rails advisory GHSA-f3w6-w445-fwh9, published 2026-11-04, says an unauthenticated attacker
+    can write arbitrary files, and read files when the Disk service stores attachments, because
+    Active Storage constrained no ImageMagick coders and analysis runs on attach. Fixed in
+    activestorage 8.1.4.1 and 8.0.5.2, which ship an ImageMagick policy and need mini_magick
+    5.1 or later. Apps on :mini_magick, the default for load_defaults 6.1 or earlier, are
+    affected, and the Debian and Ubuntu ImageMagick policies do not block the coders involved.
+  why: >-
+    Rails teams must upgrade or copy the shipped policy into the system policy.xml, and Disk
+    service users must rotate secret_key_base and every secret the app can read.
+  followup: >-
+    Rails 8.0 security support ends on 2026-11-07. Watch for a CVE ID and exploitation reports.
+  sources:
+  - label: primary
+    url: https://github.com/rails/rails/security/advisories/GHSA-f3w6-w445-fwh9
+  - label: discussion
+    url: https://thehackernews.com/2026/11/critical-rails-flaw-lets-attackers.html
+  thread: f-0168
+- title: >-
+    Xen XSA-523 grant copy flaws let a malicious guest read and write other VMs and dom0 on
+    all versions since 4.6
+  section: Top stories
+  category: Security
+  blurb: >-
+    A malicious Xen guest can read and write memory of other guests and dom0 on every release
+    since 4.6, with no mitigation but patches.
+  summary: >-
+    The Xen Project published XSA-523 on 2026-11-03 for CVE-2026-102703 and CVE-2026-102704,
+    where cached validation in batched grant copy operations mixed up frame numbers and grant
+    references and misplaced a check. Patches cover xen-unstable through 4.17, and Anthropic
+    found the bug using Claude before Ada Logics validated it. The Hacker News reports XCP-ng
+    8.3 and Qubes OS 4.3 fixes that need host reboots, and Debian's tracker listed bookworm,
+    trixie and forky as still vulnerable on 2026-11-04.
+  why: >-
+    Anyone running Xen hosts with untrusted guests needs patched packages and a reboot, since
+    no configuration change mitigates the flaw.
+  followup: >-
+    Debian stable xen package updates and vendor fixes for products built on Xen 4.6 to 4.16.
+  sources:
+  - label: primary
+    url: https://xenbits.xen.org/xsa/advisory-523.html
+  - label: discussion
+    url: https://thehackernews.com/2026/11/xen-hypervisor-flaws-let-one-malicious.html
+  thread: f-0169
 - title: >-
     Era Security finds the Greeter framework exploiting Flowise CVE-2024-58351 to harvest
     cloud credentials
@@ -43,27 +95,6 @@ stories:
   - label: primary
     url: https://thehackernews.com/2026/11/synology-nas-devices-targeted-in.html
 - title: >-
-    mSecure tells users to reset passwords, 2FA and passkeys after suspicious activity it
-    has not explained
-  section: Security
-  category: Security
-  blurb: >-
-    The password manager's developer emailed customers on 2026-11-03 to protect every stored
-    secret but has not said what was accessed.
-  summary: >-
-    mSeven Software says it found suspicious activity tied to the mSecure app, engaged outside
-    experts, and recommends changing passwords, re-enrolling two-factor methods or removing
-    passkeys. It has not said whether customer vaults were exposed.
-  why: >-
-    Engineers who keep work credentials or recovery codes in mSecure should prioritize rotating
-    high-value secrets until the vendor discloses scope.
-  sources:
-  - label: primary
-    url: https://www.theregister.com/security/2026/11/03/password-manager-msecure-tells-users-to-change-passwords-wont-say-why/5307296
-  - label: discussion
-    url: https://thehackernews.com/2026/11/msecure-warns-users-to-change-passwords.html
-  thread: f-0167
-- title: >-
     Barracuda patches chainable flaws that give root on Email Security Gateway and five other
     appliances
   section: Security
@@ -82,6 +113,67 @@ stories:
   sources:
   - label: primary
     url: https://thehackernews.com/2026/11/barracuda-flaws-could-be-chained-to.html
+- title: >-
+    Debian fixes APT flaw CVE-2026-109518 that lets a network attacker swap a verified package
+    for root code execution
+  section: Security
+  category: Security
+  blurb: >-
+    A man-in-the-middle could swap a package after APT verified it by abusing HTTP download
+    resume, giving root code execution on Debian trixie.
+  summary: >-
+    DSA-6607-1 on 2026-11-04 says APT can merge two downloads after an HTTP redirect gives
+    them the same URI, and improper file handling on resume lets a man-in-the-middle replace
+    a package after verification. Max Justicz found it. Debian trixie gets the fix in apt
+    3.0.4, which also addresses several out-of-bounds access issues.
+  why: >-
+    Signature checks no longer protect APT over plain HTTP mirrors until hosts and base images
+    run apt 3.0.4.
+  sources:
+  - label: primary
+    url: https://lists.debian.org/debian-security-announce/2026/msg00526.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50364814
+- title: >-
+    GitHub pull requests, Git operations, Issues, API and Actions were degraded for two hours
+    on 2026-11-04
+  section: Outages
+  category: Outage
+  blurb: >-
+    Pull requests, Git operations, Issues, API requests and Actions saw errors and intermittent
+    failures for about two hours on 2026-11-04.
+  summary: >-
+    GitHub began investigating degraded Git Operations, Issues and Pull Requests at 09:49
+    UTC, and Actions and API Requests degraded soon after. API, Git, Issues and Pull Requests
+    were mitigated by 11:30 UTC, Actions by 11:43 UTC, and the incident was resolved at 11:50
+    UTC. GitHub says a root cause analysis will follow.
+  why: >-
+    This is GitHub's third broad degradation in two days, so teams relying on it for CI and
+    merges should plan for retries and delays.
+  followup: GitHub's root cause analysis.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/smtdswd1h2w4
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50363378
+  thread: f-0170
+- title: >-
+    Copilot Mission Control task calls failed at about 2.5% for over an hour on 2026-11-04
+  section: Outages
+  category: Outage
+  blurb: >-
+    About 2.5% of task list and create calls in Copilot Mission Control failed for over an
+    hour on 2026-11-04 due to database throttling.
+  summary: >-
+    GitHub opened the incident at 08:45 UTC and attributed the errors to upstream database
+    throttling. It later tied the issue to a specific client version, rolled out a mitigation,
+    and resolved the incident at 10:01 UTC.
+  why: >-
+    Teams scheduling Copilot agent tasks through Mission Control saw failed task creation
+    and listing during the window.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/tc28c0wzrnpz
 - title: >-
     Google DeepMind releases Cheminformatics Skills for Antigravity built on RDKit, ChEMBL
     and PubChem
@@ -158,6 +250,26 @@ stories:
   - label: primary
     url: https://github.blog/changelog/2026-11-03-dependabot-version-updates-support-agent-package-manager
 - title: >-
+    kitty 0.50 adds docked windows and restores sessions with scrollback after logout
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    kitty 0.50 can dock windows to the edge of a window or tab for status bars and file trees,
+    and can restore every session after logout.
+  summary: >-
+    kitty 0.50.0, released 2026-11-03, adds docks created with launch --type=window-dock or
+    --type=tab-dock that sit outside the layout and are saved in sessions. A new restore_session_after_logout
+    option saves OS windows, tabs, windows and scrollback on logout or shutdown, encrypted
+    with a keychain key on macOS.
+  why: >-
+    kitty users can keep editor side panels and full terminal state across reboots without
+    a multiplexer.
+  sources:
+  - label: primary
+    url: https://sw.kovidgoyal.net/kitty/changelog/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50362980
+- title: >-
     Rust compiler wall time fell 2.85% on average in five weeks as span and trait solver work
     landed
   section: Languages and runtimes
@@ -178,6 +290,25 @@ stories:
     url: https://nnethercote.github.io/2026/11/04/how-to-speed-up-the-rust-compiler-in-november-2026.html
   - label: discussion
     url: https://www.reddit.com/r/rust/comments/1xngioy/how_to_speed_up_the_rust_compiler_in_november_2026/
+- title: >-
+    systemd allows Rust in leaf binaries but keeps core components in C until Rust has shared
+    library support
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    systemd now accepts Rust in standalone leaf binaries, while core components stay C until
+    Rust gains first-class shared library support.
+  summary: >-
+    Phoronix reports that systemd merged support for Rust programs, limited to leaf binaries
+    because shared code remains C only. Lennart Poettering and Christian Brauner wrote that
+    Rust stays optional and no-std, uses the same build system and core APIs, and that missing
+    shared library and file-descriptor-based filesystem support block use in core components.
+  why: >-
+    Distribution builders will need a Rust toolchain for some systemd binaries, while the
+    core stays buildable in C alone.
+  sources:
+  - label: report
+    url: https://www.phoronix.com/news/systemd-Loves-Rust
 - title: >-
     Updated macOS Sequoia Macs cannot use the xprotect tool to install XProtect rule updates
   section: Apple platforms
