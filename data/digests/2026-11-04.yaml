@@ -1,5 +1,5 @@
 date: '2026-11-04'
-updated: 2026-11-04T20:30Z
+updated: 2026-11-04T22:49Z
 stories:
 - title: >-
     Rails fixes a 9.8 Active Storage flaw that lets one crafted upload write server files
@@ -319,6 +319,27 @@ stories:
   - label: primary
     url: https://vercel.com/changelog/vercel-security-review-public-beta
 - title: >-
+    Neon says agents pick its MCP server over its CLI and moves to the stateless 2026-07-28
+    MCP spec
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Neon MCP tool calls grew 79x since December 2025 against 21x for its CLI, and only Claude
+    Code defaults to the stateless MCP spec so far.
+  summary: >-
+    Neon reports that 28% of its function deploys in October came through its MCP server even
+    though its own agent skills recommend the CLI, and that ChatGPT made 24% of tool calls,
+    Claude Desktop 22%, Codex 21%, Claude Code 13% and Cursor 8%. On 2026-11-02 it added support
+    for the stateless 2026-07-28 MCP spec, which drops the initialize handshake and Mcp-Session-Id
+    header, and retired its SSE endpoints and the Redis session store. Codex and OpenCode
+    support the new spec only as an opt-in, and Cursor has no public support yet.
+  why: >-
+    MCP server authors can drop sticky sessions and shared session stores, but must keep the
+    2025 handshake until most clients move.
+  sources:
+  - label: primary
+    url: https://neon.com/blog/is-mcp-good-yet
+- title: >-
     Paper finds dense-model FP4 RL recovery fails on MoE models and proposes a symmetric fix
   section: ML research
   category: Paper
@@ -515,6 +536,25 @@ stories:
   - label: primary
     url: https://eclecticlight.co/2026/11/04/why-your-mac-may-struggle-to-update-xprotect/
 - title: >-
+    GitHub Copilot joins Xcode's built-in coding assistant in public preview starting with
+    Xcode 27.3 beta
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    Xcode 27.3 beta can run GitHub Copilot inside its native coding assistant, separate from
+    the existing Copilot for Xcode extension.
+  summary: >-
+    GitHub says Copilot is available in Xcode's built-in coding assistant as a public preview
+    starting with Xcode 27.3 beta, set up under Xcode > Settings > Intelligence. It needs
+    macOS Tahoe 26.6 or later and supports all Copilot plans. The separate GitHub Copilot
+    for Xcode extension stays available.
+  why: >-
+    iOS and macOS teams can use Copilot inside Apple's own assistant workflow without the
+    third-party extension.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-04-github-copilot-is-now-available-in-xcodes-coding-assistant
+- title: >-
     PostgreSQL 19 adds REPACK CONCURRENTLY for online table bloat cleanup without pg_repack
   section: Infrastructure
   category: Infrastructure
@@ -556,6 +596,26 @@ stories:
   sources:
   - label: primary
     url: https://cloud.google.com/blog/topics/developers-practitioners/introducing-compute-engine-api-multi-versioning-predictable-evolution-without-breaking-production/
+- title: >-
+    Google previews AlloyDB Express, scale-to-zero PostgreSQL that provisions in under two
+    seconds
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Google's AlloyDB Express preview creates Postgres databases in under two seconds and pauses
+    compute after 15 idle minutes.
+  summary: >-
+    AlloyDB Express is a preview AlloyDB for PostgreSQL offering with 1 to 2 vCPUs and 20
+    GB of storage, created through gcloud, REST, MCP, Terraform or the console. Compute costs
+    $0.115 per compute unit hour billed by the second and nothing while paused, storage costs
+    $0.30 per GB-month, and a free tier gives 50 compute units a month. A one-click upgrade
+    moves a database to full AlloyDB with data, users and connection strings kept.
+  why: >-
+    Teams can give each CI run or coding agent task its own isolated Postgres database under
+    central IAM and network policy without paying for idle compute.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/products/databases/introducing-alloydb-express-for-rapid-testing-and-prototyping/
 - title: >-
     Dimitri Fontaine builds five-region multi-writer Postgres on core logical replication
     and pg_auto_failover
