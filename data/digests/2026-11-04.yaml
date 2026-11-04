@@ -1,0 +1,240 @@
+date: '2026-11-04'
+updated: 2026-11-04T07:43Z
+stories:
+- title: >-
+    Era Security finds the Greeter framework exploiting Flowise CVE-2024-58351 to harvest
+    cloud credentials
+  section: Security
+  category: Security
+  blurb: >-
+    A Chinese-language toolkit hides each attack stage behind a hello chat message and runs
+    shell commands on exposed Flowise servers.
+  summary: >-
+    Era's Flowise 1.8.2 honeypots logged 4,972 hello messages from July to October 2026, each
+    carrying an overrideConfig javascriptFunction payload that ran reconnaissance, cloud metadata
+    probes, credential file searches and persistence attempts. Shodan shows 4,372 exposed
+    Flowise instances, and 703 of 3,277 with a known version had no authentication.
+  why: >-
+    Teams running Flowise or similar agent builders should enforce authentication, update,
+    drop root and Docker socket access, and log overrideConfig requests, because the stored
+    chat history shows only greetings.
+  sources:
+  - label: primary
+    url: https://era.security/blog/greeter-flowise-ai-infrastructure-attack
+  - label: discussion
+    url: https://www.reddit.com/r/netsec/comments/1xmviny/we_found_4972_hello_messages_hiding_thousands_of/
+- title: >-
+    Synology warns C3RB3R ransomware is encrypting NAS devices on outdated DiskStation Manager
+    builds
+  section: Security
+  category: Security
+  blurb: >-
+    Attackers exploit DSM flaws patched as early as December 2024 to encrypt files with a
+    .L0CK3D extension, and Synology urges updates.
+  summary: >-
+    Synology says attackers exploit a vulnerability patched in December 2024 and links an
+    advisory listing CVE-2024-10441 (CVSS 9.8). Qihoo 360 also ties C3RB3R to CVE-2026-13684
+    and CVE-2026-13639, fixed in September 2026. Fixed builds include DSM 7.2.2-72806-1 and
+    7.1.1-42962-7.
+  why: >-
+    Synology boxes that hold backups or build artifacts need current DSM and automatic updates,
+    and their management interfaces should stay off the internet.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/11/synology-nas-devices-targeted-in.html
+- title: >-
+    mSecure tells users to reset passwords, 2FA and passkeys after suspicious activity it
+    has not explained
+  section: Security
+  category: Security
+  blurb: >-
+    The password manager's developer emailed customers on 2026-11-03 to protect every stored
+    secret but has not said what was accessed.
+  summary: >-
+    mSeven Software says it found suspicious activity tied to the mSecure app, engaged outside
+    experts, and recommends changing passwords, re-enrolling two-factor methods or removing
+    passkeys. It has not said whether customer vaults were exposed.
+  why: >-
+    Engineers who keep work credentials or recovery codes in mSecure should prioritize rotating
+    high-value secrets until the vendor discloses scope.
+  sources:
+  - label: primary
+    url: https://www.theregister.com/security/2026/11/03/password-manager-msecure-tells-users-to-change-passwords-wont-say-why/5307296
+  - label: discussion
+    url: https://thehackernews.com/2026/11/msecure-warns-users-to-change-passwords.html
+  thread: f-0167
+- title: >-
+    Barracuda patches chainable flaws that give root on Email Security Gateway and five other
+    appliances
+  section: Security
+  category: Security
+  blurb: >-
+    CVE-2026-116606 and CVE-2026-111560 let an attacker who reaches the admin interface bypass
+    authorization and run commands as root.
+  summary: >-
+    The pre-authentication bypass CVE-2026-116606 (CVSS 9.3) affects Email Security Gateway,
+    and the command injection CVE-2026-111560 (CVSS 8.6) also affects Load Balancer ADC, Message
+    Archiver, WAF, WAF Control Center and Web Security Gateway. Barracuda says devices several
+    versions behind may need more than one firmware update.
+  why: >-
+    Barracuda appliance owners should confirm current firmware and restrict admin interfaces
+    to trusted networks.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/11/barracuda-flaws-could-be-chained-to.html
+- title: >-
+    Google DeepMind releases Cheminformatics Skills for Antigravity built on RDKit, ChEMBL
+    and PubChem
+  section: AI
+  category: AI
+  blurb: >-
+    An agent curates literature compounds, runs matched molecular pair analysis, trains potency
+    models and proposes new macrocycles.
+  summary: >-
+    The skills let the model orchestrate while deterministic RDKit tools do molecular calculations,
+    with connectors to ChEMBL and PubChem. In a crizotinib to lorlatinib rigidification walkthrough
+    the agent used chronological or scaffold splits for potency models and proposed synthesis
+    routes in about an hour. DeepMind says designs remain hypotheses that need experimental
+    validation.
+  why: >-
+    It is a concrete pattern for drug discovery agents that keep chemistry computation in
+    deterministic tooling rather than in the model.
+  sources:
+  - label: primary
+    url: https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/
+- title: >-
+    Vercel Security Review enters public beta and reviews every GitHub push with an AI agent
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Pro and Enterprise teams get AI vulnerability findings on every push, including force
+    pushes, with agent fixes offered as pull requests.
+  summary: >-
+    Reviews trigger on GitHub push events, add a GitHub check, post pull request comments,
+    and record an AI-generated severity per finding. Vercel Agent can open a fix PR that needs
+    approval, and the vercel security vulnerabilities CLI command hands findings to other
+    coding agents. Reviews are free until 2026-11-10, then billed at token rates.
+  why: >-
+    It adds an AI review gate that covers direct pushes to production branches, not only pull
+    requests, with cost that scales with push frequency.
+  followup: Free period ends 2026-11-10.
+  sources:
+  - label: primary
+    url: https://vercel.com/changelog/vercel-security-review-public-beta
+- title: >-
+    Paper finds dense-model FP4 RL recovery fails on MoE models and proposes a symmetric fix
+  section: ML research
+  category: Paper
+  blurb: >-
+    Correcting only the rollout side breaks router agreement between training and inference,
+    so MoeResQ applies recovery on both sides.
+  summary: >-
+    The authors find FP4 recovery recipes that work for dense models give no gain over naive
+    FP4 on mixture-of-experts RL post-training. Asymmetric corrections lower the correlation
+    of training and inference probabilities and router selection match rates. MoeResQ enforces
+    symmetric correction and largely closes the gap to full precision.
+  why: >-
+    Teams running low-precision RL on MoE models should check router agreement between trainer
+    and rollout engine, not just token probabilities.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.04376v1
+- title: >-
+    Dependabot version updates now cover agent skills and prompts declared in Agent Package
+    Manager
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Dependabot opens pull requests for git dependencies in apm.yml and regenerates apm.lock.yaml,
+    though it offers no security updates.
+  summary: >-
+    GitHub added an apm ecosystem to dependabot.yml for AI agent skills, prompts and instructions
+    managed by APM. It is generally available on github.com and comes to GitHub Enterprise
+    Server 3.24.
+  why: >-
+    Agent instructions pinned as dependencies can now get the same reviewed update flow as
+    code dependencies.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-03-dependabot-version-updates-support-agent-package-manager
+- title: >-
+    Rust compiler wall time fell 2.85% on average in five weeks as span and trait solver work
+    landed
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Nicholas Nethercote reports a new span encoding that interns about 1% of spans in incremental
+    builds, down from 20 to 40% before.
+  summary: >-
+    Between 2026-09-28 and 2026-11-02 rustc improved on 236 relevant tests with four regressions,
+    a mean wall-time drop of 2.85% and a mean peak memory drop of 4.46%. Optimizations cut
+    the new trait solver's overhead on Diesel from 1.49x to 1.16x, and sparse metadata encoding
+    reduced metadata size by up to 37%.
+  why: >-
+    Incremental Rust builds get faster and the new trait solver moves closer to replacing
+    the old one without a compile time penalty.
+  sources:
+  - label: primary
+    url: https://nnethercote.github.io/2026/11/04/how-to-speed-up-the-rust-compiler-in-november-2026.html
+  - label: discussion
+    url: https://www.reddit.com/r/rust/comments/1xngioy/how_to_speed_up_the_rust_compiler_in_november_2026/
+- title: >-
+    Updated macOS Sequoia Macs cannot use the xprotect tool to install XProtect rule updates
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    Howard Oakley finds xprotect check and update fail on Sequoia 15.8 to 15.8.2 with a CloudKit
+    Zone Not Found error from Apple servers.
+  summary: >-
+    As of 2026-11-03, xprotect check returns XProtectUpdateError Code=11 and xprotect update
+    reports no update on Sequoia 15.8 to 15.8.2, while Tahoe, Golden Gate and Sequoia 15.6.1
+    work. The background XProtectUpdateService can still copy a Software Update copy into
+    the primary location after a day or more.
+  why: >-
+    Fleet admins on Sequoia cannot force XProtect updates with xprotect and should install
+    via softwareupdate and verify versions.
+  sources:
+  - label: primary
+    url: https://eclecticlight.co/2026/11/04/why-your-mac-may-struggle-to-update-xprotect/
+- title: >-
+    PostgreSQL 19 adds REPACK CONCURRENTLY for online table bloat cleanup without pg_repack
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The new built-in command rebuilds bloated tables while they stay readable and writable,
+    holding an exclusive lock only for the final swap.
+  summary: >-
+    REPACK replaces the VACUUM FULL and CLUSTER split and uses logical decoding like pg_squeeze.
+    CONCURRENTLY needs twice the table and index space, a primary key, a non-partitioned logged
+    table, and is not fully MVCC-safe for snapshots taken before it starts. Craig Kerstiens
+    reports RC1 is out, RC2 is expected 2026-11-12, and GA later in November or December.
+  why: >-
+    Teams that run pg_repack or pg_squeeze as extensions can plan to move bloat cleanup into
+    core after upgrading to PostgreSQL 19.
+  followup: PostgreSQL 19 RC2 expected 2026-11-12.
+  thread: f-0151
+  sources:
+  - label: primary
+    url: https://www.snowflake.com/en/blog/engineering/postgres-19-repack-table-bloat/
+  - label: discussion
+    url: https://www.reddit.com/r/programming/comments/1xn9jr2/postgres_19_repack_builtin_online_table_bloat/
+- title: >-
+    Dimitri Fontaine builds five-region multi-writer Postgres on core logical replication
+    and pg_auto_failover
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Primary kills under load lost no acknowledged rows with failover slots and row filters,
+    but core Postgres still cannot replicate DDL.
+  summary: >-
+    Regions own rows through a region column in every primary key, and row-filtered publications
+    prevent loops where origin = none would drop relayed rows. With synchronized_standby_slots
+    set, consumers saw duplicates but no holes after a primary kill, and emptying it left
+    consumers 69 to 92 rows ahead of the new primary. A killed hub delayed downstream rows
+    by about 54 seconds and lost nothing.
+  why: >-
+    It shows which Postgres 17 to 19 settings make logical replication survive failover and
+    how to check a consumer's position with IDENTIFY_SYSTEM.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9AU
