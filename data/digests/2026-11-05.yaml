@@ -1,0 +1,225 @@
+date: '2026-11-05'
+updated: 2026-11-05T08:04Z
+lede: >-
+  AI-assisted vulnerability research landed twice in one day: a Codex-assisted Firecracker
+  escape and an OpenAI pipeline that turned out 948 Linux root exploits.
+stories:
+- title: >-
+    Firecracker CVE-2026-122192 lets a root guest process escape into the VMM on snapshot-restored
+    microVMs
+  section: Top stories
+  category: Security
+  blurb: >-
+    A Coinspect chain escapes Firecracker microVMs restored from file-backed snapshots with
+    a balloon device. Upgrade to v1.16.2 or v1.17.0.
+  summary: >-
+    Coinspect showed that a failed memory discard in Firecracker v0.23.0 through v1.16.1 left
+    a KVM memory slot pointing at reused VMM memory, letting root in guest userspace read
+    and change Firecracker's host process and gain code execution. A second issue, FC-03,
+    let that code create a fresh io_uring ring to perform host operations the seccomp policy
+    blocks, and a seccomp redesign for it is still under review in PR 6287 with no CVE planned.
+    AWS published the CVE, GHSA-48ww-rqpp-2mgm and a bulletin on 2026-11-04 and says Lambda
+    and its other services are not affected.
+  why: >-
+    Teams that self-host Firecracker for agent or untrusted code sandboxes should upgrade,
+    check for file-backed snapshot plus balloon or virtio-mem setups, and consider running
+    the jailer with --netns.
+  followup: Review and merge of the FC-03 seccomp redesign in Firecracker PR 6287.
+  sources:
+  - label: primary
+    url: https://www.coinspect.com/blog/firecracker-escape/
+  - label: discussion
+    url: https://www.reddit.com/r/netsec/comments/1xo0yov/escaping_aws_firecracker_from_guest_userspace_vmm/
+  thread: f-0173
+- title: >-
+    OpenAI pipeline produced 948 working Linux root exploits in a 30-hour run for $1.2 million
+  section: Top stories
+  category: Security
+  blurb: >-
+    An agentic pipeline on an unreleased OpenAI cyber model reproduced 1,724 kernel bugs and
+    wrote patches, at $1,279 per root exploit.
+  summary: >-
+    OpenAI describes a five-stage agent pipeline covering discovery, sandboxed dynamic validation,
+    exploitability assessment, patch generation and human review. In a mid-October 2026 run
+    against a common Linux distribution it analyzed 2,308 candidate kernel findings, reproduced
+    1,724, and produced 291 information leak PoCs and 948 working local privilege escalation
+    exploits for $1,213,430 in API credits, using at least 10 new exploitation techniques.
+    OpenAI says an unpatched system with a low-privileged account should be treated as equivalent
+    to root for a well-resourced attacker.
+  why: >-
+    Kernel patch latency on multi-user and CI hosts now matters as much as remote exposure,
+    since local footholds convert to root cheaply.
+  sources:
+  - label: primary
+    url: https://openai.com/index/a-thousand-fewer-paths-to-root/
+  - label: discussion
+    url: https://thehackernews.com/2026/11/openai-ai-pipeline-generates-948-linux.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50372929
+- title: >-
+    Zyxel GS1900 zero-day CVE-2026-107441 bypassed an earlier patch and was used to hack 996
+    switches
+  section: Security
+  category: Security
+  blurb: >-
+    Attackers bypassed the June fix for CVE-2026-7273 on ten GS1900 switch models. Zyxel shipped
+    new firmware on 2026-10-22.
+  summary: >-
+    GreyNoise saw an actor it tracks as Kapibala compromise 996 GS1900 switches in 48 countries
+    from about 2026-08-17 and steal configurations and hashed root credentials. Binarly found
+    the exploit worked against all firmware patched for CVE-2026-7273 by corrupting a parameter
+    counter, and Zyxel assigned the unauthenticated out-of-bounds write CVE-2026-107441, released
+    fixes on 2026-10-22 and published an advisory on 2026-11-03.
+  why: >-
+    Switches patched for the June flaw are still exposed until they run the October firmware.
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/zyxel-fixes-zero-day-exploited-to-hack-nearly-1-000-network-switches/
+- title: >-
+    Binance traces its $6.34 billion theft to a rigged coding assignment and an abused internal
+    AI tool
+  section: Security
+  category: Security
+  blurb: >-
+    A fake job interview handed a wallet engineer a malicious repository, and attackers then
+    used an internal AI tool to reach two more machines.
+  summary: >-
+    Binance's initial incident report, published 2026-11-03, says a June tampered Homebrew
+    download hit one Wallet DevOps engineer, and in September a second engineer ran a coding
+    assignment repository that swapped in a rogue developer tool component undetected by endpoint
+    tools. On 2026-10-20 the attackers used that machine and an internal AI tool to take over
+    two other engineers' systems, then on 2026-10-29 deployed a container with a stolen deployment
+    token and abused the wallet signing service, including EIP-7702 delegations. The FBI attributes
+    the theft to TraderTraitor, and about $2.85 billion has been frozen or intercepted.
+  why: >-
+    Take-home repositories and internal AI tools with broad reach are now proven paths from
+    one developer laptop to production signing systems.
+  sources:
+  - label: primary
+    url: https://www.securityweek.com/rigged-coding-assignment-abused-ai-tool-opened-path-to-6-billion-binance-heist/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50365755
+- title: >-
+    Check Point finds a Codex jailbreak bundle that writes ads into the agent's global instructions
+  section: Security
+  category: Security
+  blurb: >-
+    The haiou-codex package, starred 403 times on GitHub, edits Codex config so greetings
+    trigger ads for an opaque LLM gateway.
+  summary: >-
+    Check Point Research calls the behavior prompt adware. The Haiou bundle uses role-play
+    and CTF framing to jailbreak Codex, installs offensive security skills, and persistently
+    adds instructions that answer greetings with ads for an OpenAI-compatible gateway. It
+    is also bundled in the Codex-X configuration GUI.
+  why: >-
+    Third-party agent configs and skills change behavior without any executable payload, so
+    instruction files need the same review as dependencies.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/11/researchers-uncover-prompt-adware.html
+- title: >-
+    Vercel binds dashboard sessions to device TPM keys with DBSC to stop stolen cookie reuse
+  section: Security
+  category: Security
+  blurb: >-
+    Vercel is rolling out Device Bound Session Credentials in Chrome on macOS and Windows
+    and DPoP for its CLI against infostealer cookie theft.
+  summary: >-
+    Vercel CTO Malte Ubl said logins to vercel.com now sign session cookies with a private
+    key held in the device TPM, so a stolen cookie cannot be replayed elsewhere. The rollout
+    is gradual to handle OAuth app edge cases, and a similar DPoP scheme is coming to the
+    Vercel CLI.
+  why: >-
+    Deploy-platform sessions stolen by infostealers become much harder to replay, a pattern
+    other developer platforms can copy.
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/vercel-rolls-out-new-protection-against-stolen-session-cookie-attacks/
+- title: >-
+    Ricursive releases Ripple-65B Preview, a dense open-weight model scoring 80.52 on TerminalBench
+    2.1
+  section: AI
+  category: AI
+  blurb: >-
+    The 65B dense model was trained from scratch on 12T tokens for a stated $32M and is on
+    Hugging Face, Together AI and OpenRouter.
+  summary: >-
+    Ricursive says Ripple-65B Preview supports up to 1M context and reports 80.52 on TerminalBench
+    2.1, a vendor-run result. Its RL recipe used truncated importance sampling, score centering
+    and a linear length penalty and reached that score with 1.4M rollouts after an SFT stage
+    built on its own synthetic data. The thin-and-deep dense architecture uses 80 layers,
+    gated attention, global NoPE and value residuals and held 40% MFU without custom kernels.
+  why: >-
+    A dense 65B agentic coding model is small enough for local hardware such as DGX Spark
+    and documents a reproducible post-training recipe.
+  sources:
+  - label: primary
+    url: https://www.ricursive.com/ripple
+  - label: primary
+    url: https://huggingface.co/ricursiveAI/Ripple-65B-Preview
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50369925
+- title: >-
+    Conductor joins Meta, stops new sign-ups and shuts down Conductor Cloud on 2026-11-20
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    The coding agent app is now free for existing users. Cloud workspaces go read-only on
+    2026-11-13, and local app updates end in early 2027.
+  summary: >-
+    Conductor stopped new sign-ups and downloads on 2026-11-04. Conductor Cloud goes read-only
+    on 2026-11-13 and data deletion starts on 2026-11-20, with a Transfer to local option
+    and a data export. The local app gets new models and critical fixes until early 2027.
+  why: >-
+    Teams running parallel coding agents in Conductor Cloud must export or move workspaces
+    within two weeks.
+  followup: Conductor Cloud read-only on 2026-11-13 and deletion from 2026-11-20.
+  sources:
+  - label: primary
+    url: https://www.conductor.build/announcement
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50369503
+  thread: f-0174
+- title: >-
+    Mbed TLS maintainers will stop TLS and X.509 security fixes in April 2027 unless new maintainers
+    join
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The current team keeps TF-PSA-Crypto but leaves the TLS and X.509 libraries, which lose
+    security fixes and releases without new maintainers.
+  summary: >-
+    An announcement dated 2026-10-08 on the Mbed TLS list says the existing maintainers will
+    end their work on the TLS and X.509 libraries from April 2027. Unless new maintainers
+    have ramped up by then, security incident response, fixes and releases will stop, and
+    the project is asking organizations for engineering resources or funding.
+  why: >-
+    Embedded and firmware products that ship Mbed TLS need a maintenance plan or a migration
+    path before April 2027.
+  followup: Named new maintainers or funding for Mbed TLS before April 2027.
+  sources:
+  - label: primary
+    url: https://lists.trustedfirmware.org/archives/list/mbed-tls@lists.trustedfirmware.org/thread/YPIGCB7WN6GCHOGEGKOJXUYAP7OK527W/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50349165
+  thread: f-0175
+- title: >-
+    Synaptics cease-and-desist takes down Vino, a reverse-engineered Rust driver for DisplayLink
+    hardware
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    After a patent-based legal notice to its developer, the open-source Rust kernel driver
+    for modern DisplayLink USB graphics left GitHub.
+  summary: >-
+    Phoronix reports that Synaptics sent the Vino developer a cease-and-desist on patent grounds,
+    with the correspondence attached to an LKML thread. The clean-room Rust driver repository
+    is no longer public.
+  why: >-
+    Linux users of modern DisplayLink docks remain on the proprietary driver with no upstream
+    path in sight.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Synaptics-Blocks-Vino-Driver
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50363968
