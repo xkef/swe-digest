@@ -1,5 +1,5 @@
 date: '2026-11-05'
-updated: 2026-11-05T13:24Z
+updated: 2026-11-05T17:32Z
 lede: >-
   AI-assisted vulnerability research landed twice in one day: a Codex-assisted Firecracker
   escape and an OpenAI pipeline that turned out 948 Linux root exploits.
@@ -186,6 +186,23 @@ stories:
   - label: primary
     url: https://www.theregister.com/research/2026/11/05/anthropic-wont-fix-a-claude-dispatch-flaw-that-could-let-attackers-execute-remote-commands-across-corporate-boundaries/5307684
   thread: f-0177
+- title: GitHub Actions workflow runs saw start delays and errors on 2026-11-05
+  section: Outages
+  category: Outage
+  blurb: >-
+    GitHub Actions workflow runs were delayed or failed to start from 16:50 UTC on 2026-11-05
+    until a mitigation at 17:04 UTC.
+  summary: >-
+    GitHub opened an Actions incident at 16:50 UTC on 2026-11-05 and said some workflow runs
+    might see delays or errors when starting. At 17:04 UTC it reported the degradation mitigated
+    and moved to monitoring.
+  why: >-
+    CI pipelines that start in this window may need reruns, and it is the fifth GitHub incident
+    touching Actions in three days.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/t89g2q1800fr
+  thread: f-0178
 - title: >-
     Ricursive releases Ripple-65B Preview, a dense open-weight model scoring 80.52 on TerminalBench
     2.1
@@ -276,6 +293,26 @@ stories:
     url: https://news.ycombinator.com/item?id=50369503
   thread: f-0174
 - title: >-
+    Shopify's Reflex architecture lets agents drive native iOS and Android apps headlessly
+    through ViewModel contracts
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Agents read each screen's state as JSON and call its actions from a CLI, so one behavior
+    suite of 1,700+ tests runs on iOS and Android.
+  summary: >-
+    Shopify splits each native app into a UI-free Core module and a Mobile module, and every
+    ViewModel exposes its state and actions through an introspection node that a CLI drives
+    without a simulator. The same Bun-based test file runs against Swift and Kotlin builds,
+    a PR cannot merge unless it passes on both, and the 1,700+ behavior tests finish in about
+    four minutes on CI with network access blocked.
+  why: >-
+    It shows a concrete way to give coding agents a fast feedback loop on mobile code by testing
+    ViewModel state instead of rendered UI.
+  sources:
+  - label: primary
+    url: https://shopify.engineering/reflex
+- title: >-
     Mbed TLS maintainers will stop TLS and X.509 security fixes in April 2027 unless new maintainers
     join
   section: Languages and runtimes
@@ -318,6 +355,26 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/golang/comments/1xoe261/proposal_accepted_generic_sets/
 - title: >-
+    zlib 1.4 ships more than a dozen security fixes for buffer overflows and out-of-bounds
+    reads
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The compression library release fixes buffer overflows, reads before input start and outside
+    the window, and several minizip flaws.
+  summary: >-
+    zlib 1.4 includes fixes for buffer overflows, overrunning buffer writes, reading before
+    the start of input, copying uninitialized memory to output, reading outside the window,
+    and several minizip issues. It also updates the CMake build and adds Android large file
+    support.
+  why: >-
+    zlib is linked or vendored into most toolchains and runtimes, so vendored copies and distribution
+    packages need tracking for the update.
+  followup: Distribution zlib package updates and CVE IDs for the fixed flaws.
+  sources:
+  - label: secondary
+    url: https://www.phoronix.com/news/Zlib-1.4-Released
+- title: >-
     Synaptics cease-and-desist takes down Vino, a reverse-engineered Rust driver for DisplayLink
     hardware
   section: Linux and kernel
@@ -357,3 +414,44 @@ stories:
   sources:
   - label: primary
     url: https://cloud.google.com/blog/products/containers-kubernetes/open-infrastructure-for-autonomous-agents-comes-to-cncf/
+- title: >-
+    Prometheus 3.16.0 adds experimental PromQL query cost limits and fixes several TSDB sample-loss
+    bugs
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The release adds opt-in query cost estimation and execution limits, makes smoothed and
+    anchored selectors stable, and fixes TSDB data loss.
+  summary: >-
+    Prometheus 3.16.0 adds query cost estimation and configurable execution limits behind
+    --enable-feature=query-cost and an experimental integral() function, and makes smoothed
+    and anchored selectors stable. It fixes TSDB races that could lose out-of-order samples
+    or samples during selected-series compaction, and fixes HTTP/2 silently falling back to
+    HTTP/1.1 under Go 1.27 with TLS. --web.external-url now defaults to https when TLS is
+    enabled.
+  why: >-
+    Operators get a guard against expensive queries and fixes for silent sample loss, but
+    should check the external URL default and removed remote write metadata metrics.
+  sources:
+  - label: primary
+    url: https://github.com/prometheus/prometheus/releases/tag/v3.16.0
+- title: >-
+    Datadog's FETCh turns TLA+ specifications into runtime monitors and found a year-old Husky
+    placement bug
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Datadog checks production logs against TLA+ models of its Husky event store and found
+    conflicting placements that could crash backfills.
+  summary: >-
+    Datadog built FETCh, which compiles TLA+ specifications into Rust runtime monitors that
+    consume telemetry such as logs. It uses TLA+ refinement to pair an observable specification
+    with a bounded model-checkable one. Running it on Husky's routing system showed that a
+    placement logic change had let conflicting placements persist for about a year, which
+    would have crashed backfill during placement data loss recovery.
+  why: >-
+    It gives a method for catching drift between a formal model and the system it describes,
+    which point-in-time spec reviews miss.
+  sources:
+  - label: primary
+    url: https://www.datadoghq.com/blog/engineering/continuous-formal-spec-validation/
