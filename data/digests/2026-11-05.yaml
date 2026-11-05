@@ -1,5 +1,5 @@
 date: '2026-11-05'
-updated: 2026-11-05T17:32Z
+updated: 2026-11-05T20:45Z
 lede: >-
   AI-assisted vulnerability research landed twice in one day: a Codex-assisted Firecracker
   escape and an OpenAI pipeline that turned out 948 Linux root exploits.
@@ -313,6 +313,28 @@ stories:
   - label: primary
     url: https://shopify.engineering/reflex
 - title: >-
+    IntelliJ IDEA 2026.3 adds JetBrains Air, Java 28 support and a Java and Kotlin extension
+    for Cursor and VS Code
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    JetBrains' Java IDE release adds an agentic development layer, an ij-debugger agent skill,
+    Hibernate debugging and Git worktree support.
+  summary: >-
+    IntelliJ IDEA 2026.3 ships JetBrains Air as a layer for agentic development and an extension
+    that brings IntelliJ's Java and Kotlin support to Cursor and VS Code. It adds an ij-debugger
+    agent skill, a Hibernate debugger, Spring Security diagnostics in HTTP responses, and
+    support for Java 28, Jakarta Persistence 4 and Hibernate 8. Git worktrees are supported
+    for parallel work and code review.
+  why: >-
+    Java teams that use Cursor or VS Code can now get IntelliJ language support there, and
+    agents get a debugger skill inside the IDE.
+  sources:
+  - label: primary
+    url: https://blog.jetbrains.com/idea/2026/11/whats-new-in-intellij-idea-2026-3/
+  - label: discussion
+    url: https://www.reddit.com/r/java/comments/1xoirsd/whats_new_in_intellij_idea_20263/
+- title: >-
     Mbed TLS maintainers will stop TLS and X.509 security fixes in April 2027 unless new maintainers
     join
   section: Languages and runtimes
@@ -455,3 +477,45 @@ stories:
   sources:
   - label: primary
     url: https://www.datadoghq.com/blog/engineering/continuous-formal-spec-validation/
+- title: >-
+    GitHub details a Git storage architecture that took 7,200 pushes per second from 5,000
+    agents on one repository
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    GitHub orders only reference updates and lets writers store immutable Git objects in parallel,
+    so many agents can push to one repository.
+  summary: >-
+    GitHub says internal tests of its new Git storage architecture supported 5,000 concurrent
+    agents sending 7,200 pushes per second to one repository while serving reads at low latency.
+    The design rests on two principles, minimizing coordination and decoupling storage from
+    compute: Git objects are content-addressed and can be written without agreement, and only
+    reference updates need a quorum. Repositories are onboarded through virtual replicas backed
+    by Azure Blob Storage, after moving 99.99999% of repositories into Azure.
+  why: >-
+    Teams running fleets of coding agents against a single repository can expect GitHub to
+    absorb sustained write rates that today only appear in short bursts.
+  sources:
+  - label: primary
+    url: https://github.blog/engineering/architecture-optimization/inside-githubs-new-git-storage-architecture/
+- title: >-
+    PlanetScale's Neki fails over Postgres only when reachable replicas confirm broken replication
+    to the primary
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Neki asks replicas, not just its control plane, whether a Postgres primary is dead, then
+    freezes WAL positions before choosing a new primary.
+  summary: >-
+    Shlomi Noach describes how Neki's Admin control plane declares a Postgres primary dead
+    only when at least one reachable replica reports broken replication through pg_stat_wal_receiver
+    and none contradict it. Before promotion, Admin breaks each replica's primary_conninfo
+    hostname so a returning primary cannot regain acknowledgers under synchronous_standby_names
+    ANY 1, then promotes the replica with the highest received WAL position. The old primary
+    is marked TEARDOWN and kept for postmortem rather than rejoined.
+  why: >-
+    It gives a concrete fencing and candidate-selection recipe for anyone building automated
+    Postgres failover on core physical replication.
+  sources:
+  - label: primary
+    url: https://planetscale.com/blog/designing-a-reliable-unplanned-failover
