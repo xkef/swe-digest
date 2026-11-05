@@ -1,5 +1,5 @@
 date: '2026-11-05'
-updated: 2026-11-05T20:45Z
+updated: 2026-11-05T22:48Z
 lede: >-
   AI-assisted vulnerability research landed twice in one day: a Codex-assisted Firecracker
   escape and an OpenAI pipeline that turned out 948 Linux root exploits.
@@ -272,6 +272,29 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50377078
 - title: >-
+    OpenAI releases GPT-6 Cyber, rated Critical, to approved Daybreak Red offensive security
+    customers
+  section: AI
+  category: AI
+  blurb: >-
+    OpenAI's new cyber model scores 48.5 percent on ExploitGym, up from 32.1, and access is
+    limited to vetted red-team customers.
+  summary: >-
+    OpenAI released GPT-6 Cyber on 2026-11-05 and says it scored 48.5 percent on its ExploitGym
+    evaluation versus 32.1 percent for GPT-5.6 Cyber, and avoided exploiting out-of-scope
+    services over 99 percent of the time. OpenAI rates it Critical under its Preparedness
+    Framework, and it is available only through the API and Codex to a select group of Daybreak
+    Red customers, with wider Daybreak Red access over the coming weeks. OpenAI says the model
+    found 81 previously unknown high-severity Firefox bugs that Mozilla has started fixing.
+  why: >-
+    Teams get a vendor model aimed at exploit development and fix generation, but only through
+    a gated offensive security program, so most defenders cannot use it yet.
+  sources:
+  - label: discussion
+    url: https://www.theregister.com/security/2026/11/05/openai-releases-gpt-6-cyber-and-promises-this-one-stays-within-rules-of-engagement/5307855
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50381590
+- title: >-
     Conductor joins Meta, stops new sign-ups and shuts down Conductor Cloud on 2026-11-20
   section: Agentic coding
   category: Agentic coding
@@ -334,6 +357,26 @@ stories:
     url: https://blog.jetbrains.com/idea/2026/11/whats-new-in-intellij-idea-2026-3/
   - label: discussion
     url: https://www.reddit.com/r/java/comments/1xoirsd/whats_new_in_intellij_idea_20263/
+- title: >-
+    GitHub previews a pull request Overview page that puts merge readiness and blockers at
+    the top
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    An opt-in GitHub pull request view puts a compact merge box at the top and filters conversations
+    to unresolved or your own comments.
+  summary: >-
+    GitHub released an opt-in public preview of a pull request Overview page on 2026-11-05,
+    with rollout continuing through the weekend. It moves a redesigned merge box with checks,
+    approvals and next actions to the top, and adds filters for unresolved conversations,
+    newest-first comment sorting and an activity summary. Users can switch back to the classic
+    overview from the same menu.
+  why: >-
+    Reviewers handling many pull requests can see what blocks a merge without scrolling the
+    full timeline.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-05-new-pull-request-overview-page-in-public-preview
 - title: >-
     Mbed TLS maintainers will stop TLS and X.509 security fixes in April 2027 unless new maintainers
     join
@@ -519,3 +562,24 @@ stories:
   sources:
   - label: primary
     url: https://planetscale.com/blog/designing-a-reliable-unplanned-failover
+- title: >-
+    PostgresAI measures UUIDv4 primary keys inserting at 0.62 to 0.69 of ordered keys at 100M
+    rows on Postgres 18
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Once a random UUID index outgrows memory, Postgres 18 inserts slow by about a third and
+    WAL per row rises 1.5 to 1.9 times.
+  summary: >-
+    Nikolay Samokhvalov compared UUIDv4, UUIDv7 and int8 primary keys on Postgres 18.6 with
+    16 pgbench clients under memory caps. Past memory at 100M rows, UUIDv4 inserted at 0.62
+    to 0.69 of an ordered key on the same server, wrote 1.5 to 1.9 times the WAL per row from
+    full-page images, and had a 33 percent larger index, while UUIDv7 kept pace with int8.
+    The post advises generating uuidv7() on the server because client clock skew of plus or
+    minus 60 seconds left 45 percent of leaves out of order.
+  why: >-
+    Tables using gen_random_uuid() keys can switch new rows to uuidv7() with one ALTER COLUMN
+    SET DEFAULT and cut index churn, WAL volume and standby replay cost.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9B8
