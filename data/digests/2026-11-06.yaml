@@ -1,0 +1,240 @@
+date: '2026-11-06'
+updated: 2026-11-06T08:08Z
+stories:
+- title: >-
+    Claude Code put signed-in users' account email addresses into User-Agent headers sent
+    to third-party websites
+  section: Top stories
+  category: Agentic coding
+  blurb: >-
+    Claude Code put signed-in users' account email into User-Agent headers on agent web requests,
+    and Anthropic will remove it next week.
+  summary: >-
+    GitHub issue 107757, filed on 2026-11-05 against Claude Code 2.1.318, reports that the
+    agent sent the user's account email to arbitrary sites in the User-Agent header during
+    web requests. An Anthropic engineer, quoted in the issue, said the account email had been
+    added to the model's context to stop hallucinated author names, and that Claude sometimes
+    used it as a contact address in curl calls it wrote. The email will be removed from context
+    in a release expected early next week. Until then, version 2.1.317 and later ship a built-in
+    cc-plugin-privacy mod, on by default, that asks before running such commands but does
+    not catch every case. The stable channel is still on 2.1.311.
+  why: >-
+    Teams running Claude Code against the web should move to 2.1.317 or later, or add their
+    own PreToolUse hook, until the email is removed from the model's context.
+  followup: >-
+    The Claude Code release that removes the account email from model context, expected early
+    in the week of 2026-11-09.
+  comments: >-
+    A Windows user on 2.1.318 reported that the built-in privacy mod loaded but neither blocked
+    nor prompted on echo or curl -A test commands containing the account email, and shared
+    a stopgap PreToolUse hook that also covers Write and Edit. Another commenter pointed to
+    an earlier issue, 81138, that reported the behavior months ago.
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/claude-code/issues/107757
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50385272
+  thread: f-0179
+- title: >-
+    DigiCert breach exposed archived customer records and identity documents through a misconfigured
+    internal system
+  section: Security
+  category: Security
+  blurb: >-
+    A DigiCert server migration exposed an internal system with open self-registration, letting
+    an account read archived customer ID documents.
+  summary: >-
+    A server migration in February 2025 exposed to the internet a DigiCert internal business
+    system that had been reachable only by VPN. The system's self-registration feature combined
+    with an authorization flaw to give new accounts read-only access to archived customer
+    data. An unauthorized account read names, business contact details and, for some customers,
+    driver's licenses, passports or utility bills between 2026-06-27 and 2026-07-02. DigiCert
+    confirmed the data access only on 2026-10-19, says CertCentral, DigiCert ONE, issued certificates
+    and login credentials were not affected, and has not given a count of affected people.
+  why: >-
+    Organizations that submitted identity documents for DigiCert certificate validation should
+    expect notifications and watch for targeted phishing using that data.
+  followup: >-
+    DigiCert's count of affected customers and completion of its identity document review.
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/digicert-data-breach-exposes-customer-information-identity-documents/
+  thread: f-0181
+- title: >-
+    Backdoored cwpsrv web server in Control Web Panel runs signed commands that never appear
+    in access logs
+  section: Security
+  category: Security
+  blurb: >-
+    XLab found a rebuilt cwpsrv binary in Control Web Panel that runs signed commands from
+    HTTP headers and hides them from access logs.
+  summary: >-
+    QiAnXin XLab named the backdoor cwpdoor. It is a modified build of cwpsrv 1.15.10 and
+    1.24.0, installed by a fake update script, that runs commands from requests carrying X-Ngx-Integrity
+    headers with a valid timestamp and signature. The installer needs root and resets the
+    file timestamps. The backdoored file had zero detections on VirusTotal, and an archive
+    uploaded from Brazil on 2026-09-30 suggests real victims. XLab gives socket, process and
+    strings checks for detection, publishes MD5 hashes and a download server IP, and recommends
+    restoring cwpsrv, upgrading and rotating all panel credentials.
+  why: >-
+    Admins of CWP hosting servers can run ss -axp | grep integrity to check for the backdoor
+    and should treat any hit as a full server compromise.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/11/hackers-hide-linux-backdoor-in-control.html
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xoo0nf/hackers_backdoor_linux_servers_using_trojanized/
+- title: >-
+    Truffle Security launches a program for issuers to revoke 1.4 million leaked secrets that
+    still work
+  section: Security
+  category: Security
+  blurb: >-
+    Truffle Security now sends 1.4 million leaked but still valid secrets to 16 issuers, such
+    as Hugging Face and Twilio, for revocation.
+  summary: >-
+    Truffle Security's free Secrets Revocation Program sends TruffleHog-verified leaked keys
+    to issuers. The issuer either exposes a revocation endpoint or receives keys by webhook
+    and revokes them within 14 days. Sixteen issuers have joined, including Hugging Face,
+    Notion, Vercel, Resend, RubyGems and Twilio. Truffle says 81 percent of keys it reported
+    last year still worked six months later, and that it has found 2,655 working keys in AI
+    coding tool config files since January 2025.
+  why: >-
+    Keys leaked to public repos, images or agent config files on these platforms can now be
+    revoked without the owner acting, which can break services that still use them.
+  sources:
+  - label: primary
+    url: https://www.bleepingcomputer.com/news/security/truffle-security-launches-program-to-revoke-14-million-live-secrets/
+- title: >-
+    Check Point bypassed ChatGPT Lockdown Mode through sandbox-escaping popups in HTML previews
+  section: Security
+  category: Security
+  blurb: >-
+    Check Point escaped ChatGPT's HTML preview sandbox through nested-frame popups to bypass
+    Lockdown Mode, and OpenAI fixed it on 2026-09-18.
+  summary: >-
+    ChatGPT renders HTML previews of code blocks inside nested sandboxed frames. Check Point
+    found that a further nested frame could reach an unmodified popup function, which opened
+    content outside the sandbox and outside Lockdown Mode's limits on outbound requests. The
+    flaw allowed chat data exfiltration, including zero-click exfiltration in the desktop
+    app, through a crafted prompt, a malicious GPT or a shared chat. OpenAI fixed it on 2026-09-18.
+  why: >-
+    Lockdown Mode protected against data leaving through outbound requests, but this flaw
+    in the HTML preview feature, outside the model, got around that boundary.
+  sources:
+  - label: primary
+    url: https://thehackernews.com/2026/11/researchers-bypass-chatgpt-lockdown.html
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xoo84b/researchers_bypass_chatgpt_lockdown_mode_to/
+- title: >-
+    GitHub Git operations, Issues, Actions, API and Pages were degraded for about 45 minutes
+    on 2026-11-05
+  section: Outages
+  category: Outage
+  blurb: >-
+    Git operations, Issues, Actions, API access and Pages saw errors and slow responses for
+    about 45 minutes late on 2026-11-05 UTC.
+  summary: >-
+    GitHub began investigating degraded Actions and Pages at 23:36 UTC on 2026-11-05. The
+    incident then spread to failed requests and slow responses in Git operations, Issues and
+    API access. A mitigation brought recovery at 00:06 UTC, and GitHub marked the incident
+    resolved at 00:20 UTC on 2026-11-06. A root cause analysis is pending.
+  why: >-
+    This is GitHub's fourth multi-service incident since 2026-11-03, so CI pipelines and agents
+    that depend on GitHub need retries and fallbacks.
+  followup: GitHub's root cause analysis and availability report.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/pfbmpxxfq1cy
+  thread: f-0180
+- title: >-
+    Thinking Machines releases Inkling 2 Small, a 594B MoE on Tinker, with Apache 2.0 weights
+    planned next week
+  section: AI
+  category: AI
+  blurb: >-
+    Thinking Machines released Inkling 2 Small, a 594B MoE with 17B active parameters, on
+    Tinker and plans Apache 2.0 weights next week.
+  summary: >-
+    Inkling 2 Small is a Mixture-of-Experts model with 594B total and 17B active parameters,
+    image input and variable effort. It is available now on Tinker for sampling and fine-tuning
+    with closed weights. Thinking Machines plans to release full weights under Apache 2.0
+    next week, after external safety testing. Coding RL used hundreds of thousands of long-horizon
+    tasks across several agent harnesses, with an agentic grader in addition to unit-test
+    rewards. The model scores 31 on the Artificial Analysis Intelligence Index.
+  why: >-
+    If the weights ship as planned, it adds an Apache 2.0 open-weight model with 17B active
+    parameters, aimed at agentic coding and autoresearch work, with Tinker fine-tuning checkpoints
+    downloadable.
+  followup: >-
+    Weight release under Apache 2.0 after external red-teaming, planned for the week of 2026-11-09.
+  sources:
+  - label: primary
+    url: https://thinkingmachines.ai/news/inkling-2-small/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50386338
+  thread: f-0182
+- title: >-
+    METR estimates Anthropic is improving models on well-specified tasks about 2x faster than
+    before October 2025
+  section: AI
+  category: AI
+  blurb: >-
+    METR's 11-week review at Anthropic estimates the lab is improving models on well-specified
+    tasks about twice as fast as before October 2025.
+  summary: >-
+    From 2026-08-12 to 2026-10-29, METR staff reviewed internal Anthropic data on pretraining,
+    RL, compute and benchmarks. Anthropic's internal capability index grew 1.9x faster since
+    October 2025, with a 95 percent interval of 1.5x to 2.8x. METR attributes about 80 percent
+    of the current acceleration to AI use, found no sign that the acceleration came from faster
+    growth in training compute, and saw no clear bottlenecks for the next 12 months. Anthropic
+    redacted a majority of the evidence METR found most informative.
+  why: >-
+    This is the first third-party estimate from inside a frontier lab of how much AI is speeding
+    up AI R&D, and it bears on how fast model capabilities and tools will change.
+  sources:
+  - label: primary
+    url: https://metr.org/blog/2026-11-05-anthropic-ai-rd-acceleration-assessment/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50383902
+- title: >-
+    GitHub Copilot usage metrics add per-repository code review addressed rate and merges
+    without human change requests
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Copilot usage metrics now count, per repository, how many Copilot review comments developers
+    acted on and how many PRs merged unchallenged.
+  summary: >-
+    A new copilot_code_review object on repos-1-day rows reports total_comments_evaluated
+    and total_comments_addressed, broken down by severity, review tier, comment type and customization
+    such as custom instructions, skills or MCP servers. It also reports total_merged_no_human_change_request_after_review.
+    Comments are counted on the day their pull request merges, and comments on bot-authored
+    pull requests are usually not evaluated.
+  why: >-
+    Engineering leads can now measure whether AI pre-review feedback is acted on per repository
+    and whether custom instructions or skills change that.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-05-usage-metrics-api-adds-code-review-details-and-addressed-rate
+- title: >-
+    Neon fleet data shows 99.46% of Lakebase Postgres page reads hit compute cache and object
+    storage serves 39 per second
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Neon fleet data shows 99.46% of Lakebase Postgres page reads hit compute cache, and object
+    storage serves about 39 requests per second.
+  summary: >-
+    Across a slice of Neon's production fleet, the compute local cache served about 1.1 billion
+    page accesses per second, pageserver NVMe served about 6 million, and object storage about
+    39, roughly 1 in 28 million. Pageservers answer GetPage@LSN by replaying WAL deltas on
+    image layers, with p90 under 1 delta and p99 around 6 after images were created more eagerly.
+    Object storage reads mostly come from long-dormant projects waking up and from branches
+    or restores at old LSNs.
+  why: >-
+    For teams weighing Postgres built on object storage, the data shows cold-read latency
+    mostly falls on dormant projects and point-in-time branches rather than on active queries.
+  sources:
+  - label: primary
+    url: https://neon.com/blog/lakebase-postgres-reads-never-touch-object-storage
