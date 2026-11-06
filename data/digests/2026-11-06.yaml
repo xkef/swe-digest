@@ -1,5 +1,5 @@
 date: '2026-11-06'
-updated: 2026-11-06T13:07Z
+updated: 2026-11-06T16:53Z
 stories:
 - title: >-
     Claude Code put signed-in users' account email addresses into User-Agent headers sent
@@ -265,6 +265,26 @@ stories:
   - label: primary
     url: https://github.blog/changelog/2026-11-05-usage-metrics-api-adds-code-review-details-and-addressed-rate
 - title: >-
+    Kernel patch proposes removing CONFIG_RT_GROUP_SCHED, which major distributions already
+    disable
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    A Linutronix engineer calls cgroup v1-era real-time group scheduling broken beyond repair
+    and proposes deleting it from the kernel.
+  summary: >-
+    Sebastian Andrzej Siewior's patch says that with RT_GROUP_SCHED enabled, tasks cannot
+    be set to SCHED_FIFO or SCHED_RR because cgroup v2 cannot assign runtime to their group.
+    The patch notes that Debian, openSUSE, Fedora and Arch already disable the option, and
+    that the DL fair server now handles RT throttling. Reviewers said some users remain and
+    asked whether to deprecate the option before removing it.
+  why: >-
+    Real-time workloads that rely on cgroup RT bandwidth groups need a path to deadline scheduling
+    or the planned hierarchical constant bandwidth server.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Linux-Drop-RT_GROUP_SCHED
+- title: >-
     Loki 4.0 release candidates remove Promtail support, BoltDB, Cassandra and DynamoDB backends
     and SSD targets
   section: Infrastructure
@@ -326,3 +346,48 @@ stories:
   sources:
   - label: primary
     url: https://fly.io/blog/well-that-wasnt-fun/
+- title: >-
+    Stripe's AutoJDK upgrades Java targets from the live Bazel build graph and uses Minions
+    agents to fix CI failures
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Stripe moved its JVM monorepo off Java 8 with a build-graph-driven upgrader that opens
+    bounded PRs and sends agents to fix CI.
+  summary: >-
+    Stripe's post, dated 2026-05-27, describes AutoJDK. It decides which targets can upgrade
+    from reverse dependencies, runtime JDK caps and framework guards, opens partitioned and
+    idempotent PRs, and uses Minions in sandboxed checkouts to fix mechanical CI failures.
+    In three months it merged more than 160 PRs, removed every Java 8 service and most Java
+    11 services, and cut the legacy JDK footprint by about 25K targets. LogScale alerts on
+    UnsupportedClassVersionError trigger targeted rollbacks.
+  why: >-
+    When the build system controls JDK versions centrally, language upgrades can run continuously
+    and agents can do the cleanup.
+  sources:
+  - label: primary
+    url: https://stripe.dev/blog/modern-java-at-stripe-language-upgrades-as-a-service
+  - label: discussion
+    url: https://www.reddit.com/r/programming/comments/1xov21m/modern_java_at_stripe_language_upgrades_as_a/
+- title: >-
+    Bitnami's engineering team that maintained its container images and Helm charts has been
+    laid off
+  section: Markets and companies
+  category: Markets
+  blurb: >-
+    The small team that built and secured hundreds of Bitnami images and Helm charts lost
+    their jobs in a corporate restructuring.
+  summary: >-
+    In a LinkedIn post dated 2026-11-03, Bitnami engineering manager Carlos Rodríguez Hernández
+    says the team behind Bitnami's container images and Helm charts was laid off in a corporate
+    restructuring and geographic consolidation. He says a small team built, tested and released
+    hundreds of images and charts that millions of developers use. The post does not say who
+    will maintain the catalog.
+  why: >-
+    Clusters that deploy Bitnami charts or images should find out who now ships their updates
+    and security fixes, and line up alternatives.
+  sources:
+  - label: primary
+    url: https://www.linkedin.com/posts/carlosrodriguezhernandez_after-20-years-the-engineering-team-behind-share-7521931915680030720-mnOs
+  - label: discussion
+    url: https://www.reddit.com/r/kubernetes/comments/1xpa3ek/the_engineering_team_behind_bitnami_has_been_laid/
