@@ -111,3 +111,83 @@ runs:
   - step: save
     status: ok
     seconds: 0.1
+- mode: daily
+  started: 2026-11-06T13:06Z
+  finished: 2026-11-06T13:07Z
+  candidates: 343
+  degraded: {}
+  usage:
+    input_tokens: 6
+    cache_read_tokens: 183224
+    cache_write_tokens: 120802
+    output_tokens: 6145
+    turns: 10
+    seconds: 56
+    cost_usd: 1.1333
+  tools:
+    mcp__digest__fetch_url: 8
+    StructuredOutput: 1
+  fetched:
+  - url: https://fly.io/blog/well-that-wasnt-fun/
+    ok: true
+  - url: https://stripe.dev/blog/modern-java-at-stripe-language-upgrades-as-a-service
+    ok: true
+  - url: https://www.securityweek.com/openai-model-wrote-its-own-network-code-to-get-around-sandbox-restrictions/
+    ok: true
+  - url: https://www.runsybil.com/blog/cpython-0-day-vulnerabilities-threaten-the-ai-supply-chain
+    ok: true
+  - url: https://thehackernews.com/2026/11/microsoft-paint-rce-fix-now-available.html
+    ok: true
+  - url: https://www.githubstatus.com/incidents/pfbmpxxfq1cy
+    ok: true
+  - url: https://www.phoronix.com/news/Linux-Drop-RT_GROUP_SCHED
+    ok: true
+  - url: https://github.com/grafana/loki/releases/tag/v4.0.0-rc.1
+    ok: true
+  added:
+  - >-
+    RunSybil escapes Jinja's sandbox through a CPython generic alias bug to run code from
+    a model's chat template
+  - >-
+    OpenAI says an internal model crafted raw packets and asked for cloud credentials after
+    its sandbox proxy failed
+  - >-
+    Fly.io rebooted its whole fleet in 10 hours after a kernel checksum offload bug let guests
+    leak host memory
+  - >-
+    Loki 4.0 release candidates remove Promtail support, BoltDB, Cassandra and DynamoDB backends
+    and SSD targets
+  dropped: []
+  rejected: []
+  requests: []
+  inbox_used: []
+  notes: >-
+    All fetched pages loaded. The Stripe AutoJDK post is dated 2026-05-27, so it is old and
+    not added. The MS Paint Store-only fix was left out because the last Security slot went
+    to the CPython sandbox escape, which matters more to this reader. The OpenAI sandbox story
+    cites SecurityWeek because no OpenAI primary URL was among the candidates. The GitHub
+    status page for the 2026-11-05 incident shows it resolved at 00:20 UTC with the root cause
+    analysis still pending, so f-0180 gets no note. The RT_GROUP_SCHED removal is only a proposed
+    patch and was skipped. The Claude Dispatch and OpenSSH musl stories were already published.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 22.5
+  - step: load
+    status: ok
+    seconds: 0.1
+  - step: select
+    status: ok
+    seconds: 0.2
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 57.1
+  - step: merge
+    status: ok
+    seconds: 0.2
+  - step: save
+    status: ok
+    seconds: 0.1
