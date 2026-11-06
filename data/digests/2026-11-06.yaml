@@ -1,5 +1,5 @@
 date: '2026-11-06'
-updated: 2026-11-06T20:01Z
+updated: 2026-11-06T22:19Z
 stories:
 - title: >-
     Claude Code put signed-in users' account email addresses into User-Agent headers sent
@@ -265,6 +265,27 @@ stories:
   - label: primary
     url: https://github.blog/changelog/2026-11-05-usage-metrics-api-adds-code-review-details-and-addressed-rate
 - title: >-
+    Claude Code 2.1.319 ends auto mode's local classifier fallback behind gateways and fixes
+    a worktree sandbox escape
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Claude Code 2.1.319 denies or asks about auto mode calls the server cannot check and adds
+    a setting that denies instead of prompting.
+  summary: >-
+    With telemetry or feature flags off, including behind LLM gateways, auto mode now asks
+    about or denies calls the server cannot check instead of falling back to the built-in
+    classifier, unless CLAUDE_CODE_AUTO_MODE_SERVER=0 is set. The release adds permissions.denyInsteadOfPrompting,
+    background MCP tasks and CLAUDE_CODE_DISABLE_FEATURE_FLAGS. It also fixes a sandbox escape
+    when creating a worktree, a Bash permission bypass through a crafted environment prefix,
+    and a sed command skipping permission checks.
+  why: >-
+    Teams running Claude Code through gateways or with telemetry off will see more prompts
+    or denials in auto mode and should decide whether to opt back into the local classifier.
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/claude-code/releases/tag/v2.1.319
+- title: >-
     Vercel Tracing is generally available with KQL trace search and tracing on by default
     for new Next.js projects
   section: Developer tools
@@ -284,6 +305,25 @@ stories:
   sources:
   - label: primary
     url: https://vercel.com/changelog/vercel-tracing-is-now-generally-available
+- title: >-
+    mise 2026.11.3 adds task run history, saved task logs and --affected runs outside monorepos
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    mise 2026.11.3 records task run history, can save each task's last output, and runs --affected
+    tasks by source globs in any project.
+  summary: >-
+    mise tasks history lists past runs with durations, exit codes and status, keeping 20 runs
+    per task by default. The opt-in task.logs setting stores each task's last output with
+    owner-only permissions and redaction. mise run --affected now works outside a monorepo
+    by matching changed files against each task's sources, and a locked lockfile no longer
+    records unreviewed versions during installs.
+  why: >-
+    Projects using mise as a task runner can skip unaffected tasks in CI and inspect slow
+    or failed runs without rerunning them.
+  sources:
+  - label: primary
+    url: https://github.com/jdx/mise/releases/tag/v2026.11.3
 - title: >-
     Kernel patch proposes removing CONFIG_RT_GROUP_SCHED, which major distributions already
     disable
@@ -409,6 +449,30 @@ stories:
     url: https://stripe.dev/blog/modern-java-at-stripe-language-upgrades-as-a-service
   - label: discussion
     url: https://www.reddit.com/r/programming/comments/1xov21m/modern_java_at_stripe_language_upgrades_as_a/
+- title: >-
+    Replit rebuilt its sandbox engine on Cloud Hypervisor microVMs with minimal guest kernels
+    and host-side egress control
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Replit moved hundreds of millions of projects to Cloud Hypervisor microVMs with tinyconfig
+    guest kernels and host-side egress enforcement.
+  summary: >-
+    Replit replaced its Docker-based runtime with Cloud Hypervisor microVMs running runc containers
+    inside, built from a tinyconfig kernel with module loading disabled, and says it avoided
+    96.1% of 6,211 Linux CVEs published from 2026-06-01 to 2026-11-04 by early fixes or configuration.
+    Egress policy runs in a host-side proxy that checks TLS hostnames and filters DNS, and
+    credential brokers attach upstream credentials so workloads never hold the keys. eBPF
+    and LSM monitors per sandbox can be updated across production within 15 minutes.
+  why: >-
+    It is a concrete reference design for isolating coding agents with per-sandbox kernels,
+    out-of-guest network policy and credential brokering.
+  followup: Part 2 on orchestrating tens of thousands of microVMs on Kubernetes.
+  sources:
+  - label: primary
+    url: https://frontier.replit.com/sandbox-engine-microvms-part-1/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50396834
 - title: >-
     Bitnami's engineering team that maintained its container images and Helm charts has been
     laid off
