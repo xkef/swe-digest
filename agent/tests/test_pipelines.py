@@ -144,6 +144,23 @@ def test_brief_lists_stories_of_the_two_days_before(data):
     assert "Story of 2026-10-06" not in text
 
 
+def test_brief_lists_pages_that_failed_in_earlier_runs_today(data):
+    failed = "https://openai.com/index/post/"
+    runs.append(
+        DAY,
+        {
+            "mode": "daily",
+            "fetched": [{"url": failed, "ok": False}, {"url": STORY["sources"][0]["url"], "ok": True}],
+        },
+    )
+    runs.append(DAY, {"mode": "daily", "fetched": [{"url": failed, "ok": False}]})
+
+    text = daily.brief(DAY, {"stories": []}, [], [], [], {})["brief"]
+
+    assert text.count(failed) == 1
+    assert STORY["sources"][0]["url"] not in text
+
+
 def test_improve_brief_shows_hand_added_stories_and_failure_counts(data):
     hand = STORY | {"title": "Hand added", "sources": [{"label": "primary", "url": "https://x.dev/post"}]}
     stories.save({"date": DAY, "stories": [STORY, hand]})

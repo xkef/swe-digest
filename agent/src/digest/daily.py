@@ -220,6 +220,14 @@ def brief(
     lines += ["", "## Degraded sources"]
     lines += [f"- {name}: {reason}" for name, reason in degraded.items()] or ["(none)"]
 
+    # Sites such as openai.com and reddit.com refuse the fetcher every time.
+    # Without this list each run spends turns fetching the same page again.
+    fetched = [entry for record in runs.load(day)["runs"] for entry in record.get("fetched", [])]
+    loaded = {entry["url"] for entry in fetched if entry["ok"]}
+    failed = dict.fromkeys(entry["url"] for entry in fetched if entry["url"] not in loaded)
+    lines += ["", "## Pages that failed to load in earlier runs today"]
+    lines += [f"- {url}" for url in failed] or ["(none)"]
+
     lines += ["", "## Reading profile", config.profile()]
 
     lines += ["", f"## Candidates ({len(fresh)}), one JSON object per line"]

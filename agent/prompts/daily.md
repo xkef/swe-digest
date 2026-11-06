@@ -12,7 +12,8 @@ profile, never by popularity, and expect to reject most candidates. On a quiet
 run, the correct answer is an empty `stories` list.
 
 - Verify each story with `fetch_url` on its primary source before you add it.
-  Drop a story you cannot verify.
+  Drop a story you cannot verify. Do not fetch a page listed as failed in an
+  earlier run today. Look for another primary source instead.
 - Do not add a story already published today or on an earlier day listed in
   the message. Another title or another outlet does not make it new. When such
   an event has moved, `note` its thread instead.
@@ -24,15 +25,22 @@ run, the correct answer is an empty `stories` list.
 - Stay inside the budget. When a section or the day is full and a candidate
   ranks higher than one of today's stories, add the candidate. Put the
   lower-ranked story's exact title in `drop`. Drop only for a clear improvement.
-- Outages that affect developers always qualify.
+- Outages that affect developers always qualify. Give a provider one outage
+  story a day. When another incident hits a provider already covered today,
+  put the earlier story's title in `drop` and add one story that covers both.
 - Security takes at most five stories: the advisories, active exploitation,
   and supply chain attacks that matter most to the profile. Rank a breach
   without a developer impact below them. When Security is full, drop the
   weakest for a stronger one.
+- For a Security story, the primary source is the vendor advisory, the
+  maintainers' announcement, or the researchers' write-up. Find and fetch it
+  before you fall back to press coverage, which is `discussion`. Label a page
+  `primary` only when it loaded.
 - Skip market news unless it changes engineering context, and benchmark
   claims without a method or primary source.
 - A story request, which the owner wrote or approved, is a strong signal. Cover
-  it when it is verifiable, and list its id in `inbox_used`.
+  it when it is verifiable, and list its id in `inbox_used`. Also list the id
+  when the digest already published the event, so later runs skip it.
 
 ## Each story
 
