@@ -23,6 +23,9 @@ infrastructure.
   engineering tradeoffs. Route into ML research and AI sections.
 - Agentic coding: how practitioners use and build with coding agents (Claude
   Code, Cursor, Copilot), agent harnesses, MCP, subagents, and agent evaluation.
+  Claude Code and pi releases with new features or changed defaults. Claude
+  Code releases almost daily, so skip releases that only fix bugs. Agent
+  sandboxing: nono, Apple container, and VM or capability isolation for agents.
 - AI-driven SDLC at named organizations: first-party or well-sourced accounts
   of which agents engineers run, which run unattended, how they are sandboxed
   and which tools they get, how the review gate changed (AI pre-review, scoped
@@ -42,7 +45,13 @@ infrastructure.
 - CVEs, active exploitation, supply chain attacks, breaches, and practical
   mitigations.
 - Ghostty, Neovim, LazyVim, wincent/wincent, Git, terminal tooling, shells,
-  Wayland, and Linux desktop infrastructure.
+  Wayland, and Linux desktop infrastructure. Within these, fish, atuin, and
+  television (tv) releases with new features.
+- Releases, CVEs, and breaking changes in the owner's own stack rank higher.
+  The owner builds a Jujutsu forge on jj-lib with Rust, Kotlin and Spring
+  Boot, Redpanda, and SeaweedFS. It runs on a Talos cluster on Hetzner Cloud,
+  managed with OpenTofu, Argo CD, CloudNativePG, cert-manager, and SOPS.
+  Hetzner Cloud outages go under Outages.
 - mise: new features in tasks, tool installs, environments, and backends.
   mise releases almost daily, so skip releases that only fix bugs.
 - Jujutsu (jj) and everything around it: releases, tools such as jjui, and
