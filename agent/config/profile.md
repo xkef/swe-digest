@@ -73,6 +73,11 @@ infrastructure.
   memory management, and Rust for Linux.
 - Programming languages and runtimes: Java, Kotlin, Rust, Go, Python,
   TypeScript, Zig, Swift, C, C++, WebAssembly.
+- Rust libraries the owner builds on: tokio, axum, tonic, hyper, tower,
+  rustls, prost, tracing, opentelemetry-rust, object_store, serde, clap,
+  gitoxide, ratatui, rust-analyzer, and ruff. Cover releases with new features,
+  breaking changes, or security fixes. Skip nightly and patch-only releases.
+  Route into Languages and runtimes.
 - C outside the kernel: the ISO C standard and compiler support for it, glibc
   and musl releases, the Clang, GCC and LLVM toolchains, sanitizers and
   hardening flags, and memory-safety retrofits of existing C codebases. Route
