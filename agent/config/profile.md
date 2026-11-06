@@ -42,7 +42,9 @@ infrastructure.
 - CVEs, active exploitation, supply chain attacks, breaches, and practical
   mitigations.
 - Ghostty, Neovim, LazyVim, wincent/wincent, Git, terminal tooling, shells,
-  Wayland, dotfiles management (chezmoi), and Linux desktop infrastructure.
+  Wayland, and Linux desktop infrastructure.
+- mise: new features in tasks, tool installs, environments, and backends.
+  mise releases almost daily, so skip releases that only fix bugs.
 - Jujutsu (jj) and everything around it: releases, tools such as jjui, and
   workflows such as megamerges. Track the work of its creator, Martin von
   Zweigbergk, and East River Source Control (ERSC), his company building
