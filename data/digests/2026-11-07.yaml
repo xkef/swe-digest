@@ -1,5 +1,5 @@
 date: '2026-11-07'
-updated: 2026-11-07T07:29Z
+updated: 2026-11-07T08:03Z
 stories:
 - title: >-
     libghostty-vt 1.0 ships a stable C ABI for terminal emulation, with Neovim set to replace
@@ -103,6 +103,32 @@ stories:
     url: https://thehackernews.com/2026/11/chainalysis-breach-exposes-all-users.html
   thread: f-0185
 - title: >-
+    Claude Code saved approved commands with secrets in settings.local.json, and Apiiro finds
+    1,122 public copies on GitHub
+  section: Security
+  category: Security
+  blurb: >-
+    Choosing 'don't ask again' in Claude Code can write a command's password or token into
+    a project file that developers then commit to GitHub.
+  summary: >-
+    Apiiro found 104,185 public copies of .claude/settings.local.json, and 1,122 of them hold
+    at least one secret, 1,379 distinct secrets in all, including 379 database passwords and
+    23 AWS keys. Claude Code adds the file only to the user's global git excludes, not the
+    project .gitignore, and in 539 of 1,105 traced repositories a commit co-authored by Claude
+    changed the file. Gitleaks and TruffleHog missed 215 of the files with secrets, mostly
+    passwords typed inline in commands.
+  why: >-
+    Teams using Claude Code should search repositories and git history for .claude settings
+    files, rotate any secrets found, and approve command patterns that reference secrets through
+    variables rather than inline values.
+  comments: >-
+    The Hacker News reports four related GitHub issues, the earliest filed 2025-08-11, were
+    closed by a stale bot without an Anthropic reply.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/claude-codes-dont-ask-again-file.html
+  thread: f-0187
+- title: >-
     Anthropic finds offline dreaming corrects Claude's memory notes and builds wikis that
     improve multi-document answers
   section: AI
@@ -123,6 +149,28 @@ stories:
   sources:
   - label: primary
     url: https://www.anthropic.com/research/components-of-agent-memory
+- title: >-
+    Anthropic finds scientists use Claude mostly for data analysis and writing across 207,000
+    research sessions
+  section: AI
+  category: AI
+  blurb: >-
+    Anthropic's study of 207,000 research sessions finds scientists use Claude mainly for
+    data analysis and writing, rarely for ideation.
+  summary: >-
+    Anthropic classified 207,049 consumer Claude and Claude Code research sessions from 2026-08-02
+    to 2026-09-30 against the SciNet taxonomy of 7,262 tasks. Data analysis is 33.7 percent
+    of Claude sessions and 48.1 percent of Claude Code sessions, computer science takes 32.7
+    percent of Claude Code research sessions with 4.3 percent of researchers, and ideation
+    is twice as large a share on Claude Science as on Claude.
+  why: >-
+    The data shows where AI help in research currently lands, which matters for teams building
+    scientific and drug discovery tooling on top of agents.
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/research/how-researchers-use-claude
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50389990
 - title: >-
     GitHub opens Copilot code review settings to REST and GraphQL and reports which MCP servers
     shaped each comment
