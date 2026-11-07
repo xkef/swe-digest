@@ -29,6 +29,7 @@ TIMEOUT_SECONDS = 20
 MAX_BYTES = 8 * 1024 * 1024
 GZIP_MAGIC = b"\x1f\x8b"
 PROXY_ENV = "FETCH_PROXY_URL"
+TRUNCATED = "\n[truncated]"
 BLOCKED_STATUSES = (HTTPStatus.FORBIDDEN, HTTPStatus.TOO_MANY_REQUESTS)
 
 SHORTENERS = re.compile(
@@ -152,7 +153,7 @@ class Fetcher:
 
         entry["ok"] = True
         if len(text) > limit:
-            text = text[:limit] + "\n[truncated]"
+            text = text[:limit] + TRUNCATED
         return True, text
 
     def _read(self, url: str, entry: dict[str, Any]) -> tuple[str, int]:
@@ -187,6 +188,10 @@ class Fetcher:
             return get(url, urllib.request.build_opener(handler, _CheckedRedirects))
         except RuntimeError:
             raise RuntimeError(f"{blocked}, and the proxy retry failed too") from None
+
+    def longest(self) -> int:
+        """Returns the most characters one fetch can return."""
+        return max(self.max_chars, self.transcript_max_chars) + len(TRUNCATED)
 
     def fetched(self) -> set[str]:
         return {entry["url"] for entry in self.log if entry["ok"]}

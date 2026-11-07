@@ -28,6 +28,7 @@ from claude_agent_sdk import (
     HookJSONOutput,
     HookMatcher,
     ResultMessage,
+    ToolAnnotations,
     ToolUseBlock,
     create_sdk_mcp_server,
     query,
@@ -63,7 +64,12 @@ async def ask(prompt: str, data: str, schema: dict[str, Any], fetcher: Fetcher) 
     """Runs one session and returns the structured answer and its usage."""
     check_billing()
 
-    @tool("fetch_url", "Fetch an https page and return its text.", {"url": str})
+    # Claude Code moves a larger result to a file and shows the model a
+    # preview. The model has no tool to read the file, so a long transcript
+    # would arrive cut short.
+    inline = ToolAnnotations(maxResultSizeChars=fetcher.longest())
+
+    @tool("fetch_url", "Fetch an https page and return its text.", {"url": str}, annotations=inline)
     async def fetch_url(args: dict[str, Any]) -> dict[str, Any]:
         ok, text = fetcher.fetch(args["url"])
         return {"content": [{"type": "text", "text": text}], "is_error": not ok}

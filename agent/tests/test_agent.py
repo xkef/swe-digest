@@ -1,3 +1,5 @@
+import asyncio
+
 import pytest
 
 pytest.importorskip("claude_agent_sdk")
@@ -42,3 +44,30 @@ def test_prompt_carries_rules_and_blurb_band():
     prompt = agent.load_prompt("daily")
     assert prompt.startswith("# Standing rules")
     assert "{blurb}" not in prompt
+
+
+def test_fetch_results_stay_inline_up_to_the_longest_fetch(monkeypatch):
+    """Claude Code moves a larger tool result to a file the model cannot read."""
+    from digest.http import Fetcher
+
+    seen = {}
+    real_tool = agent.tool
+
+    def spy_tool(name, description, schema, annotations=None):
+        seen[name] = annotations
+        return real_tool(name, description, schema, annotations=annotations)
+
+    async def no_reply(**kwargs):
+        return
+        yield
+
+    monkeypatch.setattr(agent, "tool", spy_tool)
+    monkeypatch.setattr(agent, "query", no_reply)
+    monkeypatch.setattr(agent, "check_billing", lambda: None)
+    fetcher = Fetcher(max_chars=100, transcript_max_chars=500)
+
+    with pytest.raises(agent.AgentError):
+        asyncio.run(agent.ask("prompt", "data", {}, fetcher))
+
+    longest = len("x" * 500 + "\n[truncated]")
+    assert seen["fetch_url"].maxResultSizeChars >= longest
