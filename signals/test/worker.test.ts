@@ -23,7 +23,15 @@ describe("requests that cannot authenticate", () => {
   it("never reach the store with a bearer no enrollment issues", async () => {
     const store = vi.spyOn(env.SIGNALS, "getByName");
 
-    for (const token of ["", "x", "a".repeat(42), "a".repeat(44), `${"a".repeat(42)}+`]) {
+    for (
+      const token of [
+        "",
+        "x",
+        "a".repeat(42),
+        "a".repeat(44),
+        `${"a".repeat(42)}+`,
+      ]
+    ) {
       expect((await call(token, "GET", "/me")).status).toBe(401);
     }
     expect(store).not.toHaveBeenCalled();
