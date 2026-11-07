@@ -42,7 +42,8 @@ infrastructure.
   accounts from engineering organizations, and critiques with evidence. Route
   into Agentic coding.
 - Major outages affecting developers, cloud users, identity, payments, package
-  registries, and collaboration tools.
+  registries, and collaboration tools. Include an outage only when it has
+  wide impact or a published postmortem. Skip routine status page incidents.
 - CVEs, active exploitation, supply chain attacks, breaches, and practical
   mitigations.
 - Ghostty, Neovim, LazyVim, wincent/wincent, Git, terminal tooling, shells,
@@ -50,9 +51,12 @@ infrastructure.
   television (tv) releases with new features.
 - Releases, CVEs, and breaking changes in the owner's own stack rank higher.
   The owner builds a Jujutsu forge on jj-lib with Rust, Kotlin and Spring
-  Boot, Redpanda, and SeaweedFS. It runs on a Talos cluster on Hetzner Cloud,
-  managed with OpenTofu, Argo CD, CloudNativePG, cert-manager, and SOPS.
-  Hetzner Cloud outages go under Outages.
+  Boot, Redpanda, and SeaweedFS, built with Cargo and Gradle. It runs on a
+  Talos cluster on Hetzner Cloud, managed with OpenTofu, Argo CD,
+  CloudNativePG, cert-manager, and SOPS. Hetzner Cloud outages go under
+  Outages. This digest runs on the Claude Agent SDK, builds with Zola, and
+  takes feedback through a Cloudflare Worker. RustSec advisories for crates
+  in this stack go under Security.
 - mise: new features in tasks, tool installs, environments, and backends.
   mise releases almost daily, so skip releases that only fix bugs.
 - Jujutsu (jj) and everything around it: releases, tools such as jjui, and
@@ -117,6 +121,13 @@ infrastructure.
 - The digital euro, covering the ECB design and technical architecture, the
   EU legislation, privacy, offline payments, and holding limits. Route into
   Markets and companies.
+- EU regulation that affects software engineers: the Cyber Resilience Act and
+  its obligations for open source maintainers and stewards, and the AI Act as
+  it applies to building and running AI systems. Route into Markets and
+  companies.
+- Commit signing and developer authentication: SSH signing, passkeys, and
+  1Password developer tooling such as its SSH agent. Route into Security and
+  Developer tools.
 - Acquisitions, IPOs, governance changes, and licensing changes that affect
   developer infrastructure or open source sustainability.
 
