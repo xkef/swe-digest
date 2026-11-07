@@ -12,25 +12,26 @@ infrastructure.
 - ML research papers with engineering relevance: training methods, reasoning
   models, evaluation, interpretability, and architecture work from arXiv, Papers
   with Code, and Hugging Face Papers.
-- Post-training, a strong interest: supervised fine-tuning, reinforcement
-  learning, preference tuning, distillation, and reward design, from papers and
-  from first-party accounts of organizations post-training their own models on
-  open weights. Route into ML research and AI.
-- AI for science, especially drug discovery: protein structure prediction,
-  protein language models, molecular generation and de novo design, docking,
-  binding affinity, and retrosynthesis. Track the models, open source tooling
-  (AlphaFold, Boltz, Chai, OpenFold, RDKit, DeepChem), datasets, methods, and
-  engineering tradeoffs. Route into ML research and AI sections.
+- Post-training, a strong interest, including supervised fine-tuning,
+  reinforcement learning, preference tuning, distillation, and reward design,
+  from papers and from first-party accounts of organizations post-training their
+  own models on open weights. Route into ML research and AI.
+- AI for science, especially drug discovery, including protein structure
+  prediction, protein language models, molecular generation and de novo design,
+  docking, binding affinity, and retrosynthesis. Track the models, open source
+  tooling (AlphaFold, Boltz, Chai, OpenFold, RDKit, DeepChem), datasets,
+  methods, and engineering tradeoffs. Route into ML research and AI sections.
 - Agentic coding: how practitioners use and build with coding agents (Claude
   Code, Cursor, Copilot), agent harnesses, MCP, subagents, and agent evaluation.
   Claude Code and pi releases with new features or changed defaults. Claude
   Code releases almost daily, so skip releases that only fix bugs. Agent
   sandboxing: nono, Apple container, and VM or capability isolation for agents.
 - AI-driven SDLC at named organizations: first-party or well-sourced accounts
-  of which agents engineers run, which run unattended, how they are sandboxed
-  and which tools they get, how the review gate changed (AI pre-review, scoped
-  auto-merge, no human review), and measured outcomes (merged PRs, review
-  time, revert rate, cost per PR). Reference cases: Stripe Minions, Spotify
+  of which agents engineers run and which run unattended. Cover how the agents
+  are sandboxed and which tools they get. Cover how the review gate changed (AI
+  pre-review, scoped auto-merge, or no human review) and the measured outcomes
+  (merged PRs, review time, revert rate, cost per PR). Reference cases include
+  Stripe Minions, Spotify
   Honk, Uber managed agents, Cloudflare AI review, Coinbase, Meta RADAR,
   StrongDM. Industry data on review bottlenecks (LinearB, CircleCI, GitHub)
   counts too. Always include when the source is a company engineering blog or
@@ -56,11 +57,11 @@ infrastructure.
   mise releases almost daily, so skip releases that only fix bugs.
 - Jujutsu (jj) and everything around it: releases, tools such as jjui, and
   workflows such as megamerges. Track the work of its creator, Martin von
-  Zweigbergk, and East River Source Control (ERSC), his company building
-  version control servers for humans and agents. Version control forges and
-  code hosting, a strong interest: new and alternative forges such as Tangled,
-  forges built on open protocols, stacked pull requests, and forge support for
-  jj. Route into Developer tools.
+  Zweigbergk, and East River Source Control (ERSC), his company building version
+  control servers for humans and agents. Version control forges and code
+  hosting, a strong interest, including new and alternative forges such as
+  Tangled, forges built on open protocols, stacked pull requests, and forge
+  support for jj. Route into Developer tools.
 - Lua outside editor configuration: Lua 5.x releases, LuaJIT, Luau, the C API
   and embedding Lua as an extension language in servers, games, proxies and
   network tooling, and performance work on Lua runtimes. Route into Languages
@@ -78,11 +79,11 @@ infrastructure.
   gitoxide, ratatui, rust-analyzer, and ruff. Cover releases with new features,
   breaking changes, or security fixes. Skip nightly and patch-only releases.
   Route into Languages and runtimes.
-- C outside the kernel: the ISO C standard and compiler support for it, glibc
-  and musl releases, the Clang, GCC and LLVM toolchains, sanitizers and
-  hardening flags, and memory-safety retrofits of existing C codebases. Route
-  into Languages and runtimes and Developer tools. Kernel C stays under the
-  Linux kernel bullet. Exclude tutorials and beginner material.
+- C outside the kernel, including the ISO C standard and compiler support for
+  it, glibc and musl releases, the Clang, GCC and LLVM toolchains, sanitizers
+  and hardening flags, and memory-safety retrofits of existing C codebases.
+  Route into Languages and runtimes and Developer tools. Kernel C stays under
+  the Linux kernel bullet. Exclude tutorials and beginner material.
 - Notebooks and interactive computing for Python work, covering Jupyter and
   JupyterLab releases, the notebook format and kernel protocol, execution and
   reproducibility, notebook diffing and review, and packaging notebooks into
@@ -122,8 +123,8 @@ infrastructure.
 ## Background
 
 The reader reads the digest to learn, not only to keep up. Write background
-for a senior engineer outside the story's specialty: define the terms, name
-what came before, and say what problem the thing solves. Skip what any senior
+for a senior engineer outside the story's specialty. Define the terms. Say
+what came before and what problem the thing solves. Skip what any senior
 engineer knows, such as how TLS works.
 
 ## Lower interest

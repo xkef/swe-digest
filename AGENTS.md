@@ -85,6 +85,7 @@ reply saved under `.run/replies/`, without a new model call.
 ## Writing
 
 Comments, docstrings, and these documents follow
-[Google's style guide for developer documentation](https://developers.google.com/style):
-present tense, active voice, one idea per sentence, no idiom, and no em dash, en
-dash, or semicolon. Comment why the code is as it is, never what it used to be.
+[Google's style guide for developer documentation](https://developers.google.com/style).
+Write in present tense and active voice, with one idea per sentence. Avoid
+idiom, and don't use an em dash, en dash, or semicolon. Comment why the code is
+as it is, never what it used to be.

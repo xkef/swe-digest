@@ -28,9 +28,9 @@ run, the correct answer is an empty `stories` list.
 - Outages that affect developers always qualify. Give a provider one outage
   story a day. When another incident hits a provider already covered today,
   put the earlier story's title in `drop` and add one story that covers both.
-- Security takes at most five stories: the advisories, active exploitation,
-  and supply chain attacks that matter most to the profile. Rank a breach
-  without a developer impact below them. When Security is full, drop the
+- Security takes at most five stories, chosen from the advisories, active
+  exploitation, and supply chain attacks that matter most to the profile. Rank a
+  breach without a developer impact below them. When Security is full, drop the
   weakest for a stronger one.
 - For a Security story, the primary source is the vendor advisory, the
   maintainers' announcement, or the researchers' write-up. Find and fetch it
@@ -77,8 +77,8 @@ run, the correct answer is an empty `stories` list.
 Follow-ups are threads the digest tracks across days. A thread tracks one
 event. Another incident or flaw at the same vendor is a new event.
 
-- `open` a thread when a story has a known next step: a release date, a
-  deadline, a pending fix. Set `story` to that story's exact title. When an
+- `open` a thread when a story has a known next step, such as a release date, a
+  deadline, or a pending fix. Set `story` to that story's exact title. When an
   open thread already tracks the same event, `note` it and set the story's
   `thread` to its id instead, even if the story's angle or CVE id differs.
 - `note` an open thread when a candidate moves it. Say in one sentence what
@@ -91,5 +91,5 @@ event. Another incident or flaw at the same vendor is a new event.
 `lede` is one sentence for a day with one through-line. Leave it empty on
 a day of unrelated items.
 
-`notes` is for the run log: degraded sources, pages that would not load, and
-choices a reader of the page could not infer. A few sentences.
+`notes` is for the run log. Record degraded sources and pages that would not
+load, and explain choices a reader of the page could not infer. A few sentences.
