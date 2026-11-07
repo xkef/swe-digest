@@ -119,6 +119,13 @@ infrastructure.
 - Acquisitions, IPOs, governance changes, and licensing changes that affect
   developer infrastructure or open source sustainability.
 
+## Background
+
+The reader reads the digest to learn, not only to keep up. Write background
+for a senior engineer outside the story's specialty: define the terms, name
+what came before, and say what problem the thing solves. Skip what any senior
+engineer knows, for example how TLS works.
+
 ## Lower interest
 
 - Product marketing without technical detail.

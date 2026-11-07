@@ -96,6 +96,13 @@ def test_stories_link_only_to_open_threads(data):
     assert [s.get("thread") for s in stories.load(DAY)["stories"]] == ["f-0001", None]
 
 
+def test_a_story_keeps_its_background(data):
+    daily.run(DAY, saved_reply(STORY | {"background": "Tool replaced its 1.x config format."}))
+
+    assert stories.load(DAY)["stories"][0]["background"] == "Tool replaced its 1.x config format."
+    assert "background" in daily.schema()["properties"]["stories"]["items"]["properties"]
+
+
 def test_an_opened_thread_links_its_story(data):
     opened = {"subject": "Tool 2.0 rollout", "watch_for": "2.1", "story": STORY["title"]}
 

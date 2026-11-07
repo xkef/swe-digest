@@ -58,6 +58,15 @@ run, the correct answer is an empty `stories` list.
   card text, not the title restated.
 - `summary`: one to three sentences of fact from the source.
 - `why`: one sentence on what changes for an engineer.
+- `background`: two to four sentences that help the reader learn the area and
+  place the story: the concept or mechanism it rests on, the history that led
+  here, or the earlier events it continues. Do not repeat the summary. Write
+  settled knowledge, such as how a protocol works, from what you know. Take
+  dates, numbers, versions, and recent events only from a page you fetched,
+  and fetch a reference page, such as documentation, when a claim needs one.
+  Write it for every Top stories item and for each story whose terms a
+  generalist engineer would not know. Leave it out when you are unsure of the
+  facts. The profile says how deep to go.
 - `followup`: the next date or event to watch. Optional.
 - `comments`: what the discussion thread adds, when it adds fact or
   practitioner experience. Optional.

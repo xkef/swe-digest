@@ -28,6 +28,7 @@ INLINE_CODE = re.compile(r"`([^`\n]+)`")
 FIELDS = (
     ("summary", "Summary"),
     ("why", "Why it matters"),
+    ("background", "Background"),
     ("followup", "Follow-up"),
     ("comments", "Comments"),
 )

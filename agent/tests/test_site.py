@@ -21,6 +21,27 @@ def test_story_page_front_matter_survives_hostile_text():
     assert front["extra"]["sources"][0]["url"] == "https://a.dev/x"
 
 
+def test_story_page_shows_background_after_why_it_matters():
+    story = {
+        "title": "Tool 2.0 released",
+        "section": "Developer tools",
+        "blurb": "b",
+        "summary": "s",
+        "why": "w",
+        "background": "Tool replaced `libfoo` in 2019.",
+        "followup": "f",
+        "sources": [{"label": "primary", "url": "https://a.dev/x"}],
+    }
+    card = site._card("2026-10-09", story)
+    page = site._story_page("2026-10-09", story, card, None)
+    front = tomllib.loads(page.removeprefix("+++\n").rsplit("+++", 1)[0])
+    fields = [(field["label"], field["text"]) for field in front["extra"]["fields"]]
+    assert fields[1:3] == [
+        ("Why it matters", "w"),
+        ("Background", "Tool replaced <code>libfoo</code> in 2019."),
+    ]
+
+
 def test_slugify_matches_published_urls():
     assert site.slugify("Rust 1.97.0 defaults to v0") == "rust-1-97-0-defaults-to-v0"
 
