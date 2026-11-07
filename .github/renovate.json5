@@ -16,8 +16,11 @@
   lockFileMaintenance: { enabled: true, schedule: ["before 6am on monday"] },
   packageRules: [
     {
+      // config:recommended sets fix or chore per dependency type in its own
+      // packageRules, which override the top-level semanticCommitType.
       matchPackageNames: ["*"],
       groupName: "dependencies",
+      semanticCommitType: "build",
     },
   ],
   "pip-compile": {
