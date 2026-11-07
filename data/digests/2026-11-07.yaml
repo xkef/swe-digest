@@ -1,5 +1,5 @@
 date: '2026-11-07'
-updated: 2026-11-07T08:03Z
+updated: 2026-11-07T08:56Z
 stories:
 - title: >-
     libghostty-vt 1.0 ships a stable C ABI for terminal emulation, with Neovim set to replace
@@ -129,6 +129,30 @@ stories:
     url: https://thehackernews.com/2026/11/claude-codes-dont-ask-again-file.html
   thread: f-0187
 - title: >-
+    Rails, Jetty and Spring Boot read client-sent Forwarded headers that most reverse proxies
+    pass through unchanged
+  section: Security
+  category: Security
+  blurb: >-
+    Spring Boot before 4.2, Jetty and Rails 8.1 prefer the Forwarded header, which Envoy,
+    Nginx and Traefik pass through, allowing IP spoofing.
+  summary: >-
+    Lauri Koskela found that Jetty 12.1.7, Spring Boot 4.0.5 with Jetty, Reactor Netty or
+    the FRAMEWORK strategy, and Rails 8.1.3 parse RFC 7239 Forwarded and prioritise it over
+    X-Forwarded-* headers, while Envoy, ingress-nginx, Traefik, Apache, Caddy and Kong pass
+    Forwarded through untouched. This lets clients spoof client IP, host name and scheme behind
+    a trusted proxy. Rails fixed its spoofing check in 8.1.4.1, Spring Boot 4.2 now parses
+    only X-Forwarded-* by default, and Jetty kept its default while adding configuration options.
+  why: >-
+    Spring and Jetty services behind a proxy that does not strip Forwarded can have IP allowlists,
+    rate limits and password reset host names bypassed, so proxies should drop untrusted forwarding
+    headers.
+  sources:
+  - label: primary
+    url: https://www.lkoskela.fi/blog/2026-11-05-forwarded-without-question/
+  - label: discussion
+    url: https://www.reddit.com/r/netsec/comments/1xp9n79/forwarded_without_question_how_web_frameworks/
+- title: >-
     Anthropic finds offline dreaming corrects Claude's memory notes and builds wikis that
     improve multi-document answers
   section: AI
@@ -172,6 +196,28 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50389990
 - title: >-
+    Google makes Gemini Omni 1.2 Flash generally available with 15-second video clips and
+    30 percent lower pricing
+  section: AI
+  category: AI
+  blurb: >-
+    Google's video model now makes 15-second clips, edits them over multiple turns, and costs
+    $0.07 per second at 720p on the Gemini API.
+  summary: >-
+    Gemini Omni 1.2 Flash is generally available on the Gemini API and Google Cloud, with
+    native clips of 3 to 15 seconds, up from 10 seconds in Omni 1.1. It adds multi-turn conversational
+    editing and stronger reference adherence, with Provisioned Throughput available and SynthID
+    watermarks on outputs. Pricing dropped 30 percent from Omni 1.1 to $0.07 per second for
+    720p.
+  why: >-
+    Developers generating video can edit a clip in follow-up turns instead of regenerating
+    it and get a GA, provisionable endpoint for production use.
+  sources:
+  - label: primary
+    url: https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-omni-1-2-flash/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50392118
+- title: >-
     GitHub opens Copilot code review settings to REST and GraphQL and reports which MCP servers
     shaped each comment
   section: Agentic coding
@@ -211,6 +257,26 @@ stories:
   sources:
   - label: primary
     url: https://github.blog/changelog/2026-11-06-github-copilot-weekly-releases-november-2
+- title: >-
+    On-policy distillation from a model's own GRPO checkpoint needs 50x fewer FLOPs, but loses
+    to GRPO with external teachers
+  section: ML research
+  category: Paper
+  blurb: >-
+    On-policy distillation from a model's own GRPO checkpoint matched its math accuracy with
+    50x fewer FLOPs, but external teachers lost to GRPO.
+  summary: >-
+    The paper compares reverse-KL on-policy distillation with GRPO across task difficulty,
+    model sizes and domains. With an external post-trained teacher, OPD generally loses to
+    GRPO in accuracy per training FLOP and often inflates response length. Multi-teacher OPD
+    that merges per-domain GRPO experts costs 5.2 to 8.0 percent of specialist training FLOPs
+    and reaches joint GRPO performance on a 2-domain mix with 42 percent fewer total FLOPs.
+  why: >-
+    Teams post-training open-weight models get measured guidance that OPD pays off for consolidating
+    domain RL experts, not as a cheaper replacement for RL with a stronger external teacher.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.08453v1
 - title: >-
     Asahi Linux makes M3 support generally available and relicenses its code from MIT to GPLv2
     or later
@@ -295,3 +361,26 @@ stories:
     url: https://hightouch.com/blog/llm-judges-identity-resolution
   - label: discussion
     url: https://news.ycombinator.com/item?id=50397429
+- title: >-
+    Cohere finds a strong lead agent with cheap planning workers cuts coding team cost by
+    up to 70 percent
+  section: Talks
+  category: Video
+  blurb: >-
+    Cohere found a strong lead model with cheap worker agents placed at the bottleneck stage
+    neared frontier coding results at up to 70% lower cost.
+  summary: >-
+    On ProgramBench, Nouha Dziri reports that agent teams beat a solo agent by up to about
+    10 points but cost 4 to 7 times as much, and that adding workers paid off only at the
+    stage that bottlenecks the task, planning there and implementation on Commit0. A strong
+    lead with cheap workers kept most of the reward while cheap leads capped results, and
+    84 percent of messages went from workers to the lead, with peer messaging adding no reward.
+    A blocking lead outperformed an asynchronous lead under a minimal prompt because the async
+    lead moved on before worker results arrived.
+  why: >-
+    Engineers building multi-agent coding harnesses should spend on the lead model and on
+    parallel discovery at the bottleneck stage rather than spreading workers across every
+    stage.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=maitMe9HCvw
