@@ -37,6 +37,8 @@ API_VERSION = 1
 API_PAGE_SIZE = 100
 SEARCH_FIELDS = ("date", "title", "section", "category", "blurb", "thread", "url")
 MIN_THREAD_STORIES = 2
+# The About page reports run totals over this many recent days.
+STATS_DAYS = 30
 # The files base.html inlines, by the tag that carries each.
 INLINED = (("style", "style.css"), ("script", "theme.js"))
 
@@ -133,7 +135,9 @@ def build() -> None:
     }
     _write_json(api_dir / "index.json", index)
 
-    (config.SITE / "data" / "stats.json").write_text(json.dumps({"stories": total}))
+    recent = [config.load(file) for file in sorted(config.RUNS.glob("*.yaml"))[-STATS_DAYS:]]
+    stats = {"stories": total, "runs": runs.summary(recent)}
+    (config.SITE / "data" / "stats.json").write_text(json.dumps(stats))
     print(f"site: {total} stories, {len(threads)} threads")
 
 

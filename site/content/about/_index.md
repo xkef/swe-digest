@@ -14,6 +14,34 @@ original sources. Digests update five times a day, at 01:30, 05:30, 09:30,
 with, endorsed by, or speaking for any company, vendor, or the people and
 projects it covers.
 
+## How it works
+
+Each run makes one model call, and the model can't change anything outside
+that call:
+
+- Python collects candidates from the
+  [watchlist]({{ config.extra.repository }}/blob/main/agent/config/watchlist.yaml)
+  before the model starts.
+- The model runs with every built-in tool removed, including the shell, file
+  access, and web search. Its one tool, `fetch_url`, reads an https page, and
+  the run record logs each call.
+- The model answers in JSON. Python checks each story and refuses one that
+  cites a URL the run never saw or repeats a published story. Python writes
+  every file.
+- A separate job with the write token checks the changed files against a path
+  allowlist before it commits them. A run can propose changes to the watchlist
+  and the reading profile only through a pull request.
+
+Every run leaves a public
+[run record]({{ config.extra.repository }}/tree/main/data/runs). It lists the
+pages the model fetched and the stories it added or refused, with the reason
+for each refusal.
+
+{% include "run_stats.html" %}
+
+To run your own digest with your own profile, see
+[Run your own]({{ config.extra.repository }}#run-your-own).
+
 ## No warranty and no reliance
 
 The digest is provided for general information only, "as is" and without

@@ -1,0 +1,16 @@
+{%- set stats = load_data(path="data/stats.json") -%}
+{%- set r = stats.runs -%}
+{%- if r.runs > 0 -%}
+<table>
+  <caption>The last {{ r.days }} days of run records</caption>
+  <tbody>
+    <tr><th scope="row">Runs</th><td>{{ r.runs | num_format }}</td></tr>
+    <tr><th scope="row">Candidates collected</th><td>{{ r.candidates | num_format }}</td></tr>
+    <tr><th scope="row">Pages the model fetched to verify</th><td>{{ r.fetches | num_format }}</td></tr>
+    <tr><th scope="row">Stories published</th><td>{{ r.stories | num_format }} ({{ (r.stories * 100 / r.candidates) | round(precision=1) }}% of candidates)</td></tr>
+    <tr><th scope="row">Stories the validator refused</th><td>{{ r.refused | num_format }}</td></tr>
+    <tr><th scope="row">Model time per run, median</th><td>{{ r.run_seconds }} s</td></tr>
+    <tr><th scope="row">Model cost per day</th><td>${{ (r.cost_usd / r.days) | round(precision=2) }}</td></tr>
+  </tbody>
+</table>
+{%- endif -%}

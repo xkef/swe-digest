@@ -76,6 +76,22 @@ def test_build_on_a_clean_checkout(tmp_path, monkeypatch):
     assert (built / "content" / "stories" / "2026-10-09-t.md").exists()
 
 
+def test_build_writes_run_stats(tmp_path, monkeypatch):
+    built = checkout(tmp_path, monkeypatch)
+    runs_dir = tmp_path / "data" / "runs"
+    runs_dir.mkdir(parents=True)
+    (runs_dir / "2026-10-09.yaml").write_text(
+        "date: '2026-10-09'\nruns:\n- mode: daily\n  candidates: 10\n  added: [T]\n"
+        "  usage: {cost_usd: 1.0, seconds: 60}\n"
+    )
+
+    site.build()
+
+    stats = json.loads((built / "data" / "stats.json").read_text())
+    assert stats["runs"]["candidates"] == 10
+    assert stats["runs"]["stories"] == 1
+
+
 THREAD = {
     "id": "f-0001",
     "subject": "Sub",

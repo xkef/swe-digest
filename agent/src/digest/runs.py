@@ -6,6 +6,7 @@ refused, and why. It lists each step of the run with its status and duration.
 """
 
 from datetime import datetime
+from statistics import median
 from typing import Any
 
 import yaml
@@ -46,6 +47,26 @@ def keep(day: str, mode: str, values: dict[str, Any]) -> None:
 def replay(day: str, mode: str) -> dict[str, Any]:
     saved: dict[str, Any] = yaml.safe_load((REPLIES / f"{day}-{mode}.yaml").read_text())
     return saved
+
+
+def summary(logs: list[dict[str, Any]]) -> dict[str, Any]:
+    """Totals for the About page over the given days of run records.
+
+    Run records from before 2026-10-12 lack usage, so only daily runs with
+    usage count. Cost covers every run with usage, the weekly run included.
+    """
+    every = [run for log in logs for run in log["runs"]]
+    daily = [run for run in every if run.get("mode") == "daily" and "usage" in run]
+    return {
+        "days": len(logs),
+        "runs": len(daily),
+        "candidates": sum(run.get("candidates", 0) for run in daily),
+        "stories": sum(len(run.get("added", [])) for run in daily),
+        "refused": sum(len(run.get("rejected", [])) for run in daily),
+        "fetches": sum(len(run.get("fetched", [])) for run in daily),
+        "cost_usd": round(sum(run["usage"].get("cost_usd", 0) for run in every if "usage" in run), 2),
+        "run_seconds": int(median(run["usage"]["seconds"] for run in daily)) if daily else 0,
+    }
 
 
 def problems(log: Any, expected_date: str) -> list[str]:
