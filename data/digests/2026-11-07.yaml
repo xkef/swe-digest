@@ -1,0 +1,249 @@
+date: '2026-11-07'
+updated: 2026-11-07T07:29Z
+stories:
+- title: >-
+    libghostty-vt 1.0 ships a stable C ABI for terminal emulation, with Neovim set to replace
+    libvterm with it
+  section: Top stories
+  category: Dev tools
+  blurb: >-
+    libghostty-vt reaches 1.0 with a stable C ABI enforced in CI, and Neovim plans to swap
+    libvterm for it once distributions can package it.
+  summary: >-
+    Mitchell Hashimoto released libghostty-vt 1.0 on 2026-11-06, the terminal emulation core
+    of Ghostty as an MIT-licensed C library with semantic versioning, libabigail ABI checks
+    in CI and versioned ELF symbols. Releases ship signed source tarballs plus an offline
+    dependency tarball, shared and static libraries with a SONAME, pkg-config and CMake files.
+    Neovim has an approved pull request replacing libvterm with libghostty-vt that waits on
+    this tagged release, and the JetBrains IDE terminal already runs on it.
+  why: >-
+    Terminal and TUI builders can now dynamically link a packaged, ABI-stable emulator instead
+    of writing or vendoring their own.
+  followup: The Neovim merge of the libghostty-vt pull request and distribution packages.
+  sources:
+  - label: primary
+    url: https://mitchellh.com/writing/libghostty-1-0
+  - label: primary
+    url: https://github.com/ghostty-org/ghostty/releases/tag/vt-1.0.0
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50399933
+  thread: f-0186
+- title: >-
+    SonicWall fixes exploited SSL-VPN SAML MFA bypass CVE-2026-19868, which CISA adds to KEV
+  section: Security
+  category: Security
+  blurb: >-
+    SonicOS SSL-VPN flaw CVE-2026-19868 lets attackers bypass SAML-enforced MFA, is exploited
+    in the wild, and is fixed in 7.3.4 and 8.2.3.
+  summary: >-
+    SonicWall fixed seven SonicOS flaws, including CVE-2026-19868 (CVSS 7.1), which lets attackers
+    with valid credentials for an alternate authentication method bypass SAML controls, potentially
+    including SAML-enforced MFA, on SSL-VPN set up for SAML. CISA added it to KEV on 2026-11-06
+    with a federal deadline of 2026-11-20. Gen7 7.3.3-7015 and earlier and Gen8 8.2.2-8015
+    and earlier are affected, fixed in 7.3.4-7013 and 8.2.3-8015, with no workaround.
+  why: >-
+    Teams relying on SAML MFA in front of SonicWall SSL-VPN should treat it as bypassable
+    until firewalls run the fixed builds.
+  followup: >-
+    CISA federal remediation deadline on 2026-11-20 and any attribution of the attacks.
+  sources:
+  - label: primary
+    url: https://www.cisa.gov/news-events/alerts/2026/11/06/cisa-adds-one-known-exploited-vulnerability-catalog
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/sonicwall-warns-of-new-ssl-vpn-mfa-bypass-flaw-exploited-in-attacks/
+  thread: f-0184
+- title: >-
+    pwn.ai escapes a Firecracker 1.16.1 microVM to run code as root on the host through a
+    host kernel memory primitive
+  section: Security
+  category: Security
+  blurb: >-
+    pwn.ai turned a host kernel memory primitive into root code execution in a Firecracker
+    1.16.1 VMM run as root without the jailer.
+  summary: >-
+    PwnEscape Part 2 shows a guest using host physical memory access, obtained through a Linux
+    networking flaw from Part 1, to find its own page via EPT, recover the Firecracker process
+    page tables, and rewrite the saved registers of a vCPU thread blocked in KVM_RUN. A serial
+    port write made Firecracker call write on stderr with guest-chosen arguments, then resume
+    normally. The test ran Firecracker 1.16.1 directly as root on host kernel 7.0.0-1011-aws
+    with no jailer, and the authors say jailer deployments need separate assessment.
+  why: >-
+    Agent sandboxes on Firecracker depend on host kernel patching and the jailer's privilege
+    drop, not the VMM boundary alone.
+  comments: >-
+    The Hacker News thread debates how much the missing jailer, namespaces and seccomp limit
+    real impact.
+  sources:
+  - label: primary
+    url: https://pwn.ai/blog/firecracker-escape
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50397219
+- title: >-
+    Chainalysis says its agentic breach exposed names, password hashes and live tokens for
+    all customers
+  section: Security
+  category: Security
+  blurb: >-
+    Chainalysis says its agentic attack exposed names, password hashes and live tokens for
+    all users and took KYT and its API offline.
+  summary: >-
+    Chainalysis says its investigation of an agent-driven attack found exposure of names,
+    usernames, password hashes and live tokens for all users, after earlier finding an on-path
+    attack that exposed a subset of passwords. It took Reactor, Data Solutions, the KYT interface
+    and API, address screening and the login page offline, and will require every user to
+    reset passwords and rotate API keys. KYT access returns first for customers who register
+    trusted IP addresses for an allowlist.
+  why: >-
+    Chainalysis API integrations will break until keys are rotated, and reused passwords elsewhere
+    should be changed now.
+  followup: >-
+    Restoration of KYT, Reactor and Data Solutions and disclosure of the initial access vector.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/chainalysis-breach-exposes-all-users.html
+  thread: f-0185
+- title: >-
+    Anthropic finds offline dreaming corrects Claude's memory notes and builds wikis that
+    improve multi-document answers
+  section: AI
+  category: AI
+  blurb: >-
+    Anthropic says offline dreaming over transcripts corrected wrong memory notes and raised
+    wiki-only QA scores from 13% to 48% in 128 sessions.
+  summary: >-
+    Anthropic describes agent memory as notes written in session plus dreaming, an offline
+    pass that checks notes against transcripts, builds linked wikis and promotes a small index
+    into future context. On a 420M-token internal corpus, wiki-only scores rose from 13% to
+    48% as dreaming scaled from 2 to 128 sessions, and search plus wiki reached 61% versus
+    53% for search alone. Telling strong models to record only failures cut their gain from
+    memory, while explicit steering helped older models.
+  why: >-
+    Agent builders get evidence to keep injected memory small, let strong models judge what
+    to save, and verify notes against logs.
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/research/components-of-agent-memory
+- title: >-
+    GitHub opens Copilot code review settings to REST and GraphQL and reports which MCP servers
+    shaped each comment
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Copilot code review settings are now manageable over REST and GraphQL, and responses show
+    which skills and MCP servers shaped each comment.
+  summary: >-
+    Enterprise, organization and repository admins can now read and set code review enablement,
+    default effort, runner configuration and MCP tool use through the APIs, and review responses
+    carry attribution fields and reported sources. Balanced effort reviews now use three reviewer
+    models with a fourth combining findings, and the automatic review rule honors the bypass
+    list. Enterprise and organization endpoints do not accept GitHub Apps or fine-grained
+    tokens.
+  why: >-
+    Teams can manage the AI review gate as code across repositories and audit what context
+    fed each review comment.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-06-copilot-code-review-api-management-and-review-overview-updates
+- title: >-
+    GitHub Copilot app keeps Agent Merge armed while required checks are pending and adds
+    opt-in approval instructions
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    The GitHub Copilot app can now set Agent Merge from a pull request and keep it armed while
+    required checks or rules are still pending.
+  summary: >-
+    In the weekly release of 2026-11-06, Agent Merge can be set directly from a pull request
+    in the Copilot app and stays enabled while required checks or rules are pending. Users
+    can also give opt-in personal instructions for assisted approval of tool requests in local
+    sessions. VS Code 1.145 adds cron-scheduled local automations with workspace custom agents.
+  why: >-
+    Copilot now merges pull requests on its own once gates pass, so branch protection and
+    required checks become the real review boundary.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-06-github-copilot-weekly-releases-november-2
+- title: >-
+    Asahi Linux makes M3 support generally available and relicenses its code from MIT to GPLv2
+    or later
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Asahi Linux makes M3 support generally available, ships partial Thunderbolt support, and
+    is moving all its code from MIT to GPLv2 or later.
+  summary: >-
+    The Linux 7.3 progress report drops the EXPERT flag for M3 machines, enables DCP and sleep
+    on them, and ships Thunderbolt with USB3, XDomain and networking but no PCIe or DisplayPort
+    tunnelling. The macaudio and AVD drivers and initial M4 Pro, M4 Max and M5 Devicetrees
+    went to the mailing list. The project is relicensing all repositories to GPLv2 or later
+    after reporting code lifted from its forks without attribution.
+  why: >-
+    Downstream users and forks of Asahi code now face copyleft terms, and M3 Macs become a
+    supported Linux target apart from the GPU.
+  sources:
+  - label: primary
+    url: https://asahilinux.org/2026/11/progress-report-7-3/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50401867
+- title: >-
+    Apple container 1.7.1 adds config.toml DNS defaults and a shared image store for Kubernetes
+    clusters
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    Apple's container 1.7.1 adds DNS defaults in config.toml, a shared image store for clusters,
+    and keeps container data out of Time Machine.
+  summary: >-
+    container 1.7.1 lets users set default DNS nameservers, search domains and options in
+    config.toml, reports cpuUtilization in machine-readable stats, and moves the default Kata
+    kernel to 4.3.1. The Kubernetes plugin gains a breaking --shared-image-store option on
+    container cluster run, removes load-image, and sets worker CPU and memory through --workers.
+    Lifecycle commands no longer act on cluster nodes.
+  why: >-
+    Mac users running agents or local clusters in Apple's VM-per-container runtime get configurable
+    DNS and must update cluster scripts.
+  sources:
+  - label: primary
+    url: https://github.com/apple/container/releases/tag/1.7.1
+- title: >-
+    OpenTelemetry Collector v0.165.0 removes deprecated confighttp fields and bounds zstd
+    decoder memory
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Collector v0.165.0 drops deprecated confighttp fields and bounds zstd decoder windows
+    that let small crafted payloads force big allocations.
+  summary: >-
+    The release removes IdleConnTimeout, MaxIdleConns, MaxIdleConnsPerHost and DisableKeepAlives
+    from confighttp and marks confighttp stable. It bounds the zstd decoder window by max_recv_msg_size_mib
+    for gRPC and max_request_body_size for HTTP, and adds a recursion depth limit of 100 to
+    AnyValue unmarshalling. It also promotes the queue_batch processor to beta and warns when
+    a pipeline combines the batch processor with exporterhelper batching.
+  why: >-
+    Configs still using the removed confighttp fields will fail to load, and internet-facing
+    OTLP receivers get protection from crafted payloads.
+  sources:
+  - label: primary
+    url: https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.165.0
+- title: >-
+    Hightouch pairs a calibrated cheap judge model with Claude Opus 5.5 to grade identity
+    resolution near Opus accuracy
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Hightouch found a cheap judge that escalates uncertain cases to Opus 5.5 nearly matched
+    Opus accuracy at a fraction of the per-identity cost.
+  summary: >-
+    On 1,000 synthetic identities from pseudopeople, Claude Opus 5.5 scored 99.0% at $3.86
+    per 1,000, while Jev alone scored 95.7% at $0.05. Sending Jev's 30 to 90 percent confidence
+    cases to Opus scored 98.8% at $0.88, and on a harder set it scored 95.3% versus 95.1%
+    for Opus at $2.94 versus $5.39. GPT-6 Luna was more accurate alone but overconfident,
+    so its hybrid reached only 91.6% on the harder set.
+  why: >-
+    Confidence calibration, not raw accuracy, decides whether a cheap first-pass model works
+    in an escalating LLM judge pipeline.
+  sources:
+  - label: primary
+    url: https://hightouch.com/blog/llm-judges-identity-resolution
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50397429
