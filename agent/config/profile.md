@@ -54,7 +54,7 @@ infrastructure.
   Boot, Redpanda, and SeaweedFS, built with Cargo and Gradle. It runs on a
   Talos cluster on Hetzner Cloud, managed with OpenTofu, Argo CD,
   CloudNativePG, cert-manager, and SOPS. Hetzner Cloud outages go under
-  Outages. This digest runs on the Claude Agent SDK, builds with Zola, and
+  Outages. This digest runs on the Claude Agent SDK and builds with Zola. It
   takes feedback through a Cloudflare Worker. RustSec advisories for crates
   in this stack go under Security.
 - mise: new features in tasks, tool installs, environments, and backends.
