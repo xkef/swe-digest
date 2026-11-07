@@ -1,5 +1,5 @@
 date: '2026-11-07'
-updated: 2026-11-07T09:41Z
+updated: 2026-11-07T11:53Z
 stories:
 - title: >-
     libghostty-vt 1.0 ships a stable C ABI for terminal emulation, with Neovim set to replace
@@ -363,6 +363,24 @@ stories:
   - label: primary
     url: https://arxiv.org/abs/2611.08249v1
 - title: >-
+    Gradle 9.9.0 speeds up Kotlin DSL compilation and preserves wrapper settings on upgrade
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Gradle 9.9.0 speeds up Kotlin DSL script compilation, filters non-method JUnit Platform
+    tests, and keeps wrapper settings across upgrades.
+  summary: >-
+    Gradle 9.9.0, released on 2026-11-06, lists performance improvements for Kotlin DSL compilation,
+    test filtering for JUnit Platform tests that are not methods, wrapper settings preserved
+    on upgrade, and predefined groups in the Problems API. Upgrades run through the wrapper
+    task with --gradle-version=9.9.0.
+  why: >-
+    Kotlin DSL builds should configure faster, and wrapper upgrades no longer reset customized
+    wrapper settings.
+  sources:
+  - label: primary
+    url: https://github.com/gradle/gradle/releases/tag/v9.9.0
+- title: >-
     WebAssembly Release 3.0 core specification adds GC, exception handling, tail calls, memory64
     and multiple memories
   section: Languages and runtimes
@@ -561,6 +579,33 @@ stories:
   - label: primary
     url: https://blog.cloudflare.com/vole-mole/
 - title: >-
+    Thomas Neumann finds GenDB-V's TPC-H speedups over Umbra come from per-query precomputation
+    and hard-coded dbgen layouts
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Thomas Neumann shows the AI-generated GenDB-V engine beats Umbra on TPC-H by precomputing
+    per query and hard-coding the data generator's layout.
+  summary: >-
+    The GenDB-V paper claims 22x to 61x speedups over Umbra and DuckDB from an AI-generated,
+    formally verified engine, but Neumann calculates that at SF10 memory bandwidth alone puts
+    a floor of about 280 ms under Umbra's roughly 540 ms total. The agents built per-query
+    auxiliary structures at load time, such as suppliers sorted by s_acctbal for Q2, and the
+    plain-array mode hard-codes dbgen's row numbering to make the Q18 join cheap. The verified
+    fallback for data that breaks those assumptions is a slow nested loop that never runs
+    with official TPC-H data.
+  why: >-
+    Treat AI-optimized database benchmark results with suspicion, and check whether a speedup
+    survives inserts, deletes or data not produced by the benchmark's generator.
+  background: >-
+    TPC-H is a decision-support benchmark of 22 analytical queries over data produced by a
+    generator called dbgen at a chosen scale factor. Its predecessor TPC-D was broken by vendors
+    who precomputed answers, and TPC-H rules forbid that kind of tuning, but unofficial results
+    often ignore the rules. Umbra is a compiled-query research engine from Neumann's group.
+  sources:
+  - label: primary
+    url: https://databasearchitects.blogspot.com/2026/11/next-level-benchmarking-overfitting.html
+- title: >-
     Cohere finds a strong lead agent with cheap planning workers cuts coding team cost by
     up to 70 percent
   section: Talks
@@ -628,6 +673,37 @@ stories:
   - label: primary
     url: https://www.youtube.com/watch?v=pz74r-4dGfQ
 - title: >-
+    Bryan Cantrill argues Rust's compiler bargain suits LLM-written code but that agents lack
+    the laziness to design abstractions
+  section: Talks
+  category: Video
+  blurb: >-
+    Bryan Cantrill says Rust's ownership model gives LLMs useful compiler feedback, but agents
+    pile on complexity and should not own abstractions.
+  summary: >-
+    Cantrill contrasts language features that eased development at the operator's expense,
+    such as garbage collection, dynamic typing, exceptions, ORMs and RPC, with Rust, which
+    removed garbage collection and green threads and traded a steeper learning curve for safety.
+    He argues that this learning curve becomes a strength with LLMs, because code that compiles
+    says something about its correctness, while LLMs lack a programmer's laziness, keep finding
+    more work, and burned down the Gas Town software factory. He recommends using LLMs heavily
+    for code comprehension, writing comments yourself as a check on understanding, and points
+    to Oxide's public RFD 576 on LLM use.
+  why: >-
+    It gives a concrete rule set for agent use in Rust codebases: lean on agents for comprehension
+    and well-defined tasks, keep the abstraction design and comments human.
+  background: >-
+    Rust's ownership model gives each value a single owner and checks borrows at compile time,
+    which removes the need for a garbage collector while preventing use-after-free and data
+    races. Cantrill uses the example that Rust's standard BTreeMap is practical because the
+    compiler knows who holds references to the values the tree moves, while a C B-tree library
+    would need a complex callback contract. Accidental versus essential complexity is Fred
+    Brooks's distinction between complexity created by past choices and complexity inherent
+    in the problem.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=5D7QPOIZ7gY
+- title: >-
     LiveOverflow walks through the libheif overlay heap overflow used in the OpenAI Discourse
     hack, fixed without a CVE
   section: Videos
@@ -647,3 +723,66 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=IsQ-OuoxlUk
+- title: >-
+    Theo walks through Anthropic's Claude Code review process, which risk-tiers human approval
+    and caps AI review rounds
+  section: Videos
+  category: Video
+  blurb: >-
+    Anthropic's Claude Code team routes PRs to zero, one or two human approvers by risk and
+    caps AI review rounds, cutting the mean to 1.32.
+  summary: >-
+    Reading Anthropic's post, Theo reports that changes landing per day in Anthropic's monorepo
+    rose from 2,500 in May to more than 30,000 in September, and that merged Claude Code PRs
+    more than doubled from June to September while the revert share fell by more than 40 percent.
+    Each PR passes CI, a multi-agent bug review with voting, a blocking security review, and
+    a risk classifier that requires zero, one or two humans, and an agent approval never counts
+    as a human one. Capping review rounds and re-reviewing only diffs cut mean rounds to pass
+    from 2.08 to 1.32 and PRs needing five or more rounds from 9 to 1.5 percent, and Theo
+    adds his own case of an uncapped agent review loop that ran four days and grew a PR to
+    about 80,000 lines.
+  why: >-
+    It is a mechanism-level template for AI pre-review, risk-based human gates and review-loop
+    caps that a team can copy, with the metrics Anthropic uses as guardrails.
+  background: >-
+    In agent-driven workflows a coding agent writes the change and other agents review it,
+    so review can loop indefinitely when the author agent fixes every nit a reviewer agent
+    raises. Anthropic's answer is to measure human time per PR and to treat revert and incident
+    rates as guardrails, so saved review time that shows up as more incidents does not count
+    as a gain.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=TFCDWrEBaFM
+- title: >-
+    Ajeya Cotra's reading of METR's Anthropic acceleration report sparks debate on Hacker
+    News and Reddit
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A post arguing METR's report means AI doubles Anthropic's progress drew 319 points on
+    Hacker News and threads in r/ClaudeAI and r/OpenAI.
+  summary: >-
+    Cotra writes that METR found capabilities progress at Anthropic from October 2025 to October
+    2026 about twice as fast as the prior twelve months, with roughly 80 percent of the current
+    speedup attributed to AI, and estimates this implies about a 10x uplift to researcher
+    labor, near staff self-reports of about 12x. She argues a naive extrapolation implies
+    superintelligence within a year and criticizes how much of the evidence was redacted.
+    The Hacker News thread reached 319 points and 276 comments, and the same theme ran in
+    r/ClaudeAI and r/OpenAI.
+  why: >-
+    The METR finding is now shaping practitioner expectations about model release cadence,
+    and the debate shows how far readers trust a mostly redacted report.
+  comments: >-
+    The top Hacker News comment, from an ML researcher, agrees LLMs speed up experiments inside
+    the compute environment by up to 10x in some cases but argues physical testing and data
+    limits are not accelerated. Much of the rest debates whether persuasion, rather than direct
+    action, is the realistic risk path.
+  sources:
+  - label: primary
+    url: https://www.planned-obsolescence.org/p/ai-is-dramatically-accelerating-ai
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50397994
+  - label: discussion
+    url: https://www.reddit.com/r/ClaudeAI/comments/1xplov4/anthropic_researchers_are_reporting_a_sharp/
+  - label: discussion
+    url: https://www.reddit.com/r/OpenAI/comments/1xpcezu/metrs_ryan_greenblatt_estimates_ai_is_now/
