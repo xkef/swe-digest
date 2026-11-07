@@ -40,9 +40,6 @@ for each refusal.
 
 The [stats page](@/stats/_index.md) charts these numbers over time.
 
-To run your own digest with your own profile, see
-[Run your own]({{ config.extra.repository }}#run-your-own).
-
 ## No warranty and no reliance
 
 The digest is provided for general information only, "as is" and without

@@ -10,6 +10,14 @@
 A software engineering digest curated by a scheduled agent:
 <https://xkef.github.io/swe-digest/>.
 
+The model runs with every built-in tool removed, the shell and file access
+included. Its only tool is an audited fetch, and it answers in JSON. Python
+refuses any story that cites a URL the run never saw, and Python writes every
+file. Every run publishes a record of the pages it fetched, the stories it
+added, and the stories it refused, with the reason. The
+[About page](https://xkef.github.io/swe-digest/about/) shows the totals for the
+last 30 days, cost included.
+
 ## Runs
 
 Five times a day ([daily.py](agent/src/digest/daily.py)):
