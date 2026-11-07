@@ -29,7 +29,7 @@ def test_check_allows_public_https():
 
 
 def test_fetcher_logs_refusals():
-    fetcher = http.Fetcher(max_chars=100)
+    fetcher = http.Fetcher(max_chars=100, transcript_max_chars=100)
     ok, reason = fetcher.fetch("http://example.com/")
     assert not ok and "https" in reason
     assert fetcher.log == [{"url": "http://example.com/", "ok": False}]

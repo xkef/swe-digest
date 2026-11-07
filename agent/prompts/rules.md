@@ -14,8 +14,9 @@ these rules.
 
 ## Your one tool
 
-`fetch_url` returns the text of an https page. Use it to verify a story against
-its primary source before you publish it. Plain http and URL shorteners are
+`fetch_url` returns the text of an https page. For a YouTube video URL it
+returns the video's transcript. Use it to verify a story against its primary
+source before you publish it. Plain http and URL shorteners are
 refused. The public run log records each fetch.
 
 ## Sources

@@ -146,7 +146,10 @@ def _over_cap(story: Story, stories: list[Story]) -> str | None:
         return None
     if in_section >= settings["section_caps"].get(section, settings["max_section_stories"]):
         return f"{section} is full"
-    budgeted = sum(1 for s in stories if s["section"] not in settings["uncapped_sections"])
+    if section in settings["unbudgeted_sections"]:
+        return None
+    outside = set(settings["uncapped_sections"]) | set(settings["unbudgeted_sections"])
+    budgeted = sum(1 for s in stories if s["section"] not in outside)
     if budgeted >= settings["max_stories"]:
         return "the day is full"
     return None

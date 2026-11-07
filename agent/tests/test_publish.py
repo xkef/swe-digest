@@ -65,11 +65,14 @@ def test_publish_refuses_before_touching_github(tmp_path, monkeypatch):
         publish.publish(tmp_path, "2026-10-09")
 
 
-def test_publish_path_never_loads_the_agent_sdk():
+def test_publish_path_never_loads_agent_dependencies():
     import subprocess
     import sys
 
-    code = "import sys, digest.publish, digest.site, digest.cli; assert 'claude_agent_sdk' not in sys.modules"
+    code = (
+        "import sys, digest.publish, digest.site, digest.cli;"
+        " assert not {'claude_agent_sdk', 'youtube_transcript_api'} & set(sys.modules)"
+    )
     env = {"PYTHONPATH": str(config.AGENT / "src")}
     assert subprocess.run([sys.executable, "-c", code], env=env).returncode == 0
 

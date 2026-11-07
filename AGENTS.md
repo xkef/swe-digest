@@ -31,6 +31,7 @@ else under `agent/`.
 | `agent.py`   | the model call, its harness, and its billing check     |
 | `sources.py` | collection from the watchlist                          |
 | `http.py`    | bounded GET and the model's audited fetch              |
+| `youtube.py` | video transcripts for the model's fetch                |
 | `stories.py` | the digest format and its checks                       |
 | `memory.py`  | follow-ups                                             |
 | `runs.py`    | the run record                                         |
@@ -72,8 +73,9 @@ reply saved under `.run/replies/`, without a new model call.
 
 ## Constraints
 
-- **Only `agent.py` imports the agent SDK.** The publish job installs
-  `requirements/base.txt` alone. A test fails if the publish path loads the SDK.
+- **Only `agent.py` imports the agent SDK, and only `youtube.py` the transcript
+  library.** The publish job installs `requirements/base.txt` alone. A test
+  fails if the publish path loads either.
 - **The model never writes a file.** It answers in JSON, and Python validates
   and writes. A new capability becomes a new field in the answer.
 - **Requirements files are generated.** `mise run deps:lock` rewrites them.

@@ -36,7 +36,7 @@ def run(day: str, replay: State) -> runs.Record:
 
     ``replay`` holds saved values that stand in for the steps that give them.
     """
-    fetcher = Fetcher(config.settings()["fetch_max_chars"])
+    fetcher = Fetcher(config.settings()["fetch_max_chars"], config.settings()["transcript_max_chars"])
     given = {"day": day, "started": datetime.now(UTC), "fetcher": fetcher} | replay
     outcome = graph.run(STEPS, given)
 

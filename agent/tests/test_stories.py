@@ -114,3 +114,17 @@ def test_vet_fills_top_stories_to_its_own_cap():
 def test_ordered_follows_section_order_and_keeps_legacy_last():
     items = [story(section="Legacy"), story(section="Security"), story(section="Top stories")]
     assert [s["section"] for s in stories.ordered(items)] == ["Top stories", "Security", "Legacy"]
+
+
+def test_vet_keeps_unbudgeted_sections_outside_the_day():
+    settings = config.settings()
+    outside = settings["unbudgeted_sections"] + settings["uncapped_sections"]
+    sections = [s for s in settings["sections"] if s not in outside]
+    news = [story(title=f"n{i}", section=sections[i % len(sections)]) for i in range(settings["max_stories"])]
+    talk = story(title="talk", section="Talks", category="Video")
+    assert "day is full" in stories.vet(story(title="new"), day(*news), set(), KNOWN)
+    assert stories.vet(talk, day(*news), set(), KNOWN) is None
+
+    talks = [story(title=f"t{i}", section="Talks") for i in range(settings["max_section_stories"])]
+    assert "Talks is full" in stories.vet(talk, day(*talks), set(), KNOWN)
+    assert stories.vet(story(title="new"), day(*news[:-1], *talks), set(), KNOWN) is None

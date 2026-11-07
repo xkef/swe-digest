@@ -110,24 +110,45 @@ class _CheckedRedirects(urllib.request.HTTPRedirectHandler):
 class Fetcher:
     """The model's only window on the web. Records every attempt."""
 
-    def __init__(self, max_chars: int) -> None:
+    def __init__(self, max_chars: int, transcript_max_chars: int) -> None:
         self.max_chars = max_chars
+        self.transcript_max_chars = transcript_max_chars
         self.log: list[dict[str, Any]] = []
 
     def fetch(self, url: str) -> tuple[bool, str]:
-        """Returns (ok, page text or the reason it failed)."""
+        """Returns (ok, page text or the reason it failed).
+
+        A YouTube video URL returns the video's transcript. A video without
+        one returns its page, headed by the reason.
+        """
         try:
             check(url)
-            body = get(url, urllib.request.build_opener(_CheckedRedirects))
+            text, limit = self._read(url)
         except (Refused, RuntimeError) as error:
             self.log.append({"url": url, "ok": False})
             return False, str(error)
 
         self.log.append({"url": url, "ok": True})
-        text = readable(body.decode("utf-8", errors="replace"))
-        if len(text) > self.max_chars:
-            text = text[: self.max_chars] + "\n[truncated]"
+        if len(text) > limit:
+            text = text[:limit] + "\n[truncated]"
         return True, text
+
+    def _read(self, url: str) -> tuple[str, int]:
+        # The publish job loads this module without the transcript library,
+        # so only a model's fetch imports it.
+        from digest import youtube
+
+        note = ""
+        video = youtube.video_id(url)
+        if video:
+            try:
+                return f"Transcript of YouTube video {video}:\n{youtube.transcript(video)}", (
+                    self.transcript_max_chars
+                )
+            except RuntimeError as error:
+                note = f"{error}. The page follows.\n"
+        body = get(url, urllib.request.build_opener(_CheckedRedirects))
+        return note + readable(body.decode("utf-8", errors="replace")), self.max_chars
 
     def fetched(self) -> set[str]:
         return {entry["url"] for entry in self.log if entry["ok"]}

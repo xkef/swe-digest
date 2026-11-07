@@ -36,6 +36,14 @@ run, the correct answer is an empty `stories` list.
   maintainers' announcement, or the researchers' write-up. Find and fetch it
   before you fall back to press coverage, which is `discussion`. Label a page
   `primary` only when it loaded.
+- Candidates from a `YouTube:` source are new videos from watched channels.
+  Fetch the video URL of each one whose title fits the profile and read the
+  transcript. Add a story only when the transcript holds substance the reader
+  would act on. A new technique or a measured result qualifies. Put a
+  conference or meetup talk in `Talks` and any other video in `Videos`, with
+  the category `Video`. The video is the primary source. Summarize the
+  transcript, not the title. These two sections do not count toward the day's
+  budget. Never drop a news story for a video.
 - Skip market news unless it changes engineering context, and benchmark
   claims without a method or primary source.
 - A story request, which the owner wrote or approved, is a strong signal. Cover

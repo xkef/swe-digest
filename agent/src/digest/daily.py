@@ -47,7 +47,7 @@ def run(day: str, replay: State) -> runs.Record:
 
     ``replay`` holds saved values that stand in for the steps that give them.
     """
-    fetcher = Fetcher(config.settings()["fetch_max_chars"])
+    fetcher = Fetcher(config.settings()["fetch_max_chars"], config.settings()["transcript_max_chars"])
     given = {"day": day, "started": datetime.now(UTC), "fetcher": fetcher} | replay
     outcome = graph.run(STEPS, given)
 
@@ -203,6 +203,7 @@ def brief(
         f"At most {settings['max_stories']} stories a day, {settings['max_section_stories']} per section."
         f" {', '.join(f'{name}: at most {cap}' for name, cap in settings['section_caps'].items())}."
         f" {', '.join(settings['uncapped_sections'])} are outside both caps."
+        f" {', '.join(settings['unbudgeted_sections'])} keep the section cap but not the day's."
     )
     counts = Counter(story["section"] for story in digest["stories"])
     lines += [f"- {section}: {count} published" for section, count in counts.items()]

@@ -18,6 +18,9 @@ window_hours: 24
 archive_days: 14
 # Characters of a fetched page the model reads.
 fetch_max_chars: 20000
+# Characters of a video transcript the model reads. Speech runs near 1,050
+# characters a minute, so this covers a one-hour talk.
+transcript_max_chars: 70000
 
 # A digest is a bounded page, not a feed.
 # Security counts toward the day, so 30 leaves 25 for the other sections.
@@ -30,6 +33,9 @@ section_caps:
   Security: 5
 # A heavy incident day is what the reader came for.
 uncapped_sections: [Outages]
+# Sections that keep their section cap but do not count toward max_stories,
+# so a new talk never displaces the day's news.
+unbudgeted_sections: [Talks, Videos]
 
 followup_max_age_days: 45
 max_open_followups: 60
@@ -52,7 +58,8 @@ sections:
   - Engineering posts
   - Markets and companies
   - Books
-  - New videos
+  - Talks
+  - Videos
   - Hacker News
   - Reddit and social pulse
 

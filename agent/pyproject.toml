@@ -15,9 +15,12 @@ dependencies = [
 [project.optional-dependencies]
 # Only the agent job installs the SDK. It resolves to 30-odd packages, none of
 # which belong in the job that holds the write token. Only digest.agent imports
-# it, and a test checks that the publish path never loads it.
+# it, and a test checks that the publish path never loads it. The model's
+# fetch reads video transcripts through youtube-transcript-api, which follows
+# YouTube's changes to its player API.
 agent = [
   "claude-agent-sdk>=0.2.137,<0.3",
+  "youtube-transcript-api>=1.2.5,<2",
 ]
 
 [project.scripts]
