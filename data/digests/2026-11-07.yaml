@@ -1,5 +1,5 @@
 date: '2026-11-07'
-updated: 2026-11-07T08:56Z
+updated: 2026-11-07T09:07Z
 stories:
 - title: >-
     libghostty-vt 1.0 ships a stable C ABI for terminal emulation, with Neovim set to replace
@@ -278,6 +278,31 @@ stories:
   - label: primary
     url: https://arxiv.org/abs/2611.08453v1
 - title: >-
+    WebAssembly Release 3.0 core specification adds GC, exception handling, tail calls, memory64
+    and multiple memories
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The WebAssembly core spec Release 3.0, dated 2026-11-04, folds garbage collection, exceptions,
+    tail calls and 64-bit memories into the standard.
+  summary: >-
+    The WebAssembly Community Group published Release 3.0 of the core specification dated
+    2026-11-04, edited by Andreas Rossberg. Its change history lists extended constant expressions,
+    tail calls, exception handling with exnref and try_table, multiple memories, a 64-bit
+    address type for tables and memories, typed function references, and managed garbage-collected
+    reference types. The spec states that all versions are intended to stay backward compatible
+    with earlier valid modules.
+  why: >-
+    Toolchains and runtimes targeting Wasm can now cite one standard for GC languages such
+    as Kotlin and Java, native exceptions and memories above 4 GiB.
+  sources:
+  - label: primary
+    url: https://webassembly.github.io/spec/core/
+  - label: primary
+    url: https://webassembly.github.io/spec/core/appendix/changes.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50394278
+- title: >-
     Asahi Linux makes M3 support generally available and relicenses its code from MIT to GPLv2
     or later
   section: Linux and kernel
@@ -384,3 +409,67 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=maitMe9HCvw
+- title: >-
+    Anthropic's Lance Martin shows Claude Code skills that audit prompts, fix prompt caching
+    and hill climb evals
+  section: Talks
+  category: Video
+  blurb: >-
+    An Anthropic engineer says prompt cache fixes cut eval harness costs up to 72 percent,
+    and an eval hill climber cut one setup's cost 90 percent.
+  summary: >-
+    Lance Martin presents bundled Claude Code skills that strip outdated prompt patterns such
+    as think step by step and contradictory rules, check prompt cache hit rates, build evals
+    and hill climb on them with a train and test split to catch overfitting. He reports that
+    cache fixes on internal benchmark harnesses cut cost by up to 72 percent with no meaningful
+    quality change. A cost-focused hill climb on a support ticket eval moved from Opus 4.8
+    high effort to stronger models at low effort for about 90 percent lower cost and better
+    scores. He also advises binary or pairwise LLM judge rubrics checked across several models
+    and replicate runs.
+  why: >-
+    Teams on the Claude API can run these audits on existing code and test a stronger model
+    at low effort before buying more tokens.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=ys6YQ2yfBpM
+- title: >-
+    Warp's Ben Holmes scores agent transcripts with LLM judges and lets a nightly agent propose
+    skill fixes
+  section: Talks
+  category: Video
+  blurb: >-
+    Warp grades every merged agent session on rubrics like redundant tests, verbosity and
+    efficiency, then has an agent turn failures into skill PRs.
+  summary: >-
+    Ben Holmes describes collecting each agent session with its transcript, tool calls and
+    resulting diff in one place, then grading it with markdown LLM-as-judge rubrics that set
+    pass and fail thresholds. A daily cron agent reads the failing reports, finds common causes
+    and opens pull requests against skills and agent config. Examples include a test skill
+    that wasted tool calls hunting for free ports and a triage skill missing config to spawn
+    subagents. Warp released a one-off version as a skill called Skill Doctor.
+  why: >-
+    It gives a concrete loop for finding silent tool-call waste in unattended agents and measuring
+    whether a skill change helped.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=pz74r-4dGfQ
+- title: >-
+    LiveOverflow walks through the libheif overlay heap overflow used in the OpenAI Discourse
+    hack, fixed without a CVE
+  section: Videos
+  category: Video
+  blurb: >-
+    A crafted HEIF overlay at a negative offset with alpha makes libheif write past the canvas
+    buffer, and the fix shipped without a CVE.
+  summary: >-
+    The video traces a libheif bug in heif_pixel_image overlay code that HackerOne researchers
+    used against a Discourse forum to reach OpenAI internal source code. Negative overlay
+    offsets produce a wrong width, and the alpha blending path computes the output pointer
+    without subtracting the x start offset, so writes spill into following rows and past the
+    heap buffer. The fixing commit had a benign message and no CVE.
+  why: >-
+    Services that decode user-uploaded HEIC images with libheif should confirm they run a
+    build that includes the overlay fix, since scanners keyed on CVEs will miss it.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=IsQ-OuoxlUk
