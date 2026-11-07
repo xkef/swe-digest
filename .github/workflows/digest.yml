@@ -69,10 +69,14 @@ jobs:
         run: echo "day=$(date -u +%F)" >> "$GITHUB_OUTPUT"
 
       # CLAUDE_CODE_OAUTH_TOKEN bills the Claude subscription, not the API.
+      # FETCH_PROXY_URL is a residential proxy for the requests sites refuse
+      # from runner addresses: video transcripts, and pages that answer 403
+      # or 429. See agent/src/digest/http.py.
       - name: Run
         env:
           GH_TOKEN: ${{ github.token }}
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          FETCH_PROXY_URL: ${{ secrets.FETCH_PROXY_URL }}
         run: mise run "agent:$MODE" --day "${{ steps.day.outputs.day }}"
 
       # Runs even when the run failed, because a failed run still writes its

@@ -1,4 +1,5 @@
 import pytest
+import requests
 
 from digest import http, youtube
 
@@ -63,3 +64,43 @@ def test_fetcher_falls_back_to_the_page_without_a_transcript(monkeypatch):
 
     assert ok
     assert text == f"no transcript for {VIDEO}. The page follows.\nTalk\nTalk Description"
+
+
+class FakeApi:
+    def __init__(self, proxy_config=None, http_client=None):
+        FakeApi.proxy = proxy_config
+
+    def fetch(self, video, languages):
+        return [type("Snippet", (), {"text": " spoken  words "})()]
+
+
+def test_transcript_goes_through_the_proxy_when_configured(monkeypatch):
+    monkeypatch.setattr(youtube, "YouTubeTranscriptApi", FakeApi)
+    monkeypatch.setenv("FETCH_PROXY_URL", "http://user-rotate:secret@proxy.example:80")
+
+    assert youtube.transcript(VIDEO) == "spoken words"
+    assert FakeApi.proxy.to_requests_dict()["https"] == "http://user-rotate:secret@proxy.example:80"
+    assert FakeApi.proxy.prevent_keeping_connections_alive
+
+
+def test_transcript_connects_directly_without_a_proxy(monkeypatch):
+    monkeypatch.setattr(youtube, "YouTubeTranscriptApi", FakeApi)
+    monkeypatch.delenv("FETCH_PROXY_URL", raising=False)
+
+    youtube.transcript(VIDEO)
+    assert FakeApi.proxy is None
+
+
+def test_transcript_errors_never_carry_the_proxy_url(monkeypatch):
+    class Failing(FakeApi):
+        def fetch(self, video, languages):
+            raise requests.exceptions.ProxyError(
+                "Unable to connect to http://user-rotate:secret@proxy.example:80"
+            )
+
+    monkeypatch.setattr(youtube, "YouTubeTranscriptApi", Failing)
+    monkeypatch.setenv("FETCH_PROXY_URL", "http://user-rotate:secret@proxy.example:80")
+
+    with pytest.raises(RuntimeError) as raised:
+        youtube.transcript(VIDEO)
+    assert "secret" not in str(raised.value) and "ProxyError" in str(raised.value)

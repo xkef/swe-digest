@@ -4,16 +4,23 @@ Every response is untrusted. Requests are capped in size and time. The model's
 fetch adds the rules a page it chose must pass: https only, no shorteners, no
 private addresses, re-checked on every redirect hop, and a log of every attempt
 for the run record.
+
+Some sites refuse the cloud addresses GitHub runners use. When FETCH_PROXY_URL
+names a residential proxy, a page refused with 403 or 429 is requested once
+more through it. The URL holds the proxy's credentials, so no error that may
+mention it reaches the model or the run record.
 """
 
 import gzip
 import html
 import ipaddress
 import json
+import os
 import re
 import socket
 import urllib.error
 import urllib.request
+from http import HTTPStatus
 from typing import Any
 from urllib.parse import urlparse
 
@@ -21,6 +28,8 @@ USER_AGENT = "swe-digest/2.0 (+https://github.com/xkef/swe-digest)"
 TIMEOUT_SECONDS = 20
 MAX_BYTES = 8 * 1024 * 1024
 GZIP_MAGIC = b"\x1f\x8b"
+PROXY_ENV = "FETCH_PROXY_URL"
+BLOCKED_STATUSES = (HTTPStatus.FORBIDDEN, HTTPStatus.TOO_MANY_REQUESTS)
 
 SHORTENERS = re.compile(
     r"https?://(www\.)?(bit\.ly|t\.co|tinyurl\.com|goo\.gl|ow\.ly|is\.gd|buff\.ly|lnkd\.in|rb\.gy|cutt\.ly)/",
@@ -30,6 +39,15 @@ SHORTENERS = re.compile(
 
 class Refused(RuntimeError):
     """A URL the model's fetch will not request, at any hop."""
+
+
+class Blocked(RuntimeError):
+    """A server refused the request, likely for the address it came from."""
+
+
+def proxy_url() -> str | None:
+    """Returns the residential proxy to retry blocked requests through, if one is set."""
+    return os.environ.get(PROXY_ENV) or None
 
 
 def get(url: str, opener: urllib.request.OpenerDirector | None = None) -> bytes:
@@ -58,6 +76,9 @@ def _read(request: urllib.request.Request, opener: urllib.request.OpenerDirector
     try:
         with open_url(request, timeout=TIMEOUT_SECONDS) as response:
             body: bytes = response.read(MAX_BYTES + 1)
+    except urllib.error.HTTPError as error:
+        kind = Blocked if error.code in BLOCKED_STATUSES else RuntimeError
+        raise kind(f"{url}: {error}") from error
     except (urllib.error.URLError, TimeoutError, OSError) as error:
         raise RuntimeError(f"{url}: {error}") from error
 
@@ -121,19 +142,20 @@ class Fetcher:
         A YouTube video URL returns the video's transcript. A video without
         one returns its page, headed by the reason.
         """
+        entry: dict[str, Any] = {"url": url, "ok": False}
+        self.log.append(entry)
         try:
             check(url)
-            text, limit = self._read(url)
+            text, limit = self._read(url, entry)
         except (Refused, RuntimeError) as error:
-            self.log.append({"url": url, "ok": False})
             return False, str(error)
 
-        self.log.append({"url": url, "ok": True})
+        entry["ok"] = True
         if len(text) > limit:
             text = text[:limit] + "\n[truncated]"
         return True, text
 
-    def _read(self, url: str) -> tuple[str, int]:
+    def _read(self, url: str, entry: dict[str, Any]) -> tuple[str, int]:
         # The publish job loads this module without the transcript library,
         # so only a model's fetch imports it.
         from digest import youtube
@@ -147,8 +169,24 @@ class Fetcher:
                 )
             except RuntimeError as error:
                 note = f"{error}. The page follows.\n"
-        body = get(url, urllib.request.build_opener(_CheckedRedirects))
+        body = self._get(url, entry)
         return note + readable(body.decode("utf-8", errors="replace")), self.max_chars
+
+    def _get(self, url: str, entry: dict[str, Any]) -> bytes:
+        try:
+            return get(url, urllib.request.build_opener(_CheckedRedirects))
+        except Blocked as error:
+            proxy = proxy_url()
+            if not proxy:
+                raise
+            blocked = error
+
+        entry["proxy"] = True
+        handler = urllib.request.ProxyHandler({"https": proxy})
+        try:
+            return get(url, urllib.request.build_opener(handler, _CheckedRedirects))
+        except RuntimeError:
+            raise RuntimeError(f"{blocked}, and the proxy retry failed too") from None
 
     def fetched(self) -> set[str]:
         return {entry["url"] for entry in self.log if entry["ok"]}

@@ -1,3 +1,5 @@
+import urllib.request
+
 import pytest
 
 from digest import http
@@ -52,3 +54,57 @@ def test_readable_keeps_title_and_text_and_drops_scripts():
 
 def test_readable_passes_non_html_through():
     assert http.readable('{"a": 1}') == '{"a": 1}'
+
+
+PROXY = "http://user-rotate:secret@proxy.example:80"
+
+
+def blocked_then(direct_status, proxied_body):
+    """Returns a ``get`` stand-in: ``direct_status`` directly, ``proxied_body`` via the proxy."""
+    calls = []
+
+    def get(url, opener=None):
+        proxied = any(
+            isinstance(h, urllib.request.ProxyHandler) and h.proxies.get("https") == PROXY
+            for h in opener.handlers
+        )
+        calls.append(proxied)
+        if not proxied:
+            raise http.Blocked(f"{url}: HTTP Error {direct_status}")
+        if isinstance(proxied_body, Exception):
+            raise proxied_body
+        return proxied_body
+
+    return get, calls
+
+
+def test_fetcher_retries_a_blocked_page_through_the_proxy(monkeypatch):
+    get, calls = blocked_then(403, b"<html><title>Post</title><p>Text</p></html>")
+    monkeypatch.setattr(http, "get", get)
+    monkeypatch.setenv("FETCH_PROXY_URL", PROXY)
+    fetcher = http.Fetcher(max_chars=1000, transcript_max_chars=10)
+
+    assert fetcher.fetch("https://example.com/post") == (True, "Post\nPost Text")
+    assert calls == [False, True]
+    assert fetcher.log == [{"url": "https://example.com/post", "ok": True, "proxy": True}]
+
+
+def test_fetcher_reports_a_blocked_page_without_a_proxy(monkeypatch):
+    get, calls = blocked_then(403, b"unused")
+    monkeypatch.setattr(http, "get", get)
+    monkeypatch.delenv("FETCH_PROXY_URL", raising=False)
+    fetcher = http.Fetcher(max_chars=1000, transcript_max_chars=10)
+
+    ok, reason = fetcher.fetch("https://example.com/post")
+    assert not ok and "403" in reason and calls == [False]
+
+
+def test_fetcher_hides_the_proxy_url_when_the_proxy_fails(monkeypatch):
+    get, _ = blocked_then(429, RuntimeError(f"https://example.com/post: cannot reach {PROXY}"))
+    monkeypatch.setattr(http, "get", get)
+    monkeypatch.setenv("FETCH_PROXY_URL", PROXY)
+    fetcher = http.Fetcher(max_chars=1000, transcript_max_chars=10)
+
+    ok, reason = fetcher.fetch("https://example.com/post")
+    assert not ok and "secret" not in reason and "429" in reason
+    assert fetcher.log == [{"url": "https://example.com/post", "ok": False, "proxy": True}]
