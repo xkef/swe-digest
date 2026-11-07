@@ -1,5 +1,5 @@
 date: '2026-11-07'
-updated: 2026-11-07T15:50Z
+updated: 2026-11-07T18:09Z
 stories:
 - title: >-
     libghostty-vt 1.0 ships a stable C ABI for terminal emulation, with Neovim set to replace
@@ -410,6 +410,30 @@ stories:
   - label: primary
     url: https://github.com/gradle/gradle/releases/tag/v9.9.0
 - title: >-
+    mise 2026.11.4 lets config and task includes load from zip archives over HTTP and HTTPS
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    mise 2026.11.4 lets config and task includes load from zip archives over HTTP or HTTPS,
+    an option that paranoid mode rejects.
+  summary: >-
+    The include setting and task_config.includes now accept zip:: URLs alongside local paths,
+    git:: and oci:: sources. mise unpacks the archive and loads its root mise.toml or its
+    file and TOML tasks, and it marks non-TOML files that start with a shebang as executable.
+    Task includes stay experimental, a zip URL does not pin contents, and paranoid mode rejects
+    zip config includes.
+  why: >-
+    Teams can share platform config and task bundles from any web server without an OCI registry
+    or Git host, but they get no content pinning.
+  background: >-
+    mise manages tool versions, environment variables and tasks from a mise.toml file per
+    project. Remote includes let many repositories share one set of tasks or settings, and
+    earlier releases supported Git and OCI artifacts as remote sources. Paranoid mode is mise's
+    stricter trust setting, which refuses sources whose contents cannot be verified.
+  sources:
+  - label: primary
+    url: https://github.com/jdx/mise/releases/tag/v2026.11.4
+- title: >-
     WebAssembly Release 3.0 core specification adds GC, exception handling, tail calls, memory64
     and multiple memories
   section: Languages and runtimes
@@ -434,6 +458,34 @@ stories:
     url: https://webassembly.github.io/spec/core/appendix/changes.html
   - label: discussion
     url: https://news.ycombinator.com/item?id=50394278
+- title: >-
+    Luau 0.746 adds while local bindings and salts string interning against crafted collision
+    sets
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Luau 0.746 adds while local bindings, salts its string intern table against crafted key
+    sets, and specializes recompiled native code.
+  summary: >-
+    Luau 0.746 adds a while local form that binds a variable inside the loop condition. The
+    runtime now salts the hash of the string interning table when lua_setpointerencodekey
+    is called, so crafted sets of strings cannot slow string operations, and it fixes a luau_load
+    crash when embedders expose GC controls. Native code generation now gathers type tags
+    and userdata types at runtime to specialize arithmetic, field access and namecalls on
+    recompilation.
+  why: >-
+    Embedders that run untrusted Luau scripts get a defense against hash-flooding slowdowns
+    by calling lua_setpointerencodekey.
+  background: >-
+    Luau is a Lua 5.1-derived language from Roblox with gradual typing, a faster interpreter
+    and an optional native code generator, and it is embedded in games and other hosts. Lua
+    interns every string in a global hash table, so an attacker who can choose many strings
+    that collide in that hash can make string creation slow, the same class of hash-flooding
+    attack seen in web frameworks. Salting the hash with a secret value makes the colliding
+    inputs unpredictable.
+  sources:
+  - label: primary
+    url: https://github.com/luau-lang/luau/releases/tag/0.746
 - title: >-
     Asahi Linux makes M3 support generally available and relicenses its code from MIT to GPLv2
     or later
