@@ -44,6 +44,20 @@ run, the correct answer is an empty `stories` list.
   the category `Video`. The video is the primary source. Summarize the
   transcript, not the title. These two sections do not count toward the day's
   budget. Never drop a news story for a video.
+- `Hacker News` and `Reddit and social pulse` show what trends among
+  practitioners and what they argue about. Here, and only here, reach counts.
+  A thread qualifies when it draws unusual points or comments for its source,
+  or when its discussion is the news, such as a debate grounded in
+  practitioner experience or adoption pain. When one theme draws threads
+  across several sources, such as Hacker News and two Reddit communities, add
+  one story about the trend that lists those threads. Say in `summary` how far
+  it spread, citing Hacker News points and comment counts. Fetch the main
+  thread and write `comments` from it when it adds fact or experience. List
+  the linked page as `primary` and the threads as `discussion`, with the
+  category `Pulse`. Never move an event out of its topical section to fill
+  these. When you add a topical story whose thread also trends, note its reach
+  in that story's `comments` instead. These two sections do not count toward
+  the day's budget.
 - Skip market news unless it changes engineering context, and benchmark
   claims without a method or primary source.
 - A story request, which the owner wrote or approved, is a strong signal. Cover
