@@ -630,6 +630,168 @@
     color: var(--dim);
   }
 
+  /* The stats page. Each chart shows a single series, so the accent is the
+     only data color, and labels and values stay in text colors. */
+  .stats {
+    --ticks: 2.5rem;
+  }
+  .stats .hero {
+    margin: var(--space-xl) 0 var(--space-xl);
+  }
+  .hero-number {
+    margin: 0;
+    font-size: 3rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .hero-label {
+    margin: var(--space-xs) 0 var(--space-lg);
+    color: var(--muted);
+  }
+  /* A column chart: tick labels in a narrow column, the SVG beside it.
+     The tick column width also indents the date axis under the plot. */
+  .plot {
+    display: grid;
+    grid-template-columns: var(--ticks) 1fr;
+    margin-top: var(--space-xs);
+  }
+  .plot svg {
+    display: block;
+    width: 100%;
+    height: 7rem;
+  }
+  .ticks {
+    position: relative;
+    color: var(--dim);
+    font-size: var(--label-size);
+    font-variant-numeric: tabular-nums;
+  }
+  .ticks span {
+    position: absolute;
+    right: var(--space-xs);
+    line-height: 1;
+    transform: translateY(-50%);
+  }
+  .tick-top {
+    top: 0;
+  }
+  .tick-mid {
+    top: 50%;
+  }
+  .tick-zero {
+    top: 100%;
+  }
+  .plot-axis {
+    margin-left: var(--ticks);
+  }
+
+  .chart-bar {
+    fill: var(--accent);
+    transition: opacity 120ms;
+  }
+  .bar-rail {
+    fill: var(--surface);
+  }
+  .hit {
+    fill: transparent;
+  }
+  /* Hovering a chart fades every bar but the hovered one, which keeps its
+     color, so the reader's eye lands on it without a new color. */
+  svg:hover .chart-bar {
+    opacity: 0.35;
+  }
+  svg:hover .day:hover .chart-bar {
+    opacity: 1;
+  }
+  .grid {
+    stroke: var(--border);
+    stroke-width: 1;
+    stroke-dasharray: 2 3;
+  }
+  .base {
+    stroke: var(--quiet);
+    stroke-width: 1;
+  }
+  .axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--space-xs);
+    color: var(--dim);
+    font-size: var(--label-size);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .plot-label {
+    margin: var(--space-md) 0 0;
+    font-size: var(--label-size);
+  }
+  .plot-label span {
+    margin-left: var(--space-xs);
+    color: var(--dim);
+  }
+
+  .chart-table {
+    margin-top: var(--space-sm);
+    color: var(--muted);
+    font-size: var(--label-size);
+  }
+  .chart-table summary {
+    cursor: pointer;
+  }
+  .chart-table table {
+    width: 100%;
+    margin-top: var(--space-xs);
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .chart-table th, .chart-table td {
+    padding: var(--space-3xs) var(--space-xs);
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+  }
+  .chart-table th:first-child, .chart-table td:first-child {
+    text-align: left;
+  }
+
+  .bar-list {
+    margin: var(--space-sm) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .bar-list li {
+    display: grid;
+    grid-template-columns: minmax(7rem, 12rem) 1fr 3.5rem;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-3xs) 0;
+  }
+  .funnel li {
+    grid-template-columns: minmax(7rem, 12rem) 1fr 3.5rem 3rem;
+  }
+  .bar-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .bar-track {
+    display: block;
+    width: 100%;
+    height: 0.625rem;
+  }
+  .bar-value, .bar-share {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .bar-share {
+    color: var(--dim);
+  }
+  .refused {
+    margin-top: var(--space-sm);
+    color: var(--muted);
+  }
+
   /* The feedback overlay from signals.js. Only enrolled readers see it.
      Toggles read as text, like the meta line, and the pressed one takes the
      accent color. */

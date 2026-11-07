@@ -16,9 +16,12 @@ import base64
 import hashlib
 import html
 import json
+import math
 import re
 import shutil
 from collections import Counter
+from collections.abc import Iterable, Sequence
+from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -37,6 +40,8 @@ API_VERSION = 1
 API_PAGE_SIZE = 100
 SEARCH_FIELDS = ("date", "title", "section", "category", "blurb", "thread", "url")
 MIN_THREAD_STORIES = 2
+# Multiples of a power of ten that an axis top may take.
+AXIS_STEPS = (1, 2, 4, 6, 8, 10)
 # The About page reports run totals over this many recent days.
 STATS_DAYS = 30
 # The files base.html inlines, by the tag that carries each.
@@ -135,10 +140,62 @@ def build() -> None:
     }
     _write_json(api_dir / "index.json", index)
 
-    recent = [config.load(file) for file in sorted(config.RUNS.glob("*.yaml"))[-STATS_DAYS:]]
-    stats = {"stories": total, "runs": runs.summary(recent)}
-    (config.SITE / "data" / "stats.json").write_text(json.dumps(stats))
+    (config.SITE / "data" / "stats.json").write_text(json.dumps(_stats(total, digests)))
     print(f"site: {total} stories, {len(threads)} threads")
+
+
+def _stats(total: int, digests: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """The totals and charts for the About and stats pages."""
+    recent = [config.load(file) for file in sorted(config.RUNS.glob("*.yaml"))[-STATS_DAYS:]]
+    per_day = runs.daily(recent)
+    summary = runs.summary(recent)
+    weekly: Counter[str] = Counter()
+    for day, digest in digests.items():
+        start = date.fromisoformat(day)
+        weekly[(start - timedelta(days=start.weekday())).isoformat()] += len(digest["stories"])
+    counted = {day["date"] for day in per_day}
+    sections = Counter(
+        story["section"] for day in counted & digests.keys() for story in digests[day]["stories"]
+    )
+    return {
+        "stories": total,
+        "runs": summary,
+        "cost_per_day": f"{summary['cost_usd'] / max(summary['days'], 1):.2f}",
+        "charts": {
+            "weekly": _chart(sorted(weekly.items())) | {"max": axis_top(max(weekly.values(), default=0))},
+            "daily": {
+                "stories_max": axis_top(max((day["stories"] for day in per_day), default=0)),
+                "cost_max": axis_top(max((day["cost_usd"] for day in per_day), default=0)),
+                # Tera rounds without trailing zeros, so cost arrives as text.
+                "points": [day | {"cost": f"{day['cost_usd']:.2f}"} for day in per_day],
+            },
+            "sections": _chart(sections.most_common()),
+            "refusals": [{"reason": reason, "count": count} for reason, count in runs.refusals(recent)],
+        },
+    }
+
+
+def _chart(points: Sequence[tuple[str, float]]) -> dict[str, Any]:
+    return {
+        "max": _peak(value for _, value in points),
+        "points": [{"label": label, "value": value} for label, value in points],
+    }
+
+
+def _peak(values: Iterable[float]) -> float:
+    # The template scales each bar against the peak, so a chart of zeros
+    # still has a nonzero divisor.
+    return max(values, default=0) or 1
+
+
+def axis_top(peak: float) -> float:
+    """Returns the top of a value axis: the smallest round value at or above the peak.
+
+    The axis labels its top and its middle. Every step here halves to a
+    round number, so the middle label stays round too.
+    """
+    magnitude = 10 ** math.floor(math.log10(peak)) if peak > 0 else 1
+    return next(step * magnitude for step in AXIS_STEPS if step * magnitude >= peak)
 
 
 def seal(dist: Path) -> None:

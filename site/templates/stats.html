@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{# A ranked list of horizontal bars. Each row is its own SVG, so the label
+   and the value stay text and only the bar is drawn. #}
+{% component bar_list(chart: map, label: string) %}
+  <ol class="bar-list" aria-label="{{ label }}">
+    {%- for point in chart.points %}
+      <li>
+        <span class="bar-label">{{ point.label }}</span>
+        <svg class="bar-track" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true">
+          <rect class="bar-rail" width="100" height="10" rx="0.6" ry="5" />
+          <rect class="chart-bar" width="{{ point.value / chart.max * 100 }}" height="10" rx="0.6" ry="5" />
+        </svg>
+        <span class="bar-value">{{ point.value | num_format }}</span>
+      </li>
+    {%- endfor %}
+  </ol>
+{% endcomponent bar_list %}
+
+{# An axis value: whole numbers stay whole, and a half step keeps a single
+   decimal. #}
+{% component tick(value: number, unit = "") %}
+  {{- unit -}}{%- if value == value | round -%}{{ value | int | num_format }}{%- else -%}{{ value | round(precision=1) }}{%- endif -%}
+{% endcomponent tick %}
+
+{# A column chart with a labelled value axis at 0, half, and the top. The
+   SVG stretches to the column width, so the tick labels are HTML beside it
+   and the gridlines keep a hairline width. Each bar runs past the baseline
+   and the SVG edge clips it, so only its top corners show rounded. #}
+{% component columns(points: array, key: string, top: number, unit = "", tip = "day", label: string) %}
+  {%- set n = points | length -%}
+  {%- set slot = 100 / n -%}
+  <div class="plot">
+    <div class="ticks" aria-hidden="true">
+      <span class="tick-top">{{ <tick value={top} unit={unit} /> }}</span>
+      <span class="tick-mid">{{ <tick value={top / 2} unit={unit} /> }}</span>
+      <span class="tick-zero">{{ unit }}0</span>
+    </div>
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="{{ label }}">
+      <line class="grid" x1="0" y1="0.5" x2="100" y2="0.5" vector-effect="non-scaling-stroke" />
+      <line class="grid" x1="0" y1="50" x2="100" y2="50" vector-effect="non-scaling-stroke" />
+      {%- for point in points %}
+        {%- set h = point[key] / top * 100 -%}
+        {%- set x = loop.index0 * slot -%}
+        <g class="day">
+          {%- if tip == "week" %}
+            <title>Week of {{ point.label }}: {{ point.value | num_format }} stories</title>
+          {%- else %}
+            <title>{{ point.date }}: {{ point.stories }} stories, ${{ point.cost }}, {{ point.candidates | num_format }} candidates</title>
+          {%- endif %}
+          <rect class="hit" x="{{ x }}" y="0" width="{{ slot }}" height="100" />
+          <rect class="chart-bar" x="{{ x + slot * 0.15 }}" y="{{ 100 - h }}" width="{{ slot * 0.7 }}"
+            height="{{ h + 4 }}" rx="0.3" ry="3" />
+        </g>
+      {%- endfor %}
+      <line class="base" x1="0" y1="100" x2="100" y2="100" vector-effect="non-scaling-stroke" />
+    </svg>
+  </div>
+{% endcomponent columns %}
+
+{% block content %}
+  {%- set stats = load_data(path="data/stats.json") -%}
+  {%- set r = stats.runs -%}
+  {%- set weekly = stats.charts.weekly -%}
+  {%- set daily = stats.charts.daily -%}
+  <article class="layout stats">
+    <header class="page-header">
+      <h1 class="visually-hidden">Stats</h1>
+      <p>
+        Every run writes a public
+        <a href="{{ config.extra.repository | safe }}/tree/main/data/runs">run record</a>.
+        This page charts them.
+      </p>
+    </header>
+
+    {# The archive since the first digest: its total and its weekly shape. #}
+    {%- set weeks = weekly.points | length -%}
+    <section class="hero">
+      <p class="hero-number">{{ stats.stories | num_format }}</p>
+      {%- if weeks > 0 %}
+        <p class="hero-label">stories since {{ weekly.points | first | get(key="label") }}</p>
+        {{ <columns points={weekly.points} key="value" top={weekly.max} tip="week" label="Stories published per week" /> }}
+        <p class="axis plot-axis">
+          <span>stories per week</span>
+          <span>this week so far</span>
+        </p>
+      {%- endif %}
+    </section>
+
+    {%- if r.runs > 0 %}
+      {# What a run keeps of what it sees, over the same days as the chart
+         below. The bars share a scale, so the drop is the point. #}
+      <section class="day-section">
+        <h2>From candidate to story</h2>
+        <p class="meta">{{ r.runs | num_format }} runs over the last {{ r.days }} days.</p>
+        <ol class="bar-list funnel">
+          {%- for step in [
+            ["Candidates collected", r.candidates],
+            ["Pages fetched to verify", r.fetches],
+            ["Stories published", r.stories],
+          ] %}
+            <li>
+              <span class="bar-label">{{ step[0] }}</span>
+              <svg class="bar-track" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true">
+                <rect class="bar-rail" width="100" height="10" rx="0.6" ry="5" />
+                <rect class="chart-bar" width="{{ step[1] / r.candidates * 100 }}" height="10" rx="0.6" ry="5" />
+              </svg>
+              <span class="bar-value">{{ step[1] | num_format }}</span>
+              <span class="bar-share">{{ (step[1] * 100 / r.candidates) | round(precision=1) }}%</span>
+            </li>
+          {%- endfor %}
+        </ol>
+        {%- if r.refused > 0 %}
+          <p class="refused">
+            The validator also refused {{ r.refused | num_format }} stories:
+            {% for item in stats.charts.refusals -%}
+              {{ item.count }} {{ item.reason }}{% if not loop.last %}, {% endif %}
+            {%- endfor %}.
+          </p>
+        {%- endif %}
+      </section>
+
+      {# Two plots share the date axis, and neither borrows the other's
+         scale. #}
+      <section class="day-section">
+        <h2>Each day</h2>
+        <p class="plot-label">Stories published</p>
+        {{ <columns points={daily.points} key="stories" top={daily.stories_max} label="Stories published per day" /> }}
+        <p class="plot-label">
+          Model cost <span>${{ stats.cost_per_day }} a day on average, {{ r.run_seconds }} s median per run</span>
+        </p>
+        {{ <columns points={daily.points} key="cost_usd" top={daily.cost_max} unit="$" label="Model cost per day" /> }}
+        <p class="axis plot-axis">
+          <span>{{ daily.points | first | get(key="date") }}</span>
+          <span>{{ daily.points | last | get(key="date") }}</span>
+        </p>
+        <details class="chart-table">
+          <summary>Table</summary>
+          <table>
+            <thead>
+              <tr><th scope="col">Date</th><th scope="col">Candidates</th><th scope="col">Stories</th><th scope="col">Cost</th></tr>
+            </thead>
+            <tbody>
+              {%- for day in daily.points %}
+                <tr>
+                  <td>{{ day.date }}</td>
+                  <td>{{ day.candidates | num_format }}</td>
+                  <td>{{ day.stories }}</td>
+                  <td>${{ day.cost }}</td>
+                </tr>
+              {%- endfor %}
+            </tbody>
+          </table>
+        </details>
+      </section>
+
+      <section class="day-section">
+        <h2>Stories by section</h2>
+        <p class="meta">The same {{ r.days }} days.</p>
+        {{ <bar_list chart={stats.charts.sections} label="Stories by section" /> }}
+      </section>
+    {%- endif %}
+  </article>
+{% endblock content %}

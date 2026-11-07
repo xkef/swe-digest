@@ -5,6 +5,7 @@ trail. It names every URL the model fetched and every story the validator
 refused, and why. It lists each step of the run with its status and duration.
 """
 
+from collections import Counter
 from datetime import datetime
 from statistics import median
 from typing import Any
@@ -53,20 +54,59 @@ def summary(logs: list[dict[str, Any]]) -> dict[str, Any]:
     """Totals for the About page over the given days of run records.
 
     Run records from before 2026-10-12 lack usage, so only daily runs with
-    usage count. Cost covers every run with usage, the weekly run included.
+    usage count, and only days that have such a run. Cost covers every run with
+    usage, the weekly run included.
     """
-    every = [run for log in logs for run in log["runs"]]
-    daily = [run for run in every if run.get("mode") == "daily" and "usage" in run]
+    complete = [run for log in logs for run in log["runs"] if _complete(run)]
     return {
-        "days": len(logs),
-        "runs": len(daily),
-        "candidates": sum(run.get("candidates", 0) for run in daily),
-        "stories": sum(len(run.get("added", [])) for run in daily),
-        "refused": sum(len(run.get("rejected", [])) for run in daily),
-        "fetches": sum(len(run.get("fetched", [])) for run in daily),
-        "cost_usd": round(sum(run["usage"].get("cost_usd", 0) for run in every if "usage" in run), 2),
-        "run_seconds": int(median(run["usage"]["seconds"] for run in daily)) if daily else 0,
+        "days": len(daily(logs)),
+        "runs": len(complete),
+        "candidates": sum(run.get("candidates", 0) for run in complete),
+        "stories": sum(len(run.get("added", [])) for run in complete),
+        "refused": sum(len(run.get("rejected", [])) for run in complete),
+        "fetches": sum(len(run.get("fetched", [])) for run in complete),
+        "cost_usd": round(sum(_cost(log) for log in logs), 2),
+        "run_seconds": int(median(run["usage"]["seconds"] for run in complete)) if complete else 0,
     }
+
+
+def daily(logs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Per-day totals for the stats page, for each day with a complete daily run."""
+    days = []
+    for log in logs:
+        complete = [run for run in log["runs"] if _complete(run)]
+        if not complete:
+            continue
+
+        days.append(
+            {
+                "date": str(log["date"]),
+                "candidates": sum(run.get("candidates", 0) for run in complete),
+                "stories": sum(len(run.get("added", [])) for run in complete),
+                "cost_usd": round(_cost(log), 2),
+            }
+        )
+    return days
+
+
+def refusals(logs: list[dict[str, Any]]) -> list[tuple[str, int]]:
+    """Returns each reason the validator refused a story, most frequent first."""
+    reasons = Counter(
+        refused["reason"]
+        for log in logs
+        for run in log["runs"]
+        if _complete(run)
+        for refused in run.get("rejected", [])
+    )
+    return reasons.most_common()
+
+
+def _complete(run: Record) -> bool:
+    return run.get("mode") == "daily" and "usage" in run
+
+
+def _cost(log: dict[str, Any]) -> float:
+    return float(sum(run["usage"].get("cost_usd", 0) for run in log["runs"] if "usage" in run))
 
 
 def problems(log: Any, expected_date: str) -> list[str]:

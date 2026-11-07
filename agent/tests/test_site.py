@@ -90,6 +90,17 @@ def test_build_writes_run_stats(tmp_path, monkeypatch):
     stats = json.loads((built / "data" / "stats.json").read_text())
     assert stats["runs"]["candidates"] == 10
     assert stats["runs"]["stories"] == 1
+    assert stats["cost_per_day"] == "1.00"
+    charts = stats["charts"]
+    # 2026-10-09 is a Friday, so its week starts on Monday 2026-10-05.
+    assert charts["weekly"]["points"] == [{"label": "2026-10-05", "value": 1}]
+    assert charts["daily"] == {
+        "stories_max": 1,
+        "cost_max": 1.0,
+        "points": [{"date": "2026-10-09", "candidates": 10, "stories": 1, "cost_usd": 1.0, "cost": "1.00"}],
+    }
+    assert charts["sections"]["points"] == [{"label": "Security", "value": 1}]
+    assert charts["refusals"] == []
 
 
 THREAD = {
@@ -228,3 +239,7 @@ def test_seal_points_csp_at_minified_inline_blocks(tmp_path, monkeypatch):
     assert f"'sha256-{site._sha256('body{color:red}')}'" in sealed
     assert f"'sha256-{site._sha256('let a = 1;')}'" in sealed
     assert raw_style not in sealed
+
+
+def test_axis_top_rounds_up_to_a_value_with_a_round_half():
+    assert [site.axis_top(peak) for peak in (0, 1, 8.81, 34, 165, 2339)] == [1, 1, 10, 40, 200, 4000]
