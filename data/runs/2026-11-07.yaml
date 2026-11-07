@@ -608,3 +608,96 @@ runs:
   - step: save
     status: ok
     seconds: 0.1
+- mode: daily
+  started: 2026-11-07T09:38Z
+  finished: 2026-11-07T09:41Z
+  candidates: 330
+  degraded:
+    ECB Press Releases: >-
+      https://www.ecb.europa.eu/rss/press.html: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED]
+      certificate verify failed: unable to get local issuer certificate (_ssl.c:1082)>
+  usage:
+    input_tokens: 12
+    cache_read_tokens: 293453
+    cache_write_tokens: 235187
+    output_tokens: 12379
+    turns: 11
+    seconds: 169
+    cost_usd: 2.6019
+  tools:
+    mcp__digest__fetch_url: 7
+    StructuredOutput: 2
+  fetched:
+  - url: https://lwn.net/Articles/1105934/
+    ok: true
+  - url: https://arxiv.org/abs/2611.08249v1
+    ok: true
+  - url: https://arxiv.org/abs/2611.08016v1
+    ok: true
+  - url: https://clickhouse.com/blog/clickhouse-release-26-10
+    ok: true
+  - url: https://blog.cloudflare.com/vole-mole/
+    ok: true
+  - url: https://github.blog/changelog/2026-11-06-github-copilot-in-slack-and-teams-is-generally-available
+    ok: true
+  - url: https://www.youtube.com/watch?v=TFCDWrEBaFM
+    ok: true
+  added:
+  - >-
+    Amutable Operating System overview describes an image-based Linux with no shell, no SSH
+    and signed-only images
+  - >-
+    ClickHouse 26.10 adds a function composition operator, row-count quotas and disk spilling
+    for IN subqueries
+  - >-
+    Cloudflare says Privacy Pass needs post-quantum replacement and points to VOLE-in-the-Head
+    blind signatures
+  - >-
+    Paper traces on-policy distillation failures to a feedback loop and shows offline pretraining
+    is a prerequisite
+  - >-
+    DiffDock study finds focused post-training supervision does not beat broad continuation
+    on docking success
+  - >-
+    GitHub makes @GitHub in Slack and Teams generally available with a Canvas review surface
+    in Teams
+  dropped: []
+  rejected: []
+  requests: []
+  inbox_used: []
+  notes: >-
+    Verified each added story against its primary source with fetch_url: the LWN post on the
+    Amutable Operating System overview, the ClickHouse 26.10 release post, the Cloudflare
+    post-quantum Privacy Pass and MOLE post, two arXiv abstracts (2611.08016 and 2611.08249),
+    and the GitHub changelog entry for @GitHub in Slack and Teams. The ClickHouse page truncated
+    partway through the GROUP BY section, so only facts from the loaded portion are used.
+    ECB press releases remain unreachable due to a TLS certificate failure, unchanged from
+    earlier runs. Many candidates today were already covered in earlier runs (OpenSSH SSHole,
+    GPT-6 Cyber, WorkOS, DigiCert, Chainalysis, WordPress updater) and were left to their
+    existing follow-up threads. Large volumes of Reddit and Hacker News items were social
+    commentary, benchmark screenshots without method, or market news with no engineering consequence,
+    and were dropped. One watched-channel video on Anthropic's internal code review process
+    was reviewed but not published this run because its primary source is a vendor engineering
+    post that was not fetched.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 15.7
+  - step: load
+    status: ok
+    seconds: 0.1
+  - step: select
+    status: ok
+    seconds: 0.1
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 170.2
+  - step: merge
+    status: ok
+    seconds: 0.1
+  - step: save
+    status: ok
+    seconds: 0.1

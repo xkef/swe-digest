@@ -35,7 +35,7 @@
   // Public visitors never download signals.js. Enrolled readers start the
   // download here, before the body parses. The key and the fragment match
   // signals.js.
-  const signals = document.querySelector('meta[name="signals"]');
+  const signals = document.querySelector("meta[name=\"signals\"]");
   if (
     signals
     && (location.hash.startsWith("#signals-token=") || stored("signals-token"))

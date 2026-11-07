@@ -34,7 +34,8 @@ memory. Copy URLs exactly.
 
 ## Writing
 
-- State only facts the source supports.
+- State only facts the source supports. The `background` field is the one
+  exception, as the task describes.
 - Short factual sentences. Concrete nouns and verbs. Dates in ISO format.
 - Leave out hype, filler, calls to action, and emojis.
 - No em dashes, en dashes, or semicolons.

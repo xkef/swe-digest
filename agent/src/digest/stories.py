@@ -10,6 +10,7 @@
         blurb: one sentence, the card text
         summary: ...
         why: why it matters
+        background: optional, the context a reader needs to place the story
         followup: optional
         comments: optional
         thread: optional, the follow-up id the story advances
@@ -34,7 +35,18 @@ type Story = dict[str, Any]
 type Day = dict[str, Any]
 
 REQUIRED = ("title", "section", "blurb", "summary", "sources")
-TEXT_FIELDS = ("title", "section", "category", "blurb", "summary", "why", "followup", "comments", "thread")
+TEXT_FIELDS = (
+    "title",
+    "section",
+    "category",
+    "blurb",
+    "summary",
+    "why",
+    "background",
+    "followup",
+    "comments",
+    "thread",
+)
 MAX_TEXT_CHARS = 4000
 MAX_SOURCES = 8
 
