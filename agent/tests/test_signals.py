@@ -39,8 +39,7 @@ def test_available_only_with_an_actions_token(monkeypatch):
 
 
 def test_unavailable_without_a_worker(monkeypatch, actions):
-    settings = signals.config.settings() | {"signals": ""}
-    monkeypatch.setattr(signals.config, "settings", lambda: settings)
+    monkeypatch.setattr(signals.config, "signals_url", lambda: "")
     assert not signals.available()
 
 
@@ -51,7 +50,7 @@ def test_fetch_sends_the_oidc_token_for_the_signals_audience(actions, sent):
     assert token_url.endswith("&audience=swe-digest-signals")
     assert token_headers == {"Authorization": "bearer request-secret"}
     url, headers, payload = sent[1]
-    assert url == "https://swe-digest-signals.git-f57.workers.dev/signals?days=7"
+    assert url == f"{signals.config.signals_url()}/signals?days=7"
     assert headers == {"Authorization": "Bearer oidc-jwt"}
     assert payload is None
 

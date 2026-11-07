@@ -32,8 +32,7 @@ def _api(path: str, *args: str) -> Any:
 
 
 def _repo() -> str:
-    repo: str = config.settings()["repo"]
-    return repo
+    return config.repository()
 
 
 def head(branch: str) -> str:

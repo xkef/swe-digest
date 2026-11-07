@@ -52,6 +52,9 @@ def test_unique_slugs():
     assert [card["url"] for card in cards] == ["/d/a/", "/d/a-2/"]
 
 
+BASE = site.config.site_url().rstrip("/")
+
+
 def checkout(tmp_path, monkeypatch, story_extra=""):
     digests = tmp_path / "data" / "digests"
     digests.mkdir(parents=True)
@@ -121,7 +124,7 @@ def test_build_writes_thread_pages_and_the_json_api(tmp_path, monkeypatch):
         "  thread: f-0001\n  sources:\n  - {label: primary, url: 'https://a.dev/y'}\n"
     )
     site.memory.save([THREAD])
-    permalink = "https://xkef.github.io/swe-digest/digests/2026-10-09/t/"
+    permalink = f"{BASE}/digests/2026-10-09/t/"
 
     site.build()
 
@@ -132,8 +135,8 @@ def test_build_writes_thread_pages_and_the_json_api(tmp_path, monkeypatch):
             "date": "2026-10-09",
             "updated": None,
             "count": 1,
-            "url": "https://xkef.github.io/swe-digest/digests/2026-10-09/",
-            "json": "https://xkef.github.io/swe-digest/api/digests/2026-10-09.json",
+            "url": f"{BASE}/digests/2026-10-09/",
+            "json": f"{BASE}/api/digests/2026-10-09.json",
         }
     ]
     [story] = json.loads((api / "digests" / "2026-10-09.json").read_text())["stories"]
@@ -142,7 +145,7 @@ def test_build_writes_thread_pages_and_the_json_api(tmp_path, monkeypatch):
     assert story["thread"] == "f-0001"
     [thread] = json.loads((api / "threads.json").read_text())["threads"]
     assert thread["closed"] == "2026-10-10"
-    assert thread["url"] == "https://xkef.github.io/swe-digest/threads/f-0001/"
+    assert thread["url"] == f"{BASE}/threads/f-0001/"
     assert thread["stories"][0] == {"date": "2026-10-09", "title": "T", "url": permalink}
 
     page = (built / "content" / "stories" / "2026-10-09-t.md").read_text()
@@ -208,7 +211,7 @@ def test_build_pages_stories_newest_first_and_writes_a_search_index(tmp_path, mo
     assert [first["page"], first["pages"], first["total"]] == [1, 2, 2]
     assert first["stories"][0]["title"] == "U"
     assert first["stories"][0]["date"] == "2026-10-10"
-    assert first["next"] == "https://xkef.github.io/swe-digest/api/stories/2.json"
+    assert first["next"] == f"{BASE}/api/stories/2.json"
     assert first["prev"] is None
     last = json.loads((api / "stories" / "2.json").read_text())
     assert last["next"] is None

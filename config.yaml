@@ -1,0 +1,707 @@
+# The agent reads this file directly. site:build generates site/zola.toml
+# from it, and the signals Worker's npm scripts pass its values to wrangler.
+#
+# A run may change only `watchlist` and `profile`, through a pull request.
+# The publish gate refuses any other change to this file.
+
+site:
+  url: https://xkef.github.io/swe-digest/
+  title: SWE Digest
+  description: >-
+    Daily software engineering digest with links, context, and follow-up
+    memory.
+  author: xkef
+# The GitHub repository as owner/name.
+repository: xkef/swe-digest
+
+# The Worker in signals/ that holds readers' story requests and feedback.
+# Leave url empty to run without it. The Access application guards /enroll.
+# Its team domain and AUD are public identifiers from the Zero Trust
+# dashboard. Empty values turn enrollment off.
+signals:
+  url: https://swe-digest-signals.git-f57.workers.dev
+  access_team_domain: https://patient-sun-0a4e.cloudflareaccess.com
+  access_aud: 7240c81d2b8f66d17372b09477b647f370e4b22f9fd2031d7e3ae5fca54cbe63
+
+# Who pays for the model: subscription, through CLAUDE_CODE_OAUTH_TOKEN, or
+# api, through ANTHROPIC_API_KEY. See agent/src/digest/agent.py.
+billing: subscription
+
+# Tunables for a run. The tool grant lives in agent/src/digest/agent.py.
+settings:
+  model: claude-opus-5-5
+  # Opus 5.5's default, set here so a model change cannot move it silently.
+  effort: medium
+  max_turns: 60
+
+  # How far back each run collects.
+  window_hours: 24
+  # How far back a story counts as already published.
+  archive_days: 14
+  # Characters of a fetched page the model reads.
+  fetch_max_chars: 20000
+  # Characters of a video transcript the model reads. Speech runs near 1,050
+  # characters a minute, so this covers a one-hour talk.
+  transcript_max_chars: 70000
+
+  # A digest is a bounded page, not a feed.
+  # Security counts toward the day, so 30 leaves 25 for the other sections.
+  max_stories: 30
+  max_section_stories: 4
+  # Sections whose cap differs from max_section_stories. Security keeps only
+  # the advisories that matter most to the reader.
+  section_caps:
+    Top stories: 5
+    Security: 5
+  # A heavy incident day is what the reader came for.
+  uncapped_sections: [Outages]
+  # Sections that keep their section cap but do not count toward max_stories,
+  # so a new talk or a community thread never displaces the day's news.
+  unbudgeted_sections: [Talks, Videos, Hacker News, Reddit and social pulse]
+
+  followup_max_age_days: 45
+  max_open_followups: 60
+
+  # The card text on every day page.
+  blurb_chars: [100, 145]
+
+  sections:
+    - Top stories
+    - Security
+    - Outages
+    - AI
+    - Agentic coding
+    - ML research
+    - Developer tools
+    - Languages and runtimes
+    - Linux and kernel
+    - Apple platforms
+    - Infrastructure
+    - Engineering posts
+    - Markets and companies
+    - Books
+    - Talks
+    - Videos
+    - Hacker News
+    - Reddit and social pulse
+
+  categories:
+    - AI
+    - ML research
+    - Agentic coding
+    - Security
+    - Outage
+    - Dev tools
+    - Languages
+    - Apple
+    - Linux/Kernel
+    - Infrastructure
+    - Engineering post
+    - Event
+    - Book
+    - Paper
+    - Video
+    - Markets
+    - Pulse
+
+# What a run collects. Python fetches every source here before the model
+# starts. Edit by hand, or merge a weekly improvement pull request.
+watchlist:
+  hacker_news:
+    queries:
+      - AI
+      - LLM
+      - OpenAI
+      - Anthropic
+      - Claude
+      - Gemini
+      - Mistral
+      - Llama
+      - DeepSeek
+      - Qwen
+      - GLM
+      - Grok
+      - GPT
+      - GPU
+      - Nvidia
+      - CUDA
+      - AMD
+      - Rust
+      - Go
+      - Java
+      - Kotlin
+      - Python
+      - TypeScript
+      - C++
+      - Zig
+      - Swift
+      - Neovim
+      - Vim
+      - Wayland
+      - Linux
+      - Kubernetes
+      - Cilium
+      - Postgres
+      - CockroachDB
+      - YugabyteDB
+      - SQLite
+      - Redis
+      - Kafka
+      - Prometheus
+      - Grafana
+      - OpenTelemetry
+      - CRDT
+      - distributed systems
+      - local-first
+      - TLA+
+      - AWS
+      - GCP
+      - Azure
+      - Cloudflare
+      - GitHub
+      - Jujutsu
+      - Homebrew
+      - npm
+      - PyPI
+      - CVE
+      - 0day
+      - exploit
+      - breach
+      - outage
+      - incident
+      - acquires
+      - acquisition
+      - IPO
+      - S-1
+      - LWN
+      - kernel
+      - eBPF
+      - io_uring
+      - SwiftUI
+      - Xcode
+      - iOS
+      - macOS
+      - Apple Silicon
+      - Spring Boot
+      - arXiv
+      - Claude Code
+      - Cursor
+      - Copilot
+      - coding agent
+      - agentic
+      - MCP
+      - decision model
+      - Jev
+      - AI code review
+      - software factory
+      - digital euro
+      - DuckDB
+      - WSL
+      - DNSSEC
+      - JVM
+      - post-training
+      - forge
+      - Hetzner
+      - Talos
+      - AlphaFold
+      - protein
+      - drug discovery
+      - Isomorphic Labs
+      - Lua
+      - LuaJIT
+      - LLVM
+      - GCC
+      - Jupyter
+      - Gradle
+      - JEP
+      - Tangled
+      - Forgejo
+      - stacked diffs
+      - Cyber Resilience Act
+      - AI Act
+      - passkey
+      - 1Password
+      - SSH
+  reddit:
+    subreddits:
+      - programming
+      - softwareengineering
+      - devops
+      - kubernetes
+      - aws
+      - AZURE
+      - googlecloud
+      - netsec
+      - cybersecurity
+      - MachineLearning
+      - LocalLLaMA
+      - OpenAI
+      - rust
+      - golang
+      - java
+      - kotlin
+      - Python
+      - typescript
+      - swift
+      - iOSProgramming
+      - SpringBoot
+      - ClaudeAI
+      - ChatGPTCoding
+      - cursor
+      - neovim
+      - linux
+      - selfhosted
+      - bioinformatics
+  arxiv:
+    categories:
+      - cs.LG
+      - cs.CL
+      - cs.AI
+      - cs.CR
+      - cs.SE
+      - cs.DC
+      - cs.PL
+    queries:
+      - language model agents
+      - retrieval augmented generation
+      - inference optimization
+      - quantization
+      - conflict-free replicated data types
+      - post-training
+  github_releases:
+    - ghostty-org/ghostty
+    - wincent/wincent
+    - neovim/neovim
+    - LazyVim/LazyVim
+    - folke/lazy.nvim
+    - jj-vcs/jj
+    - jdx/mise
+    - idursun/jjui
+    - anthropics/claude-code
+    - badlogic/pi-mono
+    - always-further/nono
+    - apple/container
+    - fish-shell/fish-shell
+    - atuinsh/atuin
+    - alexpasmantier/television
+    - astral-sh/uv
+    - git/git
+    - Homebrew/brew
+    - wez/wezterm
+    - alacritty/alacritty
+    - tmux/tmux
+    - zed-industries/zed
+    - helix-editor/helix
+    - rust-lang/rust
+    - rust-lang/cargo
+    - tokio-rs/tokio
+    - tokio-rs/axum
+    - hyperium/tonic
+    - hyperium/hyper
+    - tower-rs/tower
+    - rustls/rustls
+    - tokio-rs/prost
+    - tokio-rs/tracing
+    - open-telemetry/opentelemetry-rust
+    - apache/arrow-rs-object-store
+    - serde-rs/serde
+    - clap-rs/clap
+    - GitoxideLabs/gitoxide
+    - ratatui/ratatui
+    - rust-lang/rust-analyzer
+    - astral-sh/ruff
+    - golang/go
+    - openjdk/jdk
+    - JetBrains/kotlin
+    - python/cpython
+    - nodejs/node
+    - denoland/deno
+    - oven-sh/bun
+    - ziglang/zig
+    - microsoft/TypeScript
+    - torvalds/linux
+    - swiftlang/swift
+    - spring-projects/spring-boot
+    - spring-projects/spring-framework
+    - prometheus/prometheus
+    - grafana/grafana
+    - grafana/loki
+    - grafana/tempo
+    - grafana/mimir
+    - open-telemetry/opentelemetry-collector
+    - kubernetes/kubernetes
+    - cilium/cilium
+    - siderolabs/talos
+    - argoproj/argo-cd
+    - cloudnative-pg/cloudnative-pg
+    - opentofu/opentofu
+    - getsops/sops
+    - cert-manager/cert-manager
+    - redpanda-data/redpanda
+    - seaweedfs/seaweedfs
+    - cockroachdb/cockroach
+    - yugabyte/yugabyte-db
+    - automerge/automerge
+    - yjs/yjs
+    - google-deepmind/alphafold3
+    - jwohlwend/boltz
+    - chaidiscovery/chai-lab
+    - aqlaboratory/openfold
+    - rdkit/rdkit
+    - deepchem/deepchem
+    - getzola/zola
+    - gradle/gradle
+    - anthropics/claude-agent-sdk-python
+    - cloudflare/workers-sdk
+    - lua/lua
+    - luau-lang/luau
+    - llvm/llvm-project
+    - jupyterlab/jupyterlab
+  feeds:
+    Cloudflare Blog: https://blog.cloudflare.com/rss/
+    AWS Architecture Blog: https://aws.amazon.com/blogs/architecture/feed/
+    AWS News Blog: https://aws.amazon.com/blogs/aws/feed/
+    Google Cloud Blog: https://cloudblog.withgoogle.com/rss/
+    Microsoft Azure Blog: https://azure.microsoft.com/en-us/blog/feed/
+    GitHub Blog: https://github.blog/feed/
+    GitHub Engineering: https://github.blog/engineering/feed/
+    GitHub Changelog: https://github.blog/changelog/feed/
+    GitHub Changelog (page 2): https://github.blog/changelog/feed/?paged=2
+    GitHub Changelog (page 3): https://github.blog/changelog/feed/?paged=3
+    CISA Advisories: https://www.cisa.gov/cybersecurity-advisories/all.xml
+    BleepingComputer: https://www.bleepingcomputer.com/feed/
+    SecurityWeek: https://www.securityweek.com/feed/
+    The Hacker News: https://feeds.feedburner.com/TheHackersNews
+    The Register Security: https://www.theregister.com/security/headlines.atom
+    Krebs on Security: https://krebsonsecurity.com/feed/
+    Rapid7 Blog: https://www.rapid7.com/blog/rss/
+    RustSec Advisories: https://rustsec.org/feed.xml
+    Cloudflare Workers Changelog: https://developers.cloudflare.com/workers/platform/changelog/index.xml
+    Inside Java: https://inside.java/feed.xml
+    Kotlin Blog: https://blog.jetbrains.com/kotlin/feed/
+    LLVM Blog: https://blog.llvm.org/index.xml
+    Luau Blog: https://luau.org/feed.xml
+    Jupyter Blog: https://medium.com/feed/jupyter
+    Tangled Blog: https://tangled.org/blog/feed.xml
+    Forgejo News: https://forgejo.org/rss.xml
+    arXiv q-bio.BM: https://rss.arxiv.org/rss/q-bio.BM
+    arXiv q-bio.QM: https://rss.arxiv.org/rss/q-bio.QM
+    Alpine Linux News: https://alpinelinux.org/atom.xml
+    Apple Newsroom: https://www.apple.com/newsroom/rss-feed.rss
+    Google Research Blog: https://research.google/blog/rss/
+    Stripe Engineering: https://stripe.com/blog/feed.rss
+    Netflix TechBlog: https://netflixtechblog.com/feed
+    Meta Engineering: https://engineering.fb.com/feed/
+    Airbnb Engineering: https://medium.com/feed/airbnb-engineering
+    Shopify Engineering: https://shopify.engineering/blog.atom
+    Discord Engineering: https://discord.com/blog/rss.xml
+    Figma Engineering: https://www.figma.com/blog/feed/atom.xml
+    Canva Engineering: https://www.canva.dev/blog/engineering/feed.xml
+    Grafana Labs Blog: https://grafana.com/blog/index.xml
+    Kubernetes Blog: https://kubernetes.io/feed.xml
+    CNCF Blog: https://www.cncf.io/feed/
+    Cilium Blog: https://cilium.io/blog/rss.xml
+    Isovalent Blog: https://isovalent.com/blog/rss.xml
+    ERSC Blog: https://ersc.io/rss.xml
+    ECB Press Releases: https://www.ecb.europa.eu/rss/press.html
+    Datadog Engineering: https://www.datadoghq.com/blog/engineering/index.xml
+    Sentry Blog: https://blog.sentry.io/feed.xml
+    Vercel Blog: https://vercel.com/atom
+    Fly.io Blog: https://fly.io/blog/feed.xml
+    Tailscale Blog: https://tailscale.com/blog/index.xml
+    Oxide Computer Blog: https://oxide.computer/blog/feed
+    TigerBeetle Blog: https://tigerbeetle.com/blog/atom.xml
+    Materialize Blog: https://materialize.com/rss.xml
+    Cockroach Labs Blog: https://www.cockroachlabs.com/rss.xml
+    Yugabyte Blog: https://www.yugabyte.com/blog/feed/
+    PostgreSQL News: https://www.postgresql.org/news.rss
+    Planet PostgreSQL: https://planet.postgresql.org/rss20.xml
+    Neon Blog: https://neon.com/blog/rss.xml
+    Supabase Blog: https://supabase.com/rss.xml
+    Sourcegraph Blog: https://sourcegraph.com/blog/rss.xml
+    PlanetScale Blog: https://planetscale.com/blog/feed.atom
+    Slack Engineering: https://slack.engineering/feed/
+    Spotify Engineering: https://engineering.atspotify.com/feed/
+    The Pragmatic Engineer: https://newsletter.pragmaticengineer.com/feed
+    Jane Street Tech Blog: https://blog.janestreet.com/feed.xml
+    LWN.net: https://lwn.net/headlines/rss
+    Phoronix: https://www.phoronix.com/rss.php
+    Swift.org Blog: https://www.swift.org/atom.xml
+    Rust Blog: https://blog.rust-lang.org/feed.xml
+    Inside Rust: https://blog.rust-lang.org/inside-rust/feed.xml
+    This Week in Rust: https://this-week-in-rust.org/atom.xml
+    Apple Developer News: https://developer.apple.com/news/rss/news.rss
+    The Eclectic Light Company: https://eclecticlight.co/feed/
+    Spring Blog: https://spring.io/blog.atom
+    Hugging Face Papers: https://papers.takara.ai/api/feed
+    The Batch: https://raw.githubusercontent.com/Olshansk/rss-feeds/main/feeds/feed_the_batch.xml
+    Simon Willison's Weblog: https://simonwillison.net/atom/everything/
+    Latent Space: https://www.latent.space/feed
+    Anthropic Engineering: https://raw.githubusercontent.com/Olshansk/rss-feeds/main/feeds/feed_anthropic_engineering.xml
+    OpenAI Blog: https://openai.com/news/rss.xml
+    Google DeepMind Blog: https://deepmind.google/blog/rss.xml
+    Hugging Face Blog: https://huggingface.co/blog/feed.xml
+    Sebastian Raschka (Ahead of AI): https://magazine.sebastianraschka.com/feed
+    Lilian Weng (Lil'Log): https://lilianweng.github.io/index.xml
+    Marc Brooker's Blog: https://brooker.co.za/blog/rss.xml
+    Martin Kleppmann's Blog: https://martin.kleppmann.com/feed.rss
+    Dan Luu: https://danluu.com/atom.xml
+    Brendan Gregg's Blog: https://www.brendangregg.com/blog/rss.xml
+    Asimov Press: https://www.asimov.press/feed
+    Works in Progress: https://worksinprogress.co/rss.xml
+    No Starch Press: https://nostarch.com/rss.xml
+    Pragmatic Bookshelf: https://pragprog.com/rss.xml
+    Database Architects: https://databasearchitects.blogspot.com/feeds/posts/default
+    Florian Marending: https://marending.dev/rss.xml
+    DuckDB Blog: https://duckdb.org/feed.xml
+    ClickHouse Blog: https://clickhouse.com/rss.xml
+    Ink & Switch: https://www.inkandswitch.com/index.xml
+    Jeremy Morrell: https://jeremymorrell.dev/rss.xml
+    Asahi Linux Blog: https://asahilinux.org/blog/index.xml
+    Protomaps Blog: https://protomaps.com/blog/index.xml
+    Robin Sloan: https://www.robinsloan.com/feed.xml
+    Greg Hurrell's Blog: https://wincent.dev/blog.rss
+  youtube:
+    Jon Gjengset: UC_iD0xppBwwsrM9DegC5cQQ
+    Ryan Levick: UCpeX4D-ArTrsqvhLapAHprQ
+    Let's Get Rusty: UCSp-OaMpsO8K0KkOqyBl7_w
+    Logan Smith: UCnHX5FjwtQpxkCGziuh4NJA
+    strager: UC3ewEwPUnReNd_mgwxOn9aQ
+    Ben Eater: UCS0N5baNlQWJCUrhCEo8WlA
+    Core Dumped: UCGKEMK3s-ZPbjVOIuAV8clQ
+    Context Free: UCS4FAVeYW_IaZqAbqhlvxlA
+    Low Byte Productions: UC56l7uZA209tlPTVOJiJ8Tw
+    Tech With Nikola: UCHvDhwNuq-h2hZQRR6BwbLQ
+    Ladybird: UCkT7pg-YFt3k1N17q4vIAhg
+    Bits inside by René Rebe: UCJLLl6AraX1POemgLfhirwg
+    number 0: UCdWMU1dBMmB4SrMokGI4jvA
+    Fireship: UCsBjURrPoezykLs9EqgamOA
+    Tsoding Daily: UCrqM0Ym_NbK1fqeQG2VIohg
+    Computerphile: UC9-y-6csu5WGm29I7JiwpnA
+    Rust Programming Language: UCaYhcUwRBNscFNUKTjgPFiA
+    The Go Programming Language: UCO3LEtymiLrgvpb59cNsb8A
+    Casey Muratori (Molly Rocket): UCaTznQhurW5AaiYPbhEA-KA
+    Jacob Sorber: UCwd5VFu4KoJNjkWJZMFJGHQ
+    javidx9 (OneLoneCoder): UC-yuWVUplUJZvieEligKBkA
+    Nir Lichtman: UCAMu6Dso0ENoNm3sKpQsy0g
+    Code to the Moon: UCjREVt2ZJU8ql-NC9Gu-TJw
+    The Cherno: UCQ-W1KE9EYfdxhL6S4twUNw
+    Freya Holmér: UC7M-Wz4zK8oikt6ATcoTwBA
+    Acerola: UCQG40havu4kNpB4pxUDQhYQ
+    The Art of Code: UCcAlTqd9zID6aNX3TzwxJXg
+    Inigo Quilez: UCdmAhiG8HQDlz8uyekw4ENw
+    Andrej Karpathy: UCXUPKJO5MZQN11PqgIvyuvQ
+    AI Explained: UCNJ1Ymd5yFuUPtn21xtRbbw
+    bycloud: UCgfe2ooZD3VJPB6aJAnuQng
+    AI Engineer: UCLKPca3kwwd-B59HNr-_lvA
+    Welch Labs: UConVfxXodg78Tzh5nNu85Ew
+    3Blue1Brown: UCYO_jab_esuFRV4b17AJtAw
+    Dwarkesh Patel: UCXl4i9dYBrFOabk0xGmbkRA
+    Umar Jamil: UCtAcpQcYerN8xxZJYTfWBMw
+    Yannic Kilcher: UCZHmQk67mSJgfCCTn7xBfew
+    Machine Learning Street Talk: UCMLtBahI5DMrt0NPvDSoIRQ
+    Matt Pocock: UCswG6FSbgZjbWtdf_hMLaow
+    Theo - t3.gg: UCbRP3c757lWg9M-U7TyEkXA
+    Jack Herrington: UC6vRUjYqDuoUsYsku86Lrsw
+    ui.dev: UCbAn7pVK2VIyo-UysfWGdZQ
+    Dreams of Code: UCWQaM7SpSECp9FELz-cHzuQ
+    typecraft: UCo71RUe6DX4w-Vd47rFLXPg
+    DevOps Toolbox: UCYeiozh-4QwuC1sjgCmB92w
+    By Default: UC8wKWWarusivFpIcUx9ilOw
+    Greg Hurrell: UCXPHFM88IlFn68OmLwtPmZA
+    Mitchell Hashimoto: UC0gjVbm7HY5GzDTo5NbQruA
+    IntelliJ IDEA: UC4ogdcPcIAOOMJktgBMhQnQ
+    ForrestKnight: UC2WHjPDvbE6O328n17ZGcfg
+    CodeAesthetic: UCaSCt8s_4nfkRglWCvNSDrg
+    TJ DeVries: UCd3dNckv1Za2coSaHGHl5aA
+    SpringDeveloper: UC7yfnfvEUlXUIfm8rGLwZdA
+    Marco Codes (Marco Behler): UCf4tsZfSZlBx2QusJg3HJew
+    Dan Vega: UCc98QQw1D-y38wg6mO3w4MQ
+    Paul Hudson: UCmJi5RdDLgzvkl3Ly0DRMlQ
+    Apple Developer: UCwrVwiJllwhJUKXKmjLcckQ
+    AppleProgramming: UCDg-YmnNehm3KB0BpytkUJg
+    Point-Free: UCLRsEwHehW8SN9tNWvjwSyw
+    LiveOverflow: UClcE-kVhqyiHCcjYwcpfj9w
+    Low Level: UC6biysICWOJ-C3P4Tyeggzg
+    stacksmashing: UC3S8vxwRfqLBdIhgRlDRVzw
+    samy kamkar: UC4m2G6T18_JcjwxwtwKJijw
+    IppSec: UCa6eh7gCkpPo5XXUDfygQQA
+    PwnFunction: UCW6MNdOsqv2E9AjQkv9we7A
+    13Cubed: UCy8ntxFEudOCRZYT1f7ya9Q
+    John Hammond: UCVeW9qkBjo3zosnqUbG7CFw
+    OALabs: UC--DwaiMV-jtO-6EvmKOnqg
+    ByteByteGo: UCZgt6AzoyjslHTC9dz0UoTw
+    Hussein Nasser: UC_ML5xP23TOWKUcc-oAE_Eg
+    Decomplexify: UCjka2mU4tWFuJ2juvF-0Pxg
+    Grafana: UCYCwgQAMm9sTJv0rgwQLCxw
+    InfoQ: UCkQX1tChV7Z7l1LFF4L9j_g
+    The Pragmatic Engineer: UCPbwhExawYrn9xxI21TFfyw
+    Devoxx: UCCBVCTuk6uJrN3iFV_3vurg
+    GOTO Conferences: UCs_tLP3AiwYKwdUHpltJPuA
+    CppCon: UCMlGfpWw-RUdWX_JbLCukXg
+    ThePrimeagen: UC8ENHE5xdFSwx71u3fDH5Xw
+    Modern Software Engineering (Dave Farley): UCCfqyGl3nq_V0bo64CjZh8g
+    No Boilerplate: UCUMwY9iS8oMyWDYIe6_RmoA
+    CMU Database Group (Andy Pavlo): UCHnBsf2rH-K7pn09rb3qvkA
+    Arpit Bhayani: UC_b1GUJv_2QiMP4BxC9-Dxg
+    USENIX: UCHwLg2XZDZL3OvrwpzleKjw
+    CNCF: UCvqbFHwN-nwalWPjPUKpvTA
+    Strange Loop: UC_QIfHvN9auy2CoOdSfMWDw
+    TechTechPotato: UC1r0DG-KEPyqOeW6o79PByw
+    High Yield: UCmMwHbw2j8LfvTKVh3O7Vdw
+    Asianometry: UC1LpsuAUaKoMzzJSEt5WImw
+    Branch Education: UCdp4_l1vPmpN-gDbUwhaRUQ
+
+# The reader's interests. Every run reads them, and the weekly run may
+# propose changes.
+profile: |
+  # Public preference profile
+
+  The digest is tuned for a senior software engineer with strong interest in
+  reliable systems, developer tools, AI, security, observability, and
+  infrastructure.
+
+  ## High interest
+
+  - Hacker News stories with technical substance.
+  - AI releases, model behavior changes, coding agents, inference, GPUs, open
+    weights, safety, and AI security.
+  - ML research papers with engineering relevance: training methods, reasoning
+    models, evaluation, interpretability, and architecture work from arXiv, Papers
+    with Code, and Hugging Face Papers.
+  - Post-training, a strong interest, including supervised fine-tuning,
+    reinforcement learning, preference tuning, distillation, and reward design,
+    from papers and from first-party accounts of organizations post-training their
+    own models on open weights. Route into ML research and AI.
+  - AI for science, especially drug discovery, including protein structure
+    prediction, protein language models, molecular generation and de novo design,
+    docking, binding affinity, and retrosynthesis. Track the models, open source
+    tooling (AlphaFold, Boltz, Chai, OpenFold, RDKit, DeepChem), datasets,
+    methods, and engineering tradeoffs. Route into ML research and AI sections.
+  - Agentic coding: how practitioners use and build with coding agents (Claude
+    Code, Cursor, Copilot), agent harnesses, MCP, subagents, and agent evaluation.
+    Claude Code and pi releases with new features or changed defaults. Claude
+    Code releases almost daily, so skip releases that only fix bugs. Agent
+    sandboxing: nono, Apple container, and VM or capability isolation for agents.
+  - AI-driven SDLC at named organizations: first-party or well-sourced accounts
+    of which agents engineers run and which run unattended. Cover how the agents
+    are sandboxed and which tools they get. Cover how the review gate changed (AI
+    pre-review, scoped auto-merge, or no human review) and the measured outcomes
+    (merged PRs, review time, revert rate, cost per PR). Reference cases include
+    Stripe Minions, Spotify
+    Honk, Uber managed agents, Cloudflare AI review, Coinbase, Meta RADAR,
+    StrongDM. Industry data on review bottlenecks (LinearB, CircleCI, GitHub)
+    counts too. Always include when the source is a company engineering blog or
+    a credible practitioner write-up with mechanism-level detail.
+  - Software factories: systems where specifications and scenarios drive fleets
+    of coding agents from ticket to deployed change with little or no human code
+    review. Track StrongDM's factory, Factory.ai, first-party
+    accounts from engineering organizations, and critiques with evidence. Route
+    into Agentic coding.
+  - Major outages affecting developers, cloud users, identity, payments, package
+    registries, and collaboration tools. Include an outage only when it has
+    wide impact or a published postmortem. Skip routine status page incidents.
+  - CVEs, active exploitation, supply chain attacks, breaches, and practical
+    mitigations.
+  - Ghostty, Neovim, LazyVim, wincent/wincent, Git, terminal tooling, shells,
+    Wayland, and Linux desktop infrastructure. Within these, fish, atuin, and
+    television (tv) releases with new features.
+  - Releases, CVEs, and breaking changes in the owner's own stack rank higher.
+    The owner builds a Jujutsu forge on jj-lib with Rust, Kotlin and Spring
+    Boot, Redpanda, and SeaweedFS, built with Cargo and Gradle. It runs on a
+    Talos cluster on Hetzner Cloud, managed with OpenTofu, Argo CD,
+    CloudNativePG, cert-manager, and SOPS. Hetzner Cloud outages go under
+    Outages. This digest runs on the Claude Agent SDK and builds with Zola. It
+    takes feedback through a Cloudflare Worker. RustSec advisories for crates
+    in this stack go under Security.
+  - mise: new features in tasks, tool installs, environments, and backends.
+    mise releases almost daily, so skip releases that only fix bugs.
+  - Jujutsu (jj) and everything around it: releases, tools such as jjui, and
+    workflows such as megamerges. Track the work of its creator, Martin von
+    Zweigbergk, and East River Source Control (ERSC), his company building version
+    control servers for humans and agents. Version control forges and code
+    hosting, a strong interest, including new and alternative forges such as
+    Tangled, forges built on open protocols, stacked pull requests, and forge
+    support for jj. Route into Developer tools.
+  - Lua outside editor configuration: Lua 5.x releases, LuaJIT, Luau, the C API
+    and embedding Lua as an extension language in servers, games, proxies and
+    network tooling, and performance work on Lua runtimes. Route into Languages
+    and runtimes and Developer tools. Neovim plugin and configuration Lua stays
+    under the preceding developer tools bullet. Exclude tutorials and beginner
+    material.
+  - iOS and macOS engineering: Swift, SwiftUI, Xcode, Foundation Models, Apple
+    Silicon, the Swift toolchain, and macOS and Darwin platform internals.
+  - Linux kernel and LWN: kernel releases, scheduler, io_uring, eBPF, filesystems,
+    memory management, and Rust for Linux.
+  - Programming languages and runtimes: Java, Kotlin, Rust, Go, Python,
+    TypeScript, Zig, Swift, C, C++, WebAssembly.
+  - Rust libraries the owner builds on: tokio, axum, tonic, hyper, tower,
+    rustls, prost, tracing, opentelemetry-rust, object_store, serde, clap,
+    gitoxide, ratatui, rust-analyzer, and ruff. Cover releases with new features,
+    breaking changes, or security fixes. Skip nightly and patch-only releases.
+    Route into Languages and runtimes.
+  - C outside the kernel, including the ISO C standard and compiler support for
+    it, glibc and musl releases, the Clang, GCC and LLVM toolchains, sanitizers
+    and hardening flags, and memory-safety retrofits of existing C codebases.
+    Route into Languages and runtimes and Developer tools. Kernel C stays under
+    the Linux kernel bullet. Exclude tutorials and beginner material.
+  - Notebooks and interactive computing for Python work, covering Jupyter and
+    JupyterLab releases, the notebook format and kernel protocol, execution and
+    reproducibility, notebook diffing and review, and packaging notebooks into
+    scripts or pipelines. Route into Developer tools and ML research. Exclude
+    tutorial notebooks and course material.
+  - The Java ecosystem, a strong interest: OpenJDK releases and JEPs, JVM
+    internals and performance, GraalVM, JVM GPU and compiler projects such as
+    TornadoVM, Spring Boot, Netty, R2DBC, database drivers, TLS, cloud
+    integration, and migration issues.
+  - Observability: Prometheus, Grafana, OpenTelemetry, SLOs, latency, tracing,
+    dashboards, postmortems. Track the Grafana Labs stack: Grafana, Loki, Tempo,
+    Mimir, and Alloy.
+  - Kubernetes and cloud native networking: Kubernetes releases and KEPs,
+    Cilium, Tetragon, eBPF-based networking and security, Isovalent, and CNCF
+    projects. Route into Infrastructure.
+  - Cloud cost controls such as hard spend caps and budget enforcement at AWS,
+    Google Cloud, Azure, and other providers, including their billing APIs and
+    whether providers match each other's features. Route into Infrastructure.
+  - PostgreSQL and Postgres-compatible distributed SQL: PostgreSQL releases,
+    extensions, and internals, CockroachDB, YugabyteDB, and other NewSQL
+    databases, with their consistency models, benchmarks with method, and
+    licensing changes. Route into Infrastructure and Engineering posts.
+  - Distributed systems research and practice: consensus protocols, replication,
+    CRDTs and local-first software, eventual consistency, and distributed
+    transactions. Track Martin Kleppmann's work and the Automerge and Yjs
+    ecosystems. Route into Infrastructure, Engineering posts, and ML research.
+  - Engineering blog posts with detail on how the system is built, architecture
+    tradeoffs, incident analysis, performance work, or debugging lessons.
+  - Reddit topics that show adoption pain, repeated failure modes, or fast-moving
+    hype around tools and AI.
+  - The digital euro, covering the ECB design and technical architecture, the
+    EU legislation, privacy, offline payments, and holding limits. Route into
+    Markets and companies.
+  - EU regulation that affects software engineers: the Cyber Resilience Act and
+    its obligations for open source maintainers and stewards, and the AI Act as
+    it applies to building and running AI systems. Route into Markets and
+    companies.
+  - Commit signing and developer authentication: SSH signing, passkeys, and
+    1Password developer tooling such as its SSH agent. Route into Security and
+    Developer tools.
+  - Acquisitions, IPOs, governance changes, and licensing changes that affect
+    developer infrastructure or open source sustainability.
+
+  ## Background
+
+  The reader reads the digest to learn, not only to keep up. Write background
+  for a senior engineer outside the story's specialty. Define the terms. Say
+  what came before and what problem the thing solves. Skip what any senior
+  engineer knows, such as how TLS works.
+
+  ## Lower interest
+
+  - Product marketing without technical detail.
+  - Funding rounds without engineering impact.
+  - Benchmarks without method.
+  - Social media controversy without a primary source.
+  - Consumer gadget news unless it affects developer platforms.
+  - WordPress and Drupal vulnerabilities, including plugins and modules. Include
+    them only when monumental, such as mass exploitation of an unauthenticated
+    core flaw across a large share of sites.

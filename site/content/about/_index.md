@@ -19,7 +19,7 @@ projects it covers.
 The model can't change anything outside its call:
 
 - Python collects candidates from the
-  [watchlist]({{ config.extra.repository }}/blob/main/agent/config/watchlist.yaml)
+  [watchlist]({{ config.extra.repository }}/blob/main/config.yaml)
   before the model starts.
 - The model runs with every built-in tool removed, including the shell, file
   access, and web search. Its only tool, `fetch_url`, reads an https page, and
@@ -70,7 +70,7 @@ source for any operational decision.
 ## JSON API
 
 Every build publishes the digest as static JSON under `/api/`. Start at
-[`/api/index.json`](https://xkef.github.io/swe-digest/api/index.json), which
+[`/api/index.json`]({{ config.base_url }}/api/index.json), which
 links to the rest.
 
 | File                  | Holds                                                         |
@@ -118,7 +118,7 @@ Act on Data Protection (FADP).
 
 If you are mentioned and want a correction, added context, removal, or exclusion
 from future coverage, open a
-[correction or removal request](https://github.com/xkef/swe-digest/issues/new?template=removal.yml)
+[correction or removal request]({{ config.extra.repository }}/issues/new?template=removal.yml)
 and identify the specific page or item. Use that template rather than a blank
 issue: it keeps the request open for a human. Issues are public and are monitored. Reasonable
 requests are honored promptly, and asking to be excluded does not require a

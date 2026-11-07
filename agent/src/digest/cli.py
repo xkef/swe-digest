@@ -53,5 +53,6 @@ def main() -> int:
         print("\n".join(problems), file=sys.stderr)
         return 1
     if args.command == "build":
+        site.write_zola_config()
         site.build()
     return 0

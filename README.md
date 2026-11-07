@@ -23,7 +23,7 @@ last 30 days, cost included.
 Five times a day ([daily.py](agent/src/digest/daily.py)):
 
 1. Python collects candidates from Hacker News, Reddit, arXiv, and the RSS
-   feeds in [watchlist.yaml](agent/config/watchlist.yaml).
+   feeds in the watchlist in [config.yaml](config.yaml).
 2. One model call picks and writes the new stories. The session starts with
    all built-in tools removed. That includes the shell and file access. Its one
    tool, an audited `fetch_url`, reads https pages.
@@ -41,8 +41,8 @@ and opens a pull request against the watchlist and the reading profile.
 The agent job runs with a read-only token and uploads the files it changed. A
 second job gets the write token, checks every file against a path allowlist and
 its schema ([publish.py](agent/src/digest/publish.py)), commits `data/` to main,
-and opens a pull request for `agent/config/`. Code, prompts, and workflows are
-not on the allowlist.
+and opens a pull request for a new watchlist or profile in `config.yaml`. Code,
+prompts, workflows, and the rest of `config.yaml` are off limits.
 
 ## Layout
 
@@ -65,6 +65,9 @@ A fork needs:
   block GitHub runners.
 - **Cloudflare, optional:** the [signals Worker](signals/README.md) for story
   requests and feedback.
+
+[config.yaml](config.yaml) holds the configuration, from the site URL and
+billing to the watchlist and profile.
 
 The [stats page](https://xkef.github.io/swe-digest/stats/) shows what a run
 costs.

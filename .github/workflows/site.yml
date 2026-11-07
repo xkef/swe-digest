@@ -72,6 +72,8 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url || steps.retry.outputs.page_url }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url || steps.retry.outputs.page_url }}
@@ -107,7 +109,7 @@ jobs:
         with:
           runs: 3
           urls: |
-            https://xkef.github.io/swe-digest/
-            https://xkef.github.io/swe-digest/digests/
+            ${{ needs.deploy.outputs.page_url }}
+            ${{ needs.deploy.outputs.page_url }}digests/
           configPath: .github/lighthouserc.json
           uploadArtifacts: true

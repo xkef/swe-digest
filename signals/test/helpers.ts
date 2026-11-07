@@ -87,7 +87,7 @@ export async function runToken(claims: RunClaims = {}): Promise<string> {
     JSON.parse(testEnv.TEST_ACCESS_KEY) as JWK,
     "RS256",
   );
-  const repository = claims.repository ?? "xkef/swe-digest";
+  const repository = claims.repository ?? testEnv.REPOSITORY;
   return new SignJWT({
     repository,
     ref: claims.ref ?? "refs/heads/main",

@@ -58,7 +58,7 @@ any field.
 
 | Path            | Holds                                                          |
 | --------------- | -------------------------------------------------------------- |
-| `src/config.ts` | every fixed value: site, limits, and the GitHub token claims   |
+| `src/config.ts` | every fixed value: limits and the GitHub token claims          |
 | `src/index.ts`  | the route table                                                |
 | `src/router.ts` | dispatch, and the guard for each kind of caller                |
 | `src/routes/`   | the handlers, by caller: enrollment, browsers, and digest runs |
@@ -78,8 +78,8 @@ repository holds no Cloudflare token. Its settings:
 
 - Root directory: `signals`
 - Build command: `npm ci`
-- Deploy command: `npx wrangler deploy`
-- Build variable `NODE_VERSION`: the `node` version in `mise.toml`
+- Deploy command: `npm run deploy`
+- Build variable `NODE_VERSION`: the `node` version in `.mise/config.toml`
 
 ## Enrollment
 

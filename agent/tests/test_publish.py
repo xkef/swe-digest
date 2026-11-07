@@ -1,4 +1,5 @@
 import pytest
+import yaml
 
 from digest import config, publish
 
@@ -12,8 +13,8 @@ def write(root, relative, text="date: '2026-10-09'\nruns: []\n"):
 
 def test_gather_accepts_allowlisted_paths(tmp_path):
     write(tmp_path, "data/runs/2026-10-09.yaml")
-    write(tmp_path, "agent/config/profile.md", "# Profile\n")
-    assert set(publish.gather(tmp_path)["files"]) == {"data/runs/2026-10-09.yaml", "agent/config/profile.md"}
+    write(tmp_path, "config.yaml", "profile: x\n")
+    assert set(publish.gather(tmp_path)["files"]) == {"data/runs/2026-10-09.yaml", "config.yaml"}
 
 
 @pytest.mark.parametrize(
@@ -23,7 +24,8 @@ def test_gather_accepts_allowlisted_paths(tmp_path):
         "agent/src/digest/publish.py",
         "agent/prompts/rules.md",
         "agent/config/settings.yaml",
-        "config/watchlist.yaml",
+        "config/config.yaml",
+        "site/zola.toml",
         "data/digests/latest.yaml",
         "data/digests/2026-10-09.yaml.bak",
         "site/templates/story.html",
@@ -48,11 +50,11 @@ def test_check_rejects_secrets_and_bad_shapes():
     assert publish.check("data/runs/2026-10-09.yaml", b"date: '2026-10-09'\nruns: []\nx: ghp_" + b"a" * 30)
     assert publish.check("data/runs/2026-10-09.yaml", b"date: '2026-10-08'\nruns: []\n")
     assert publish.check("data/memory/followups.yaml", b"{}\n")
-    assert publish.check("agent/config/watchlist.yaml", b"feeds: {}\n")
+    assert publish.check("config.yaml", b"feeds: {}\n")
 
 
 def test_check_accepts_the_committed_files():
-    assert publish.check("agent/config/watchlist.yaml", config.WATCHLIST.read_bytes()) == []
+    assert publish.check("config.yaml", config.CONFIG.read_bytes()) == []
     assert publish.check("data/memory/followups.yaml", config.FOLLOWUPS.read_bytes()) == []
     digest = sorted(config.DIGESTS.glob("*.yaml"))[-1]
     assert publish.check(f"data/digests/{digest.name}", digest.read_bytes()) == []
@@ -86,3 +88,19 @@ def test_mark_requests_waits_for_the_commit(monkeypatch):
     publish.mark_requests("abc123", {"inbox_used": ["a"]})
 
     assert marked == [["a"]]
+
+
+def proposed(**changes):
+    return yaml.safe_dump(config.document() | changes).encode()
+
+
+def test_check_accepts_a_new_watchlist_and_profile():
+    watchlist = config.watchlist() | {"github_releases": ["astral-sh/uv"]}
+    assert publish.check("config.yaml", proposed(watchlist=watchlist, profile="# New\n")) == []
+
+
+@pytest.mark.parametrize(
+    "changes", [{"billing": "api"}, {"repository": "someone/else"}, {"settings": {}}, {"extra": 1}]
+)
+def test_check_refuses_changes_outside_the_watchlist_and_profile(changes):
+    assert publish.check("config.yaml", proposed(**changes))

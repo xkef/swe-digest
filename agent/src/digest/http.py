@@ -24,7 +24,9 @@ from http import HTTPStatus
 from typing import Any
 from urllib.parse import urlparse
 
-USER_AGENT = "swe-digest/2.0 (+https://github.com/xkef/swe-digest)"
+from digest import config
+
+USER_AGENT = f"swe-digest/2.0 (+https://github.com/{config.repository()})"
 TIMEOUT_SECONDS = 20
 MAX_BYTES = 8 * 1024 * 1024
 GZIP_MAGIC = b"\x1f\x8b"

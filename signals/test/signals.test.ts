@@ -1,4 +1,5 @@
 import { reset } from "cloudflare:test";
+import { env } from "cloudflare:workers";
 import { afterEach, describe, expect, it } from "vitest";
 import { call, deviceToken, FRIEND, OWNER, runToken } from "./helpers";
 
@@ -59,11 +60,11 @@ describe("GET /signals", () => {
 
   it("admits only the digest workflow on main", async () => {
     const tokens = await Promise.all([
-      runToken({ repository: "someone/swe-digest" }),
+      runToken({ repository: "someone/else" }),
       runToken({ ref: "refs/heads/feature" }),
       runToken({
         workflow_ref:
-          "xkef/swe-digest/.github/workflows/ci.yml@refs/heads/main",
+          `${env.REPOSITORY}/.github/workflows/ci.yml@refs/heads/main`,
       }),
       runToken({ audience: "other" }),
       deviceToken(OWNER),

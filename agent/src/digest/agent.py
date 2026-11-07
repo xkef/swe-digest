@@ -10,7 +10,7 @@ Three settings carry the harness. ``tools=[]`` removes every built-in tool.
 PreToolUse hook refuses any tool but ``fetch_url``, in case the first two ever
 stop holding. The run record counts every call, refused or not.
 
-Authentication: ``billing`` in settings names who pays. A subscription run
+Authentication: ``billing`` in config.yaml names who pays. A subscription run
 bills through CLAUDE_CODE_OAUTH_TOKEN. An API key in the environment would take
 precedence and move billing to the API without any visible change, so its
 presence stops the run. An API run needs ANTHROPIC_API_KEY.
@@ -62,7 +62,7 @@ class Billing(StrEnum):
 
 
 def check_billing() -> None:
-    if Billing(config.settings()["billing"]) is Billing.API:
+    if Billing(config.document()["billing"]) is Billing.API:
         if not os.environ.get(API_KEY):
             raise AgentError(f"refusing to run: billing is api but {API_KEY} is not set")
         return

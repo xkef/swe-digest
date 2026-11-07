@@ -6,8 +6,8 @@
 
 The evidence is what the week published, the Hacker News stories it missed,
 what the runs recorded, and the week's reader feedback from the signals Worker. The model answers
-with a full watchlist and profile. Python writes them to agent/config/, and the
-publish job opens a pull request. Merging it is the approval.
+with a full watchlist and profile. Python writes them into config.yaml, and
+the publish job opens a pull request. Merging it is the approval.
 """
 
 import asyncio
@@ -23,10 +23,6 @@ from digest.http import Fetcher
 MODE = "improve"
 WEEK_DAYS = 7
 MISS_MIN_POINTS = 300
-HEADER = (
-    "# What a run collects. Python fetches every source here before the model\n"
-    "# starts. Edit by hand, or merge a weekly improvement pull request.\n\n"
-)
 # What a run takes from outside. Saved after each run, these replay it.
 REPLAYED = ("feedback", "misses", "reply", "fetched")
 
@@ -67,15 +63,15 @@ def ask(brief: str, fetcher: Fetcher) -> State:
 def propose(reply: dict[str, Any]) -> State:
     """Writes the proposed watchlist and profile where they differ and pass their checks."""
     answer = reply["answer"]
-    changed = []
+    changes: dict[str, Any] = {}
     refused = sources.watchlist_problems(answer["watchlist"])
     if not refused and answer["watchlist"] != config.watchlist():
-        config.WATCHLIST.write_text(HEADER + config.dump(answer["watchlist"]))
-        changed.append("watchlist")
+        changes["watchlist"] = answer["watchlist"]
     if answer["profile"].strip() and answer["profile"].strip() != config.profile().strip():
-        config.PROFILE.write_text(answer["profile"].strip() + "\n")
-        changed.append("profile")
-    return {"changed": changed, "refused": refused}
+        changes["profile"] = answer["profile"].strip() + "\n"
+    if changes:
+        config.propose(changes)
+    return {"changed": list(changes), "refused": refused}
 
 
 def summary(state: State) -> runs.Record:
@@ -140,7 +136,7 @@ def brief(week: list[str], feedback: list[dict[str, Any]], misses: list[dict[str
         lines += [f"  owner note: {' '.join(note.split())}" for note in tally["notes"]]
     lines += ["(none)"] if not feedback else []
 
-    lines += ["", "## Current watchlist (YAML)", config.WATCHLIST.read_text()]
+    lines += ["", "## Current watchlist (YAML)", config.dump(config.watchlist())]
     lines += ["", "## Current profile", config.profile()]
     return {"brief": "\n".join(lines)}
 

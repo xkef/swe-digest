@@ -1,6 +1,6 @@
 import { reset } from "cloudflare:test";
 import { afterEach, describe, expect, it } from "vitest";
-import { limits } from "../src/config";
+import { limits, site } from "../src/config";
 import { call, deviceToken, FRIEND, OWNER } from "./helpers";
 
 const STORY = "2026-10-30/cursor-marketplace-served-a-trojanized-extension";
@@ -179,7 +179,7 @@ describe("CORS", () => {
 
     expect(response.status).toBe(401);
     expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-      "https://xkef.github.io",
+      site.origin,
     );
   });
 });

@@ -7,12 +7,14 @@ mirrored under one directory. This module trusts none of it:
     2. Every file must be a regular file under the size cap, and parse and pass
        its own check.
     3. data/ files become one signed commit on main.
-    4. agent/config/ files become a pull request. Merging it is the owner's approval.
+    4. A changed config.yaml becomes a pull request. Merging it is the owner's
+       approval. Only its watchlist and profile may differ from main.
     5. Story requests the run covered are marked used on the signals Worker,
        only after the digest is committed.
 
-Code, prompts, workflows, and settings are not on the allowlist, so a run can
-never change its own instructions or this gate.
+Code, prompts, and workflows are not on the allowlist, and the rest of
+config.yaml must match main, so a run can never change its own instructions,
+its settings, or this gate.
 
 The steps form a graph. Only ``verify`` gives what the writing steps need, so
 nothing reaches GitHub before every file passes:
@@ -33,7 +35,7 @@ from digest.graph import State, Step
 
 DAY = r"\d{4}-\d{2}-\d{2}"
 DATA_PATHS = re.compile(rf"data/digests/{DAY}\.yaml|data/runs/{DAY}\.yaml|data/memory/followups\.yaml")
-CONFIG_PATHS = re.compile(r"agent/config/watchlist\.yaml|agent/config/profile\.md")
+CONFIG_PATH = "config.yaml"
 MAX_FILE_BYTES = 2 * 1024 * 1024
 SITE_WORKFLOW = "site.yml"
 
@@ -51,7 +53,7 @@ def gather(out_dir: Path) -> State:
             continue
         if entry.is_symlink() or not entry.is_file():
             raise Refused(f"{relative}: not a regular file")
-        if not (DATA_PATHS.fullmatch(relative) or CONFIG_PATHS.fullmatch(relative)):
+        if not (DATA_PATHS.fullmatch(relative) or relative == CONFIG_PATH):
             raise Refused(f"{relative}: not a publishable path")
         if entry.stat().st_size > MAX_FILE_BYTES:
             raise Refused(f"{relative}: over {MAX_FILE_BYTES} bytes")
@@ -64,9 +66,6 @@ def check(relative: str, body: bytes) -> list[str]:
     text = body.decode("utf-8")
     if stories.text_issues(text):
         return ["contains a secret pattern"]
-    if relative == "agent/config/profile.md":
-        return []
-
     parsed: Any = yaml.safe_load(text)
     stem = Path(relative).stem
     if relative.startswith("data/digests/"):
@@ -75,7 +74,24 @@ def check(relative: str, body: bytes) -> list[str]:
         return runs.problems(parsed, stem)
     if relative == "data/memory/followups.yaml":
         return memory.problems(parsed)
-    return sources.watchlist_problems(parsed)
+    return config_problems(parsed)
+
+
+def config_problems(proposed: Any) -> list[str]:
+    """Returns why a proposed config.yaml changes more than the watchlist and profile."""
+    if not isinstance(proposed, dict):
+        return ["not a mapping"]
+
+    current = config.document()
+    fixed = sorted((current.keys() | proposed.keys()) - set(config.PROPOSABLE))
+    problems = [
+        f"changes {key}, which only the owner may change"
+        for key in fixed
+        if proposed.get(key) != current.get(key)
+    ]
+    if not isinstance(proposed.get("profile"), str) or not proposed["profile"].strip():
+        problems.append("profile must be text")
+    return problems + sources.watchlist_problems(proposed.get("watchlist"))
 
 
 def verify(files: dict[str, bytes], day: str) -> State:
@@ -87,7 +103,7 @@ def verify(files: dict[str, bytes], day: str) -> State:
     record = yaml.safe_load(files.get(f"data/runs/{day}.yaml", b"runs: [{}]"))["runs"][-1]
     return {
         "data": {path: body for path, body in files.items() if path.startswith("data/")},
-        "proposals": {path: body for path, body in files.items() if path.startswith("agent/config/")},
+        "proposals": {path: body for path, body in files.items() if path == CONFIG_PATH},
         "record": record,
     }
 

@@ -2,11 +2,9 @@ import { reset, runInDurableObject } from "cloudflare:test";
 import { env, exports } from "cloudflare:workers";
 import { generateKeyPair } from "jose";
 import { afterEach, describe, expect, it } from "vitest";
-import { enrollment } from "../src/config";
+import { enrollment, site } from "../src/config";
 import type { SignalStore } from "../src/store";
 import { call, enroll, tokenFrom } from "./helpers";
-
-const SITE_URL = "https://xkef.github.io/swe-digest/";
 
 afterEach(async () => {
   await reset();
@@ -22,7 +20,7 @@ describe("GET /enroll", () => {
 
     expect(response.status).toBe(303);
     expect(response.headers.get("Location")).toMatch(
-      new RegExp(`^${SITE_URL}#signals-token=[A-Za-z0-9_-]{43}$`),
+      new RegExp(`^${site.url}#signals-token=[A-Za-z0-9_-]{43}$`),
     );
     expect(response.headers.get("Cache-Control")).toBe("no-store");
     const reader = await me(tokenFrom(response));
@@ -107,7 +105,7 @@ describe("GET /me", () => {
 
     expect(response.status).toBe(401);
     expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-      "https://xkef.github.io",
+      site.origin,
     );
   });
 

@@ -4,7 +4,7 @@ name: Digest
 #
 #   agent job (read-only token)          publish job (write token)
 #   collect, ask the model, write   ──>  check every file, commit data/ to main,
-#   upload the changed files             open a pull request for agent/config/
+#   upload the changed files             open a pull request for config.yaml
 #
 # The agent job cannot push. The publish job runs only code from main and
 # trusts nothing in the uploaded files until agent/src/digest/publish.py
@@ -30,7 +30,7 @@ on:
 
 permissions: {}
 
-# The repository's own mise.toml defines the tasks every step runs.
+# The repository's own .mise/config.toml defines the tasks every step runs.
 env:
   MISE_TRUSTED_CONFIG_PATHS: ${{ github.workspace }}
 
@@ -86,7 +86,7 @@ jobs:
         if: always()
         run: |
           mkdir -p .run/out
-          git ls-files -z --modified --others --exclude-standard -- data agent/config |
+          git ls-files -z --modified --others --exclude-standard -- data config.yaml |
             xargs -0 -r cp --parents -t .run/out
           if [ -n "$(ls -A .run/out)" ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"

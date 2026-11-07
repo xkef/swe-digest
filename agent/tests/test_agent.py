@@ -8,8 +8,8 @@ from digest import agent
 
 
 def bill(monkeypatch, billing):
-    settings = agent.config.settings() | {"billing": billing}
-    monkeypatch.setattr(agent.config, "settings", lambda: settings)
+    document = agent.config.document() | {"billing": billing}
+    monkeypatch.setattr(agent.config, "document", lambda: document)
 
 
 def test_api_key_stops_a_subscription_run(monkeypatch):

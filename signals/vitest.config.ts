@@ -31,7 +31,10 @@ export default defineConfig({
     cloudflareTest({
       wrangler: { configPath: "./wrangler.jsonc" },
       miniflare: {
+        // Fixed values, so the tests pass whatever config.yaml holds.
         bindings: {
+          SITE_URL: "https://site.test/digest/",
+          REPOSITORY: "owner/digest",
           ACCESS_TEAM_DOMAIN: TEAM_DOMAIN,
           ACCESS_AUD: "test-aud",
           OWNER_EMAIL: "Owner@Example.com",

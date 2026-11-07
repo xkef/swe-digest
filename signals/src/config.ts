@@ -1,12 +1,15 @@
 // Every fixed value the Worker depends on. Values that differ per deployment,
-// such as the Access application, are vars in wrangler.jsonc instead.
+// such as the site and the Access application, are vars from config.yaml at
+// the repository root, passed by scripts/wrangler.mjs.
+
+import { env } from "cloudflare:workers";
 
 const HOUR = 3_600_000;
 export const DAY = 24 * HOUR;
 
 export const site = {
-  origin: "https://xkef.github.io",
-  url: "https://xkef.github.io/swe-digest/",
+  origin: new URL(env.SITE_URL).origin,
+  url: env.SITE_URL,
 } as const;
 
 // Every request goes to this one Durable Object instance.
@@ -51,7 +54,7 @@ export const access = {
 export const github = {
   issuer: "https://token.actions.githubusercontent.com",
   audience: "swe-digest-signals",
-  repository: "xkef/swe-digest",
+  repository: env.REPOSITORY,
   ref: "refs/heads/main",
-  workflowRef: "xkef/swe-digest/.github/workflows/digest.yml@refs/heads/main",
+  workflowRef: `${env.REPOSITORY}/.github/workflows/digest.yml@refs/heads/main`,
 } as const;
