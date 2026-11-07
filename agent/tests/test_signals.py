@@ -38,6 +38,12 @@ def test_available_only_with_an_actions_token(monkeypatch):
     assert signals.available()
 
 
+def test_unavailable_without_a_worker(monkeypatch, actions):
+    settings = signals.config.settings() | {"signals": ""}
+    monkeypatch.setattr(signals.config, "settings", lambda: settings)
+    assert not signals.available()
+
+
 def test_fetch_sends_the_oidc_token_for_the_signals_audience(actions, sent):
     assert signals.fetch(7) == {"requests": [], "feedback": [], "marked": 0}
 

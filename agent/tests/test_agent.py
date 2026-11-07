@@ -7,8 +7,27 @@ pytest.importorskip("claude_agent_sdk")
 from digest import agent
 
 
-def test_api_key_stops_the_run(monkeypatch):
+def bill(monkeypatch, billing):
+    settings = agent.config.settings() | {"billing": billing}
+    monkeypatch.setattr(agent.config, "settings", lambda: settings)
+
+
+def test_api_key_stops_a_subscription_run(monkeypatch):
+    bill(monkeypatch, "subscription")
     monkeypatch.setenv("ANTHROPIC_API_KEY", "")
+    with pytest.raises(agent.AgentError):
+        agent.check_billing()
+
+
+def test_api_billing_runs_with_a_key(monkeypatch):
+    bill(monkeypatch, "api")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test")
+    agent.check_billing()
+
+
+def test_api_billing_stops_without_a_key(monkeypatch):
+    bill(monkeypatch, "api")
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     with pytest.raises(agent.AgentError):
         agent.check_billing()
 

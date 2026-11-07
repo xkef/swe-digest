@@ -56,6 +56,19 @@ signals/  the Cloudflare Worker for private feedback
 `mise tasks` lists every command. [SECURITY.md](.github/SECURITY.md) states the
 threat model. [AGENTS.md](AGENTS.md) covers developing this repository.
 
+## Run your own
+
+A fork needs:
+
+- **Anthropic:** a Claude subscription token or an API key.
+- **A residential proxy, optional:** for YouTube transcripts and sites that
+  block GitHub runners.
+- **Cloudflare, optional:** the [signals Worker](signals/README.md) for story
+  requests and feedback.
+
+The [stats page](https://xkef.github.io/swe-digest/stats/) shows what a run
+costs.
+
 ## License
 
 Code is MIT. Digest text and site copy are CC BY 4.0.

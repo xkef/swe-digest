@@ -3,7 +3,8 @@
 The Worker admits only the digest workflow on main, which proves itself with
 the job's GitHub OIDC token. No secret is stored anywhere. Outside GitHub
 Actions there is no such token, so ``available`` is false and the runs go on
-without signals.
+without signals. An empty ``signals`` setting does the same for a fork with no
+Worker.
 """
 
 import os
@@ -18,7 +19,7 @@ TOKEN_SECRET = "ACTIONS_ID_TOKEN_REQUEST_TOKEN"
 
 
 def available() -> bool:
-    return bool(os.environ.get(TOKEN_URL) and os.environ.get(TOKEN_SECRET))
+    return bool(config.settings()["signals"] and os.environ.get(TOKEN_URL) and os.environ.get(TOKEN_SECRET))
 
 
 def fetch(days: int) -> dict[str, Any]:

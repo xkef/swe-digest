@@ -10,14 +10,15 @@ Three settings carry the harness. ``tools=[]`` removes every built-in tool.
 PreToolUse hook refuses any tool but ``fetch_url``, in case the first two ever
 stop holding. The run record counts every call, refused or not.
 
-Authentication: the run bills the Claude subscription through
-CLAUDE_CODE_OAUTH_TOKEN. An API key in the environment would take precedence
-and move billing to the API without any visible change, so its presence stops
-the run.
+Authentication: ``billing`` in settings names who pays. A subscription run
+bills through CLAUDE_CODE_OAUTH_TOKEN. An API key in the environment would take
+precedence and move billing to the API without any visible change, so its
+presence stops the run. An API run needs ANTHROPIC_API_KEY.
 """
 
 import os
 from collections import Counter
+from enum import StrEnum
 from typing import Any
 
 from claude_agent_sdk import (
@@ -42,8 +43,9 @@ SERVER = "digest"
 FETCH_TOOL = f"mcp__{SERVER}__fetch_url"
 # The structured answer itself arrives as a call to this built-in.
 ANSWER_TOOL = "StructuredOutput"
+API_KEY = "ANTHROPIC_API_KEY"
 BILLING_OVERRIDES = (
-    "ANTHROPIC_API_KEY",
+    API_KEY,
     "ANTHROPIC_AUTH_TOKEN",
     "CLAUDE_CODE_USE_BEDROCK",
     "CLAUDE_CODE_USE_VERTEX",
@@ -54,7 +56,17 @@ class AgentError(RuntimeError):
     """The model call did not return a usable answer."""
 
 
+class Billing(StrEnum):
+    SUBSCRIPTION = "subscription"
+    API = "api"
+
+
 def check_billing() -> None:
+    if Billing(config.settings()["billing"]) is Billing.API:
+        if not os.environ.get(API_KEY):
+            raise AgentError(f"refusing to run: billing is api but {API_KEY} is not set")
+        return
+
     found = [name for name in BILLING_OVERRIDES if name in os.environ]
     if found:
         raise AgentError(f"refusing to run: {', '.join(found)} would bill the API, not the subscription")
