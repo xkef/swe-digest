@@ -34,8 +34,8 @@ Every control below holds even then.
 
 Anyone who can put text where a run reads it: Hacker News, Reddit, arXiv, the
 watchlist feeds, any page the model fetches, and earlier output committed to
-`data/`. Possible goals are publishing their content, leaking a secret, gaining
-write access, or changing what future runs do.
+`data/`. Possible goals are to publish their content, leak a secret, gain write
+access, or change what future runs do.
 
 A malicious repository owner and a failure of GitHub itself are out of scope.
 So is denial of service, because a failed run publishes nothing.
