@@ -1,5 +1,5 @@
 date: '2026-11-07'
-updated: 2026-11-07T09:07Z
+updated: 2026-11-07T09:41Z
 stories:
 - title: >-
     libghostty-vt 1.0 ships a stable C ABI for terminal emulation, with Neovim set to replace
@@ -258,6 +258,28 @@ stories:
   - label: primary
     url: https://github.blog/changelog/2026-11-06-github-copilot-weekly-releases-november-2
 - title: >-
+    GitHub makes @GitHub in Slack and Teams generally available with a Canvas review surface
+    in Teams
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    GitHub's chat integration leaves preview, so a Slack or Teams message can start a coding
+    session and open a pull request.
+  summary: >-
+    GitHub announced on 2026-11-06 that @GitHub in Slack and Teams is generally available.
+    It can investigate bugs, create issues, implement changes and open pull requests from
+    a chat thread. Canvas in Teams shows implementation plans, code changes and previews next
+    to the conversation. Onboarding now infers the repository from the message instead of
+    asking for a selection again, a bug that could block replies to follow-up messages is
+    fixed, and issues and pull requests created this way carry a description line naming the
+    Slack or Teams conversation and the requesting user.
+  why: >-
+    Agent work can now originate in chat, so pull request provenance and repository defaults
+    become things to audit rather than assume.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-06-github-copilot-in-slack-and-teams-is-generally-available
+- title: >-
     On-policy distillation from a model's own GRPO checkpoint needs 50x fewer FLOPs, but loses
     to GRPO with external teachers
   section: ML research
@@ -277,6 +299,69 @@ stories:
   sources:
   - label: primary
     url: https://arxiv.org/abs/2611.08453v1
+- title: >-
+    Paper traces on-policy distillation failures to a feedback loop and shows offline pretraining
+    is a prerequisite
+  section: ML research
+  category: ML research
+  blurb: >-
+    A mechanistic study splits on-policy distillation into update conversion and broadcast,
+    explaining weak student response and degeneration.
+  summary: >-
+    In arXiv:2611.08016, submitted 2026-11-05, Hong and seven co-authors analyze the learning
+    dynamics of on-policy distillation, which trains a student on its own generated trajectories
+    under dense teacher supervision. They separate the feedback loop into conversion of the
+    distillation signal into parameter updates and broadcast of those updates across prefixes,
+    which reshapes the rollout distribution. The framework accounts for limited student responsiveness
+    despite large teacher-student disagreement, and for degeneration when updates that improve
+    local teacher agreement also raise the probability of unsuccessful continuations. They
+    report that offline distillation can prepare a student for on-policy distillation without
+    improving immediate held-out accuracy, and that on-policy distillation alone may degrade
+    generation but yields substantial accuracy gains after sufficient offline preparation.
+  why: >-
+    It gives a concrete ordering for post-training pipelines: run offline distillation first,
+    then on-policy, rather than going on-policy from the start.
+  background: >-
+    Offline distillation trains a student on a fixed dataset of teacher outputs, so the training
+    distribution never moves. On-policy distillation samples from the student instead and
+    scores those samples against the teacher's next-token distributions, which keeps the training
+    data on the student's own distribution but makes the data generator change with every
+    update. That coupling is the same instability reinforcement learning fine-tuning faces,
+    and it is why practitioners mix the two rather than choosing one.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.08016v1
+- title: >-
+    DiffDock study finds focused post-training supervision does not beat broad continuation
+    on docking success
+  section: ML research
+  category: Paper
+  blurb: >-
+    A fixed-budget DiffDock comparison reports no consistent gain from concentrating training
+    signal on structurally consequential pose corrections.
+  summary: >-
+    In arXiv:2611.08249, submitted 2026-11-05 and accepted at the NeurIPS 2026 AI4DD workshop,
+    Brown and four co-authors compare broad continuation training of DiffDock against torsional
+    supervision focused on Cartesian consequence or conditional target consistency, and against
+    a broad and focused mixture, all under a fixed budget. Evaluation separates fixed score
+    fidelity, generated-pose quality, best-of-10 sampling capacity and confidence-selected
+    Top-1 performance. At under 5 Angstrom, broad continuation had the highest mean Top-1
+    success among trained policies and the focused or mixed variants showed no consistent
+    advantage. The starting model had better fixed score fidelity while the broad-continuation
+    model had higher mean Top-1 success at the same aggregate best-of-10 recovery.
+  why: >-
+    For teams fine-tuning diffusion docking models, the result argues against reweighting
+    training toward geometrically important corrections without new evidence.
+  background: >-
+    Molecular docking predicts how a small molecule binds a protein pocket. Diffusion docking
+    models such as DiffDock corrupt a known pose with noise and learn a score field that reverses
+    the corruption, so training coverage across the whole corruption range matters. Reported
+    docking accuracy usually counts poses within 2 or 5 Angstrom RMSD of the crystal structure,
+    and a confidence model selects which sampled pose to return, which is why score fidelity
+    and returned-pose success can move in opposite directions.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.08249v1
 - title: >-
     WebAssembly Release 3.0 core specification adds GC, exception handling, tail calls, memory64
     and multiple memories
@@ -325,6 +410,35 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50401867
 - title: >-
+    Amutable Operating System overview describes an image-based Linux with no shell, no SSH
+    and signed-only images
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Poettering and colleagues detail a Linux design shipping no shell, SSH or interpreters,
+    booting only signed Verity images.
+  summary: >-
+    LWN reports on 2026-11-07 that Lennart Poettering, Michael Vogt and Joaquim Rocha published
+    a detailed technical overview of the Amutable Operating System (AOS) and its infrastructure.
+    The overview lists seven security properties, including that AOS installs no UNIX shell,
+    no SSH remote access and no language interpreters such as Python or Perl by default, and
+    that only images whose Verity data is signed by a key in the Verity keyring may be activated.
+  why: >-
+    Operators evaluating immutable Linux images for nodes now have a stated design target
+    where debugging by shell is deliberately unavailable.
+  background: >-
+    Image-based Linux distributions ship the operating system as a signed, read-only filesystem
+    image rather than a set of individually updated packages, so the running system can be
+    verified against a measured hash tree. dm-verity provides that hash tree and refuses blocks
+    that do not match the signed root hash. Removing shells and interpreters removes the usual
+    post-exploitation tooling an attacker finds on a compromised host, at the cost of ordinary
+    administrative access.
+  followup: >-
+    Publication of the full AOS specification and the first distribution shipping it.
+  sources:
+  - label: primary
+    url: https://lwn.net/Articles/1105934/
+- title: >-
     Apple container 1.7.1 adds config.toml DNS defaults and a shared image store for Kubernetes
     clusters
   section: Apple platforms
@@ -365,6 +479,35 @@ stories:
   - label: primary
     url: https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.165.0
 - title: >-
+    ClickHouse 26.10 adds a function composition operator, row-count quotas and disk spilling
+    for IN subqueries
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The monthly release brings a pipe operator for lambdas, a quota to cap rows inserted per
+    user, and spilling of large IN sets to disk.
+  summary: >-
+    ClickHouse 26.10, published 2026-11-06, contains 104 new features, 225 performance optimizations
+    and 739 bug fixes. A function composition operator lets higher-order function lambdas
+    be written as pipelines joined with the pipe character, with placeholders for extra arguments.
+    Quotas gain a written_rows counter so a user can be capped by rows inserted per interval.
+    IN subquery sets can now spill to disk via max_bytes_before_external_set, which in the
+    release's own example completed a query at 203 MiB peak memory that otherwise failed under
+    a 512 MiB limit. A sql_compatible_division_for_integers setting makes integer division
+    truncate as PostgreSQL does, and is off by default.
+  why: >-
+    The spill setting lets large IN subqueries finish under tight memory limits instead of
+    aborting, and row quotas give a per-user ingestion brake.
+  background: >-
+    ClickHouse evaluates IN with a subquery by materializing the subquery results into an
+    in-memory set and probing outer rows against it, so set size has historically been bounded
+    by max_memory_usage. External spilling mirrors what the engine already does for GROUP
+    BY and sorting. Quotas in ClickHouse are time-interval limits attached to users or roles
+    and visible in system.quotas_usage.
+  sources:
+  - label: primary
+    url: https://clickhouse.com/blog/clickhouse-release-26-10
+- title: >-
     Hightouch pairs a calibrated cheap judge model with Claude Opus 5.5 to grade identity
     resolution near Opus accuracy
   section: Engineering posts
@@ -386,6 +529,37 @@ stories:
     url: https://hightouch.com/blog/llm-judges-identity-resolution
   - label: discussion
     url: https://news.ycombinator.com/item?id=50397429
+- title: >-
+    Cloudflare says Privacy Pass needs post-quantum replacement and points to VOLE-in-the-Head
+    blind signatures
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Cloudflare's cryptographers say Privacy Pass tokens stay unlinkable after Q-day but become
+    forgeable, and survey successor designs.
+  summary: >-
+    In a post published 2026-11-06, Christopher Patton, Tianyu Zhang and Bas Westerbaan write
+    that Privacy Pass still relies on RSA and elliptic curves, so a quantum attacker could
+    forge tokens at will, while its unlinkability is unconditional and survives. They describe
+    a successor design called MOLE, Moderation Of unLinkable Endorsements, in which an anchor
+    issues an endorsement that a client redeems with a moderator without revealing which anchor
+    in the trusted anchor set issued it. They name size as the main obstacle, citing ML-DSA-44
+    signatures at 2,420 bytes against 64 bytes for ECDSA-P256, and point to the VOLE-in-the-Head
+    zero-knowledge proof system from Baum et al., Crypto 2023, and the FAEST signature candidate
+    as a route to decoupling parameter choice from protocol design.
+  why: >-
+    Teams that depend on Privacy Pass tokens for rate limiting or private relays should expect
+    a protocol change with far larger tokens.
+  background: >-
+    Privacy Pass issues a client blind signatures over messages the issuer never sees, so
+    the client can later redeem a token that cannot be linked back to issuance. Apple's iCloud
+    Private Relay and Cloudflare's Privacy Gateway use it to let proxied traffic prove legitimacy
+    without identifying the user. Unlinkability that holds against any attacker, quantum or
+    not, is an information-theoretic property, unlike unforgeability, which rests on hardness
+    assumptions that quantum computers break.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/vole-mole/
 - title: >-
     Cohere finds a strong lead agent with cheap planning workers cuts coding team cost by
     up to 70 percent
