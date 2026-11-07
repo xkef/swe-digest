@@ -1,5 +1,5 @@
 date: '2026-11-07'
-updated: 2026-11-07T11:53Z
+updated: 2026-11-07T15:50Z
 stories:
 - title: >-
     libghostty-vt 1.0 ships a stable C ABI for terminal emulation, with Neovim set to replace
@@ -217,6 +217,35 @@ stories:
     url: https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-omni-1-2-flash/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50392118
+- title: >-
+    Nous Research releases Arete-27B, an SFT-only Qwen3.8-27B fine-tune that cuts CCP-framed
+    answers from 22% to 0.9%
+  section: AI
+  category: AI
+  blurb: >-
+    Nous Research fine-tuned Qwen3.8-27B with SFT only on 20,000 prompts and cut propaganda
+    answers from 22% to 0.9% on its own eval.
+  summary: >-
+    Nous Research published Arete-27B under Apache 2.0, trained by supervised fine-tuning
+    only on about 52.8 million tokens of answers from the open Inkling model over two epochs
+    and 1,202 steps at 64k context. On an 803-prompt evaluation graded by a Grok 4.7 judge,
+    the fact score rose from 2.32 to 2.98 out of 5 and answers containing state framing fell
+    from 22% to 0.9%. Hermes Bench moved from 65.77% to 65.60% and Terminal-Bench-2.1 from
+    67% to 70%, which Nous does not credit to the training.
+  why: >-
+    It is a fully specified recipe, with optimizer settings, data size and a held-out eval,
+    for shifting an open-weight model's values with SFT alone and no measured capability loss.
+  background: >-
+    Supervised fine-tuning trains a model on prompt and response pairs, here written by a
+    stronger teacher model, which is a form of distillation. Nous chose an open teacher to
+    avoid the terms-of-use limits that closed providers place on training from their outputs.
+    The model card separates factual recall from framing, so a model can score well on facts
+    while still adopting an official line.
+  sources:
+  - label: primary
+    url: https://huggingface.co/NousResearch/Arete-27B
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1xpmj33/nousresearcharete27b_hugging_face_qwen_finetune/
 - title: >-
     GitHub opens Copilot code review settings to REST and GraphQL and reports which MCP servers
     shaped each comment
@@ -786,3 +815,32 @@ stories:
     url: https://www.reddit.com/r/ClaudeAI/comments/1xplov4/anthropic_researchers_are_reporting_a_sharp/
   - label: discussion
     url: https://www.reddit.com/r/OpenAI/comments/1xpcezu/metrs_ryan_greenblatt_estimates_ai_is_now/
+- title: >-
+    Researcher maps the undocumented macOS knowledge graph that infers kinship from Contacts,
+    Photos, Messages and location
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A researcher maps two macOS daemons that build a 181-class knowledge graph of contacts,
+    kin and movements in plaintext SQLite since macOS 13.
+  summary: >-
+    Dario Pasquini's write-up says knowledgeconstructiond and intelligenceplatformd have shipped
+    since macOS 13 and keep 51 plaintext SQLite databases under ~/Library/IntelligencePlatform,
+    protected only by TCC Full Disk Access. Its graph.db is a triple store with 181 entity
+    classes and 278 predicates fed by Contacts, Photos faces, Calendar, Family Sharing, Mail
+    and Messages suggestions, a communication log and location, and the author released an
+    iKnow dashboard to read it. The Hacker News thread reached 332 points and about 185 comments.
+  why: >-
+    Any process granted Full Disk Access on a Mac can read a precomputed social and movement
+    graph of the user, which changes what such a grant exposes.
+  comments: >-
+    Commenters split on whether an on-device graph is useful or invasive and argue it should
+    be opt-in, with a side debate on whether GDPR applies to local processing. A large share
+    of the thread criticizes the post as AI-written, and the author confirmed the technical
+    parts were AI-assisted. One commenter who ran iKnow reported it listed hundreds of people
+    and employers but explained the results poorly.
+  sources:
+  - label: primary
+    url: https://8rank.ai/game/apple-intelligence-personal-knowledge-graph
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50403097
