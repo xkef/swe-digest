@@ -1,6 +1,65 @@
 date: '2026-11-08'
-updated: 2026-11-08T07:39Z
+updated: 2026-11-08T12:06Z
 stories:
+- title: >-
+    GitHub timed out requests from logged-out users for over an hour on 2026-11-08, breaking
+    CI release downloads
+  section: Outages
+  category: Outage
+  blurb: >-
+    Logged-out requests to GitHub timed out for over an hour on a Sunday, breaking CI jobs
+    that download release assets and tools.
+  summary: >-
+    GitHub opened an incident at 10:36 UTC on 2026-11-08 for degraded performance primarily
+    affecting unauthenticated users, listed API Requests as degraded at 11:20 UTC, and said
+    at 11:50 UTC it had identified a problematic component and was redeploying it. GitHub
+    marked the degradation mitigated at 11:56 UTC, with the incident still in monitoring and
+    no root cause published.
+  why: >-
+    CI pipelines and installers that fetch release assets or tools from GitHub without a token
+    can fail during these incidents, so authenticated fetches or a local mirror reduce exposure.
+  followup: GitHub's root cause analysis for the 2026-11-08 incident.
+  comments: >-
+    The Hacker News thread drew 99 points and 96 comments. Users reported 504 and 503 errors
+    for logged-out web and release downloads while logged-in browsing worked, broken CI steps
+    that fetch tools such as gitleaks, failing Nix and Elixir builds, and Terraform runs that
+    could not download providers. Several noted the status page stayed green for roughly an
+    hour before the incident was posted.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/pyynvrm1vskw
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50411818
+  thread: f-0188
+- title: >-
+    SD-OPD weights on-policy distillation by what the student learned in post-training and
+    gains 7.8 to 10.4 math points
+  section: ML research
+  category: Paper
+  blurb: >-
+    A new on-policy distillation method weights updates by what the student learned in post-training
+    and gains 7.8 to 10.4 points on math.
+  summary: >-
+    The authors find that in standard on-policy distillation, style-related token positions
+    show 3.5 times the mean teacher-student log-probability gap of mathematical tokens, so
+    much of the update goes to imitating the teacher's phrasing. Student-Delta OPD instead
+    uses centered differences between the student and its own pretrained base as update coefficients,
+    keeps each only when its sign agrees with the teacher feedback, and recomputes them every
+    round. Across five teacher-student pairs with Qwen3 students from 1.7B to 8B, it improves
+    six-task math average pass@1 over OPD by 7.76 to 10.37 points, with code released.
+  why: >-
+    Teams distilling reasoning models can expect plain OPD to spend update budget on teacher
+    style and may get larger gains by anchoring updates to the student's own post-training
+    shift.
+  background: >-
+    On-policy distillation trains a student on its own sampled outputs while a teacher scores
+    each token, which gives dense feedback and avoids the mismatch of training only on teacher-written
+    text. The digest covered two OPD papers on 2026-11-07, one on self-distillation from a
+    GRPO checkpoint and one on a feedback loop behind OPD failures. This paper changes which
+    tokens get the most update weight rather than the training loop.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.07722v1
 - title: >-
     GitHub previews a pull request Overview page that puts merge readiness and next actions
     at the top
@@ -65,6 +124,57 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=0PSA2LFFlvk
+- title: >-
+    UndoBench finds coding agents recover from injected failures in only 47% of runs that
+    otherwise succeed
+  section: Talks
+  category: Video
+  blurb: >-
+    In UndoBench, coding agents recovered from injected failures in only 47 percent of runs
+    that otherwise succeeded.
+  summary: >-
+    Tanmay Sah and Dolly Sah report 2,880 paired trials in which agents completed 84% of tasks
+    normally, but only 47% of normally successful trials recovered after an injected failure,
+    and naive retries after a lost acknowledgement produced duplicate effects in 54% of such
+    trials. In their EvoUndo work, 197 of 478 harness changes that improved capability left
+    the system unable to recover, prompted repair fixed none of them, and capturing a pre-state
+    witness plus a richer undo language recovered 180 of 197. Requiring both capability gain
+    and verified recoverability raised admissible improvements from 281 to 461 of 600 tasks.
+  why: >-
+    Agents that touch external APIs, configuration or their own harness need state capture,
+    idempotency checks and verified compensation, since git revert covers only the repository.
+  background: >-
+    A timeout tells a client that the response never arrived, not that the operation failed,
+    which is why distributed systems use idempotency keys and compensating actions instead
+    of blind retries. The same problem now applies to coding agents that create tickets, tags
+    or deployments. Self-evolving agents add a second layer, because they also rewrite their
+    own prompts, tools and middleware.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=BT1Mo-fD-g0
+- title: >-
+    Modal's CTO says agent sandboxes need persisted idle state, elastic resources and credential-hiding
+    sidecar proxies
+  section: Talks
+  category: Video
+  blurb: >-
+    Modal's CTO says agent sandboxes need persisted state without idle compute, elastic resources,
+    and sidecar proxies that hide credentials.
+  summary: >-
+    Akshat Bubna describes sandboxes that run the agent harness separately from the containers
+    where tool calls execute, with shared volumes and snapshots of a root file system or a
+    single directory so state persists for days without paying for idle compute. Ramp's internal
+    coding agent data showed CPU and memory use varying widely within and across sandboxes,
+    so provisioning for peak would mean about 15 cores and 15 GB per sandbox. He says domain
+    allow lists are not enough and users write sidecar proxies with path-level rules and inject
+    credentials the agent cannot read, and that Modal sees 20 million snapshots and 2.6 million
+    volumes created a week.
+  why: >-
+    Teams running agents in sandboxes can plan for per-path egress rules, hidden credentials,
+    snapshot-based persistence and burstable resources instead of fixed peak-sized containers.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=_0SQh8a1Osk
 - title: >-
     MaxxBench finds small requirement changes to DeepSWE tasks drop some coding models by
     about 20 points
