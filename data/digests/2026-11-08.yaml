@@ -1,5 +1,5 @@
 date: '2026-11-08'
-updated: 2026-11-08T18:26Z
+updated: 2026-11-08T21:21Z
 stories:
 - title: >-
     GitHub timed out requests from logged-out users for over an hour on 2026-11-08, breaking
@@ -149,6 +149,40 @@ stories:
   sources:
   - label: primary
     url: https://github.com/seaweedfs/seaweedfs/releases/tag/4.53
+- title: >-
+    Outlook.com has bounced some mail from domains without a DMARC record since 2026-11-05,
+    small senders included
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Microsoft's consumer mail now rejects part of the mail from domains with no DMARC record,
+    with no announcement and no volume threshold.
+  summary: >-
+    MailRoute reports that since 2026-11-05 Outlook.com, Hotmail, Live and MSN have rejected
+    some messages from domains that publish no DMARC record, with the bounce 550 5.7.1 Message
+    rejected: Message lacks SPF/DKIM/DMARC Auth Records. Only part of the mail from an affected
+    domain bounces, and low-volume senders are hit, unlike Microsoft's May 2025 rule for senders
+    above 5,000 messages a day. As of 2026-11-06 Microsoft had published no notice, and the
+    suggested fix is a TXT record at _dmarc with v=DMARC1; p=none plus SPF or DKIM aligned
+    with the From domain.
+  why: >-
+    Transactional mail from app domains, such as password resets and invoices, can silently
+    fail to reach Outlook.com users until a DMARC record is published.
+  background: >-
+    SPF lists the servers allowed to send for a domain and DKIM signs messages with a domain
+    key. DMARC ties those checks to the visible From address, requiring that SPF or DKIM pass
+    for the same domain, and lets the owner publish a policy (none, quarantine or reject)
+    and a reporting address. Gmail and Yahoo began requiring DMARC from bulk senders in 2024.
+  comments: >-
+    The Hacker News thread drew 96 points and 85 comments. Operators report Outlook.com and
+    Office 365 also drop mail via private blocklists or accept mail and never deliver it,
+    and several commenters note that mail-tester.com still scores mail without DMARC as 10
+    of 10, so the gap is easy to miss.
+  sources:
+  - label: primary
+    url: https://mailroute.net/blog/outlook-rejecting-email-without-dmarc
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50416158
 - title: >-
     Linus Torvalds says many kernel subsystems now take patches only after public Sashiko
     AI review
@@ -353,3 +387,32 @@ stories:
     url: https://github.com/synchopate/llama-modchip
   - label: discussion
     url: https://news.ycombinator.com/item?id=50411961
+- title: >-
+    Goldman Sachs limits Claude Code and GitHub to engineers, and Hacker News debates agents
+    on bankers' workstations
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A bank that praised trader-built AI tools in July now restricts coding agents to its roughly
+    12,000 engineers and strats, citing risk.
+  summary: >-
+    State of AI, citing Bloomberg News, reports that internal Goldman Sachs guidance updated
+    in October restricts Anthropic's Claude Code and Microsoft's GitHub to engineers and strats
+    after a review of productivity and risk. Traders and bankers had used the tools to monitor
+    client flows, model positions and build material, and the firm's in-house multi-model
+    assistant stays available to all staff. The Hacker News thread reached 386 points and
+    237 comments.
+  why: >-
+    Large firms are starting to scope local coding agents by role, so agent sandboxing and
+    ownership of agent-built code become rollout prerequisites outside engineering.
+  comments: >-
+    Commenters frame the move as the lethal trifecta of private data, untrusted input and
+    network egress on the same workstation, and note that corporate desktops often block the
+    virtualization that would sandbox agents. Others report companies clawing back Claude
+    access over billing, since commenters say organizations above 150 seats pay API rates
+    rather than flat subscriptions.
+  sources:
+  - label: primary
+    url: https://www.thestateofai.com/news/goldman-sachs-claude-code-traders-bankers
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50415628
