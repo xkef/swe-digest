@@ -1,5 +1,5 @@
 date: '2026-11-08'
-updated: 2026-11-08T12:06Z
+updated: 2026-11-08T16:10Z
 stories:
 - title: >-
     GitHub timed out requests from logged-out users for over an hour on 2026-11-08, breaking
@@ -95,6 +95,34 @@ stories:
     url: https://github.blog/changelog/2026-11-05-new-pull-request-overview-page-in-public-preview/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50408931
+- title: >-
+    Lima v2.3 adds a native Windows HCS driver, Linux bridged VM networking and sync excludes
+    for AI agent sandboxes
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    The local VM launcher now keeps .env files and .git out of agent sandboxes, can block
+    guest access to host loopback, and runs natively on Windows
+  summary: >-
+    Lima v2.3 shipped on 2026-11-06 with an experimental hcs driver that starts VMs through
+    the Windows Host Compute System without QEMU, and a lima-privileged-net helper that gives
+    Linux-hosted VMs shared, host and bridged networking. For agent sandboxing, limactl shell
+    --sync gains --sync-exclude and a .limasyncignore file, networkOpts.hostLoopback: false
+    refuses guest connections to host 127.0.0.1 on VZ, and the MCP tools add a replace edit
+    operation. On macOS, VZ guests can attach a raw block device through a root-owned helper
+    that is granted access per device in a generated sudoers file.
+  why: >-
+    Engineers running coding agents in Lima VMs can now keep secrets and the Git directory
+    on the host and cut the guest off from local databases and dev servers.
+  background: >-
+    Lima (Linux Machines) is a CNCF Incubating project that launches local virtual machines
+    from the command line, first built to run containerd on Macs and now used for macOS, Windows
+    and AI sandbox guests. Its sync mode copies a project into the VM so an agent can edit
+    it in isolation, then asks before copying changes back. The block device feature was redesigned
+    after an earlier version was reverted following a security report.
+  sources:
+  - label: primary
+    url: https://www.cncf.io/blog/2026/11/08/lima-v2-3-native-on-windows-vmnet-on-linux-and-menu-tui/
 - title: >-
     Linus Torvalds says many kernel subsystems now take patches only after public Sashiko
     AI review
