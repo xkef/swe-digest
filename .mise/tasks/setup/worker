@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+#MISE description="Install the signals Worker's dependencies and generate its types"
+#MISE hide=true
+#MISE dir="{{config_root}}/signals"
+set -euo pipefail
+
+# Each step runs only when its output is missing or older than its input, for the reason
+# setup:python gives.
+if [ ! -e node_modules/.package-lock.json ] ||
+  [ package-lock.json -nt node_modules/.package-lock.json ]; then
+  npm ci
+fi
+
+# The types come from the installed workerd, so they are generated here rather
+# than committed. A committed copy would go stale with every wrangler bump.
+if [ ! -e worker-configuration.d.ts ] ||
+  [ wrangler.jsonc -nt worker-configuration.d.ts ] ||
+  [ node_modules/.package-lock.json -nt worker-configuration.d.ts ]; then
+  npx wrangler types --strict-vars=false
+fi

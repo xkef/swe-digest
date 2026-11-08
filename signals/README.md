@@ -47,7 +47,7 @@ flowchart LR
 | What failed?            | `error` events in Workers Logs, with the stack                  |
 | Did the schema change?  | `schema_migrated` events                                        |
 | Why was a call refused? | `rejected` events, with the `path`, `status`, and `reason`      |
-| What is happening now?  | `mise run signals:tail`                                         |
+| What is happening now?  | `mise run worker-tail`                                          |
 | Why a 429?              | one address passed `ratelimits` in `wrangler.jsonc`, unlogged   |
 
 Every log line is one JSON object with an `event` field. Workers Logs in the
@@ -68,8 +68,8 @@ any field.
 
 ## Development
 
-`mise tasks` lists the `signals:*` tasks. `signals:check` runs the tests inside
-workerd with real Durable Object storage.
+`mise run worker` runs the Worker locally, and `mise run ci:worker` runs the
+tests inside workerd with real Durable Object storage.
 
 ## Deployment
 

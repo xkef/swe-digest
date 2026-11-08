@@ -64,7 +64,7 @@ jobs:
           install_args: python uv
           cache: true
       - name: Install dependencies
-        run: mise run deps:agent
+        run: mise run install:agent
       - id: day
         run: echo "day=$(date -u +%F)" >> "$GITHUB_OUTPUT"
 
@@ -77,7 +77,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           FETCH_PROXY_URL: ${{ secrets.FETCH_PROXY_URL }}
-        run: mise run "agent:$MODE" --day "${{ steps.day.outputs.day }}"
+        run: mise run "$MODE" --day "${{ steps.day.outputs.day }}"
 
       # Runs even when the run failed, because a failed run still writes its
       # run record, and that record is how a failure gets reviewed.
@@ -118,7 +118,7 @@ jobs:
           install_args: python uv
           cache: false
       - name: Install dependencies
-        run: mise run deps:base
+        run: mise run install:base
       # Outside the checkout, so the uploaded files cannot shadow repository code.
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
@@ -127,4 +127,4 @@ jobs:
       - name: Check and publish
         env:
           GH_TOKEN: ${{ github.token }}
-        run: mise run agent:publish "$RUNNER_TEMP/out" --day "${{ needs.agent.outputs.day }}"
+        run: mise run publish "$RUNNER_TEMP/out" --day "${{ needs.agent.outputs.day }}"

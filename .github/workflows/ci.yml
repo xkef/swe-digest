@@ -32,12 +32,10 @@ jobs:
         with:
           install_args: python uv
           cache: true
-      - name: Sync environment
-        run: mise run deps:setup
       - name: Lint and type check
-        run: mise run dev:lint
+        run: mise run ci:lint
       - name: Tests
-        run: mise run dev:test
+        run: mise run test
 
       # A Renovate bump of one pin can contradict another package's peer
       # pin. Without this step the first failure is the scheduled run.
@@ -60,9 +58,9 @@ jobs:
           install_args: python uv zola github:Pagefind/pagefind
           cache: true
       - name: Install dependencies
-        run: mise run deps:base
+        run: mise run install:base
       - name: Check and build the site
-        run: mise run site:build
+        run: mise run build
 
   # The signals Worker: generated types, the type check, and its tests in
   # workerd.
@@ -80,13 +78,11 @@ jobs:
         with:
           install_args: node
           cache: true
-      - name: Install dependencies
-        run: mise run signals:setup
       - name: Types and tests
-        run: mise run signals:check
+        run: mise run ci:worker
 
   # Formatting drift and prose lint in owner-edited files. Tool versions are pinned in
-  # .mise/config.toml, so this job and a local `mise run dev:fmt-check` agree.
+  # .mise/config.toml, so this job and a local `mise run ci:format` agree.
   format:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -102,6 +98,6 @@ jobs:
           install_args: python uv dprint rumdl vale
           cache: true
       - name: Check formatting
-        run: mise run dev:fmt-check
+        run: mise run ci:format
       - name: Lint prose
-        run: mise run dev:prose
+        run: mise run ci:prose

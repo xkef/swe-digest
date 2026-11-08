@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+#MISE description="Create agent/.venv from uv.lock, with the agent SDK and dev tools"
+#MISE hide=true
+#MISE dir="{{config_root}}/agent"
+set -euo pipefail
+
+# Every Python task depends on this one, so it returns at once unless uv.lock is
+# newer than the environment. In CI, install:base or install:agent has
+# just created the environment from the hash-pinned requirements, and this
+# check keeps that environment as installed. mise's own sources and outputs
+# can't do this, because they keep their state outside the checkout and so
+# always run on a fresh runner.
+if [ -e .venv/pyvenv.cfg ] && [ ! uv.lock -nt .venv/pyvenv.cfg ]; then
+  exit 0
+fi
+
+# --frozen installs uv.lock as committed. Without it, uv re-resolves and can
+# write machine-local settings into the lock. `mise run lock` updates it.
+uv sync --frozen --extra agent
+touch .venv/pyvenv.cfg
