@@ -1,5 +1,5 @@
 date: '2026-11-08'
-updated: 2026-11-08T16:10Z
+updated: 2026-11-08T18:26Z
 stories:
 - title: >-
     GitHub timed out requests from logged-out users for over an hour on 2026-11-08, breaking
@@ -124,6 +124,32 @@ stories:
   - label: primary
     url: https://www.cncf.io/blog/2026/11/08/lima-v2-3-native-on-windows-vmnet-on-linux-and-menu-tui/
 - title: >-
+    SeaweedFS 4.53 tightens S3 authorization checks and adds per-bucket Block Public Access
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The SeaweedFS release binds S3 Tables deletes to authorized records, gates CORS and versioning
+    changes, and adds Block Public Access.
+  summary: >-
+    SeaweedFS 4.53, released on 2026-11-08, binds S3 Tables DeleteNamespace and vector bucket
+    cleanup to the authorized records, requires the matching actions to change a bucket's
+    CORS or versioning, makes S3 Tables policy conditions fail safe, and stops plugin workers
+    from forwarding the admin stream token to job RPCs. It adds per-bucket Block Public Access
+    (BlockPublicAcls and IgnorePublicAcls), rejects POST Object header fields with control
+    characters, and checks a needle's CRC the first time a range of it is read. The notes
+    list no CVE IDs.
+  why: >-
+    Clusters that expose the SeaweedFS S3 gateway to several identities should upgrade, because
+    several of these fixes close authorization gaps between S3 actions.
+  background: >-
+    SeaweedFS is a distributed object store with a filer layer and an S3-compatible gateway.
+    S3 Block Public Access settings make a bucket refuse or ignore public ACLs regardless
+    of what individual uploads request. S3 Tables and S3 Vectors are newer AWS APIs for Iceberg
+    tables and vector indexes that SeaweedFS has been reimplementing.
+  sources:
+  - label: primary
+    url: https://github.com/seaweedfs/seaweedfs/releases/tag/4.53
+- title: >-
     Linus Torvalds says many kernel subsystems now take patches only after public Sashiko
     AI review
   section: Talks
@@ -204,6 +230,29 @@ stories:
   - label: primary
     url: https://www.youtube.com/watch?v=_0SQh8a1Osk
 - title: >-
+    AlixPartners found Claude Code's contract analysis missed $800,000 until structured data
+    and custom tools fixed it
+  section: Talks
+  category: Video
+  blurb: >-
+    AlixPartners found Claude Code's procurement answers looked complete but missed an orphan
+    amendment worth about $800,000 and a renewal date.
+  summary: >-
+    Natalia Connolly and Kevin Madura ran Claude Code on a post-merger procurement analysis
+    of more than 40,000 contracts, and checking its answers against the warehouse showed total
+    contract value off by about $800,000 because of an unlinked amendment, and an auto-renewal
+    deadline a month late because it used the termination clause instead of the renewal clause.
+    They spent about two weeks on a five-stage extraction pipeline that handles restated amendment
+    values and tables split across pages, then had Claude Code build deal-specific tools that
+    embed business rules. They also found that silent access-denied or malformed tool results
+    led the agent to treat invoices as zero, and fixed it by returning explicit error feedback.
+  why: >-
+    Agents doing data analysis need structured inputs, business rules enforced in tool code,
+    and explicit tool error messages, or plausible answers will hide costly mistakes.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=u7fsyrXsPBE
+- title: >-
     MaxxBench finds small requirement changes to DeepSWE tasks drop some coding models by
     about 20 points
   section: Hacker News
@@ -277,3 +326,30 @@ stories:
     url: https://caleb.software/posts/claude-to-pi.html
   - label: discussion
     url: https://news.ycombinator.com/item?id=50410107
+- title: >-
+    Llama-modchip claims a 284B DeepSeek model on a 64 GB CPU box, and Hacker News disputes
+    the quality at low bit widths
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A llama.cpp fork claims a 284B DeepSeek model runs in 64 GB of RAM on CPU, and commenters
+    question its 2-bit quantization quality.
+  summary: >-
+    The llama-modchip repository says it shrinks DeepSeek-V4-Flash to 56.56 GiB with a custom
+    block-64 format and MoE expert pruning, reaching about 44 tokens per second prefill and
+    9 to 10.7 tokens per second decode on a 16-core Zen 5 CPU, with GGUF files that unpatched
+    llama.cpp cannot load. The Hacker News thread drew 241 points and 72 comments.
+  why: >-
+    Claims of frontier MoE models on commodity CPUs depend on quantization below 4 bits, so
+    quality needs checking on your own tasks before adoption.
+  comments: >-
+    Commenters cite a TUM paper finding the best size-to-quality ratio near 4 bits, while
+    others counter that quantization-aware training and large MoE models degrade less. One
+    commenter traces the README's 76.87 GiB baseline to an IQ1_S file mislabeled as IQ2_XXS
+    and calls the result likely heavily degraded. Others say llama.cpp's backlog of about
+    1,700 pull requests pushes such work into forks.
+  sources:
+  - label: primary
+    url: https://github.com/synchopate/llama-modchip
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50411961
