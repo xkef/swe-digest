@@ -1,6 +1,37 @@
 date: '2026-11-09'
-updated: 2026-11-09T14:11Z
+updated: 2026-11-09T19:59Z
 stories:
+- title: >-
+    Anthropic releases Claude Fable 5.2 and Mythos 5.2 at $8 and $40 per million tokens, with
+    a 2.5x fast mode
+  section: Top stories
+  category: AI
+  blurb: >-
+    Anthropic's upgraded top models score above Opus 5.5 on most of its benchmarks, run up
+    to 30% faster, and cost less than the 5.1 versions.
+  summary: >-
+    Fable 5.2 and Mythos 5.2 are one underlying model. Fable carries cyber and biology safeguards
+    and is open to all users, while Mythos goes to organizations in Anthropic's Cyber and
+    Life Sciences Verification Programs. Pricing is $8 input and $40 output per million tokens,
+    and an optional fast mode costs $16 and $80 for up to 2.5x faster generation. On Anthropic's
+    FrontierCode 2.0 run, Fable 5.2 scores 49.1% at Xhigh effort against 45.5% for Opus 5.5,
+    and at High effort it matches Opus 5.5 for about half the cost per task.
+  why: >-
+    Anthropic still recommends Opus 5.5 as the default for most coding, with Fable 5.2 reserved
+    for long ambiguous tasks or used as an Advisor or Orchestrator over smaller models.
+  background: >-
+    Anthropic splits one frontier model into two products. Fable has safeguards that block
+    most cybersecurity and biology tasks, and Mythos removes them for vetted users. Anthropic
+    reports that Mythos 5.2 found 10.2% more vulnerabilities than Opus 5.5 on its internal
+    CVE Rediscovery set of 1,829 CVEs. All benchmark numbers in the post are vendor-run, and
+    the system card describes the method.
+  comments: >-
+    The Hacker News thread reached 372 points and 157 comments within about an hour of posting.
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/claude-fable-and-mythos-5-2
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50429906
 - title: >-
     Unpatched Eclipse Mosquitto 2.1 WebSocket bug gives pre-auth RCE, with upstream fixes
     expected before 2026-11-18
@@ -101,6 +132,60 @@ stories:
   - label: primary
     url: https://rustsec.org/advisories/RUSTSEC-2026-0462.html
 - title: >-
+    Attacker used Qubole's trusted AWS account to assume customer IAM roles and steal secrets
+    and S3 data
+  section: Security
+  category: Security
+  blurb: >-
+    Wiz says roles that still trusted Qubole's AWS account, even unused ones, let an attacker
+    read secrets and copy whole S3 buckets.
+  summary: >-
+    Wiz says an attacker with credentials for the AWS account Qubole's platform uses, 805246085872,
+    assumed roles in multiple customers' accounts between 2026-10-14 and 2026-10-26. The attacker
+    read Lambda environment variables, Secrets Manager and SSM Parameter Store values, tested
+    the found credentials with TruffleHog, and copied S3 data. How the credentials were obtained
+    is not disclosed, and Qubole and Idera had posted no statement.
+  why: >-
+    Any account that ever connected Qubole should search CloudTrail from 2026-10-01 for AssumeRole
+    calls from that account outside AWS, rotate reachable secrets, and add source IP conditions
+    to vendor role trust policies.
+  background: >-
+    SaaS vendors that work inside a customer's AWS account usually get an IAM role whose trust
+    policy lets the vendor's account assume it. The External ID guards against the confused
+    deputy problem, but it is not a secret and appears in plain text in CloudTrail. If the
+    vendor's own account is compromised, every customer role that still trusts it is exposed.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/hackers-exploit-quboles-trusted-aws.html
+  thread: f-0191
+- title: >-
+    Stolen CI credentials let attackers publish wallet-stealing bee-js 13.3.0 to npm and a
+    signed Swarm Desktop 0.56.2
+  section: Security
+  category: Security
+  blurb: >-
+    Ethersphere's release automation shipped a postinstall loader with valid npm provenance
+    and a notarized macOS build before both were pulled.
+  summary: >-
+    On 2026-11-09 attackers used Ethersphere's bee-worker automation account to publish bee-js
+    13.3.0, latest on npm for about 75 minutes, and Swarm Desktop 0.56.2, live on GitHub for
+    about 8.5 hours. Both fetch a payload that steals the Swarm node key and its plain-text
+    password and installs a Go remote shell on Linux and macOS or ScreenConnect on Windows.
+    Clean Swarm Desktop 0.56.3 is out, and signing jobs now need DevOps approval and run only
+    from main.
+  why: >-
+    Search lockfiles, caches and CI logs for @ethersphere/bee-js@13.3.0, and treat any machine
+    or runner that installed it with scripts enabled as compromised.
+  background: >-
+    npm provenance links a package to the repository and workflow that built it, but it does
+    not show that anyone reviewed the code. Here the project's real workflow built the malicious
+    release, so provenance was valid. npm runs postinstall scripts automatically, so a project
+    did not need to import the library for the loader to run.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/hackers-compromise-etherspheres-bee-js.html
+  thread: f-0190
+- title: >-
     Google adds TPU 8tx for confidential inference and dual-chip TPU 8i Max, and makes Cloud
     Pathways GA on GKE
   section: AI
@@ -158,6 +243,34 @@ stories:
   - label: discussion
     url: https://www.securityweek.com/google-deepminds-ai-agents-make-1024-bit-rsa-keys-cheaper-to-attack/
 - title: >-
+    Meta releases Muse Ember, a $0.10 and $0.50 per million token model for agent subtasks
+    with a 1M context
+  section: AI
+  category: AI
+  blurb: >-
+    Meta's smallest Muse model targets tool calls and coding subtasks, and Meta claims more
+    intelligence per dollar than Claude Haiku 5.5.
+  summary: >-
+    Muse Ember is available as muse-ember-1.0 on the Meta Model API and Muse Code at $0.10
+    input and $0.50 output per million tokens, with a 1M-token context, up to 512K output
+    tokens and Responses API support. Meta says it scores 36 on the Artificial Analysis Intelligence
+    Index at about $0.14 per task, against $2.39 for Muse Spark 1.3. Claude Haiku 5.5 still
+    leads on FrontierCode 2.0, 34.9% to 27.2%.
+  why: >-
+    It gives teams a cheap subagent option for the high-volume steps in agent harnesses, though
+    its code mergeability score trails Haiku.
+  background: >-
+    Meta says Muse Ember is the first model trained using its larger Muse Wonder Full model,
+    which places it as a distilled worker beneath Muse Wonder and Muse Spark. Meta positions
+    it for the planner and worker split, where a strong model plans and a cheap model handles
+    repeated tool calls.
+  comments: The Hacker News thread drew 103 points and 47 comments.
+  sources:
+  - label: primary
+    url: https://research.meta.ai/blog/muse-ember
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50429024
+- title: >-
     Hyperlight adds hyperlight-unikraft to run unmodified Linux binaries in snapshot-restored
     micro-VMs for agent code
   section: Agentic coding
@@ -188,6 +301,50 @@ stories:
   - label: primary
     url: https://www.cncf.io/blog/2026/11/09/run-linux-applications-in-hypervisor-isolated-micro-vms-with-hyperlight/
 - title: >-
+    Claude Code 2.1.321 makes Fable 5.2 the default Fable model and fixes MCP OAuth secrets
+    leaking on redirects
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    The release also closes a sandbox gap where a read-only Bash command ran unsandboxed without
+    a prompt, and adds remote-control settings.
+  summary: >-
+    Claude Code 2.1.321 adds claude-fable-5-2 with a 1M context and moves saved Fable 5.1
+    picks to it, at once on Pro and Max and after an admin allows it on Team and Enterprise.
+    It fixes MCP OAuth requests that sent refresh tokens to another host when a server redirected
+    them, a read-only Bash command that ran outside the sandbox without a prompt, and deny
+    rules that missed files written by cp or mv into a directory. It also adds --settings
+    to claude remote-control and lets mods Claude writes turn on without asking in auto and
+    bypass modes.
+  why: >-
+    Teams that rely on the sandbox, deny rules or MCP OAuth servers should upgrade, and should
+    check the new default that lets Claude-written mods activate in auto mode.
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/claude-code/releases/tag/v2.1.321
+- title: >-
+    Sourcegraph will end Cody on 2027-01-31 and steers users to Deep Search and its MCP server
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Sourcegraph is retiring its RAG-era coding assistant to focus on code search, a deterministic
+    code graph, and tools for other agents.
+  summary: >-
+    Sourcegraph CEO Dan Adler says Cody, including its IDE integrations and APIs, reaches
+    end of life on 2027-01-31. Sourcegraph will focus on Code Search, its code graph, Deep
+    Search, Agentic Batch Changes, and MCP, CLI and API access for agents such as Claude Code
+    and Cursor. It says these are not one-for-one replacements for every Cody feature.
+  why: >-
+    Teams with workflows built on Cody's APIs or IDE plugins have under three months to migrate.
+  background: >-
+    Cody launched in early 2023 as a chat and completion assistant that used retrieval over
+    Sourcegraph's code index. Sourcegraph's agent effort became Amp, which is now an independent
+    company. Adler says Sourcegraph chose two years ago not to turn Cody into an agent.
+  sources:
+  - label: primary
+    url: https://sourcegraph.com/blog/sunsetting-cody-future-of-code-intelligence
+  thread: f-0192
+- title: >-
     Linux 7.4-rc2 ships with many AI-driven fixes, and Torvalds says BPF fixes now outpace
     new reports
   section: Linux and kernel
@@ -216,6 +373,79 @@ stories:
     url: https://www.phoronix.com/news/Linux-7.4-rc2-Released
   - label: discussion
     url: https://www.theregister.com/security/2026/11/09/linus-torvalds-sees-signs-ai-prompted-patch-flood-has-peaked/5308345
+- title: >-
+    AWS Nitro Sandboxes run each EKS pod, ECS task or agent workload in its own Nitro VM at
+    no extra charge
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    A one-line change gives each pod or task a hardware-isolated VM on shared EC2 instances,
+    with attestation before secrets are released.
+  summary: >-
+    AWS Nitro Sandboxes are lightweight VMs managed by the Nitro Hypervisor that run on customers'
+    own EC2 instances. Enabling them in EKS or ECS gives each pod or task its own VM while
+    Pod Identity, VPC CNI, EBS, EFS, S3 and CloudWatch keep working. On EC2 they support Amazon
+    Linux and Firecracker directly, and they are available in all commercial regions on most
+    Nitro instances.
+  why: >-
+    Teams running LLM-generated code or multi-tenant workloads on Kubernetes can get VM isolation
+    per pod without a separate sandbox provider or dedicated hosts.
+  background: >-
+    Containers share the host kernel, so a kernel bug can let one workload reach another.
+    Projects such as Kata Containers and Firecracker put each workload in a microVM to add
+    a hardware boundary. AWS now offers that model natively inside EKS and ECS, with attestation
+    so secrets go only to verified sandboxes.
+  sources:
+  - label: primary
+    url: https://aws.amazon.com/about-aws/whats-new/2026/11/nitro-sandboxes-eks-ecs-ec2/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50428199
+- title: >-
+    ClickHouse Managed Postgres reaches GA on AWS, and ClickHouse acquires Xata for copy-on-write
+    branching
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The NVMe-backed Postgres service replicates to ClickHouse via WAL, and Xata's storage
+    will add instant branches and scale-to-zero for agents.
+  summary: >-
+    ClickHouse Managed Postgres is GA on AWS and in private preview on GCP, built on local
+    NVMe storage with up to two standbys, PgBouncer, read replicas and point-in-time recovery.
+    WalShadow replicates physical WAL to ClickHouse, and pg_clickhouse lets apps query ClickHouse
+    through Postgres. With GA, the beta discount ends and backup storage and public egress
+    become billable, and Xata's branching and scale-to-zero will be integrated in the coming
+    months.
+  why: >-
+    Postgres users who want instant branches for previews or agent sandboxes now have another
+    provider path after Neon, with billing changes for existing beta customers.
+  sources:
+  - label: primary
+    url: https://clickhouse.com/blog/managed-postgres-ga-xata-acquisition
+- title: >-
+    Meta builds a vendor-neutral accelerator plugin layer in lldb-server to debug CPU and
+    GPU code in one session
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    LLDB models the host and the GPU as separate targets with their own address spaces, and
+    most of the shared framework is upstream in LLVM.
+  summary: >-
+    Meta's design adds a plugin interface to lldb-server that sets internal breakpoints on
+    GPU runtime events, initializes the vendor debug API, and opens a second LLDB target for
+    the device. New GDB remote packets handle plugin discovery and connection setup, and a
+    mock accelerator plugin tests the flow without GPU hardware. The post shows a HIP kernel
+    breakpoint resolving when the GPU module loads, and it supports GPU core dumps.
+  why: >-
+    Engineers debugging AI workloads across host and kernel code may get one LLDB or IDE session
+    instead of switching between ROCgdb and CUDA-GDB.
+  background: >-
+    GPU vendors have shipped their own debuggers, such as AMD's ROCgdb and NVIDIA's CUDA-GDB,
+    because GPUs use different instruction sets, lane-based execution and separate address
+    spaces. lldb-server is the LLDB component that controls the debugged process and speaks
+    the GDB remote protocol to the client.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/11/09/developer-tools/extending-lldb-to-debug-applications-that-span-cpus-and-gpus/
 - title: >-
     Uber relaxes SubmitQueue conflict checks and validates main after landing to absorb AI-driven
     PR growth
