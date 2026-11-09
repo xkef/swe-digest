@@ -1,5 +1,5 @@
 date: '2026-11-09'
-updated: 2026-11-09T08:18Z
+updated: 2026-11-09T14:11Z
 stories:
 - title: >-
     Unpatched Eclipse Mosquitto 2.1 WebSocket bug gives pre-auth RCE, with upstream fixes
@@ -68,6 +68,125 @@ stories:
     url: https://shubs.io/unlocking-any-car-from-x-brand-in-most-of-the-world/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50419215
+- title: >-
+    rmcp, the official Rust MCP SDK, fixes an OAuth client SSRF and unauthenticated memory
+    exhaustion in Streamable HTTP
+  section: Security
+  category: Security
+  blurb: >-
+    Three RustSec advisories hit rmcp: an OAuth discovery SSRF fixed in 3.7.0 and two unbounded-memory
+    bugs in its Streamable HTTP transports.
+  summary: >-
+    RUSTSEC-2026-0457 (GHSA-5p52-q7pq-9fq2) says the rmcp OAuth client from 2.0.0 until 3.7.0
+    checked only host strings, so a malicious MCP server could steer discovery to a hostname
+    resolving to an internal address, and token and registration endpoints were not checked
+    at all. RUSTSEC-2026-0461, rated CVSS 7.5, says StreamableHttpService from 3.0.0 until
+    3.6.0 cached tool lookups by name with no size limit, even for rejected requests, so unauthenticated
+    clients could exhaust server memory. RUSTSEC-2026-0462 covers unbounded response body
+    buffering in Streamable HTTP clients.
+  why: >-
+    Rust MCP clients and servers built on rmcp should move to 3.7.0, and code that passes
+    a custom OAuth HTTP client must enforce its own outbound address policy.
+  background: >-
+    The Model Context Protocol (MCP) lets AI agents call tools exposed by servers, and Streamable
+    HTTP is its HTTP transport. Server-side request forgery (SSRF) here means a hostile server
+    tricks the client into sending requests to internal services it can reach, such as unauthenticated
+    admin endpoints. The fix resolves hostnames and applies the address policy to every resolved
+    address and redirect, rather than inspecting the URL text.
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0457.html
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0461.html
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0462.html
+- title: >-
+    Google adds TPU 8tx for confidential inference and dual-chip TPU 8i Max, and makes Cloud
+    Pathways GA on GKE
+  section: AI
+  category: AI
+  blurb: >-
+    Google's eighth TPU generation adds 8tx for confidential inference and 8i Max with double
+    the HBM bandwidth, plus open-source TPU Sync.
+  summary: >-
+    Google added two eighth-generation TPU systems on 2026-11-09: TPU 8tx, built on TPU 8t
+    silicon with custom AMD CPU hosts for confidential inference and small-scale training,
+    and TPU 8i Max, which packs two TPU 8i chips for double the compute, SRAM and HBM bandwidth.
+    Google also open-sourced TPU Sync for KV cache tiering and RL weight sync, and made Cloud
+    Pathways and GKE dynamic slicing generally available on GKE. Google says dynamic slicing
+    cuts job startup times by up to 5x.
+  why: >-
+    Teams running inference or RL on Google Cloud get confidential computing on TPUs and GA
+    tools for multi-slice jobs, and PyTorch and vLLM code can target TPUs through the TorchTPU
+    stack.
+  background: >-
+    TPUs are Google's custom accelerators for machine learning. Confidential computing keeps
+    data and model weights encrypted and isolated in memory while they are processed, not
+    only at rest and in transit. Pathways is the single-controller runtime Google DeepMind
+    uses to drive many TPU slices as one program.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/topics/ai-infrastructure/tpu-8tx-and-tpu-8i-max/
+  - label: primary
+    url: https://cloud.google.com/blog/topics/ai-infrastructure/cloud-pathways-a-distributed-ml-runtime-is-ga/
+  - label: primary
+    url: https://cloud.google.com/blog/topics/ai-infrastructure/introducing-tpu-sync-fast-kv-cache-and-weight-transfer-on-tpu/
+- title: >-
+    Google DeepMind agents cut RSA-1024 signature forgery cost 3.5-fold and find cheaper batch
+    factoring
+  section: AI
+  category: AI
+  blurb: >-
+    Agents working with UC San Diego and Inria cryptographers re-ran a signature forgery on
+    a 1024-bit key in 391 core-years, not 1,380.
+  summary: >-
+    SecurityWeek reports that DeepMind agents, supervised by cryptographers from UC San Diego
+    and Inria, found that PKCS#1 v1.5 padding adds no protection once an attacker controls
+    roughly half the signed block, and re-ran an earlier forgery on a 1024-bit key in 391
+    CPU core-years against 1,380. Two agents designed, ran and debugged the computation in
+    under four days with about 20 human messages. A second, unimplemented algorithm makes
+    factoring each additional 1024-bit key about 30 times cheaper after one upfront computation.
+  why: >-
+    Anything still signing with RSA-1024 through PKCS#11 devices such as HSMs has less margin
+    than assumed, while 2048-bit and larger keys are unaffected.
+  background: >-
+    PKCS#1 v1.5 is an older RSA padding scheme still common in hardware security module signing
+    interfaces. The forgery needs about 4 billion chosen signing queries, does not recover
+    the private key, and fails against devices that hash messages internally. Factoring one
+    1024-bit key is estimated at 500,000 to 1 million core-years.
+  sources:
+  - label: discussion
+    url: https://www.securityweek.com/google-deepminds-ai-agents-make-1024-bit-rsa-keys-cheaper-to-attack/
+- title: >-
+    Hyperlight adds hyperlight-unikraft to run unmodified Linux binaries in snapshot-restored
+    micro-VMs for agent code
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Microsoft's embeddable Rust VMM now runs Python, Node.js, Java and other stock Linux binaries
+    in micro-VMs that restore from snapshots in ms.
+  summary: >-
+    hyperlight-unikraft runs a Unikraft unikernel inside a Hyperlight micro-VM, so unmodified
+    binaries for Python, Node.js, .NET, Java, PHP, Go, Rust, C, Bash and PowerShell run on
+    x86_64 and arm64 with no SDK or recompile. It snapshots a warmed runtime: a script importing
+    numpy, pandas and scikit-learn took 45 ms from snapshot against 1,119 ms natively, while
+    a Python hello world was slower at 22 ms against 17 ms. Integrations include urunc for
+    containerd and Kubernetes, an MCP server with a stateful run_python tool, smolagents,
+    an OpenAI Agents SDK sandbox provider, ClickHouse Python UDFs and verl reward execution.
+  why: >-
+    Teams sandboxing agent-generated code get a hypervisor boundary with startup costs near
+    or below native for heavy runtimes, deny-by-default mounts and network, and a containerd
+    path into Kubernetes.
+  background: >-
+    Hyperlight is a CNCF Sandbox project. Unlike QEMU or Firecracker, which run as separate
+    processes, it is a library virtual machine monitor that an application links in, using
+    KVM or MSHV on Linux, WHP on Windows and Hypervisor.framework on macOS. A unikernel is
+    a single-application operating system with one address space and only the kernel components
+    that application needs. The digest covered a Firecracker microVM escape on 2026-11-07,
+    a reminder that the hypervisor boundary narrows risk but does not remove it.
+  sources:
+  - label: primary
+    url: https://www.cncf.io/blog/2026/11/09/run-linux-applications-in-hypervisor-isolated-micro-vms-with-hyperlight/
 - title: >-
     Linux 7.4-rc2 ships with many AI-driven fixes, and Torvalds says BPF fixes now outpace
     new reports
@@ -193,3 +312,32 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=WWIFiQi9U4w
+- title: >-
+    Hacker News debates whether Opus 5.5 reasoning changed on 2026-11-03 after a user's analysis
+    of 1,400 sessions
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A developer had Gemini analyze 1,400 Claude Code sessions and says Opus 5.5 at high effort
+    now reasons less, drawing 320 points on Hacker News.
+  summary: >-
+    Shane Melaugh posted that Gemini 4 Argon analysis of 1,400 of his Claude Code sessions
+    shows Opus 5.5 reasoning changed sharply on 2026-11-03, that high effort now reasons less,
+    and that xhigh fixed a bug in minutes where high failed after three hours. He later said
+    the analysis is not a scientifically rigorous benchmark. The Hacker News thread reached
+    320 points and 215 comments, and r/ClaudeAI carried a parallel LiveNerf tracking thread.
+  why: >-
+    Teams that depend on a fixed reasoning effort setting should keep their own evals, since
+    provider-side changes can shift agent behavior with no model name change.
+  comments: >-
+    Commenters link an r/ClaudeCode post that frames the change as an A/B test, and several
+    report Claude Code fumbling tool calls such as calling a lowercase bash tool. Others argue
+    for self-hosted open-weight models for consistency, while critics say local models still
+    trail on coding. No Anthropic statement appears in the thread.
+  sources:
+  - label: primary
+    url: https://twitter.com/shanemelaugh/status/2119192075505893695
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50422069
+  - label: discussion
+    url: https://www.reddit.com/r/ClaudeAI/comments/1xriv9l/has_anthropic_nerfed_opus_55_livenerf_day_47/
