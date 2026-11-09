@@ -1,0 +1,195 @@
+date: '2026-11-09'
+updated: 2026-11-09T08:18Z
+stories:
+- title: >-
+    Unpatched Eclipse Mosquitto 2.1 WebSocket bug gives pre-auth RCE, with upstream fixes
+    expected before 2026-11-18
+  section: Security
+  category: Security
+  blurb: >-
+    An empty WebSocket frame makes Mosquitto 2.1 overrun a heap buffer before login, and a
+    researcher turned it into remote code execution.
+  summary: >-
+    A researcher shows that a Mosquitto bug disclosed publicly in August 2026 and judged harmless
+    in its GitHub issue lets an empty WebSocket frame return more bytes than requested, underflowing
+    the packet length counter and writing past the payload buffer before authentication. The
+    write-up builds a reliable exploit against the Home Assistant Mosquitto add-on. Affected
+    are upstream 2.1.0 onward built with the built-in WebSocket listener exposed on the network,
+    Eclipse expects fixed releases before 2026-11-18, and the Home Assistant add-on is fixed
+    in 7.1.2.
+  why: >-
+    Anyone exposing Mosquitto's built-in MQTT-over-WebSocket listener should firewall or disable
+    it until Eclipse ships a fix.
+  background: >-
+    MQTT is a publish and subscribe protocol for IoT and machine-to-machine messaging, and
+    Mosquitto is one of its most widely used open source brokers. Brokers can speak MQTT over
+    raw TCP or wrapped in WebSocket frames for browser clients, so the broker must strip frame
+    headers and reassemble MQTT packets across reads. The researcher found the flaw through
+    a gap in Mosquitto's OSS-Fuzz harness, and says two frontier models pointed at the file
+    flagged the length bug but missed its memory safety impact.
+  followup: >-
+    Eclipse fixed Mosquitto releases expected before 2026-11-18, and the author's second post
+    on the container escape.
+  sources:
+  - label: primary
+    url: https://born0monday.me/posts/ha-green-mosquitto-rce/
+  - label: discussion
+    url: https://www.reddit.com/r/netsec/comments/1xr33yo/pwning_home_assistant_green_preauth_rce_in/
+  thread: f-0189
+- title: >-
+    Researchers chain leaked OpenIDM admin credentials and an MFA skip to unlock one automaker's
+    cars by number plate
+  section: Security
+  category: Security
+  blurb: >-
+    Researchers chained leaked OpenIDM admin credentials, a WAF path bypass and an MFA skip
+    to unlock any of one automaker's cars by plate.
+  summary: >-
+    Shubham Shah and Sam Curry found hardcoded API keys and staging OpenIDM admin credentials
+    in the automaker's public JavaScript bundles, and the credentials also worked in production.
+    A path traversal through /static%2f..%2fopenidm/, found by GPT 5.6 after six hours on
+    the OpenIDM source, bypassed the WAF and let them reset any user's password, and a password
+    grant flow skipped MFA to mint app tokens that sent unlock commands. The chain covered
+    the automaker's Australian vehicles, and a related chain covered the United States and
+    Canada.
+  why: >-
+    Admin and identity endpoints left on the internet behind WAF rules, with credentials in
+    shipped JavaScript, remain a full account takeover path.
+  background: >-
+    ForgeRock OpenIDM is an identity management server that stores user accounts and exposes
+    REST endpoints for administrators to change them. The OAuth Resource Owner Password Credentials
+    grant lets a client trade a username and password directly for tokens, and OAuth 2.1 drops
+    it because it bypasses interactive steps such as MFA. Connected car apps typically turn
+    an account token into remote commands through a telematics API, so whoever controls identity
+    controls the car.
+  comments: The Hacker News thread drew 289 points and 98 comments.
+  sources:
+  - label: primary
+    url: https://shubs.io/unlocking-any-car-from-x-brand-in-most-of-the-world/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50419215
+- title: >-
+    Linux 7.4-rc2 ships with many AI-driven fixes, and Torvalds says BPF fixes now outpace
+    new reports
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Torvalds ships a large 7.4-rc2 full of AI-found bug fixes and says the BPF tree now fixes
+    reports faster than new ones arrive.
+  summary: >-
+    Linus Torvalds tagged Linux 7.4-rc2 on 2026-11-09, a big release candidate following the
+    largest rc1 ever, padded by deferred coccinelle cleanups. He wrote that much of it was
+    driven by AI fixes, that Alexei Starovoitov says BPF fixes are now arriving faster than
+    new reports, and that most other areas have not reached that point. Phoronix lists a FAT32
+    sync-mount speedup, AMDGPU HDMI 2.2 FRL fixes, a BHI mitigation selection fix and fixes
+    for long-standing memory management bugs.
+  why: >-
+    Kernel maintainers see the first sign that the AI-generated bug report backlog may be
+    shrinking, starting with BPF.
+  followup: Linux 7.4 stable release expected around the end of December 2026.
+  comments: >-
+    The Register frames the post as a sign the AI patch flood may have peaked, citing record
+    monthly fix counts at Microsoft and Oracle.
+  sources:
+  - label: primary
+    url: https://github.com/torvalds/linux/releases/tag/v7.4-rc2
+  - label: discussion
+    url: https://www.phoronix.com/news/Linux-7.4-rc2-Released
+  - label: discussion
+    url: https://www.theregister.com/security/2026/11/09/linus-torvalds-sees-signs-ai-prompted-patch-flood-has-peaked/5308345
+- title: >-
+    Uber relaxes SubmitQueue conflict checks and validates main after landing to absorb AI-driven
+    PR growth
+  section: Talks
+  category: Video
+  blurb: >-
+    Uber's merge queue went from 30-minute to 3 to 4 hour waits as AI PRs grew, then relaxed
+    conflict checks and verified main after landing.
+  summary: >-
+    Uber engineers say queue requests rose from about 90 to 130 an hour between January and
+    March 2026, mostly from AI-generated changes, and P95 land time grew from 30 minutes to
+    3 to 4 hours. They added peak-hour admission gating with a deferred queue for expensive
+    changes, then scored target overlap between changes with a Jaccard measure and dropped
+    weak conflict edges to run more in parallel. That lets some combinations land untested,
+    so a post-land system called StowPipe validates new commits and advances a verified main
+    pointer, and peak throughput reached about 300 lands an hour at a 30-minute P95.
+  why: >-
+    Monorepo teams facing agent-driven PR volume may need to trade an always-green trunk for
+    post-merge validation and a verified-main pointer.
+  background: >-
+    A merge queue tests each change against the changes ahead of it so the trunk stays green
+    when many PRs merge concurrently. Uber's SubmitQueue already speculated on likely outcomes
+    and built unrelated targets in parallel. The new step accepts a sometimes broken main
+    and relies on post-land checks plus on-call reverts.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=hX140a5klW0
+- title: >-
+    Modal's async agent RL recipe trains stably with rollouts spread over mixed GPUs and clouds
+  section: Talks
+  category: Video
+  blurb: >-
+    Modal's RL recipe corrects trainer and sampler mismatch so agent rollouts can run on mixed
+    GPU types across clouds, 15 percent cheaper.
+  summary: >-
+    Jason Mancuso describes a recipe of GRPO plus masked importance sampling, score centering
+    to remove accumulated drift, and top-p sampling with mask replay, ablated on Qwen 3.6
+    35B MoE with code environments. Because per-step weight deltas are 100 to 1,000 times
+    sparse, compressed updates let inference workers run outside the training cluster across
+    providers and GPU types, including FP8 pools, with stable reward. He says rollouts cost
+    15 percent less, and that the code builds on Miles and SGLang with a source release planned.
+  why: >-
+    Teams with a production agent harness and evals can treat them as an RL environment and
+    run rollouts on cheaper, scattered GPUs.
+  background: >-
+    GRPO, introduced with DeepSeek R1, scores a group of sampled answers against each other
+    instead of training a separate value model. Asynchronous RL keeps samplers and trainer
+    busy at once, but rollouts then come from slightly stale weights, and kernel or precision
+    differences make the sampler's token probabilities differ from the trainer's. Importance
+    sampling reweights tokens to correct for that mismatch.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=3nDMYV-QHLs
+- title: >-
+    Linear runs triage and review agents that check PRs against past product decisions and
+    reverts
+  section: Talks
+  category: Video
+  blurb: >-
+    Linear runs a triage agent that enriches issues and a review agent that checks PRs against
+    past product decisions, reverts and incidents.
+  summary: >-
+    Tom Moor says Linear's triage agent labels, deduplicates and routes incoming requests,
+    then attaches customer value, logs, related issues and prior decisions, and small bugs
+    are fixed automatically. A review agent reads the original issue, product history, reverts,
+    incidents, overlapping work and the agent session, and caught a reintroduced UI element
+    that had been rejected before and an incident-prone open DB transaction that Codex missed.
+    A daily automation mines merged PRs for lessons and writes them back into agents.md and
+    docs.
+  why: >-
+    Review agents that see issue intent and product history catch coherence regressions that
+    code-only AI review misses.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=Xw9utONfhIY
+- title: >-
+    Daytona finds agent frameworks converging on separate VM sandboxes as CrewAI and AG2 drop
+    local execution
+  section: Talks
+  category: Video
+  blurb: >-
+    Daytona argues allow lists and embedded runtimes leave tool calls unisolated, and notes
+    CrewAI and AG2 dropped local code execution.
+  summary: >-
+    Mislav Ivanda compares three isolation models for agent code: command allow lists with
+    approval prompts, embedded runtimes such as V8 or QuickJS, and a separate VM. He argues
+    that allowing a command like python -c grants arbitrary capability, and that embedded
+    runtimes isolate generated glue code while its tool calls still run on the host. He cites
+    CrewAI removing its local code interpreter in April 2026 and AG2 retiring local executors,
+    and says the execution boundary is harder to swap later than the framework.
+  why: >-
+    Pick the agent execution boundary before the framework, because tools written for host
+    execution are costly to move into a sandbox later.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=WWIFiQi9U4w
