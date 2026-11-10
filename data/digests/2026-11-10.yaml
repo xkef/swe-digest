@@ -1,5 +1,5 @@
 date: '2026-11-10'
-updated: 2026-11-10T08:37Z
+updated: 2026-11-10T13:42Z
 stories:
 - title: >-
     rust-openssl 0.10.78 fixes an out-of-bounds write in the safe aes::unwrap_key function
@@ -186,6 +186,41 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50436640
 - title: >-
+    Google DeepMind's AlphaProof Code agents formally verify Signal's protocol implementation
+    in Lean
+  section: AI
+  category: AI
+  blurb: >-
+    Google DeepMind agents wrote machine-checked Lean proofs that Signal's compiled protocol
+    code meets its security properties, in four weeks.
+  summary: >-
+    Google DeepMind introduced AlphaProof Code on 2026-11-10, a multi-LLM agent framework
+    in which humans and models write formal specifications and Gemini Carbon agents generate
+    the Lean proofs, producing millions of lines of proof for Signal's core cryptographic
+    code. Agents audited the proofs and flagged about one percent for human review, and the
+    work took four weeks. When two previously fixed real bugs were reintroduced into an isolated
+    copy, the system produced machine-checked proofs that the buggy versions were insecure,
+    and DeepMind says it will open-source the verification artifacts.
+  why: >-
+    Implementation-level formal verification, long too costly outside small cores, now looks
+    feasible for production security code when agents write the proofs and a proof checker
+    validates them.
+  background: >-
+    Formal verification proves mathematically that code meets a specification, and Lean is
+    a proof assistant whose kernel mechanically checks every proof step, so a proof an agent
+    writes can be trusted without trusting the agent. Most earlier protocol verification checked
+    the design, not the deployed code, which leaves room for bugs in the gap between them.
+    The Signal protocol underpins end-to-end encryption in Signal and Google Messages, and
+    properties such as protection after a temporary device compromise are among those it aims
+    to guarantee.
+  sources:
+  - label: primary
+    url: https://deepmind.google/blog/introducing-alphaproof-code/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50439193
+  - label: discussion
+    url: https://www.theregister.com/ai-and-ml/2026/11/10/google-deepmind-melds-humans-and-ai-agents-to-vet-signals-secure-messaging-techniques/5308625
+- title: >-
     pi 1.5.1 warms prompt caches between runs by default and sends only new messages to Anthropic
   section: Agentic coding
   category: Agentic coding
@@ -255,6 +290,99 @@ stories:
   sources:
   - label: primary
     url: https://vercel.com/changelog/vercel-sandbox-snapshot-creation-is-now-up-to-10x-faster
+- title: >-
+    Fable 5.2 merges repeated code far more often when the prompt says the codebase is its
+    own
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Anthropic says telling Fable 5.2 a codebase is its own raised how often it merged repeated
+    code from under a tenth of tries to about half.
+  summary: >-
+    Anthropic's prompting documentation for Claude Fable 5.2 says the model follows what the
+    prompt says about who owns the code. When the prompt said nothing or framed the code as
+    someone else's, the model tended to add to existing structure even when that repeated
+    code. With the sentence saying the codebase is the model's own and that it will keep building
+    on it, it merged repeated code in about half of small coding tasks, against under a tenth
+    without it.
+  why: >-
+    Teams running Fable 5.2 in agent harnesses can steer toward refactoring or toward minimal
+    additive changes with one line in the system prompt or project instructions.
+  sources:
+  - label: primary
+    url: https://simonwillison.net/2026/Nov/10/prompting-claude-fable-52/
+- title: >-
+    mise 2026.11.6 adds mise run --multi task checklists and package-manager-agnostic bootstrap
+    packages
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    mise run --multi opens a checklist to run several tasks in parallel, and unprefixed bootstrap
+    packages pick an available package manager.
+  summary: >-
+    mise 2026.11.6 adds mise run --multi, which runs checked tasks as if joined with ::: so
+    they run in parallel unless dependent, with --all listing tasks across a monorepo. Bootstrap
+    package keys without a manager prefix now install through the first available manager
+    in the order apt, dnf, pacman, zypper, apk, brew, winget, scoop, choco, overridable with
+    system_packages.prefer. The npm backend installs from HTTPS tarball URLs, custom daemons
+    get named ports, launchd agents get resource limits, and the default prompt theme changes
+    to base16.
+  why: >-
+    One bootstrap config can now provision system packages across Linux distributions and
+    macOS, and undefined env template errors no longer print the names of secret variables
+    at every prompt.
+  sources:
+  - label: primary
+    url: https://github.com/jdx/mise/releases/tag/v2026.11.6
+- title: >-
+    JDK 28 removes the Primitive Types in Patterns preview after five rounds, with Constant
+    Patterns to follow
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The Amber project will remove primitive types in patterns from JDK 28 after five previews,
+    so the feature is gone even with --enable-preview.
+  summary: >-
+    Angelos Bimpoudis and Gavin Bierman announced on 2026-11-09 that development of Primitive
+    Types in Patterns, instanceof, and switch has stopped and the draft sixth preview JEP
+    is withdrawn. The feature previewed in JDK 23 through 27 and will be unavailable in JDK
+    28 because its exact numeric conversion rules may conflict with Valhalla's planned user-defined
+    numeric types. A draft JEP for Constant Patterns, allowing nested constants such as case
+    Point(0, 0) and carrying forward expanded primitive support in switch, is due shortly.
+  why: >-
+    Code that uses primitive patterns under --enable-preview will stop compiling on JDK 28
+    and needs rewriting before upgrading.
+  background: >-
+    Java preview features ship complete but unfinalized, and code must opt in with --enable-preview
+    at compile and run time, so they can change or disappear between releases. JEP 12 defines
+    this process and explicitly allows removing a preview through a bug-tracker issue rather
+    than a new JEP. Project Valhalla is the long-running effort to add value classes and richer
+    numeric types to the JVM, and its design now constrains how pattern matching treats numeric
+    conversions.
+  sources:
+  - label: primary
+    url: https://mail.openjdk.org/archives/list/amber-spec-experts@openjdk.org/thread/UYEK3PGOHN6R56AHJTSLPGAY363K666S/
+  - label: discussion
+    url: https://www.reddit.com/r/java/comments/1xsdxiq/withdrawing_the_primitive_patterns_preview/
+- title: >-
+    Kernel memory management developer Lorenzo Stoakes drops reviewer roles, citing AI-generated
+    patch volume
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Arm's Lorenzo Stoakes drops reviewer roles in kernel memory management, core, misc and
+    Rust areas, citing the flood of AI-generated series.
+  summary: >-
+    Lorenzo Stoakes, a kernel contributor since 2014, posted patches on 2026-11-10 removing
+    himself as reviewer for memory management, core, misc and Rust areas. He wrote that the
+    throughput of AI-generated series leaves him without bandwidth to review outside the areas
+    he maintains, and he stays on as maintainer of those.
+  why: >-
+    Reviewer capacity, not patch supply, is becoming the limit in core kernel subsystems,
+    which can slow review of patches in memory management and Rust for Linux.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Lorenzo-Stoakes-AI-Flood
 - title: >-
     Tailscale OAuth apps reach GA, so agents join a tailnet as devices under the authorizing
     user's identity
@@ -376,6 +504,28 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=fwypmxVg96U
+- title: >-
+    A LoRA fine-tune of Gemma 4 E2B beats Gemma 4 31B on a structured extraction task and
+    runs 44 times faster
+  section: Videos
+  category: Video
+  blurb: >-
+    A LoRA fine-tune of Gemma 4 E2B with MLX beat Gemma 4 31B on a JSON extraction task, at
+    100% test accuracy and 44 times faster inference.
+  summary: >-
+    Code to the Moon fine-tuned Gemma 4 E2B with LoRA in MLX on a JSONL chat dataset to bucket
+    described events by relative day into a fixed JSON schema, with no system prompt needed
+    afterward. The 4-bit fine-tune averaged 0.32 seconds per inference against 14.2 seconds
+    for Gemma 4 31B with thinking, scored 100% on the test set and 98% on a harder unseen
+    set, against about 92% for the 31B model and about 20 to 25% for the base E2B model with
+    instructions. The video warns that fine-tuning is poor at adding new knowledge and can
+    raise hallucination.
+  why: >-
+    For narrow output-format tasks, a small LoRA fine-tune can replace a large or frontier
+    model and cut latency and token costs by an order of magnitude.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=lgRZMm8hjYM
 - title: >-
     Hacker News reacts to a write-up that consumer Gemini sends connected Gmail and Drive
     content to human reviewers
