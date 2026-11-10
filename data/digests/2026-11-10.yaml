@@ -1,5 +1,5 @@
 date: '2026-11-10'
-updated: 2026-11-10T17:13Z
+updated: 2026-11-10T20:32Z
 stories:
 - title: >-
     Google releases Gemini 4 Carbon to paying API developers at $2 and $10 per million tokens
@@ -61,6 +61,41 @@ stories:
   sources:
   - label: primary
     url: https://shopify.engineering/shopify-app-rebuild
+- title: >-
+    Git 2.56.1 fixes six flaws, including code execution when recursively cloning a malicious
+    repository
+  section: Top stories
+  category: Security
+  blurb: >-
+    Git 2.56.1 and backports fix six flaws, including code execution when a malicious repository
+    is cloned with its submodules.
+  summary: >-
+    The Git project released 2.56.1 with backports to 2.55.1, 2.54.1, 2.53.1, 2.52.1, 2.51.3
+    and 2.50.2. CVE-2026-111760 uses an integer truncation in index handling to replace a
+    submodule's .git file with a symlink and run attacker hooks during a recursive clone,
+    and other fixes cover path traversal through a server's advertised HEAD, stack and heap
+    corruption in signature stripping and large merges, binary patch out-of-bounds reads,
+    and unsafe git fast-import stream features. GitHub has patched github.com and shipped
+    GitHub Enterprise Server 3.19.15, 3.20.11, 3.21.9 and 3.22.4.
+  why: >-
+    Update Git on workstations, CI images and any service that bundles Git, and treat servers
+    that merge or apply patches from untrusted users as exposed to the merge and patch memory
+    bugs.
+  background: >-
+    A recursive clone also clones each submodule, and a submodule's .git entry is a file that
+    points at its repository metadata. Git refuses to write paths that would overwrite that
+    metadata because a repository's config and hooks can run commands. Several past Git advisories
+    have used the same pattern of tricking checkout into writing into a .git location. Forges
+    are affected separately from clients because they run merges and patch application on
+    content that users push.
+  followup: >-
+    Distribution packages, updates to tools that bundle Git, and any exploitation reports.
+  sources:
+  - label: primary
+    url: https://github.blog/open-source/git/git-security-vulnerabilities-announced-7/
+  - label: discussion
+    url: https://thehackernews.com/2026/11/git-patches-flaw-that-lets-malicious.html
+  thread: f-0198
 - title: >-
     rust-openssl 0.10.78 fixes an out-of-bounds write in the safe aes::unwrap_key function
   section: Security
@@ -377,6 +412,33 @@ stories:
   - label: primary
     url: https://simonwillison.net/2026/Nov/10/prompting-claude-fable-52/
 - title: >-
+    On-policy distillation tolerates FP8 and asynchronous rollouts that destabilize RL, a
+    measured study finds
+  section: ML research
+  category: Paper
+  blurb: >-
+    On-policy distillation stays stable under FP8 and asynchronous rollouts that break RL,
+    reaching BF16 training quality 1.62 times sooner.
+  summary: >-
+    The paper measures quantization, weight staleness and injected noise on one scale across
+    three student-teacher pairs and finds on-policy distillation tolerates substantial training-inference
+    mismatch up to an empirical budget. It proposes an admission check that screens rollout
+    configurations against that budget without a full training run. Model-specific FP8 recipes
+    hold at least 1.93 times as many KV-cache tokens as BF16, and FP8 with asynchronous rollouts
+    reaches the same quality 1.62 times sooner than synchronous BF16.
+  why: >-
+    Teams distilling into smaller open-weight models can use cheaper quantized and asynchronous
+    rollout engines with less risk than in RL, after checking sensitive layers.
+  background: >-
+    On-policy distillation has the student generate its own responses and trains it to match
+    a fixed teacher's token distribution on them, which avoids the train-test gap of distilling
+    on teacher text. Rollout engines such as vLLM often run in lower precision or on stale
+    weights for speed, so the policy that generated data differs from the one being trained.
+    In RL this mismatch is a known source of instability.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.11450v1
+- title: >-
     mise 2026.11.6 adds mise run --multi task checklists and package-manager-agnostic bootstrap
     packages
   section: Developer tools
@@ -472,6 +534,38 @@ stories:
   - label: primary
     url: https://www.phoronix.com/news/Lorenzo-Stoakes-AI-Flood
 - title: >-
+    Synaptics patent threats stop an open Rust DisplayLink driver for Linux, and OIN says
+    it offers no cover
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    A Rust DisplayLink dock driver for Linux is on hold after Synaptics threatened patent
+    claims and OIN said codecs fall outside its coverage.
+  summary: >-
+    LWN reports that Mike Lothian posted Vino, an LLM-assisted Rust DRM/KMS driver for DisplayLink
+    DL3 docks, to dri-devel, then received a cease-and-desist from Synaptics citing 125 patents
+    and later claim charts for two UK patents with a demand of $25,000 rising weekly. The
+    Open Invention Network concluded its license does not cover codecs, so Lothian took down
+    the repository and will not submit Vino to the kernel.
+  why: >-
+    Linux users of DisplayLink docks remain on Synaptics's binary x86-only software, and the
+    case shows OIN membership does not protect codec work.
+  background: >-
+    DisplayLink docks drive monitors over USB by compressing the display stream in software
+    and decoding it in the dock, so Linux needs a vendor driver rather than standard DisplayPort
+    support. Synaptics ships an open EVDI kernel module but keeps the user-space DisplayLink
+    Manager closed. The Open Invention Network is a patent cross-license pool meant to deter
+    patent suits against Linux, limited to components in its Linux System Definition.
+  comments: >-
+    The Hacker News thread drew 137 points and 57 comments. LWN commenters argue the two UK
+    patents describe long-known image compression techniques and question OIN's value if it
+    does not act against a member.
+  sources:
+  - label: primary
+    url: https://lwn.net/SubscriberLink/1102549/acbc92e00cee3a3f/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50443824
+- title: >-
     Public worse_query iOS sandbox escape lets apps read other apps' files, with no Apple
     fix confirmed
   section: Apple platforms
@@ -523,6 +617,55 @@ stories:
   sources:
   - label: primary
     url: https://tailscale.com/blog/oauth-apps-ga
+- title: >-
+    Talos 1.15.0-beta.0 switches to containerd config version 4, so old CRI customization
+    keys are silently ignored
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The first Talos 1.15 beta changes containerd config to version 4 and adds SMART disk monitoring,
+    ingress filtering and CPU scaling documents.
+  summary: >-
+    Talos 1.15.0-beta.0 generates containerd configuration version 4, so CRICustomizationConfig
+    patches using top-level sections such as [metrics] or [grpc] are ignored with only a log
+    warning and must move into plugin blocks. The beta also adds NetworkLinkIngressConfig
+    packet filtering, BGP MD5 authentication, a CPUScalingConfig document, DiskSMARTConfig
+    collection on by default for new configs, kube-apiserver webhook kubeconfigs, and syncfs
+    of unpacked image layers. It removes the talosctl gen ca, crt, csr, key and keypair subcommands.
+  why: >-
+    Clusters with custom containerd patches need them rewritten before upgrading to 1.15,
+    or settings such as metrics endpoints will silently stop applying.
+  followup: Talos 1.15.0 final release.
+  sources:
+  - label: primary
+    url: https://github.com/siderolabs/talos/releases/tag/v1.15.0-beta.0
+  thread: f-0199
+- title: >-
+    CNCF accepts OpenShell and Agent Substrate as sandbox projects for isolating AI agents
+    on Kubernetes
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    NVIDIA's OpenShell and the Agent Substrate runtime join CNCF as sandbox projects for isolating
+    and governing AI agents on Kubernetes.
+  summary: >-
+    At KubeCon North America on 2026-11-10, CNCF said OpenShell, spearheaded by NVIDIA, joins
+    as a sandbox project that enforces policy on agents' access to files, networks, credentials
+    and model endpoints. Agent Substrate joins as a zero-trust runtime for running agents
+    on Kubernetes while isolating untrusted code, alongside OpenRL for Kubernetes-native reinforcement
+    learning and KubeRay. The same announcement lists CloudNativePG as advanced to incubation.
+  why: >-
+    Agent sandboxing on Kubernetes now has vendor-neutral projects to evaluate alongside gVisor
+    and microVM approaches.
+  background: >-
+    CNCF sandbox is the entry level for projects, followed by incubating and graduated, which
+    require production adopters and governance reviews. Agent runtimes aim to contain code
+    that a model writes and runs, which ordinary container isolation was not designed for
+    since containers share the host kernel. gVisor, already listed in the same announcement,
+    addresses this by running a user-space kernel between workload and host.
+  sources:
+  - label: primary
+    url: https://www.cncf.io/announcements/2026/11/10/cncf-hits-major-milestones-with-global-community-growth-record-industry-investment-and-a-new-generation-of-projects-to-build-ai-systems-in-production/
 - title: >-
     Meta's TLX extends Triton with explicit warp-group control for Hopper and Blackwell GPUs
   section: Engineering posts
