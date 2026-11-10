@@ -1,5 +1,5 @@
 date: '2026-11-10'
-updated: 2026-11-10T00:52Z
+updated: 2026-11-10T08:37Z
 stories:
 - title: >-
     rust-openssl 0.10.78 fixes an out-of-bounds write in the safe aes::unwrap_key function
@@ -45,6 +45,96 @@ stories:
   - label: discussion
     url: https://www.securityweek.com/plex2shell-exploited-against-qnap-nas-users/
 - title: >-
+    Chrome 157.0.8103.50 fixes CVE-2026-125350, an XML use-after-free already exploited in
+    the wild
+  section: Security
+  category: Security
+  blurb: >-
+    Google patched nine Chrome flaws on 2026-11-09, including an exploited XML use-after-free
+    that is the browser's eighth zero-day of 2026.
+  summary: >-
+    Google's 2026-11-09 stable desktop update fixes nine vulnerabilities, including CVE-2026-125350,
+    a high-severity use-after-free in the XML component reported anonymously on 2026-11-06.
+    Google says an exploit exists in the wild and keeps bug details restricted. Fixed versions
+    are 157.0.8103.50/.51 for Windows and macOS and 157.0.8103.50 for Linux.
+  why: >-
+    Update Chrome and Chromium-based browsers and embedded Chromium runtimes now, since a
+    working exploit is already in use.
+  background: >-
+    A use-after-free happens when code keeps using memory after it has been freed, which attackers
+    can turn into memory corruption and code execution. Browser bugs in parsers such as the
+    XML component are reachable from any web page, so they are common zero-day targets. Google
+    restricts bug details until most users have updated.
+  sources:
+  - label: primary
+    url: https://chromereleases.googleblog.com/
+  - label: discussion
+    url: https://thehackernews.com/2026/11/google-issues-chrome-security-update.html
+  - label: discussion
+    url: https://www.securityweek.com/chrome-update-patches-exploited-xml-zero-day-eighth-this-year/
+- title: >-
+    Fireworks AI breach through a third-party cloud provider exposed Notion AI chat transcripts
+    from under 1% of workspaces
+  section: Security
+  category: Security
+  blurb: >-
+    Attackers went through a cloud provider to reach Fireworks development machines, taking
+    customer model data and Notion AI chat logs.
+  summary: >-
+    Notion says that Fireworks AI, which it used for inference and for classification in its
+    Insights feature, confirmed on 2026-11-08 that a stolen dataset included Notion AI chat
+    transcripts with no user or workspace labels, affecting under 1% of workspaces. Notion
+    disconnected from Fireworks on 2026-11-03 and advises rotating any credentials pasted
+    into Notion AI. BleepingComputer reports that the attackers used a cloud provider breach
+    on 2026-10-23 to reach Fireworks R&D machines and took billing data, resource metadata,
+    and partial model weights and datasets. The incident follows an earlier Fireworks breach
+    of API key secrets tied to LLMjacking.
+  why: >-
+    If you send prompts or fine-tuning data to a hosted inference provider, its subprocessors
+    are part of your attack surface. Rotate any secrets that users pasted into chat.
+  background: >-
+    Inference platforms such as Fireworks host open-weight models and customer fine-tunes
+    behind an API, so they hold prompts, datasets and weights from many tenants. LLMjacking
+    means stealing API keys or cloud access to resell model usage. Several AI infrastructure
+    and agent platforms disclosed breaches aimed at stored AI keys in October and November
+    2026.
+  sources:
+  - label: primary
+    url: https://www.notion.com/help/security-incident-involving-a-third-party-ai-vendor
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/fireworks-ai-discloses-new-breach-after-cloud-provider-hack/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50437106
+  thread: f-0194
+- title: >-
+    CISA adds GPUStack CVE-2026-102895 to KEV, an authentication bypass that gives admin access
+    and code execution
+  section: Security
+  category: Security
+  blurb: >-
+    CISA now lists an authentication flaw as exploited in GPUStack, a manager for self-hosted
+    LLM GPU clusters fixed in July 2026.
+  summary: >-
+    CISA added CVE-2026-102895 in GPUStack to the Known Exploited Vulnerabilities catalog
+    on 2026-11-09, alongside FreeSWITCH, IBM Aspera Faspex and the OpenSSH SSHole flaw. The
+    Hacker News reports that the GPUStack flaw (CVSS 9.8) allows unauthenticated administrative
+    access, persistent admin API key creation, disclosure of worker and cloud-provider secrets,
+    and code execution through POST /v2/inference-backends/from-yaml. GPUStack fixed it in
+    July 2026. Federal agencies must patch by 2026-11-12.
+  why: >-
+    Teams running self-hosted inference on GPUStack should confirm they are on the July 2026
+    fix, keep the API off the internet, and rotate cloud credentials stored in workers.
+  background: >-
+    GPUStack is an open source cluster manager that schedules LLM inference backends such
+    as vLLM across GPU machines and exposes an OpenAI-compatible API. The CISA KEV catalog
+    lists vulnerabilities with confirmed exploitation and sets patch deadlines for US federal
+    agencies. Many other organizations use it to decide what to patch first.
+  sources:
+  - label: primary
+    url: https://www.cisa.gov/news-events/alerts/2026/11/09/cisa-adds-four-known-exploited-vulnerabilities-catalog
+  - label: discussion
+    url: https://thehackernews.com/2026/11/cisa-warns-of-active-exploitation-of.html
+- title: >-
     Cisco AI Defense and IBM Concert will use Anthropic's Mythos model for red teaming and
     vulnerability finding
   section: AI
@@ -65,6 +155,36 @@ stories:
   sources:
   - label: discussion
     url: https://www.theregister.com/ai-and-ml/2026/11/10/anthropics-super-bug-finding-mythos-model-is-going-into-cisco-and-ibm-products/5308616
+- title: >-
+    Amazon swaps Sonnet 4.6 for a Strands Decider model in ticket labeling and cuts cost per
+    ticket 98%
+  section: AI
+  category: AI
+  blurb: >-
+    Two Amazon engineers replaced an LLM that sorted internal tickets into 20 labels with
+    a small decision model at about $500 per million tickets.
+  summary: >-
+    Amazon engineers moved internal ticket labeling from Claude Sonnet 4.6 on Bedrock to the
+    Gemma 4 E4B build of Strands Decider on SageMaker ml.g5.xlarge instances. The decision
+    model returns probabilities for a fixed set of options instead of generating JSON. Average
+    call time fell from 4,215 ms to 897 ms, tokens per ticket fell from 6,724 to 2,010, and
+    cost per ticket fell from about $0.0222 to about $0.0005. They rolled the change out with
+    an AppConfig switch that could run both models in parallel, and found that the order of
+    JSON keys in the input shifted the output probabilities by up to 0.19.
+  why: >-
+    High-volume classification steps in agent pipelines can often move from a frontier LLM
+    to a small decision model, provided you shadow-run both on live traffic before switching.
+  background: >-
+    A decision model is a classifier built from an LLM that scores a fixed list of options
+    rather than generating free text, so each call produces one output token. Running both
+    systems on the same traffic before a switch, called shadow mode, is a standard way to
+    compare behavior on real inputs.
+  comments: The Hacker News thread reached 180 points and 60 comments.
+  sources:
+  - label: primary
+    url: https://strandsagents.com/blog/amazon-saves-millions-replacing-sonnet-with-strands-decider/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50436640
 - title: >-
     pi 1.5.1 warms prompt caches between runs by default and sends only new messages to Anthropic
   section: Agentic coding
@@ -156,6 +276,106 @@ stories:
   sources:
   - label: primary
     url: https://tailscale.com/blog/oauth-apps-ga
+- title: >-
+    Robinhood's hybrid reviewer merges about 60% of data pipeline PRs with no human review
+  section: Talks
+  category: Video
+  blurb: >-
+    Scripts check data contracts, tags and lineage, an agent searches the repo for unregistered
+    consumers, and humans approve sensitive grants.
+  summary: >-
+    Robinhood's data platform team built a two-layer reviewer for pipeline PRs. Deterministic
+    scripts check the schema registry, catalog tags, registered lineage and staging performance,
+    and they turn CI red on failure. A separate agent with read-only repository tools scores
+    risk and approves or escalates. The agent can never approve grants that touch sensitive
+    data, migrations that change intent, or verdicts where it has low confidence. As of 2026-08-31,
+    about 60% of these PRs merged without human review, manual review effort fell about 75%,
+    about 132 engineer hours a month were saved, related incidents fell about 30%, and the
+    miss rate was about 2%. An on-call engineer updates the agent's rules by hand each week
+    from reviewer replies.
+  why: >-
+    It gives a concrete pattern for scoped auto-merge: scripts settle factual checks, the
+    agent judges only what they cannot see, and some change types always need a person.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=MQiojLnK-E0
+- title: >-
+    Harvey's Spectre platform ran 10,000 agent PRs and added a fair launch queue after a 950-task
+    burst
+  section: Talks
+  category: Video
+  blurb: >-
+    Harvey's cloud agent platform runs any coding agent, merges approved PRs automatically,
+    and now queues tasks so one user cannot fill it.
+  summary: >-
+    Harvey's internal platform Spectre runs Claude Code, Codex or Cursor sessions in cloud
+    sandboxes with company secrets and a real copy of the stack. About 460 people used it
+    last month, and command-line launches reached about 6,500 tasks a month. A loop that reads
+    CI failures and pushes fixes covered four of five agent PRs merged into the backend. A
+    Slack alert storm started about 900 tasks in four hours, and one engineer later started
+    about 950 tasks from the CLI. Harvey then built a fair queue that dispatches tasks as
+    capacity frees up and cut start latency in a 300-task burst from almost 2 seconds to 70
+    ms. Scheduled automations now switch off after five consecutive failures.
+  why: >-
+    Once agents can launch other agents, the platform needs admission and fairness controls
+    and a CI-fix loop more than it needs a better model.
+  comments: >-
+    Harvey says PR volume across the company rose about 60% in one month and merges slowed
+    from 15 to 30 minutes to over an hour, a problem it has not solved yet.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=ktbAVYsAxpk
+- title: >-
+    Audible and SAP engineers argue self-hosted LLM servers need admission control, with a
+    queue cap cutting P95 TTFT 2.5x
+  section: Talks
+  category: Video
+  blurb: >-
+    Coding agents send bursts like 40 calls in two seconds, so inference clusters should admit,
+    defer or reject requests before they use GPU memory.
+  summary: >-
+    The speakers propose an admission layer between the gateway and engines such as vLLM or
+    SGLang. It returns 200 to admit, 503 with Retry-After to defer, 429 when a client exceeds
+    its share, or 529 when every replica is full. The decision is based on request size, tenant,
+    agent session, deadline, KV cache use and queue age. They note that admitting each request
+    separately can leave an agent session half-finished, and they recommend scoring goodput
+    against all arriving requests, including rejected ones. On Qwen 2.5 0.5B on an A10, a
+    policy allowing at most two waiting requests admitted 63% and cut P95 time to first token
+    from about 2.5 s to about 1 s, while KV cache use peaked at 0.5% and a KV-threshold policy
+    would have admitted everything.
+  why: >-
+    Teams hosting models for coding agents should shed load at the ingress based on signals
+    that change within seconds, and agents should honor Retry-After with jitter.
+  background: >-
+    During decode, each admitted LLM request holds a growing KV cache in GPU memory until
+    it finishes or the client disconnects, so admitting a request commits memory for its whole
+    life. Gateway rate limits count requests and cannot see that memory cost, while the engine
+    finds out only after it has accepted the request.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=ntVpbyDTYaQ
+- title: >-
+    Spotify brings Backstage context to agents with Portal workspaces, a PR inbox and fleet-wide
+    refactors
+  section: Talks
+  category: Video
+  blurb: >-
+    Spotify's Portal adds agent workspaces, a PR inbox, cost insights and Fleetshift refactors
+    so coding agents start with the same org context.
+  summary: >-
+    Spotify says that after an internal all-hands titled AI or die, about nine months ago,
+    engineers moved to running fleets of agents, which trapped context in personal instruction
+    files and made costs hard to attribute. Its Portal product adds workspaces that seed agent
+    sessions with catalog entities, designs and wikis, plus a PR inbox for agent PRs, a catalog
+    of skills and rules, an MCP server, usage and cost insights, and Fleetshift for refactors
+    across thousands of repositories. It also has an internal session tool called Zerp. Spotify
+    reports over 6,200 Portal users and over 121,000 sessions.
+  why: >-
+    An existing service catalog can serve as shared agent context and as the place to track
+    agent cost and review queues.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=fwypmxVg96U
 - title: >-
     Hacker News reacts to a write-up that consumer Gemini sends connected Gmail and Drive
     content to human reviewers
