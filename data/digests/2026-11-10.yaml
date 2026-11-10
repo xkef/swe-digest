@@ -1,5 +1,5 @@
 date: '2026-11-10'
-updated: 2026-11-10T20:32Z
+updated: 2026-11-10T22:32Z
 stories:
 - title: >-
     Google releases Gemini 4 Carbon to paying API developers at $2 and $10 per million tokens
@@ -515,6 +515,32 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/java/comments/1xsdxiq/withdrawing_the_primitive_patterns_preview/
 - title: >-
+    .NET 11 ships C# 15 union types, a Native AOT CLI host and a NuGet minimum package age
+    setting
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The two-year STS release adds closed hierarchies, Zstandard compression, a warm MSBuild
+    server and a preview of runtime-managed async.
+  summary: >-
+    Microsoft released .NET 11 on 2026-11-10 as a Standard Term Support release with two years
+    of support, with C# 15 union types and closed class hierarchies checked for exhaustiveness
+    in switch expressions. The SDK now uses a Native AOT CLI host and keeps the MSBuild server
+    warm by default, and NuGet gains a minimum package publication age setting so new package
+    versions wait before selection. Runtime Async, which moves async suspension into the runtime
+    instead of compiler-generated state machines, remains an opt-in preview.
+  why: >-
+    The NuGet publication age setting gives .NET teams a cooldown against freshly published
+    malicious packages, a control other ecosystems have added after recent supply chain attacks.
+  comments: The runtime what's new page drew 215 points and 152 comments on Hacker News.
+  sources:
+  - label: primary
+    url: https://devblogs.microsoft.com/dotnet/announcing-dotnet-11/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50442225
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50439284
+- title: >-
     Kernel memory management developer Lorenzo Stoakes drops reviewer roles, citing AI-generated
     patch volume
   section: Linux and kernel
@@ -565,6 +591,29 @@ stories:
     url: https://lwn.net/SubscriberLink/1102549/acbc92e00cee3a3f/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50443824
+- title: >-
+    X.Org Server 21.1.26 and Xwayland 24.1.15 fix eight memory safety flaws, several in Xv
+    request handling
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Eight CVEs cover out-of-bounds writes from crafted EDID data, XTest valuators and Xv shared-memory
+    requests in the X server.
+  summary: >-
+    The X.Org advisory of 2026-11-10 lists eight CVEs fixed in xorg-server 21.1.26 and xwayland
+    24.1.15. They include an EDID display-range out-of-bounds write triggered by a malicious
+    monitor, a stack out-of-bounds write in XTestFakeInput, wrapped bounds checks in XvShmPutImage
+    and glamor Xv image sizing, and request size overflows in XRes on 32-bit servers.
+  why: >-
+    Wayland desktops still run Xwayland for X clients, so distributions need the xwayland
+    24.1.15 update as well as the Xorg server fix.
+  sources:
+  - label: primary
+    url: https://lists.x.org/archives/xorg-announce/2026-November/003759.html
+  - label: discussion
+    url: https://www.phoronix.com/news/Eight-More-XOrg-Server-Issues
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1xsrgxn/xorg_security_advisory_multiple_security_issues/
 - title: >-
     Public worse_query iOS sandbox escape lets apps read other apps' files, with no Apple
     fix confirmed
@@ -693,6 +742,45 @@ stories:
   sources:
   - label: primary
     url: https://engineering.fb.com/2026/11/10/open-source/tlx-a-hardware-native-gpu-compiler-for-production-ml/
+- title: >-
+    Railway's incident report traces a build isolation escape to decrypted variables in up
+    to 100,000 workspaces
+  section: Engineering posts
+  category: Security
+  blurb: >-
+    An attacker chained a build escape, a Temporal trust gap and a bad OIDC binding to decrypt
+    AI keys, leading to about $740,000 in fraud.
+  summary: >-
+    Railway's 2026-11-10 report says an attacker partially escaped filesystem isolation in
+    its multi-tenant build infrastructure on 2026-10-20, took a build credential that its
+    internal Temporal cluster accepted as a trusted client, and read build histories and a
+    copy of Railway's monorepo. Using a misconfigured OIDC binding found in that code, the
+    attacker obtained cloud credentials, reached an orchestration machine holding a long-lived
+    decryption credential, and decrypted variables for at most 1.85% of workspaces, about
+    100,000, querying specifically for AI provider keys. Railway estimates unauthorized spend
+    on stolen keys at about $740,000, reset linked tokens for 1,852 users, and is moving builds
+    to per-build virtual machines.
+  why: >-
+    Any platform that stores customer secrets should check whether internal credentials are
+    accepted beyond their purpose and whether CI OIDC trust bindings are scoped tightly.
+  background: >-
+    Envelope encryption encrypts each secret with a data key and then encrypts that data key
+    with a root key held in a key management service, so stealing the database alone yields
+    only ciphertext. The weak point becomes any machine allowed to ask the KMS to decrypt,
+    which is what the attacker reached here. Railway says OpenCode, Warp and Fireworks AI
+    disclosed similar thefts between 2026-10-06 and 2026-10-23, and it treats this as one
+    of a series of attacks aimed at platforms that hold AI keys.
+  followup: >-
+    Refunds of the roughly $740,000 in unauthorized AI spend from providers or Railway.
+  comments: The Hacker News thread drew 20 points and 2 comments, with no added detail.
+  sources:
+  - label: primary
+    url: https://blog.railway.com/p/incident-report-october-security-incident
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50441465
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/apple/railway-breach-leads-to-740-000-in-fraudulent-ai-charges/
+  thread: f-0200
 - title: >-
     Robinhood's hybrid reviewer merges about 60% of data pipeline PRs with no human review
   section: Talks
@@ -873,3 +961,52 @@ stories:
     url: https://news.ycombinator.com/item?id=50438318
   - label: discussion
     url: https://www.reddit.com/r/ClaudeCode/comments/1xq2n3t/a_year_after_the_100_ai_mandate_nobody/
+- title: >-
+    Hacker News trades hardware-backed SSH key setups after a guide to YubiKey, TPM and Secure
+    Enclave keys
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A post moves every SSH key into a YubiKey, a TPM or Apple's Secure Enclave, and commenters
+    debate resident keys, touch policy and backups.
+  summary: >-
+    Alex Haydock describes replacing all on-disk SSH keys with ed25519-sk keys on YubiKeys,
+    TPM-sealed keys through ssh-tpm-agent, and non-exportable Secure Enclave keys created
+    with sc_auth on macOS. He notes that TPM keys still keep an encrypted key file on disk
+    and that no-touch-required keys need a matching authorized_keys option. The thread reached
+    204 points and 106 comments.
+  why: >-
+    Hardware-bound SSH keys stop a compromised laptop or agent from copying a key that also
+    signs commits or reaches production hosts.
+  comments: >-
+    Commenters explain that resident keys can be recovered from the YubiKey with ssh-keygen
+    -K while non-resident keys need the handle file too. One reports GitHub accepts touch-required
+    resident keys while Bitbucket rejects FIDO keys, others use the OpenPGP or PIV slot to
+    cache touches, and several warn to enroll multiple keys after a YubiKey failed or melted.
+  sources:
+  - label: primary
+    url: https://blog.infected.systems/posts/2026-11-03-i-deleted-all-my-ssh-keys/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50382401
+- title: >-
+    Chrome, Edge, Firefox and MDN teams publish Modern Web Guidance skills to steer coding
+    agents off legacy JavaScript
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    An Apache-2.0 skill set and CLI feeds coding agents curated guides on 250 web platform
+    features and scans codebases for legacy patterns.
+  summary: >-
+    Modern Web Guidance, stewarded by the Chrome, Edge, Firefox and MDN teams, ships agent
+    skills and plugins for Claude Code, Codex, Cursor, Gemini and others, plus a CLI to search
+    guides and run a legacy-scan over a codebase. The project says models default to older
+    patterns because of their training data, and it prunes guide content that evals show models
+    already know. The Show HN post reached 202 points and 57 comments.
+  why: >-
+    Teams using agents for front-end work can install curated, eval-pruned platform guidance
+    instead of writing their own rules files.
+  sources:
+  - label: primary
+    url: https://github.com/GoogleChrome/modern-web-guidance
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50443812
