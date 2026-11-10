@@ -1,6 +1,66 @@
 date: '2026-11-10'
-updated: 2026-11-10T13:42Z
+updated: 2026-11-10T17:13Z
 stories:
+- title: >-
+    Google releases Gemini 4 Carbon to paying API developers at $2 and $10 per million tokens
+  section: Top stories
+  category: AI
+  blurb: >-
+    Google opens Gemini 4 Carbon to paying API developers at $2 and $10 per million tokens
+    and previews a /swarm multi-agent mode in Antigravity.
+  summary: >-
+    On 2026-11-10 Google made Gemini 4 Carbon available through the Gemini API in AI Studio
+    and Gemini for business for all paying developers and enterprises, at Gemini 4 Argon's
+    introductory price of $2 per million input tokens and $10 per million output tokens. Google
+    also previewed /swarm in Antigravity, which turns one prompt into a team of agents working
+    in parallel isolated workspaces with adversarial verifiers. A safety and security report
+    shipped with the release, and the introductory period ends on 2026-11-30.
+  why: >-
+    Carbon is now a model you can call from production code, so teams can test it against
+    Fable 5.2 and Opus 5.5 on their own agent workloads.
+  background: >-
+    Google released Carbon two weeks earlier only to vetted cyber defenders in its Fairwind
+    Program. Argon is the cheaper general model. Carbon uses more tokens per task to reason
+    longer and run longer verification loops. Google says Carbon ranks first on CursorBench
+    4.0 and reports a 0% attack success rate on the Gray Swan indirect prompt injection benchmark,
+    but those are vendor-reported results.
+  followup: The introductory price ends on 2026-11-30.
+  thread: f-0136
+  sources:
+  - label: primary
+    url: https://deepmind.google/blog/gemini-4-carbon-is-now-available/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50442303
+  - label: discussion
+    url: https://www.securityweek.com/google-widens-gemini-4-carbon-access-after-ai-agents-verify-signal-code/
+- title: >-
+    Shopify rebuilt its mobile app in Swift and Kotlin in 12 weeks with agents writing most
+    of the code
+  section: Top stories
+  category: Agentic coding
+  blurb: >-
+    Thirty engineers moved the Shopify mobile app from React Native to Swift and Kotlin while
+    agents wrote most code and humans reviewed every PR.
+  summary: >-
+    About 30 engineers in pods of two rewrote the 300-screen Shopify app from React Native
+    to native Swift and Kotlin in 12 weeks. Each engineer steered several agents, and a tool
+    called Helix checked each small checkpoint against the old app. Agents give every PR an
+    adversarial first review and fix merge conflicts and CI failures, but a human still reviews
+    every PR. A self-healing loop runs every 15 minutes, reproduces new crashes and opens
+    fix PRs. Android P50 launch time fell from 1.71s to 0.87s, and crash-free sessions rose
+    from 99.66% to 99.98%.
+  why: >-
+    The post shows which parts of a team's process limit agent speed once code is cheap: build
+    machines, review, merging and coordination.
+  background: >-
+    Teams migrating with agents usually face a choice between writing specs and using the
+    old system as the reference. Shopify tried spec-driven development first and dropped it
+    because the specs went stale. It used the running React Native app as the spec instead.
+    An agent turns each day's review comments into updated architecture rules and skills,
+    so the number of requested changes per PR kept falling.
+  sources:
+  - label: primary
+    url: https://shopify.engineering/shopify-app-rebuild
 - title: >-
     rust-openssl 0.10.78 fixes an out-of-bounds write in the safe aes::unwrap_key function
   section: Security
@@ -23,27 +83,6 @@ stories:
   sources:
   - label: primary
     url: https://rustsec.org/advisories/RUSTSEC-2026-0463.html
-- title: >-
-    QNAP warns attackers are compromising Plex Media Server on its NAS devices through Plex2Shell
-  section: Security
-  category: Security
-  blurb: >-
-    QNAP says attackers are compromising Plex Media Server on its NAS devices through the
-    four-flaw Plex2Shell chain patched this summer.
-  summary: >-
-    QNAP says users reported Plex Media Server on their NAS devices being compromised through
-    Plex2Shell, a chain of CVE-2026-96652, CVE-2026-96654, CVE-2026-96655 and CVE-2026-96656
-    that allows unauthenticated code execution as the Plex service. Widespread exploitation
-    began in mid-October after details and proof-of-concept code were published. QNAP says
-    QTS and QuTS hero are not affected, and it advises updating to Plex Media Server 1.43.3
-    or later, treating internet-exposed devices as compromised, reinstalling Plex and rotating
-    Plex and NAS passwords.
-  why: >-
-    Self-hosted Plex instances reachable on port 32400 should be updated, and any that were
-    exposed should be reinstalled and their credentials rotated.
-  sources:
-  - label: discussion
-    url: https://www.securityweek.com/plex2shell-exploited-against-qnap-nas-users/
 - title: >-
     Chrome 157.0.8103.50 fixes CVE-2026-125350, an XML use-after-free already exploited in
     the wild
@@ -134,6 +173,32 @@ stories:
     url: https://www.cisa.gov/news-events/alerts/2026/11/09/cisa-adds-four-known-exploited-vulnerabilities-catalog
   - label: discussion
     url: https://thehackernews.com/2026/11/cisa-warns-of-active-exploitation-of.html
+- title: >-
+    Attackers exploit a Xen Orchestra authentication bypass to take over XCP-ng hosts as root
+  section: Security
+  category: Security
+  blurb: >-
+    Attackers use a crafted cookie to log into Xen Orchestra as admin and take root on XCP-ng
+    hosts, fixed in Xen Orchestra 6.9.1 and 6.10.0.
+  summary: >-
+    Vates advisory VSA-2026-062 says a cookie of authenticationToken=j:{} makes Xen Orchestra
+    pull up an existing token and log the attacker in as that token's owner with Admin rights,
+    which can lead to root on managed XCP-ng hosts. Vates confirms active exploitation and
+    fixes the flaw in Xen Orchestra 6.9.1 and 6.10.0 (xo-server 5.211.2 and 5.213.1). Indicators
+    include a VM named pivot2, VMs with an hvm_serial file setting, and the files /etc/cron.d/zz-ustar
+    and /.ustar5. Exploitation leaves no trace in the application logs.
+  why: >-
+    Anyone running Xen Orchestra should patch now, keep its interface on a management network,
+    and look for the indicators with HTTP monitoring, since the logs will not show the attack.
+  background: >-
+    Xen Orchestra is the web management plane for XCP-ng, an open source hypervisor built
+    on Xen. Control of the management plane gives control of every VM and host in the pool.
+    No CVE ID or CVSS score has been assigned yet.
+  followup: A CVE assignment and any broader exploitation reports.
+  sources:
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/critical-xen-orchestra-auth-bypass-flaw-exploited-to-hijack-vm-servers/
+  thread: f-0195
 - title: >-
     Cisco AI Defense and IBM Concert will use Anthropic's Mythos model for red teaming and
     vulnerability finding
@@ -335,6 +400,29 @@ stories:
   - label: primary
     url: https://github.com/jdx/mise/releases/tag/v2026.11.6
 - title: >-
+    GitHub will turn off Dependabot alerts on repositories with no activity for a year, starting
+    2026-12-08
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    From 2026-12-08 GitHub turns off Dependabot alerts on most repositories with no push in
+    a year, archiving existing alerts until the next push.
+  summary: >-
+    Starting 2026-12-08, GitHub will turn off Dependabot alerts on most repositories with
+    no activity in the past year. Activity means a push to any branch or tag, creating the
+    repository, or turning on alerts. Existing alerts are archived, and a push or a settings
+    change restores them. Repositories under an enforced security configuration that enables
+    alerts are exempt, and so are enterprises whose policy stops repository admins from changing
+    alerts. GitHub Enterprise Server is not affected.
+  why: >-
+    Libraries and services that are stable but rarely pushed will stop getting vulnerability
+    alerts unless you enforce alerts through an org security configuration.
+  followup: Alerts start pausing on 2026-12-08.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-10-dependabot-alerts-will-pause-on-inactive-repositories
+  thread: f-0196
+- title: >-
     JDK 28 removes the Primitive Types in Patterns preview after five rounds, with Constant
     Patterns to follow
   section: Languages and runtimes
@@ -384,6 +472,37 @@ stories:
   - label: primary
     url: https://www.phoronix.com/news/Lorenzo-Stoakes-AI-Flood
 - title: >-
+    Public worse_query iOS sandbox escape lets apps read other apps' files, with no Apple
+    fix confirmed
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    A public iOS sandbox escape called worse_query lets an app read other apps' data containers
+    on iOS 26 and 27, and Apple's updates list no fix.
+  summary: >-
+    A researcher known as forcequit published worse_query on GitHub. The proof of concept
+    reaches every app's data container on iOS 26 and 27, and some system folders on iOS 27,
+    as long as the app has an App Group container. Sideloaded apps such as the WQ Files file
+    manager already use it to read and edit other apps' data without a jailbreak. The release
+    notes for iOS 27.2.1 and 26.7.3 do not mention the issue. Binance told users to delete
+    sideloaded apps and to move funds to a new wallet if they suspect a breach. No attacks
+    have been reported.
+  why: >-
+    iOS apps that keep secrets or tokens as plain files in their data container should move
+    them to the Keychain until Apple ships a fix.
+  background: >-
+    On iOS each app runs in a sandbox that should only see its own data container. App Groups
+    let apps from the same developer share a container. Sideloading tools such as AltStore
+    create these containers automatically, and that is what makes the exploit easy to use
+    today. Nobody has said whether an App Store app could use it.
+  followup: An Apple fix and any confirmation that App Store apps can use the escape.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/binance-warns-of-ios-sandbox-escape.html
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/binance-warns-of-ios-flaw-that-could-leak-crypto-wallet-secrets/
+  thread: f-0197
+- title: >-
     Tailscale OAuth apps reach GA, so agents join a tailnet as devices under the authorizing
     user's identity
   section: Infrastructure
@@ -404,6 +523,33 @@ stories:
   sources:
   - label: primary
     url: https://tailscale.com/blog/oauth-apps-ga
+- title: >-
+    Meta's TLX extends Triton with explicit warp-group control for Hopper and Blackwell GPUs
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Meta's TLX extends Triton with explicit warp-group orchestration so kernels can use Hopper
+    and Blackwell features like TMA and tensor memory.
+  summary: >-
+    Meta built Triton Low-Level Extensions (TLX), which lets kernel authors write regular
+    Triton tensor code and add explicit control over warp groups, shared-memory buffers, barriers
+    and asynchronous data movement where they need it. Meta calls this model Multiple Instructions,
+    Multiple Warps. It sits between CUDA's per-thread SIMT model and Triton's block-level
+    model. TLX runs production RecSys training and inference and LLM pretraining at Meta,
+    on NVIDIA and AMD GPUs. Over 10 months, Meta's Triton kernel count grew about 3.8 times
+    while its CUDA kernel count grew about 2 times.
+  why: >-
+    Kernel authors can reach Blackwell features such as tensor memory and cluster execution
+    from Python, without dropping to CUDA or waiting for the Triton compiler to support them.
+  background: >-
+    Triton is a Python language for GPU kernels in which the compiler decides how threads
+    and memory are scheduled. Newer NVIDIA GPUs get their speed from warp specialization,
+    where some warp groups only move data with the Tensor Memory Accelerator while others
+    run tensor-core math. Triton's compiler hides that structure, so authors had little control
+    over it.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/11/10/open-source/tlx-a-hardware-native-gpu-compiler-for-production-ml/
 - title: >-
     Robinhood's hybrid reviewer merges about 60% of data pipeline PRs with no human review
   section: Talks
@@ -552,3 +698,35 @@ stories:
     url: https://github.com/thisisme6598/gemini_files/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50429426
+- title: >-
+    Hacker News argues over whether AI-mandated codebases are becoming fragile and opaque
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Two Hacker News threads on AI-written codebases drew over 340 comments, split between
+    fragility worries and claims the lead post was AI-made.
+  summary: >-
+    A Reddit post on a team that nobody understands after a year of a 100% AI mandate reached
+    144 points and 183 comments on Hacker News before being flagged. Evan Merz's post on AI-generated
+    code being fragile drew 132 points and 163 comments. Merz, who says he had to generate
+    at least 90% of his code with AI at Meta, lists shallow tests, overly complex helpers,
+    lost human understanding, and review that cannot keep up with PR volume.
+  why: >-
+    Practitioners report the same costs again and again under AI code mandates: more incidents,
+    slower recovery and skimmed reviews. Those are things to measure if your team has a mandate.
+  comments: >-
+    The top comment says the Reddit post itself scored as AI-generated on Pangram, and others
+    argue over how reliable that detector is. Several engineers report real cases: a colleague's
+    fully vibe-coded project that someone else inherited with an architectural mess and breaking
+    bugs, and a developer whose learning stalled a month after switching to 100% generated
+    code. One commenter claims to run a software factory with no human review and to make
+    good revenue from it.
+  sources:
+  - label: primary
+    url: https://evanxmerz.com/post/ai-usage-generates-a-fragile-codebase/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50433079
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50438318
+  - label: discussion
+    url: https://www.reddit.com/r/ClaudeCode/comments/1xq2n3t/a_year_after_the_100_ai_mandate_nobody/
