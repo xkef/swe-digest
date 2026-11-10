@@ -1,0 +1,184 @@
+date: '2026-11-10'
+updated: 2026-11-10T00:52Z
+stories:
+- title: >-
+    rust-openssl 0.10.78 fixes an out-of-bounds write in the safe aes::unwrap_key function
+  section: Security
+  category: Security
+  blurb: >-
+    An inverted size check in the openssl crate's safe aes::unwrap_key let undersized output
+    buffers through, causing an out-of-bounds write.
+  summary: >-
+    RUSTSEC-2026-0463 (CVE-2026-41678) says openssl::aes::unwrap_key checked its output buffer
+    with an inverted assertion, so it rejected large buffers and accepted ones that were too
+    small. AES_unwrap_key then wrote past the end of the output buffer. Versions 0.10.24 to
+    0.10.77 are affected, and 0.10.78 panics before writing when the buffer is too small.
+  why: >-
+    Any Rust service that pulls in the openssl crate and lets untrusted input set key-wrap
+    buffer sizes should upgrade to 0.10.78, and cargo audit will now flag older versions.
+  background: >-
+    AES key wrap (RFC 3394) encrypts one key under another, and unwrapping produces output
+    8 bytes shorter than the input. The bug matters because it is memory corruption reachable
+    from safe Rust, which the type system is supposed to rule out.
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0463.html
+- title: >-
+    QNAP warns attackers are compromising Plex Media Server on its NAS devices through Plex2Shell
+  section: Security
+  category: Security
+  blurb: >-
+    QNAP says attackers are compromising Plex Media Server on its NAS devices through the
+    four-flaw Plex2Shell chain patched this summer.
+  summary: >-
+    QNAP says users reported Plex Media Server on their NAS devices being compromised through
+    Plex2Shell, a chain of CVE-2026-96652, CVE-2026-96654, CVE-2026-96655 and CVE-2026-96656
+    that allows unauthenticated code execution as the Plex service. Widespread exploitation
+    began in mid-October after details and proof-of-concept code were published. QNAP says
+    QTS and QuTS hero are not affected, and it advises updating to Plex Media Server 1.43.3
+    or later, treating internet-exposed devices as compromised, reinstalling Plex and rotating
+    Plex and NAS passwords.
+  why: >-
+    Self-hosted Plex instances reachable on port 32400 should be updated, and any that were
+    exposed should be reinstalled and their credentials rotated.
+  sources:
+  - label: discussion
+    url: https://www.securityweek.com/plex2shell-exploited-against-qnap-nas-users/
+- title: >-
+    Cisco AI Defense and IBM Concert will use Anthropic's Mythos model for red teaming and
+    vulnerability finding
+  section: AI
+  category: AI
+  blurb: >-
+    Cisco AI Defense and IBM Concert will call Anthropic's Mythos model, giving customers
+    its bug finding without direct model access.
+  summary: >-
+    Cisco said at an event in Melbourne that the red teaming tools in its AI Defense suite
+    can call Mythos to test customers' AI models, agents and applications, at no extra cost
+    under existing licenses. IBM said its Concert tool will use Mythos to find weaknesses
+    traditional scanners miss, rank real risk and generate fixes for developer approval. Anthropic
+    had limited Mythos to vetted organizations through Project Glasswing and other controlled
+    programs.
+  why: >-
+    Teams that could not get Mythos access may now get its vulnerability findings through
+    vendor security tools they already license.
+  sources:
+  - label: discussion
+    url: https://www.theregister.com/ai-and-ml/2026/11/10/anthropics-super-bug-finding-mythos-model-is-going-into-cisco-and-ibm-products/5308616
+- title: >-
+    pi 1.5.1 warms prompt caches between runs by default and sends only new messages to Anthropic
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    pi 1.5.1 keeps prompt caches warm between runs by default, sends only new messages to
+    Anthropic, and adds shell login commands.
+  summary: >-
+    The cacheWarming setting now defaults to idle, so pi keeps eligible prompt caches warm
+    for up to 30 minutes between agent runs when a refresh is expected to pay for itself.
+    Anthropic sessions use message threads, sending only new messages and falling back to
+    the full request after compaction or a tool change. The release adds pi auth login and
+    logout commands, makes Claude Opus 5.5 the default Anthropic model, and stops sending
+    an empty tools array to OpenAI-compatible endpoints, which fixes errors from vLLM 0.20
+    and later.
+  why: >-
+    pi users on Anthropic will see cache-warming charges between runs unless they set cacheWarming
+    back to streaming, and proxies that require tools with tool history now need a compat
+    flag.
+  background: >-
+    Anthropic prompt caching bills cached prefix reads far below fresh input, but cache entries
+    expire after a short idle period. Warming sends a cheap request to keep the prefix alive,
+    which pays off only if the next turn arrives before expiry.
+  sources:
+  - label: primary
+    url: https://github.com/earendil-works/pi/releases/tag/v1.5.1
+- title: >-
+    Sourcegraph uses an agent to route each pull request to ship, show after merge, or ask
+    for review
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Sourcegraph's agent sorts each PR into ship, show after merge, or ask before merge, using
+    the diff and the author's history with the code.
+  summary: >-
+    Sourcegraph built a GitHub Actions bot because agent-written code moved its bottleneck
+    to review and routine changes still needed a human approval. The agent reads the diff,
+    surrounding code and the author's past contributions, and application code applies rules
+    to pick a path. Familiarity requires two reviewed merged PRs plus a relevant contribution
+    in the past 30 days, and changes to authentication or sensitive data exposure always need
+    review. The team ran it in recommendation-only mode first, sees fewer stamp requests,
+    and says that metric says little about review quality.
+  why: >-
+    It is a concrete, rules-plus-agent design for scoped auto-approval that a team can copy,
+    including the guardrails and the open question of whether post-merge reviews actually
+    happen.
+  background: >-
+    Ship, Show, Ask is a 2021 model for review: merge without review, merge and notify for
+    later review, or block on review. The post cites Meta's RADAR, which also routes changes
+    between pre-land review, deferred review and automatic approval by risk.
+  sources:
+  - label: primary
+    url: https://sourcegraph.com/blog/what-we-learned-building-a-pr-approval-bot
+- title: Vercel Sandbox cuts median snapshot time from 4.4 seconds to under 0.4 seconds
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Vercel Sandbox now takes a median 0.4 seconds to snapshot instead of 4.4, and p50 restore
+    time fell from 500 ms to 250 ms.
+  summary: >-
+    Vercel says its Hive Snapshot format now reuses frames and indexes data so more reads
+    and writes run in parallel, and restores load the base image in parallel with user data.
+    Persistent sandboxes, the default, snapshot when a session stops and resume from the latest
+    snapshot. The change applies to new snapshots, and existing snapshots keep the old format.
+  why: >-
+    Agent platforms that stop and resume sandboxes per session pay much less latency per pause,
+    which makes persisting idle agent state cheaper.
+  sources:
+  - label: primary
+    url: https://vercel.com/changelog/vercel-sandbox-snapshot-creation-is-now-up-to-10x-faster
+- title: >-
+    Tailscale OAuth apps reach GA, so agents join a tailnet as devices under the authorizing
+    user's identity
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Tailscale OAuth apps are GA, letting an agent join a tailnet as a device under the authorizing
+    user's identity and policy rules.
+  summary: >-
+    Tailscale OAuth apps use a standard OAuth 2.0 flow to provision devices that carry the
+    authorizing user's identity, unlike existing OAuth clients that create tag-owned devices
+    under a shared service identity. Tailnet policies, audit logs and device quotas apply
+    to these devices. Grok Bot already uses the flow to reach private MCP servers, and Premium
+    and Enterprise plans can use a custom posture attribute with defaultSrcPosture to limit
+    the agent to designated servers.
+  why: >-
+    Teams can expose internal MCP servers to a hosted agent over the tailnet without public
+    endpoints or pasted keys, and scope the agent more narrowly than the user's own devices.
+  sources:
+  - label: primary
+    url: https://tailscale.com/blog/oauth-apps-ga
+- title: >-
+    Hacker News reacts to a write-up that consumer Gemini sends connected Gmail and Drive
+    content to human reviewers
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A write-up says consumer Gemini with Connected Apps can pull Gmail and Drive content into
+    chats that Google's human reviewers may read.
+  summary: >-
+    The write-up cites an updated Google help page and an edit on 2026-10-16 to a 2023 Google
+    post, which now warn that reviewers may see connected emails or files. It reports that
+    Gemini pulled email content into context without explicit app tags, sometimes as a summary
+    and sometimes as the full email with headers. The Hacker News thread reached 359 points
+    and 91 comments.
+  why: >-
+    Engineers who connect work-adjacent Gmail or Drive accounts to consumer Gemini should
+    assume that content can reach human review.
+  comments: >-
+    The top comment says the change covers consumer Gemini with Connected Apps, and that Google
+    still says Workspace Gemini is not subject to human review. Others moved photos and files
+    to self-hosted Immich and Nextcloud behind Tailscale.
+  sources:
+  - label: primary
+    url: https://github.com/thisisme6598/gemini_files/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50429426
