@@ -1,5 +1,5 @@
 date: '2026-11-11'
-updated: 2026-11-11T07:57Z
+updated: 2026-11-11T12:54Z
 stories:
 - title: >-
     Microsoft fixes 1,093 flaws on November Patch Tuesday, including exploited Outlook spoofing
@@ -90,6 +90,110 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/netsec/comments/1xskopy/electron_we_have_a_problem/
 - title: >-
+    cap-primitives 3.4.6 and 4.0.3 fix a critical sandbox escape through paths and symlinks
+    ending in a slash
+  section: Security
+  category: Security
+  blurb: >-
+    A trailing slash let symlinks inside a cap-std sandbox open files outside it on macOS,
+    Windows and Linux without openat2.
+  summary: >-
+    RUSTSEC-2026-0482, rated CVSS 9, says the cap-primitives resolver re-added a trailing
+    slash to the last path component, so O_NOFOLLOW no longer applied and a symlink pointing
+    outside the sandbox was followed. Reads, writes, directory creation, removal and renames
+    outside the sandbox were possible, and stripping trailing slashes from input is not a
+    workaround because the symlink target itself can end in a slash. The resolver is used
+    on Windows, macOS, FreeBSD without O_RESOLVE_BENEATH, and Linux without openat2, and Wasmtime's
+    WASI filesystem support is covered separately by RUSTSEC-2026-0269.
+  why: >-
+    Anything that uses cap-std or Wasmtime WASI to confine untrusted code, including agent
+    sandboxes, should move to 3.4.6 or 4.0.3.
+  background: >-
+    cap-std is the Bytecode Alliance's capability-based filesystem library for Rust: code
+    gets a handle to a directory and should only reach paths beneath it. On Linux 5.6 and
+    later the kernel's openat2 with RESOLVE_BENEATH enforces that boundary, so the library
+    falls back to resolving each path component in userspace only where that call is missing.
+    Userspace resolution is where symlink and trailing-slash edge cases have repeatedly broken
+    such sandboxes.
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0482.html
+- title: >-
+    hickory-proto 0.26.2 fixes DNS header memory amplification among five new RustSec advisories
+  section: Security
+  category: Security
+  blurb: >-
+    A small DNS packet claiming 65,535 records made the Rust hickory-proto decoder reserve
+    about 18 MB before failing.
+  summary: >-
+    RUSTSEC-2026-0491 says hickory-proto sized its section vectors from the record counts
+    in the DNS header without checking them against the message size, so repeated small packets
+    could exhaust memory in servers and in clients that receive spoofed responses. The fix
+    in 0.26.2 caps initial capacity at 8 entries. RustSec issued four more hickory-proto advisories
+    the same day, covering panics in the zone file lexer and SVCB or HTTPS parsing and an
+    integer underflow on malformed TSIG records.
+  why: >-
+    Rust services that resolve DNS through hickory, directly or through an HTTP client's resolver
+    feature, should check their lockfile for hickory-proto below 0.26.2.
+  background: >-
+    Hickory DNS, formerly Trust-DNS, is the main pure-Rust DNS client, resolver and server
+    stack, and its hickory-proto crate does the wire-format parsing. Trusting length or count
+    fields from the wire before allocating is a classic amplification bug in binary protocol
+    parsers.
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0491.html
+- title: >-
+    eMudhra revokes eight more intermediate CAs whose RSA keys passed through a Python script's
+    memory
+  section: Security
+  category: Security
+  blurb: >-
+    Six TLS and two code-signing CAs fell after the company's incident report said it could
+    not prove their private keys stayed controlled.
+  summary: >-
+    eMudhra's full incident report says an in-house Python script used in an April 2025 key
+    ceremony truncated eight ECDSA CA keys to one byte, and also read eight RSA CA private
+    keys out of the HSM into process memory, so the company cannot show they met its own key-handling
+    rules. It revoked the eight RSA CAs late last week with the reason cessationOfOperation,
+    and they had issued 195 listed certificates. Microsoft starts removing the remaining ten
+    eMudhra roots on 2026-11-16, Chrome and Firefox stop trusting G1 certificates issued after
+    that date, and Apple ends trust in all G1 certificates on 2026-11-30.
+  why: >-
+    Clients that skip Certificate Transparency, such as Electron updaters and command-line
+    tools, need updated trust stores before the November root removals.
+  background: >-
+    An intermediate CA holds its own signing key under a root, so a weak or exposed intermediate
+    key lets anyone mint trusted certificates until the intermediate is revoked and distrusted.
+    Browsers that require Certificate Transparency would reject unlogged certificates, which
+    is why the exposure falls mainly on software that does its own TLS validation. The original
+    eight one-byte keys were revoked on 2026-10-18, and eMudhra announced its exit from publicly
+    trusted TLS on 2026-10-22.
+  followup: >-
+    Microsoft root removal from 2026-11-16, eMudhra's CA key inventory by 2026-11-30, and
+    KPMG's review by 2026-12-04.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/emudhra-revokes-8-more-cas-it.html
+  thread: f-0203
+- title: Grafana 13.3.1 and backports to 13.2, 13.1, 13.0 and 12.4 fix at least six CVEs
+  section: Security
+  category: Security
+  blurb: >-
+    Grafana shipped security releases on 2026-11-10 across five release lines, each listing
+    six to eight CVE fixes without details.
+  summary: >-
+    Grafana 13.3.1 lists fixes for CVE-2026-102589, CVE-2026-107509, CVE-2026-110992, CVE-2026-111024,
+    CVE-2026-13721 and CVE-2026-14242. The 13.2.6, 13.1.10, 13.0.13 and 12.4.15 releases carry
+    the same or overlapping sets, with older lines listing additional CVEs. The release notes
+    do not describe severity or affected features.
+  why: >-
+    Self-hosted Grafana operators should upgrade within their release line now, since the
+    CVE list is public before the details are.
+  sources:
+  - label: primary
+    url: https://github.com/grafana/grafana/releases/tag/v13.3.1
+- title: >-
     Microsoft Research's Lazarus backdoors LLM agents by editing fewer than ten dormant neurons,
     with no training
   section: AI
@@ -137,6 +241,53 @@ stories:
   sources:
   - label: primary
     url: https://blog.sentry.io/mcp-or-cli/
+- title: >-
+    Stochastic rounding closes BF16's slower convergence against FP16 in RL post-training
+  section: ML research
+  category: Paper
+  blurb: >-
+    Round-to-nearest leaves small RLVR updates stuck in BF16 weights, and stochastic rounding
+    matches FP16 speed with lower KL drift.
+  summary: >-
+    The authors find that mixed-precision BF16 converges more slowly than FP16 in reinforcement
+    learning with verifiable rewards at the same low learning rate, because small updates
+    to FP32 shadow weights often do not change the BF16 weights used for rollouts and training.
+    Raising the learning rate fixes speed but increases KL divergence from the reference model.
+    Stochastic rounding when casting shadow weights to BF16 matches FP16 convergence across
+    models and datasets while keeping BF16's range and needing no loss scaling.
+  why: >-
+    Teams running RLVR in BF16 get a cheap change to try before switching to FP16 or raising
+    the learning rate.
+  background: >-
+    BF16 keeps FP32's exponent range but only 7 mantissa bits, so increments much smaller
+    than a weight's magnitude round away to nothing under round-to-nearest. Stochastic rounding
+    rounds up or down with probability proportional to the distance, so small updates take
+    effect on average. This sits alongside recent work on precision choices in RL post-training,
+    such as FP16 versus BF16 for rollout and training mismatch.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.13545v1
+- title: >-
+    Shared parameters can suppress or amplify reward hacking in RLVR, depending on how many
+    prompts accept a hack
+  section: ML research
+  category: Paper
+  blurb: >-
+    In an exact toy setting, a leak most prompts accept grows under RL, while a rare one shrinks
+    below the base model's rate.
+  summary: >-
+    The paper shows that at the KL-regularized optimum RLVR only reweights the accepted set,
+    so the hack rate is inherited from the base model, and drift from that comes from parameter
+    sharing across prompts. With sharing, a wrong answer accepted by most prompts is amplified
+    and one accepted by few is pushed below the base rate, under Adam, SGD and sampled GRPO.
+    Two verifier patches removing equally many errors differed by up to 38 points of true
+    accuracy.
+  why: >-
+    When fixing a verifier, prioritize the false positives the model repeats across many prompts
+    rather than counting errors removed.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.13218v1
 - title: >-
     Val Town is winding down, going read-only on 2026-12-10 and shutting down on 2027-01-10
   section: Developer tools
@@ -212,6 +363,69 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50433216
 - title: >-
+    Agent Substrate reaches 1.0, and Anthropic adds a bridge to run Claude Managed Agents
+    on it
+  section: Talks
+  category: Video
+  blurb: >-
+    A KubeCon keynote demo packed about 65 suspended and resumable agent sandboxes per node
+    on a 24-node GKE cluster.
+  summary: >-
+    Google, Solo.io and Anthropic speakers said Agent Substrate gives each agent an identity
+    but no credentials or open network, snapshots memory and disk to suspend idle agents,
+    and resumes them in a few hundred milliseconds. Anthropic's Luiz Scheidegger announced
+    the Agent Substrate bridge for Claude Managed Agents. The project is 1.0 and GA, and the
+    team said it benchmarked the demo to 15,000 agents on 24 nodes.
+  why: >-
+    Kubernetes operators running agent fleets get a GA, CNCF-hosted option for dense suspend
+    and resume sandboxing, with a direct path for Claude Managed Agents.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=CC872qQ-eNQ
+- title: >-
+    A study of 20,000 agent tool calls finds a quarter pipe CLI output through filters like
+    head and grep
+  section: Talks
+  category: Video
+  blurb: >-
+    Ayush Bhardwaj argues agents' repeated pipes are feature requests, and selection flags
+    cut his tool's piped reads from 82% to a quarter.
+  summary: >-
+    Across about 20,000 calls to 14 CLIs in his own transcripts, a quarter fed output into
+    head, grep, tail, Python and similar filters, over half for read-heavy commands, and 83%
+    of pipes followed patterns seen at least 10 times. He warns that piping cargo test into
+    head without pipefail can report success on failure, and that tail can cut the error so
+    the model never sees it. Adding match-scoped reads, a compact mode and batch inspection
+    cut piped reads from 82% to about a quarter, and agents kept passing a stale flag in 95
+    of 95 searches until the skill file changed.
+  why: >-
+    CLI and MCP authors can mine agent transcripts for repeated pipes and add range, limit
+    and compact flags, with a failure summary on the last lines.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=rS36lYuvXQ8
+- title: >-
+    Meta runs one AI on-call teammate per rotation, with a three-level autonomy ladder and
+    team memory
+  section: Talks
+  category: Video
+  blurb: >-
+    Meta's agent triages alerts, drafts fixes behind human review and closes low-criticality
+    work alone, while high-criticality stays human.
+  summary: >-
+    Meta engineers say about three quarters of new code is AI-written, and they replaced per-silo
+    bots with one agent per rotation that has its own identity, persistent team memory and
+    a morning digest. At level one it investigates, at level two it drafts fixes that land
+    only through normal review and CI, and at level three it handles low-criticality work
+    such as noisy alerts and duplicates. Memory entries are scored on whether they helped
+    and are promoted or retired, and the team has not yet published a measured on-call reduction.
+  why: >-
+    It gives a concrete pattern for granting agent autonomy per action, based on mistake cost
+    and how easily tests or review catch errors.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=_NBx2NNOuA4
+- title: >-
     Hacker News debates VulnCheck's count of 442 Anthropic-credited CVEs and 217 fixes in
     Project Glasswing
   section: Hacker News
@@ -234,3 +448,27 @@ stories:
     url: https://www.vulncheck.com/blog/anthropic-glasswing-november-update
   - label: discussion
     url: https://news.ycombinator.com/item?id=50447074
+- title: >-
+    Hacker News argues over a list of open source projects that ban AI-generated contributions
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Maintainers and users split over whether bans protect review time or drive away contributors,
+    in an 87-comment thread on osssaysno.com.
+  summary: >-
+    The site, itself vibe coded by its author, catalogs projects with policies restricting
+    or banning AI-generated contributions. The Hacker News thread reached 53 points and 87
+    comments within about four hours.
+  why: >-
+    Contributors using coding agents increasingly need to check a project's AI policy before
+    opening a pull request.
+  comments: >-
+    Commenters argue review, not writing, is the bottleneck, and that a ban works as a proof-of-work
+    filter against slop PRs. Others note that projects like Immich ban external LLM PRs while
+    maintainers use agents, and that most listed projects are restricted rather than banned
+    outright.
+  sources:
+  - label: primary
+    url: https://osssaysno.com
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50451102
