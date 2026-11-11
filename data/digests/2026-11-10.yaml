@@ -1,0 +1,1012 @@
+date: '2026-11-10'
+updated: 2026-11-10T22:32Z
+stories:
+- title: >-
+    Google releases Gemini 4 Carbon to paying API developers at $2 and $10 per million tokens
+  section: Top stories
+  category: AI
+  blurb: >-
+    Google opens Gemini 4 Carbon to paying API developers at $2 and $10 per million tokens
+    and previews a /swarm multi-agent mode in Antigravity.
+  summary: >-
+    On 2026-11-10 Google made Gemini 4 Carbon available through the Gemini API in AI Studio
+    and Gemini for business for all paying developers and enterprises, at Gemini 4 Argon's
+    introductory price of $2 per million input tokens and $10 per million output tokens. Google
+    also previewed /swarm in Antigravity, which turns one prompt into a team of agents working
+    in parallel isolated workspaces with adversarial verifiers. A safety and security report
+    shipped with the release, and the introductory period ends on 2026-11-30.
+  why: >-
+    Carbon is now a model you can call from production code, so teams can test it against
+    Fable 5.2 and Opus 5.5 on their own agent workloads.
+  background: >-
+    Google released Carbon two weeks earlier only to vetted cyber defenders in its Fairwind
+    Program. Argon is the cheaper general model. Carbon uses more tokens per task to reason
+    longer and run longer verification loops. Google says Carbon ranks first on CursorBench
+    4.0 and reports a 0% attack success rate on the Gray Swan indirect prompt injection benchmark,
+    but those are vendor-reported results.
+  followup: The introductory price ends on 2026-11-30.
+  thread: f-0136
+  sources:
+  - label: primary
+    url: https://deepmind.google/blog/gemini-4-carbon-is-now-available/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50442303
+  - label: discussion
+    url: https://www.securityweek.com/google-widens-gemini-4-carbon-access-after-ai-agents-verify-signal-code/
+- title: >-
+    Shopify rebuilt its mobile app in Swift and Kotlin in 12 weeks with agents writing most
+    of the code
+  section: Top stories
+  category: Agentic coding
+  blurb: >-
+    Thirty engineers moved the Shopify mobile app from React Native to Swift and Kotlin while
+    agents wrote most code and humans reviewed every PR.
+  summary: >-
+    About 30 engineers in pods of two rewrote the 300-screen Shopify app from React Native
+    to native Swift and Kotlin in 12 weeks. Each engineer steered several agents, and a tool
+    called Helix checked each small checkpoint against the old app. Agents give every PR an
+    adversarial first review and fix merge conflicts and CI failures, but a human still reviews
+    every PR. A self-healing loop runs every 15 minutes, reproduces new crashes and opens
+    fix PRs. Android P50 launch time fell from 1.71s to 0.87s, and crash-free sessions rose
+    from 99.66% to 99.98%.
+  why: >-
+    The post shows which parts of a team's process limit agent speed once code is cheap: build
+    machines, review, merging and coordination.
+  background: >-
+    Teams migrating with agents usually face a choice between writing specs and using the
+    old system as the reference. Shopify tried spec-driven development first and dropped it
+    because the specs went stale. It used the running React Native app as the spec instead.
+    An agent turns each day's review comments into updated architecture rules and skills,
+    so the number of requested changes per PR kept falling.
+  sources:
+  - label: primary
+    url: https://shopify.engineering/shopify-app-rebuild
+- title: >-
+    Git 2.56.1 fixes six flaws, including code execution when recursively cloning a malicious
+    repository
+  section: Top stories
+  category: Security
+  blurb: >-
+    Git 2.56.1 and backports fix six flaws, including code execution when a malicious repository
+    is cloned with its submodules.
+  summary: >-
+    The Git project released 2.56.1 with backports to 2.55.1, 2.54.1, 2.53.1, 2.52.1, 2.51.3
+    and 2.50.2. CVE-2026-111760 uses an integer truncation in index handling to replace a
+    submodule's .git file with a symlink and run attacker hooks during a recursive clone,
+    and other fixes cover path traversal through a server's advertised HEAD, stack and heap
+    corruption in signature stripping and large merges, binary patch out-of-bounds reads,
+    and unsafe git fast-import stream features. GitHub has patched github.com and shipped
+    GitHub Enterprise Server 3.19.15, 3.20.11, 3.21.9 and 3.22.4.
+  why: >-
+    Update Git on workstations, CI images and any service that bundles Git, and treat servers
+    that merge or apply patches from untrusted users as exposed to the merge and patch memory
+    bugs.
+  background: >-
+    A recursive clone also clones each submodule, and a submodule's .git entry is a file that
+    points at its repository metadata. Git refuses to write paths that would overwrite that
+    metadata because a repository's config and hooks can run commands. Several past Git advisories
+    have used the same pattern of tricking checkout into writing into a .git location. Forges
+    are affected separately from clients because they run merges and patch application on
+    content that users push.
+  followup: >-
+    Distribution packages, updates to tools that bundle Git, and any exploitation reports.
+  sources:
+  - label: primary
+    url: https://github.blog/open-source/git/git-security-vulnerabilities-announced-7/
+  - label: discussion
+    url: https://thehackernews.com/2026/11/git-patches-flaw-that-lets-malicious.html
+  thread: f-0198
+- title: >-
+    rust-openssl 0.10.78 fixes an out-of-bounds write in the safe aes::unwrap_key function
+  section: Security
+  category: Security
+  blurb: >-
+    An inverted size check in the openssl crate's safe aes::unwrap_key let undersized output
+    buffers through, causing an out-of-bounds write.
+  summary: >-
+    RUSTSEC-2026-0463 (CVE-2026-41678) says openssl::aes::unwrap_key checked its output buffer
+    with an inverted assertion, so it rejected large buffers and accepted ones that were too
+    small. AES_unwrap_key then wrote past the end of the output buffer. Versions 0.10.24 to
+    0.10.77 are affected, and 0.10.78 panics before writing when the buffer is too small.
+  why: >-
+    Any Rust service that pulls in the openssl crate and lets untrusted input set key-wrap
+    buffer sizes should upgrade to 0.10.78, and cargo audit will now flag older versions.
+  background: >-
+    AES key wrap (RFC 3394) encrypts one key under another, and unwrapping produces output
+    8 bytes shorter than the input. The bug matters because it is memory corruption reachable
+    from safe Rust, which the type system is supposed to rule out.
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0463.html
+- title: >-
+    Chrome 157.0.8103.50 fixes CVE-2026-125350, an XML use-after-free already exploited in
+    the wild
+  section: Security
+  category: Security
+  blurb: >-
+    Google patched nine Chrome flaws on 2026-11-09, including an exploited XML use-after-free
+    that is the browser's eighth zero-day of 2026.
+  summary: >-
+    Google's 2026-11-09 stable desktop update fixes nine vulnerabilities, including CVE-2026-125350,
+    a high-severity use-after-free in the XML component reported anonymously on 2026-11-06.
+    Google says an exploit exists in the wild and keeps bug details restricted. Fixed versions
+    are 157.0.8103.50/.51 for Windows and macOS and 157.0.8103.50 for Linux.
+  why: >-
+    Update Chrome and Chromium-based browsers and embedded Chromium runtimes now, since a
+    working exploit is already in use.
+  background: >-
+    A use-after-free happens when code keeps using memory after it has been freed, which attackers
+    can turn into memory corruption and code execution. Browser bugs in parsers such as the
+    XML component are reachable from any web page, so they are common zero-day targets. Google
+    restricts bug details until most users have updated.
+  sources:
+  - label: primary
+    url: https://chromereleases.googleblog.com/
+  - label: discussion
+    url: https://thehackernews.com/2026/11/google-issues-chrome-security-update.html
+  - label: discussion
+    url: https://www.securityweek.com/chrome-update-patches-exploited-xml-zero-day-eighth-this-year/
+- title: >-
+    Fireworks AI breach through a third-party cloud provider exposed Notion AI chat transcripts
+    from under 1% of workspaces
+  section: Security
+  category: Security
+  blurb: >-
+    Attackers went through a cloud provider to reach Fireworks development machines, taking
+    customer model data and Notion AI chat logs.
+  summary: >-
+    Notion says that Fireworks AI, which it used for inference and for classification in its
+    Insights feature, confirmed on 2026-11-08 that a stolen dataset included Notion AI chat
+    transcripts with no user or workspace labels, affecting under 1% of workspaces. Notion
+    disconnected from Fireworks on 2026-11-03 and advises rotating any credentials pasted
+    into Notion AI. BleepingComputer reports that the attackers used a cloud provider breach
+    on 2026-10-23 to reach Fireworks R&D machines and took billing data, resource metadata,
+    and partial model weights and datasets. The incident follows an earlier Fireworks breach
+    of API key secrets tied to LLMjacking.
+  why: >-
+    If you send prompts or fine-tuning data to a hosted inference provider, its subprocessors
+    are part of your attack surface. Rotate any secrets that users pasted into chat.
+  background: >-
+    Inference platforms such as Fireworks host open-weight models and customer fine-tunes
+    behind an API, so they hold prompts, datasets and weights from many tenants. LLMjacking
+    means stealing API keys or cloud access to resell model usage. Several AI infrastructure
+    and agent platforms disclosed breaches aimed at stored AI keys in October and November
+    2026.
+  sources:
+  - label: primary
+    url: https://www.notion.com/help/security-incident-involving-a-third-party-ai-vendor
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/fireworks-ai-discloses-new-breach-after-cloud-provider-hack/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50437106
+  thread: f-0194
+- title: >-
+    CISA adds GPUStack CVE-2026-102895 to KEV, an authentication bypass that gives admin access
+    and code execution
+  section: Security
+  category: Security
+  blurb: >-
+    CISA now lists an authentication flaw as exploited in GPUStack, a manager for self-hosted
+    LLM GPU clusters fixed in July 2026.
+  summary: >-
+    CISA added CVE-2026-102895 in GPUStack to the Known Exploited Vulnerabilities catalog
+    on 2026-11-09, alongside FreeSWITCH, IBM Aspera Faspex and the OpenSSH SSHole flaw. The
+    Hacker News reports that the GPUStack flaw (CVSS 9.8) allows unauthenticated administrative
+    access, persistent admin API key creation, disclosure of worker and cloud-provider secrets,
+    and code execution through POST /v2/inference-backends/from-yaml. GPUStack fixed it in
+    July 2026. Federal agencies must patch by 2026-11-12.
+  why: >-
+    Teams running self-hosted inference on GPUStack should confirm they are on the July 2026
+    fix, keep the API off the internet, and rotate cloud credentials stored in workers.
+  background: >-
+    GPUStack is an open source cluster manager that schedules LLM inference backends such
+    as vLLM across GPU machines and exposes an OpenAI-compatible API. The CISA KEV catalog
+    lists vulnerabilities with confirmed exploitation and sets patch deadlines for US federal
+    agencies. Many other organizations use it to decide what to patch first.
+  sources:
+  - label: primary
+    url: https://www.cisa.gov/news-events/alerts/2026/11/09/cisa-adds-four-known-exploited-vulnerabilities-catalog
+  - label: discussion
+    url: https://thehackernews.com/2026/11/cisa-warns-of-active-exploitation-of.html
+- title: >-
+    Attackers exploit a Xen Orchestra authentication bypass to take over XCP-ng hosts as root
+  section: Security
+  category: Security
+  blurb: >-
+    Attackers use a crafted cookie to log into Xen Orchestra as admin and take root on XCP-ng
+    hosts, fixed in Xen Orchestra 6.9.1 and 6.10.0.
+  summary: >-
+    Vates advisory VSA-2026-062 says a cookie of authenticationToken=j:{} makes Xen Orchestra
+    pull up an existing token and log the attacker in as that token's owner with Admin rights,
+    which can lead to root on managed XCP-ng hosts. Vates confirms active exploitation and
+    fixes the flaw in Xen Orchestra 6.9.1 and 6.10.0 (xo-server 5.211.2 and 5.213.1). Indicators
+    include a VM named pivot2, VMs with an hvm_serial file setting, and the files /etc/cron.d/zz-ustar
+    and /.ustar5. Exploitation leaves no trace in the application logs.
+  why: >-
+    Anyone running Xen Orchestra should patch now, keep its interface on a management network,
+    and look for the indicators with HTTP monitoring, since the logs will not show the attack.
+  background: >-
+    Xen Orchestra is the web management plane for XCP-ng, an open source hypervisor built
+    on Xen. Control of the management plane gives control of every VM and host in the pool.
+    No CVE ID or CVSS score has been assigned yet.
+  followup: A CVE assignment and any broader exploitation reports.
+  sources:
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/critical-xen-orchestra-auth-bypass-flaw-exploited-to-hijack-vm-servers/
+  thread: f-0195
+- title: >-
+    Cisco AI Defense and IBM Concert will use Anthropic's Mythos model for red teaming and
+    vulnerability finding
+  section: AI
+  category: AI
+  blurb: >-
+    Cisco AI Defense and IBM Concert will call Anthropic's Mythos model, giving customers
+    its bug finding without direct model access.
+  summary: >-
+    Cisco said at an event in Melbourne that the red teaming tools in its AI Defense suite
+    can call Mythos to test customers' AI models, agents and applications, at no extra cost
+    under existing licenses. IBM said its Concert tool will use Mythos to find weaknesses
+    traditional scanners miss, rank real risk and generate fixes for developer approval. Anthropic
+    had limited Mythos to vetted organizations through Project Glasswing and other controlled
+    programs.
+  why: >-
+    Teams that could not get Mythos access may now get its vulnerability findings through
+    vendor security tools they already license.
+  sources:
+  - label: discussion
+    url: https://www.theregister.com/ai-and-ml/2026/11/10/anthropics-super-bug-finding-mythos-model-is-going-into-cisco-and-ibm-products/5308616
+- title: >-
+    Amazon swaps Sonnet 4.6 for a Strands Decider model in ticket labeling and cuts cost per
+    ticket 98%
+  section: AI
+  category: AI
+  blurb: >-
+    Two Amazon engineers replaced an LLM that sorted internal tickets into 20 labels with
+    a small decision model at about $500 per million tickets.
+  summary: >-
+    Amazon engineers moved internal ticket labeling from Claude Sonnet 4.6 on Bedrock to the
+    Gemma 4 E4B build of Strands Decider on SageMaker ml.g5.xlarge instances. The decision
+    model returns probabilities for a fixed set of options instead of generating JSON. Average
+    call time fell from 4,215 ms to 897 ms, tokens per ticket fell from 6,724 to 2,010, and
+    cost per ticket fell from about $0.0222 to about $0.0005. They rolled the change out with
+    an AppConfig switch that could run both models in parallel, and found that the order of
+    JSON keys in the input shifted the output probabilities by up to 0.19.
+  why: >-
+    High-volume classification steps in agent pipelines can often move from a frontier LLM
+    to a small decision model, provided you shadow-run both on live traffic before switching.
+  background: >-
+    A decision model is a classifier built from an LLM that scores a fixed list of options
+    rather than generating free text, so each call produces one output token. Running both
+    systems on the same traffic before a switch, called shadow mode, is a standard way to
+    compare behavior on real inputs.
+  comments: The Hacker News thread reached 180 points and 60 comments.
+  sources:
+  - label: primary
+    url: https://strandsagents.com/blog/amazon-saves-millions-replacing-sonnet-with-strands-decider/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50436640
+- title: >-
+    Google DeepMind's AlphaProof Code agents formally verify Signal's protocol implementation
+    in Lean
+  section: AI
+  category: AI
+  blurb: >-
+    Google DeepMind agents wrote machine-checked Lean proofs that Signal's compiled protocol
+    code meets its security properties, in four weeks.
+  summary: >-
+    Google DeepMind introduced AlphaProof Code on 2026-11-10, a multi-LLM agent framework
+    in which humans and models write formal specifications and Gemini Carbon agents generate
+    the Lean proofs, producing millions of lines of proof for Signal's core cryptographic
+    code. Agents audited the proofs and flagged about one percent for human review, and the
+    work took four weeks. When two previously fixed real bugs were reintroduced into an isolated
+    copy, the system produced machine-checked proofs that the buggy versions were insecure,
+    and DeepMind says it will open-source the verification artifacts.
+  why: >-
+    Implementation-level formal verification, long too costly outside small cores, now looks
+    feasible for production security code when agents write the proofs and a proof checker
+    validates them.
+  background: >-
+    Formal verification proves mathematically that code meets a specification, and Lean is
+    a proof assistant whose kernel mechanically checks every proof step, so a proof an agent
+    writes can be trusted without trusting the agent. Most earlier protocol verification checked
+    the design, not the deployed code, which leaves room for bugs in the gap between them.
+    The Signal protocol underpins end-to-end encryption in Signal and Google Messages, and
+    properties such as protection after a temporary device compromise are among those it aims
+    to guarantee.
+  sources:
+  - label: primary
+    url: https://deepmind.google/blog/introducing-alphaproof-code/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50439193
+  - label: discussion
+    url: https://www.theregister.com/ai-and-ml/2026/11/10/google-deepmind-melds-humans-and-ai-agents-to-vet-signals-secure-messaging-techniques/5308625
+- title: >-
+    pi 1.5.1 warms prompt caches between runs by default and sends only new messages to Anthropic
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    pi 1.5.1 keeps prompt caches warm between runs by default, sends only new messages to
+    Anthropic, and adds shell login commands.
+  summary: >-
+    The cacheWarming setting now defaults to idle, so pi keeps eligible prompt caches warm
+    for up to 30 minutes between agent runs when a refresh is expected to pay for itself.
+    Anthropic sessions use message threads, sending only new messages and falling back to
+    the full request after compaction or a tool change. The release adds pi auth login and
+    logout commands, makes Claude Opus 5.5 the default Anthropic model, and stops sending
+    an empty tools array to OpenAI-compatible endpoints, which fixes errors from vLLM 0.20
+    and later.
+  why: >-
+    pi users on Anthropic will see cache-warming charges between runs unless they set cacheWarming
+    back to streaming, and proxies that require tools with tool history now need a compat
+    flag.
+  background: >-
+    Anthropic prompt caching bills cached prefix reads far below fresh input, but cache entries
+    expire after a short idle period. Warming sends a cheap request to keep the prefix alive,
+    which pays off only if the next turn arrives before expiry.
+  sources:
+  - label: primary
+    url: https://github.com/earendil-works/pi/releases/tag/v1.5.1
+- title: >-
+    Sourcegraph uses an agent to route each pull request to ship, show after merge, or ask
+    for review
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Sourcegraph's agent sorts each PR into ship, show after merge, or ask before merge, using
+    the diff and the author's history with the code.
+  summary: >-
+    Sourcegraph built a GitHub Actions bot because agent-written code moved its bottleneck
+    to review and routine changes still needed a human approval. The agent reads the diff,
+    surrounding code and the author's past contributions, and application code applies rules
+    to pick a path. Familiarity requires two reviewed merged PRs plus a relevant contribution
+    in the past 30 days, and changes to authentication or sensitive data exposure always need
+    review. The team ran it in recommendation-only mode first, sees fewer stamp requests,
+    and says that metric says little about review quality.
+  why: >-
+    It is a concrete, rules-plus-agent design for scoped auto-approval that a team can copy,
+    including the guardrails and the open question of whether post-merge reviews actually
+    happen.
+  background: >-
+    Ship, Show, Ask is a 2021 model for review: merge without review, merge and notify for
+    later review, or block on review. The post cites Meta's RADAR, which also routes changes
+    between pre-land review, deferred review and automatic approval by risk.
+  sources:
+  - label: primary
+    url: https://sourcegraph.com/blog/what-we-learned-building-a-pr-approval-bot
+- title: Vercel Sandbox cuts median snapshot time from 4.4 seconds to under 0.4 seconds
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Vercel Sandbox now takes a median 0.4 seconds to snapshot instead of 4.4, and p50 restore
+    time fell from 500 ms to 250 ms.
+  summary: >-
+    Vercel says its Hive Snapshot format now reuses frames and indexes data so more reads
+    and writes run in parallel, and restores load the base image in parallel with user data.
+    Persistent sandboxes, the default, snapshot when a session stops and resume from the latest
+    snapshot. The change applies to new snapshots, and existing snapshots keep the old format.
+  why: >-
+    Agent platforms that stop and resume sandboxes per session pay much less latency per pause,
+    which makes persisting idle agent state cheaper.
+  sources:
+  - label: primary
+    url: https://vercel.com/changelog/vercel-sandbox-snapshot-creation-is-now-up-to-10x-faster
+- title: >-
+    Fable 5.2 merges repeated code far more often when the prompt says the codebase is its
+    own
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Anthropic says telling Fable 5.2 a codebase is its own raised how often it merged repeated
+    code from under a tenth of tries to about half.
+  summary: >-
+    Anthropic's prompting documentation for Claude Fable 5.2 says the model follows what the
+    prompt says about who owns the code. When the prompt said nothing or framed the code as
+    someone else's, the model tended to add to existing structure even when that repeated
+    code. With the sentence saying the codebase is the model's own and that it will keep building
+    on it, it merged repeated code in about half of small coding tasks, against under a tenth
+    without it.
+  why: >-
+    Teams running Fable 5.2 in agent harnesses can steer toward refactoring or toward minimal
+    additive changes with one line in the system prompt or project instructions.
+  sources:
+  - label: primary
+    url: https://simonwillison.net/2026/Nov/10/prompting-claude-fable-52/
+- title: >-
+    On-policy distillation tolerates FP8 and asynchronous rollouts that destabilize RL, a
+    measured study finds
+  section: ML research
+  category: Paper
+  blurb: >-
+    On-policy distillation stays stable under FP8 and asynchronous rollouts that break RL,
+    reaching BF16 training quality 1.62 times sooner.
+  summary: >-
+    The paper measures quantization, weight staleness and injected noise on one scale across
+    three student-teacher pairs and finds on-policy distillation tolerates substantial training-inference
+    mismatch up to an empirical budget. It proposes an admission check that screens rollout
+    configurations against that budget without a full training run. Model-specific FP8 recipes
+    hold at least 1.93 times as many KV-cache tokens as BF16, and FP8 with asynchronous rollouts
+    reaches the same quality 1.62 times sooner than synchronous BF16.
+  why: >-
+    Teams distilling into smaller open-weight models can use cheaper quantized and asynchronous
+    rollout engines with less risk than in RL, after checking sensitive layers.
+  background: >-
+    On-policy distillation has the student generate its own responses and trains it to match
+    a fixed teacher's token distribution on them, which avoids the train-test gap of distilling
+    on teacher text. Rollout engines such as vLLM often run in lower precision or on stale
+    weights for speed, so the policy that generated data differs from the one being trained.
+    In RL this mismatch is a known source of instability.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.11450v1
+- title: >-
+    mise 2026.11.6 adds mise run --multi task checklists and package-manager-agnostic bootstrap
+    packages
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    mise run --multi opens a checklist to run several tasks in parallel, and unprefixed bootstrap
+    packages pick an available package manager.
+  summary: >-
+    mise 2026.11.6 adds mise run --multi, which runs checked tasks as if joined with ::: so
+    they run in parallel unless dependent, with --all listing tasks across a monorepo. Bootstrap
+    package keys without a manager prefix now install through the first available manager
+    in the order apt, dnf, pacman, zypper, apk, brew, winget, scoop, choco, overridable with
+    system_packages.prefer. The npm backend installs from HTTPS tarball URLs, custom daemons
+    get named ports, launchd agents get resource limits, and the default prompt theme changes
+    to base16.
+  why: >-
+    One bootstrap config can now provision system packages across Linux distributions and
+    macOS, and undefined env template errors no longer print the names of secret variables
+    at every prompt.
+  sources:
+  - label: primary
+    url: https://github.com/jdx/mise/releases/tag/v2026.11.6
+- title: >-
+    GitHub will turn off Dependabot alerts on repositories with no activity for a year, starting
+    2026-12-08
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    From 2026-12-08 GitHub turns off Dependabot alerts on most repositories with no push in
+    a year, archiving existing alerts until the next push.
+  summary: >-
+    Starting 2026-12-08, GitHub will turn off Dependabot alerts on most repositories with
+    no activity in the past year. Activity means a push to any branch or tag, creating the
+    repository, or turning on alerts. Existing alerts are archived, and a push or a settings
+    change restores them. Repositories under an enforced security configuration that enables
+    alerts are exempt, and so are enterprises whose policy stops repository admins from changing
+    alerts. GitHub Enterprise Server is not affected.
+  why: >-
+    Libraries and services that are stable but rarely pushed will stop getting vulnerability
+    alerts unless you enforce alerts through an org security configuration.
+  followup: Alerts start pausing on 2026-12-08.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-10-dependabot-alerts-will-pause-on-inactive-repositories
+  thread: f-0196
+- title: >-
+    JDK 28 removes the Primitive Types in Patterns preview after five rounds, with Constant
+    Patterns to follow
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The Amber project will remove primitive types in patterns from JDK 28 after five previews,
+    so the feature is gone even with --enable-preview.
+  summary: >-
+    Angelos Bimpoudis and Gavin Bierman announced on 2026-11-09 that development of Primitive
+    Types in Patterns, instanceof, and switch has stopped and the draft sixth preview JEP
+    is withdrawn. The feature previewed in JDK 23 through 27 and will be unavailable in JDK
+    28 because its exact numeric conversion rules may conflict with Valhalla's planned user-defined
+    numeric types. A draft JEP for Constant Patterns, allowing nested constants such as case
+    Point(0, 0) and carrying forward expanded primitive support in switch, is due shortly.
+  why: >-
+    Code that uses primitive patterns under --enable-preview will stop compiling on JDK 28
+    and needs rewriting before upgrading.
+  background: >-
+    Java preview features ship complete but unfinalized, and code must opt in with --enable-preview
+    at compile and run time, so they can change or disappear between releases. JEP 12 defines
+    this process and explicitly allows removing a preview through a bug-tracker issue rather
+    than a new JEP. Project Valhalla is the long-running effort to add value classes and richer
+    numeric types to the JVM, and its design now constrains how pattern matching treats numeric
+    conversions.
+  sources:
+  - label: primary
+    url: https://mail.openjdk.org/archives/list/amber-spec-experts@openjdk.org/thread/UYEK3PGOHN6R56AHJTSLPGAY363K666S/
+  - label: discussion
+    url: https://www.reddit.com/r/java/comments/1xsdxiq/withdrawing_the_primitive_patterns_preview/
+- title: >-
+    .NET 11 ships C# 15 union types, a Native AOT CLI host and a NuGet minimum package age
+    setting
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The two-year STS release adds closed hierarchies, Zstandard compression, a warm MSBuild
+    server and a preview of runtime-managed async.
+  summary: >-
+    Microsoft released .NET 11 on 2026-11-10 as a Standard Term Support release with two years
+    of support, with C# 15 union types and closed class hierarchies checked for exhaustiveness
+    in switch expressions. The SDK now uses a Native AOT CLI host and keeps the MSBuild server
+    warm by default, and NuGet gains a minimum package publication age setting so new package
+    versions wait before selection. Runtime Async, which moves async suspension into the runtime
+    instead of compiler-generated state machines, remains an opt-in preview.
+  why: >-
+    The NuGet publication age setting gives .NET teams a cooldown against freshly published
+    malicious packages, a control other ecosystems have added after recent supply chain attacks.
+  comments: The runtime what's new page drew 215 points and 152 comments on Hacker News.
+  sources:
+  - label: primary
+    url: https://devblogs.microsoft.com/dotnet/announcing-dotnet-11/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50442225
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50439284
+- title: >-
+    Kernel memory management developer Lorenzo Stoakes drops reviewer roles, citing AI-generated
+    patch volume
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Arm's Lorenzo Stoakes drops reviewer roles in kernel memory management, core, misc and
+    Rust areas, citing the flood of AI-generated series.
+  summary: >-
+    Lorenzo Stoakes, a kernel contributor since 2014, posted patches on 2026-11-10 removing
+    himself as reviewer for memory management, core, misc and Rust areas. He wrote that the
+    throughput of AI-generated series leaves him without bandwidth to review outside the areas
+    he maintains, and he stays on as maintainer of those.
+  why: >-
+    Reviewer capacity, not patch supply, is becoming the limit in core kernel subsystems,
+    which can slow review of patches in memory management and Rust for Linux.
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Lorenzo-Stoakes-AI-Flood
+- title: >-
+    Synaptics patent threats stop an open Rust DisplayLink driver for Linux, and OIN says
+    it offers no cover
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    A Rust DisplayLink dock driver for Linux is on hold after Synaptics threatened patent
+    claims and OIN said codecs fall outside its coverage.
+  summary: >-
+    LWN reports that Mike Lothian posted Vino, an LLM-assisted Rust DRM/KMS driver for DisplayLink
+    DL3 docks, to dri-devel, then received a cease-and-desist from Synaptics citing 125 patents
+    and later claim charts for two UK patents with a demand of $25,000 rising weekly. The
+    Open Invention Network concluded its license does not cover codecs, so Lothian took down
+    the repository and will not submit Vino to the kernel.
+  why: >-
+    Linux users of DisplayLink docks remain on Synaptics's binary x86-only software, and the
+    case shows OIN membership does not protect codec work.
+  background: >-
+    DisplayLink docks drive monitors over USB by compressing the display stream in software
+    and decoding it in the dock, so Linux needs a vendor driver rather than standard DisplayPort
+    support. Synaptics ships an open EVDI kernel module but keeps the user-space DisplayLink
+    Manager closed. The Open Invention Network is a patent cross-license pool meant to deter
+    patent suits against Linux, limited to components in its Linux System Definition.
+  comments: >-
+    The Hacker News thread drew 137 points and 57 comments. LWN commenters argue the two UK
+    patents describe long-known image compression techniques and question OIN's value if it
+    does not act against a member.
+  sources:
+  - label: primary
+    url: https://lwn.net/SubscriberLink/1102549/acbc92e00cee3a3f/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50443824
+- title: >-
+    X.Org Server 21.1.26 and Xwayland 24.1.15 fix eight memory safety flaws, several in Xv
+    request handling
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Eight CVEs cover out-of-bounds writes from crafted EDID data, XTest valuators and Xv shared-memory
+    requests in the X server.
+  summary: >-
+    The X.Org advisory of 2026-11-10 lists eight CVEs fixed in xorg-server 21.1.26 and xwayland
+    24.1.15. They include an EDID display-range out-of-bounds write triggered by a malicious
+    monitor, a stack out-of-bounds write in XTestFakeInput, wrapped bounds checks in XvShmPutImage
+    and glamor Xv image sizing, and request size overflows in XRes on 32-bit servers.
+  why: >-
+    Wayland desktops still run Xwayland for X clients, so distributions need the xwayland
+    24.1.15 update as well as the Xorg server fix.
+  sources:
+  - label: primary
+    url: https://lists.x.org/archives/xorg-announce/2026-November/003759.html
+  - label: discussion
+    url: https://www.phoronix.com/news/Eight-More-XOrg-Server-Issues
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1xsrgxn/xorg_security_advisory_multiple_security_issues/
+- title: >-
+    Public worse_query iOS sandbox escape lets apps read other apps' files, with no Apple
+    fix confirmed
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    A public iOS sandbox escape called worse_query lets an app read other apps' data containers
+    on iOS 26 and 27, and Apple's updates list no fix.
+  summary: >-
+    A researcher known as forcequit published worse_query on GitHub. The proof of concept
+    reaches every app's data container on iOS 26 and 27, and some system folders on iOS 27,
+    as long as the app has an App Group container. Sideloaded apps such as the WQ Files file
+    manager already use it to read and edit other apps' data without a jailbreak. The release
+    notes for iOS 27.2.1 and 26.7.3 do not mention the issue. Binance told users to delete
+    sideloaded apps and to move funds to a new wallet if they suspect a breach. No attacks
+    have been reported.
+  why: >-
+    iOS apps that keep secrets or tokens as plain files in their data container should move
+    them to the Keychain until Apple ships a fix.
+  background: >-
+    On iOS each app runs in a sandbox that should only see its own data container. App Groups
+    let apps from the same developer share a container. Sideloading tools such as AltStore
+    create these containers automatically, and that is what makes the exploit easy to use
+    today. Nobody has said whether an App Store app could use it.
+  followup: An Apple fix and any confirmation that App Store apps can use the escape.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/binance-warns-of-ios-sandbox-escape.html
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/binance-warns-of-ios-flaw-that-could-leak-crypto-wallet-secrets/
+  thread: f-0197
+- title: >-
+    Tailscale OAuth apps reach GA, so agents join a tailnet as devices under the authorizing
+    user's identity
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Tailscale OAuth apps are GA, letting an agent join a tailnet as a device under the authorizing
+    user's identity and policy rules.
+  summary: >-
+    Tailscale OAuth apps use a standard OAuth 2.0 flow to provision devices that carry the
+    authorizing user's identity, unlike existing OAuth clients that create tag-owned devices
+    under a shared service identity. Tailnet policies, audit logs and device quotas apply
+    to these devices. Grok Bot already uses the flow to reach private MCP servers, and Premium
+    and Enterprise plans can use a custom posture attribute with defaultSrcPosture to limit
+    the agent to designated servers.
+  why: >-
+    Teams can expose internal MCP servers to a hosted agent over the tailnet without public
+    endpoints or pasted keys, and scope the agent more narrowly than the user's own devices.
+  sources:
+  - label: primary
+    url: https://tailscale.com/blog/oauth-apps-ga
+- title: >-
+    Talos 1.15.0-beta.0 switches to containerd config version 4, so old CRI customization
+    keys are silently ignored
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The first Talos 1.15 beta changes containerd config to version 4 and adds SMART disk monitoring,
+    ingress filtering and CPU scaling documents.
+  summary: >-
+    Talos 1.15.0-beta.0 generates containerd configuration version 4, so CRICustomizationConfig
+    patches using top-level sections such as [metrics] or [grpc] are ignored with only a log
+    warning and must move into plugin blocks. The beta also adds NetworkLinkIngressConfig
+    packet filtering, BGP MD5 authentication, a CPUScalingConfig document, DiskSMARTConfig
+    collection on by default for new configs, kube-apiserver webhook kubeconfigs, and syncfs
+    of unpacked image layers. It removes the talosctl gen ca, crt, csr, key and keypair subcommands.
+  why: >-
+    Clusters with custom containerd patches need them rewritten before upgrading to 1.15,
+    or settings such as metrics endpoints will silently stop applying.
+  followup: Talos 1.15.0 final release.
+  sources:
+  - label: primary
+    url: https://github.com/siderolabs/talos/releases/tag/v1.15.0-beta.0
+  thread: f-0199
+- title: >-
+    CNCF accepts OpenShell and Agent Substrate as sandbox projects for isolating AI agents
+    on Kubernetes
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    NVIDIA's OpenShell and the Agent Substrate runtime join CNCF as sandbox projects for isolating
+    and governing AI agents on Kubernetes.
+  summary: >-
+    At KubeCon North America on 2026-11-10, CNCF said OpenShell, spearheaded by NVIDIA, joins
+    as a sandbox project that enforces policy on agents' access to files, networks, credentials
+    and model endpoints. Agent Substrate joins as a zero-trust runtime for running agents
+    on Kubernetes while isolating untrusted code, alongside OpenRL for Kubernetes-native reinforcement
+    learning and KubeRay. The same announcement lists CloudNativePG as advanced to incubation.
+  why: >-
+    Agent sandboxing on Kubernetes now has vendor-neutral projects to evaluate alongside gVisor
+    and microVM approaches.
+  background: >-
+    CNCF sandbox is the entry level for projects, followed by incubating and graduated, which
+    require production adopters and governance reviews. Agent runtimes aim to contain code
+    that a model writes and runs, which ordinary container isolation was not designed for
+    since containers share the host kernel. gVisor, already listed in the same announcement,
+    addresses this by running a user-space kernel between workload and host.
+  sources:
+  - label: primary
+    url: https://www.cncf.io/announcements/2026/11/10/cncf-hits-major-milestones-with-global-community-growth-record-industry-investment-and-a-new-generation-of-projects-to-build-ai-systems-in-production/
+- title: >-
+    Meta's TLX extends Triton with explicit warp-group control for Hopper and Blackwell GPUs
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Meta's TLX extends Triton with explicit warp-group orchestration so kernels can use Hopper
+    and Blackwell features like TMA and tensor memory.
+  summary: >-
+    Meta built Triton Low-Level Extensions (TLX), which lets kernel authors write regular
+    Triton tensor code and add explicit control over warp groups, shared-memory buffers, barriers
+    and asynchronous data movement where they need it. Meta calls this model Multiple Instructions,
+    Multiple Warps. It sits between CUDA's per-thread SIMT model and Triton's block-level
+    model. TLX runs production RecSys training and inference and LLM pretraining at Meta,
+    on NVIDIA and AMD GPUs. Over 10 months, Meta's Triton kernel count grew about 3.8 times
+    while its CUDA kernel count grew about 2 times.
+  why: >-
+    Kernel authors can reach Blackwell features such as tensor memory and cluster execution
+    from Python, without dropping to CUDA or waiting for the Triton compiler to support them.
+  background: >-
+    Triton is a Python language for GPU kernels in which the compiler decides how threads
+    and memory are scheduled. Newer NVIDIA GPUs get their speed from warp specialization,
+    where some warp groups only move data with the Tensor Memory Accelerator while others
+    run tensor-core math. Triton's compiler hides that structure, so authors had little control
+    over it.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/11/10/open-source/tlx-a-hardware-native-gpu-compiler-for-production-ml/
+- title: >-
+    Railway's incident report traces a build isolation escape to decrypted variables in up
+    to 100,000 workspaces
+  section: Engineering posts
+  category: Security
+  blurb: >-
+    An attacker chained a build escape, a Temporal trust gap and a bad OIDC binding to decrypt
+    AI keys, leading to about $740,000 in fraud.
+  summary: >-
+    Railway's 2026-11-10 report says an attacker partially escaped filesystem isolation in
+    its multi-tenant build infrastructure on 2026-10-20, took a build credential that its
+    internal Temporal cluster accepted as a trusted client, and read build histories and a
+    copy of Railway's monorepo. Using a misconfigured OIDC binding found in that code, the
+    attacker obtained cloud credentials, reached an orchestration machine holding a long-lived
+    decryption credential, and decrypted variables for at most 1.85% of workspaces, about
+    100,000, querying specifically for AI provider keys. Railway estimates unauthorized spend
+    on stolen keys at about $740,000, reset linked tokens for 1,852 users, and is moving builds
+    to per-build virtual machines.
+  why: >-
+    Any platform that stores customer secrets should check whether internal credentials are
+    accepted beyond their purpose and whether CI OIDC trust bindings are scoped tightly.
+  background: >-
+    Envelope encryption encrypts each secret with a data key and then encrypts that data key
+    with a root key held in a key management service, so stealing the database alone yields
+    only ciphertext. The weak point becomes any machine allowed to ask the KMS to decrypt,
+    which is what the attacker reached here. Railway says OpenCode, Warp and Fireworks AI
+    disclosed similar thefts between 2026-10-06 and 2026-10-23, and it treats this as one
+    of a series of attacks aimed at platforms that hold AI keys.
+  followup: >-
+    Refunds of the roughly $740,000 in unauthorized AI spend from providers or Railway.
+  comments: The Hacker News thread drew 20 points and 2 comments, with no added detail.
+  sources:
+  - label: primary
+    url: https://blog.railway.com/p/incident-report-october-security-incident
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50441465
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/apple/railway-breach-leads-to-740-000-in-fraudulent-ai-charges/
+  thread: f-0200
+- title: >-
+    Robinhood's hybrid reviewer merges about 60% of data pipeline PRs with no human review
+  section: Talks
+  category: Video
+  blurb: >-
+    Scripts check data contracts, tags and lineage, an agent searches the repo for unregistered
+    consumers, and humans approve sensitive grants.
+  summary: >-
+    Robinhood's data platform team built a two-layer reviewer for pipeline PRs. Deterministic
+    scripts check the schema registry, catalog tags, registered lineage and staging performance,
+    and they turn CI red on failure. A separate agent with read-only repository tools scores
+    risk and approves or escalates. The agent can never approve grants that touch sensitive
+    data, migrations that change intent, or verdicts where it has low confidence. As of 2026-08-31,
+    about 60% of these PRs merged without human review, manual review effort fell about 75%,
+    about 132 engineer hours a month were saved, related incidents fell about 30%, and the
+    miss rate was about 2%. An on-call engineer updates the agent's rules by hand each week
+    from reviewer replies.
+  why: >-
+    It gives a concrete pattern for scoped auto-merge: scripts settle factual checks, the
+    agent judges only what they cannot see, and some change types always need a person.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=MQiojLnK-E0
+- title: >-
+    Harvey's Spectre platform ran 10,000 agent PRs and added a fair launch queue after a 950-task
+    burst
+  section: Talks
+  category: Video
+  blurb: >-
+    Harvey's cloud agent platform runs any coding agent, merges approved PRs automatically,
+    and now queues tasks so one user cannot fill it.
+  summary: >-
+    Harvey's internal platform Spectre runs Claude Code, Codex or Cursor sessions in cloud
+    sandboxes with company secrets and a real copy of the stack. About 460 people used it
+    last month, and command-line launches reached about 6,500 tasks a month. A loop that reads
+    CI failures and pushes fixes covered four of five agent PRs merged into the backend. A
+    Slack alert storm started about 900 tasks in four hours, and one engineer later started
+    about 950 tasks from the CLI. Harvey then built a fair queue that dispatches tasks as
+    capacity frees up and cut start latency in a 300-task burst from almost 2 seconds to 70
+    ms. Scheduled automations now switch off after five consecutive failures.
+  why: >-
+    Once agents can launch other agents, the platform needs admission and fairness controls
+    and a CI-fix loop more than it needs a better model.
+  comments: >-
+    Harvey says PR volume across the company rose about 60% in one month and merges slowed
+    from 15 to 30 minutes to over an hour, a problem it has not solved yet.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=ktbAVYsAxpk
+- title: >-
+    Audible and SAP engineers argue self-hosted LLM servers need admission control, with a
+    queue cap cutting P95 TTFT 2.5x
+  section: Talks
+  category: Video
+  blurb: >-
+    Coding agents send bursts like 40 calls in two seconds, so inference clusters should admit,
+    defer or reject requests before they use GPU memory.
+  summary: >-
+    The speakers propose an admission layer between the gateway and engines such as vLLM or
+    SGLang. It returns 200 to admit, 503 with Retry-After to defer, 429 when a client exceeds
+    its share, or 529 when every replica is full. The decision is based on request size, tenant,
+    agent session, deadline, KV cache use and queue age. They note that admitting each request
+    separately can leave an agent session half-finished, and they recommend scoring goodput
+    against all arriving requests, including rejected ones. On Qwen 2.5 0.5B on an A10, a
+    policy allowing at most two waiting requests admitted 63% and cut P95 time to first token
+    from about 2.5 s to about 1 s, while KV cache use peaked at 0.5% and a KV-threshold policy
+    would have admitted everything.
+  why: >-
+    Teams hosting models for coding agents should shed load at the ingress based on signals
+    that change within seconds, and agents should honor Retry-After with jitter.
+  background: >-
+    During decode, each admitted LLM request holds a growing KV cache in GPU memory until
+    it finishes or the client disconnects, so admitting a request commits memory for its whole
+    life. Gateway rate limits count requests and cannot see that memory cost, while the engine
+    finds out only after it has accepted the request.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=ntVpbyDTYaQ
+- title: >-
+    Spotify brings Backstage context to agents with Portal workspaces, a PR inbox and fleet-wide
+    refactors
+  section: Talks
+  category: Video
+  blurb: >-
+    Spotify's Portal adds agent workspaces, a PR inbox, cost insights and Fleetshift refactors
+    so coding agents start with the same org context.
+  summary: >-
+    Spotify says that after an internal all-hands titled AI or die, about nine months ago,
+    engineers moved to running fleets of agents, which trapped context in personal instruction
+    files and made costs hard to attribute. Its Portal product adds workspaces that seed agent
+    sessions with catalog entities, designs and wikis, plus a PR inbox for agent PRs, a catalog
+    of skills and rules, an MCP server, usage and cost insights, and Fleetshift for refactors
+    across thousands of repositories. It also has an internal session tool called Zerp. Spotify
+    reports over 6,200 Portal users and over 121,000 sessions.
+  why: >-
+    An existing service catalog can serve as shared agent context and as the place to track
+    agent cost and review queues.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=fwypmxVg96U
+- title: >-
+    A LoRA fine-tune of Gemma 4 E2B beats Gemma 4 31B on a structured extraction task and
+    runs 44 times faster
+  section: Videos
+  category: Video
+  blurb: >-
+    A LoRA fine-tune of Gemma 4 E2B with MLX beat Gemma 4 31B on a JSON extraction task, at
+    100% test accuracy and 44 times faster inference.
+  summary: >-
+    Code to the Moon fine-tuned Gemma 4 E2B with LoRA in MLX on a JSONL chat dataset to bucket
+    described events by relative day into a fixed JSON schema, with no system prompt needed
+    afterward. The 4-bit fine-tune averaged 0.32 seconds per inference against 14.2 seconds
+    for Gemma 4 31B with thinking, scored 100% on the test set and 98% on a harder unseen
+    set, against about 92% for the 31B model and about 20 to 25% for the base E2B model with
+    instructions. The video warns that fine-tuning is poor at adding new knowledge and can
+    raise hallucination.
+  why: >-
+    For narrow output-format tasks, a small LoRA fine-tune can replace a large or frontier
+    model and cut latency and token costs by an order of magnitude.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=lgRZMm8hjYM
+- title: >-
+    Hacker News reacts to a write-up that consumer Gemini sends connected Gmail and Drive
+    content to human reviewers
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A write-up says consumer Gemini with Connected Apps can pull Gmail and Drive content into
+    chats that Google's human reviewers may read.
+  summary: >-
+    The write-up cites an updated Google help page and an edit on 2026-10-16 to a 2023 Google
+    post, which now warn that reviewers may see connected emails or files. It reports that
+    Gemini pulled email content into context without explicit app tags, sometimes as a summary
+    and sometimes as the full email with headers. The Hacker News thread reached 359 points
+    and 91 comments.
+  why: >-
+    Engineers who connect work-adjacent Gmail or Drive accounts to consumer Gemini should
+    assume that content can reach human review.
+  comments: >-
+    The top comment says the change covers consumer Gemini with Connected Apps, and that Google
+    still says Workspace Gemini is not subject to human review. Others moved photos and files
+    to self-hosted Immich and Nextcloud behind Tailscale.
+  sources:
+  - label: primary
+    url: https://github.com/thisisme6598/gemini_files/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50429426
+- title: >-
+    Hacker News argues over whether AI-mandated codebases are becoming fragile and opaque
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Two Hacker News threads on AI-written codebases drew over 340 comments, split between
+    fragility worries and claims the lead post was AI-made.
+  summary: >-
+    A Reddit post on a team that nobody understands after a year of a 100% AI mandate reached
+    144 points and 183 comments on Hacker News before being flagged. Evan Merz's post on AI-generated
+    code being fragile drew 132 points and 163 comments. Merz, who says he had to generate
+    at least 90% of his code with AI at Meta, lists shallow tests, overly complex helpers,
+    lost human understanding, and review that cannot keep up with PR volume.
+  why: >-
+    Practitioners report the same costs again and again under AI code mandates: more incidents,
+    slower recovery and skimmed reviews. Those are things to measure if your team has a mandate.
+  comments: >-
+    The top comment says the Reddit post itself scored as AI-generated on Pangram, and others
+    argue over how reliable that detector is. Several engineers report real cases: a colleague's
+    fully vibe-coded project that someone else inherited with an architectural mess and breaking
+    bugs, and a developer whose learning stalled a month after switching to 100% generated
+    code. One commenter claims to run a software factory with no human review and to make
+    good revenue from it.
+  sources:
+  - label: primary
+    url: https://evanxmerz.com/post/ai-usage-generates-a-fragile-codebase/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50433079
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50438318
+  - label: discussion
+    url: https://www.reddit.com/r/ClaudeCode/comments/1xq2n3t/a_year_after_the_100_ai_mandate_nobody/
+- title: >-
+    Hacker News trades hardware-backed SSH key setups after a guide to YubiKey, TPM and Secure
+    Enclave keys
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A post moves every SSH key into a YubiKey, a TPM or Apple's Secure Enclave, and commenters
+    debate resident keys, touch policy and backups.
+  summary: >-
+    Alex Haydock describes replacing all on-disk SSH keys with ed25519-sk keys on YubiKeys,
+    TPM-sealed keys through ssh-tpm-agent, and non-exportable Secure Enclave keys created
+    with sc_auth on macOS. He notes that TPM keys still keep an encrypted key file on disk
+    and that no-touch-required keys need a matching authorized_keys option. The thread reached
+    204 points and 106 comments.
+  why: >-
+    Hardware-bound SSH keys stop a compromised laptop or agent from copying a key that also
+    signs commits or reaches production hosts.
+  comments: >-
+    Commenters explain that resident keys can be recovered from the YubiKey with ssh-keygen
+    -K while non-resident keys need the handle file too. One reports GitHub accepts touch-required
+    resident keys while Bitbucket rejects FIDO keys, others use the OpenPGP or PIV slot to
+    cache touches, and several warn to enroll multiple keys after a YubiKey failed or melted.
+  sources:
+  - label: primary
+    url: https://blog.infected.systems/posts/2026-11-03-i-deleted-all-my-ssh-keys/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50382401
+- title: >-
+    Chrome, Edge, Firefox and MDN teams publish Modern Web Guidance skills to steer coding
+    agents off legacy JavaScript
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    An Apache-2.0 skill set and CLI feeds coding agents curated guides on 250 web platform
+    features and scans codebases for legacy patterns.
+  summary: >-
+    Modern Web Guidance, stewarded by the Chrome, Edge, Firefox and MDN teams, ships agent
+    skills and plugins for Claude Code, Codex, Cursor, Gemini and others, plus a CLI to search
+    guides and run a legacy-scan over a codebase. The project says models default to older
+    patterns because of their training data, and it prunes guide content that evals show models
+    already know. The Show HN post reached 202 points and 57 comments.
+  why: >-
+    Teams using agents for front-end work can install curated, eval-pruned platform guidance
+    instead of writing their own rules files.
+  sources:
+  - label: primary
+    url: https://github.com/GoogleChrome/modern-web-guidance
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50443812

@@ -1,0 +1,236 @@
+date: '2026-11-11'
+updated: 2026-11-11T07:57Z
+stories:
+- title: >-
+    Microsoft fixes 1,093 flaws on November Patch Tuesday, including exploited Outlook spoofing
+    bug CVE-2026-124194
+  section: Top stories
+  category: Security
+  blurb: >-
+    Microsoft's November update fixes about 1,100 flaws, and CISA lists an Outlook spoofing
+    bug among those already exploited in attacks.
+  summary: >-
+    Krebs on Security reports that Microsoft's 2026-11-10 release fixes 1,093 vulnerabilities,
+    63 of them critical, with CVE-2026-124194, a spoofing bug in Outlook affecting Microsoft
+    365 Apps for Enterprise and Office, the only one under active exploitation. CISA added
+    CVE-2026-124194 to its Known Exploited Vulnerabilities catalog on 2026-11-10. Microsoft
+    has shipped more than 5,100 security fixes so far this year and credits AI with much of
+    the rise.
+  why: >-
+    Patch Outlook and Microsoft 365 Apps first, and plan for monthly patch volumes that are
+    now ten times last year's.
+  background: >-
+    Patch Tuesday is Microsoft's fixed monthly release on the second Tuesday. A year ago Microsoft
+    averaged around 100 fixes a month, per Krebs, and AI-assisted bug finding has pushed that
+    into the thousands. The CISA KEV catalog lists flaws with evidence of exploitation and
+    sets federal patch deadlines, so it is a common way to triage such volumes.
+  sources:
+  - label: primary
+    url: https://www.cisa.gov/news-events/alerts/2026/11/10/cisa-adds-six-known-exploited-vulnerabilities-catalog
+  - label: discussion
+    url: https://krebsonsecurity.com/2026/11/microsoft-fixes-nearly-1100-security-vulnerabilities/
+- title: >-
+    SGLang code execution flaw let an attacker breach NEAR AI inference servers, including
+    TEE-protected requests
+  section: Top stories
+  category: Security
+  blurb: >-
+    An attacker used an SGLang remote code execution bug to run code on a NEAR AI inference
+    server and could see requests inside its TEE.
+  summary: >-
+    The Hacker News reports that an attacker exploited an SGLang remote code execution flaw
+    on one of NEAR AI's inference servers, could see that day's requests including confidential
+    mode requests processed in a trusted execution environment, and then reached 18 agents
+    on an older deployment and account details of about 100 Private Chat users. Two customers'
+    API keys were exposed in logs and revoked. NEAR AI has deployed a fix on all its inference
+    servers and reported the flaw to SGLang, but no CVE, affected versions or upstream release
+    are public.
+  why: >-
+    Anyone exposing a self-hosted SGLang server should restrict network access to it until
+    the project publishes a fix and affected versions.
+  background: >-
+    SGLang is an open-source LLM serving engine used as an alternative to vLLM. A TEE encrypts
+    and isolates a workload from the host operator, but code running inside the enclave, here
+    the inference engine itself, is still in the trust boundary, which is the point NEAR AI
+    makes. Brave said in October that its Leo assistant runs some chats in a TEE operated
+    by NEAR AI.
+  followup: An SGLang advisory with a CVE ID and affected versions.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/sglang-rce-exploit-breaches-near-ai.html
+  thread: f-0201
+- title: >-
+    Many Electron apps auto-update without signature checks while still trusting compromised
+    eMudhra CAs
+  section: Security
+  category: Security
+  blurb: >-
+    A survey of 36 Electron apps finds many auto-update without signature checks while still
+    trusting compromised eMudhra intermediate CAs.
+  summary: >-
+    Cryptography engineer Pascal Schärli tested 36 Electron apps and found several, including
+    Logseq, Beekeeper Studio, DbGate, Notesnook, Filen and Internxt, that have no patched
+    release, still trust the compromised eMudhra intermediates and update through electron-updater
+    without verifying signatures on Linux or Windows. That combination lets an attacker on
+    the network push code to the machine. Electron lacks Chromium's component updater, so
+    it distrusted the certificates by hardcoding them, which reaches users only through a
+    full app update.
+  why: >-
+    Developer tools such as database clients and note apps can be hijacked on hostile networks,
+    so update them by manual download and verify signatures if you ship Electron apps.
+  background: >-
+    Browsers fetch certificate revocation lists through a background component updater, which
+    let them distrust the weak eMudhra keys within hours in October. Electron bundles Chromium
+    without that updater, so each app carries its own trust fixes. electron-updater, the most
+    common update library, only partly supports signature checks, and some vendors rely on
+    TLS alone.
+  sources:
+  - label: primary
+    url: https://schaerli.org/briefs/electron-we-have-a-problem/
+  - label: discussion
+    url: https://www.reddit.com/r/netsec/comments/1xskopy/electron_we_have_a_problem/
+- title: >-
+    Microsoft Research's Lazarus backdoors LLM agents by editing fewer than ten dormant neurons,
+    with no training
+  section: AI
+  category: AI
+  blurb: >-
+    Microsoft researchers show that editing under ten rarely firing neurons backdoors an LLM
+    agent without training while it still passes evals.
+  summary: >-
+    Microsoft Research describes Lazarus, which reprograms dormant neurons into trigger detectors
+    that inject tokens into the residual stream, so an agent can emit a command such as downloading
+    and running attacker code when a trigger like a date past 2027 appears. The edit needs
+    only inference-level compute and write access to a checkpoint. Frontier agents can spot
+    such edits when asked, but reliable detection requires diffing against the original weights,
+    and the researcher says Claude Code with Opus 4.5 discovered most of the method.
+  why: >-
+    Treat model weights like code in your supply chain: pin checksums, verify provenance,
+    and limit what agents running open-weight models can execute.
+  background: >-
+    Backdoored models are an old threat, usually planted by poisoning training data or fine-tuning.
+    This method skips training entirely, which lowers the cost to anyone who can alter a checkpoint
+    in storage or a pipeline. Microsoft says it is working on signed models with tamper-evident
+    provenance.
+  sources:
+  - label: primary
+    url: https://www.microsoft.com/en-us/research/blog/lazare-veni-foras-reprogramming-dormant-neurons-to-backdoor-ai-agents/
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1xt82mz/microsoft_research_backdoored_an_ai_agent_by/
+- title: >-
+    Sentry's CLI now launches its MCP server with shared credentials, combining MCP tools
+    with filesystem access
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Sentry's CLI now launches its MCP server over stdio with the CLI's own credentials, so
+    agents get native MCP tools and filesystem access.
+  summary: >-
+    Running sentry mcp starts Sentry's MCP server in stdio mode with a shim that reuses the
+    CLI login and a separate Sentry-Bearer token type that bypasses the MCP OAuth layer. David
+    Cramer argues the CLI can pull raw data such as session replay event logs onto the filesystem
+    for grepping, while MCP gives native tool discovery. He notes uneven harness support for
+    MCP features such as tool search, server instructions and events.
+  why: >-
+    Vendors and teams wiring agents to internal services can pair a CLI for bulk data with
+    an MCP server for discovery instead of choosing one.
+  sources:
+  - label: primary
+    url: https://blog.sentry.io/mcp-or-cli/
+- title: >-
+    Val Town is winding down, going read-only on 2026-12-10 and shutting down on 2027-01-10
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Val Town stops signups now, goes read-only on 2026-12-10, shuts all services on 2027-01-10
+    and plans to open-source the code on 2027-02-01.
+  summary: >-
+    Founder Steve Krouse says Val Town could not compete in cloud computing and stopped new
+    signups and upgrades on 2026-11-10. Billing is paused, existing subscriptions run free,
+    and annual prepayments get partial refunds. Migration guides cover Cloudflare, Vercel,
+    Netlify and Render, and the platform will be open-sourced on 2027-02-01.
+  why: >-
+    Anyone running scripts, webhooks or cron jobs on Val Town has until 2026-12-10 before
+    code goes read-only and must migrate.
+  followup: Read-only mode on 2026-12-10 and open-sourcing on 2027-02-01.
+  comments: The Hacker News thread drew 369 points and 93 comments.
+  sources:
+  - label: primary
+    url: https://blog.val.town/winding-down
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50443427
+  thread: f-0202
+- title: >-
+    Microsoft FORGE Lab finds safe-code undefined behavior in Rust's standard library with
+    an AI scanner
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Microsoft's FORGE Lab used an AI scanner to find Rust standard library bugs where safe
+    code triggers undefined behavior, in three patterns.
+  summary: >-
+    FORGE Lab reports soundness bugs in std and core, including a panic safety bug in MapWindows::clone,
+    a str::replace fast path that could produce non-UTF-8 Strings from a custom Pattern, process::exit
+    unmapping the main thread's signal stack, and CommandExt::exec writing environ under a
+    read lock. Two of its reports remain open. Rust 1.100, due on 2026-11-12, stabilizes the
+    Allocator API with a rule that implementors must never unwind, after unwinding allocators
+    proved a pervasive source of unsoundness.
+  why: >-
+    Code that implements Allocator, Pattern or other traits consumed by unsafe std code should
+    expect stricter contracts, and teams writing unsafe Rust get concrete patterns to audit.
+  background: >-
+    A safe Rust API is sound when no safe caller can trigger undefined behavior, so the unsafe
+    code beneath it must defend against panics, inconsistent trait implementations and OS
+    state. The authors built Rudra, a 2021 static analyzer for such bugs, and say AI agents
+    now make the OS boundary practical to search.
+  followup: Rust 1.100 release on 2026-11-12 with the Allocator API.
+  sources:
+  - label: primary
+    url: https://forge-blog.github.io/posts/rust-std-memory-safety/
+  - label: discussion
+    url: https://www.reddit.com/r/rust/comments/1xssl6n/memory_safety_bugs_in_rust_standard_library/
+- title: >-
+    Microsoft publishes Sysinternals Process Explorer for Mac as a native SwiftUI app
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    Microsoft publishes Sysinternals Process Explorer for Mac, a native SwiftUI app with a
+    live process tree, signing checks and system graphs.
+  summary: >-
+    The open repository implements Process Explorer for macOS 14 and later in Swift, SwiftUI
+    and AppKit, sampling through libproc, sysctl, Mach host statistics, Security.framework
+    and IOKit. It shows modules, file descriptors and threads per process, code-signing and
+    notarization details, and per-core graphs with Apple Silicon performance and efficiency
+    core labels. An optional root helper registered with SMAppService adds cross-user detail.
+  why: >-
+    Mac developers get a free inspector for file descriptors, sockets and code signatures
+    of running processes, with source showing how to read them through public APIs.
+  comments: The Hacker News thread drew 189 points and 59 comments.
+  sources:
+  - label: primary
+    url: https://github.com/microsoft/Procexp-Mac
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50433216
+- title: >-
+    Hacker News debates VulnCheck's count of 442 Anthropic-credited CVEs and 217 fixes in
+    Project Glasswing
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    VulnCheck counts 442 CVEs credited to Anthropic in seven months, with 2 exploited and
+    217 of 37,966 ledger findings marked fixed.
+  summary: >-
+    VulnCheck's Patrick Garrity counts 442 CVEs attributable to Anthropic, about 0.5% of this
+    year's CVEs, with two in its KEV list. Anthropic's ledger lists 37,966 findings, 7,349
+    public, 217 fixed, 1,654 duplicates and 419 withdrawn, against a claimed 94.2% true positive
+    rate. Of 34 curl reports published from Anthropic's OSS Scanner, 19 were not vulnerabilities
+    and six were confirmed as low severity. The Hacker News thread drew 391 points and 180
+    comments.
+  why: >-
+    Maintainers opting into AI scanners should budget triage time, since curl's results suggest
+    the validation burden lands on them.
+  sources:
+  - label: primary
+    url: https://www.vulncheck.com/blog/anthropic-glasswing-november-update
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50447074

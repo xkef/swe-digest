@@ -1,5 +1,5 @@
 date: '2026-11-08'
-updated: 2026-11-08T12:06Z
+updated: 2026-11-08T21:21Z
 stories:
 - title: >-
     GitHub timed out requests from logged-out users for over an hour on 2026-11-08, breaking
@@ -96,6 +96,94 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50408931
 - title: >-
+    Lima v2.3 adds a native Windows HCS driver, Linux bridged VM networking and sync excludes
+    for AI agent sandboxes
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    The local VM launcher now keeps .env files and .git out of agent sandboxes, can block
+    guest access to host loopback, and runs natively on Windows
+  summary: >-
+    Lima v2.3 shipped on 2026-11-06 with an experimental hcs driver that starts VMs through
+    the Windows Host Compute System without QEMU, and a lima-privileged-net helper that gives
+    Linux-hosted VMs shared, host and bridged networking. For agent sandboxing, limactl shell
+    --sync gains --sync-exclude and a .limasyncignore file, networkOpts.hostLoopback: false
+    refuses guest connections to host 127.0.0.1 on VZ, and the MCP tools add a replace edit
+    operation. On macOS, VZ guests can attach a raw block device through a root-owned helper
+    that is granted access per device in a generated sudoers file.
+  why: >-
+    Engineers running coding agents in Lima VMs can now keep secrets and the Git directory
+    on the host and cut the guest off from local databases and dev servers.
+  background: >-
+    Lima (Linux Machines) is a CNCF Incubating project that launches local virtual machines
+    from the command line, first built to run containerd on Macs and now used for macOS, Windows
+    and AI sandbox guests. Its sync mode copies a project into the VM so an agent can edit
+    it in isolation, then asks before copying changes back. The block device feature was redesigned
+    after an earlier version was reverted following a security report.
+  sources:
+  - label: primary
+    url: https://www.cncf.io/blog/2026/11/08/lima-v2-3-native-on-windows-vmnet-on-linux-and-menu-tui/
+- title: >-
+    SeaweedFS 4.53 tightens S3 authorization checks and adds per-bucket Block Public Access
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The SeaweedFS release binds S3 Tables deletes to authorized records, gates CORS and versioning
+    changes, and adds Block Public Access.
+  summary: >-
+    SeaweedFS 4.53, released on 2026-11-08, binds S3 Tables DeleteNamespace and vector bucket
+    cleanup to the authorized records, requires the matching actions to change a bucket's
+    CORS or versioning, makes S3 Tables policy conditions fail safe, and stops plugin workers
+    from forwarding the admin stream token to job RPCs. It adds per-bucket Block Public Access
+    (BlockPublicAcls and IgnorePublicAcls), rejects POST Object header fields with control
+    characters, and checks a needle's CRC the first time a range of it is read. The notes
+    list no CVE IDs.
+  why: >-
+    Clusters that expose the SeaweedFS S3 gateway to several identities should upgrade, because
+    several of these fixes close authorization gaps between S3 actions.
+  background: >-
+    SeaweedFS is a distributed object store with a filer layer and an S3-compatible gateway.
+    S3 Block Public Access settings make a bucket refuse or ignore public ACLs regardless
+    of what individual uploads request. S3 Tables and S3 Vectors are newer AWS APIs for Iceberg
+    tables and vector indexes that SeaweedFS has been reimplementing.
+  sources:
+  - label: primary
+    url: https://github.com/seaweedfs/seaweedfs/releases/tag/4.53
+- title: >-
+    Outlook.com has bounced some mail from domains without a DMARC record since 2026-11-05,
+    small senders included
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Microsoft's consumer mail now rejects part of the mail from domains with no DMARC record,
+    with no announcement and no volume threshold.
+  summary: >-
+    MailRoute reports that since 2026-11-05 Outlook.com, Hotmail, Live and MSN have rejected
+    some messages from domains that publish no DMARC record, with the bounce 550 5.7.1 Message
+    rejected: Message lacks SPF/DKIM/DMARC Auth Records. Only part of the mail from an affected
+    domain bounces, and low-volume senders are hit, unlike Microsoft's May 2025 rule for senders
+    above 5,000 messages a day. As of 2026-11-06 Microsoft had published no notice, and the
+    suggested fix is a TXT record at _dmarc with v=DMARC1; p=none plus SPF or DKIM aligned
+    with the From domain.
+  why: >-
+    Transactional mail from app domains, such as password resets and invoices, can silently
+    fail to reach Outlook.com users until a DMARC record is published.
+  background: >-
+    SPF lists the servers allowed to send for a domain and DKIM signs messages with a domain
+    key. DMARC ties those checks to the visible From address, requiring that SPF or DKIM pass
+    for the same domain, and lets the owner publish a policy (none, quarantine or reject)
+    and a reporting address. Gmail and Yahoo began requiring DMARC from bulk senders in 2024.
+  comments: >-
+    The Hacker News thread drew 96 points and 85 comments. Operators report Outlook.com and
+    Office 365 also drop mail via private blocklists or accept mail and never deliver it,
+    and several commenters note that mail-tester.com still scores mail without DMARC as 10
+    of 10, so the gap is easy to miss.
+  sources:
+  - label: primary
+    url: https://mailroute.net/blog/outlook-rejecting-email-without-dmarc
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50416158
+- title: >-
     Linus Torvalds says many kernel subsystems now take patches only after public Sashiko
     AI review
   section: Talks
@@ -176,6 +264,29 @@ stories:
   - label: primary
     url: https://www.youtube.com/watch?v=_0SQh8a1Osk
 - title: >-
+    AlixPartners found Claude Code's contract analysis missed $800,000 until structured data
+    and custom tools fixed it
+  section: Talks
+  category: Video
+  blurb: >-
+    AlixPartners found Claude Code's procurement answers looked complete but missed an orphan
+    amendment worth about $800,000 and a renewal date.
+  summary: >-
+    Natalia Connolly and Kevin Madura ran Claude Code on a post-merger procurement analysis
+    of more than 40,000 contracts, and checking its answers against the warehouse showed total
+    contract value off by about $800,000 because of an unlinked amendment, and an auto-renewal
+    deadline a month late because it used the termination clause instead of the renewal clause.
+    They spent about two weeks on a five-stage extraction pipeline that handles restated amendment
+    values and tables split across pages, then had Claude Code build deal-specific tools that
+    embed business rules. They also found that silent access-denied or malformed tool results
+    led the agent to treat invoices as zero, and fixed it by returning explicit error feedback.
+  why: >-
+    Agents doing data analysis need structured inputs, business rules enforced in tool code,
+    and explicit tool error messages, or plausible answers will hide costly mistakes.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=u7fsyrXsPBE
+- title: >-
     MaxxBench finds small requirement changes to DeepSWE tasks drop some coding models by
     about 20 points
   section: Hacker News
@@ -249,3 +360,59 @@ stories:
     url: https://caleb.software/posts/claude-to-pi.html
   - label: discussion
     url: https://news.ycombinator.com/item?id=50410107
+- title: >-
+    Llama-modchip claims a 284B DeepSeek model on a 64 GB CPU box, and Hacker News disputes
+    the quality at low bit widths
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A llama.cpp fork claims a 284B DeepSeek model runs in 64 GB of RAM on CPU, and commenters
+    question its 2-bit quantization quality.
+  summary: >-
+    The llama-modchip repository says it shrinks DeepSeek-V4-Flash to 56.56 GiB with a custom
+    block-64 format and MoE expert pruning, reaching about 44 tokens per second prefill and
+    9 to 10.7 tokens per second decode on a 16-core Zen 5 CPU, with GGUF files that unpatched
+    llama.cpp cannot load. The Hacker News thread drew 241 points and 72 comments.
+  why: >-
+    Claims of frontier MoE models on commodity CPUs depend on quantization below 4 bits, so
+    quality needs checking on your own tasks before adoption.
+  comments: >-
+    Commenters cite a TUM paper finding the best size-to-quality ratio near 4 bits, while
+    others counter that quantization-aware training and large MoE models degrade less. One
+    commenter traces the README's 76.87 GiB baseline to an IQ1_S file mislabeled as IQ2_XXS
+    and calls the result likely heavily degraded. Others say llama.cpp's backlog of about
+    1,700 pull requests pushes such work into forks.
+  sources:
+  - label: primary
+    url: https://github.com/synchopate/llama-modchip
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50411961
+- title: >-
+    Goldman Sachs limits Claude Code and GitHub to engineers, and Hacker News debates agents
+    on bankers' workstations
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A bank that praised trader-built AI tools in July now restricts coding agents to its roughly
+    12,000 engineers and strats, citing risk.
+  summary: >-
+    State of AI, citing Bloomberg News, reports that internal Goldman Sachs guidance updated
+    in October restricts Anthropic's Claude Code and Microsoft's GitHub to engineers and strats
+    after a review of productivity and risk. Traders and bankers had used the tools to monitor
+    client flows, model positions and build material, and the firm's in-house multi-model
+    assistant stays available to all staff. The Hacker News thread reached 386 points and
+    237 comments.
+  why: >-
+    Large firms are starting to scope local coding agents by role, so agent sandboxing and
+    ownership of agent-built code become rollout prerequisites outside engineering.
+  comments: >-
+    Commenters frame the move as the lethal trifecta of private data, untrusted input and
+    network egress on the same workstation, and note that corporate desktops often block the
+    virtualization that would sandbox agents. Others report companies clawing back Claude
+    access over billing, since commenters say organizations above 150 seats pay API rates
+    rather than flat subscriptions.
+  sources:
+  - label: primary
+    url: https://www.thestateofai.com/news/goldman-sachs-claude-code-traders-bankers
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50415628

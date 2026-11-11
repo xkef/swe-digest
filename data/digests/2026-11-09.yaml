@@ -1,0 +1,765 @@
+date: '2026-11-09'
+updated: 2026-11-09T23:06Z
+stories:
+- title: >-
+    Anthropic releases Claude Fable 5.2 and Mythos 5.2 at $8 and $40 per million tokens, with
+    a 2.5x fast mode
+  section: Top stories
+  category: AI
+  blurb: >-
+    Anthropic's upgraded top models score above Opus 5.5 on most of its benchmarks, run up
+    to 30% faster, and cost less than the 5.1 versions.
+  summary: >-
+    Fable 5.2 and Mythos 5.2 are one underlying model. Fable carries cyber and biology safeguards
+    and is open to all users, while Mythos goes to organizations in Anthropic's Cyber and
+    Life Sciences Verification Programs. Pricing is $8 input and $40 output per million tokens,
+    and an optional fast mode costs $16 and $80 for up to 2.5x faster generation. On Anthropic's
+    FrontierCode 2.0 run, Fable 5.2 scores 49.1% at Xhigh effort against 45.5% for Opus 5.5,
+    and at High effort it matches Opus 5.5 for about half the cost per task.
+  why: >-
+    Anthropic still recommends Opus 5.5 as the default for most coding, with Fable 5.2 reserved
+    for long ambiguous tasks or used as an Advisor or Orchestrator over smaller models.
+  background: >-
+    Anthropic splits one frontier model into two products. Fable has safeguards that block
+    most cybersecurity and biology tasks, and Mythos removes them for vetted users. Anthropic
+    reports that Mythos 5.2 found 10.2% more vulnerabilities than Opus 5.5 on its internal
+    CVE Rediscovery set of 1,829 CVEs. All benchmark numbers in the post are vendor-run, and
+    the system card describes the method.
+  comments: >-
+    The Hacker News thread reached 372 points and 157 comments within about an hour of posting.
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/claude-fable-and-mythos-5-2
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50429906
+- title: >-
+    Unpatched Eclipse Mosquitto 2.1 WebSocket bug gives pre-auth RCE, with upstream fixes
+    expected before 2026-11-18
+  section: Security
+  category: Security
+  blurb: >-
+    An empty WebSocket frame makes Mosquitto 2.1 overrun a heap buffer before login, and a
+    researcher turned it into remote code execution.
+  summary: >-
+    A researcher shows that a Mosquitto bug disclosed publicly in August 2026 and judged harmless
+    in its GitHub issue lets an empty WebSocket frame return more bytes than requested, underflowing
+    the packet length counter and writing past the payload buffer before authentication. The
+    write-up builds a reliable exploit against the Home Assistant Mosquitto add-on. Affected
+    are upstream 2.1.0 onward built with the built-in WebSocket listener exposed on the network,
+    Eclipse expects fixed releases before 2026-11-18, and the Home Assistant add-on is fixed
+    in 7.1.2.
+  why: >-
+    Anyone exposing Mosquitto's built-in MQTT-over-WebSocket listener should firewall or disable
+    it until Eclipse ships a fix.
+  background: >-
+    MQTT is a publish and subscribe protocol for IoT and machine-to-machine messaging, and
+    Mosquitto is one of its most widely used open source brokers. Brokers can speak MQTT over
+    raw TCP or wrapped in WebSocket frames for browser clients, so the broker must strip frame
+    headers and reassemble MQTT packets across reads. The researcher found the flaw through
+    a gap in Mosquitto's OSS-Fuzz harness, and says two frontier models pointed at the file
+    flagged the length bug but missed its memory safety impact.
+  followup: >-
+    Eclipse fixed Mosquitto releases expected before 2026-11-18, and the author's second post
+    on the container escape.
+  sources:
+  - label: primary
+    url: https://born0monday.me/posts/ha-green-mosquitto-rce/
+  - label: discussion
+    url: https://www.reddit.com/r/netsec/comments/1xr33yo/pwning_home_assistant_green_preauth_rce_in/
+  thread: f-0189
+- title: >-
+    rmcp, the official Rust MCP SDK, fixes an OAuth client SSRF and unauthenticated memory
+    exhaustion in Streamable HTTP
+  section: Security
+  category: Security
+  blurb: >-
+    Three RustSec advisories hit rmcp: an OAuth discovery SSRF fixed in 3.7.0 and two unbounded-memory
+    bugs in its Streamable HTTP transports.
+  summary: >-
+    RUSTSEC-2026-0457 (GHSA-5p52-q7pq-9fq2) says the rmcp OAuth client from 2.0.0 until 3.7.0
+    checked only host strings, so a malicious MCP server could steer discovery to a hostname
+    resolving to an internal address, and token and registration endpoints were not checked
+    at all. RUSTSEC-2026-0461, rated CVSS 7.5, says StreamableHttpService from 3.0.0 until
+    3.6.0 cached tool lookups by name with no size limit, even for rejected requests, so unauthenticated
+    clients could exhaust server memory. RUSTSEC-2026-0462 covers unbounded response body
+    buffering in Streamable HTTP clients.
+  why: >-
+    Rust MCP clients and servers built on rmcp should move to 3.7.0, and code that passes
+    a custom OAuth HTTP client must enforce its own outbound address policy.
+  background: >-
+    The Model Context Protocol (MCP) lets AI agents call tools exposed by servers, and Streamable
+    HTTP is its HTTP transport. Server-side request forgery (SSRF) here means a hostile server
+    tricks the client into sending requests to internal services it can reach, such as unauthenticated
+    admin endpoints. The fix resolves hostnames and applies the address policy to every resolved
+    address and redirect, rather than inspecting the URL text.
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0457.html
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0461.html
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0462.html
+- title: >-
+    Attacker used Qubole's trusted AWS account to assume customer IAM roles and steal secrets
+    and S3 data
+  section: Security
+  category: Security
+  blurb: >-
+    Wiz says roles that still trusted Qubole's AWS account, even unused ones, let an attacker
+    read secrets and copy whole S3 buckets.
+  summary: >-
+    Wiz says an attacker with credentials for the AWS account Qubole's platform uses, 805246085872,
+    assumed roles in multiple customers' accounts between 2026-10-14 and 2026-10-26. The attacker
+    read Lambda environment variables, Secrets Manager and SSM Parameter Store values, tested
+    the found credentials with TruffleHog, and copied S3 data. How the credentials were obtained
+    is not disclosed, and Qubole and Idera had posted no statement.
+  why: >-
+    Any account that ever connected Qubole should search CloudTrail from 2026-10-01 for AssumeRole
+    calls from that account outside AWS, rotate reachable secrets, and add source IP conditions
+    to vendor role trust policies.
+  background: >-
+    SaaS vendors that work inside a customer's AWS account usually get an IAM role whose trust
+    policy lets the vendor's account assume it. The External ID guards against the confused
+    deputy problem, but it is not a secret and appears in plain text in CloudTrail. If the
+    vendor's own account is compromised, every customer role that still trusts it is exposed.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/hackers-exploit-quboles-trusted-aws.html
+  thread: f-0191
+- title: >-
+    Stolen CI credentials let attackers publish wallet-stealing bee-js 13.3.0 to npm and a
+    signed Swarm Desktop 0.56.2
+  section: Security
+  category: Security
+  blurb: >-
+    Ethersphere's release automation shipped a postinstall loader with valid npm provenance
+    and a notarized macOS build before both were pulled.
+  summary: >-
+    On 2026-11-09 attackers used Ethersphere's bee-worker automation account to publish bee-js
+    13.3.0, latest on npm for about 75 minutes, and Swarm Desktop 0.56.2, live on GitHub for
+    about 8.5 hours. Both fetch a payload that steals the Swarm node key and its plain-text
+    password and installs a Go remote shell on Linux and macOS or ScreenConnect on Windows.
+    Clean Swarm Desktop 0.56.3 is out, and signing jobs now need DevOps approval and run only
+    from main.
+  why: >-
+    Search lockfiles, caches and CI logs for @ethersphere/bee-js@13.3.0, and treat any machine
+    or runner that installed it with scripts enabled as compromised.
+  background: >-
+    npm provenance links a package to the repository and workflow that built it, but it does
+    not show that anyone reviewed the code. Here the project's real workflow built the malicious
+    release, so provenance was valid. npm runs postinstall scripts automatically, so a project
+    did not need to import the library for the loader to run.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/hackers-compromise-etherspheres-bee-js.html
+  thread: f-0190
+- title: >-
+    N-able takes hosted N-central offline after a researcher publishes exploits for more than
+    30 flaws
+  section: Security
+  category: Security
+  blurb: >-
+    N-able shut down hosted N-central and told on-prem customers to go offline after a researcher
+    posted proof-of-concept exploits for 30+ flaws.
+  summary: >-
+    Researcher Sean Bales published the Able2Shell repository late on 2026-11-08 with AI-assisted
+    proof-of-concept exploits for more than 30 N-central flaws, including an unauthenticated
+    XXE in service import that chains to an admin account and command execution, plus a stored
+    XSS and a privilege escalation to root. N-able took hosted N-central offline across the
+    Americas, Europe and Asia-Pacific on 2026-11-09, told on-premises customers to shut down
+    their servers, and says it is validating a hotfix with no exploitation seen so far. Bales
+    says he published without notice because earlier RCE reports for another N-able product
+    went unpatched for months.
+  why: >-
+    Any team or MSP running on-premises N-central should keep it offline or unreachable until
+    the hotfix ships, since working exploit code is public.
+  background: >-
+    Remote monitoring and management (RMM) platforms hold administrative agents on every managed
+    endpoint, so one compromised server gives an attacker code execution across all of a provider's
+    customers. That is why RMM flaws have repeatedly fed mass ransomware campaigns against
+    managed service providers. XXE (XML external entity) injection abuses an XML parser that
+    resolves external entities, letting an attacker read local files or reach internal services
+    through crafted input.
+  followup: >-
+    N-able hotfix release and restoration of hosted N-central, with status updates promised
+    every four hours.
+  sources:
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/n-able-takes-cloud-platform-offline-after-30-plus-zero-days-published/
+  thread: f-0193
+- title: >-
+    Google adds TPU 8tx for confidential inference and dual-chip TPU 8i Max, and makes Cloud
+    Pathways GA on GKE
+  section: AI
+  category: AI
+  blurb: >-
+    Google's eighth TPU generation adds 8tx for confidential inference and 8i Max with double
+    the HBM bandwidth, plus open-source TPU Sync.
+  summary: >-
+    Google added two eighth-generation TPU systems on 2026-11-09: TPU 8tx, built on TPU 8t
+    silicon with custom AMD CPU hosts for confidential inference and small-scale training,
+    and TPU 8i Max, which packs two TPU 8i chips for double the compute, SRAM and HBM bandwidth.
+    Google also open-sourced TPU Sync for KV cache tiering and RL weight sync, and made Cloud
+    Pathways and GKE dynamic slicing generally available on GKE. Google says dynamic slicing
+    cuts job startup times by up to 5x.
+  why: >-
+    Teams running inference or RL on Google Cloud get confidential computing on TPUs and GA
+    tools for multi-slice jobs, and PyTorch and vLLM code can target TPUs through the TorchTPU
+    stack.
+  background: >-
+    TPUs are Google's custom accelerators for machine learning. Confidential computing keeps
+    data and model weights encrypted and isolated in memory while they are processed, not
+    only at rest and in transit. Pathways is the single-controller runtime Google DeepMind
+    uses to drive many TPU slices as one program.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/topics/ai-infrastructure/tpu-8tx-and-tpu-8i-max/
+  - label: primary
+    url: https://cloud.google.com/blog/topics/ai-infrastructure/cloud-pathways-a-distributed-ml-runtime-is-ga/
+  - label: primary
+    url: https://cloud.google.com/blog/topics/ai-infrastructure/introducing-tpu-sync-fast-kv-cache-and-weight-transfer-on-tpu/
+- title: >-
+    Google DeepMind agents cut RSA-1024 signature forgery cost 3.5-fold and find cheaper batch
+    factoring
+  section: AI
+  category: AI
+  blurb: >-
+    Agents working with UC San Diego and Inria cryptographers re-ran a signature forgery on
+    a 1024-bit key in 391 core-years, not 1,380.
+  summary: >-
+    SecurityWeek reports that DeepMind agents, supervised by cryptographers from UC San Diego
+    and Inria, found that PKCS#1 v1.5 padding adds no protection once an attacker controls
+    roughly half the signed block, and re-ran an earlier forgery on a 1024-bit key in 391
+    CPU core-years against 1,380. Two agents designed, ran and debugged the computation in
+    under four days with about 20 human messages. A second, unimplemented algorithm makes
+    factoring each additional 1024-bit key about 30 times cheaper after one upfront computation.
+  why: >-
+    Anything still signing with RSA-1024 through PKCS#11 devices such as HSMs has less margin
+    than assumed, while 2048-bit and larger keys are unaffected.
+  background: >-
+    PKCS#1 v1.5 is an older RSA padding scheme still common in hardware security module signing
+    interfaces. The forgery needs about 4 billion chosen signing queries, does not recover
+    the private key, and fails against devices that hash messages internally. Factoring one
+    1024-bit key is estimated at 500,000 to 1 million core-years.
+  sources:
+  - label: discussion
+    url: https://www.securityweek.com/google-deepminds-ai-agents-make-1024-bit-rsa-keys-cheaper-to-attack/
+- title: >-
+    Meta releases Muse Ember, a $0.10 and $0.50 per million token model for agent subtasks
+    with a 1M context
+  section: AI
+  category: AI
+  blurb: >-
+    Meta's smallest Muse model targets tool calls and coding subtasks, and Meta claims more
+    intelligence per dollar than Claude Haiku 5.5.
+  summary: >-
+    Muse Ember is available as muse-ember-1.0 on the Meta Model API and Muse Code at $0.10
+    input and $0.50 output per million tokens, with a 1M-token context, up to 512K output
+    tokens and Responses API support. Meta says it scores 36 on the Artificial Analysis Intelligence
+    Index at about $0.14 per task, against $2.39 for Muse Spark 1.3. Claude Haiku 5.5 still
+    leads on FrontierCode 2.0, 34.9% to 27.2%.
+  why: >-
+    It gives teams a cheap subagent option for the high-volume steps in agent harnesses, though
+    its code mergeability score trails Haiku.
+  background: >-
+    Meta says Muse Ember is the first model trained using its larger Muse Wonder Full model,
+    which places it as a distilled worker beneath Muse Wonder and Muse Spark. Meta positions
+    it for the planner and worker split, where a strong model plans and a cheap model handles
+    repeated tool calls.
+  comments: The Hacker News thread drew 103 points and 47 comments.
+  sources:
+  - label: primary
+    url: https://research.meta.ai/blog/muse-ember
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50429024
+- title: >-
+    Hyperlight adds hyperlight-unikraft to run unmodified Linux binaries in snapshot-restored
+    micro-VMs for agent code
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Microsoft's embeddable Rust VMM now runs Python, Node.js, Java and other stock Linux binaries
+    in micro-VMs that restore from snapshots in ms.
+  summary: >-
+    hyperlight-unikraft runs a Unikraft unikernel inside a Hyperlight micro-VM, so unmodified
+    binaries for Python, Node.js, .NET, Java, PHP, Go, Rust, C, Bash and PowerShell run on
+    x86_64 and arm64 with no SDK or recompile. It snapshots a warmed runtime: a script importing
+    numpy, pandas and scikit-learn took 45 ms from snapshot against 1,119 ms natively, while
+    a Python hello world was slower at 22 ms against 17 ms. Integrations include urunc for
+    containerd and Kubernetes, an MCP server with a stateful run_python tool, smolagents,
+    an OpenAI Agents SDK sandbox provider, ClickHouse Python UDFs and verl reward execution.
+  why: >-
+    Teams sandboxing agent-generated code get a hypervisor boundary with startup costs near
+    or below native for heavy runtimes, deny-by-default mounts and network, and a containerd
+    path into Kubernetes.
+  background: >-
+    Hyperlight is a CNCF Sandbox project. Unlike QEMU or Firecracker, which run as separate
+    processes, it is a library virtual machine monitor that an application links in, using
+    KVM or MSHV on Linux, WHP on Windows and Hypervisor.framework on macOS. A unikernel is
+    a single-application operating system with one address space and only the kernel components
+    that application needs. The digest covered a Firecracker microVM escape on 2026-11-07,
+    a reminder that the hypervisor boundary narrows risk but does not remove it.
+  sources:
+  - label: primary
+    url: https://www.cncf.io/blog/2026/11/09/run-linux-applications-in-hypervisor-isolated-micro-vms-with-hyperlight/
+- title: >-
+    Claude Code 2.1.321 makes Fable 5.2 the default Fable model and fixes MCP OAuth secrets
+    leaking on redirects
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    The release also closes a sandbox gap where a read-only Bash command ran unsandboxed without
+    a prompt, and adds remote-control settings.
+  summary: >-
+    Claude Code 2.1.321 adds claude-fable-5-2 with a 1M context and moves saved Fable 5.1
+    picks to it, at once on Pro and Max and after an admin allows it on Team and Enterprise.
+    It fixes MCP OAuth requests that sent refresh tokens to another host when a server redirected
+    them, a read-only Bash command that ran outside the sandbox without a prompt, and deny
+    rules that missed files written by cp or mv into a directory. It also adds --settings
+    to claude remote-control and lets mods Claude writes turn on without asking in auto and
+    bypass modes.
+  why: >-
+    Teams that rely on the sandbox, deny rules or MCP OAuth servers should upgrade, and should
+    check the new default that lets Claude-written mods activate in auto mode.
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/claude-code/releases/tag/v2.1.321
+- title: >-
+    Sourcegraph will end Cody on 2027-01-31 and steers users to Deep Search and its MCP server
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Sourcegraph is retiring its RAG-era coding assistant to focus on code search, a deterministic
+    code graph, and tools for other agents.
+  summary: >-
+    Sourcegraph CEO Dan Adler says Cody, including its IDE integrations and APIs, reaches
+    end of life on 2027-01-31. Sourcegraph will focus on Code Search, its code graph, Deep
+    Search, Agentic Batch Changes, and MCP, CLI and API access for agents such as Claude Code
+    and Cursor. It says these are not one-for-one replacements for every Cody feature.
+  why: >-
+    Teams with workflows built on Cody's APIs or IDE plugins have under three months to migrate.
+  background: >-
+    Cody launched in early 2023 as a chat and completion assistant that used retrieval over
+    Sourcegraph's code index. Sourcegraph's agent effort became Amp, which is now an independent
+    company. Adler says Sourcegraph chose two years ago not to turn Cody into an agent.
+  sources:
+  - label: primary
+    url: https://sourcegraph.com/blog/sunsetting-cody-future-of-code-intelligence
+  thread: f-0192
+- title: GitHub secret scanning now checks Actions workflow logs, in public preview
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    GitHub secret scanning now checks completed Actions workflow logs for provider tokens,
+    in public preview for Enterprise Cloud customers.
+  summary: >-
+    From 2026-11-09, GitHub scans the logs of completed Actions workflow runs for provider
+    secret patterns and lists findings in the repository's secret scanning alerts with a link
+    to the log, with validity checks and alerts kept after log deletion. The preview needs
+    GitHub Enterprise Cloud with Secret Protection or Advanced Security and an enterprise
+    policy that is off by default. Existing logs are not backfilled, generic and custom patterns
+    and secrets already masked by Actions are not detected, and alerts send no notifications
+    during the preview.
+  why: >-
+    Teams on GHEC can catch tokens that CI steps echo into logs, but must check the alert
+    list by hand while notifications are off.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-09-secret-scanning-detects-secrets-in-github-actions-workflow-logs
+- title: >-
+    mise 2026.11.5 adds mise dot files to show how dotfile tracking rules apply to each path
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    mise 2026.11.5 adds mise dot files, which lists each path in a directory as tracked, excluded,
+    omitted, untracked, partial or local.
+  summary: >-
+    The new mise dot files command shows the state of every file and subdirectory under a
+    path, names the entry or exclusion rule that applies, and supports recursive listing,
+    filters and JSON output, using the same exclusion check as mise dot save. The release
+    also adds a status.show_env_ignore setting to hide chosen variables from the status line,
+    lets dot commands take relative paths, and retries downloads once without ~/.netrc credentials
+    after a 401.
+  why: >-
+    mise dotfile users can now see why a file is or is not captured instead of reasoning through
+    include, exclude and history rules by hand.
+  sources:
+  - label: primary
+    url: https://github.com/jdx/mise/releases/tag/v2026.11.5
+- title: >-
+    Linux 7.4-rc2 ships with many AI-driven fixes, and Torvalds says BPF fixes now outpace
+    new reports
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Torvalds ships a large 7.4-rc2 full of AI-found bug fixes and says the BPF tree now fixes
+    reports faster than new ones arrive.
+  summary: >-
+    Linus Torvalds tagged Linux 7.4-rc2 on 2026-11-09, a big release candidate following the
+    largest rc1 ever, padded by deferred coccinelle cleanups. He wrote that much of it was
+    driven by AI fixes, that Alexei Starovoitov says BPF fixes are now arriving faster than
+    new reports, and that most other areas have not reached that point. Phoronix lists a FAT32
+    sync-mount speedup, AMDGPU HDMI 2.2 FRL fixes, a BHI mitigation selection fix and fixes
+    for long-standing memory management bugs.
+  why: >-
+    Kernel maintainers see the first sign that the AI-generated bug report backlog may be
+    shrinking, starting with BPF.
+  followup: Linux 7.4 stable release expected around the end of December 2026.
+  comments: >-
+    The Register frames the post as a sign the AI patch flood may have peaked, citing record
+    monthly fix counts at Microsoft and Oracle.
+  sources:
+  - label: primary
+    url: https://github.com/torvalds/linux/releases/tag/v7.4-rc2
+  - label: discussion
+    url: https://www.phoronix.com/news/Linux-7.4-rc2-Released
+  - label: discussion
+    url: https://www.theregister.com/security/2026/11/09/linus-torvalds-sees-signs-ai-prompted-patch-flood-has-peaked/5308345
+- title: >-
+    macOS 27.2.1, 26.7.3 and 15.8.3 fix eight flaws and block compromised eMudhra intermediate
+    certificates
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    macOS 27.2.1, 26.7.3 and 15.8.3 patch eight flaws and block compromised eMudhra intermediate
+    certificates in bundled and Xcode tools.
+  summary: >-
+    Apple released security updates for macOS Golden Gate, Tahoe and Sequoia on 2026-11-09,
+    each listing the same eight fixes, including AirPlay and Messages flaws, with none reported
+    as exploited. Apple says the updates handle compromised eMudhra intermediate certificates
+    by updating /etc/ssl/cert.pem and blocking the certificates in command line tools bundled
+    with macOS and Xcode. Older macOS versions do not get that fix, so their users must remove
+    the certificates by hand.
+  why: >-
+    Developers on unsupported macOS versions need to remove the eMudhra intermediates from
+    their trust stores themselves, since curl and other bundled tools still trust them.
+  sources:
+  - label: discussion
+    url: https://eclecticlight.co/2026/11/09/apple-has-just-released-updates-to-macos-27-2-1-26-7-3-and-15-8-3/
+- title: >-
+    AWS Nitro Sandboxes run each EKS pod, ECS task or agent workload in its own Nitro VM at
+    no extra charge
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    A one-line change gives each pod or task a hardware-isolated VM on shared EC2 instances,
+    with attestation before secrets are released.
+  summary: >-
+    AWS Nitro Sandboxes are lightweight VMs managed by the Nitro Hypervisor that run on customers'
+    own EC2 instances. Enabling them in EKS or ECS gives each pod or task its own VM while
+    Pod Identity, VPC CNI, EBS, EFS, S3 and CloudWatch keep working. On EC2 they support Amazon
+    Linux and Firecracker directly, and they are available in all commercial regions on most
+    Nitro instances.
+  why: >-
+    Teams running LLM-generated code or multi-tenant workloads on Kubernetes can get VM isolation
+    per pod without a separate sandbox provider or dedicated hosts.
+  background: >-
+    Containers share the host kernel, so a kernel bug can let one workload reach another.
+    Projects such as Kata Containers and Firecracker put each workload in a microVM to add
+    a hardware boundary. AWS now offers that model natively inside EKS and ECS, with attestation
+    so secrets go only to verified sandboxes.
+  sources:
+  - label: primary
+    url: https://aws.amazon.com/about-aws/whats-new/2026/11/nitro-sandboxes-eks-ecs-ec2/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50428199
+- title: >-
+    ClickHouse Managed Postgres reaches GA on AWS, and ClickHouse acquires Xata for copy-on-write
+    branching
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The NVMe-backed Postgres service replicates to ClickHouse via WAL, and Xata's storage
+    will add instant branches and scale-to-zero for agents.
+  summary: >-
+    ClickHouse Managed Postgres is GA on AWS and in private preview on GCP, built on local
+    NVMe storage with up to two standbys, PgBouncer, read replicas and point-in-time recovery.
+    WalShadow replicates physical WAL to ClickHouse, and pg_clickhouse lets apps query ClickHouse
+    through Postgres. With GA, the beta discount ends and backup storage and public egress
+    become billable, and Xata's branching and scale-to-zero will be integrated in the coming
+    months.
+  why: >-
+    Postgres users who want instant branches for previews or agent sandboxes now have another
+    provider path after Neon, with billing changes for existing beta customers.
+  sources:
+  - label: primary
+    url: https://clickhouse.com/blog/managed-postgres-ga-xata-acquisition
+- title: >-
+    Meta builds a vendor-neutral accelerator plugin layer in lldb-server to debug CPU and
+    GPU code in one session
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    LLDB models the host and the GPU as separate targets with their own address spaces, and
+    most of the shared framework is upstream in LLVM.
+  summary: >-
+    Meta's design adds a plugin interface to lldb-server that sets internal breakpoints on
+    GPU runtime events, initializes the vendor debug API, and opens a second LLDB target for
+    the device. New GDB remote packets handle plugin discovery and connection setup, and a
+    mock accelerator plugin tests the flow without GPU hardware. The post shows a HIP kernel
+    breakpoint resolving when the GPU module loads, and it supports GPU core dumps.
+  why: >-
+    Engineers debugging AI workloads across host and kernel code may get one LLDB or IDE session
+    instead of switching between ROCgdb and CUDA-GDB.
+  background: >-
+    GPU vendors have shipped their own debuggers, such as AMD's ROCgdb and NVIDIA's CUDA-GDB,
+    because GPUs use different instruction sets, lane-based execution and separate address
+    spaces. lldb-server is the LLDB component that controls the debugged process and speaks
+    the GDB remote protocol to the client.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/11/09/developer-tools/extending-lldb-to-debug-applications-that-span-cpus-and-gpus/
+- title: >-
+    Sentry cut symbolication database CPU from 76% to 19% by capping rows scanned per URL
+    lookup
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    A release named after an unexpanded CI variable piled up 44M index rows, and a per-lookup
+    row cap cut Sentry's database CPU from 76% to 19%.
+  summary: >-
+    Customer builds that passed the literal string VERCEL_GIT_COMMIT_SHA as the release name
+    put every build into one release, and the worst case held 13,595 bundles and 44 million
+    URL index rows that a single lookup could not scan before the query timeout, after which
+    Symbolicator retried. Sentry capped each lookup at 1,000,000 rows and cached the miss,
+    split a multi-table debug ID join into three single-table queries, stopped indexing generated
+    file names, and turned off Postgres JIT, which had cut one query from 14.5 ms to 0.12
+    ms. Busy sessions on the main host fell 77% and lookup timeouts fell 98%, and Sentry JavaScript
+    SDK 11.9.0 now ignores a commit variable whose value is its own name.
+  why: >-
+    It shows that bounding work per request fixed a Postgres load problem that bigger instances
+    and extra indexes had not, and it gives a check for misnamed CI releases.
+  background: >-
+    Symbolication maps minified JavaScript stack frames back to original source using uploaded
+    source maps. Sentry finds the right map either by a debug ID stamped into each built file
+    or, for older setups, by matching release name plus file URL through a large index table.
+    Postgres JIT compiles expensive query plans to machine code, which pays off for long analytic
+    queries but can cost more than it saves on short ones.
+  sources:
+  - label: primary
+    url: https://blog.sentry.io/broken-release-database-load/
+- title: >-
+    Grafana explains how Watchers run always-on monitoring agents for a median of under $5
+    a month
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Grafana's Watchers calibrate once with a capable agent, then run plain code and one small-model
+    call per check, at a median under $5 a month.
+  summary: >-
+    A calibration agent with a capable model maps the telemetry, mines existing alert rules
+    and dashboards, measures normal ranges over the past week, and saves validated checks
+    once. Each later run uses plain code to query metrics, compare against baselines and track
+    Loki log patterns, then makes one tool-free call to a small model that decides whether
+    to notify. Grafana says 41 of its 43 internal watchers cost under $10 a month at $2 per
+    million tokens, and one watcher found more than 10 customer-affecting production bugs.
+  why: >-
+    It is a concrete cost pattern for agentic monitoring: spend model reasoning once at setup
+    and keep the per-run model call narrow.
+  sources:
+  - label: primary
+    url: https://grafana.com/blog/run-cost-effective-always-on-agents-to-monitor-your-environment-the-engineering-behind-watchers/
+- title: >-
+    Uber relaxes SubmitQueue conflict checks and validates main after landing to absorb AI-driven
+    PR growth
+  section: Talks
+  category: Video
+  blurb: >-
+    Uber's merge queue went from 30-minute to 3 to 4 hour waits as AI PRs grew, then relaxed
+    conflict checks and verified main after landing.
+  summary: >-
+    Uber engineers say queue requests rose from about 90 to 130 an hour between January and
+    March 2026, mostly from AI-generated changes, and P95 land time grew from 30 minutes to
+    3 to 4 hours. They added peak-hour admission gating with a deferred queue for expensive
+    changes, then scored target overlap between changes with a Jaccard measure and dropped
+    weak conflict edges to run more in parallel. That lets some combinations land untested,
+    so a post-land system called StowPipe validates new commits and advances a verified main
+    pointer, and peak throughput reached about 300 lands an hour at a 30-minute P95.
+  why: >-
+    Monorepo teams facing agent-driven PR volume may need to trade an always-green trunk for
+    post-merge validation and a verified-main pointer.
+  background: >-
+    A merge queue tests each change against the changes ahead of it so the trunk stays green
+    when many PRs merge concurrently. Uber's SubmitQueue already speculated on likely outcomes
+    and built unrelated targets in parallel. The new step accepts a sometimes broken main
+    and relies on post-land checks plus on-call reverts.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=hX140a5klW0
+- title: >-
+    Modal's async agent RL recipe trains stably with rollouts spread over mixed GPUs and clouds
+  section: Talks
+  category: Video
+  blurb: >-
+    Modal's RL recipe corrects trainer and sampler mismatch so agent rollouts can run on mixed
+    GPU types across clouds, 15 percent cheaper.
+  summary: >-
+    Jason Mancuso describes a recipe of GRPO plus masked importance sampling, score centering
+    to remove accumulated drift, and top-p sampling with mask replay, ablated on Qwen 3.6
+    35B MoE with code environments. Because per-step weight deltas are 100 to 1,000 times
+    sparse, compressed updates let inference workers run outside the training cluster across
+    providers and GPU types, including FP8 pools, with stable reward. He says rollouts cost
+    15 percent less, and that the code builds on Miles and SGLang with a source release planned.
+  why: >-
+    Teams with a production agent harness and evals can treat them as an RL environment and
+    run rollouts on cheaper, scattered GPUs.
+  background: >-
+    GRPO, introduced with DeepSeek R1, scores a group of sampled answers against each other
+    instead of training a separate value model. Asynchronous RL keeps samplers and trainer
+    busy at once, but rollouts then come from slightly stale weights, and kernel or precision
+    differences make the sampler's token probabilities differ from the trainer's. Importance
+    sampling reweights tokens to correct for that mismatch.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=3nDMYV-QHLs
+- title: >-
+    Linear runs triage and review agents that check PRs against past product decisions and
+    reverts
+  section: Talks
+  category: Video
+  blurb: >-
+    Linear runs a triage agent that enriches issues and a review agent that checks PRs against
+    past product decisions, reverts and incidents.
+  summary: >-
+    Tom Moor says Linear's triage agent labels, deduplicates and routes incoming requests,
+    then attaches customer value, logs, related issues and prior decisions, and small bugs
+    are fixed automatically. A review agent reads the original issue, product history, reverts,
+    incidents, overlapping work and the agent session, and caught a reintroduced UI element
+    that had been rejected before and an incident-prone open DB transaction that Codex missed.
+    A daily automation mines merged PRs for lessons and writes them back into agents.md and
+    docs.
+  why: >-
+    Review agents that see issue intent and product history catch coherence regressions that
+    code-only AI review misses.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=Xw9utONfhIY
+- title: >-
+    Daytona finds agent frameworks converging on separate VM sandboxes as CrewAI and AG2 drop
+    local execution
+  section: Talks
+  category: Video
+  blurb: >-
+    Daytona argues allow lists and embedded runtimes leave tool calls unisolated, and notes
+    CrewAI and AG2 dropped local code execution.
+  summary: >-
+    Mislav Ivanda compares three isolation models for agent code: command allow lists with
+    approval prompts, embedded runtimes such as V8 or QuickJS, and a separate VM. He argues
+    that allowing a command like python -c grants arbitrary capability, and that embedded
+    runtimes isolate generated glue code while its tool calls still run on the host. He cites
+    CrewAI removing its local code interpreter in April 2026 and AG2 retiring local executors,
+    and says the execution boundary is harder to swap later than the framework.
+  why: >-
+    Pick the agent execution boundary before the framework, because tools written for host
+    execution are costly to move into a sandbox later.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=WWIFiQi9U4w
+- title: >-
+    Fireship walks through OpenAI's GPT-6 Cyber agent pipeline that found 948 Linux kernel
+    root exploits
+  section: Videos
+  category: Video
+  blurb: >-
+    Fireship recaps OpenAI research where a GPT-6 Cyber agent swarm found 948 unique Linux
+    kernel root exploits for about $1.2 million.
+  summary: >-
+    The video describes a four-stage pipeline: a scout agent narrowed kernel master to about
+    5,000 code targets reachable by unprivileged users, an analyst produced candidate bugs
+    for about $316,000 in tokens, a triage agent reproduced them in VMs with the kernel memory
+    checker, and exploit agents built working root exploits with KASLR and SMEP enabled. The
+    run cost about $1,213,000, or about $1,280 per exploit, compared with 166 local privilege
+    escalations at about $3,100 each from a GPT-5.6 Sol run in July. OpenAI withheld technical
+    details and says an unpatched low-privilege account should be treated as equivalent to
+    root.
+  why: >-
+    Shared hosts, CI runners and agent sandboxes that rely on kernel privilege boundaries
+    need prompt kernel patching and a stronger isolation layer such as a VM.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=pf5tXJZM1Rw
+- title: >-
+    Hacker News debates whether Opus 5.5 reasoning changed on 2026-11-03 after a user's analysis
+    of 1,400 sessions
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A developer had Gemini analyze 1,400 Claude Code sessions and says Opus 5.5 at high effort
+    now reasons less, drawing 320 points on Hacker News.
+  summary: >-
+    Shane Melaugh posted that Gemini 4 Argon analysis of 1,400 of his Claude Code sessions
+    shows Opus 5.5 reasoning changed sharply on 2026-11-03, that high effort now reasons less,
+    and that xhigh fixed a bug in minutes where high failed after three hours. He later said
+    the analysis is not a scientifically rigorous benchmark. The Hacker News thread reached
+    320 points and 215 comments, and r/ClaudeAI carried a parallel LiveNerf tracking thread.
+  why: >-
+    Teams that depend on a fixed reasoning effort setting should keep their own evals, since
+    provider-side changes can shift agent behavior with no model name change.
+  comments: >-
+    Commenters link an r/ClaudeCode post that frames the change as an A/B test, and several
+    report Claude Code fumbling tool calls such as calling a lowercase bash tool. Others argue
+    for self-hosted open-weight models for consistency, while critics say local models still
+    trail on coding. No Anthropic statement appears in the thread.
+  sources:
+  - label: primary
+    url: https://twitter.com/shanemelaugh/status/2119192075505893695
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50422069
+  - label: discussion
+    url: https://www.reddit.com/r/ClaudeAI/comments/1xriv9l/has_anthropic_nerfed_opus_55_livenerf_day_47/
+- title: >-
+    Hacker News debates SSH agent forwarding by AI agents after a claim about ChatGPT Desktop
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A Hacker News post says ChatGPT Desktop forwards the local SSH agent to remote hosts,
+    but commenters note the cited Codex PR was never merged.
+  summary: >-
+    A text post claiming that ChatGPT Desktop forwards the user's SSH agent so a remote agent
+    can push to private repos drew 202 points and 68 comments on 2026-11-09. Its only evidence
+    is a review comment on an openai/codex pull request that several commenters point out
+    was closed without merging and described as opt-in. The thread turned into a broader discussion
+    of how to limit what agents can do with local keys.
+  why: >-
+    Agent tools that open SSH sessions can reach any key loaded in the local agent unless
+    forwarding is disabled or each signature needs a physical confirmation.
+  comments: >-
+    Commenters recommend ForwardAgent no as the default in ssh config, ProxyJump instead of
+    agent forwarding for jump hosts, and keys that need a touch or Touch ID per use, such
+    as ed25519-sk keys on a YubiKey or Secure Enclave keys through Secretive. Others note
+    Docker Desktop and DevPod have also injected agent forwarding into ssh config.
+  sources:
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50422628
+- title: >-
+    Fable 5.2 tops Artificial Analysis at 65, and Hacker News and Reddit argue over its cost
+    per task
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Artificial Analysis scores Fable 5.2 at max effort 65, the top result, but used 275M output
+    tokens on the index and 44 minutes per task.
+  summary: >-
+    Artificial Analysis rates Claude Fable 5.2 at max effort 65 on Intelligence Index v5.0.1,
+    against a median of 40 in its price tier, while it generated 275M output tokens over the
+    index against a median of 72.8M and took 44.1 minutes per task with a 231-second time
+    to first answer token. The Hacker News thread reached 202 points and 121 comments within
+    three hours, and r/ClaudeAI and r/OpenAI threads argued over whether the model is cheaper
+    per task than Fable 5.1.
+  why: >-
+    Cost per finished task, not the per-token price cut, decides whether Fable 5.2 is cheaper
+    for a given workload, and the effort setting moves it a lot.
+  comments: >-
+    The top comment says output tokens per task rose from about 118k on Fable 5.1 to about
+    274k on 5.2 at max effort, doubling cost per task despite the price cut. Replies counter
+    that the high setting scores 62 at about 80k tokens and a third of the max cost, and one
+    user reports the model ignoring CLAUDE.md instructions.
+  sources:
+  - label: primary
+    url: https://artificialanalysis.ai/models/claude-fable-5-2
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50431144
+  - label: discussion
+    url: https://www.reddit.com/r/ClaudeAI/comments/1xs292a/wtf_fable_52_cost_per_task_is_insane_its_not/
+  - label: discussion
+    url: https://www.reddit.com/r/OpenAI/comments/1xs2gvx/fable_52_stands_alone_the_gulf_is_widening/
