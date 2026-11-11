@@ -1,3 +1,6 @@
+import pytest
+import yaml
+
 from digest import config
 
 BEFORE = """# Head.
@@ -49,3 +52,10 @@ def test_propose_matches_the_committed_formatting(tmp_path, monkeypatch):
     config.propose({key: config.document()[key] for key in config.PROPOSABLE})
 
     assert path.read_text() == committed
+
+
+def test_load_refuses_python_tags(tmp_path):
+    file = tmp_path / "data.yaml"
+    file.write_text("!!python/object/apply:os.system ['true']\n")
+    with pytest.raises(yaml.constructor.ConstructorError):
+        config.load(file)
