@@ -1,5 +1,5 @@
 date: '2026-11-11'
-updated: 2026-11-11T17:22Z
+updated: 2026-11-11T23:42Z
 stories:
 - title: >-
     Microsoft fixes 1,093 flaws on November Patch Tuesday, including exploited Outlook spoofing
@@ -90,6 +90,42 @@ stories:
   - label: Node.js 22.23.5 release
     url: https://github.com/nodejs/node/releases/tag/v22.23.5
 - title: >-
+    AWS releases AWS Emulator, a free open-source Rust emulator of AWS APIs for local testing
+  section: Top stories
+  category: Infrastructure
+  blurb: >-
+    AWS Emulator serves AWS APIs on localhost to the CLI, SDKs and coding agents, with per-service
+    fidelity scores checked against real AWS.
+  summary: >-
+    AWS made AWS Emulator generally available on 2026-11-11 with no service fee. It is written
+    in Rust and built from the public AWS API models. It serves HTTPS on 127.0.0.1:9297, installs
+    from RPM or Debian packages on Linux and runs in Docker on macOS and Windows. An embedded
+    mode for the AWS SDK for Rust runs a separate emulator instance inside each test. Operations
+    that are not implemented return HTTP 501. It does not evaluate IAM or resource policies
+    and acts as a single account with no cross-account or cross-Region behavior. The code
+    is released under CC0.
+  why: >-
+    Integration tests and agent loops against services like S3, DynamoDB and SQS can now run
+    offline without an AWS account, but IAM behavior still has to be tested on real AWS.
+  background: >-
+    Smithy is the interface definition language AWS uses to describe each service's operations,
+    inputs, outputs and errors, and the AWS SDKs are generated from those models. Until now,
+    local AWS testing relied on third-party emulators such as LocalStack and moto, whose behavior
+    could drift from the real services. AWS publishes a fidelity score for each service as
+    k of n tests passing, and each test is first verified against real AWS.
+  comments: >-
+    The Hacker News thread drew 572 points and 194 comments. Simon Willison notes that macOS
+    and Windows users still need Docker, since there is no standalone binary for those platforms.
+  sources:
+  - label: primary
+    url: https://aws.amazon.com/blogs/aws/test-your-applications-against-aws-locally-with-aws-emulator/
+  - label: primary
+    url: https://github.com/aws/aws-emulator
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50456631
+  - label: discussion
+    url: https://simonwillison.net/2026/Nov/11/aws-emulator/
+- title: >-
     Many Electron apps auto-update without signature checks while still trusting compromised
     eMudhra CAs
   section: Security
@@ -149,31 +185,6 @@ stories:
   - label: primary
     url: https://rustsec.org/advisories/RUSTSEC-2026-0482.html
 - title: >-
-    hickory-proto 0.26.2 fixes DNS header memory amplification among five new RustSec advisories
-  section: Security
-  category: Security
-  blurb: >-
-    A small DNS packet claiming 65,535 records made the Rust hickory-proto decoder reserve
-    about 18 MB before failing.
-  summary: >-
-    RUSTSEC-2026-0491 says hickory-proto sized its section vectors from the record counts
-    in the DNS header without checking them against the message size, so repeated small packets
-    could exhaust memory in servers and in clients that receive spoofed responses. The fix
-    in 0.26.2 caps initial capacity at 8 entries. RustSec issued four more hickory-proto advisories
-    the same day, covering panics in the zone file lexer and SVCB or HTTPS parsing and an
-    integer underflow on malformed TSIG records.
-  why: >-
-    Rust services that resolve DNS through hickory, directly or through an HTTP client's resolver
-    feature, should check their lockfile for hickory-proto below 0.26.2.
-  background: >-
-    Hickory DNS, formerly Trust-DNS, is the main pure-Rust DNS client, resolver and server
-    stack, and its hickory-proto crate does the wire-format parsing. Trusting length or count
-    fields from the wire before allocating is a classic amplification bug in binary protocol
-    parsers.
-  sources:
-  - label: primary
-    url: https://rustsec.org/advisories/RUSTSEC-2026-0491.html
-- title: >-
     eMudhra revokes eight more intermediate CAs whose RSA keys passed through a Python script's
     memory
   section: Security
@@ -223,6 +234,59 @@ stories:
   sources:
   - label: primary
     url: https://github.com/grafana/grafana/releases/tag/v13.3.1
+- title: >-
+    Apache httpd 2.4.71 fixes critical mod_http2 race CVE-2026-119618 that can lead to remote
+    code execution
+  section: Security
+  category: Security
+  blurb: >-
+    A synchronization bug in mod_http2's assign_headers corrupts the heap in httpd 2.4.55
+    through 2.4.70, and 2.4.71 also fixes a mod_md crash.
+  summary: >-
+    Apache released httpd 2.4.71 on 2026-11-11 with three CVE fixes. The critical one is CVE-2026-119618,
+    an improper synchronization flaw in mod_http2's assign_headers() that can lead to RCE.
+    It affects httpd 2.4.55 through 2.4.70 and mod_h2 2.0.8 through 2.0.42. Anthropic's OSS
+    Scanner reported it on 2026-10-26 and Google Cloud Vulnerability Research reported it
+    on 2026-11-03. The release also fixes CVE-2026-106023, an important mod_md NULL pointer
+    dereference, and CVE-2026-109163, a low-severity mod_vhost_alias overwrite.
+  why: >-
+    Any httpd server with HTTP/2 enabled on 2.4.55 or later needs 2.4.71 or a distribution
+    backport. Disabling h2 is the stopgap until then.
+  background: >-
+    mod_http2 implements HTTP/2 in httpd. It multiplexes many streams over one connection
+    and processes them on worker threads, so shared state between threads is a recurring source
+    of memory-safety bugs. The October 2.4.69 release already fixed a mod_http2 use-after-free
+    from shared session state.
+  followup: Distribution packages and any public proof of concept or exploitation reports.
+  sources:
+  - label: primary
+    url: https://httpd.apache.org/security/vulnerabilities_24.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50453368
+  thread: f-0204
+- title: >-
+    GitHub Actions, Pages, Webhooks and Copilot were degraded for about 30 minutes on 2026-11-11
+  section: Outages
+  category: Outage
+  blurb: >-
+    Starting at 20:48 UTC, Actions and Pages lost availability and webhooks slowed, and the
+    queued Actions jobs had drained by 21:21 UTC.
+  summary: >-
+    GitHub reported degraded availability for Pages and Actions and degraded performance for
+    Webhooks at 20:48 UTC on 2026-11-11, and Copilot was degraded from 20:57 UTC. GitHub marked
+    the incident mitigated at 21:07 UTC and resolved it at 21:21 UTC after the Actions job
+    backlog cleared. A root cause analysis is pending.
+  why: >-
+    CI runs and webhook-driven deployments around 21:00 UTC may have been delayed or failed
+    and may need re-running.
+  followup: GitHub's root cause analysis.
+  comments: The Hacker News thread drew 75 points and 54 comments.
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/dvy0t3mvh1lg
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50458532
+  thread: f-0205
 - title: >-
     Microsoft Research's Lazarus backdoors LLM agents by editing fewer than ten dormant neurons,
     with no training
@@ -279,6 +343,36 @@ stories:
   - label: primary
     url: https://deepmind.google/blog/alphagenome-2-deciphering-how-cells-read-dna-to-better-understand-disease/
 - title: >-
+    Google launches the Gemini Decisions API, scoring up to 1,000 closed-set questions per
+    request at $0.10 per million tokens
+  section: AI
+  category: AI
+  blurb: >-
+    Gemini Decision 1 returns calibrated probabilities for yes/no, choice and rubric questions
+    in 150 to 250 ms, and output tokens are not billed.
+  summary: >-
+    Google released the Gemini Decisions API and the gemini-decision-1 model on 2026-11-11.
+    One request takes one multimodal input of up to 256K tokens, covering text, images, audio,
+    video or PDF, plus up to 1,000 questions of three types: noul (yes/no), choice (2 to 255
+    options) or score (an ordered rubric). The model scores all options in one forward pass
+    and returns a probability and a confidence for each. Google cites 150 to 250 ms end-to-end
+    latency. Pricing is $0.10 per million input tokens with no output charges, and Google
+    says Gemini Notebook uses the API for model routing and Search uses it as a safety layer
+    for MCP tools.
+  why: >-
+    Routing, tool filtering and policy checks in agent pipelines can use a fast scoring call
+    with confidence scores instead of a generative call.
+  comments: >-
+    Simon Willison says the API is almost identical to Jev's, down to reusing Jev's term noul
+    for yes/no questions. The Hacker News thread drew 202 points and 68 comments.
+  sources:
+  - label: primary
+    url: https://blog.google/innovation-and-ai/technology/developers-tools/gemini-decisions-api/
+  - label: discussion
+    url: https://simonwillison.net/2026/Nov/11/gemini-decisions-api/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50456791
+- title: >-
     Sentry's CLI now launches its MCP server with shared credentials, combining MCP tools
     with filesystem access
   section: Agentic coding
@@ -298,6 +392,39 @@ stories:
   sources:
   - label: primary
     url: https://blog.sentry.io/mcp-or-cli/
+- title: >-
+    Agents wrote and tested all of AWS Emulator's code, behind a merge gate with adversarial
+    security agents
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    AWS says agents built its emulator from 400+ API models, filing gaps found against real
+    AWS and gating changes on security agents.
+  summary: >-
+    Swami Sivasubramanian writes that agents first fix each fidelity test until it passes
+    against real AWS, then implement the emulator until it passes the same test. One group
+    of agents finds gaps and files issues. Another writes tests, implements the fix and reviews
+    it. Before a change reaches the public repository, CodePipeline runs the fidelity tests,
+    several adversarial security agents review it, and deterministic checks block agents from
+    editing code they should not touch. Simon Willison counts 29,684 commits in the project's
+    first three weeks.
+  why: >-
+    This is a first-party, mechanism-level account of a software factory in production at
+    AWS. Its guardrails are specs verified against the real system and a merge gate built
+    from agent reviewers.
+  comments: >-
+    Sivasubramanian says Kiro failed for four nights to rebuild a Paxos replication engine
+    with no way to check its results, then finished in about two hours once it had a spec
+    and a test environment.
+  sources:
+  - label: primary
+    url: https://www.allthingsdistributed.com/2026/11/aws-emulator-and-the-engineers-job-when-agents-write-the-code.html
+  - label: primary
+    url: https://aws.amazon.com/blogs/aws/test-your-applications-against-aws-locally-with-aws-emulator/
+  - label: discussion
+    url: https://simonwillison.net/2026/Nov/11/aws-emulator/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50456740
 - title: >-
     Stochastic rounding closes BF16's slower convergence against FP16 in RL post-training
   section: ML research
@@ -419,6 +546,51 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50443427
   thread: f-0202
+- title: >-
+    Atuin 18.24 adds Threads, a synced, encrypted history of agent sessions that you can resume
+    in another agent
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Atuin Threads syncs Claude Code, Codex, Pi and OpenCode sessions with end-to-end encryption,
+    and resumes or forks them in a different harness.
+  summary: >-
+    Atuin 18.24 indexes coding agent sessions and syncs them across machines with Atuin's
+    end-to-end encrypted sync engine. Capture is opt-in, and users can sync through the hosted
+    server, run their own, or stay local. The atuin resume command opens a TUI that resumes
+    a session or forks it into another agent, such as starting in Claude Code and continuing
+    in Codex. The atuin mcp command lets agents search past sessions themselves.
+  why: >-
+    Agent transcripts that were scattered across machines and tools become one searchable
+    record that later agents can query over MCP.
+  comments: >-
+    The post is dated 2026-10-27 and trended on Hacker News on 2026-11-11 with 180 points
+    and 65 comments.
+  sources:
+  - label: primary
+    url: https://blog.atuin.sh/threads-agent-sessions/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50453637
+- title: >-
+    Zellij 0.46 can also run as a standalone desktop terminal on Linux, macOS and Windows
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    The zellij terminal command runs Zellij as its own desktop terminal app, sharing sessions
+    with the multiplexer in other terminals.
+  summary: >-
+    Zellij 0.46 adds a desktop terminal mode started with zellij terminal, on Linux, macOS
+    and Windows. The multiplexer still runs inside other terminals, and both modes use the
+    same sessions, which can be shared between them. The release also adds a GUI settings
+    screen, session previews and a right-click menu.
+  why: >-
+    Zellij users can drop the separate terminal emulator and keep their sessions, layouts
+    and plugins in one tool.
+  sources:
+  - label: primary
+    url: https://lwn.net/Articles/1106903/
+  - label: discussion
+    url: https://www.reddit.com/r/rust/comments/1xtercc/zellij_0460_just_released_rust_developers_can_now/
 - title: >-
     Microsoft FORGE Lab finds safe-code undefined behavior in Rust's standard library with
     an AI scanner
@@ -545,28 +717,6 @@ stories:
   - label: primary
     url: https://www.youtube.com/watch?v=CC872qQ-eNQ
 - title: >-
-    A study of 20,000 agent tool calls finds a quarter pipe CLI output through filters like
-    head and grep
-  section: Talks
-  category: Video
-  blurb: >-
-    Ayush Bhardwaj argues agents' repeated pipes are feature requests, and selection flags
-    cut his tool's piped reads from 82% to a quarter.
-  summary: >-
-    Across about 20,000 calls to 14 CLIs in his own transcripts, a quarter fed output into
-    head, grep, tail, Python and similar filters, over half for read-heavy commands, and 83%
-    of pipes followed patterns seen at least 10 times. He warns that piping cargo test into
-    head without pipefail can report success on failure, and that tail can cut the error so
-    the model never sees it. Adding match-scoped reads, a compact mode and batch inspection
-    cut piped reads from 82% to about a quarter, and agents kept passing a stale flag in 95
-    of 95 searches until the skill file changed.
-  why: >-
-    CLI and MCP authors can mine agent transcripts for repeated pipes and add range, limit
-    and compact flags, with a failure summary on the last lines.
-  sources:
-  - label: primary
-    url: https://www.youtube.com/watch?v=rS36lYuvXQ8
-- title: >-
     Meta runs one AI on-call teammate per rotation, with a three-level autonomy ladder and
     team memory
   section: Talks
@@ -588,27 +738,57 @@ stories:
   - label: primary
     url: https://www.youtube.com/watch?v=_NBx2NNOuA4
 - title: >-
-    Microsoft engineer's talk models sub-agent orchestration as a distributed system with
-    a SAFE handoff contract
+    Duolingo's agent pipeline merged 700 test PRs adding 225,000 lines of iOS tests, with
+    a human approving each one
   section: Talks
   category: Video
   blurb: >-
-    Sub-agent handoffs fail like network calls, so this talk proposes fact provenance, single-use
-    approvals, fan-out caps and explicit outcomes.
+    Temporal workflows pick untested Swift files, Claude Code writes tests, and an LLM judge
+    rejects PRs that touch production code.
   summary: >-
-    Girish Konda maps sub-agent failures to classic faults: half-finished work returned as
-    success, dirty reads of guesses from shared context, unseen rate limits, and retries that
-    repeat side effects. His SAFE model requires source-versioned facts checked for freshness,
-    at-most-once writes with single-use approvals and read-back, per-downstream fan-out budgets,
-    and named outcome states where a timeout is recorded as unknown. He shows fixes from his
-    MCP Pacemaker bridge, such as gating package-manager cold starts two at a time and counting
-    session-cap refusals as failures.
+    Kush Agrawal describes Temporal workflows that score files from Xcode coverage reports,
+    run one Claude Code agent per file to open a labeled PR, and fix red CI up to five times
+    before giving up. The workflows assign the top git blame contributor as reviewer with
+    auto-merge on. A PR that edits non-test files is closed automatically. An LLM judge has
+    reviewed about 1,200 PRs and rejected 73 for edited production code, deleted or disabled
+    tests, or long waits. Coverage of the app's MVVM layers rose from 9% to 59% and overall
+    coverage from 11% to 24%. Lint failures dropped once the agents moved from Linux to Mac
+    runners and could build locally.
   why: >-
-    Orchestrators that read only sub-agent text can be changed to demand a status, evidence
-    and idempotency keys before acting.
+    It shows a concrete identify, write, verify and resolve loop for unattended agent PRs,
+    including the guardrails that stop agents from gaming CI.
   sources:
   - label: primary
-    url: https://www.youtube.com/watch?v=DxP5aW4VknQ
+    url: https://www.youtube.com/watch?v=D_4Rn6uLdQM
+- title: >-
+    Apple Container adds container cluster, a kubeadm Kubernetes cluster of lightweight VMs
+    on a Mac
+  section: Talks
+  category: Video
+  blurb: >-
+    Apple showed container cluster create at KubeCon, running each Kubernetes node as its
+    own VM with a choice of CNI and shared images.
+  summary: >-
+    Apple maintainers Kathryn Baldauf and Vince Prignano presented container cluster, a new
+    feature in apple/container that creates a Kubernetes cluster with a configurable number
+    of workers, CPU and memory. Each node is its own lightweight VM bootstrapped with kubeadm.
+    kind's CNI is the default, and custom CNIs such as Cilium are supported. One flag shares
+    the local image store with the cluster, so images built locally run without pushing. Services
+    get local IPs through macOS networking, with no port forwarding. The talk also recaps
+    container machines, persistent Linux VMs that share the user and home directory with the
+    Mac.
+  why: >-
+    Mac developers can test controllers and network policies on a multi-node upstream Kubernetes
+    cluster without Docker Desktop or a remote cluster.
+  background: >-
+    apple/container is Apple's open-source Swift tool that runs each OCI container in its
+    own lightweight VM using the Virtualization framework on Apple silicon. kubeadm is the
+    upstream Kubernetes tool for bootstrapping control plane and worker nodes. Desktop clusters
+    often run nodes as containers, as kind does, while here each node is a full Linux VM whose
+    kernel supports CNIs such as Cilium.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=JHJoZ_E2e88
 - title: >-
     Hacker News debates VulnCheck's count of 442 Anthropic-credited CVEs and 217 fixes in
     Project Glasswing
@@ -656,3 +836,53 @@ stories:
     url: https://osssaysno.com
   - label: discussion
     url: https://news.ycombinator.com/item?id=50451102
+- title: >-
+    Hacker News swaps datacenter war stories after a false smoke alarm nearly set off sprinklers
+    in Jane Street's server room
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A smoke alarm shut down the cooling and pressurized the sprinklers, so an engineer pulled
+    every power cord as the room reached 143 F.
+  summary: >-
+    Michael Bacarella writes that contractor dust set off the smoke alarm in Jane Street's
+    datacenter at 1 New York Plaza. The alarm cut the room's air conditioning and filled the
+    sprinkler pipes, whose heads open on heat. He shut down every device by hand, and the
+    temperature stopped at 143.6 F, short of the sprinklers' 150 F trigger. Afterward he wrote
+    an OCaml monitor that alerts when the average temperature across the server fleet rises.
+    The post drew 375 points and 185 comments on Hacker News.
+  why: >-
+    Fire suppression interlocks can turn a false alarm into a cooling failure, and fleet-wide
+    temperature averages catch that faster than per-server alerts.
+  sources:
+  - label: primary
+    url: https://michael.bacarella.com/2026/11/10/false-smoke-alarm-jane-street-datacenter/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50455394
+- title: >-
+    Guido van Rossum announces that Tim Peters, author of the Zen of Python and Timsort, died
+    on 2026-07-15
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Python's core developers remember Tim Peters, who designed Timsort, wrote PEP 20 and tuned
+    pymalloc, dict and the cyclic garbage collector.
+  summary: >-
+    Guido van Rossum announced on 2026-11-11 that Tim Peters died on 2026-07-15. Peters wrote
+    PEP 20 and designed Timsort in 2002, which Java and Android later adopted. He was a PSF
+    director from 2001 to 2014. Core developers credit him with polishing pymalloc, the dict
+    implementation, the cyclic garbage collector and generators, and with writing doctest
+    and difflib. The Hacker News thread drew 760 points and 76 comments, and the news also
+    reached r/Python and LWN.
+  why: >-
+    Timsort and the CPython internals Peters shaped still underpin sorting and memory management
+    in Python and other runtimes.
+  sources:
+  - label: primary
+    url: https://discuss.python.org/t/in-memoriam-tim-peters-1952-2026/110028
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50450488
+  - label: discussion
+    url: https://www.reddit.com/r/Python/comments/1xt65ah/tim_peters_has_passed_away/
+  - label: discussion
+    url: https://lwn.net/Articles/1106901/
