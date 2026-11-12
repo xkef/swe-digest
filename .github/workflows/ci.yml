@@ -37,11 +37,11 @@ jobs:
       - name: Tests
         run: mise run test
 
-      # A Renovate bump of one pin can contradict another package's peer
-      # pin. Without this step the first failure is the scheduled run.
-      - name: Agent requirements resolve
+      # Every install runs with --frozen, which installs a stale uv.lock
+      # without complaint. This step fails when pyproject.toml has moved on.
+      - name: Lock matches pyproject.toml
         working-directory: agent
-        run: uv pip install --dry-run --require-hashes -r requirements/agent.txt
+        run: uv lock --check
 
   site:
     runs-on: ubuntu-latest
