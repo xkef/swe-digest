@@ -1,0 +1,363 @@
+date: '2026-11-12'
+updated: 2026-11-12T08:36Z
+lede: >-
+  Attackers pushed malware through channels developers trust: stolen GitHub accounts, MSP
+  remote access panels and a KDE wallpaper.
+stories:
+- title: >-
+    Attacker uses 4,837 hijacked GitHub accounts to run a CI secret stealer in at least 1,806
+    repositories
+  section: Top stories
+  category: Security
+  blurb: >-
+    A wfx-loot stealer pushed through stolen GitHub accounts grabbed CI secrets and cloud
+    roles, then planted backdoors that survive rotation.
+  summary: >-
+    Aikido Security reports that from 2026-11-10 an attacker used stolen credentials for 4,837
+    GitHub accounts to open probe pull requests titled docs: dependency audit notes in 61,764
+    repositories, and the stealer ran in at least 1,806 of them. SafeDep counted 8,093 public
+    repositories with malicious commits, either added to existing workflows or as npm postinstall
+    hooks. The stealer takes Actions secrets, GITHUB_TOKEN, OIDC tokens, AI keys and cloud
+    credential files, can rewrite AWS role trust policies and adds wfx-ci- federated credentials
+    to Azure AD apps, and reached a Packagist package, Go modules and 28 WebdriverIO repositories.
+  why: >-
+    Any repository you can write to may have run the stealer, so check for wfx-docs branches
+    and runs with missing numbers, then rotate every workflow secret and audit cloud trust
+    policies.
+  background: >-
+    GitHub Actions workflows run with the repository's secrets and can exchange a short-lived
+    OIDC token for cloud sessions through workload identity federation, so a single malicious
+    workflow commit can reach AWS, Azure or GCP without any stored key. Attackers who add
+    a new trust relationship or federated credential keep access after the original tokens
+    are revoked. Aikido says the accounts used overlap heavily with those hit in October's
+    GhostAction wave but does not yet attribute both to one actor.
+  comments: >-
+    The Hacker News found new probe pull requests from wfx-docs branches opened between 05:04
+    and 05:38 UTC on 2026-11-12, after Aikido's search ended, and corrected its article after
+    a second analysis found a third exfiltration server and a Telegram channel.
+  sources:
+  - label: primary
+    url: https://www.aikido.dev/blog
+  - label: discussion
+    url: https://thehackernews.com/2026/11/4837-hijacked-github-accounts-ran-ci.html
+  thread: f-0206
+- title: >-
+    SCKit worm uses hijacked ScreenConnect panels to install rogue clients on at least 288
+    endpoints in 48 organizations
+  section: Top stories
+  category: Security
+  blurb: >-
+    Attackers push rogue ScreenConnect clients from compromised MSP panels and steal technician
+    session cookies to reach further panels.
+  summary: >-
+    Huntress says attackers with access to cloud-hosted ScreenConnect panels used Run Command
+    to install rogue clients and a toolkit called SCKit on at least 288 managed endpoints
+    across 48 organizations, first detected on 2026-11-11 at about 17:47 UTC. ConnectWise
+    disabled five third-party extensions, including RMM Plus and Labtech Plus, in partner
+    environments, and says it sees no compromise of its infrastructure or flaw in ScreenConnect.
+    SCKit is built to steal the .aspxauth cookie from technicians who connect to infected
+    machines and broadcast payloads through the panel's Shared Toolbox.
+  why: >-
+    Teams that rely on an MSP using ScreenConnect should check Run Command history and look
+    for unapproved remote access clients even without alerts.
+  background: >-
+    ScreenConnect is a remote support tool that managed service providers use to control many
+    customer machines from one web panel, which makes a stolen panel session equivalent to
+    administrative access across every customer. Huntress says the attacker numbers each compromised
+    MSP sequentially and the observed tags start partway through the sequence, which suggests
+    earlier victims.
+  sources:
+  - label: primary
+    url: https://www.huntress.com/blog
+  - label: discussion
+    url: https://thehackernews.com/2026/11/screenconnect-attacks-target-at-least.html
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/active-screenconnect-attacks-breach-msps-impact-dozens-of-organizations/
+  thread: f-0207
+- title: >-
+    RustSec publishes six russh advisories, including an SSH agent confirm bypass and pre-auth
+    memory exhaustion
+  section: Security
+  category: Security
+  blurb: >-
+    The Rust SSH library russh ignored ssh-add -c confirmation in its agent server and let
+    unauthenticated clients force huge allocations.
+  summary: >-
+    RUSTSEC-2026-0495 (CVE-2026-116794) shows russh's agent server signed with confirm-constrained
+    keys without calling Agent::confirm from 0.50.0-beta.12, so any process reaching the agent,
+    including a remote host over agent forwarding, could sign without approval. It is fixed
+    in 0.65.0. RUSTSEC-2026-0496 (CVE-2026-42189, CVSS 7.5) lets an unauthenticated client
+    send a huge keyboard-interactive response count and make a server allocate gigabytes,
+    fixed in 0.60.1, and further advisories issued the same day cover decompression and message
+    field size limits and client callbacks for unopened channels.
+  why: >-
+    Rust SSH servers and agents built on russh, such as Git forges, should upgrade to 0.65.0,
+    and implementations that left Agent::confirm as todo!() will now hit that code.
+  background: >-
+    Keyboard-interactive is an SSH authentication method in which the server sends prompts,
+    as for TOTP codes, and the client returns a list of answers. The confirm constraint on
+    an SSH agent key requires the user to approve each signature, which limits the damage
+    when the agent is forwarded to an untrusted host.
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0495.html
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0496.html
+- title: >-
+    KDE warns that the NeoNova animated wallpaper for Plasma shipped a Sliver remote-control
+    implant from its first commit
+  section: Security
+  category: Security
+  blurb: >-
+    A working Plasma wallpaper hid a nested base64 script that LD_PRELOADed a Sliver implant
+    from .config/Plasma6Library.so.
+  summary: >-
+    KDE developer David Edmundson writes that the NeoNova Animated Wallpaper on GitHub worked
+    as advertised but hid a doubly base64-encoded script that downloaded a second script,
+    saved a library to .config/Plasma6Library.so and ran it via LD_PRELOAD. The payload appears
+    to be the Sliver remote-control framework. Pling and OpenDesktop removed the listing within
+    hours of KDE's report.
+  why: >-
+    Plasma users who installed third-party wallpapers or widgets should check for .config/Plasma6Library.so
+    and rebuild any machine that has it.
+  background: >-
+    Plasma extensions from the KDE Store run unsandboxed with the user's full privileges,
+    so a wallpaper plugin can execute arbitrary code. Sliver is an open-source command and
+    control framework originally built for red teams.
+  sources:
+  - label: primary
+    url: https://blog.davidedmundson.co.uk/blog/malware-found-disguised-as-3rd-party-plasma-extension-neonova-wallpaper/
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1xtrfsx/malware_found_disguised_as_3rd_party_plasma/
+- title: >-
+    NVFP4 pretraining needs up to 1.52 times the exposures of BF16 to learn rare facts, despite
+    near-equal loss
+  section: ML research
+  category: Paper
+  blurb: >-
+    A controlled study finds 4-bit training slows recall of rarely seen facts while validation
+    loss barely moves, and traces it to update noise.
+  summary: >-
+    Training transformers from scratch on synthetic biographies with controlled exposure counts,
+    the authors find emulated NVFP4 needs 1.32 and 1.52 times as many exposures as BF16 to
+    match recall while validation loss differs by 0.5% and 2%. Noise injected into the optimizer
+    update carries about two thirds of the cost, and raising the learning rate does not recover
+    it. Gradient statistics of BF16 checkpoints rank the cost of formats with a Spearman correlation
+    of 0.96.
+  why: >-
+    Teams evaluating low-precision training recipes should measure rare-fact recall alongside
+    loss, since loss alone hides the gap.
+  background: >-
+    NVFP4 is a 4-bit floating point format with block scaling supported in Blackwell tensor
+    cores, used to cut the memory and compute cost of matrix multiplications. Low-precision
+    recipes are usually accepted when their loss curve tracks the BF16 baseline.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.12832v1
+- title: >-
+    RLVR checkpoints of Olmo-3-7B write chains of thought that help other checkpoints more
+    than SFT or DPO ones do
+  section: ML research
+  category: Paper
+  blurb: >-
+    On multi-digit addition, a paper finds RLVR makes Olmo 3's written reasoning more useful
+    while its internal carry signals stay unchanged.
+  summary: >-
+    The study probes successive SFT, DPO and RLVR checkpoints of Olmo-3-7B-Instruct on multi-digit
+    addition, using carry values as known intermediate state. Probes recover carry information
+    equally well after SFT and RLVR, but chains of thought produced by RLVR raise accuracy
+    for every receiving checkpoint more than SFT or DPO ones. DPO shows similar sensitivity
+    to carry statements without comparable accuracy gains.
+  why: >-
+    It gives evidence that reinforcement learning with verifiable rewards changes how useful
+    written reasoning is, not what the model represents internally.
+  background: >-
+    RLVR, reinforcement learning with verifiable rewards, trains a model on tasks whose answers
+    can be checked automatically, such as math. Olmo 3 is AI2's open model family released
+    with its intermediate post-training checkpoints, which makes this kind of stage-by-stage
+    comparison possible.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.13552v1
+- title: >-
+    Ubuntu 26.10 curl checks certificate revocation locally with rustls upki, with OpenSSL
+    integration planned for 27.04
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Ubuntu's curl now refuses revoked certificates using a local revocation dataset refreshed
+    every six hours, with no extra network calls.
+  summary: >-
+    Ubuntu 26.10 ships curl with upki-openssl, which checks server certificates against a
+    local dataset of revoked certificates built with the same CRLite technology Firefox uses.
+    The upki package adds a systemd timer that refreshes the data every six hours. Canonical's
+    Foundations team plans to integrate upki into Ubuntu's OpenSSL in 27.04 so that over 1,000
+    packages linking OpenSSL get revocation checks.
+  why: >-
+    Command-line and server tools on Ubuntu can start rejecting revoked certificates the way
+    browsers do, instead of waiting for ca-certificates updates.
+  background: >-
+    OpenSSL verifies certificate chains but does not check revocation by default, and online
+    checks such as OCSP add latency and leak browsing data. CRLite compresses the revocation
+    status of all publicly logged certificates into a compact filter that clients download
+    and query locally. The announcement cites the eMudhra incident, where browsers blocked
+    weak intermediate CAs the same day while most other software waited for distribution updates.
+  sources:
+  - label: primary
+    url: https://discourse.ubuntu.com/t/introducing-initial-upki-support/91540
+  - label: discussion
+    url: https://www.reddit.com/r/rust/comments/1xte7b1/ubuntu_2610_ships_with_initial_support_for/
+- title: >-
+    Anthropic's Lydia Hallie says Claude Code setups should move control into deny rules,
+    sandboxes, hooks and CI
+  section: Talks
+  category: Video
+  blurb: >-
+    With Opus 5.5 and auto mode, CLAUDE.md should hold only what code can't show, and hooks
+    must exit with code 2 to send Claude back.
+  summary: >-
+    Hallie says CLAUDE.md should keep only facts Claude cannot see in the code, and a doctor
+    prompt audit command checks CLAUDE.md and skills against the current model. She cites
+    an Anthropic study where about 14% of people caught a clearly dangerous command while
+    auto mode blocked 89%, so guarantees belong in deny rules, which are checked before the
+    classifier, and in the OS sandbox, which also binds child processes such as npm test scripts.
+    She recommends hooks that run tests at task and session end and exit with code 2, CI autofix,
+    cloud sessions with network secrets, and Claude Code projects, a beta where a Fable orchestrator
+    starts Opus 5.5 thread sessions.
+  why: >-
+    It gives a concrete checklist for running long unattended Claude Code sessions safely,
+    including the exit code detail that makes hooks actually block completion.
+  background: >-
+    Auto mode is a Claude Code permission mode in which a separate classifier approves or
+    blocks tool calls that go beyond reading and editing project files. Hallie says Anthropic
+    went from about 2,500 changes a day in May to more than 30,000 a day in September as engineers
+    moved from approving each step to managing dozens of parallel sessions.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=vlfCjWuv4es
+- title: >-
+    Intel's Nikolay Petrov splits agent skills into checkable claims to find lines that teach
+    the model nothing
+  section: Talks
+  category: Video
+  blurb: >-
+    Testing each skill claim with and without the skill showed models already know much of
+    it, and the run cost $14 for 29 skills.
+  summary: >-
+    Petrov breaks a SKILL.md into 25 to 30 question and answer items, asks the model each
+    question with and without the skill, and has a judge from another model family score the
+    answers. That sorts lines into already known, newly taught, harmful, and still missed.
+    Opus understood 70% of skill content under lenient scoring but only 22% under strict scoring
+    of exact details, and only one harmful item appeared among about 400 in Anthropic's skills.
+  why: >-
+    Skill authors can prune what the model already knows and keep exact details, then confirm
+    with end-to-end evals that scores hold.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=yzx4IuEh_tU
+- title: >-
+    DigitalOcean's tuning agent runs Optuna Bayesian search over vLLM settings and lifts GPT-OSS-120B
+    goodput 17.5%
+  section: Talks
+  category: Video
+  blurb: >-
+    An agent tunes vLLM serving configs across four traffic regimes over hours of trials and
+    doubled throughput on a DeepSeek R1 distill.
+  summary: >-
+    The agent starts from a model's default vLLM recipe and uses Optuna's Bayesian optimization
+    to search serving parameters against four regimes: short chat, long chat, RAG and batch
+    classification. A 50-trial run of several hours on GPT-OSS-120B found a config with 17.5%
+    more goodput tokens, and a nine-trial run on a DeepSeek R1 distill doubled throughput
+    and roughly halved inter-token latency. Each run outputs an HTML report and an optimized
+    YAML recipe.
+  why: >-
+    Teams self-hosting open-weight models can automate serving config search against their
+    own traffic mix instead of tuning a single setting by hand.
+  background: >-
+    Bayesian optimization fits a model of how a score varies with parameters and picks the
+    next trial where improvement is most likely, which needs far fewer runs than grid search
+    when each trial is an hours-long benchmark.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=cWrYEBlWpcY
+- title: >-
+    Meta moves Helm deployments for its AI Kubernetes clusters from Terraform to Argo CD and
+    Kargo
+  section: Talks
+  category: Video
+  blurb: >-
+    Meta's cloud foundation team pulled app rollout out of a 12-layer Terraform stack and
+    cut deployment time from over four hours to minutes.
+  summary: >-
+    Meta engineers say their research and inference clusters were built from about 12 Terraform
+    layers that also deployed most Helm charts, so a stuck DaemonSet or a cloud SDK error
+    could block an unrelated values change. They now keep Terraform for cloud resources, Kargo
+    for promotion and a managed internal Argo CD service for deployment, with a tool called
+    Catch that exports internal monorepo configs and merges layered Helm values into Git.
+    A pipeline.yaml abstraction asks developers only what to deploy, where, and how to roll
+    out.
+  why: >-
+    It is a first-hand argument for keeping Terraform out of in-cluster app delivery, relevant
+    to anyone running Argo CD alongside infrastructure as code.
+  background: >-
+    Argo CD continuously reconciles Kubernetes clusters to manifests stored in Git, while
+    Kargo promotes versions of those manifests through stages such as dev and production.
+    Both expect Git as the source of truth, which is why Meta needed a bridge from its internal
+    monorepo.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=UDDRhFgAE9Y
+  - label: discussion
+    url: https://www.cncf.io/announcements/2026/11/11/meta-wins-cncf-end-user-case-study-contest-for-accelerating-ai-infrastructure-deployments-from-hours-to-minutes/
+- title: >-
+    Voltage glitching turns a CMP 170HX mining card into an A100-80G that runs about 1.18
+    times faster than retail
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A researcher glitched the GA100 fuse controller to burn fuseless fuse rows, unlocking
+    HBM, all working SMs, NVLink and PCIe Gen4.
+  summary: >-
+    Kate's write-up describes a voltage fault injection on the GA100 die that clears the secured
+    burn restriction so new fuseless fuse rows can override disable masks, turning an 8 GB
+    CMP 170HX into an 80 GB card with about 124 SMs. It measured 85.9 FP16 TFLOP/s against
+    72.5 for a retail A100, which ships with 108 SMs, and the findings were disclosed to NVIDIA
+    first. The post drew 293 points and 115 comments on Hacker News and a separate r/LocalLLaMA
+    thread.
+  why: >-
+    It shows that NVIDIA's product segmentation lets extra fuse burns relax restrictions,
+    a design flaw with security as well as resale implications.
+  background: >-
+    eFuses are one-time programmable bits that chipmakers burn to disable defective or unpaid-for
+    parts of a die, a practice called floorsweeping. A secure design makes every additional
+    burn more restrictive, because burns cannot be undone.
+  sources:
+  - label: primary
+    url: https://blog.kate.land/posts/using-voltage-glitching-to-unlock-the-a100/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50451903
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1xu1dkz/someone_voltageglitched_a_cmp_170hx_mining_card/
+- title: >-
+    Hugo van Kemenade's guide to GitHub Actions workflow lockfiles draws 234 points on Hacker
+    News
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    gh actions-lock records commit SHAs in a lockfile so workflows can use readable tags,
+    and Renovate, Dependabot and zizmor 1.32.0 support it.
+  summary: >-
+    The CPython release manager shows the gh actions-lock extension rewriting SHA-pinned uses
+    lines back to version tags and writing .github/workflows/actions.lock with each action's
+    commit, owner ID and repository ID. He adds a CI job that runs gh actions-lock --verify
+    and notes that zizmor 1.32.0 is the first version to accept lockfiles instead of demanding
+    hash pins. The post reached 234 points and 47 comments on Hacker News on the same day
+    the wfx-loot CI stealer campaign was reported.
+  why: >-
+    Lockfiles give tamper-resistant action pinning without unreadable SHAs, which matters
+    as attackers target CI workflows.
+  sources:
+  - label: primary
+    url: https://hugovk.dev/blog/2026/lock-github-actions/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50459485
