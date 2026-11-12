@@ -1,5 +1,5 @@
 date: '2026-11-12'
-updated: 2026-11-12T08:36Z
+updated: 2026-11-12T13:57Z
 lede: >-
   Attackers pushed malware through channels developers trust: stolen GitHub accounts, MSP
   remote access panels and a KDE wallpaper.
@@ -130,6 +130,96 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/linux/comments/1xtrfsx/malware_found_disguised_as_3rd_party_plasma/
 - title: >-
+    Red Hat Quay CVE-2026-123710 lets any account install a rogue token signing key and write
+    to every repository
+  section: Security
+  category: Security
+  blurb: >-
+    Any Quay user, or anonymous clients where allowed, can install a rogue token signing key
+    and get read and write access to every repository.
+  summary: >-
+    Red Hat rates CVE-2026-123710 in Quay's service key server at CVSS 9.8. An attacker with
+    a registry token, which anonymous access or any valid account provides, can abuse key
+    rotation to install a non-expiring signing key, mint tokens for any repository, and delete
+    legitimate instance keys. Red Hat's advisory names no fixed version, but fixes for this
+    flaw and CVE-2026-110697 were merged into the Quay repository on 2026-11-11.
+  why: >-
+    Teams running Quay must restrict access to the key service and audit for unknown signing
+    keys now, since password and robot token resets do not evict an attacker's key.
+  background: >-
+    Container registries that follow the Docker token authentication model issue short-lived
+    signed tokens that grant pull or push rights on specific repositories, and the registry
+    trusts any token signed by a key it holds. Control of a trusted signing key therefore
+    equals control of every repository. An attacker who can overwrite images also reaches
+    every system that later pulls them.
+  followup: A Red Hat Quay release that ships the merged fix.
+  sources:
+  - label: discussion
+    url: https://www.securityweek.com/critical-red-hat-quay-vulnerability-could-expose-private-container-images/
+  thread: f-0208
+- title: >-
+    MongoDB CVE-2026-118383 lets two unauthenticated pings crash a lagging replica set member
+    after failover
+  section: Security
+  category: Security
+  blurb: >-
+    Two unauthenticated ping requests plant waiters that crash a lagging MongoDB replica set
+    member when it later wins an election.
+  summary: >-
+    MongoDB rates the use-after-free CVE-2026-118383 at 9.5 on CVSS 4.0 and has shipped fixed
+    releases on each affected branch, with Atlas patched during maintenance. Datadog Security
+    Labs reproduced it: pings carrying readConcern.afterOpTime plant waiters that persist,
+    and if that member later wins an election while behind, catch-up cleanup runs twice and
+    the new primary segfaults, as 8.0.34 did in the lab. Fixed 8.0.37 rejects the requests,
+    but a public proof of concept reports the end-of-life 8.2.12 still shows the bug.
+  why: >-
+    Self-managed replica sets and sharded clusters need the fixed release on every member,
+    because authentication does not block the two requests.
+  background: >-
+    A MongoDB replica set keeps copies of the same data on several servers, with one primary
+    taking writes. When the primary fails, members elect a new one, which first applies writes
+    it missed in a catch-up phase. The flaw sits in the cleanup at the end of that phase,
+    so it only fires during a failover.
+  followup: Whether MongoDB ships an 8.2 fix or confirms the branch is affected.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/critical-pre-auth-mongodb-flaw-cve-2026.html
+  thread: f-0209
+- title: >-
+    Google Cloud says Turin VMs need guest kernel patches and a stop and start for three AMD
+    Zen 5 TSA flaws
+  section: Security
+  category: Security
+  blurb: >-
+    Google Cloud says C4D, N4D, H4D, Z4D and G4 VMs need a patched guest kernel and a stop
+    and start to mitigate three AMD Zen 5 side channels.
+  summary: >-
+    AMD now says Zen 5 is affected by TSA-SQ (CVE-2024-36350) and TSA-L1 (CVE-2024-36357),
+    reversing an earlier statement, and adds a new variant, CVE-2026-0004, which Xen calls
+    TSA-Fill. Google has mitigated cross-VM and VM-to-host attacks, but inside a guest a process
+    on the same core may infer data from other processes or the kernel until the guest kernel
+    is patched and the VM is stopped and started after Google updates its reported CPU information.
+    The Linux kernel has a mitigation commit, Debian has fixed only unstable so far, and Zen
+    5 microcode has been in linux-firmware since 2026-09-23.
+  why: >-
+    Anyone running fifth-generation EPYC hosts or VMs must track both microcode and kernel
+    updates, because a guest reboot alone does not enable the mitigation on Google Cloud.
+  background: >-
+    Transient Scheduler Attacks are AMD side channels disclosed on 2025-07-08, in which the
+    timing of instructions under certain microarchitectural conditions reveals data from the
+    store queue or L1 data cache. Like earlier Spectre-class flaws, they need code running
+    on the same core, so cloud providers isolate tenants at the hypervisor while guests must
+    protect their own processes. A guest kernel only enables a mitigation when the CPU it
+    sees reports the matching feature bits, which is why Google must update the CPU information
+    first.
+  followup: >-
+    Turin GKE node images, Debian stable kernel fixes, and firmware from other cloud and server
+    vendors.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/google-cloud-warns-three-amd-turin-cpu.html
+  thread: f-0210
+- title: >-
     NVFP4 pretraining needs up to 1.52 times the exposures of BF16 to learn rare facts, despite
     near-equal loss
   section: ML research
@@ -179,6 +269,79 @@ stories:
   sources:
   - label: primary
     url: https://arxiv.org/abs/2611.13552v1
+- title: >-
+    CAMP-II trains coding agents to use files as memory across context resets with asynchronous
+    on-policy distillation
+  section: ML research
+  category: Paper
+  blurb: >-
+    A jointly trained policy learns to use files as memory across context resets, with gains
+    carrying to Terminal-Bench and SWE-Bench Pro.
+  summary: >-
+    The authors argue that prior on-policy distillation for agent memory relied on custom
+    memory tools the teacher never saw in pre-training, so its guidance was weak. CAMP-II
+    instead gives the policy plain Bash and a persistent workspace across five CAMG-II environments
+    and distills file-based memory use from a frozen teacher with fully asynchronous OPD.
+    It reports 2.97 times the gain of the strongest OPD baseline, with improved success on
+    Terminal-Bench 2.1 and SWE-Bench Pro V2.
+  why: >-
+    Agent builders get evidence that teaching memory through ordinary file operations, which
+    models already know, transfers better than bespoke memory interfaces.
+  background: >-
+    On-policy distillation samples trajectories from the student and has a teacher score or
+    correct each step, which avoids the distribution mismatch of training only on teacher
+    outputs. Long-horizon agents outgrow their context window and must compact history, so
+    what they write down before a reset decides what they can recover.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.14009v1
+- title: >-
+    HiLo replaces LoRA weight shipping with compressed gradients and optimizer replay in distributed
+    on-policy post-training
+  section: ML research
+  category: Paper
+  blurb: >-
+    HiLo ships compressed gradients instead of LoRA weights to rollout workers, sending as
+    little as 1.6% of adapter bytes with similar quality.
+  summary: >-
+    HiLo keeps replicated optimizer states on rollout workers, so the learner sends compressed
+    gradients and each worker replays the optimizer step to reach the same policy version.
+    Its Spar compressor combines spectral truncation, adaptive rank allocation and error feedback
+    so training rank no longer sets communication cost. Across on-policy distillation and
+    reward-guided runs it stays close to full synchronization while sending as little as 1.6%
+    of adapter bytes and speeds end-to-end updates up to 2.2 times under bandwidth limits.
+  why: >-
+    Teams running RL or distillation across machines with slow links can cut weight sync traffic
+    without lowering LoRA rank.
+  background: >-
+    In on-policy post-training, rollout workers must generate with the latest policy, so every
+    update has to reach them before the next batch of samples. With LoRA only small adapter
+    matrices change, but adaptive optimizers such as Adam produce updates that compress poorly,
+    which is why sending gradients and replaying the optimizer locally helps.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.13306v1
+- title: >-
+    mise 2026.11.7 adds an opt-in shim fallback to installed versions and task run history
+    in JSON output
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Shims can fall back to the latest installed tool version, task JSON gains run history,
+    and mise goes quiet when it detects a coding agent.
+  summary: >-
+    A shim for a tool no config selects now fails with a one-line error, and the new shims.fallback_to_installed
+    setting, off by default, runs the latest installed version instead. mise tasks info --json
+    and mise tasks ls --json include a history field with run counts, failures and durations,
+    and vfox plugins that download nothing can install in locked mode. When mise detects a
+    coding agent through variables such as CLAUDECODE or AI_AGENT, it suppresses update notices
+    and hints.
+  why: >-
+    Agent sessions get less noise in tool output, and scripts can read task failure history
+    without a separate command.
+  sources:
+  - label: primary
+    url: https://github.com/jdx/mise/releases/tag/v2026.11.7
 - title: >-
     Ubuntu 26.10 curl checks certificate revocation locally with rustls upki, with OpenSSL
     integration planned for 27.04
@@ -309,6 +472,26 @@ stories:
     url: https://www.youtube.com/watch?v=UDDRhFgAE9Y
   - label: discussion
     url: https://www.cncf.io/announcements/2026/11/11/meta-wins-cncf-end-user-case-study-contest-for-accelerating-ai-infrastructure-deployments-from-hours-to-minutes/
+- title: >-
+    Matt Pocock runs coding agents from a single home repo that holds shared skills and points
+    to other repos
+  section: Videos
+  category: Video
+  blurb: >-
+    Matt Pocock runs every agent session from one home repo that holds shared skills, settings,
+    a wiki and tools, with paths to the other repos.
+  summary: >-
+    Pocock keeps private skills, a versioned settings.json, a markdown wiki and custom CLI
+    tooling in one repo and always starts agents there. Its agents.md lists paths to the repos
+    he touches, and the agent clones a missing repo or adds a worktree when several agents
+    run at once. For hundreds of repos he suggests grouping links by area for progressive
+    disclosure, and he prefers a monorepo when one is possible.
+  why: >-
+    Teams with many repos get a way to version agent skills and settings in one place instead
+    of copying them into each repo or each user's home directory.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=hWe-j78vNpc
 - title: >-
     Voltage glitching turns a CMP 170HX mining card into an A100-80G that runs about 1.18
     times faster than retail
