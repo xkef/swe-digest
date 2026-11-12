@@ -1,5 +1,5 @@
 date: '2026-11-12'
-updated: 2026-11-12T21:02Z
+updated: 2026-11-12T22:52Z
 lede: >-
   Attackers pushed malware through channels developers trust: stolen GitHub accounts, MSP
   remote access panels and a KDE wallpaper.
@@ -387,6 +387,36 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50472260
 - title: >-
+    Claude Code 2.1.323 adds experimental Code Mode and plugin version ranges, and closes
+    several permission bypasses
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Code Mode lets Claude write JavaScript that calls its tools, and plugins can now declare
+    which Claude Code versions they support.
+  summary: >-
+    Claude Code 2.1.323, released 2026-11-12, adds Code Mode, an experimental opt-in in which
+    Claude writes JavaScript to call its tools, and an engines["claude-code"] field in plugin.json
+    so plugins outside their stated version range are not installed, updated or loaded. The
+    release also fixes many permission and sandbox gaps, including Bash allow rules with attached
+    wildcards skipping prompts, deny rules missed through sudo and env wrappers, Write and
+    Edit reaching paths under a Read deny rule, and the Bash sandbox switching off mid-session.
+    It now ignores .claude/settings.local.json globally when a folder becomes a git repository
+    later, and no longer offers don't ask again for commands that write to .git or .claude.
+  why: >-
+    Teams relying on allow and deny rules or the Bash sandbox should upgrade, because several
+    fixed cases let commands run without the expected prompt.
+  background: >-
+    Coding agents usually call tools one at a time, with each call and result passing through
+    the model's context. A code mode instead has the model write a short program that calls
+    several tools and processes their results, which can cut round trips and context use.
+    Claude Code's permission system layers allow, ask and deny rules over a sandbox that restricts
+    what Bash commands can touch.
+  thread: f-0187
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/claude-code/releases/tag/v2.1.323
+- title: >-
     NVFP4 pretraining needs up to 1.52 times the exposures of BF16 to learn rare facts, despite
     near-equal loss
   section: ML research
@@ -538,6 +568,33 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/rust/comments/1xte7b1/ubuntu_2610_ships_with_initial_support_for/
 - title: >-
+    Discord's Linux client gains a Rust self-updater with bsdiff deltas and Wayland screen
+    sharing through PipeWire
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Discord's Linux client now self-updates with bsdiff deltas from a Rust bootstrapper and
+    screen shares on Wayland through PipeWire.
+  summary: >-
+    Discord's .deb, .rpm, Arch package and tarball are now a small Rust bootstrapper that
+    installs the client into the home directory, after which it updates itself with bsdiff
+    binary deltas, which Discord measured as about 23% faster on average. Wayland screen sharing
+    uses the xdg-desktop-portal dialog and a PipeWire stream, with hardware encoding through
+    VA-API or NVENC, including on Steam Deck under gamescope. Global push-to-talk uses the
+    GlobalShortcuts portal, where Discord had to send KDE a different shortcut syntax than
+    the spec, and Discord is working with Igalia on per-app audio capture in xdg-desktop-portal.
+  why: >-
+    It is a worked example of shipping a self-updating desktop app across distro packages,
+    immutable distros and Wayland's permission-gated portals.
+  background: >-
+    Wayland, unlike X11, does not let apps read the screen or global keyboard input directly.
+    Apps request access through xdg-desktop-portal, which shows a user consent dialog and
+    hands back a PipeWire video stream or a shortcut session. Desktop environments implement
+    these portals separately, so behavior can differ between GNOME and KDE.
+  sources:
+  - label: primary
+    url: https://discord.com/blog/discord-linux-a-year-of-upgrades
+- title: >-
     PostgreSQL 18.7's CVE-2026-6460 fix changes the extension ABI, so servers and C extensions
     must update together
   section: Infrastructure
@@ -626,6 +683,39 @@ stories:
   sources:
   - label: primary
     url: https://shopify.engineering/cyber-chaos-monkey
+- title: >-
+    Eye Security's ARTEX incident shows attacker agents abusing a Git-synced deploy pipeline
+    to keep privileged pods running
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    An incident team saw LLM agents bypass a rate limiter in three minutes and turn a Git-synced
+    deploy pipeline into attacker persistence.
+  summary: >-
+    Eye Security describes responding to an attack driven by the ARTEX agent framework that
+    began with a custom PHP upload webshell. The agents used leaked environment secrets within
+    minutes, evaded a rate limiter by rotating a client IP header after about three minutes,
+    and peaked at over 9,000 requests a minute. With an engineer's Git access, they changed
+    a repository so deployment automation launched a privileged pod, which the automation
+    re-created within a second when responders deleted it, while a stolen CI app key let them
+    re-register self-hosted runners every eight minutes. The defenders ran their own agents
+    with read-only access enforced by a command-checking hook, sharing findings through pull
+    requests in a private Git repo.
+  why: >-
+    GitOps sync and CI app credentials become attacker persistence once an identity with repository
+    write access is stolen, so incident playbooks must revoke Git and CI access before deleting
+    workloads.
+  background: >-
+    GitOps tools such as Argo CD continuously reconcile a cluster to the state declared in
+    a Git repository, so deleting a resource by hand is undone on the next sync. ARTEX is
+    described by threat intelligence reports as an autonomous LLM-driven pentesting framework
+    in which many agents share discovered secrets and retry blocked paths. The digest has
+    tracked ARTEX before in the WorkOS breach thread.
+  sources:
+  - label: primary
+    url: https://labs.eye.security/how-we-defended-against-an-ai-driven-attack/
+  - label: discussion
+    url: https://www.reddit.com/r/netsec/comments/1xucxqr/how_we_defended_against_an_aidriven_artex_attack/
 - title: >-
     Jensen Huang resigns as Nvidia CEO, with CFO Colette Kress as interim CEO and Harvey Jones
     as first chairman
