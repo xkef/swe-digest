@@ -1,5 +1,5 @@
 date: '2026-11-12'
-updated: 2026-11-12T17:43Z
+updated: 2026-11-12T21:02Z
 lede: >-
   Attackers pushed malware through channels developers trust: stolen GitHub accounts, MSP
   remote access panels and a KDE wallpaper.
@@ -107,6 +107,37 @@ stories:
     url: https://news.ycombinator.com/item?id=50467763
   - label: discussion
     url: https://www.phoronix.com/news/PostgreSQL-52-CVEs
+- title: >-
+    Rust 1.100 stabilizes the never type, the core Allocator API and DropGuard, and changes
+    never-type fallback
+  section: Top stories
+  category: Languages
+  blurb: >-
+    Rust 1.100 stabilizes the never type after five failed attempts and changes never-type
+    fallback in older editions, a rare breaking change.
+  summary: >-
+    Rust 1.100.0, released 2026-11-12, lets code name the never type anywhere, makes Infallible
+    an alias for it, and switches never-type fallback from () to ! in editions 2015, 2018
+    and 2021. It also stabilizes the core Allocator trait for Vec and Box, core::mem::DropGuard,
+    std::mem::conjure_zst, Cargo warnings for unused dependencies, and a new build-dir layout
+    that keys all artifacts by build configuration.
+  why: >-
+    Rare code that relied on () fallback can change behavior or hit new unreachable-code warnings,
+    and build scripts that poked at the old build-dir layout may break.
+  background: >-
+    The never type, written !, is the type of expressions that never produce a value, such
+    as return or process::exit, and it coerces to any other type. Infallible was added as
+    a stand-in error type for operations that cannot fail, with the plan of later making it
+    the same type as !, and that plan is why stabilization required a fallback change. Edition
+    2024 had already switched the fallback, so this release brings older editions in line.
+  comments: Two Hacker News threads for the release drew 302 and 66 points.
+  sources:
+  - label: primary
+    url: https://blog.rust-lang.org/2026/11/12/Rust-1.100.0/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50471793
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50472038
 - title: >-
     RustSec publishes six russh advisories, including an SSH agent confirm bypass and pre-auth
     memory exhaustion
@@ -254,6 +285,60 @@ stories:
     url: https://www.phoronix.com/news/NVIDIA-NvRoot-ForgePtr
   thread: f-0211
 - title: >-
+    Microsoft 365 outage disrupts Exchange Online, Teams, SharePoint and Copilot as servers
+    fail health checks
+  section: Outages
+  category: Outage
+  blurb: >-
+    Exchange Online, Teams, SharePoint, Copilot and Defender XDR were disrupted across regions
+    as servers dropped out and overloaded the rest.
+  summary: >-
+    Microsoft opened incident MO1550821 at 1:26 PM ET on 2026-11-12, saying the load came
+    from a number of servers being unexpectedly unavailable rather than more traffic, and
+    it paused all deployments and shifted traffic. Just before 3 PM ET it said the affected
+    servers were failing automated health checks and it was testing a workaround that bypasses
+    the component handling those checks, after an earlier Teams incident from 9:45 to 10:53
+    AM ET.
+  why: >-
+    Teams on Microsoft 365 lost mail, chat and Defender XDR access, and the cause is still
+    unexplained.
+  followup: Resolution of MO1550821 and a root cause for the failing health checks.
+  comments: >-
+    An Ask HN thread on a Microsoft or Azure outage drew 295 points and 160 comments, and
+    a thread noting that Microsoft's status page was also down drew 276 points.
+  sources:
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/microsoft/massive-microsoft-365-outage-disrupts-outlook-teams-copilot-worldwide/
+  - label: discussion
+    url: https://www.securityweek.com/microsoft-365-outage-disrupts-outlook-exchange-online-and-teams/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50471668
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50471731
+  thread: f-0212
+- title: >-
+    Google releases Gemini 4 Hydrogen at $1.50 and $7.50 per million tokens to all API tiers
+  section: AI
+  category: AI
+  blurb: >-
+    Google's new everyday Gemini 4 model costs $1.50 and $7.50 per million tokens across a
+    1M context and scores 57% on Terminal-Bench 4.1.
+  summary: >-
+    Gemini 4 Hydrogen replaces Gemini 3.8 Flash, is available on all tiers of AI Studio and
+    the Gemini API, and has four thinking levels, low, medium, high by default and a new xhigh.
+    Google reports 57% on Terminal-Bench 4.1 against 18.2% for 3.8 Flash, 1 million input
+    and output tokens, flat pricing across the context window, and partner tests 2 to 2.8
+    times faster with 12% to 23% fewer tokens than 3.8 Flash.
+  why: >-
+    Teams on Gemini Flash get a cheaper execution model for agent workers, with a migration
+    path and a new xhigh setting to test.
+  comments: The Hacker News thread drew 340 points and 230 comments.
+  sources:
+  - label: primary
+    url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50471431
+- title: >-
     Sentry's Junior Slack agent turns a one-line ask into an auto-merged PR for $1.32 after
     a quick human approval
   section: Agentic coding
@@ -274,6 +359,33 @@ stories:
   sources:
   - label: primary
     url: https://blog.sentry.io/slopware-factory/
+- title: >-
+    Google Antigravity's Orchestrator switches between Gemini 4 Carbon and Hydrogen inside
+    one agent session
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Antigravity's Orchestrator hands work back and forth between Carbon for planning and Hydrogen
+    for edits and tests inside one agent session.
+  summary: >-
+    Orchestrator lets Carbon run a read-only planning phase with explicit re-planning triggers,
+    hands edits and test runs to Hydrogen, and returns control to Carbon when Hydrogen hits
+    friction. Google says it reached near-Carbon task success on Terminal-Bench with 24% less
+    quota and 19% faster runs, and it is rolling out to Google AI Ultra subscribers, while
+    the Antigravity SDK can wire the two models into fixed roles.
+  why: >-
+    It is a vendor-built alternative to static model routers, switching models mid-trajectory
+    instead of choosing one from the first prompt.
+  background: >-
+    Static model routers guess task difficulty from the first prompt and send the whole task
+    to one model, which breaks down when difficulty changes during a long agent run. Google
+    released Gemini 4 Carbon and a /swarm feature for parallel agent teams earlier in the
+    week.
+  sources:
+  - label: primary
+    url: https://antigravity.google/blog/gemini-4-hydrogen-in-google-antigravity/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50472260
 - title: >-
     NVFP4 pretraining needs up to 1.52 times the exposures of BF16 to learn rare facts, despite
     near-equal loss
@@ -426,6 +538,68 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/rust/comments/1xte7b1/ubuntu_2610_ships_with_initial_support_for/
 - title: >-
+    PostgreSQL 18.7's CVE-2026-6460 fix changes the extension ABI, so servers and C extensions
+    must update together
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    New C extension builds fail to load on PostgreSQL 18.6 and older, while old builds on
+    18.7 load but lack the CVE-2026-6460 checks.
+  summary: >-
+    The fix for CVE-2026-6460 adds versioning to composite types, turns DatumGetHeapTupleHeader()
+    from a macro into a server function and makes heap_getattr() call a new heap_datum_check(),
+    so PGDG rebuilt every RPM extension and now requires the matching minor release, for example
+    postgresql18-libs >= 18.7. Jeremy Schneider reports that new AGE, credcheck and pg_cron
+    builds already fail on 18.6 in his CloudNativePG extension pipelines, and Devrim Gunduz
+    found a pllua crash on the new minors that PGDG patched.
+  why: >-
+    Anyone building or pinning extension images, as with CloudNativePG, must roll the server
+    and extensions in lockstep or get either undefined symbol errors or unprotected extensions.
+  background: >-
+    PostgreSQL extensions written in C are compiled against server headers, so macros and
+    inline code from those headers end up inside the extension binary. The project normally
+    keeps this binary interface stable within a major version, with rare exceptions such as
+    17.1. Mehmet Ince's write-up describes CVE-2026-6460 as a 22-year-old type confusion where
+    changing a field type inside a composite type makes PostgreSQL read stored values with
+    the wrong layout, which he turned into code execution.
+  comments: The Hacker News thread on Ince's RCE write-up drew 50 points and 6 comments.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9BD
+  - label: primary
+    url: https://postgr.es/p/9BH
+  - label: primary
+    url: https://mehmetince.net/part-3-6-how-i-ended-up-turning-a-22-year-old-postgresql-type-confusion-primitive-into-rce-cve-2026-6460/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50471761
+  thread: f-0214
+- title: >-
+    AWS Lambda Web Functions billed memory for 5 to 7 minutes after the last request in Easel's
+    tests
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Easel measured idle Lambda Web Functions environments billing memory for 313 to 411 seconds
+    after the last request, with no timeout setting.
+  summary: >-
+    Easel measured six Web Functions environments in us-east-1 staying alive for 313 to 411
+    seconds after their last request, with memory about 88% of compute and request cost at
+    list prices. Exiting environments after 10 seconds idle cut metered time about 20 times,
+    but AWS recorded each exit as a runtime failure, so Easel moved apps to its own hosts
+    with Lambda for overflow.
+  why: >-
+    Low-traffic apps on Web Functions can pay for minutes of idle memory per request, which
+    changes the cost math for many small deployments.
+  background: >-
+    AWS announced Lambda Web Functions in October 2026 with native HTTP servers, concurrent
+    requests per environment and active CPU billing. Memory is billed for an environment's
+    whole lifetime, and AWS documents no idle timeout, which is the gap this post measures.
+  sources:
+  - label: primary
+    url: https://www.easel.sh/blog/lambda-web-functions-idle-memory
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50470445
+- title: >-
     Shopify's Cyber Chaos Monkey runs AI agents against production, with a second model able
     to kill each run
   section: Engineering posts
@@ -452,6 +626,54 @@ stories:
   sources:
   - label: primary
     url: https://shopify.engineering/cyber-chaos-monkey
+- title: >-
+    Jensen Huang resigns as Nvidia CEO, with CFO Colette Kress as interim CEO and Harvey Jones
+    as first chairman
+  section: Markets and companies
+  category: Markets
+  blurb: >-
+    Nvidia's board named CFO Colette Kress interim CEO and Harvey Jones its first chairman
+    after reports of Huang's relationships.
+  summary: >-
+    Jensen Huang resigned on 2026-11-12 after reports of an extramarital relationship with
+    a direct report and an affair with a Megaspeed executive believed to work with Chinese
+    intelligence, and Nvidia says he will not work with the company in any capacity. The board
+    will search internal and external candidates for a permanent CEO, and Nvidia shares fell
+    as much as 16% before recovering to about 5% lower.
+  why: >-
+    The company behind CUDA and most AI training hardware now has interim leadership and a
+    new governance structure during a US investigation into chip smuggling.
+  comments: >-
+    The main Hacker News thread drew 2,303 points and 2,273 comments, far more than any other
+    story today.
+  sources:
+  - label: discussion
+    url: https://www.nbcnews.com/tech/tech-news/nvidia-ceo-jensen-huang-resigns-reports-extramarital-relationships-rcna608402
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50467087
+- title: >-
+    Anthropic sets its IPO for Nasdaq under ticker ANT, with pricing expected on 2026-11-18
+  section: Markets and companies
+  category: Markets
+  blurb: >-
+    Anthropic plans to price its Nasdaq listing under ticker ANT on 2026-11-18 and start trading
+    the next day, after $17.0B in Q3 revenue.
+  summary: >-
+    Anthropic's IPO site says the roadshow began on 2026-11-10, the share price is expected
+    on 2026-11-18 and trading on 2026-11-19, subject to regulatory clearance. It reports Q3
+    2026 revenue of $17.0B, more than 12 times the prior year, a 15% adjusted operating margin
+    and a $23.3B net loss that includes a $21.9B non-cash fair value charge.
+  why: >-
+    The vendor behind Claude and Claude Code becomes a public company with SEC disclosure,
+    which will expose its compute costs and business risks.
+  followup: Pricing on 2026-11-18 and first trading day on 2026-11-19.
+  comments: The Hacker News thread drew 720 points and 720 comments.
+  sources:
+  - label: primary
+    url: https://ipo.anthropic.com/us/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50465829
+  thread: f-0213
 - title: >-
     Anthropic's Lydia Hallie says Claude Code setups should move control into deny rules,
     sandboxes, hooks and CI
@@ -574,6 +796,26 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=hWe-j78vNpc
+- title: >-
+    OpenAI's agent harness found 948 working Linux kernel privilege escalations for $1.2 million,
+    Low Level reports
+  section: Videos
+  category: Video
+  blurb: >-
+    A Low Level video walks through OpenAI's kernel bug harness, where scout agents pick audit
+    targets and triage agents test exploits in VMs.
+  summary: >-
+    The video summarizes an OpenAI write-up from its Patch the Planet effort with Trail of
+    Bits, in which scout agents survey the kernel for suspicious patterns, analyst agents
+    audit small target areas, and triage agents build proofs of concept and run them in VMs.
+    It cites about 2,300 candidates, 948 working local privilege escalations and 219 working
+    memory leak proofs, at about $1,200 per escalation.
+  why: >-
+    It shows a concrete scout, analyst and triage split for running agents over a codebase
+    far larger than any context window.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=Z3xvjzlDWd8
 - title: >-
     Voltage glitching turns a CMP 170HX mining card into an A100-80G that runs about 1.18
     times faster than retail
