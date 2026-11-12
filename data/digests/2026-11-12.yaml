@@ -1,5 +1,5 @@
 date: '2026-11-12'
-updated: 2026-11-12T13:57Z
+updated: 2026-11-12T17:43Z
 lede: >-
   Attackers pushed malware through channels developers trust: stolen GitHub accounts, MSP
   remote access panels and a KDE wallpaper.
@@ -75,6 +75,39 @@ stories:
     url: https://www.bleepingcomputer.com/news/security/active-screenconnect-attacks-breach-msps-impact-dozens-of-organizations/
   thread: f-0207
 - title: >-
+    PostgreSQL 18.7, 17.12, 16.16, 15.20 and 14.25 fix 52 CVEs, and PostgreSQL 14 reaches
+    end of life
+  section: Top stories
+  category: Infrastructure
+  blurb: >-
+    Five supported branches fix 52 CVEs, most rated 8.8 for arbitrary code execution, plus
+    GIN index and incremental backup corruption bugs.
+  summary: >-
+    The 2026-11-12 releases fix 52 vulnerabilities and over 140 bugs, including type confusion
+    and use-after-free flaws that execute arbitrary code, SQL injection in pg_dump and reindexdb,
+    and logical replication writes to subscriber system catalogs. Post-update steps include
+    reindexing affected GIN indexes, pg_trgm GiST indexes and B-tree indexes on bpchar columns,
+    and taking a new full backup for incremental backup users. PostgreSQL 14.25 is the final
+    14 release, and PostgreSQL 19 RC 2 is out with general availability planned for 2026-11-19.
+  why: >-
+    CloudNativePG clusters need the new minor image plus a reindex and a fresh full backup,
+    not only a rolling restart.
+  background: >-
+    PostgreSQL minor releases are cumulative and need only a binary swap, but corruption fixes
+    cannot repair indexes already built wrong, so the project asks users to rebuild them.
+    GIN is the inverted index type behind jsonb, array and full-text search queries. Incremental
+    backup, added in PostgreSQL 17, chains pg_basebackup --incremental runs onto a full backup
+    and joins them with pg_combinebackup, so a bad base taints every later increment.
+  followup: PostgreSQL 19 general availability planned for 2026-11-19.
+  thread: f-0151
+  sources:
+  - label: primary
+    url: https://www.postgresql.org/about/news/postgresql-187-1712-1616-1520-1425-and-19-rc-2-released-3442/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50467763
+  - label: discussion
+    url: https://www.phoronix.com/news/PostgreSQL-52-CVEs
+- title: >-
     RustSec publishes six russh advisories, including an SSH agent confirm bypass and pre-auth
     memory exhaustion
   section: Security
@@ -103,32 +136,6 @@ stories:
     url: https://rustsec.org/advisories/RUSTSEC-2026-0495.html
   - label: primary
     url: https://rustsec.org/advisories/RUSTSEC-2026-0496.html
-- title: >-
-    KDE warns that the NeoNova animated wallpaper for Plasma shipped a Sliver remote-control
-    implant from its first commit
-  section: Security
-  category: Security
-  blurb: >-
-    A working Plasma wallpaper hid a nested base64 script that LD_PRELOADed a Sliver implant
-    from .config/Plasma6Library.so.
-  summary: >-
-    KDE developer David Edmundson writes that the NeoNova Animated Wallpaper on GitHub worked
-    as advertised but hid a doubly base64-encoded script that downloaded a second script,
-    saved a library to .config/Plasma6Library.so and ran it via LD_PRELOAD. The payload appears
-    to be the Sliver remote-control framework. Pling and OpenDesktop removed the listing within
-    hours of KDE's report.
-  why: >-
-    Plasma users who installed third-party wallpapers or widgets should check for .config/Plasma6Library.so
-    and rebuild any machine that has it.
-  background: >-
-    Plasma extensions from the KDE Store run unsandboxed with the user's full privileges,
-    so a wallpaper plugin can execute arbitrary code. Sliver is an open-source command and
-    control framework originally built for red teams.
-  sources:
-  - label: primary
-    url: https://blog.davidedmundson.co.uk/blog/malware-found-disguised-as-3rd-party-plasma-extension-neonova-wallpaper/
-  - label: discussion
-    url: https://www.reddit.com/r/linux/comments/1xtrfsx/malware_found_disguised_as_3rd_party_plasma/
 - title: >-
     Red Hat Quay CVE-2026-123710 lets any account install a rogue token signing key and write
     to every repository
@@ -219,6 +226,54 @@ stories:
   - label: discussion
     url: https://thehackernews.com/2026/11/google-cloud-warns-three-amd-turin-cpu.html
   thread: f-0210
+- title: >-
+    NVIDIA open GPU kernel module flaws let a container process gain host root and tenants
+    rewrite read-only files
+  section: Security
+  category: Security
+  blurb: >-
+    Stealthium disclosed ForgePtr and NvRoot, NVIDIA driver flaws that threaten shared GPU
+    nodes, and says 25 more disclosures will follow.
+  summary: >-
+    Stealthium made public ForgePtr (CVE-2026-47501), which lets an unprivileged process in
+    a GPU container become root on the host, and NvRoot (CVE-2026-47591), which lets the GPU
+    rewrite files the OS marks read-only from any tenant on the node. Both have existed in
+    the NVIDIA open kernel modules for four years and are rated 7.8. NvRoot is fixed in drivers
+    610.57.04, 595.91.07 and 580.178.04, and ForgePtr in 615.71.09.
+  why: >-
+    Operators of GPU Kubernetes nodes or rented GPU slices should treat container isolation
+    as broken until hosts run a fixed driver.
+  background: >-
+    Containers share the host kernel, so a bug in a kernel driver whose device nodes are passed
+    into the container crosses the isolation boundary directly. GPU containers get the NVIDIA
+    driver's device files through tooling such as the NVIDIA Container Toolkit, which makes
+    the driver part of every GPU tenant's attack surface.
+  followup: Stealthium's remaining 25 disclosures on the NVIDIA AI runtime stack.
+  sources:
+  - label: discussion
+    url: https://www.phoronix.com/news/NVIDIA-NvRoot-ForgePtr
+  thread: f-0211
+- title: >-
+    Sentry's Junior Slack agent turns a one-line ask into an auto-merged PR for $1.32 after
+    a quick human approval
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    David Cramer shows Sentry's open-source Slack agent finding context from memory, opening
+    a PR, handling CI on its own and auto-merging.
+  summary: >-
+    Cramer says Junior, Sentry's open-source internal Slack agent, has its name on more commits
+    than any other single contributor at the company. Asked in Slack to delete a kanban experiment
+    with no repository named, it searched past conversations, opened a PR, decided on its
+    own whether to address CI failures, and auto-merged after Cramer approved with a glance,
+    for $1.32 and five minutes of his time. Sentry minimally requires self-review or peer
+    review, and Cramer argues that memory does not make the system self-improving.
+  why: >-
+    A named company's software factory still rests on one human approval and CI as the gate,
+    a baseline to compare your own review policy against.
+  sources:
+  - label: primary
+    url: https://blog.sentry.io/slopware-factory/
 - title: >-
     NVFP4 pretraining needs up to 1.52 times the exposures of BF16 to learn rare facts, despite
     near-equal loss
@@ -370,6 +425,33 @@ stories:
     url: https://discourse.ubuntu.com/t/introducing-initial-upki-support/91540
   - label: discussion
     url: https://www.reddit.com/r/rust/comments/1xte7b1/ubuntu_2610_ships_with_initial_support_for/
+- title: >-
+    Shopify's Cyber Chaos Monkey runs AI agents against production, with a second model able
+    to kill each run
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Shopify's agentic vulnerability hunter ran tens of thousands of attacks with ephemeral
+    credentials, an egress allowlist and a judge agent.
+  summary: >-
+    Shopify's Cyber Chaos Monkey pairs a Discovery component, which uses source, threat intelligence,
+    past reports and deployment records to find leads, with a Sandbox where agents exploit
+    them against live test shops and read production logs. Each engagement is a Kubernetes
+    job whose pod runs an orchestrator, the offensive executor, and a judge agent on a different
+    model that reads the full session and can kill it, and the job ends if either sidecar
+    dies or the judge times out. Shopify reports dozens of impactful findings without an outage,
+    and says bug bounty reports have risen almost 300% since 2024.
+  why: >-
+    The pod design is a concrete fail-closed pattern for supervising any high-risk agent with
+    a second model.
+  background: >-
+    Netflix introduced Chaos Monkey in 2011 to kill production instances at random, which
+    grew into chaos engineering. Two-person integrity is a control from government and red
+    team work where a second party must review the acting party's work, and Shopify fills
+    the second seat with a differently prompted model.
+  sources:
+  - label: primary
+    url: https://shopify.engineering/cyber-chaos-monkey
 - title: >-
     Anthropic's Lydia Hallie says Claude Code setups should move control into deny rules,
     sandboxes, hooks and CI
@@ -544,3 +626,55 @@ stories:
     url: https://hugovk.dev/blog/2026/lock-github-actions/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50459485
+- title: >-
+    Hacker News debates Humble Bundle's rewritten site, which users say dropped 2FA and password-change
+    checks
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Users report Humble Bundle's new site lets a logged-in session change password or email
+    without the old password, and HN argues over blame.
+  summary: >-
+    A SpaceBattles post on 2026-11-11 reports that Humble Bundle's new website no longer asks
+    for 2FA tokens, changes passwords without the current password, and sends the email-change
+    code to the new address, with no statement from Humble at the time. The vibecoding attribution
+    is the users' claim and is unconfirmed. The Hacker News thread drew 327 points and 200
+    comments.
+  why: >-
+    Agent-driven rewrites need explicit regression tests on authentication flows, since behavior
+    the old system had is easy to lose.
+  comments: >-
+    Commenters split between blaming the tool and blaming management. Several argue AI lowered
+    the cost of big-bang rewrites, so more of them ship without anyone knowing which old features
+    mattered. One reports logins failing through both Google and email, and others describe
+    agents removing or corrupting tests.
+  sources:
+  - label: primary
+    url: https://forums.spacebattles.com/threads/humble-bundle-just-completely-killed-most-of-their-security-through-vibecoding.1346295/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50463899
+- title: Jane Street's Socratic Tutor agent skill draws 546 points on Hacker News
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Jane Street published a skill that has agents teach by questions, track subskills on a
+    0 to 5 map and raise levels only after two checks.
+  summary: >-
+    The SKILL.md triggers only on explicit requests such as teach me or quiz me, runs a 3
+    to 5 question diagnostic, asks one question at a time, and explains directly only after
+    2 or 3 failed attempts. It interleaves spaced review, requires unprompted recall to raise
+    a level, and offers save state and resume blocks to carry progress into a new session.
+    The Hacker News thread drew 546 points and 128 comments.
+  why: >-
+    The file is a compact example of scoping a skill's trigger and enforcing strict state
+    inside a prompt.
+  comments: >-
+    Practitioners compare it with Matt Pocock's learning skills and ask how to drive tutoring
+    from a hard textbook. Others argue that offloading effort to a model undercuts learning,
+    and one notes skills pay off mainly for user preferences and internal knowledge the model
+    cannot discover.
+  sources:
+  - label: primary
+    url: https://github.com/janestreet/agent_skills/blob/master/socratic-tutor/SKILL.md
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50438261
