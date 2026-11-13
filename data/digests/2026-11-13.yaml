@@ -1,5 +1,5 @@
 date: '2026-11-13'
-updated: 2026-11-13T13:20Z
+updated: 2026-11-13T17:20Z
 stories:
 - title: >-
     Attackers chain PHP2Shell and Check Point CVE-2026-123039 to root gateways, then run a
@@ -443,6 +443,32 @@ stories:
   sources:
   - label: primary
     url: https://github.com/jdx/mise/releases/tag/v2026.11.8
+- title: Christoph Hellwig releases XRAID, a declustered parity RAID built into zoned XFS
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Christoph Hellwig's XRAID adds declustered parity RAID inside XFS, aimed at zoned SMR
+    drives, with writes up to 20 times faster than mdraid.
+  summary: >-
+    Hellwig announced the first public release of XRAID on 2026-11-13, after a year and a
+    half of work. It targets parity RAID on zoned devices such as SMR hard drives, also works
+    on conventional disks and SSDs, supports zero to two parities, and is said to write up
+    to 20 times faster than mdraid. It is not ready for upstream submission, and an xfsprogs
+    branch adds mkfs support and an xraid management utility.
+  why: >-
+    Zoned XFS users may get parity RAID without layering mdraid underneath, and testers are
+    wanted now.
+  background: >-
+    Zoned devices such as SMR drives must be written sequentially within each zone, which
+    conflicts with classic RAID 5 and 6 that rewrite parity in place. Declustered parity spreads
+    stripes across all drives so a rebuild reads from every disk instead of a fixed group,
+    shortening rebuild time. In-place parity updates also cause the RAID write hole, where
+    a crash leaves data and parity inconsistent, which Hellwig says XRAID avoids by design.
+  sources:
+  - label: primary
+    url: https://lwn.net/Articles/1107473/
+  - label: discussion
+    url: https://www.phoronix.com/news/XRAID-XFS-RAID
 - title: >-
     Grafana Mimir 3.2.5 stops Alertmanager SNS receivers from borrowing its AWS credentials
     by default
@@ -465,6 +491,35 @@ stories:
     url: https://github.com/grafana/mimir/releases/tag/mimir-3.2.5
   - label: primary
     url: https://github.com/grafana/mimir/releases/tag/mimir-2.17.12
+- title: >-
+    Cloudflare adds Spend Management beta with hard spending caps for Workers and Durable
+    Objects
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Pay-as-you-go Cloudflare accounts can now cap Workers and Durable Objects spend, and Cloudflare
+    pauses billable invocations at the limit.
+  summary: >-
+    Spend Management is in beta for pay-as-you-go customers, starting with Workers and Durable
+    Objects, and is configurable through the dashboard, the cf CLI, or a REST API with a usage_block
+    action. When a cap is hit, new billable invocations are rejected, including Cron Triggers
+    and Queue consumers, while static assets keep serving. Service resumes when the limit
+    is raised, the policy is disabled, or the next billing cycle starts. Cloudflare says spend
+    is shown in under 10 minutes, computed by a two-stage metering pipeline that aggregates
+    usage into one-minute and then five-minute windows before an account-partitioned usage
+    engine and a rating engine price it.
+  why: >-
+    A runaway Worker or Durable Object bill can now be stopped by an enforced cap instead
+    of only an alert email.
+  background: >-
+    Most cloud providers offer budget alerts that notify but do not stop spending, which is
+    why hard caps are a long-standing developer request. Enforcing a cap means metering usage
+    across a global network, pricing it against plan allowances, and pushing a block decision
+    back to every location, so caps always trail real usage by the aggregation delay. Cloudflare's
+    post notes that billing cycles start from the subscription date, not the calendar month.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/spend-management/
 - title: >-
     Fly.io rebuilds its 6PN private network to look up machine routes on demand instead of
     syncing a fleet-wide map
@@ -493,6 +548,33 @@ stories:
   - label: primary
     url: https://fly.io/blog/throwing-out-the-phonebook/
 - title: >-
+    Meta runs Android's Cuttlefish virtual device natively on Apple silicon Macs through a
+    revived QEMU backend
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Meta ported Android's Cuttlefish virtual device to Apple silicon Macs by reviving QEMU
+    support and making vhost-user build outside Linux.
+  summary: >-
+    Meta Reality Labs revived Cuttlefish's inactive QEMU backend, relaxed QEMU's Linux-only
+    gating of vhost-user frontends and libvhost-user, and raised the memory-region slot count
+    in QEMU's Hypervisor.framework backend. It also added a Cocoa display with BGRA support
+    and click-as-touch, plus arm64 macOS builds with the JIT entitlement and notarization.
+    Meta publishes the work as a qemu-wearables fork and a cuttlefish-wearables patch set
+    and is exploring upstreaming.
+  why: >-
+    Mac developers can test against the same high-fidelity Android virtual device that runs
+    in Linux CI, instead of the lighter Goldfish emulator.
+  background: >-
+    Cuttlefish is AOSP's virtual device framework that boots the same system images as real
+    hardware, while Goldfish is the lighter emulator behind the standard Android Emulator.
+    Cuttlefish normally uses crosvm on Linux with KVM, and its virtual devices run as vhost-user
+    backends, separate processes that serve virtio devices to the VMM over a socket. On macOS,
+    QEMU uses Apple's Hypervisor.framework instead of KVM.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/11/13/android/cuttlefish-on-mac/
+- title: >-
     ForrestKnight reads GitHub's Copilot runtime Rust port and finds borrow checker errors
     were 1.7% of compiler errors
   section: Videos
@@ -515,6 +597,27 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=ZsF_zibQwP8
+- title: >-
+    DevOps Toolbox tests Rex, Superlogic's libghostty terminal with persistent sessions and
+    remote pairing
+  section: Videos
+  category: Video
+  blurb: >-
+    DevOps Toolbox tests Rex, Superlogic's libghostty-based terminal with built-in persistent
+    sessions, Lua config and Tailscale remote access.
+  summary: >-
+    The beta review shows Rex, from Mitchell Hashimoto's company Superlogic, running a session
+    server that keeps sessions on disk across window closes and crashes, with floating and
+    minimizable panes, a command palette, and a CLI that wraps the same API as its Lua configuration.
+    It pairs devices over a built-in Tailscale sign-in, and an alpha iOS client showed live
+    bidirectional sessions, while Linux is supported only as a server so far. The reviewer
+    misses a keyboard copy mode like tmux's and notes that Rex is free but not open source.
+  why: >-
+    Rex folds a tmux-style multiplexer, session persistence and remote access into one libghostty-based
+    app, which may replace a Ghostty plus tmux setup once it leaves beta.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=DA1uyLPwuVQ
 - title: >-
     Jane Street adds interview rounds on design, code verification and LLM use, drawing 207
     Hacker News comments
