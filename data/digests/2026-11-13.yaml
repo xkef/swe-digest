@@ -1,5 +1,5 @@
 date: '2026-11-13'
-updated: 2026-11-13T20:35Z
+updated: 2026-11-13T22:50Z
 stories:
 - title: >-
     Attackers chain PHP2Shell and Check Point CVE-2026-123039 to root gateways, then run a
@@ -678,6 +678,32 @@ stories:
   - label: primary
     url: https://blog.cloudflare.com/spend-management/
 - title: >-
+    Pyroscope adds memory profiling for Python and Rust, .NET on Windows, and gcx profile
+    commands for agents
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Grafana's continuous profiler can now show which Python and Rust code holds live memory,
+    and coding agents can query profiles through gcx.
+  summary: >-
+    Grafana Labs says the Pyroscope Python SDK now supports memory profiling with mem_enabled=True,
+    and the Rust SDK reports in-use memory through the jemalloc allocator. .NET profiling
+    on Windows x64 is in public preview from profiler 1.3.0. The gcx Grafana CLI gains gcx
+    profiles commands that rank services by a profile type, list exemplar profiles and export
+    pprof files, and the Grafana UI adds exemplars and a Call Tree view.
+  why: >-
+    Rust and Python services can now be checked for heap growth and leaks in the same Pyroscope
+    stack that already holds their CPU profiles.
+  background: >-
+    Continuous profiling samples stack traces from running services all the time and stores
+    them so engineers can see where CPU time and memory go across a fleet. A CPU profile shows
+    where code spends time, while an in-use memory profile shows which call paths allocated
+    memory that is still live, which is what points at a leak. Exemplars are individual profiles
+    from single processes, so one bad instance does not disappear into an aggregate.
+  sources:
+  - label: primary
+    url: https://grafana.com/blog/whats-new-in-pyroscope-profile-more-of-your-workflows-troubleshoot-with-ai-agents-and-more/
+- title: >-
     Fly.io rebuilds its 6PN private network to look up machine routes on demand instead of
     syncing a fleet-wide map
   section: Engineering posts
@@ -731,6 +757,35 @@ stories:
   sources:
   - label: primary
     url: https://engineering.fb.com/2026/11/13/android/cuttlefish-on-mac/
+- title: >-
+    Florian Marending replaces his ClickHouse setup with Acta, a Parquet and DuckDB lakehouse
+    on Asahi Linux
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    A personal telemetry store writes schemaless events to Parquet files with a Variant column,
+    compacts them by time, and queries them in DuckDB.
+  summary: >-
+    Acta takes batches of JSON events with source, timestamp and data fields, buffers them
+    for 10 seconds, writes Parquet files with a Variant data column, and compacts them into
+    5-minute, hourly, daily and monthly files. DuckDB reads the files through glob imports
+    and uses Parquet footer statistics to skip row groups. A Parquet export of the old OTel
+    traces data came to 1.2 GB, and after cleanup and some dropped data the new files total
+    65 MB. The service runs under podman on an Asahi Linux box, backs itself up hourly to
+    S3 with age encryption, and was built with DeepSeek V4.1 Flash for about 8 dollars in
+    tokens.
+  why: >-
+    It shows a small-server design for wide events where the storage format is open Parquet
+    and the query engine can be swapped, with no database server to run.
+  background: >-
+    Parquet is a columnar file format whose footer holds per-column minimum and maximum values,
+    so a query engine can skip data that cannot match. The Variant type stores semi-structured
+    JSON-like values in binary form, and writers can shred common fields into typed columns
+    for compression and fast scans. Compacting many small files into larger ones is the usual
+    way lakehouse systems keep file counts and per-file overhead low.
+  sources:
+  - label: primary
+    url: https://marending.dev/notes/acta/
 - title: >-
     ForrestKnight reads GitHub's Copilot runtime Rust port and finds borrow checker errors
     were 1.7% of compiler errors
