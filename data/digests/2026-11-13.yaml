@@ -1,0 +1,347 @@
+date: '2026-11-13'
+updated: 2026-11-13T08:22Z
+stories:
+- title: >-
+    Attackers chain PHP2Shell and Check Point CVE-2026-123039 to root gateways, then run a
+    wiper on ESXi
+  section: Top stories
+  category: Security
+  blurb: >-
+    Check Point says attackers rooted its gateways through PHP2Shell and a DynamicCLI flaw,
+    then ran a wiper on ESXi at Israeli organizations.
+  summary: >-
+    Check Point Research reports two waves. The first started on 2026-10-30 against Mobile
+    Access gateways at Israeli organizations, and the second started on 2026-11-02 against
+    Security Gateways in many countries. Attackers used PHP2Shell (CVE-2026-109618 and CVE-2026-109619)
+    for initial access and DynamicCLI privilege escalation CVE-2026-123039 for root. They
+    then planted PHP webshells and deployed the PhiliKit variants TSGA and TSProxy. In the
+    first wave they moved to a VMware ESXi host and ran a wiper. Check Point cannot attribute
+    the campaign with confidence despite China-linked tooling.
+  why: >-
+    Any appliance with an embedded PHP portal needs the October PHP fixes, and a compromised
+    gateway should be treated as a path to the hypervisors behind it.
+  background: >-
+    PHP2Shell is two critical unauthenticated remote code execution flaws in the PHP runtime
+    itself, affecting PHP 5 onward. They were patched on 2026-10-21, and exploitation began
+    days before the patches. Network appliances often build their login portals in PHP, so
+    a language runtime bug becomes an appliance bug. CISA advisories this week list Siemens
+    products and PAN-OS as affected too. The first wave also dropped webshells in the directory
+    the Mobile Access portal uses to build its login pages.
+  sources:
+  - label: primary
+    url: https://research.checkpoint.com/
+  - label: discussion
+    url: https://www.securityweek.com/php2shell-exploited-in-destructive-check-point-gateway-attacks/
+- title: >-
+    Thinking Machines publishes Inkling 2 Small weights under Apache 2.0, a 594B MoE with
+    17B active parameters
+  section: Top stories
+  category: AI
+  blurb: >-
+    Thinking Machines put Inkling 2 Small on Hugging Face as open weights: 594B total, 17B
+    active, natively NVFP4, with a 1M token context.
+  summary: >-
+    The model card describes a 48-layer decoder-only mixture of experts that routes each token
+    to 8 of 384 experts. It mixes local and global attention layers and encodes images with
+    a vision transformer. The model was pretrained, midtrained and post-trained in NVFP4.
+    That checkpoint needs at least 500GB of aggregate VRAM, such as 2 B300 or 4 H200 GPUs,
+    and the MXFP8 checkpoint needs 800GB. It runs on SGLang, vLLM, TokenSpeed and Unsloth,
+    and can be post-trained with Miles, SkyRL or Tinker.
+  why: >-
+    An Apache 2.0 model in this class fits on a single 4-GPU H200 node, and the native NVFP4
+    checkpoint avoids the accuracy loss of quantizing after training.
+  background: >-
+    A mixture-of-experts model holds many feed-forward blocks, called experts, and a router
+    sends each token to only a few of them. Total parameters set memory needs, while active
+    parameters set the compute per token. NVFP4 is NVIDIA's 4-bit floating point format with
+    per-block scale factors, supported in hardware on Blackwell GPUs. Training natively in
+    such a format means the published weights are the ones the model was optimized in.
+  comments: >-
+    The r/LocalLLaMA release thread centers on the hardware floor. The 500GB VRAM minimum
+    puts the model out of reach of consumer rigs.
+  thread: f-0182
+  sources:
+  - label: primary
+    url: https://huggingface.co/thinkingmachines/Inkling-2-Small
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1xuqplg/thinkingmachinesinkling2small_is_released/
+- title: >-
+    C++26 draft fails its ISO ballot over Contracts, and WG21 meets next week to decide how
+    to ship it
+  section: Top stories
+  category: Languages
+  blurb: >-
+    The C++26 Draft International Standard failed its ISO ballot with 9 no votes and 12 abstentions,
+    mainly over the P2900 Contracts feature.
+  summary: >-
+    The October DIS ballot drew 13 votes in favor, 9 against and 12 abstentions, so it missed
+    ISO's limit of 25 percent negative votes. Bjarne Stroustrup and co-authors call the P2900
+    Contracts design an existential threat to C++. Committee member Andreas Fertig says the
+    no votes broke trust after repeated majority approvals. WG21 meets next week in Buzios,
+    Brazil. It can remove Contracts, move them into a technical specification, or revise and
+    vote again, and the standard may slip to 2027.
+  why: >-
+    Library hardening already built on Contracts may be undone, and toolchain teams planning
+    C++26 support face a delayed or reshaped standard.
+  background: >-
+    Contracts let code declare preconditions, postconditions and assertions that can be checked
+    at run time, an idea long present in Ada and Eiffel. A version was pulled from C++20 late
+    over concerns about dangerous defaults. The Draft International Standard ballot is the
+    next-to-last ISO stage, where national bodies approve the technical content, and failing
+    it is rare in C++ history.
+  followup: WG21 meeting in Buzios, Brazil, the week of 2026-11-16.
+  sources:
+  - label: discussion
+    url: https://www.theregister.com/devops/2026/11/13/c26-stumbles-at-finish-line-over-contracts-dispute/5309526
+  thread: f-0215
+- title: >-
+    SignDrop exploit turns Windows CLFS log authentication into a SYSTEM file write, with
+    no patch or CVE
+  section: Security
+  category: Security
+  blurb: >-
+    A public SignDrop exploit abuses how clfs.sys creates .cnpf companion files to give a
+    local user SYSTEM, and Microsoft has not issued a fix.
+  summary: >-
+    The researcher's proof of concept prepares a CLFS log at a path the user controls. It
+    waits for a privileged process, Defender's update service in the published code, to open
+    the log. Object manager symbolic links then redirect the companion .cnpf file the driver
+    creates as SYSTEM. Systems are in scope when the CLFS authentication Mode is 0 or 1, which
+    is the default on established installs. 78researchlab confirmed that the exploit works
+    but found it unreliable. No CVE, patch or in-the-wild use has been reported.
+  why: >-
+    Windows build agents and developer machines are exposed to local privilege escalation
+    until Microsoft responds, and disabling CLFS authentication brings back older memory corruption
+    bugs.
+  background: >-
+    The Common Log File System driver has 10 entries in CISA's known exploited catalog. Microsoft
+    added HMAC authentication of log files in October 2025 so the driver would parse only
+    logs it wrote itself. SignDrop attacks that mitigation's file creation logic rather than
+    the log parser.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/new-signdrop-zero-day-exploit-turns.html
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/new-windows-signdrop-zero-day-gives-hackers-system-privileges/
+  thread: f-0216
+- title: >-
+    hickory-dns 0.26.2 fixes DNSSEC flaws that let resolvers return forged or unrelated records
+    as validated
+  section: Security
+  category: Security
+  blurb: >-
+    RustSec published a batch of hickory-proto, hickory-net and hickory-resolver advisories,
+    and older hickory-proto releases get no fix.
+  summary: >-
+    RUSTSEC-2026-0514 (CVE-2026-93657, CVSS 7.5) shows that Resolver::lookup and lookup_ip
+    returned Ok even when DNSSEC validation found the records bogus. From 0.26.2 such lookups
+    fail with DnsError::DnssecBogus. RUSTSEC-2026-0512 shows that validation accepted a genuine
+    signed RRset for a different name or type. No hickory-proto release fixes it, and users
+    must move to 0.26.2, which validates through hickory-net. Further advisories cover NSEC3
+    checks, NXDOMAIN proofs, cache reuse and unbounded recursor queries.
+  why: >-
+    Rust services that enable DNSSEC validation in hickory cannot trust a successful lookup
+    until they upgrade to 0.26.2 or later.
+  background: >-
+    DNSSEC signs DNS record sets so a resolver can detect forged answers. NSEC and NSEC3 records
+    prove that a name or type does not exist. A validator must check both the signature and
+    that the signed data answers the question asked. Hickory is the main pure-Rust DNS stack,
+    used as an optional resolver by many Rust HTTP clients.
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0514.html
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0512.html
+- title: >-
+    Citrix patches NetScaler Console auth bypass CVE-2026-120869 and nine critical NetScaler
+    memory flaws
+  section: Security
+  category: Security
+  blurb: >-
+    Citrix fixed 12 NetScaler and Secure Access Client flaws after an AI-assisted code review,
+    including an unauthenticated Console bypass.
+  summary: >-
+    The critical ADC and Gateway bugs are memory overflows and corruption in packet processing,
+    SMPP, DNS and DoH, Push, Gateway and AAA servers, Email OTP, Endpoint Analysis and the
+    ICA proxy. They are fixed in 14.1-73.57 and 13.1-64.39. CVE-2026-120869 (CVSS 9.4) lets
+    an unauthenticated attacker bypass authentication on NetScaler Console, fixed in 14.1-74.34.
+    Secure Access Client flaws allow escalation to SYSTEM on Windows and to root on Linux.
+    Citrix knows of no exploits.
+  why: >-
+    NetScaler bugs have a history of fast exploitation, so internet-facing gateways and Console
+    instances should be patched before exploit code appears.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/citrix-patches-12-netscaler-and-secure.html
+- title: >-
+    Apify rotates customer API tokens and proxy passwords after intruders reached internal
+    systems
+  section: Security
+  category: Security
+  blurb: >-
+    Apify revoked GitHub and other OAuth integrations and told some customers to reset 2FA,
+    saying their 2FA codes may have been exposed.
+  summary: >-
+    Apify says an unauthorized party accessed parts of its internal systems on 2026-11-09
+    and 2026-11-10, and it detected the access at 12:13 UTC the next day. It invalidated internal
+    credentials, rotated API tokens and Apify Proxy passwords, reset sessions and revoked
+    third-party OAuth connections. It says it found no sign that account data was affected.
+    The access vector is not disclosed.
+  why: >-
+    Teams that run Apify scrapers in CI or agents must swap in the rotated tokens, reconnect
+    GitHub when told, and reset 2FA.
+  sources:
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/apify-rotates-api-tokens-prompts-2fa-resets-after-breach/
+  thread: f-0217
+- title: >-
+    GitHub's October report traces eight incidents to its Azure move, including a network
+    fault across three zones
+  section: Outages
+  category: Outage
+  blurb: >-
+    GitHub says 140 of 151 services now run in Azure Central US and explains October outages,
+    from stalled Actions runners to write failures.
+  summary: >-
+    On 2026-10-05, Actions jobs sat queued for about 3 hours 45 minutes. A partial cloud network
+    failure made the runner assignment service wait on timeouts until it ran out of memory,
+    and the failover region lacked capacity. The 2026-10-07 write outages exposed an unsafe
+    interaction between database orchestration and production routing. A 2026-10-29 Azure
+    network disruption hit all three Central US availability zones and at least 34,128 signed-in
+    users. The East US 3 buildout is a week late, with its first traffic ramp due in the first
+    week of December.
+  why: >-
+    Teams that depend on hosted Actions runners should expect more migration risk through
+    December and plan around queued jobs during regional failover.
+  sources:
+  - label: primary
+    url: https://github.blog/news-insights/company-news/github-availability-report-october-2026/
+- title: >-
+    Weight forensics ties six DeepSeek, Moonshot, MiniMax and Ant Group models to export-controlled
+    Blackwell GPUs
+  section: AI
+  category: AI
+  blurb: >-
+    Unemployment Labs recovered Philox seeds and thread layouts from released weights, matching
+    six Chinese models to Blackwell SM counts.
+  summary: >-
+    The report regenerates initial weights from cuRAND Philox seeds and tests which thread
+    counts reproduce traces that survive training. The thread count depends on a GPU's SM
+    count: 132 for Hopper, 148 for B200 and B300, and 152 for GB200 and GB300. DeepSeek-V4-Flash,
+    DeepSeek-V4-Pro, Kimi K3, Kimi K3.1-Pro, MiniMax-M3 and Ling-3.1-flash match Blackwell,
+    while earlier models from the same labs match Hopper. The method agreed with all 24 models
+    whose hardware was publicly disclosed. It shows only where the weights were initialized,
+    not where the chips were or whether controls were broken.
+  why: >-
+    The released weights of an open model can reveal the hardware that initialized them, which
+    matters for provenance checks and for anyone publishing weights.
+  background: >-
+    PyTorch fills new GPU tensors with Philox, a counter-based random generator from cuRAND,
+    split across up to 2,048 threads per streaming multiprocessor. The same seed on a chip
+    with a different SM count puts the same numbers in different positions. Weights that training
+    barely touches, such as unused vocabulary rows, keep those positions.
+  comments: The Hacker News thread drew 280 points and 82 comments.
+  sources:
+  - label: primary
+    url: https://unemploymentlabs.com/checkpoint-forensics
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50474883
+- title: >-
+    Edge0 open-sources a 145B MoE that it says runs on a laptop in 29GB at over 80 tokens
+    per second
+  section: AI
+  category: AI
+  blurb: >-
+    Edge0-145B shares two large matrices across each group of 64 experts and streams expert
+    and vocabulary weights from RAM and SSD to fit a laptop.
+  summary: >-
+    Edge0 released the weights of Edge0-145B and Edge0-120B with its inference framework.
+    About 10B parameters are active per step. Hot experts stay in GPU memory, a roughly 40GB
+    expert library sits in system RAM, and about 48GB of vocabulary data is read from SSD
+    on demand. Speculative decoding spreads the cost of weight reads. Edge0 reports 29GB peak
+    memory, more than 1,100 tokens per second prefill and 64.6 on DeepSWE 1.1, all from internal
+    evaluations.
+  why: >-
+    If independent runs confirm the numbers, a 48GB laptop could run a coding agent model
+    competitive with hosted flash-tier APIs, with no token fees.
+  comments: >-
+    The Hacker News thread drew 221 points and 60 comments. The benchmark comparisons are
+    Edge0's own, and the full evaluation setup is promised in a technical report.
+  sources:
+  - label: primary
+    url: https://edge0.ai/blog/introducing-edge0-145b-frontier-ai-capabilities-on-your-own-computer
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50475713
+- title: >-
+    Makepad releases Relax, a Rust JIT that runs Cargo packages without rustc or LLVM and
+    hot-patches edits
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Relax compiles each Rust function on first call and patches edits live, at 1.12x to 1.24x
+    the runtime of rustc release builds.
+  summary: >-
+    Relax is a 438k-line Rust library with its own front end, type and borrow checker, optimizer,
+    and x86-64 and AArch64 back ends. It compiles functions lazily and tiers hot ones from
+    an interpreter through O1 to O3. On an M4 MacBook, a large 3D game reached its first frame
+    in 11 s from a clean checkout, against about 3 minutes with cargo. Code runs 1.12x the
+    time of stock release builds on x64 and 1.24x on arm64, measured as a geomean over 21
+    workloads. Layout, trait and macro changes still need a restart, and Windows is untested.
+  why: >-
+    It offers a far shorter edit and run loop for large Rust codebases and agent workflows,
+    while release builds stay on rustc.
+  background: >-
+    A JIT compiles code while the program runs instead of ahead of time, which is how the
+    JVM and V8 work. Rust has always relied on ahead-of-time compilation through LLVM, where
+    long build and link times dominate iteration on large projects. Relax keys every cached
+    result by input hashes, so it needs no cargo clean.
+  comments: The Hacker News thread drew 151 points and 69 comments.
+  sources:
+  - label: primary
+    url: https://makepad.github.io/relax/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50458849
+- title: >-
+    Grafana Mimir 3.2.5 stops Alertmanager SNS receivers from borrowing its AWS credentials
+    by default
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Mimir 3.2.5, 3.1.10 and 2.17.12 require explicit SNS keys and reject use_aws_http_client,
+    closing a tenant path to Alertmanager credentials.
+  summary: >-
+    A tenant could create an SNS receiver with a custom URL and receive the Alertmanager's
+    own AWS credentials, so explicit access and secret keys are now required by default. Receivers
+    that set use_aws_http_client are rejected because that client bypassed the receivers firewall.
+    Tenant restrictions now also apply to configuration loaded from storage, with an exemption
+    flag for existing configs.
+  why: >-
+    Multi-tenant Mimir operators should upgrade, and tenants with SNS receivers that relied
+    on ambient credentials must add explicit keys or alerts will stop.
+  sources:
+  - label: primary
+    url: https://github.com/grafana/mimir/releases/tag/mimir-3.2.5
+  - label: primary
+    url: https://github.com/grafana/mimir/releases/tag/mimir-2.17.12
+- title: >-
+    Jane Street adds interview rounds on design, code verification and LLM use, drawing 207
+    Hacker News comments
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Jane Street is trialing campus onsite rounds with less code writing and more design and
+    code checking, while most rounds stay LLM-free.
+  summary: >-
+    Jane Street says most of its engineers use LLMs daily. Since the summer it has trialed
+    onsite rounds for campus candidates that focus on software design, checking the quality
+    and intent of code, and producing code with LLMs. Most rounds remain traditional coding
+    interviews without LLM help, and the formats are still changing. The Hacker News thread
+    reached 216 points and 207 comments.
+  why: >-
+    It is a concrete sign that hiring loops are shifting toward judging and verifying generated
+    code rather than writing it.
+  sources:
+  - label: primary
+    url: https://blog.janestreet.com/software-engineering-interviews-are-changing-a-little/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50467297
