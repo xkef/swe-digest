@@ -1,5 +1,5 @@
 date: '2026-11-13'
-updated: 2026-11-13T17:20Z
+updated: 2026-11-13T20:35Z
 stories:
 - title: >-
     Attackers chain PHP2Shell and Check Point CVE-2026-123039 to root gateways, then run a
@@ -367,6 +367,35 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/LocalLLaMA/comments/1xv3cyt/llamacpp_bump_version_to_100_by_ggerganov_pull/
 - title: >-
+    Cloudflare sees 50 AI pentest frameworks scanning customers, with orchestrator traffic
+    up 30 times since October 1
+  section: AI
+  category: AI
+  blurb: >-
+    Forks of the removed ARTEX tool and dozens of similar agent frameworks now probe exposed
+    infrastructure and chain stolen CI tokens.
+  summary: >-
+    Cloudflare says more than 50 LLM penetration testing framework families scanned its customers
+    in three days, with ARTEX and its forks over 60% of known orchestrators and daily requests
+    up 30 times since 2026-10-01. Its incident responders saw ARTEX use a stolen, unrestricted
+    CI/CD account API token to create artex-named Workers and issue about 400 database dump
+    requests in an hour. Cloudflare recommends rate-limited WAF rules, bot defense, identity-gated
+    access and schema validation.
+  why: >-
+    Static, non-expiring CI tokens without IP limits are now the path agent attackers use
+    to move between cloud and edge accounts, so scope and rotate them.
+  background: >-
+    ARTEX is an open-source agent system that maps a target onto a graph and runs parallel
+    agents to enumerate, verify and exploit it. Its author removed the repository on 2026-10-08
+    after abuse, but Cloudflare counts more than 12,000 repositories carrying its lineage.
+    The digest has tracked ARTEX-linked intrusions such as WorkOS and Eye Security's deploy
+    pipeline case.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/adapting-to-ai-penetration-testing-orchestrators/
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xuvt8o/hundreds_of_copies_of_chinesemade_artex_hacking/
+- title: >-
     Claude Code 2.1.323 removes the subagentStatusLine setting, and users report blank custom
     agent rows
   section: Agentic coding
@@ -393,6 +422,109 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50477704
   thread: f-0218
+- title: >-
+    ClickHouse open-sources Loom, shared agent memory tied to a code index that flags notes
+    when code changes
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Built from its GroeneAI contributor's work, Loom versions facts, links them to code, and
+    lifted code-question scores from 0.78 to 0.84.
+  summary: >-
+    Loom stores agent memories, a repository call graph index, embeddings, full-text index
+    and run logs in one ClickHouse database, and flags a memory for review when the code it
+    describes is rewritten. On ClickHouse code questions the mean graded score rose from 0.78
+    to 0.84 and cost per question fell from $0.212 to $0.17, and file-finding accuracy rose
+    from 91.4% to 96.4%. It ships under Apache 2.0 with Claude Code and Codex plugins, MCP,
+    HTTP and SDKs, and needs ClickHouse 26.5 or later.
+  why: >-
+    Teams running several coding agents get a self-hosted, namespace-scoped memory that Claude
+    Code and Codex sessions can share, with a published benchmark method.
+  background: >-
+    Coding agents start each session with an empty context, so they rediscover repository
+    quirks or guess. Memory tools store notes from past sessions but usually cannot see the
+    code, so notes go stale silently. Loom combines vector, BM25 and entity-graph searches
+    and keeps every version of a fact so queries can run as of a past date.
+  sources:
+  - label: primary
+    url: https://clickhouse.com/blog/introducing-loom-agent-memory-that-keeps-up-with-your-code
+- title: >-
+    Together AI's TKCC agent loop compiles inference engines continually and beats open engines
+    by up to 2.6 times
+  section: ML research
+  category: Paper
+  blurb: >-
+    A persistent engine lets agents measure real forward passes quickly, and the system now
+    serves trillions of tokens in Together's fleet.
+  summary: >-
+    Together Compiler runs a continual agent hill-climbing loop over end-to-end inference,
+    using a Tiered Persistent Engine to separate engine launch overhead from forward pass
+    timing and a cost model to pick starting parallelism configurations. The paper reports
+    up to 1.7 times over hand-written megakernels on Llama 1B and up to 2.6 times the tokens
+    per second of the best open engines on Kimi K3, GLM 5.3, MiniMax M3.1 Flash and DeepSeek
+    v4.1 Flash on InferenceX.
+  why: >-
+    It shows agent-driven optimization working against whole-engine measurements in production,
+    not only on isolated kernels with offline benchmarks.
+  background: >-
+    Agent kernel optimizers usually time single kernels offline, which misleads for data-dependent
+    operations such as mixture-of-experts routing. Optimizing a full engine is more faithful
+    but each engine restart is slow. TKCC targets that tradeoff between measurement throughput
+    and fidelity.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.14681v1
+- title: >-
+    Trait hitchhiking paper uses the Price equation to predict which untargeted traits GRPO
+    training amplifies
+  section: ML research
+  category: Paper
+  blurb: >-
+    RL post-training shifts probability across completions, and traits that ride along with
+    rewarded answers grow without being rewarded.
+  summary: >-
+    The authors formalize how traits evolve during RL post-training and recover the Price
+    equation from evolutionary biology. They call the amplification or suppression of non-targeted
+    traits trait hitchhiking and show the Price estimates closely track sampled trait dynamics
+    in models trained with GRPO.
+  why: >-
+    It gives post-training teams a way to predict which side behaviors an RL run will amplify
+    before they show up in evals.
+  background: >-
+    The Price equation splits a change in a population's average trait into a part driven
+    by covariance with fitness and a part from transmission. In RL with verifiable rewards,
+    reward plays the role of fitness, so any trait correlated with rewarded completions can
+    spread. GRPO is a policy gradient method that scores each completion against others sampled
+    for the same prompt.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.14683v1
+- title: >-
+    Anthropic publishes its method for safety evals, scoring whole multi-turn conversations
+    against expert rubrics
+  section: ML research
+  category: AI
+  blurb: >-
+    The guidance favors appropriate response rates over refusal rates and pairs harmful and
+    benign prompts to catch over-refusal.
+  summary: >-
+    Anthropic recommends matching eval design to observational or causal questions, measuring
+    an appropriate response rate where one bad turn fails a whole conversation, and pairing
+    harmful with benign prompts in each domain. It describes a tool where a domain expert
+    writes a scenario spec, a Claude model plays the user, and a grader scores transcripts.
+    It says single-turn harmless response rates sit between 94% and 98% for recent models,
+    so those suites are now mainly regression checks.
+  why: >-
+    Anyone building model or agent evals gets concrete guidance on construct validity, grader
+    calibration and saturation that applies beyond safety.
+  background: >-
+    Construct validity asks whether a measure captures the concept it claims to measure. A
+    refusal-rate eval rewards a model that refuses everything, which is not the same as safe
+    behavior. The post borrows reforms from psychology's replication crisis, such as preregistration
+    and better measurement.
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/research/building-strong-safety-evaluations
 - title: >-
     Makepad releases Relax, a Rust JIT that runs Cargo packages without rustc or LLVM and
     hot-patches edits
@@ -443,6 +575,31 @@ stories:
   sources:
   - label: primary
     url: https://github.com/jdx/mise/releases/tag/v2026.11.8
+- title: >-
+    Cloudflare open-sources Kitesurf, its Rust and WebAssembly browser engine for AI agents,
+    under Apache 2.0
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Kitesurf, the agent browser that runs on Workers without a browser container and speaks
+    CDP, can now be run locally or self-deployed.
+  summary: >-
+    Cloudflare published Kitesurf on GitHub under Apache 2.0 on 2026-11-13. It parses HTML,
+    applies CSS, runs page JavaScript and renders screenshots on Workers, using Blitz, Stylo,
+    Boa and Linebender libraries, and accepts Chrome DevTools Protocol clients such as Puppeteer.
+    Self-deployment needs a Workers Paid plan because pages run in Dynamic Workers.
+  why: >-
+    Teams that give agents a browser can now inspect the engine and run it locally or in their
+    own account instead of using a managed Chromium service.
+  background: >-
+    The Chrome DevTools Protocol is the WebSocket protocol that tools like Puppeteer use to
+    drive a browser, so any CDP client can drive an engine that implements it. Most agent
+    browsing today runs full headless Chromium in containers, which costs a lot of CPU and
+    memory per session. Kitesurf builds on Blitz and Stylo, Rust components from the Servo
+    and Firefox lineage, compiled to WebAssembly.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/kitesurf-open-source/
 - title: Christoph Hellwig releases XRAID, a declustered parity RAID built into zoned XFS
   section: Linux and kernel
   category: Linux/Kernel
