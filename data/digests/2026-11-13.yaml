@@ -1,5 +1,5 @@
 date: '2026-11-13'
-updated: 2026-11-13T08:22Z
+updated: 2026-11-13T13:20Z
 stories:
 - title: >-
     Attackers chain PHP2Shell and Check Point CVE-2026-123039 to root gateways, then run a
@@ -195,6 +195,35 @@ stories:
     url: https://www.bleepingcomputer.com/news/security/apify-rotates-api-tokens-prompts-2fa-resets-after-breach/
   thread: f-0217
 - title: >-
+    quinn-proto 0.11.19 fixes a Retry token client crash and a stream limit bypass that can
+    exhaust memory
+  section: Security
+  category: Security
+  blurb: >-
+    Two quinn-proto flaws let a peer crash a QUIC client with a long Retry token or exhaust
+    memory by opening streams past the limit.
+  summary: >-
+    RUSTSEC-2026-0524 says a quinn client kept a Retry token without a length limit, so an
+    oversized token makes release builds try to allocate more than 10 GiB and abort, and an
+    on-path attacker who sees the first Initial packet can send it. RUSTSEC-2026-0523 says
+    one MAX_STREAM_DATA frame naming a huge stream index opened every lower stream without
+    a limit check, letting a peer hand accept_bi more than 2^40 streams. Both are fixed in
+    quinn-proto 0.11.19, and versions before 0.11.0 are unaffected.
+  why: >-
+    Any Rust service or client using quinn for QUIC or HTTP/3 should update to quinn-proto
+    0.11.19, since one flaw hits every outgoing connection.
+  background: >-
+    QUIC servers can answer a client's first Initial packet with a Retry packet that carries
+    an address validation token, which the client must echo in later Initial packets. Initial
+    datagrams are limited to 1200 bytes, so an unbounded token leaves no room for payload.
+    RFC 9000 requires an endpoint to close the connection with STREAM_LIMIT_ERROR when a peer
+    references streams beyond the advertised limit.
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0524.html
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0523.html
+- title: >-
     GitHub's October report traces eight incidents to its Azure move, including a network
     fault across three zones
   section: Outages
@@ -216,6 +245,41 @@ stories:
   sources:
   - label: primary
     url: https://github.blog/news-insights/company-news/github-availability-report-october-2026/
+- title: >-
+    Claude.ai, Claude Code and the Claude Console fail authentication for about two hours
+    on 2026-11-13
+  section: Outages
+  category: Outage
+  blurb: >-
+    Claude.ai, Claude Code, the Console and Cowork had authentication errors for about two
+    hours on 2026-11-13, resolved at 11:58 UTC.
+  summary: >-
+    Anthropic began investigating failed authentication to claude.ai and Claude Code at 09:58
+    UTC on 2026-11-13. A fix was deployed at 11:05 UTC and the incident was marked resolved
+    at 11:58 UTC. The status page lists claude.ai, Claude Console, Claude Code and Claude
+    Cowork as affected.
+  why: >-
+    Teams that run Claude Code with account sign-in had no fallback during the window, which
+    argues for API-key or second-provider failover in agent workflows.
+  background: >-
+    Claude Code can authenticate either through a claude.ai account login, which uses OAuth,
+    or through an API key from the Console. An authentication fault on the account side blocks
+    interactive sessions even when model serving is healthy. The incident came while a separate
+    Microsoft 365 outage was still unresolved.
+  comments: >-
+    The main Hacker News thread drew 292 points and 243 comments, with a second Claude Is
+    Down thread at 146 points and 125 comments and a Reddit discussion hub. Commenters who
+    use only the API said they switch to another model provider in seconds, while subscription
+    users described pre-tuned failover across plans from several labs.
+  sources:
+  - label: primary
+    url: https://status.claude.com/incidents/nn11wk485zfn
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50481187
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50481220
+  - label: discussion
+    url: https://www.reddit.com/r/ClaudeAI/comments/1xv3xyv/discussion_hub_for_new_claude_incident_elevated/
 - title: >-
     Weight forensics ties six DeepSeek, Moonshot, MiniMax and Ant Group models to export-controlled
     Blackwell GPUs
@@ -273,6 +337,63 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50475713
 - title: >-
+    llama.cpp 1.0.0 removes deprecated APIs, adds FP8 KV caches and a MoE expert cache, and
+    hardens llama-server
+  section: AI
+  category: AI
+  blurb: >-
+    llama.cpp 1.0.0 removes 35 deprecated API functions, adds FP8 KV caches and a MoE expert
+    cache, and hardens llama-server against SSRF.
+  summary: >-
+    Georgi Gerganov merged the 1.0.0 version bump on 2026-11-13. The release removes llama_set_warmup,
+    35 deprecated functions and defrag_thold, promotes the NextN speculative API into llama.h,
+    adds OCP FP8 KV caches and a host-memory MoE expert cache with a configurable CPU share,
+    and adds Kimi-K3.1-Pro, Ripple and xing4_0. llama-server gains fixes for CORS, DNS rebinding
+    and CORS proxy SSRF, opt-in flags for unauthenticated tools and private media URLs, an
+    OpenAI-compatible /v1/audio/speech endpoint, and an HF_TOKEN restricted to huggingface.co,
+    with ggml also reaching 1.0.0.
+  why: >-
+    Code that links llama.h must drop the removed functions before upgrading, and self-hosted
+    llama-server deployments should pick up the new security defaults.
+  background: >-
+    llama.cpp is the C and C++ inference engine behind much local LLM serving, built on the
+    ggml tensor library. The KV cache stores attention keys and values for past tokens, so
+    storing it in FP8 roughly halves its memory against FP16. In mixture-of-experts models
+    only a few expert weight blocks run per token, which is what makes caching hot experts
+    in faster memory worthwhile.
+  sources:
+  - label: primary
+    url: https://github.com/ggml-org/llama.cpp/pull/32190
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1xv3cyt/llamacpp_bump_version_to_100_by_ggerganov_pull/
+- title: >-
+    Claude Code 2.1.323 removes the subagentStatusLine setting, and users report blank custom
+    agent rows
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Claude Code 2.1.323 dropped the subagentStatusLine setting without a startup warning,
+    blanking custom per-agent cost and context rows.
+  summary: >-
+    The 2.1.323 changelog says the subagentStatusLine setting was removed and subagent rows
+    always use the default look, and the schema now marks the key as having no effect. Issue
+    109446 reports that configured commands stop running with no warning, and that no mod
+    render site covers agent panel rows. Commenters say the only workaround is pinning 2.1.322
+    with the auto-updater disabled.
+  why: >-
+    Anyone who monitors per-subagent model, effort, context and cost through custom status
+    rows loses that view on upgrade and must pin or rebuild it elsewhere.
+  comments: >-
+    Users describe rows that showed per-agent model and effort, token and dollar spend, and
+    prompt cache state. One explains that a wrapper script pointing at the 2.1.322 binary
+    survives auto-update where a symlink does not.
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/claude-code/issues/109446
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50477704
+  thread: f-0218
+- title: >-
     Makepad releases Relax, a Rust JIT that runs Cargo packages without rustc or LLVM and
     hot-patches edits
   section: Developer tools
@@ -302,6 +423,27 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50458849
 - title: >-
+    mise 2026.11.8 adds argv to command wrapper templates and a setting that keeps private
+    repos off mise-versions
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    mise 2026.11.8 lets wrapper templates read user arguments and keeps chosen private GitHub
+    repo names away from the mise-versions service.
+  summary: >-
+    Command wrapper args and env templates can now read argv, the arguments passed after the
+    command name. The new versions_host_exclude setting takes owner/repo globs, and mise looks
+    up matching github: tools directly on GitHub instead of sending their names to mise-versions.
+    The release also adds experimental bootstrap settings plugins, block edits inside files
+    such as /etc/hosts, root package.json scripts in npm and Bun workspace task graphs, and
+    makes mise lock fail on unknown tools.
+  why: >-
+    Teams that install internal CLIs through github: backends can now stop leaking private
+    repository names to a third-party version service.
+  sources:
+  - label: primary
+    url: https://github.com/jdx/mise/releases/tag/v2026.11.8
+- title: >-
     Grafana Mimir 3.2.5 stops Alertmanager SNS receivers from borrowing its AWS credentials
     by default
   section: Infrastructure
@@ -323,6 +465,56 @@ stories:
     url: https://github.com/grafana/mimir/releases/tag/mimir-3.2.5
   - label: primary
     url: https://github.com/grafana/mimir/releases/tag/mimir-2.17.12
+- title: >-
+    Fly.io rebuilds its 6PN private network to look up machine routes on demand instead of
+    syncing a fleet-wide map
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Fly.io replaced a fleet-wide eBPF map of migrated machines with on-demand route lookups
+    triggered by VXLAN unknown-address events.
+  summary: >-
+    Every Fly host used to hold a BPF map of all migrated machines, hundreds of thousands
+    of entries fed from Corrosion, and hosts held very different counts, showing that sync
+    was failing. Now a VXLAN unknown-address event reaches s6pnforwarderd, which queries local
+    Corrosion state and writes one kernel route, leaving 100 to 200 routes per host, with
+    udp-xdp only checking network membership and stamping an fwmark so the path fails closed.
+    The cost is a first connection that can take about a second because of the TCP retransmit
+    timeout, which Fly plans to fix by holding the first packets during lookup.
+  why: >-
+    It shows a concrete way to replace eventually consistent state replicated into the kernel
+    with lazy lookups that fail closed and can be observed.
+  background: >-
+    VXLAN carries Ethernet frames inside UDP so a layer 2 segment can span an IP network,
+    and it needs a mapping from addresses to remote tunnel endpoints. eBPF programs cannot
+    call into userspace, so any lookup table they use must be loaded ahead of time. Corrosion
+    is Fly's gossip-replicated SQLite store for fleet state.
+  sources:
+  - label: primary
+    url: https://fly.io/blog/throwing-out-the-phonebook/
+- title: >-
+    ForrestKnight reads GitHub's Copilot runtime Rust port and finds borrow checker errors
+    were 1.7% of compiler errors
+  section: Videos
+  category: Video
+  blurb: >-
+    ForrestKnight reads GitHub's Copilot runtime port to Rust: 84% of 8,678 compiler errors
+    were plain type errors, and 1.7% were borrow errors.
+  summary: >-
+    The video summarizes a GitHub write-up in which one engineer used agents to port the Copilot
+    runtime from about 430,000 lines of TypeScript to 832,000 lines of Rust over about 14.5
+    weeks in 128 pull requests. Of 8,678 compiler errors, 84% were ordinary type errors and
+    1.7% involved ownership or lifetimes, and the bugs that shipped came mostly from lifecycle
+    and ordering problems across TypeScript handles, which end-to-end tests caught. The port
+    used agents barred from editing tests, review agents on three models comparing old and
+    new code, and a faithful port before cleanup, and the video cites a first reply falling
+    from 5.25 seconds to 55.3 milliseconds.
+  why: >-
+    For agent-driven ports, protected end-to-end tests and independent review agents mattered
+    more than Rust's borrow checker.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=ZsF_zibQwP8
 - title: >-
     Jane Street adds interview rounds on design, code verification and LLM use, drawing 207
     Hacker News comments
