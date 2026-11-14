@@ -1,5 +1,5 @@
 date: '2026-11-14'
-updated: 2026-11-14T15:57Z
+updated: 2026-11-14T18:49Z
 stories:
 - title: >-
     Unit 42 says China-nexus attackers used the open-source Cairn agent to attack 19 organizations
@@ -35,6 +35,47 @@ stories:
     url: https://unit42.paloaltonetworks.com/cairn-framework-ai-autonomous-attacks/
   - label: discussion
     url: https://www.reddit.com/r/cybersecurity/comments/1xvqdxa/attackers_use_autonomous_ai_to_target/
+- title: >-
+    Cursor traces its Claude Code extension backdoor to a Fireworks-exposed key and agent
+    traces holding credentials
+  section: Top stories
+  category: Security
+  blurb: >-
+    Attackers copied Cursor agent traces from a bucket shared with Fireworks, then used keys
+    in them to backdoor an extension for up to 5,000 users.
+  summary: >-
+    Cursor's 2026-11-13 incident update says an attacker used an access key Cursor had issued
+    to Fireworks, exposed by Fireworks, to copy mostly 2025 coding agent traces from non-Privacy-Mode
+    sessions, some holding unredacted credentials. With those credentials the attacker reached
+    Cursor SaaS tools, archived non-production repositories and support data, and on 2026-10-29
+    placed malicious Anthropic.claude-code 2.1.312 and 2.1.313 builds on the cache serving
+    Cursor's VS Code extension marketplace for about 11 hours. Cursor says fewer than 0.05%
+    of users had traces exposed, fewer than 0.01% of customers had API credentials exposed,
+    the last attacker activity was blocked on 2026-11-01, and it has moved all inference off
+    Fireworks.
+  why: >-
+    Agent session logs kept for training can carry live secrets, so anyone who pasted keys
+    into a non-Privacy-Mode Cursor session or installed those extension versions should rotate
+    credentials and follow Cursor's remediation steps, since uninstalling alone may not be
+    enough.
+  background: >-
+    Cursor is a fork of VS Code and cannot use Microsoft's extension marketplace, so it serves
+    extensions from Open VSX through its own cache, which is where the attacker wrote the
+    tampered builds. Agent traces are recorded transcripts of coding agent sessions, including
+    tool calls and command output, which is how pasted or printed secrets end up in them.
+    Fireworks AI, an inference and training vendor, disclosed several breaches in October,
+    and Notion earlier said transcripts it shared with Fireworks were exposed. BleepingComputer
+    places the incident in the wave of attacks on AI developer platforms that Wiz calls Black
+    October.
+  comments: >-
+    BleepingComputer adds that researchers found coding errors that likely kept the SSH backdoor
+    from working on many Windows and macOS machines where SSH was not already enabled.
+  thread: f-0194
+  sources:
+  - label: primary
+    url: https://cursor.com/blog/security-incident-update
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/cursor-confirms-security-breach-led-to-malicious-claude-code-extension/
 - title: >-
     Mior and Skyfall let a malicious host read AMD SEV-SNP guest memory, with BIOS fixes due
     November and December
@@ -102,6 +143,38 @@ stories:
   - label: discussion
     url: https://thehackernews.com/2026/11/attackers-exploit-unrealircd-flaw-that.html
   thread: f-0220
+- title: >-
+    NVIDIA serves 753B-parameter GLM-5.3 NVFP4 across two DGX Stations with vLLM, peaking
+    at 607.8 tokens per second
+  section: AI
+  category: AI
+  blurb: >-
+    A tensor-parallel vLLM setup over ConnectX-8 RDMA splits a 464 GB checkpoint across two
+    GB300 GPUs and publishes its throughput under load.
+  summary: >-
+    NVIDIA's guide serves the GLM-5.3 NVFP4 mixture-of-experts model, 753B parameters with
+    40B active, whose roughly 464 GB checkpoint exceeds the 252 GB of HBM3e on one GB300,
+    by running vLLM 0.30.0 with tensor parallelism of 2 across two DGX Stations linked by
+    400 Gb/s ConnectX-8 RDMA. The launch enables MTP speculative decoding with four draft
+    tokens, an FP8 KV cache, prefix caching and a 98,304-token context. AIPerf on SPEED-Bench
+    coding prompts shows output throughput peaking at 607.8 tokens per second at concurrency
+    16 and falling to 385.0 at concurrency 32, with mean request latency of 453.5 seconds.
+  why: >-
+    It gives a pinned, reproducible recipe and a measured concurrency ceiling for running
+    a frontier-size open-weight model on two workstations instead of a hosted API.
+  background: >-
+    Tensor parallelism splits each weight matrix across GPUs, so every token needs both machines
+    to exchange partial results, which is why the guide checks jumbo frames, RDMA and NCCL
+    settings before launch. A mixture-of-experts model activates only a few experts per token,
+    but all experts must stay in memory because routing changes per token. Multi-token prediction
+    lets a small extra head draft several tokens that the full model verifies in one step,
+    raising throughput when drafts are accepted.
+  comments: The Hacker News thread drew 86 points and 46 comments.
+  sources:
+  - label: primary
+    url: https://developer.nvidia.com/blog/when-one-gpu-isnt-enough-serving-glm-5-3-across-two-nvidia-dgx-stations-with-vllm/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50497155
 - title: Claude Code 2.1.325 makes sandboxed Bash commands ask for permission by default
   section: Agentic coding
   category: Agentic coding
@@ -343,6 +416,36 @@ stories:
   sources:
   - label: primary
     url: https://postgr.es/p/9BP
+- title: >-
+    Unread no-store fetch replies leak one file descriptor each in Chromium, freezing Claude
+    Desktop on Linux
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    A developer traced Claude Desktop hangs to Chromium keeping a 2 MiB shared-memory pipe
+    and fd open for every unread no-store response body.
+  summary: >-
+    After two months of patching and a 1.5 TiB sparse core dump, the author found the hung
+    renderer held 942 shared-memory regions, 938 of them containing the same 27-byte reply
+    to a keepalive presence POST that the app never reads. Blink skips draining a response
+    body into memory when it carries Cache-Control: no-store, so each unread body keeps its
+    Mojo data pipe and fd open until the renderer hits its 1,024 soft descriptor limit. A
+    repro showed the descriptors stay open even after the Response objects are garbage collected,
+    which ruled out the bundled Datadog SDK, and Chromium told the author this works as intended.
+  why: >-
+    Fire-and-forget fetch calls in Electron or Chromium apps should read or cancel the body,
+    because unread no-store responses leak descriptors until the renderer freezes.
+  background: >-
+    Chromium hands every response body to the renderer through a Mojo data pipe backed by
+    a shared-memory region, and each one costs a file descriptor in the renderer process.
+    The post also explains why the dumps are so large: V8 reserves a 1 TiB sandbox plus guard
+    regions at startup, and the renderer's seccomp policy blocks the madvise call that would
+    exclude it from core dumps.
+  sources:
+  - label: primary
+    url: https://blog.dfb.sh/blog/claude-desktop-freeze/
+  - label: discussion
+    url: https://www.reddit.com/r/programming/comments/1xw4m58/why_a_27byte_fetch_response_nobody_reads_freezes/
 - title: >-
     Theo audits his agent runs and finds Gemini 4 Carbon about five times slower than other
     models in like-for-like work
