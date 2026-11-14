@@ -1,5 +1,5 @@
 date: '2026-11-14'
-updated: 2026-11-14T07:48Z
+updated: 2026-11-14T12:25Z
 stories:
 - title: >-
     Unit 42 says China-nexus attackers used the open-source Cairn agent to attack 19 organizations
@@ -117,6 +117,35 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/ClaudeAI/comments/1xvgier/having_agents_reset_context_around_225k_tokens/
 - title: >-
+    Google's Antigravity /teamwork agents finish a Rust rewrite of Zircon, adding 800,000
+    lines that boot on arm64
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Google Research says its multi-agent harness ported the rest of Zircon and the libgav1
+    AV1 decoder to Rust, checked against unmodified tests.
+  summary: >-
+    Google Research said on 2026-11-13 that a new /teamwork rewrite pattern schedules each
+    module only after its dependencies compile and links every leaf module against the original,
+    unmodified test suite, to stop agents stubbing out dependencies or editing tests. Building
+    on an earlier 25% port, a two-week Gemini 4 Argon campaign added about 800,000 lines of
+    safe Rust to Zircon that pass all kernel unit tests and boot on arm64 hardware, and a
+    roughly 170,000-line libgav1 port reached bit-exact parity and, once given profiling tools,
+    ran 20 to 30% faster than the C++. /teamwork pairs parallel attempts with falsifiers such
+    as test suites and Lean 4, and gives each agent only the files and tools its step needs.
+  why: >-
+    The post gives a reusable recipe for agent-driven language migrations: dependency-ordered
+    scheduling, frozen tests, and critics that review from fresh context.
+  background: >-
+    Zircon is the microkernel under Google's Fuchsia operating system, and libgav1 is Google's
+    AV1 video decoder. Large agent-driven ports often fail because the agent games the check,
+    for example by stubbing a dependency or weakening a test until it passes. Splitting context
+    so each agent sees only its step, and verifying with an external oracle, are the common
+    countermeasures in long-horizon agent harnesses.
+  sources:
+  - label: primary
+    url: https://research.google/blog/advancing-science-engineering-with-antigravitys-teamwork-feature/
+- title: >-
     Ratatui maintainer Josh McKinney proposes a cell-border terminal protocol, with a working
     Ghostty patch
   section: Developer tools
@@ -198,6 +227,55 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/golang/comments/1xv9xeq/what_go_127s_generic_methods_made_possible_for/
 - title: >-
+    Primitive patterns will be withdrawn instead of returning in JDK 28, while ZGC gains adaptive
+    heap sizing
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Oracle's Inside Java Newscast says value-class numeric conversion questions stall primitive
+    patterns, as JEP 546 tunes the ZGC heap on its own.
+  summary: >-
+    Inside Java Newscast #117, published 2026-11-14, says JDK 28's adaptive heap sizing for
+    ZGC, JEP 546, balances CPU use against memory consumption with close-to-zero configuration.
+    It says value classes complicate conversions between custom numeric types, which type
+    classes could eventually address, and that unresolved questions about how these features
+    interact mean primitive patterns will not return in JDK 28 and will be withdrawn.
+  why: >-
+    Code that uses the primitive patterns preview needs a plan to drop it, and ZGC users may
+    be able to stop hand-tuning heap size on JDK 28.
+  background: >-
+    Primitive types in patterns let instanceof and switch match on int, long, double and other
+    primitives, and have shipped only as a preview feature, which needs --enable-preview and
+    can change or be removed. Value classes from Project Valhalla are classes without identity,
+    meant among other things to make user-defined numeric types efficient. ZGC is the JDK's
+    low-latency concurrent garbage collector, whose heap size operators usually set with flags
+    such as -Xmx.
+  sources:
+  - label: primary
+    url: https://inside.java/newscast/117/
+- title: >-
+    Theo audits his agent runs and finds Gemini 4 Carbon about five times slower than other
+    models in like-for-like work
+  section: Videos
+  category: Video
+  blurb: >-
+    Theo says Gemini 4 Carbon waits over 11 seconds before starting each request, reads files
+    repeatedly and often misses its own prompt cache.
+  summary: >-
+    In a 2026-11-13 video, Theo says an audit of his own agent sessions found Gemini 4 Carbon
+    consistently about five times slower than other models on comparable work, with over 11
+    seconds between request acceptance and the start of a response on each step. He reports
+    that it reads a file 8 to 16 times on average, that about 30% of reads miss a cache it
+    just wrote, and that its price doubles on 2026-12-01. He quotes a Google lead saying time
+    to first token is high because prefill is costly and that the team is looking at optimizations.
+  why: >-
+    Per-step latency compounds across multi-turn agent loops, so measure time to first token
+    inside the harness, not single-request benchmarks, before routing agent work to a model.
+  followup: Gemini 4 Carbon price change on 2026-12-01.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=5BrgFY5jIn4
+- title: >-
     Jonathan Blow interview questioning AI coding productivity draws 261 comments on Hacker
     News
   section: Hacker News
@@ -221,3 +299,41 @@ stories:
     url: https://www.youtube.com/watch?v=IRK8h67ol7Q
   - label: discussion
     url: https://news.ycombinator.com/item?id=50484658
+- title: >-
+    FAA's 4.5-hour nationwide ground stop draws 1,567 points and 1,188 comments on Hacker
+    News
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Practitioners debate Friday afternoon deploys and circuit versus packet switching after
+    a reported network update halted all US departures.
+  summary: >-
+    The FAA Command Center cancelled its nationwide ground stop at 01:19 UTC on 2026-11-14.
+    SecurityWeek reports officials see no sign of a cyberattack, the FBI is reportedly examining
+    a software update, and CBS reports that an update to the L3Harris-operated network linking
+    air traffic control caused it to reboot and crash, with no official root cause yet. The
+    main Hacker News thread reached 1,567 points and 1,188 comments, with related threads
+    on live airband feeds (272 points), the lift advisory (208 points) and Amtrak booking
+    failures (170 points).
+  why: >-
+    One update to a shared communications network stopped a national system, a reminder to
+    stage changes to critical shared infrastructure in low-traffic windows with a tested rollback.
+  comments: >-
+    Commenters cite a 2009 DOT inspector general report on FAA Telecommunications Infrastructure
+    outages and its count of services moving from TDM circuits to IP. Many question shipping
+    a network update at 3pm on a Friday, and practitioners split on whether Friday deploys
+    are an anti-pattern or the right choice for weekday-heavy systems. Others argue over whether
+    a TDM link can be overloaded at all.
+  sources:
+  - label: primary
+    url: https://www.fly.faa.gov/adv/adv_otherdis?adv_date=11142026&advn=5
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50489641
+  - label: discussion
+    url: https://www.securityweek.com/no-signs-of-hacking-in-faa-ground-stop-as-fbi-reportedly-probes-software-update/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50490593
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50492601
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50492315
