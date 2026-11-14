@@ -1,5 +1,5 @@
 date: '2026-11-14'
-updated: 2026-11-14T12:25Z
+updated: 2026-11-14T15:57Z
 stories:
 - title: >-
     Unit 42 says China-nexus attackers used the open-source Cairn agent to attack 19 organizations
@@ -69,6 +69,39 @@ stories:
   - label: discussion
     url: https://thehackernews.com/2026/11/new-mior-and-skyfall-attacks-let-rogue.html
   thread: f-0219
+- title: >-
+    CISA adds actively exploited UnrealIRCd CVE-2026-114713 to KEV, a label tag flaw that
+    injects server commands
+  section: Security
+  category: Security
+  blurb: >-
+    Any user on a network of linked UnrealIRCd 6 servers can inject server commands via an
+    unescaped label tag, and attackers now do.
+  summary: >-
+    The labeled-response module in UnrealIRCd 6.0.0 before 6.2.7.1 does not escape the IRCv3
+    label message tag when it echoes the tag into replies. On a network with two or more linked
+    servers, any user can inject server-to-server commands that run with server authority.
+    Maintainer Bram Matthys released 6.2.7.1 and a no-restart hot-patch on 2026-11-07, attackers
+    began exploiting the flaw the next day, and CISA added it to KEV with a federal deadline
+    of 2026-11-16.
+  why: >-
+    Operators of linked UnrealIRCd 6 networks should apply the hot-patch or 6.2.7.1 now, or
+    at least deploy the maintainer's spamfilter workaround.
+  background: >-
+    IRCv3 message tags attach key-value metadata to IRC lines. The labeled-response capability
+    lets a client tag a command with a label so it can match the server's reply to it. Linked
+    IRC servers trust each other's server-to-server protocol lines, so text that escapes into
+    that channel carries server or IRCOp authority. The maintainer calls this the most critical
+    UnrealIRCd issue in 15 years, and the 6.2.7.1 release fixed nine security issues found
+    with AI help.
+  followup: >-
+    Federal KEV deadline on 2026-11-16 and any details of what attackers do after exploitation.
+  sources:
+  - label: primary
+    url: https://www.unrealircd.org/
+  - label: discussion
+    url: https://thehackernews.com/2026/11/attackers-exploit-unrealircd-flaw-that.html
+  thread: f-0220
 - title: Claude Code 2.1.325 makes sandboxed Bash commands ask for permission by default
   section: Agentic coding
   category: Agentic coding
@@ -253,6 +286,63 @@ stories:
   sources:
   - label: primary
     url: https://inside.java/newscast/117/
+- title: KDE Plasma 6.9 starts XWayland only when an X11 app needs it
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Plasma 6.9 will start the XWayland compatibility layer only when an X11 app needs it,
+    after services were ported off legacy X11 code paths.
+  summary: >-
+    KDE's This Week in Plasma for 2026-11-14 says KWin now loads XWayland only when it is
+    needed, where before it ran even with no X11 clients. The change required porting several
+    system services away from legacy X11 code paths and ships in Plasma 6.9. The same week
+    brought QML ports of the Task Switching and Date & Time settings pages and a terminal
+    fallback when Plasma Login Manager fails.
+  why: >-
+    Plasma Wayland sessions with no X11 apps stop paying for an always-running X server, and
+    an X11 dependency that was hiding in a session service now becomes visible.
+  background: >-
+    XWayland is an X11 server that runs as a client of a Wayland compositor so that legacy
+    X11 applications can run in a Wayland session. When the compositor starts it unconditionally,
+    it costs memory and startup time even when no X11 app is open. Starting it on demand means
+    the compositor listens on the X11 socket and launches XWayland only when the first X11
+    client connects.
+  sources:
+  - label: primary
+    url: https://blogs.kde.org/2026/11/14/this-week-in-plasma-xwayland-on-demand/
+  - label: discussion
+    url: https://www.reddit.com/r/linux/comments/1xvq6da/this_week_in_plasma_xwayland_on_demand/
+- title: >-
+    pg_orca prices ORCA plans with a port of PostgreSQL's costsize.c, matching stock planner
+    costs within 2%
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    pg_orca ports PostgreSQL's costsize.c into the ORCA optimizer so its plan costs match
+    the stock planner, checked by a harness within 2%.
+  summary: >-
+    pg_orca replaced ORCA's Greenplum-calibrated cost model with CCostModelPG, which ports
+    PostgreSQL's costsize.c operator by operator and reads planner settings such as random_page_cost
+    and work_mem at costing time. It has been the default since May 2026. The post explains
+    how it fills gaps between the two planners: ORCA has no startup cost, prices nested loop
+    inners by rebinds where PostgreSQL uses loop counts, and needed early-termination pricing
+    for semi and anti joins, which had made TPC-H Q4-style EXISTS queries come out about 3
+    times too expensive. A harness runs 311 EXPLAINs through both planners. Where both pick
+    the same top operator, 183 of 188 plans agree within 2%.
+  why: >-
+    PostgreSQL tuning settings now steer pg_orca's plan choice the same way they steer the
+    stock planner. When the two planners pick different plans, the cause is the search space
+    or the row estimates, not a different cost scale.
+  background: >-
+    ORCA is the Cascades-style cost-based optimizer from Greenplum, described in a SIGMOD
+    2014 paper. A Cascades optimizer stores equivalent plan alternatives in a memo and uses
+    a cost model to choose among them, so a cost model calibrated for other hardware picks
+    the wrong plans. pg_orca is an MIT-licensed extension for PostgreSQL 18 and 19-devel.
+    It hooks the planner, is opt-in per session or database, and falls back to the standard
+    planner on queries it does not support.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9BP
 - title: >-
     Theo audits his agent runs and finds Gemini 4 Carbon about five times slower than other
     models in like-for-like work
