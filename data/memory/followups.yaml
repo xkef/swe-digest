@@ -2660,6 +2660,7 @@
   opened: '2026-11-02'
   last_seen: '2026-11-02'
   notes: []
+  closed: '2026-11-14'
 - id: f-0156
   subject: Langflow CVE-2026-93680 and CVE-2026-110186 unauthenticated flaws
   watch_for: >-
@@ -2915,12 +2916,16 @@
     The release removing the email from model context, stable channel promotion past 2.1.311,
     gaps in the cc-plugin-privacy mod, and any Anthropic statement.
   opened: '2026-11-06'
-  last_seen: '2026-11-09'
+  last_seen: '2026-11-14'
   notes:
   - >-
     2026-11-09: Claude Code 2.1.321 narrows the account email check to refuse only shell commands
     that contain the email and name a User-Agent, without asking, while the release removing
     the email from model context is still unconfirmed.
+  - >-
+    2026-11-14: Claude Code 2.1.325 extends the account email check to refuse the email as
+    a client identity in scripts a command runs, file writes, web fetches and MCP calls, while
+    removal from model context is still unconfirmed.
 - id: f-0180
   subject: GitHub multi-service incident on 2026-11-05 to 2026-11-06
   watch_for: >-
@@ -2983,7 +2988,7 @@
     An Anthropic response, a Claude Code release that redacts secrets or adds the file to
     project .gitignore, and reports of abuse of the leaked credentials.
   opened: '2026-11-07'
-  last_seen: '2026-11-12'
+  last_seen: '2026-11-14'
   notes:
   - >-
     2026-11-12: The Hacker News now headlines that the Claude Code don't ask again file has
@@ -2993,6 +2998,10 @@
     2026-11-12: Claude Code 2.1.323 now ignores .claude/settings.local.json globally when
     a folder becomes a git repository later or on a new machine, and stops offering don't
     ask again for commands that write to .git or .claude.
+  - >-
+    2026-11-14: Claude Code 2.1.325 fixes a case where a committed .claude/settings.local.json
+    was treated as the user's own when started in some subfolders, and applies its allow rules
+    in mounted worktrees only after the folder is trusted.
 - id: f-0188
   subject: GitHub unauthenticated timeouts incident on 2026-11-08
   watch_for: >-
@@ -3313,4 +3322,13 @@
     for agent panel rows.
   opened: '2026-11-13'
   last_seen: '2026-11-13'
+  notes: []
+- id: f-0219
+  subject: AMD SEV-SNP Mior CVE-2026-0462 and Skyfall CVE-2026-40671
+  watch_for: >-
+    AMD platform firmware for Skyfall in November and Mior in December, server maker BIOS
+    releases, cloud provider statements on confidential VM hosts, and the EDK II patch for
+    CVE-2026-18448.
+  opened: '2026-11-14'
+  last_seen: '2026-11-14'
   notes: []

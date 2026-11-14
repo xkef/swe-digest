@@ -1,0 +1,223 @@
+date: '2026-11-14'
+updated: 2026-11-14T07:48Z
+stories:
+- title: >-
+    Unit 42 says China-nexus attackers used the open-source Cairn agent to attack 19 organizations
+    with little human input
+  section: Top stories
+  category: Security
+  blurb: >-
+    A customized Cairn pentest agent on GLM 5.2 and DeepSeek V4 ran 25 operations alone and
+    got access or data at 10 targets, Unit 42 says.
+  summary: >-
+    Unit 42 reports that from August to September 2026 an actor it tracks as CL-STA-1238 ran
+    a customized fork of the Cairn AI penetration testing framework in 25 operations against
+    at least 19 organizations in semiconductor manufacturing, defense policy and civil society.
+    The attackers gave each task a one-line goal and a root domain, ran 13 operations on Zhipu
+    GLM 5.2 and 12 on DeepSeek V4 Flash or Pro, and added a preamble claiming the work was
+    authorized, which neither model refused. Cairn confirmed access or data retrieval at 10
+    organizations, including more than one million member records at a US teachers' union,
+    persistent admin accounts and an API token in a semiconductor company's production system,
+    and an overwritten standards-ballot document.
+  why: >-
+    The flaws exploited were weak passwords, auth bypasses, IDORs, mass assignment and exposed
+    cloud APIs, so identity hygiene and attack surface reduction now face machine-speed probing
+    at many targets at once.
+  background: >-
+    Agentic pentest frameworks pair a language model with a loop that plans, runs tools and
+    records results, so an operator only supplies a target and a goal. Cairn coordinates its
+    model-driven workers through a shared blackboard where confirmed findings accumulate as
+    facts and queued next steps as intents. The digest reported on 2026-11-13 that Cloudflare
+    counted 50 such AI pentest frameworks scanning its customers, and this report is a documented
+    case of one used for intrusion rather than testing.
+  sources:
+  - label: primary
+    url: https://unit42.paloaltonetworks.com/cairn-framework-ai-autonomous-attacks/
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xvqdxa/attackers_use_autonomous_ai_to_target/
+- title: >-
+    Mior and Skyfall let a malicious host read AMD SEV-SNP guest memory, with BIOS fixes due
+    November and December
+  section: Security
+  category: Security
+  blurb: >-
+    Two attacks break AMD confidential VMs on EPYC chips, one by corrupting the RMP table
+    at boot and one by leaking leftover VM state via TSA.
+  summary: >-
+    ETH Zurich's Mior redirects the Platform Security Processor's writes during SEV-SNP startup
+    so part of the Reverse Map Table stays uninitialized, letting a hypervisor enable debugging
+    on a confidential VM, read and write its memory, and forge its attestation measurement.
+    It needs hypervisor and BIOS control plus a PCIe device and was shown on a Zen 5 EPYC
+    9135. Skyfall, from ETH Zurich and Google, uses Transient Scheduler Attacks to read VM
+    register state cached after a deliberately failed VM start, recovering a disk-encryption
+    key on Zen 3 and Zen 4 chips. AMD tracks them as CVE-2026-0462 and CVE-2026-40671, has
+    SEV firmware and microcode dated August 12, and targets platform firmware for November
+    (Skyfall) and December (Mior).
+  why: >-
+    Anyone renting confidential VMs on EPYC 7003 through 9005 depends on the cloud provider
+    installing BIOS updates and should check the SNP attestation TCB values AMD lists.
+  background: >-
+    AMD SEV-SNP encrypts a VM's memory and uses the Reverse Map Table, which records the owner
+    and permissions of every physical page, to keep even the host hypervisor out. Attestation
+    reports signed by the security processor let a guest owner verify which software image
+    booted. Earlier attacks by some of the same researchers, Fabricked and RMPocalypse, also
+    corrupted the RMP at startup, and TSA was first disclosed on 2025-07-08.
+  followup: >-
+    AMD platform firmware for Skyfall in November and for Mior in December, and cloud provider
+    statements.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/new-mior-and-skyfall-attacks-let-rogue.html
+  thread: f-0219
+- title: Claude Code 2.1.325 makes sandboxed Bash commands ask for permission by default
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Sandboxed shell commands no longer run without prompts unless sandbox.autoAllowBashIfSandboxed
+    is set, and scheduled skills now ask first.
+  summary: >-
+    Claude Code 2.1.325 changes sandboxed Bash commands to follow the normal permission flow,
+    and users who want the old behavior must set sandbox.autoAllowBashIfSandboxed to true,
+    in the highest-ranking managed source for managed setups. Scheduled tasks and /loop now
+    ask before running a skill that declares allowed-tools or hooks, read-only git commands
+    ask first in untrusted repositories, and the sandbox's own helper programs run without
+    Claude Code's sign-in tokens and API keys. The release also fixes a security issue in
+    zstd response decoding and several Bash allow-rule and compound-command permission gaps.
+  why: >-
+    Unattended setups that relied on the sandbox to skip prompts, or on scheduled skills running
+    alone, will stall until settings add the new flag or Skill(name) allow rules.
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/claude-code/releases/tag/v2.1.325
+- title: >-
+    Coral cuts agent cost per turn about 65% by compacting idle agents past 225,000 tokens
+    of context
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Cache reads of 430,000 to 550,000 tokens per turn drove the bill, and compacting idle
+    agents dropped average context to 178,000 tokens.
+  summary: >-
+    Subgentic turned on automated Context Reset in its open-source Coral agent team tool on
+    2026-11-10, sending each idle agent its own compaction command once context passed 225,000
+    tokens. Cost per turn fell from about $0.16 to $0.055, Opus 5.5 turns from about $0.27
+    to $0.10, and average context from about 480,000 to 178,000 tokens, with throughput steady
+    at about 1,230 turns per hour. A replay over 301,377 earlier requests estimated 51.9%
+    fewer cache reads from compacting past 200,000 tokens at quiet moments, versus under 2%
+    from capping tool output length.
+  why: >-
+    For long-running agents, cache reads of accumulated history dominate API spend, so compaction
+    timing matters more than trimming tool results.
+  comments: >-
+    The figures come from the vendor's own fleet over a short window after the switch, and
+    the replay savings are stated as upper bounds.
+  sources:
+  - label: primary
+    url: https://coralhub.dev/blog/context-reset-turn-cost.html
+  - label: discussion
+    url: https://www.reddit.com/r/ClaudeAI/comments/1xvgier/having_agents_reset_context_around_225k_tokens/
+- title: >-
+    Ratatui maintainer Josh McKinney proposes a cell-border terminal protocol, with a working
+    Ghostty patch
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    A DCS sequence lets each cell carry up to twelve colored line segments, so TUI panes get
+    borders without losing a row or column.
+  summary: >-
+    Josh McKinney published a draft version 1 spec for cell borders, a cell attribute set
+    through a DCS string where each cell carries up to twelve segments with their own color,
+    width, style and placement, merged on shared edges by priority. Apps detect support with
+    a capability query followed by DA1 and fall back to box-drawing characters. His Ghostty
+    branch implements it in about 1,650 lines by storing a 16-bit border ID in existing cell
+    padding, with Ratatui demo apps on a separate branch, and he asks terminal and TUI authors
+    for feedback in a Ghostty discussion.
+  why: >-
+    If terminals adopt it, TUIs could draw panels, underlined fields and chart gridlines without
+    spending rows on box characters or copying borders into pasted text.
+  background: >-
+    Terminal UIs draw borders with Unicode box-drawing glyphs, which occupy whole cells, so
+    nested panels lose rows and columns. DCS (Device Control String) is the escape sequence
+    family terminals use for structured commands, and terminals ignore DCS strings they do
+    not recognize. Prior art includes DEC ruled lines, SGR framing attributes and Win32 console
+    cell grid flags, none of which offer per-edge color and width.
+  comments: >-
+    The Hacker News thread drew 208 points and 86 comments. A commenter proposed overstrike
+    mode (DECSET 20) instead, and McKinney said tmux drops unknown DCS sequences and would
+    need about a thousand lines to support the state. He expects Ghostty, Rio and Kitty could
+    adopt it more easily than Terminal.app, and said the Ratatui change is a proof of concept
+    on his fork.
+  sources:
+  - label: primary
+    url: https://www.joshka.net/cell-borders/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50491423
+- title: >-
+    Luau 0.747 adds lazy bytecode loading, buffer vector reads and writes, and native codegen
+    userdata access
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The new luau_loadlazy builds only the main function at load, leaving other functions as
+    lazy stubs loaded on first use.
+  summary: >-
+    Luau 0.747 adds luau_loadlazy, which works like luau_load but builds only the main function
+    and loads others on first use, and implements buffer.readvector and writevector f32 functions
+    per RFC 198. Native codegen gains accelerated direct userdata access, frozen metatable
+    cache access, lower promotion thresholds and runtime rebuild log callbacks. Type analysis
+    fixes include rejecting iteration over non-iterable union types and avoiding stack overflow
+    on degenerate unions, and experimental classes gain nested and local classes.
+  why: >-
+    Embedders that load large Luau scripts can cut startup work with lazy loading, and native
+    code paths get faster userdata access.
+  sources:
+  - label: primary
+    url: https://github.com/luau-lang/luau/releases/tag/0.747
+- title: >-
+    The ant Go ORM uses Go 1.27 generic methods to check column names at compile time without
+    codegen
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Pointers to fields of a pinned probe struct stand in for column names, so a misspelled
+    column or wrong value type fails go build.
+  summary: >-
+    ant maintainer Alberts Liepins explains that queries name columns as pointers to fields
+    of a per-model probe struct, and the library maps each address back to a column by offset
+    and static type in about 21 ns, pinning probes with runtime.Pinner in case Go's collector
+    ever moves objects. Go 1.27 generic methods let chained calls such as OrderBy and Include
+    take their own type parameters, which earlier versions only allowed on package-level functions.
+    Some mistakes still compile, such as a condition on another model, and a go vet analyzer
+    called antvet catches several of them.
+  why: >-
+    Go 1.27 generic methods make fluent, type-checked query builders possible without a schema
+    DSL or a code generation step.
+  sources:
+  - label: primary
+    url: https://skudra.net/blog/field-pointers-as-column-names
+  - label: discussion
+    url: https://www.reddit.com/r/golang/comments/1xv9xeq/what_go_127s_generic_methods_made_possible_for/
+- title: >-
+    Jonathan Blow interview questioning AI coding productivity draws 261 comments on Hacker
+    News
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Blow argues LLMs act as fast search but fail to track constraints across large programs,
+    and says he sees no visible jump in software output.
+  summary: >-
+    In the interview, Blow says current models write passable small throwaway code, such as
+    a 30-line Excel script that cut his time from about five hours to one, but do not reason
+    well enough to maintain the constraints between parts of a growing program. He asks where
+    the output is if AI has made programmers 5 to 10 times more productive, and says he sees
+    no new software capability. He suggests an AlphaZero-style system trained on program rules
+    might suit code better than LLMs. The Hacker News thread reached 253 points and 261 comments,
+    more comments than points.
+  why: >-
+    The thread shows practitioners still dispute whether agent-written code yields measurable
+    gains beyond small, well-bounded tasks.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=IRK8h67ol7Q
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50484658
