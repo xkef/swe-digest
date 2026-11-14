@@ -1,5 +1,5 @@
 date: '2026-11-14'
-updated: 2026-11-14T18:49Z
+updated: 2026-11-14T21:41Z
 stories:
 - title: >-
     Unit 42 says China-nexus attackers used the open-source Cairn agent to attack 19 organizations
@@ -76,6 +76,37 @@ stories:
     url: https://cursor.com/blog/security-incident-update
   - label: discussion
     url: https://www.bleepingcomputer.com/news/security/cursor-confirms-security-breach-led-to-malicious-claude-code-extension/
+- title: >-
+    Project Zero drops its 90+30 policy and will disclose bugs 90 days after report, falling
+    to 30 days by 2028
+  section: Top stories
+  category: Security
+  blurb: >-
+    Google Project Zero now discloses bugs 90 days after reporting, fixed or not, then 60
+    days from February 2027 and 30 days from January 2028.
+  summary: >-
+    On 2026-11-13 Project Zero replaced its 90+30 policy, which added 30 days of patch soak
+    time, with Full 90, publishing details 90 days after the vendor report. It moves to Full
+    60 on 2027-02-02 and Full 30 on 2028-01-03, drops the grace period and variant rules,
+    and keeps exceptions only for bugs exploited in the wild, bugs already public, and vendor
+    requests. Whether a bug is fixed is no longer a decision point.
+  why: >-
+    Vendors in your stack will face fixed, shrinking deadlines on Project Zero reports, and
+    details go public on schedule, so slow patch rollout turns directly into exposure.
+  background: >-
+    Coordinated disclosure gives a vendor a private window to fix a bug before details go
+    public. Since 2021 Project Zero allowed 90 days to fix plus 30 days after a patch for
+    users to install it. The post argues LLMs let attackers turn a patch into an exploit almost
+    immediately, so soak time no longer protects users, and says Project Zero now finds several
+    bugs a week in targets where it once found a few a year.
+  followup: Project Zero moves to Full 60 on 2027-02-02.
+  comments: The Hacker News thread drew 83 points and 12 comments.
+  sources:
+  - label: primary
+    url: https://projectzero.google/2026/11/disclosure-policy.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50496051
+  thread: f-0221
 - title: >-
     Mior and Skyfall let a malicious host read AMD SEV-SNP guest memory, with BIOS fixes due
     November and December
@@ -252,6 +283,32 @@ stories:
   - label: primary
     url: https://research.google/blog/advancing-science-engineering-with-antigravitys-teamwork-feature/
 - title: >-
+    nono 0.82 adds session terminal recording, live proxy audit logs and network approvals
+    for plain-HTTP requests
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    The nono agent sandbox now records terminal sessions, logs proxy audit events live, and
+    asks for approval on plain-HTTP and Unix socket access.
+  summary: >-
+    nono v0.82.0, released 2026-11-14, adds session terminal recording, live recording of
+    proxy audit events, and approval prompts for plain-HTTP forward requests, allow_domain
+    endpoints and AF_UNIX pathname sockets, with a Unix socket webhook transport for approvals.
+    Its proxy can now match AWS operations in endpoint policy on aws_auth routes. A breaking
+    change unifies platform commands with automatic enrollment, alongside new nono login and
+    logout commands.
+  why: >-
+    Teams sandboxing coding agents with nono get a replayable record of each session and can
+    gate more network paths, but must update scripts that use the changed platform commands.
+  background: >-
+    nono runs coding agents with restricted filesystem and network access and routes their
+    traffic through a proxy that enforces endpoint rules and injects credentials, so the agent
+    never holds real keys. Approval prompts let a human allow a blocked access while the agent
+    runs instead of widening the policy up front.
+  sources:
+  - label: primary
+    url: https://github.com/nolabs-ai/nono/releases/tag/v0.82.0
+- title: >-
     Ratatui maintainer Josh McKinney proposes a cell-border terminal protocol, with a working
     Ghostty patch
   section: Developer tools
@@ -287,6 +344,34 @@ stories:
     url: https://www.joshka.net/cell-borders/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50491423
+- title: >-
+    PyPI adds a security tab with per-file attestations and warnings when a release's provenance
+    changes or disappears
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    PyPI project pages now show whether each release file has an attestation and warn when
+    provenance is incomplete, inconsistent, changed or lost.
+  summary: >-
+    PyPI finished its UI redesign, adding a security tab that shows each release's provenance
+    state and per-file PyPI Publish and SLSA Build Provenance attestations. Warnings for incomplete,
+    inconsistent, changed or lost provenance appear at the top of the project page, and the
+    release files tab flags files uploaded more than 14 days after the release. OpenSSF funded
+    the work, which follows the OpenSSF Attestations Style Guide.
+  why: >-
+    A change or loss of provenance banner gives a visible signal of a hijacked account or
+    publishing pipeline before you install a release.
+  background: >-
+    An attestation is a signed statement, recorded in a transparency log, that binds a file
+    to the identity that published or built it. Trusted Publishing lets CI upload to PyPI
+    with short-lived OIDC tokens instead of long-lived API tokens, and PyPI added attestation
+    support in 2024. Until now the site did little to show users what attestations meant.
+  comments: The Hacker News thread drew 170 points and 73 comments.
+  sources:
+  - label: primary
+    url: https://blog.pypi.org/posts/2026-11-06-ui-updates-complete/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50497892
 - title: >-
     Luau 0.747 adds lazy bytecode loading, buffer vector reads and writes, and native codegen
     userdata access
