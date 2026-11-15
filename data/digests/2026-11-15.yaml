@@ -1,5 +1,5 @@
 date: '2026-11-15'
-updated: 2026-11-15T19:27Z
+updated: 2026-11-15T22:01Z
 stories:
 - title: >-
     US seizes infrastructure of North Korea's FaceStealer campaign, which stole over $400
@@ -239,6 +239,72 @@ stories:
     url: https://runkiri.com/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50504077
+- title: >-
+    clice 1.0 ships as a C and C++ language server that compiles in a crash-isolated process
+    pool instead of threads
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    A new Clang-based C++ language server reaches 1.0 with full C++20 module support, persistent
+    caches and a CLI for indexing and refactoring.
+  summary: >-
+    clice 1.0 is a C and C++ language server built on LLVM and Clang and written in C++23
+    with coroutines and named modules. It compiles in a pool of child processes so a compiler
+    crash does not take down the server, builds C++20 modules on demand from compile_commands.json,
+    caches PCH and PCM files across sessions, and probes over 50 toolchains. Its CLI adds
+    index, lint, format, query, refactor, analyze and modularize subcommands that work from
+    a persistent on-disk index.
+  why: >-
+    C and C++ teams on clangd get an alternative with working module support and a scriptable
+    index that agents and CI can query without starting an editor.
+  background: >-
+    A language server implements the Language Server Protocol so one backend can power completion,
+    go-to-definition and diagnostics in any editor. clangd, the LLVM project's server, runs
+    compilation in threads, so a crash on half-written code restarts the whole server. The
+    author says clangd has had almost no paid maintainers since about 2024 and that Clang's
+    lead maintainer asked for new maintainers in 2026.
+  comments: >-
+    The Hacker News thread drew 52 points and 32 comments, mostly off topic. One commenter
+    says Clang-based indexers like clangd are orders of magnitude slower than older non-Clang
+    indexers in Eclipse and Qt Creator on very large codebases.
+  sources:
+  - label: primary
+    url: https://ykiko.me/en/articles/2105384023094834022/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50508715
+- title: >-
+    py-code.org finds 544 stale PyPI packages with imports that fail on Python 3.12 or 3.13,
+    at 126 million monthly downloads
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    A scan of 354,763 PyPI projects finds 1,623 with unguarded imports of stdlib modules removed
+    in Python 3.12 and 3.13, such as distutils and imp.
+  summary: >-
+    py-code.org scanned the latest release of 354,763 PyPI projects and found 3,763 importing
+    one of 25 modules removed in Python 3.12 or 3.13, with 1,623 having an import outside
+    a try block or version check. Among the 60,000 most downloaded projects, 852 have such
+    an import and 544 of those had no release in two years, with 126 million downloads in
+    30 days. import nose and import boto fail on 3.12, while pydub, coreapi, htmlmin and pgpy
+    fail on 3.13.
+  why: >-
+    Upgrading to Python 3.12 or 3.13, or building slim venvs without setuptools, can break
+    on transitive dependencies that are unmaintained, and the post names the PyPI shims and
+    successors to use.
+  background: >-
+    PEP 632 removed distutils in Python 3.12, and PEP 594 removed 19 legacy 'dead batteries'
+    modules such as cgi, pipes and telnetlib in 3.13 after at least two releases of deprecation.
+    setuptools still provides distutils, but python -m venv stopped installing setuptools
+    in new environments from 3.12, so the error often first appears in fresh venvs, slim Docker
+    images or uv environments.
+  comments: >-
+    Shared on r/programming. The post includes a DuckDB query against its pinned Hugging Face
+    dataset to reproduce the list.
+  sources:
+  - label: primary
+    url: https://py-code.org/blog/removed-stdlib-modules-pypi/
+  - label: discussion
+    url: https://www.reddit.com/r/programming/comments/1xwyhpm/544_unmaintained_pypi_packages_with_imports_that/
 - title: >-
     Survey of 40 C projects finds only 8 allocate solely with malloc and free, while 7 rely
     mostly on regions
