@@ -1,5 +1,5 @@
 date: '2026-11-15'
-updated: 2026-11-15T12:53Z
+updated: 2026-11-15T16:31Z
 stories:
 - title: >-
     US seizes infrastructure of North Korea's FaceStealer campaign, which stole over $400
@@ -96,6 +96,112 @@ stories:
     url: https://www.digitalocean.com/blog/serving-kimi-k3-inference-engine
   - label: discussion
     url: https://www.reddit.com/r/programming/comments/1xw3jy7/under_the_hood_serving_kimi_k3_digitalocean/
+- title: >-
+    LGPO drops GRPO's importance ratio for likelihood gating, cutting RL post-training time
+    about 18% without losing stability
+  section: ML research
+  category: Paper
+  blurb: >-
+    A NeurIPS 2026 paper finds GRPO's importance sampling correction can go, but its trust
+    region cannot, and gating on likelihood keeps it cheaper.
+  summary: >-
+    Likelihood-Gated Policy Optimization enforces a soft trust region by gating on likelihood,
+    so it never computes old-policy likelihoods. The authors report that removing the importance
+    sampling term does not harm stability while removing the trust region can cause collapse,
+    and that LGPO matches GRPO's stability and peak performance while cutting training time
+    by about 18% on average. In fully on-policy training the GRPO ratio stays at 1, its clipping
+    never activates, and GRPO fails while LGPO stays stable.
+  why: >-
+    Teams running GRPO-style RL on open weights can save a full forward pass per step and
+    gain stability in fully on-policy setups.
+  background: >-
+    GRPO and PPO compute a ratio of the current policy's token probability to the policy that
+    sampled the data, then clip that ratio to keep each update close to the old policy, a
+    trust region. Computing the ratio needs an extra pass over the rollouts with the old weights.
+    When training is fully on-policy, sampling and updating use the same weights, so the ratio
+    is always 1 and the clip does nothing.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.15404v1
+- title: >-
+    Dollar-matched study finds synthetic preference data beats human labels for DPO at budgets
+    of $200 to $400
+  section: ML research
+  category: Paper
+  blurb: >-
+    Comparing preference data at equal spend rather than equal sample count, synthetic labels
+    win until human budgets grow about a hundredfold.
+  summary: >-
+    The authors post-train several base model families with SFT and DPO on helpfulness and
+    summarization, holding the annotation budget in dollars fixed instead of the sample count.
+    Synthetic preference data reaches high win rates with as little as $200 to $400, human
+    data closes the gap on helpfulness only at roughly two orders of magnitude more spend,
+    and on summarization it never closes the gap at the tested budgets. One widely used human
+    preference source underperforms another even after domain restriction and deduplication.
+  why: >-
+    When budgeting a preference-tuning run, synthetic labels are the default choice at small
+    spend, and the choice of human dataset matters as much as its size.
+  background: >-
+    Direct Preference Optimization trains a model directly on pairs of preferred and rejected
+    responses, without a separate reward model. Those pairs come either from paid human annotators
+    or from a stronger model acting as judge, and the two differ greatly in cost per pair.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.16895v1
+- title: >-
+    mini.nvim and MiniMax add Tangled and Codeberg mirrors as a first step toward self-hosting
+    on Tangled
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Evgeni Chasnovski mirrors the MINI Neovim projects to the AT Protocol forge Tangled and
+    to Codeberg, and leans toward self-hosting on Tangled.
+  summary: >-
+    On 2026-11-15 the main MINI projects, mini.nvim and MiniMax, gained mirrors on Tangled
+    and Codeberg, while GitHub stays the main place for issues and pull requests. Chasnovski
+    says he wants to eventually self-host repos, issues, pull requests, discussions and CI,
+    and currently leans toward Tangled, which he notes recently reached version 1.0. Standalone
+    module repos are not mirrored.
+  why: >-
+    A widely used Neovim plugin trialing Tangled is an early adoption signal for forges built
+    on open protocols.
+  background: >-
+    Tangled is a code forge built on the AT Protocol, the network behind Bluesky, so an existing
+    Bluesky account can sign in and interact without a new account. Codeberg is a nonprofit
+    Git host running Forgejo, a community fork of Gitea.
+  sources:
+  - label: primary
+    url: https://nvim-mini.org/blog/2026-11-15-announce-mirrors.html
+  - label: discussion
+    url: https://www.reddit.com/r/neovim/comments/1xwxljd/mini_now_has_tangled_and_codeberg_mirrors/
+- title: >-
+    Kiri 0.2.1 beta runs Docker containers from one Rust daemon, without dockerd, containerd,
+    shims or runc
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    A new Docker Desktop alternative serves the Docker API from one Rust daemon that creates
+    containers with clone3 and keeps no shims.
+  summary: >-
+    Kiri is a free beta for macOS, Windows and Linux that works with the docker CLI, Compose,
+    buildx and the Docker Engine API. On macOS it boots one Linux VM through Virtualization.framework
+    with a custom kernel and a Rust init, talks to it over vsock, and creates containers directly
+    with clone3, while on Linux it runs natively and on Windows inside WSL2. The project reports
+    docker run at 22 ms against 178 ms for Docker Desktop and 279 ms for OrbStack, measured
+    on one Apple silicon Mac with each engine limited to 2 CPUs and 8 GB.
+  why: >-
+    Mac developers get another Docker API runtime to try, though its speed figures are the
+    vendor's own single-machine measurements.
+  background: >-
+    Docker Desktop and similar tools stack several processes per container start: the docker
+    CLI calls dockerd, which calls containerd, which spawns a shim that runs runc to set up
+    namespaces and cgroups. Kiri collapses that chain into one daemon.
+  comments: The Hacker News thread drew 77 points and 32 comments.
+  sources:
+  - label: primary
+    url: https://runkiri.com/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50504077
 - title: >-
     Lauren Tan: Grok Bot team ships 11,000 PRs a month at a 0.5% revert rate by turning agent
     corrections into lint rules
