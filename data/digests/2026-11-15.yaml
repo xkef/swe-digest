@@ -1,5 +1,5 @@
 date: '2026-11-15'
-updated: 2026-11-15T16:31Z
+updated: 2026-11-15T19:27Z
 stories:
 - title: >-
     US seizes infrastructure of North Korea's FaceStealer campaign, which stole over $400
@@ -31,6 +31,43 @@ stories:
   sources:
   - label: discussion
     url: https://www.bleepingcomputer.com/news/security/us-disrupts-north-korean-campaign-behind-400-million-crypto-theft/
+- title: >-
+    FBI FLASH warns multiple threat actors use the ARTEX AI pentest framework, tying it to
+    the ConnectWise backup breach
+  section: Security
+  category: Security
+  blurb: >-
+    An FBI FLASH says multiple groups have used the ARTEX AI pentest framework since August,
+    some reaching admin access in under three hours.
+  summary: >-
+    The FBI published FLASH-20261113-001 on 2026-11-13, a threat overview of ARTEX with IOCs,
+    saying multiple threat actors have used the open-source framework since at least August
+    2026 against financial, government, technology, defense and healthcare targets. ARTEX
+    is written in Go, drives external LLMs including Claude, GPT, DeepSeek, GLM, Grok and
+    Kimi, and researchers counted over 1,600 exposed ARTEX consoles in early November. The
+    advisory links it to the October ConnectWise Cloud Backup attack attributed to Storm-0940,
+    South Korean bank intrusions combined with Claude Code agents, and a Vapor Panda campaign
+    against more than 200 organizations.
+  why: >-
+    The FBI calls out partner portals, legacy services, third-party integrations and unthrottled
+    sensitive APIs as the weak spots ARTEX finds, so those are the places to add rate limits
+    and alerts on bursts of automated requests.
+  background: >-
+    Autonomous penetration testing frameworks hand an operator's goal to LLM agents that run
+    reconnaissance, exploitation, privilege escalation and data theft as a loop, with little
+    human input between steps. ARTEX was posted to GitHub in July 2026 by a developer called
+    Autumn-27 and removed on 2026-10-08 after reports of abuse, but forks, archives and a
+    commercial ARTEX PRO edition remain. This digest covered a similar case on 2026-11-14,
+    when Unit 42 reported China-nexus attackers using the open-source Cairn agent.
+  comments: >-
+    BleepingComputer adds that researcher MalwareMustDie released an open-source ARTEX detection
+    signature pack and playbook that grades indicators by confidence, and warns that IP indicators
+    may already be stale.
+  sources:
+  - label: primary
+    url: https://www.ic3.gov/CSA
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/fbi-warns-artex-ai-hacking-tool-is-powering-global-cyberattacks/
 - title: >-
     IBM releases Granite 4.1 LLMON previews trained to ignore instructions hidden in documents
     and tool output
@@ -203,6 +240,35 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50504077
 - title: >-
+    Survey of 40 C projects finds only 8 allocate solely with malloc and free, while 7 rely
+    mostly on regions
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    A count of allocation call sites in 40 C codebases finds only 8 rely solely on malloc
+    and free, while others lean on regions or refcounting.
+  summary: >-
+    Phil Eaton at The Consensus counted allocation call sites in 40 major C projects, excluding
+    tests and vendored code. Eight, including SQLite, HAProxy and zlib, use only malloc and
+    free. Seven, including PostgreSQL, nginx and httpd, mostly use regions, while Ruby, Julia,
+    Emacs, OCaml and Lua mostly use garbage collection and CPython, PHP and Perl mostly use
+    reference counting. Linux and QEMU have started using compiler-backed scope cleanup such
+    as __free(kfree) and g_autofree.
+  why: >-
+    It gives concrete, named examples of region, refcount and scope-cleanup patterns in codebases
+    you may embed or patch, such as Lua, Neovim, Git and PostgreSQL.
+  background: >-
+    A region or arena allocator hands out objects from a pool that is freed in one call, so
+    code does not track each object's lifetime. PostgreSQL's memory contexts (palloc) and
+    nginx pools are the best-known examples. Scope cleanup relies on the GCC and Clang cleanup
+    attribute, which runs a function when a variable leaves scope, giving C a limited form
+    of RAII.
+  sources:
+  - label: primary
+    url: https://theconsensus.dev/p/2026/11/08/c-memory-management-survey.html
+  - label: discussion
+    url: https://www.reddit.com/r/programming/comments/1xwxhbp/memory_management_in_40_major_c_projects_a_survey/
+- title: >-
     Lauren Tan: Grok Bot team ships 11,000 PRs a month at a 0.5% revert rate by turning agent
     corrections into lint rules
   section: Talks
@@ -231,3 +297,30 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=O_zcc6Xl12g
+- title: >-
+    Essay arguing all AI-generated code should be open source draws 783 points and 411 comments
+    on Hacker News
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    An essay argues AI-written code should ship as open source or CC0, and Hacker News debates
+    whether LLM output can count as clean-room work.
+  summary: >-
+    Jakub Jankiewicz argues that code generated by AI should be released as open source or
+    CC0, because models were trained on open source and CC-licensed Stack Overflow content
+    and because purely machine-written code may not be copyrightable in the US. The Hacker
+    News thread reached 783 points and 411 comments within about four hours.
+  why: >-
+    Licensing and provenance of agent-written code is still unsettled, which matters for any
+    team shipping agent-written code in proprietary or copyleft products.
+  comments: >-
+    An author of several AGPL systems says a company that shipped his code without notices
+    answered his violation letters by having an LLM clone the system, which he calls buggier
+    but still his design. Commenters argue that LLMs trained on the source cannot meet the
+    clean-room standard, while others note clean-room design is sufficient but not required
+    to defend against infringement.
+  sources:
+  - label: primary
+    url: https://jakub.jankiewicz.org/blog/ai-code-open-source/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50507303
