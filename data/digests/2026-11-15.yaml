@@ -1,0 +1,97 @@
+date: '2026-11-15'
+updated: 2026-11-15T08:02Z
+stories:
+- title: >-
+    IBM releases Granite 4.1 LLMON previews trained to ignore instructions hidden in documents
+    and tool output
+  section: AI
+  category: AI
+  blurb: >-
+    Two Apache 2.0 Granite models use reserved delimiter tokens so only the exec block carries
+    authority, cutting indirect injection success.
+  summary: >-
+    IBM published granite-4.1-3b-llmon-preview and granite-4.1-8b-llmon-preview on Hugging
+    Face under Apache 2.0, with a chat template that renders every prompt part as a tagged
+    LLMON block and wraps tool results as data. MACCUS reports IBM's figures: on the OPI benchmark
+    attack success falls from 96.3% to 0.02% for the 8B model, on the agent-focused ASB benchmark
+    from 52.8% to 3.1%, with direct and multi-turn attacks still succeeding far more often.
+    IBM labels the models for evaluation only and warns against making them the only defense
+    for an agent.
+  why: >-
+    Teams running small local models over email, documents or tool output get a testable injection
+    defense, but only if they adopt the bundled template and keep outside content in separate
+    fields.
+  background: >-
+    Indirect prompt injection hides an instruction in content the model reads, such as a web
+    page or tool result, so the model treats attacker text as a user command. Earlier defenses
+    like Spotlighting mark untrusted text with ordinary delimiters, which attacker text can
+    imitate. LLMON instead uses reserved tokens from the model's vocabulary that plain text
+    cannot produce, and an exec block names which instruction runs on which inputs.
+  sources:
+  - label: primary
+    url: https://huggingface.co/ibm-granite/granite-4.1-8b-llmon-preview
+  - label: discussion
+    url: https://maccus.fr/en/ibm-granite-prompt-injection/
+  - label: discussion
+    url: https://www.reddit.com/r/LocalLLaMA/comments/1xw09tu/ibm_trains_two_small_open_models_to_ignore_orders/
+- title: >-
+    DigitalOcean details serving Kimi K3 on B300 and MI350X, where one missing API feature
+    caused 26 of 30 verifier failures
+  section: AI
+  category: AI
+  blurb: >-
+    Serving Kimi K3 correctly took dynamic tool merging, strict-mode schema shaping and four
+    streaming fixes to pass Moonshot's vendor verifier.
+  summary: >-
+    DigitalOcean serves the roughly 2.78 trillion parameter Kimi K3 on 8x NVIDIA HGX B300
+    and AMD MI350X servers with llm-d and vLLM, using MXFP4 weights to leave KV cache headroom.
+    Moonshot's Kimi Vendor Verifier first returned 30 failures, 26 of them because the proxy
+    passed per-message dynamic tools through to vLLM unvalidated, and further fixes covered
+    strict-mode tool schemas under tool_choice auto, thinking parameter mapping, and four
+    OpenAI streaming spec deviations consolidated into one ordered pipeline. A 67 to 70 token
+    prompt usage drift from injected system messages was also fixed.
+  why: >-
+    Anyone self-hosting open weights behind an OpenAI-compatible gateway should expect model-specific
+    API extensions and stream quirks to silently lower quality unless checked against the
+    vendor's own verification suite.
+  background: >-
+    Open-weight labs publish weights, but each provider must reproduce the chat template,
+    decoding parameters and tool-call parsing, and small mismatches lower benchmark scores.
+    Moonshot released the Kimi Vendor Verifier alongside K2.6 after seeing inconsistent results
+    from vendors serving identical weights. Schema-constrained decoding forces generated tool
+    arguments to match a JSON Schema, which vLLM applies only when the schema has the expected
+    strict shape.
+  sources:
+  - label: primary
+    url: https://www.digitalocean.com/blog/serving-kimi-k3-inference-engine
+  - label: discussion
+    url: https://www.reddit.com/r/programming/comments/1xw3jy7/under_the_hood_serving_kimi_k3_digitalocean/
+- title: >-
+    Lauren Tan: Grok Bot team ships 11,000 PRs a month at a 0.5% revert rate by turning agent
+    corrections into lint rules
+  section: Talks
+  category: Video
+  blurb: >-
+    Lauren Tan says each agent correction becomes a lint rule or API change, and verification
+    artifacts like videos and TLA+ models replace review.
+  summary: >-
+    At AI Engineer, Lauren Tan said the Grok Bot client team shipped 11,000 pull requests
+    to production last month from about 227 contributors, with reverts steady around 0.5%
+    and startup and typing performance improving. The team bans patterns agents misuse, such
+    as React useEffect in product code, imports between Electron main and renderer directories,
+    and 99% of code comments, enforcing each with lint rules and a dependency graph check.
+    Review now centers on verification artifacts from runtime skills with a feature map, TLA+
+    model checking of notification flows, Lean proofs for a virtualization library, and property-based
+    UI tests, and a release-time agent fuzzes the build and auto-merges its fix PRs.
+  why: >-
+    It gives a concrete order of investment before unattended merging: deterministic constraints
+    in code first, then runtime and formal verification, with prose rules last.
+  background: >-
+    Teams adopting coding agents often add instructions to files like AGENTS.md when an agent
+    errs, but prose rules are not enforced and agents copy whatever patterns already exist
+    in a codebase. Tan's approach converts each correction into a deterministic check so review
+    load shrinks over time. TLA+ is a specification language whose model checker explores
+    all states of a design, and Lean is a proof assistant for machine-checked proofs.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=O_zcc6Xl12g
