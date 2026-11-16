@@ -1,5 +1,5 @@
 date: '2026-11-16'
-updated: 2026-11-16T13:56Z
+updated: 2026-11-16T19:47Z
 stories:
 - title: >-
     Amazon decoys capture ARTEX agents hunting AI provider keys in LiteLLM, Dify, One API
@@ -72,6 +72,39 @@ stories:
   - label: discussion
     url: https://www.bleepingcomputer.com/news/linux/new-noisytcp-linux-kernel-flaw-lets-attackers-crash-servers/
   thread: f-0224
+- title: >-
+    Google GTIG finds the first fully automated patch-to-exploit pipeline as attackers adopt
+    agent pentest frameworks
+  section: Top stories
+  category: Security
+  blurb: >-
+    Google's threat group found an attacker framework that diffs patched web apps, drafts
+    exploits and runs them with no human in the loop.
+  summary: >-
+    GTIG and Mandiant found an exposed staging server hosting exploit_agent, a multi-agent
+    framework wired to frontier and local LLMs that compares code before and after patches,
+    drafts exploits and executes them against targets without human review. The 2026-11-16
+    report also says threat actors now use open-source offensive agent frameworks such as
+    ARTEX, CAIRN, CyberStrikeAI and PentAGI in live intrusions, and that monthly zero-day
+    exploits rose from a 2025 average of 8 to 11 in 2026, spiking to 22 in August. GTIG says
+    these frameworks trade stealth for speed and leave recognizable traces.
+  why: >-
+    The window between a patch release and working exploits for internet-facing software is
+    shrinking toward hours, so patch latency on exposed services is now the main risk to manage.
+  background: >-
+    Patch diffing compares a vendor's fixed code with the previous release to locate the flaw
+    a patch closes, a technique long used to build n-day exploits by hand. Offensive agent
+    frameworks chain an LLM planner with scanners and exploit tools so one operator can run
+    many intrusions at once. This digest has tracked ARTEX through the FBI FLASH alert on
+    2026-11-15 and Amazon's decoy findings earlier today, and Unit 42's report on Cairn on
+    2026-11-14.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/topics/threat-intelligence/agentic-threat-activity-crosses-a-significant-threshold/
+  - label: discussion
+    url: https://www.theregister.com/research/2026/11/16/google-ai-agent-turned-a-security-patch-into-a-working-exploit-with-no-human-help/5309926
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xxvr4p/google_finds_hackers_using_ai_agents_to_build_and/
 - title: >-
     uBlock Origin 1.75.4 fixes a one-click universal XSS through its website-driven element
     picker
@@ -154,6 +187,56 @@ stories:
     url: https://news.ycombinator.com/item?id=50512441
   thread: f-0223
 - title: >-
+    Apache Axis 1.x flaw CVE-2026-90436 is exploited through Confluence Data Center and N-able
+    N-central
+  section: Security
+  category: Security
+  blurb: >-
+    An RCE in end-of-life Apache Axis 1.x is being exploited through Confluence Data Center's
+    SOAP API and N-central's Legacy API.
+  summary: >-
+    Rapid7 MDR detected exploitation of CVE-2026-90436, a 9.8 unsafe reflection flaw in Axis
+    1.x, against Confluence Data Center on 2026-11-13, and N-able reported exploitation against
+    N-central the same day. Confluence 1.x to 9.x is affected only when Remote API (XML-RPC
+    and SOAP) is enabled, with 9.2.28 fixed and 10.x unaffected, while N-central needs Legacy
+    API turned off until 2026.4 HF3 removes it. Apache will not ship a fixed Axis 1.x release.
+  why: >-
+    Any Java product bundling Axis 1.x is a candidate target, so check Confluence and N-central
+    API settings now and inventory other software that embeds Axis.
+  background: >-
+    Apache Axis 1.x is an old SOAP web services engine for Java that many enterprise products
+    embedded and never replaced. Unsafe reflection lets a request name a class or method that
+    the server then instantiates or calls, which turns into code execution. Because Axis 1.x
+    is end of life, each downstream vendor has to patch or remove it separately.
+  thread: f-0193
+  sources:
+  - label: primary
+    url: https://www.rapid7.com/blog/post/etr-rapid7-detected-exploitation-of-cve-2026-90436-against-atlassian-confluence-data-center-n-able-n-central-also-exploited
+  - label: discussion
+    url: https://www.reddit.com/r/cybersecurity/comments/1xxfzn2/new_ncentral_chain_cve202690436_gives/
+- title: >-
+    Barracuda says an Artex-driven intruder used an exposed cloud key to reach 10 cloud accounts
+    and backdoor Kubernetes
+  section: Security
+  category: Security
+  blurb: >-
+    Barracuda says an Artex agent used one exposed cloud key to reach about 10 cloud accounts
+    in 44 hours and left a Kubernetes backdoor.
+  summary: >-
+    SecurityWeek reports that Barracuda disclosed an intrusion on 2026-11-01 and 2026-11-02
+    in which an attacker used an exposed valid cloud access key, then reused secrets found
+    in secret stores, configurations, Kubernetes service accounts and metadata services to
+    spread. Barracuda says the probe names and order of work match the Artex framework, the
+    attacker hunted crypto wallet files on shelled servers, and a backdoor was left in a Kubernetes
+    cluster. Barracuda compares it to the October Railway intrusion and has not attributed
+    it.
+  why: >-
+    A single leaked cloud key is enough for an agent to walk secret stores and service accounts
+    across accounts, so key scoping and secret sprawl in Kubernetes are the controls to check.
+  sources:
+  - label: discussion
+    url: https://www.securityweek.com/barracuda-hacked-amid-surge-in-artex-powered-cyberattacks/
+- title: >-
     Alibaba releases Qwen4-Max, a reasoning model with native vision and a 1M-token context
     window
   section: AI
@@ -179,6 +262,27 @@ stories:
     url: https://vercel.com/changelog/qwen4-max-now-available-on-ai-gateway
   - label: discussion
     url: https://news.ycombinator.com/item?id=50513215
+- title: >-
+    Hugging Face Inference Providers now routes language model requests through OpenRouter
+    and drops custom provider keys
+  section: AI
+  category: AI
+  blurb: >-
+    Hugging Face Inference Providers now routes LLM calls through OpenRouter with retries,
+    and drops bring-your-own provider keys for them.
+  summary: >-
+    Hugging Face replaced its own router with OpenRouter's for language models, which picks
+    a provider by live price, speed and reliability, retries failed calls on another provider
+    and keeps conversations on the provider holding their prompt cache. Model ids accept suffixes
+    such as :fastest, :cheapest or a provider name, and the API supports OpenAI Chat Completions
+    and Responses and Anthropic Messages. As a breaking change, custom provider API keys no
+    longer work for language models, while image, video and audio generation are unchanged.
+  why: >-
+    Anyone calling open-weight models through Hugging Face with their own provider keys must
+    switch to Hugging Face billing or another path, and gains automatic failover.
+  sources:
+  - label: primary
+    url: https://huggingface.co/blog/openrouter
 - title: >-
     TIDE speeds on-policy RL post-training up to 1.36x by repurposing idle rollout GPUs during
     long-tail rollouts
@@ -253,6 +357,35 @@ stories:
   - label: discussion
     url: https://www.reddit.com/r/rust/comments/1xx7v4v/jiff_10_a_datetime_library_for_rust/
 - title: >-
+    Rust nightly enables the parallel compiler frontend by default, cutting single-crate cargo
+    check time up to 44%
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Nightly rustc now type checks and borrow checks on two threads by default, with cargo
+    check up to about 2x faster on some single crates.
+  summary: >-
+    Since nightly-2026-11-14 the rustc frontend runs in parallel by default with 2 threads,
+    set with -Zunstable-options --jobs-frontend=N. With 8 threads the team measured a 44%
+    mean wall-time cut for single-crate cargo check, but only about 15% end to end on checking
+    the whole cargo crate graph on an 8-core machine and 3 to 5% on incremental rebuilds.
+    Diagnostics order can be nondeterministic and some reproducibility bugs remain, and stable
+    is unchanged.
+  why: >-
+    Teams on nightly can test higher frontend thread counts for faster checks, and should
+    report crashes or non-reproducible binaries before stabilization.
+  background: >-
+    The rustc frontend covers parsing, macro expansion, name resolution, type checking and
+    borrow checking, and has run on one thread while LLVM codegen ran in parallel. Opt-in
+    parallel frontend support reached nightly three years ago with a 2024 stabilization goal
+    that slipped.
+  sources:
+  - label: primary
+    url: https://blog.rust-lang.org/2026/11/16/enabling-parallel-frontend-on-nightly/
+  - label: discussion
+    url: https://www.reddit.com/r/rust/comments/1xxqdrl/enabling_the_parallel_frontend_on_nightly/
+  thread: f-0226
+- title: >-
     Debian 12 kernel 6.1.0-55 freezes servers within minutes of boot, with three merged critical
     bug reports
   section: Linux and kernel
@@ -277,6 +410,29 @@ stories:
     url: https://news.ycombinator.com/item?id=50514180
   thread: f-0222
 - title: >-
+    macOS 27.3 beta 2 splits Device Control and Data Access and makes Full Disk Access grantable
+    per folder
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    macOS 27.3 beta 2 splits Device Control and Data Access, lets users grant Full Disk Access
+    per folder, and adds ask-every-time prompts.
+  summary: >-
+    Apple's 2026-11-16 developer notice says Device Control and Data Access becomes two settings,
+    System and App Protection Override and Accessibility, and that users will be guided to
+    grant Full Disk Access only to specific folders and override access only to specific apps.
+    Users can set apps to ask every time, and an indicator shows when an app controls another
+    app. Existing grants stay in effect, and backup and assistive technology apps can request
+    entitlements to keep the old onboarding.
+  why: >-
+    Developer tools, terminals and agents that rely on Full Disk Access or app automation
+    must handle partial folder or app access and update their onboarding before macOS 27.3
+    ships.
+  sources:
+  - label: primary
+    url: https://developer.apple.com/news/?id=oqng0zjk
+  thread: f-0225
+- title: >-
     S2 replaced Route53 with its own Go authoritative DNS server backed by Spanner and fronted
     by Cloudflare
   section: Engineering posts
@@ -299,6 +455,33 @@ stories:
     url: https://s2.dev/blog/dns-server
   - label: discussion
     url: https://news.ycombinator.com/item?id=50515616
+- title: >-
+    Devoxx talk: how HotSpot flattens and scalarizes JEP 401 value objects ahead of the JDK
+    28 preview
+  section: Talks
+  category: Video
+  blurb: >-
+    An Oracle JVM engineer explains how Valhalla value objects flatten and scalarize in HotSpot,
+    and what changes under the JDK 28 preview.
+  summary: >-
+    The speaker says JEP 401 merged into mainline after the JDK 27 fork in a PR of almost
+    3,000 commits from 64 authors, and will preview in JDK 28 in March. With --enable-preview
+    the primitive wrapper classes and other value-based classes auto-migrate to value classes,
+    == compares fields, and the JVM flattens only when payload plus a null marker fits an
+    atomic access, so a two-int Point is not flattened by default. C2 scalarizes values into
+    registers with a new calling convention, and new PrintFieldLayout flags show the chosen
+    layout.
+  why: >-
+    Java teams can test early-access JDK 28 builds now for identity-dependent code, such as
+    weak references or synchronization on wrapper objects, that the automatic migration will
+    break.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=iLsLhqUOOPw
+  - label: discussion
+    url: https://inside.java/2026/11/16/devoxxbelgium-valhalla-value-objects/
+  - label: discussion
+    url: https://www.reddit.com/r/java/comments/1xxsdrv/why_it_takes_3000_commits_to_bring_valhallas/
 - title: >-
     Theo's multi-model council review lifts Opus self-scores from 7.4 to 8.9 but can run away
     into hundreds of subagents
