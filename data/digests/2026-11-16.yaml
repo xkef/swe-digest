@@ -1,0 +1,248 @@
+date: '2026-11-16'
+updated: 2026-11-16T08:12Z
+stories:
+- title: >-
+    Amazon decoys capture ARTEX agents hunting AI provider keys in LiteLLM, Dify, One API
+    and other exposed AI apps
+  section: Top stories
+  category: Security
+  blurb: >-
+    Amazon's decoy servers captured ARTEX agent records showing China-linked operators hunting
+    AI provider keys in LiteLLM, Dify and One API.
+  summary: >-
+    Amazon Threat Intelligence said on 2026-11-13 that its MadPot decoys, posing as LLM services,
+    received requests from ARTEX agents between 2026-10-03 and 2026-11-05 that carried the
+    operators' instructions and reported findings. The records describe a playbook for stealing
+    provider keys from LLM gateways and app builders such as LiteLLM, One API, New API, Dify,
+    Langflow, RAGFlow, Open WebUI and Ollama, using default admin credentials such as LiteLLM's
+    default master key, unfinished installs, an isCliRequest header bypass in One API family
+    systems, SSRF to cloud metadata, and known Langflow and RAGFlow flaws. Amazon has moderate
+    confidence the operators were separate China-linked groups and cannot verify the outcomes
+    the agents reported.
+  why: >-
+    Any self-hosted LLM gateway or AI app builder on the internet with default credentials
+    or no auth should be treated as a key store under active, automated attack.
+  background: >-
+    ARTEX is an open-source agentic penetration testing framework in which a planner agent
+    splits a goal into tasks for worker agents that run security tools and consult an LLM
+    for each next step. LLM gateways such as LiteLLM and One API sit in front of many model
+    providers and hold their API keys, so one weak admin page can expose keys for several
+    accounts. MadPot is Amazon's network of decoy sensors, and here it captured the agents'
+    own context, which includes campaign history, rather than only network traffic. The digest
+    covered the FBI FLASH on ARTEX abuse on 2026-11-15.
+  comments: >-
+    The Hacker News adds that Cloudflare responders saw ARTEX use a stolen, non-expiring account-level
+    API token to create Worker scripts named artex-*, and that Cisco Talos links more than
+    2,500 IP addresses to ARTEX.
+  sources:
+  - label: primary
+    url: https://aws.amazon.com/blogs/security/
+  - label: discussion
+    url: https://thehackernews.com/2026/11/amazon-uncovers-ai-agent-campaign.html
+- title: >-
+    uBlock Origin 1.75.4 fixes a one-click universal XSS through its website-driven element
+    picker
+  section: Security
+  category: Security
+  blurb: >-
+    A malicious site could drive uBlock Origin's element picker to add trusted filters that
+    run its JavaScript on any other site.
+  summary: >-
+    Smitty van Bodegom disclosed on 2026-11-15 that a page could leak the Firefox extension
+    UUID through a default no-fetch-if filter, frame uBO's element picker, and post messages
+    to it, injecting a newline into the opt field to add an arbitrary trusted scriptlet filter
+    for any domain. The user only had to click once on an invisible Create button. The MV2
+    Firefox version was affected, uBO Lite had a lesser issue, and the GitHub advisory lists
+    1.75.4 as patched.
+  why: >-
+    Check that uBlock Origin is at 1.75.4 or newer and uBO Lite at 2026.1110.1816 or newer,
+    and treat forks such as AdNauseam as affected until updated.
+  background: >-
+    uBO trusted filters can run scriptlets in page context, so whoever can add one can run
+    code on the targeted site. Firefox gives each extension install a random UUID used in
+    moz-extension URLs, and a leaked UUID lets a page frame the extension's web-accessible
+    pages. The fix makes the picker require a secret from the content script before accepting
+    messages.
+  comments: >-
+    The Hacker News thread drew 301 points and 84 comments. Commenters cite the patched versions
+    from the advisory, report that AdNauseam shipped a matching fix, and note the researcher
+    says GPT-5.6 Sol found the bug and Claude wrote most of the proof of concept.
+  sources:
+  - label: primary
+    url: https://iter.ca/post/ubo-uxss/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50513160
+- title: >-
+    Attackers re-register old Bitly links in 2009 to 2014 posts, and Bitly suspends the accounts
+    and disables the links
+  section: Security
+  category: Security
+  blurb: >-
+    Someone re-registered back-halves of 2009 to 2014 Bitly links, redirecting old Burger
+    King, McDonald's and Trump tweets until Bitly acted.
+  summary: >-
+    Ransomnews found that bit.ly back-halves in a 2011 Burger King tweet and a 2011 McDonald's
+    tweet were created again on 2026-11-15 and pointed at unrelated Wikipedia pages, and that
+    57 of 97 Bitly links in Donald Trump's 2009 to 2013 tweets had been re-created or blocked,
+    some pointing at lookalike crypto domains. Bitly said on X at 19:13 UTC that an issue
+    let bad actors repurpose old, inactive links, and that it suspended the accounts and is
+    disabling the affected links. Bitly's help pages say back-halves cannot be reused, and
+    a similar bug was reported fixed in February 2025.
+  why: >-
+    Short links in old docs, READMEs, release notes and printed QR codes can be silently repointed,
+    so link to your own domain for anything that must stay trustworthy.
+  comments: The Hacker News thread drew 261 points and 138 comments.
+  sources:
+  - label: primary
+    url: https://ransomnews.com/burger-king-tweet-bitly-link-hijack-2026/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50511395
+- title: >-
+    Tor 0.4.9.17 ships security fixes and an IPv6 relay DoS defense during a sustained DDoS
+    on the network
+  section: Security
+  category: Security
+  blurb: >-
+    Tor 0.4.9.17 ships security fixes, including an IPv6 relay DoS defense, as a DDoS flood
+    of client circuits overwhelms most relays.
+  summary: >-
+    The Tor Project released 0.4.9.17 on 2026-11-13 with a series of security fixes, one of
+    them important for relay DoS defenses related to IPv6 handling. It says an ongoing DDoS
+    floods relays with client circuits and has affected most relay operators. It asks operators
+    to upgrade and expects further releases with more defenses.
+  why: >-
+    Relay operators should upgrade now and expect more releases, and services that depend
+    on Tor should plan for degraded circuits while the attack continues.
+  followup: Further Tor releases with additional DoS defenses.
+  sources:
+  - label: primary
+    url: https://forum.torproject.org/t/security-release-0-4-9-17/22454
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50512441
+  thread: f-0223
+- title: >-
+    Alibaba releases Qwen4-Max, a reasoning model with native vision and a 1M-token context
+    window
+  section: AI
+  category: AI
+  blurb: >-
+    Alibaba's Qwen4-Max is a reasoning model with native vision and a 1M-token context window,
+    now callable through Vercel's AI Gateway.
+  summary: >-
+    Qwen4-Max is the first model in the Qwen4 series and targets coding, professional tool
+    use and long-running agent tasks. Vercel says it uses fewer tokens than prior Qwen Max
+    models for the same tasks, writes code with fewer injection, memory safety and access
+    control flaws by default, and that Alibaba is open-sourcing a Live Delivery plugin that
+    ships early versions of long tasks for review. It is available as alibaba/qwen4-max on
+    AI Gateway, including from Claude Code, Codex and Cursor.
+  why: >-
+    Another frontier-class reasoning model is available through a gateway that coding agents
+    can already target, which makes side-by-side trials cheap.
+  comments: >-
+    The Hacker News thread drew 420 points and 154 comments. Qwen's own blog page needs JavaScript
+    and did not load.
+  sources:
+  - label: primary
+    url: https://vercel.com/changelog/qwen4-max-now-available-on-ai-gateway
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50513215
+- title: >-
+    TIDE speeds on-policy RL post-training up to 1.36x by repurposing idle rollout GPUs during
+    long-tail rollouts
+  section: ML research
+  category: Paper
+  blurb: >-
+    TIDE lends idle rollout GPUs to training and migrates long-tail rollouts between engines,
+    speeding on-policy RL up to 1.36x.
+  summary: >-
+    TIDE targets synchronous, colocated RL post-training, where inference engines idle or
+    decode at small batch sizes while waiting on a few long rollouts. It repurposes rollout
+    GPUs for training while the long tail finishes and migrates remaining rollouts between
+    engines to raise decode batch size, with an adaptive policy deciding when to switch. The
+    authors report end-to-end speedups up to 1.36x over colocated systems and up to 97% of
+    optimal throughput while keeping on-policy semantics.
+  why: >-
+    Teams running GRPO-style post-training can recover GPU time lost to long-tail rollouts
+    without moving to off-policy asynchronous training.
+  background: >-
+    In on-policy RL for LLMs, each training step must use samples from the current policy,
+    so the step waits for the slowest rollout in the batch. Asynchronous systems avoid the
+    wait by training on slightly stale samples, which changes the algorithm. Colocated setups
+    share the same GPUs between the inference engine and the trainer and switch between phases.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.17924v1
+- title: >-
+    Jiff 1.0 ships as a stable Rust datetime library, with a commitment to no further breaking
+    releases
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Andrew Gallant tags Jiff 1.0 and commits to no semver-breaking release, after uv, Cargo,
+    mise and Jujutsu adopted the datetime crate.
+  summary: >-
+    Andrew Gallant released Jiff 1.0 on 2026-11-15 and plans to keep 1.0 indefinitely unless
+    a significant API defect appears, so the crate can serve as a public dependency of other
+    libraries. He names uv, Cargo, Starship, fd, Nushell, mise, Jujutsu, uutils coreutils
+    and AWS LLRT's Temporal implementation as production users. Breaking changes from 0.2
+    are listed in the changelog, and the release adds ICU4X-based locale-aware formatting.
+  why: >-
+    Rust crates can now expose Jiff types in public APIs without fear of churn, and jj-lib
+    users should expect a 0.2 to 1.0 migration across their dependency tree.
+  background: >-
+    Jiff models time zones explicitly, so a ZonedDateTime pairs an instant with an IANA time
+    zone, and the API forces a choice when a civil time falls in a daylight saving gap or
+    fold. It serializes zoned datetimes with RFC 9557, which extends RFC 3339 timestamps with
+    a bracketed time zone name. Its Span type mixes calendar and clock units, unlike std::time::Duration.
+  sources:
+  - label: primary
+    url: https://burntsushi.net/jiff/
+  - label: discussion
+    url: https://www.reddit.com/r/rust/comments/1xx7v4v/jiff_10_a_datetime_library_for_rust/
+- title: >-
+    Debian 12 kernel 6.1.0-55 freezes servers within minutes of boot, with three merged critical
+    bug reports
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Debian 12 servers freeze minutes after booting kernel 6.1.0-55, and reporters recover
+    by booting the previous 6.1.0-54 image from GRUB.
+  summary: >-
+    Debian bug 1154101, filed 2026-11-15 at severity critical against linux 6.1.192-1 (package
+    6.1.0-55, built 2026-11-14), reports a server that stops responding over SSH, IMAP and
+    HTTP a few minutes after boot with a kernel Oops, and runs normally on 6.1.0-54. Two further
+    reports, 1154108 and 1154119, were merged into it. The bug is tagged upstream and forwarded
+    to a linux-ext4 patch thread.
+  why: >-
+    Hold or pin Debian 12 hosts on 6.1.0-54 until a fixed kernel package lands, and keep the
+    previous kernel installed for GRUB fallback.
+  followup: A fixed Debian bookworm kernel package.
+  sources:
+  - label: primary
+    url: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1154101
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50514180
+  thread: f-0222
+- title: >-
+    Theo's multi-model council review lifts Opus self-scores from 7.4 to 8.9 but can run away
+    into hundreds of subagents
+  section: Videos
+  category: Video
+  blurb: >-
+    Theo's council skill has models from several families score each change, lifting Opus's
+    self-score from 7.4 to 8.9 at a heavy token cost.
+  summary: >-
+    Theo describes a council skill in which the coding agent calls models from other families
+    in their own harnesses to review a change, run it, and score it from 1 to 10 until every
+    reviewer clears a set bar such as 9.5. Across 144 reviewer scores from his real work,
+    Opus averaged 7.4 before the first round and 8.9 after two or more, 21 scores started
+    below 7 and only 2 ended there, and 128 ended at 9 or higher. He reports catches such
+    as three security holes in a guest share feature, and a failure mode where an agent ran
+    600 plus subagents over 20 rounds and grew a 1,000-line PR past 20,000 lines, so he now
+    caps rounds and tells the agent to fight scope creep.
+  why: >-
+    Cross-family review loops find real bugs, but they need a round cap and a scope rule,
+    and they only make sense on subscription rather than API pricing.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=TWoS5Nmyoc8
