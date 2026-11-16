@@ -1,5 +1,5 @@
 date: '2026-11-16'
-updated: 2026-11-16T08:12Z
+updated: 2026-11-16T13:56Z
 stories:
 - title: >-
     Amazon decoys capture ARTEX agents hunting AI provider keys in LiteLLM, Dify, One API
@@ -39,6 +39,39 @@ stories:
     url: https://aws.amazon.com/blogs/security/
   - label: discussion
     url: https://thehackernews.com/2026/11/amazon-uncovers-ai-agent-campaign.html
+- title: >-
+    NoisyTCP: a remote race in Linux TCP socket lookup lets unauthenticated attackers crash
+    servers
+  section: Top stories
+  category: Security
+  blurb: >-
+    An 11-year-old race in the kernel's TCP socket lookup lets remote attackers panic Linux
+    hosts running Nginx, Apache or SSH with default settings.
+  summary: >-
+    CVE-2026-99288, which researcher Hyunwoo Kim calls NoisyTCP, is a race during lockless
+    socket lookups in which recycled request socket memory is read before it is initialized
+    and hashed. Crafted traffic can cause a NULL pointer dereference and a kernel panic, though
+    not code execution. Red Hat rates it Important and lists stable kernel fixes, and BleepingComputer
+    reports the fix reached mainline about two weeks ago. Red Hat's mitigations are to set
+    net.ipv4.tcp_syncookies=0 in each network namespace or to reduce the ingress interface
+    to one RX queue with RPS and RFS turned off.
+  why: >-
+    Any Linux host that takes TCP traffic directly is exposed until it runs a patched kernel,
+    so check your distribution's kernel updates and node image updates.
+  background: >-
+    SYN cookies let a server answer a SYN flood without keeping state. The server encodes
+    the connection details in the initial sequence number and rebuilds the request socket
+    when the client's ACK arrives. The kernel finds sockets in its established hash table
+    (ehash) under RCU, without locks, so a reader can briefly see an object that is being
+    freed and reused. Exploitation needs the stale lookup and the reuse to run at the same
+    moment on different CPUs, which is why multiple RX queues or RPS are a precondition.
+  followup: Distribution kernel packages and cloud node image updates carrying the fix.
+  sources:
+  - label: primary
+    url: https://access.redhat.com/security/cve/CVE-2026-99288
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/linux/new-noisytcp-linux-kernel-flaw-lets-attackers-crash-servers/
+  thread: f-0224
 - title: >-
     uBlock Origin 1.75.4 fixes a one-click universal XSS through its website-driven element
     picker
@@ -173,6 +206,26 @@ stories:
   - label: primary
     url: https://arxiv.org/abs/2611.17924v1
 - title: >-
+    mise 2026.11.9 adds task lock pools, tag-based task dependencies and Unix socket sandboxing
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Tasks can now share counted lock slots and select dependencies by tag, and sandboxed commands
+    can be blocked from reaching Unix sockets.
+  summary: >-
+    task.lock_pools gives a named lock several slots, and a task takes count slots all at
+    once. Lock names are rendered as templates, so each project can have its own lock. depends,
+    depends_post and wait_for accept a tag selector. mise exec and mise run gain --deny-unix
+    and --allow-unix to block connections to sockets such as the SSH agent or the container
+    runtime socket. These need Linux 7.1 or later, and macOS and older kernels exit with an
+    error instead of running without the restriction.
+  why: >-
+    You can now cap concurrent heavy tasks by CPU slots, and you can keep agent tasks run
+    through mise away from the SSH agent and Docker sockets, which --deny-net does not cover.
+  sources:
+  - label: primary
+    url: https://github.com/jdx/mise/releases/tag/v2026.11.9
+- title: >-
     Jiff 1.0 ships as a stable Rust datetime library, with a commitment to no further breaking
     releases
   section: Languages and runtimes
@@ -224,6 +277,29 @@ stories:
     url: https://news.ycombinator.com/item?id=50514180
   thread: f-0222
 - title: >-
+    S2 replaced Route53 with its own Go authoritative DNS server backed by Spanner and fronted
+    by Cloudflare
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    S2 needed unlimited per-basin subdomains that resolve on creation, which managed DNS APIs
+    could not support at their update rate limits.
+  summary: >-
+    Route53's API limit of about 5 UPSERTs per second created a backlog of several hours when
+    one actor created tens of thousands of basins. S2 then built an authoritative server in
+    Go on miekg/dns that answers each query with a live SELECT against its Spanner account
+    database. It runs on two GKE clusters behind Cloudflare DNS Firewall, which protects it
+    from NXDOMAIN floods. ACME DNS-01 challenges stay in a separate Route53 zone through CNAME
+    delegation, and a test checks that origin IPs never leak in NS or SOA answers.
+  why: >-
+    Any service that gives customers DNS names, the way S3 does for buckets, will hit managed
+    DNS write limits, and this post shows one way out and what it costs to run.
+  sources:
+  - label: primary
+    url: https://s2.dev/blog/dns-server
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50515616
+- title: >-
     Theo's multi-model council review lifts Opus self-scores from 7.4 to 8.9 but can run away
     into hundreds of subagents
   section: Videos
@@ -246,3 +322,24 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=TWoS5Nmyoc8
+- title: >-
+    Rust Release Changelog 1.100: maintainers explain the never type and allocator trait stabilizations
+  section: Videos
+  category: Video
+  blurb: >-
+    Rust compiler maintainers explain how never type stabilization finally landed and what
+    the first stable allocator trait covers and leaves out.
+  summary: >-
+    The hosts list the Cargo changes: dependency cooldowns with a per-run override for urgent
+    fixes, cargo install now locked by default, a stable lints.cargo table with an unused-dependencies
+    lint, and the new build directory layout. Waffle says never type stabilization relied
+    on a lint that ran for years, an edition change, crater runs and patched releases of old
+    crates. A fuzzer recently found a soundness bug in it, patched with a narrow workaround
+    before release. Nia says the allocator trait is stable only for Box and Vec for now, with
+    Rc, Arc, linked lists, a deallocator trait and the storage API to follow.
+  why: >-
+    Scripts that read Cargo's build directory paths may break, and cooldowns and locked installs
+    change how new crate versions reach your builds.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=fP2FiYfyzlk
