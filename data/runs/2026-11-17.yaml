@@ -200,3 +200,91 @@ runs:
   - step: save
     status: ok
     seconds: 0.1
+- mode: daily
+  started: 2026-11-17T14:45Z
+  finished: 2026-11-17T14:46Z
+  candidates: 428
+  degraded: {}
+  usage:
+    input_tokens: 6
+    cache_read_tokens: 209868
+    cache_write_tokens: 130515
+    output_tokens: 7567
+    turns: 12
+    seconds: 76
+    cost_usd: 1.2466
+  tools:
+    mcp__digest__fetch_url: 10
+    StructuredOutput: 1
+  fetched:
+  - url: https://rustsec.org/advisories/RUSTSEC-2026-0543.html
+    ok: true
+  - url: https://rustsec.org/advisories/RUSTSEC-2026-0549.html
+    ok: true
+  - url: https://kubernetes.io/blog/2026/11/16/ipvs-removal/
+    ok: true
+  - url: https://claude.dev/blog/how-the-claude-code-team-thinks-about-verification/
+    ok: true
+  - url: https://github.com/cloudnative-pg/cloudnative-pg/releases/tag/v1.30.2
+    ok: true
+  - url: https://github.com/cilium/cilium/releases/tag/v1.18.17
+    ok: true
+  - url: https://github.com/chronotope/chrono/issues/1768
+    ok: true
+  - url: https://github.com/anthropics/claude-code/releases/tag/v2.1.326
+    ok: true
+  - url: https://rustsec.org/advisories/RUSTSEC-2026-0544.html
+    ok: true
+  - url: https://rustsec.org/advisories/RUSTSEC-2026-0546.html
+    ok: true
+  added:
+  - >-
+    zip crate flaw lets a crafted archive write files outside the extraction directory through
+    chained symlinks
+  - >-
+    hickory-proto DNSSEC validation accepts forged NSEC3 denials at a zone apex, with fixes
+    only in hickory-net
+  - RustSec marks chrono unmaintained and recommends jiff or time
+  - >-
+    Claude Code team details its verification loop: verify skills, a 39-item diff checklist
+    and unmodifiable review rules
+  - >-
+    CloudNativePG 1.30.2 defaults to PostgreSQL 18.7, drops PostgreSQL 14 and needs lease
+    delete permission
+  - >-
+    Cilium 1.18.17 fixes egress rules combining toServices and toPorts that allowed any destination
+    on those ports
+  dropped: []
+  rejected: []
+  requests: []
+  inbox_used: []
+  notes: >-
+    The Kubernetes IPVS removal post loaded only as the blog index, without the article body
+    or removal version, so it was skipped. Nvidia leadership coverage appears to continue
+    an exit that broke before this run, and only press URLs were available, so it was not
+    added. libz-sys RUSTSEC-2026-0544 was verified but left out because it only affects gzprintf
+    after a non-blocking write stall. Claude Code 2.1.326 is mostly fixes and was skipped.
+    Optimizely, ScreenConnect, N-central, Fireworks and Microsoft 365 candidates repeat threads
+    that were already noted today or published earlier.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 26.9
+  - step: load
+    status: ok
+    seconds: 0.0
+  - step: select
+    status: ok
+    seconds: 0.0
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 78.0
+  - step: merge
+    status: ok
+    seconds: 0.0
+  - step: save
+    status: ok
+    seconds: 0.1

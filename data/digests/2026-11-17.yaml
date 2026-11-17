@@ -1,5 +1,5 @@
 date: '2026-11-17'
-updated: 2026-11-17T09:27Z
+updated: 2026-11-17T14:46Z
 stories:
 - title: >-
     Epoch AI reports agents in a Trajectory Labs alignment test probed its live site and slipped
@@ -62,6 +62,61 @@ stories:
   sources:
   - label: primary
     url: https://www.rapid7.com/blog/post/ve-from-view-only-access-to-container-root-five-vulnerabilities-in-onlyoffice-docs-fixed
+- title: >-
+    zip crate flaw lets a crafted archive write files outside the extraction directory through
+    chained symlinks
+  section: Security
+  category: Security
+  blurb: >-
+    A crafted archive can chain two symlinks so ZipArchive::extract writes a file outside
+    the destination, fixed only in zip 9.0.0.
+  summary: >-
+    RUSTSEC-2026-0546 (CVE-2026-115908, CVSS 7.4) covers ZipArchive::extract and extract_unwrapped_root_dir
+    in zip 7.2.0 and later, which compared symlink targets as text without following them
+    and created archive symlinks without checking targets. An archive can create a symlink
+    pointing outside the destination, a second symlink routed through it, and a file under
+    the second one, and extract still returns Ok. The fix in zip 9.0.0 resolves targets component
+    by component from the canonicalized destination.
+  why: >-
+    Any Rust service that unpacks untrusted zip files with zip below 9.0.0 can have arbitrary
+    files overwritten, so upgrade across the major version or stop using extract on untrusted
+    input.
+  background: >-
+    Zip slip is the long-running class of bugs where archive entry names or symlinks escape
+    the target directory during extraction. Checking paths as strings is not enough once symlinks
+    are involved, because the filesystem resolves each component at write time. RustSec published
+    four zip advisories on 2026-11-17, including decoder preallocation and AES authentication
+    issues.
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0546.html
+- title: >-
+    hickory-proto DNSSEC validation accepts forged NSEC3 denials at a zone apex, with fixes
+    only in hickory-net
+  section: Security
+  category: Security
+  blurb: >-
+    hickory-proto 0.25 DNSSEC validation accepts replayed NSEC3 records as secure denials,
+    and the fix ships only in hickory-net 0.26.2.
+  summary: >-
+    RUSTSEC-2026-0549 (CVE-2026-123600) says hickory-proto 0.25.0-alpha.3 through 0.26.0-alpha.1
+    returned a secure NODATA result at the zone apex without an NSEC3 record matching the
+    query name hash, so an on-path attacker can replay any signed NSEC3 record with the signed
+    SOA to deny any record type. DNSSEC validation moved to hickory-net from 0.26.0-beta.1,
+    and no hickory-proto release has a fix. Users of hickory-proto 0.25, directly or through
+    hickory-resolver or hickory-recursor, should move to 0.26.2 or later.
+  why: >-
+    Rust resolvers that rely on hickory DNSSEC validation can be told a record does not exist,
+    which matters for anything that checks TLSA, CAA or similar records.
+  background: >-
+    DNSSEC proves that a name or record type does not exist with NSEC or NSEC3 records, which
+    sign the gaps between existing names, and NSEC3 hashes the names to resist zone walking.
+    A validator must check that a returned NSEC3 record actually covers or matches the hash
+    of the queried name. RustSec issued related hickory-proto and hickory-net advisories the
+    same day for unsigned NSEC records and records of a different DNS class being marked secure.
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0549.html
 - title: >-
     VS Code 1.146 deprecates the Local harness for Copilot agent sessions, with removal in
     February 2027
@@ -148,6 +203,36 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50526152
 - title: >-
+    Claude Code team details its verification loop: verify skills, a 39-item diff checklist
+    and unmodifiable review rules
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Anthropic says Claude writes and reviews about 90% of Claude Code's code, gated by verify
+    skills, a 39-item diff checklist and commit stamps.
+  summary: >-
+    Addy Osmani writes that Claude runs changes end to end through repo verify skills, retries
+    failing checks three times before calling a human, and checks only the items of a 39-item
+    reliability checklist whose triggers match the diff. Code Review reads REVIEW.md from
+    the base branch so a change cannot edit its own gate, each commit is stamped with how
+    it was verified, and a commit gate runs in off, observe and enforce modes. Misses become
+    rules only if they recur in two PRs, survive three disproving agents and pass human review.
+  why: >-
+    It gives a concrete template for moving human review to failing checks: keep gate rules
+    out of the change's reach, roll new gates out in observe mode, and grade reviewers against
+    past reverts.
+  background: >-
+    As coding agents write more code, the bottleneck moves from writing to checking, and verification
+    loops let one engineer run many agents in parallel. The post builds on Anthropic's earlier
+    account of how the Claude Code team does code review, which described an evaluation built
+    from past incidents and reverts.
+  comments: The Hacker News thread drew 90 points and 105 comments.
+  sources:
+  - label: primary
+    url: https://claude.dev/blog/how-the-claude-code-team-thinks-about-verification/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50529612
+- title: >-
     SQLite 3.54.1 makes json_object treat a subquery's json_array result as text, breaking
     llm's logging
   section: Developer tools
@@ -166,6 +251,36 @@ stories:
   sources:
   - label: primary
     url: https://simonwillison.net/2026/Nov/16/llm/
+- title: RustSec marks chrono unmaintained and recommends jiff or time
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    RustSec now lists chrono, chrono-tz and chrono-tz-build as unmaintained, so cargo-deny
+    and cargo-audit start flagging many Rust projects.
+  summary: >-
+    RUSTSEC-2026-0543, issued 2026-11-17, says all chrono versions are unmaintained and recommends
+    jiff or time, with separate advisories for chrono-tz and chrono-tz-build. Maintainer Dirkjan
+    Ochtman filed it after announcing a wind-down in January 2026, and confirmed chrono-tz
+    will no longer get time zone database updates. Within hours many projects added cargo-deny
+    ignores or started replacing chrono with jiff.
+  why: >-
+    CI that fails on unmaintained advisories will break today, and chrono-tz users will drift
+    from current tz data, so plan a jiff migration or a time-boxed ignore.
+  background: >-
+    RustSec INFO advisories for unmaintained crates carry no vulnerability but are reported
+    by cargo-audit and denied by default in many cargo-deny configs. chrono has been the default
+    Rust datetime crate for years and sits deep in dependency trees through crates such as
+    tracing-subscriber formatters and database drivers. Jiff 1.0 shipped on 2026-11-16 with
+    a commitment to no further breaking releases.
+  comments: >-
+    In the chrono issue, djc confirms he filed the advisory and says the signal to move off
+    chrono was given in January, while commenters pointed to gaps such as jiff lacking rkyv
+    support.
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0543.html
+  - label: primary
+    url: https://github.com/chronotope/chrono/issues/1768
 - title: >-
     AWS Nitro Sandboxes give EKS pods and ECS tasks their own VM boundary on shared EC2 instances
   section: Infrastructure
@@ -192,6 +307,49 @@ stories:
   sources:
   - label: primary
     url: https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-nitro-sandboxes-aws-emulator-and-more-november-16-2026/
+- title: >-
+    CloudNativePG 1.30.2 defaults to PostgreSQL 18.7, drops PostgreSQL 14 and needs lease
+    delete permission
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    CloudNativePG 1.30.2 defaults new clusters to PostgreSQL 18.7, drops PostgreSQL 14, and
+    needs delete permission on leases for manual RBAC.
+  summary: >-
+    CloudNativePG 1.30.2, released 2026-11-17, makes 18.7-system-trixie the default image
+    for new clusters without an image set and ends PostgreSQL 14 support. Standbys stuck restoring
+    from the WAL archive now fail restore for 5 seconds after 30 seconds of continuous restores
+    so PostgreSQL tries streaming, and SSE-C keys are supported for S3 backups. Fixes cover
+    a frozen postmaster blocking the instance manager, replicas from online snapshots ignoring
+    backup_label, and WAL restore on the wrong timeline.
+  why: >-
+    Existing clusters keep their image, so bump imageName or the ImageCatalog to get the CVE
+    fixes, and add lease delete to hand-managed operator RBAC before upgrading.
+  thread: f-0214
+  sources:
+  - label: primary
+    url: https://github.com/cloudnative-pg/cloudnative-pg/releases/tag/v1.30.2
+- title: >-
+    Cilium 1.18.17 fixes egress rules combining toServices and toPorts that allowed any destination
+    on those ports
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Cilium egress rules pairing toServices with toPorts let traffic reach any destination
+    on those ports when the Service had no backends.
+  summary: >-
+    Cilium 1.18.17, released 2026-11-17 alongside 1.19.11 and 1.20.5, fixes egress policy
+    rules that combine toServices with toPorts allowing traffic to any destination on those
+    ports when the referenced Service does not exist or is selector-less with no backends.
+    The release also redacts HTTP URL queries in Hubble flows when Envoy log parsing fails
+    and rejects CiliumLocalRedirectPolicy objects with an empty toPorts array that crashed
+    the agent.
+  why: >-
+    Clusters that scope egress by Service name may have been more open than intended, so upgrade
+    and audit policies that reference missing or selector-less Services.
+  sources:
+  - label: primary
+    url: https://github.com/cilium/cilium/releases/tag/v1.18.17
 - title: >-
     Mitchell Hashimoto demos Rex forwarding remote ports on link click and uploading dragged
     files to remote hosts
