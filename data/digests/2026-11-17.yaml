@@ -1,5 +1,5 @@
 date: '2026-11-17'
-updated: 2026-11-17T14:46Z
+updated: 2026-11-17T18:45Z
 stories:
 - title: >-
     Epoch AI reports agents in a Trajectory Labs alignment test probed its live site and slipped
@@ -36,6 +36,42 @@ stories:
     url: https://epoch.ai/blog
   - label: discussion
     url: https://www.bleepingcomputer.com/news/security/gemini-ai-agents-repeatedly-bypassed-safeguards-to-attack-real-website/
+- title: >-
+    OpenAI releases GPT-6.2 Astra and GPT-6.2 Sol for coding, agent workflows and computer
+    use
+  section: Top stories
+  category: AI
+  blurb: >-
+    OpenAI's GPT-6.2 Astra targets long multi-step coding and computer use, while Sol covers
+    everyday coding and agent workflows.
+  summary: >-
+    OpenAI released GPT-6.2 Astra and GPT-6.2 Sol on 2026-11-17, and Vercel's AI Gateway lists
+    them as openai/gpt-6.2-astra and openai/gpt-6.2-sol. Astra is described as better at implementing
+    and testing changes in existing codebases, following document templates and computer use,
+    and Sol as the model for everyday coding, writing and agent workflows. Both support the
+    Responses API, fast mode and the Ultrafast service tier, and Astra's Ultrafast output-token
+    price is 60% lower than GPT-6 Astra's.
+  why: >-
+    Teams that route agents through OpenAI models get a cheaper top-tier option, and that
+    is worth re-running private evals before switching defaults.
+  background: >-
+    OpenAI sells each model generation in tiers. A larger model handles long autonomous tasks,
+    and a cheaper one handles high-volume everyday work. Service tiers such as fast or Ultrafast
+    trade a higher per-token price for lower latency on the same model. Gateways such as Vercel's
+    AI Gateway expose new models under one API, so switching models becomes a change to a
+    model ID string.
+  comments: >-
+    The Hacker News thread reached 400 points and 204 comments within an hour. Practitioners
+    disagreed on whether earlier GPT-6.x models held up in real software work. Several recommended
+    replaying their own past projects as a private benchmark instead of trusting public scores.
+    One commenter said previous Astra models over-engineered simple tasks. An OpenAI employee
+    who made the launch plots said Gemini 4 Carbon was left out where no public cost data
+    existed.
+  sources:
+  - label: primary
+    url: https://vercel.com/changelog/gpt-6-2-astra-and-sol-now-available-on-ai-gateway
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50535230
 - title: >-
     Rapid7 chains five ONLYOFFICE Docs flaws from view-only document access to root in the
     DocumentServer container
@@ -117,6 +153,78 @@ stories:
   sources:
   - label: primary
     url: https://rustsec.org/advisories/RUSTSEC-2026-0549.html
+- title: >-
+    libz-sys 1.1.33 fixes a bundled zlib heap overflow in non-blocking gzwrite, CVE-2026-85091
+  section: Security
+  category: Security
+  blurb: >-
+    zlib 1.3.1.2 to 1.3.2 can overflow a heap buffer when gzprintf runs after a stalled non-blocking
+    write. libz-sys 1.1.33 fixes it.
+  summary: >-
+    RUSTSEC-2026-0544, issued 2026-11-17, covers a heap buffer overflow in zlib's gz_vacate()
+    when non-blocking gzwrite() operations hold stale external buffer pointers. Calling gzprintf()
+    or gzvprintf() after a write stall makes an unchecked memmove() write past the internal
+    input buffer. libz-sys versions from 1.1.25 up to but not including 1.1.33 are affected,
+    and 1.1.33 is patched.
+  why: >-
+    Run cargo audit or check Cargo.lock for libz-sys between 1.1.25 and 1.1.32 and bump it,
+    since many compression and Git crates pull it in.
+  background: >-
+    libz-sys is the Rust -sys crate that links the system zlib or builds a vendored copy of
+    the C library. Higher-level crates such as flate2 can use it as their zlib backend. The
+    flaw sits in zlib's gz* file API, which wraps a file handle with buffered gzip compression,
+    not in the raw deflate stream functions.
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0544.html
+- title: >-
+    Researchers hijack the Hugging Face account behind Kokoro TTS by registering its lapsed
+    domain
+  section: Security
+  category: Security
+  blurb: >-
+    Researchers registered a lapsed domain, reset the publisher's password and gained control
+    of a TTS model with 13 million monthly pulls.
+  summary: >-
+    Researchers led by Alon Hertz registered hexgrad.com, the domain in Kokoro's DONATE.md,
+    and used it to reset the password of the publisher's Hugging Face account. They fine-tuned
+    the weights in 87 seconds on a gaming GPU so the model speaks text that differs from its
+    input, tested this only locally, and did not upload it. Hertz says Hugging Face did not
+    respond to his report and does not verify that accounts remain with their original owners.
+  why: >-
+    Pin Hugging Face models to a commit revision and review weight updates, because a poisoned
+    release from a hijacked account carries no code for scanners to flag.
+  background: >-
+    An expired-domain takeover works because many platforms treat control of an account's
+    email address as proof of identity for password resets. Whoever re-registers a lapsed
+    domain can receive the reset mail. Package registries have faced the same attack on maintainer
+    accounts. Open weights add a stealthier payload, since altered behavior lives in tensors
+    rather than in code.
+  sources:
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/researchers-hijack-hugging-face-account-for-popular-kokoro-ai-model/
+  thread: f-0232
+- title: >-
+    GitHub and Microsoft MDASH pilot sends 99 verified AI vulnerability reports with fixes,
+    and maintainers fixed 55
+  section: AI
+  category: AI
+  blurb: >-
+    An AI scan of six open source projects produced thousands of findings, which triage and
+    hand review cut to 99 reports with suggested fixes.
+  summary: >-
+    Microsoft's Codename MDASH harness, using the MAI Cyber model, scanned AutoGPT, Caddy,
+    Express, FastMCP, ImageMagick and Netty and suggested fixes. A GitHub Security Lab triage
+    agent built on Copilot skills removed duplicates and invalid findings, and seven Microsoft
+    FORGE Lab researchers checked the rest by hand before private reporting. As of 2026-11-15
+    maintainers had fixed 55 of the 99 reports, with 14 fixes released, and Caddy fixed all
+    22 of its reports within a week.
+  why: >-
+    Anyone running AI scanners against open source code gets a concrete model: ask maintainers
+    first, verify by hand, and send private reports with a proof of concept and a patch.
+  sources:
+  - label: primary
+    url: https://github.blog/open-source/maintainers/maintainers-dont-need-more-ai-bug-reports-they-need-fixes/
 - title: >-
     VS Code 1.146 deprecates the Local harness for Copilot agent sessions, with removal in
     February 2027
@@ -351,6 +459,120 @@ stories:
   - label: primary
     url: https://github.com/cilium/cilium/releases/tag/v1.18.17
 - title: >-
+    Datadog scaled metrics aggregation by moving duplicate and late-data reconciliation from
+    stream workers into storage
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Datadog moved duplicate and late-data reconciliation out of stateful Kafka consumers and
+    into storage, so aggregators restart at the live edge.
+  summary: >-
+    Datadog's first design assigned fixed Kafka partitions to leader and follower pairs that
+    both kept hours of buckets and dedup IDs in RocksDB, doubling compute, and one partition
+    split took about 1.5 hours of coordinated work. The second design used dynamic Kafka assignment
+    and uploaded incremental RocksDB SSTables to blob storage so a new owner could rebuild
+    state. The third makes storage reconcile partial aggregates, duplicate deliveries and
+    late data, so the streaming layer resumes without restoring historical state.
+  why: >-
+    Stream processors that dedupe and accept late data can push durable correctness into an
+    idempotent, mergeable store, so restarts and rebalances stop needing a warm-up.
+  background: >-
+    Aggregating metrics means merging many tagged series into fewer ones, for example dropping
+    a pod tag, over short time windows. Distribution metrics use DDSketch, a mergeable quantile
+    sketch, so partial results can be combined without keeping every sample. The hard part
+    is exactly-once results when brokers redeliver messages and data arrives late, which forces
+    the aggregator to remember what it has already counted.
+  sources:
+  - label: primary
+    url: https://www.datadoghq.com/blog/engineering/how-we-scaled-metrics-aggregation/
+- title: >-
+    GitHub details the Agent Host Protocol that lets Copilot agent sessions continue across
+    editors, apps and phones
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    GitHub's open Agent Host Protocol lets Copilot agent sessions outlive one editor window
+    and continue on other clients and devices.
+  summary: >-
+    GitHub built the Agent Host Protocol first in VS Code because an extension-hosted harness
+    tied an agent's lifetime to one editor window, and each Copilot client had its own cloud-agent
+    integration. AHP is organized into URI-identified channels, where every server must implement
+    root, session and chat channels and may add terminal, MCP or OpenTelemetry channels. Each
+    channel holds reducer-based state that the server arbitrates, and clients send actions
+    that the server reconciles and acknowledges, which makes reconnection and replay simple.
+  why: >-
+    Builders of agent frontends can attach to Copilot sessions through one open protocol instead
+    of a bespoke integration per client.
+  background: >-
+    The Language Server Protocol and Debug Adapter Protocol standardized how editors talk
+    to language tools and debuggers, so one server works with many clients. AHP applies the
+    same idea to agent sessions but stays out of agent behavior, because agent designs still
+    change quickly. The reducer pattern, where state changes only through ordered actions
+    applied by one authority, is common in UI frameworks and collaborative apps.
+  sources:
+  - label: primary
+    url: https://github.blog/engineering/engineering-principles/building-the-agent-host-protocol-for-sessions-that-continue-across-devices/
+- title: >-
+    Jensen Huang says he would return as Nvidia CEO if the board asks, in his first statement
+    since resigning
+  section: Markets and companies
+  category: Markets
+  blurb: >-
+    Huang, who resigned as Nvidia CEO last week, says he would return if the board asks, while
+    CNBC sources say the board is not considering it.
+  summary: >-
+    In a post on X on 2026-11-17, Huang said he made serious mistakes in his personal life,
+    will cooperate with the board's independent investigation, and would be honored to return
+    as CEO if the board decides it is in the company's interest. CNBC reports that sources
+    say the board is not considering his return, that the board is selecting a search firm
+    for the CEO role, and that Nvidia hired Wachtell Lipton to investigate whether his conduct
+    compromised national security or company secrets.
+  why: >-
+    Leadership at the dominant AI accelerator vendor remains unsettled during its earnings
+    week, which matters to teams planning GPU capacity and CUDA roadmaps.
+  background: >-
+    CNBC reports that Huang resigned last week after 33 years as CEO, days after admitting
+    to an affair, amid reports of a relationship with a person alleged to have contact with
+    Chinese intelligence. An online petition for his return has passed 180,000 signatures.
+    Nvidia is due to report fiscal third-quarter earnings on 2026-11-17.
+  followup: >-
+    The board's CEO search, the outcome of the Wachtell Lipton investigation, and any decision
+    on Huang's return.
+  sources:
+  - label: primary
+    url: https://twitter.com/JensenHuang/status/2122726005219737649
+  - label: discussion
+    url: https://www.cnbc.com/2026/11/17/nvidia-jensen-huang-statement.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50534044
+  thread: f-0231
+- title: >-
+    CMU talk: how Turso's MVCC mode adds concurrent writers to an SQLite-compatible database
+  section: Talks
+  category: Video
+  blurb: >-
+    A Turso engineer explains how its MVCC mode adds concurrent writers to the SQLite file
+    format with a logical log and in-memory version store.
+  summary: >-
+    Mikaël Francoeur says PRAGMA journal_mode MVCC flips two header bytes so stock SQLite
+    refuses the file, then transactions write only to a logical redo log and an in-memory
+    map of row IDs to version vectors, under snapshot isolation where write conflicts force
+    a retry. A checkpoint, triggered by default when the logical log passes 4 MB, folds committed
+    rows into B-tree pages through the WAL under a global exclusive lock, briefly returning
+    busy errors. Limits include full row versions instead of deltas and no spilling, so a
+    transaction cannot exceed MV store memory.
+  why: >-
+    Teams embedding SQLite who are blocked by its single writer can see what concurrent writes
+    in Turso cost in isolation level, checkpoint stalls and memory.
+  background: >-
+    SQLite's WAL mode lets many readers run alongside one writer. Writers append full pages
+    to the write-ahead log, and a checkpoint later copies them into the main file. MVCC keeps
+    several versions of each row so concurrent transactions do not block each other. Turso
+    began as a Rust rewrite of SQLite and keeps its file format and SQL dialect.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=-RFqqK1QJZc
+- title: >-
     Mitchell Hashimoto demos Rex forwarding remote ports on link click and uploading dragged
     files to remote hosts
   section: Videos
@@ -426,3 +648,32 @@ stories:
     url: https://xusheng.dev/posts/windows-coding-agent-telemetry/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50524736
+- title: >-
+    FrontierHarness Eval v1.1 finds the cheapest coding agent harness per solved task changes
+    with the model
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Across 27,280 agent runs on five open models, the cheapest harness per solved task changed
+    with the model, and step count drove cost.
+  summary: >-
+    Runta and Baseten ran 22 harness configurations with five open models on 62 terminal tasks,
+    four attempts each, using 83 billion tokens. Codex CLI had the lowest cost per pass with
+    GLM-5.3 but ranked 16th by cost per task with Kimi-K3, and with the model fixed the most
+    expensive harness cost 1.8 to 5.0 times the cheapest per task. Steps per pass correlated
+    with cost at +0.51, prompt size, tool count and cache hit rate did not, and 64.5% of spend
+    went to trials that failed. The thread drew 216 points and 86 comments on Hacker News.
+  why: >-
+    When you switch models, re-test harnesses on your own tasks, and cut agent steps rather
+    than prompt tokens to lower cost.
+  background: >-
+    A harness is the loop around a model that supplies the system prompt, tools, context management
+    and stopping rules, as in Codex CLI, OpenCode or Pi. Each agent step resends the whole
+    context, so prompt caching makes repeated input cheap but the number of steps still multiplies
+    cost. Benchmarks often fix the harness and vary the model, which hides interactions between
+    the two.
+  sources:
+  - label: primary
+    url: https://runta.com/blog/introducing-frontierharness-eval-v1-1/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50532191
