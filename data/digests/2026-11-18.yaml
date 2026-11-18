@@ -1,5 +1,5 @@
 date: '2026-11-18'
-updated: 2026-11-18T14:26Z
+updated: 2026-11-18T18:20Z
 stories:
 - title: >-
     Microsoft agent-framework 1.26.1 and 1.26.2 on PyPI shipped a credential stealer that
@@ -42,6 +42,49 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50539610
   thread: f-0235
+- title: >-
+    nginx fixes two HTTP/2 flaws, CVE-2026-123007 and CVE-2026-123633, that allow unauthenticated
+    remote code execution
+  section: Top stories
+  category: Security
+  blurb: >-
+    Five research teams found two HTTP/2 memory-safety flaws in nginx that allow unauthenticated
+    code execution, fixed in 1.30.7 and 1.31.9.
+  summary: >-
+    F5, Rapid7 and Wiz disclosed on 2026-11-18 a send_window integer underflow (CVE-2026-123007,
+    back to 1.9.5) and a connection use-after-free (CVE-2026-123633, back to 1.19.7), both
+    CVSS 9.2 and both requiring HTTP/2. Fixed releases are nginx 1.30.7 stable and 1.31.9
+    mainline, and Wiz advises setting http2 off until patched. Rapid7's proof of concept needs
+    about 128 GB of HTTP/2 traffic and a specific AVX-512 glibc memcpy, while Xint says it
+    chained the nginx bug with an unpatched SCTP kernel flaw to reach host root from a container.
+  why: >-
+    Any internet-facing nginx with HTTP/2 needs 1.30.7 or 1.31.9 now, and hosts that do not
+    use SCTP should block that kernel module until a fix ships.
+  background: >-
+    HTTP/2 flow control lets a client grant a server credit to send DATA bytes, tracked per
+    stream and per connection and capped at 2^31-1. nginx keeps the connection credit in an
+    unsigned 64-bit counter, so restoring credit for cancelled frames past the cap makes a
+    later subtraction wrap to a huge value. That value then becomes a negative length in the
+    TLS send path and an out-of-bounds memcpy. Wiz says it found both bugs with its AI code
+    scanning harness, the same pattern as Java4Shell a day earlier.
+  followup: >-
+    Distribution nginx packages, a kernel fix for Xint's SCTP privilege escalation, and exploitation
+    reports.
+  comments: >-
+    The Hacker News thread on the Wiz post reached 402 points and 135 comments within three
+    hours.
+  sources:
+  - label: primary
+    url: https://www.wiz.io/blog/nginx-http2-rce-vulnerabilities
+  - label: primary
+    url: https://www.rapid7.com/blog/post/ve-cve-2026-123007-critical-nginx-http-2-integer-underflow-leads-to-rce-fixed
+  - label: primary
+    url: https://nginx2root.com/
+  - label: discussion
+    url: https://lwn.net/Articles/1108362/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50547374
+  thread: f-0238
 - title: >-
     Stony Brook honeypots show AWS keys leaked in public Docker Hub images get used within
     8 seconds
@@ -130,6 +173,32 @@ stories:
   - label: discussion
     url: https://rustsec.org/advisories/RUSTSEC-2026-0563.html
 - title: >-
+    Rapid7 finds third-party artifacts on 55% of internet-exposed Ollama servers, including
+    file-read payloads
+  section: Security
+  category: Security
+  blurb: >-
+    Rapid7 scanned exposed self-hosted AI servers and found strangers' callback, marker and
+    file-read models on 55% of open Ollama hosts.
+  summary: >-
+    Rapid7 counted 7,627 hosts with an unauthenticated AI or notebook API, almost all Ollama,
+    after filtering out likely honeypots. On 54.8% of 7,675 exposed Ollama servers the model
+    list held artifacts from someone else, such as pulls from raw IP addresses or tunnels,
+    tags embedding the host's own IP, and on 55 hosts encoded paths like /etc/shadow and the
+    Ollama private key. 79% listed cloud-routed models, which a signed-in daemon forwards
+    to the owner's paid ollama.com account.
+  why: >-
+    An Ollama port open to the internet gives anyone pull, copy and push access plus a server-side
+    request primitive, so bind it to localhost or put authentication in front.
+  background: >-
+    Ollama serves a local HTTP API on port 11434 with no authentication by default. Its pull
+    endpoint fetches models from any registry, which turns the server into an outbound callback
+    that confirms reachability. Hybrid mode with ollama signin links a local key to an account
+    and routes :cloud models through it.
+  sources:
+  - label: primary
+    url: https://www.rapid7.com/blog/post/tr-self-hosted-ai-renting-compute-exposed-servers
+- title: >-
     Codeberg goes offline for hours after its registrar NameSilo suspends the codeberg.org
     domain
   section: Outages
@@ -164,6 +233,32 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50545191
   thread: f-0236
+- title: >-
+    Transformers PR streams MoE experts from SSD and runs a 180B Qwen model on a 32 GB Mac
+    within 6% of Strata
+  section: AI
+  category: AI
+  blurb: >-
+    A Transformers pull request streams only router-selected MoE experts from SSD, running
+    a 180B Qwen model on a 32 GB Mac at about 14 tokens/s.
+  summary: >-
+    Hugging Face's Tarek Ziadé added an experts_offload option to from_pretrained in transformers
+    PR 50717, with a bounded slot-pool cache that grouped_mm runs on directly and early router
+    passes that prefetch experts. Qwen3.8-Flash-Next with 3-bit experts reached 13.9 tok/s
+    decode and 228 tok/s prefill on an M5 against Strata's 14.8 and 220. On a 24 GB A10G with
+    Qwen3.6-35B-A3B, Strata did 82 to 88 tok/s, llama.cpp 63 to 64, vLLM with expert offload
+    20.1, and Accelerate offload 0.16.
+  why: >-
+    Running MoE models larger than device memory no longer requires a separate engine, and
+    the benchmark shows which offload flags matter in llama.cpp and vLLM.
+  background: >-
+    In a mixture-of-experts model a router picks a few experts per token, and experts hold
+    most of the weights. Offloading the experts that are not in use to RAM or disk lets the
+    dense layers and hot experts fit in GPU memory. The cost moves to I/O and to how quickly
+    the host can queue work for the GPU.
+  sources:
+  - label: primary
+    url: https://huggingface.co/blog/moe-expert-streaming
 - title: >-
     Claude Code 2.1.327 runs shell start-up files before the first Bash command is approved
     and adds mcp add-json from stdin
@@ -275,6 +370,26 @@ stories:
   - label: primary
     url: https://github.blog/changelog/2026-11-17-track-copilot-code-review-outcomes-in-repository-insights
 - title: >-
+    mise 2026.11.10 adds an offline lockfile check for CI and an enable_backends allowlist
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    mise lock --check verifies offline in CI that mise.lock covers every tool, platform and
+    checksum, and enable_backends limits install sources.
+  summary: >-
+    mise lock --check fails, without writing or using the network, on anything mise install
+    --locked would reject, such as an unlocked version or missing checksum, and shows each
+    entry's provenance. The enable_backends setting allows only listed backends, and new options
+    add per-tool musl or glibc builds, private uv indexes for pypi tools, and a !@gitignore
+    entry for task sources. mise lock --dry-run now resolves tools and makes network requests
+    to report real changes.
+  why: >-
+    Teams can gate CI on lockfile drift and stop mise from installing tools through backends
+    they have not approved.
+  sources:
+  - label: primary
+    url: https://github.com/jdx/mise/releases/tag/v2026.11.10
+- title: >-
     SeaweedFS 4.54 adds S3 Vectors buckets with Lance-backed engines and tightens S3 signature
     and filer token checks
   section: Infrastructure
@@ -379,6 +494,27 @@ stories:
   - label: primary
     url: https://www.cncf.io/blog/2026/11/18/optimizing-kubernetes-admission-control-where-kyvernos-cel-admission-cost-actually-goes/
 - title: >-
+    Meta says AI agents handle over 60% of propagating ranking techniques across its ads models,
+    saving an estimated $45M
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Meta says agents now handle over 60% of porting proven ranking techniques across its ads
+    model fleet, with $45M estimated compute savings.
+  summary: >-
+    Meta describes agents that discover which proven techniques fit which ads ranking models,
+    adapt them beyond its shared model templates, and run multi-day training experiments,
+    using a shared knowledge base of past runs. Since agents began driving execution in March
+    2026, Meta reports 3x engineering productivity, a median 4x cut in training compute on
+    select combinations, and over $45M in estimated compute savings by year end. Engineers
+    review agent assessments, and the highest-revenue models still get manual adaptation.
+  why: >-
+    It is a first-party account of where Meta lets agents make judgment calls in ML engineering
+    and where it keeps humans in charge.
+  sources:
+  - label: primary
+    url: https://engineering.fb.com/2026/11/18/ml-applications/ai-agents-to-scale-ml-innovations-across-ads-ranking-models/
+- title: >-
     OpenAI's Codex team demos Codex Cloud V2 environments that set themselves up and reach
     private services over Tailscale
   section: Talks
@@ -426,6 +562,50 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=U92J5mCDLMc
+- title: >-
+    CodeRabbit CEO Harjot Gill: review-exempt shipping as a revocable license, release-level
+    human review and in-house CI
+  section: Videos
+  category: Video
+  blurb: >-
+    CodeRabbit's CEO says engineers lose review-exempt shipping rights after regressions,
+    and humans now review releases rather than pull requests.
+  summary: >-
+    Gill says he merged over 5,000 PRs in a month and spends about $250,000 a month on tokens.
+    Engineers on a review-exempt list ship without human code review, and CodeRabbit ties
+    production regressions back to the PR that caused them, so repeated long exposures move
+    an engineer back to mandatory review. Humans review each release, shipped every 30 to
+    45 minutes, using a risk summary. The team uses TLA+, simulations and Lean proofs as agent
+    verification loops, and moved CI in house after a vendor quoted about $13M a year.
+  why: >-
+    It gives a concrete model for scoped auto-merge, with trust earned and revoked per engineer
+    from measured regression exposure.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=4Cjb7691GJ8
+  - label: discussion
+    url: https://newsletter.pragmaticengineer.com/p/software-factories-and-code-reviews
+- title: >-
+    Snyk demo: unpinned MCP servers and skills with hidden hex comments or bundled scripts
+    make Claude Code run attacker code
+  section: Videos
+  category: Video
+  blurb: >-
+    Snyk's Brian Vermeer shows how unpinned MCP servers, hex-encoded skill comments and bundled
+    scripts make Claude Code run attacker code.
+  summary: >-
+    In an IntelliJ IDEA Tech Talk, Vermeer swaps a previously approved local MCP server for
+    one that launches a process, edits a tool description to pull fake data from an email
+    tool, and hides hex-encoded instructions in an HTML comment inside a SKILL.md. Another
+    skill downloads and runs a GraalVM native binary the model cannot inspect, and a third
+    ships a Python script that posts git config to a remote host. Snyk's open source agent-scan
+    flags each case.
+  why: >-
+    Pin MCP server versions and scan skills, including their scripts and binaries, because
+    approval of a tool carries over to whatever later builds of it contain.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=EijreHWhQ8E
 - title: >-
     Cloudflare warns Quad9's court-forced exit from France signals more public DNS resolver
     withdrawals
