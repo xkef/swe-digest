@@ -1,5 +1,5 @@
 date: '2026-11-18'
-updated: 2026-11-18T08:47Z
+updated: 2026-11-18T14:26Z
 stories:
 - title: >-
     Microsoft agent-framework 1.26.1 and 1.26.2 on PyPI shipped a credential stealer that
@@ -64,6 +64,106 @@ stories:
     url: https://containerbots.github.io/
   - label: discussion
     url: https://www.bleepingcomputer.com/news/security/cloud-keys-leaked-in-docker-hub-images-are-stolen-within-seconds/
+- title: >-
+    Puppet report deserialization RCE CVE-2026-115731 is exploited and added to CISA KEV
+  section: Security
+  category: Security
+  blurb: >-
+    Any host with a CA-signed Puppet agent certificate can run code on the Puppet server,
+    and autosign setups let attackers get one unauthenticated.
+  summary: >-
+    Neodyme found that Puppet's report endpoint deserializes attacker-defined Pcore types
+    whose RubyMethod annotations reach class_eval, giving code execution as the puppet user,
+    and a second flaw, CVE-2026-115732, lets a certificate for evil.target.lab.local authenticate
+    as target.lab.local. Perforce fixed both on 2026-11-03 in Puppet Enterprise 2026.0.1,
+    2025.12.1 and 2023.8.13 and Puppet Core 9.1.3 and 8.22.2, with OpenVox fixes in Agent
+    9.3.0 and 8.32.0 and Server 9.2.0 and 8.18.0. CISA added CVE-2026-115731 to KEV on 2026-11-17
+    with a federal deadline of 2026-12-01.
+  why: >-
+    A compromised Puppet server leaks its CA signing key and can push code to every managed
+    host, so patch and disable or tighten autosign now.
+  background: >-
+    Puppet agents pull configuration catalogs from a central server over mutual TLS on port
+    8140, and the server runs its own certificate authority. Autosign lets new hosts enroll
+    automatically when their name matches a pattern, which provisioning tools such as Satellite
+    and Ansible often rely on. Neodyme says the bugs date back to Puppet 6.24.0 from July
+    2021 and were found with steered AI assistance.
+  followup: CISA federal patch deadline on 2026-12-01.
+  comments: >-
+    SecurityWeek reports exploitation was flagged on 2026-11-04 and that a proof of concept
+    targeting OpenVox appeared shortly after the patch.
+  sources:
+  - label: primary
+    url: https://neodyme.io/en/blog/puppet_rce/
+  - label: discussion
+    url: https://www.securityweek.com/critical-perforce-puppet-rce-exploited-in-attacks/
+  - label: discussion
+    url: https://thehackernews.com/2026/11/hackers-exploiting-critical-puppet-rce.html
+  thread: f-0237
+- title: >-
+    RustSec issues six lettre advisories, including SMTP command injection through missing
+    dot-stuffing
+  section: Security
+  category: Security
+  blurb: >-
+    The Rust email crate lettre gets six advisories at once, covering SMTP smuggling, STARTTLS
+    reply injection, misrouted mail and DoS panics.
+  summary: >-
+    RUSTSEC-2026-0561 says a message with bare LF or CR line endings can be ended early with
+    a lone dot on servers that accept bare LF, so following text runs as SMTP commands on
+    the authenticated connection, affecting send_raw and unencoded bodies, patched in lettre
+    0.11.24. Companion advisories issued 2026-11-18 cover STARTTLS response injection by a
+    man in the middle, quoted local parts sent to a different address, unbounded SMTP reply
+    buffering, and panics on CR or LF in display names and on whitespace-only EHLO lines.
+  why: >-
+    Rust services that send mail with lettre should upgrade and check whether they pass untrusted
+    content to send_raw.
+  background: >-
+    SMTP ends a message body with a line holding a single dot, so clients must dot-stuff any
+    body line that starts with a dot. SMTP smuggling exploits clients and servers that disagree
+    on what counts as a line ending.
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0561.html
+  - label: discussion
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0560.html
+  - label: discussion
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0563.html
+- title: >-
+    Codeberg goes offline for hours after its registrar NameSilo suspends the codeberg.org
+    domain
+  section: Outages
+  category: Outage
+  blurb: >-
+    The Codeberg forge was unreachable on 2026-11-18 after its .org domain disappeared from
+    its registrar account, set to clientHold status.
+  summary: >-
+    Codeberg said on 2026-11-18 that codeberg.org was down because the domain had vanished
+    from its NameSilo account and was in clientHold status, with no expiry, transfer or email
+    notice. NameSilo later confirmed the domain was suspended and sent the case to its abuse
+    team. By 12:30 CET Codeberg reported the domain was slowly recovering pending DNS propagation,
+    with no official answer yet from NameSilo's abuse department.
+  why: >-
+    Projects and CI pipelines that clone from or depend on Codeberg failed, and a registrar
+    suspension is a single point of failure for any forge or service domain.
+  background: >-
+    clientHold is an EPP status code that the registrar sets to remove a domain from the TLD
+    zone, so it stops resolving even though the registration still exists. Codeberg is a nonprofit
+    Forgejo-based code host run from Germany and a common home for projects that leave GitHub.
+  followup: NameSilo abuse team's decision and stated reason for the suspension.
+  comments: >-
+    The Hacker News thread reached 264 points and 254 comments. Practitioners argue for separating
+    registrar and hosting providers, keeping a fallback domain at a second registrar, and
+    registering directly with registries such as DENIC, and one commenter reports a similar
+    unannounced registrar suspension that support offered to reverse for 90 euros per domain.
+  sources:
+  - label: primary
+    url: https://social.anoxinon.de/@Codeberg/117636454915265360
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50544261
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50545191
+  thread: f-0236
 - title: >-
     Claude Code 2.1.327 runs shell start-up files before the first Bash command is approved
     and adds mcp add-json from stdin
@@ -197,6 +297,33 @@ stories:
   - label: primary
     url: https://github.com/seaweedfs/seaweedfs/releases/tag/4.54
 - title: >-
+    Grafana Cloud Logs makes full-text search generally available with a Logline-based secondary
+    index for Loki
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Loki in Grafana Cloud can now find a request ID across weeks of logs without a full scan,
+    at about 10% extra compute and storage.
+  summary: >-
+    Grafana Labs made full-text search generally available in Grafana Cloud Logs on 2026-11-17,
+    adding a secondary index from its April 2026 Logline acquisition that tells Loki which
+    data can contain a literal string. It speeds up |= line filters, literal and case-insensitive
+    regex, structured metadata label filters and post-parser literal filters, at no extra
+    charge. Grafana says the index adds about 10% to compute and storage, and DATEV reports
+    going from scanning nearly 1 TB in three minutes to about 100 GB in under three seconds.
+  why: >-
+    Needle lookups by trace, transaction or user ID no longer require high-cardinality labels
+    or a separate search cluster, though this ships in Grafana Cloud rather than open-source
+    Loki.
+  background: >-
+    Loki indexes only stream labels and stores compressed log chunks in object storage, so
+    a filter on log content has to read every chunk in the selected streams and time range.
+    Teams worked around this by putting IDs into labels, which explodes stream cardinality,
+    or by running Elasticsearch alongside Loki.
+  sources:
+  - label: primary
+    url: https://grafana.com/blog/find-the-log-line-that-matters-faster-with-full-text-search-in-grafana-cloud-logs/
+- title: >-
     PostgresAI measures CREATE TEMP TABLE per transaction at 3783 TPS against 86997 for a
     CTE on Postgres 18
   section: Engineering posts
@@ -224,6 +351,34 @@ stories:
   - label: primary
     url: https://postgr.es/p/9Ch
 - title: >-
+    Kyverno 1.19.2 stops converting the admitted object once per policy, cutting CEL engine
+    time at 64 policies from 20 ms to 0.36 ms
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Profiling showed 86.8% of Kyverno's CEL engine allocations went to re-parsing the same
+    object for each matched policy, not to evaluating CEL.
+  summary: >-
+    Kyverno's ValidatingPolicy engine converted the AdmissionRequest to unstructured form
+    inside the loop over matched policies, so a Pod matching 16 Pod Security Standards policies
+    was parsed 16 times. Kyverno 1.19.2 builds the request once per admission and keeps each
+    engine's existing request.object contract, cutting a 50 KB Pod benchmark from 4.91 ms
+    to 0.16 ms at 16 policies and 20.01 ms to 0.36 ms at 64. It also fixes a 12% to 23% legacy
+    ClusterPolicy regression introduced in 1.17.0 with copy-on-write context checkpoints.
+  why: >-
+    Clusters running many Kyverno CEL policies get lower admission latency and allocation
+    by upgrading to 1.19.2, and the post gives a reproducible harness for comparing against
+    native ValidatingAdmissionPolicy.
+  background: >-
+    Kubernetes admission webhooks let a policy engine accept, reject or mutate each API request
+    before it is stored. CEL, the Common Expression Language, is also used by the API server's
+    built-in ValidatingAdmissionPolicy, which Kyverno benchmarks against here: native is faster
+    at one policy, and Kyverno 1.19.0 was faster at 16 policies while using about 3.2 cores
+    against the API server's 8.2.
+  sources:
+  - label: primary
+    url: https://www.cncf.io/blog/2026/11/18/optimizing-kubernetes-admission-control-where-kyvernos-cel-admission-cost-actually-goes/
+- title: >-
     OpenAI's Codex team demos Codex Cloud V2 environments that set themselves up and reach
     private services over Tailscale
   section: Talks
@@ -245,6 +400,32 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=IPh9YsWvDQk
+- title: >-
+    Cognition's Walden Yan: 40x merged PRs with 2.7x engineers from local-only test VMs and
+    goal-driven agents
+  section: Talks
+  category: Video
+  blurb: >-
+    Cognition runs every service locally in hourly-rebuilt VMs so Devin can test changes end
+    to end, and gives agents metrics to optimize.
+  summary: >-
+    Walden Yan says Cognition's merged PRs grew 40x in a year while engineering headcount
+    grew 2.7x, with PRs self-driving from bug report to merge by default and humans handling
+    escalations. The company moved every service to Docker Compose with mocked third-party
+    services in a VM rebuilt hourly, so agents never touch live systems, and Devin maintains
+    its own testing skills and posts daily CI and lint improvement ideas. He describes giving
+    agents goals instead of tasks, such as raising inference throughput on new Vera Rubin
+    GPUs or keeping an Android app at parity with iOS over 44 days at 40 to 50 merged PRs
+    a day.
+  why: >-
+    It is a first-party account of the infrastructure a software factory needs, with local
+    reproducible environments as the precondition for unattended agent PRs.
+  comments: >-
+    The talk gives throughput numbers but no revert rate, review time or defect data to back
+    the claim that quality held.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=U92J5mCDLMc
 - title: >-
     Cloudflare warns Quad9's court-forced exit from France signals more public DNS resolver
     withdrawals
