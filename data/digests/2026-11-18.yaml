@@ -1,5 +1,5 @@
 date: '2026-11-18'
-updated: 2026-11-18T18:20Z
+updated: 2026-11-18T21:31Z
 stories:
 - title: >-
     Microsoft agent-framework 1.26.1 and 1.26.2 on PyPI shipped a credential stealer that
@@ -198,6 +198,27 @@ stories:
   sources:
   - label: primary
     url: https://www.rapid7.com/blog/post/tr-self-hosted-ai-renting-compute-exposed-servers
+- title: CISA adds LiteLLM CVE-2026-40217 to its Known Exploited Vulnerabilities catalog
+  section: Security
+  category: Security
+  blurb: >-
+    CISA lists an unprotected alternate channel flaw in BerriAI's LiteLLM as exploited, alongside
+    Synology DSM, Apache Axis and REDCap.
+  summary: >-
+    On 2026-11-18 CISA added four CVEs to KEV based on evidence of active exploitation, including
+    CVE-2026-40217, a BerriAI LiteLLM unprotected alternate channel vulnerability. The same
+    batch adds Apache Axis CVE-2026-90436, Synology DSM CVE-2024-10441 and REDCap CVE-2026-90817.
+  why: >-
+    Anyone running a LiteLLM gateway that holds AI provider keys should treat this CVE as
+    exploited and patch or restrict access now.
+  background: >-
+    LiteLLM is a widely used gateway that fronts many model providers behind one OpenAI-compatible
+    API and stores their keys. On 2026-11-16 the digest covered Amazon decoys catching ARTEX
+    agents hunting AI provider keys in exposed LiteLLM and similar apps. A KEV listing sets
+    a remediation deadline for US federal agencies and is a common prioritization signal elsewhere.
+  sources:
+  - label: primary
+    url: https://www.cisa.gov/news-events/alerts/2026/11/18/cisa-adds-four-known-exploited-vulnerabilities-catalog
 - title: >-
     Codeberg goes offline for hours after its registrar NameSilo suspends the codeberg.org
     domain
@@ -259,6 +280,35 @@ stories:
   sources:
   - label: primary
     url: https://huggingface.co/blog/moe-expert-streaming
+- title: >-
+    RadixArk's DaisyRose-27B doubles Qwen3.8-27B on Terminal-Bench 4.1 with RL on 1,200 curated
+    agent tasks
+  section: AI
+  category: AI
+  blurb: >-
+    RadixArk trained Qwen3.8-27B with async RL on 144 H200s for 18 days and released BF16,
+    FP8 and NVFP4 checkpoints of the result.
+  summary: >-
+    RadixArk released DaisyRose-27B on 2026-11-18, built on Qwen3.8-27B with reinforcement
+    learning in its open-source Miles framework, raising Terminal-Bench 4.1 pass@1 from 5.6%
+    to 12.0%. The 1,200 tasks were tuned to target base model mistakes and screened for reward
+    hacking, and training ran fully asynchronous with 128 H200s on rollouts and 16 on the
+    trainer. RadixArk reports 37% MFU against 16% for the Megatron-based open-source trainer
+    and about 944,000 sandboxes run on its own AgentENV-based service.
+  why: >-
+    It is a first-party recipe showing how a small, curated long-horizon task set and async
+    RL can lift an open-weight 27B model for agent work on a bounded budget.
+  background: >-
+    Agentic RL post-training scores a model on whole tool-using sessions in a sandbox and
+    updates it from the outcome reward, so most GPU time goes to generating rollouts rather
+    than to gradient steps. Asynchronous setups split rollout and training GPUs so neither
+    waits on the slowest session, at the cost of training on slightly stale policies. Model
+    FLOPs utilization (MFU) is the share of peak GPU compute spent on useful training math.
+  sources:
+  - label: primary
+    url: https://www.radixark.com/blog/daisyrose-27b
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50551046
 - title: >-
     Claude Code 2.1.327 runs shell start-up files before the first Bash command is approved
     and adds mcp add-json from stdin
@@ -322,6 +372,31 @@ stories:
   sources:
   - label: primary
     url: https://github.com/microsoft/apm/releases/tag/v0.36.0
+- title: >-
+    Mastra open-sources Factory, the agent kanban that merged 238 of its PRs last week alongside
+    630 from humans
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Mastra's software factory runs durable agents in cloud sandboxes, takes tasks from Slack
+    and subscribes sessions to PR comments.
+  summary: >-
+    Mastra's founders released Mastra Factory, which they use to maintain the Mastra TypeScript
+    agent framework, and report it opened and merged 238 PRs last week next to 630 human PRs.
+    It combines durable agents for long sessions, conversational memory, a markdown wiki with
+    source citations, PR comment signals and a customizable cloud sandbox running their own
+    coding harness. They say they now drive it mostly from Slack and have closed the repo
+    to outside contributors, asking for detailed issue repros instead.
+  why: >-
+    It gives a named, open-source reference for an issue-to-merge agent pipeline with a measured
+    share of merged PRs, which teams can run on their own infrastructure.
+  comments: >-
+    Maintainers say agents open PRs as a Mastra GitHub App by default or under a user's token
+    if configured, and expect closing repos to outside PRs to become common as low-value AI
+    PRs grow.
+  sources:
+  - label: primary
+    url: https://news.ycombinator.com/item?id=50548660
 - title: >-
     Paper: RL on five expert-built task sets lifts Nemotron 3.5 Super by 4.5 to 13.8 points
     using LoRA adapters and no SFT
@@ -439,6 +514,34 @@ stories:
   - label: primary
     url: https://grafana.com/blog/find-the-log-line-that-matters-faster-with-full-text-search-in-grafana-cloud-logs/
 - title: >-
+    PostgreSQL now tests embargoed security fixes on a private SecurityFarm buildfarm before
+    release day
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Since June 2026 pending Postgres security patches live in a private quilt repo that a
+    private buildfarm builds on every branch.
+  summary: >-
+    Andrew Dunstan describes pgsql-security, a private repository holding pending fixes as
+    one git format-patch series per supported branch, and the SecurityFarm, a private buildfarm
+    instance. A new PatchStack client module applies the stack on top of upstream branches
+    using the same import-series.pl script the release wrap uses, triggers builds when the
+    stack's net diff changes, and reports a PatchStackBroken failure when a patch is missing
+    or fails to apply. The module is part of the standard buildfarm client and works for any
+    per-branch quilt of patches.
+  why: >-
+    Teams that carry patches on PostgreSQL can reuse PatchStack, and Postgres security releases
+    should carry less wrap-day build risk.
+  background: >-
+    PostgreSQL security fixes stay under embargo until release, so they cannot go through
+    the public mailing lists or the public buildfarm, which tests ordinary commits across
+    many platforms and compilers. Before this setup, fixes were passed around as patch files
+    and first saw broad testing hours before tarballs were built. A quilt is a series file
+    listing patches in apply order, a common way to carry changes on top of a moving upstream.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9CO
+- title: >-
     PostgresAI measures CREATE TEMP TABLE per transaction at 3783 TPS against 86997 for a
     CTE on Postgres 18
   section: Engineering posts
@@ -514,6 +617,27 @@ stories:
   sources:
   - label: primary
     url: https://engineering.fb.com/2026/11/18/ml-applications/ai-agents-to-scale-ml-innovations-across-ads-ranking-models/
+- title: >-
+    Shopify secures an 11x jump in mobile code output with per-surface security skills and
+    daily attack surface maps
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Shopify's agents inventory every deep link, WebView and keychain entry, then review each
+    changed item alone with only its code.
+  summary: >-
+    Shopify says its 12-week agent-driven rewrite of the Shopify mobile app averaged about
+    434,000 changed lines a week against about 39,000 a year earlier. It keeps an attack surface
+    map per app built by one skill per surface, based on OWASP MASVS and MASTG plus lessons
+    from incidents and HackerOne reports, with five fixed verdicts per item. Every weekday
+    frontier models diff the inventory, judge each changed item with read-only tools, and
+    an agent checks security news against the map, alongside the Dispatch vulnerability scanner.
+  why: >-
+    It shows a concrete pattern for keeping security review tractable at agent code volumes:
+    inventory first, review one item at a time, and fold every fixed bug class back into skills.
+  sources:
+  - label: primary
+    url: https://shopify.engineering/secure-agentic-apps
 - title: >-
     OpenAI's Codex team demos Codex Cloud V2 environments that set themselves up and reach
     private services over Tailscale
@@ -607,6 +731,28 @@ stories:
   - label: primary
     url: https://www.youtube.com/watch?v=EijreHWhQ8E
 - title: >-
+    Matt Pocock ships a 21,000-line feature by grilling Claude Code into a glossary, spec
+    and tickets before AFK runs
+  section: Videos
+  category: Video
+  blurb: >-
+    Pocock prototypes UI variants, splits the agent's PR into stacked two-way-door PRs and
+    runs a retro that turns review notes into lint rules.
+  summary: >-
+    Pocock uses a grill-with-docs skill to settle domain terms in a project glossary and ADRs,
+    has a subagent build three UI prototypes, then writes a spec and nine tickets that an
+    implement-spec skill runs in parallel subagents unattended. He has the agent split the
+    resulting 21,000-line PR into stacked PRs behind a feature flag, reviews them, and runs
+    a retro skill over about 30 session transcripts and his 12 review comments. The retro
+    proposes ratcheted lint rules against TypeScript as casts, raw fetch and useSearchParams,
+    and finds comments make up 18% of new feature lines against a 12% repo average.
+  why: >-
+    It shows a reproducible loop where human review feeds deterministic checks and skill fixes
+    instead of one-off corrections.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=jVBlkOF8sHk
+- title: >-
     Cloudflare warns Quad9's court-forced exit from France signals more public DNS resolver
     withdrawals
   section: Hacker News
@@ -652,3 +798,29 @@ stories:
     url: https://complexdiscovery.com/harvard-researchers-find-ai-coding-agents-shifted-the-bottleneck-to-code-review/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50538303
+- title: >-
+    Nested KVM escape CVE-2026-99312 revives the Hacker News debate over nested virtualization
+    for agent sandboxes
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A pulled write-up on a KVM x86 INIT emulation bug drew 103 comments arguing whether nested
+    virtualization is safe for multitenant hosts.
+  summary: >-
+    A Hacker News post on CVE-2026-99312, the KVM x86 fix that unconditionally resets the
+    MMU context when emulating INIT, reached 152 points and 103 comments, though the linked
+    write-up was pulled and returns 404. Commenters treat it as another nested KVM escape
+    and argue over disabling nested virtualization on hosts that run untrusted or agent workloads.
+  why: >-
+    Teams running agent sandboxes as microVMs inside cloud VMs should check whether they rely
+    on nested KVM and track their kernel fix.
+  comments: >-
+    tptacek says his team repeatedly declined to enable nested KVM because post-2020 KVM escapes
+    needed it, and counts at least two more nested escapes in the past year. Others note nested
+    virt lets Firecracker run on ordinary EC2 instances, ask whether AWS Nitro Sandboxes avoid
+    it, and a KVM maintainer calls nested support the hypervisor's largest attack surface.
+  sources:
+  - label: primary
+    url: https://www.cve.org/CVERecord?id=CVE-2026-99312
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50548004
