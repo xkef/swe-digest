@@ -1,0 +1,293 @@
+date: '2026-11-18'
+updated: 2026-11-18T08:47Z
+stories:
+- title: >-
+    Microsoft agent-framework 1.26.1 and 1.26.2 on PyPI shipped a credential stealer that
+    runs on every Python start
+  section: Top stories
+  category: Security
+  blurb: >-
+    Two poisoned releases of Microsoft's Python agent framework drop a .pth hook that steals
+    Azure and GitHub tokens whenever Python starts.
+  summary: >-
+    Versions 1.26.1 and 1.26.2 of agent-framework were published 33 minutes apart on 2026-11-17
+    and are now quarantined on PyPI. They add a .pth file that collects environment variables,
+    credential files, Azure DevOps OIDC tokens, Azure managed identity tokens and instance
+    metadata, and 1.26.2 adds GitHub Actions OIDC tokens, all posted to a webhook.site endpoint.
+    Researchers advise pinning 1.26.0, checking for installs between about 20:35 and 21:20
+    UTC on 2026-11-17, and rotating credentials from a clean system.
+  why: >-
+    Any Python process in an affected environment, including pip itself, leaked cloud tokens,
+    and the stealer requested fresh tokens that rotating stored secrets does not cover.
+  background: >-
+    Python's site module reads every .pth file in site-packages at interpreter start and executes
+    lines that begin with import, so a package can run code without ever being imported. PyPI
+    Trusted Publishing ties uploads to a CI identity through OIDC, and the PyPI page shows
+    even the clean 1.26.0 was uploaded without it or provenance attestations. This is the
+    second Microsoft Python package compromised this year, after durabletask in May 2026.
+  followup: >-
+    A Microsoft statement on how publishing access was obtained, and restoration of the agent-framework
+    and onnxruntime repositories.
+  comments: >-
+    On Hacker News, a thread about Microsoft's ONNX Runtime vanishing from GitHub (301 points,
+    66 comments) noted that the microsoft/agent-framework repository is also offline, and
+    both now return 404. Commenters suspect a compromised org admin or shared contributor
+    account, with no Microsoft statement yet. They also found the onnxruntime-genai and onnxruntime-extensions
+    repositories gone, while packages remain on PyPI and Maven Central.
+  sources:
+  - label: primary
+    url: https://pypi.org/project/agent-framework/
+  - label: discussion
+    url: https://thehackernews.com/2026/11/attackers-compromise-microsofts-agent.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50539610
+  thread: f-0235
+- title: >-
+    Stony Brook honeypots show AWS keys leaked in public Docker Hub images get used within
+    8 seconds
+  section: Security
+  category: Security
+  blurb: >-
+    Researchers planted keys in 300 container images on eight registries, and scanners pulled
+    the layers and used all AWS keys within 15 minutes.
+  summary: >-
+    Billy Tsouvalas and Nick Nikiforakis published 300 honeypot images with AWS, OpenAI and
+    Anthropic keys over four months and presented the results at ACM CCS. The fastest AWS
+    key use came 7.86 seconds after publication, the median was 51 seconds, and the keys drew
+    over 140,000 API calls from 5,000 IPs. Scanners read image layers statically without running
+    containers, and Docker made no changes after a May report.
+  why: >-
+    A secret baked into any public image layer is compromised the moment you push, so registry
+    pushes need the same secret scanning as commits.
+  sources:
+  - label: primary
+    url: https://containerbots.github.io/
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/cloud-keys-leaked-in-docker-hub-images-are-stolen-within-seconds/
+- title: >-
+    Claude Code 2.1.327 runs shell start-up files before the first Bash command is approved
+    and adds mcp add-json from stdin
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    To speed up the first command, Claude Code now sources shell start-up files before approval,
+    and mcp add-json now reads server JSON from stdin.
+  summary: >-
+    Claude Code 2.1.327 may run shell start-up files before a session's first Bash command
+    is approved, even if it is refused, unless CLAUDE_CODE_DISABLE_SHELL_HEAD_START=1 is set.
+    The command claude mcp add-json with a dash reads server JSON from stdin so tokens stay
+    off the command line, and /status now lists broken agents, skills, hooks that never match
+    and an unavailable sandbox. The release also tells Claude not to commit files likely to
+    contain secrets, and says an upcoming release removes auto mode's billed classifier fallback.
+  why: >-
+    Anything in your shell rc files now executes earlier than the approval prompt, which matters
+    for sandboxed or audited agent setups.
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/claude-code/releases/tag/v2.1.327
+- title: >-
+    Simon Willison and Prime Radiant release external sandbox servers that run coding agent
+    commands in v86, Apple container or QEMU
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    The agent stays outside while its code runs in a separate sandbox behind a localhost API,
+    with a host allow-list proxy and credential swapping.
+  summary: >-
+    The external sandbox pattern keeps the agent on the host and sends code execution to a
+    dedicated sandbox. Three servers share one localhost API: one runs Alpine Linux in WebAssembly
+    through v86, one runs Alpine in an Apple container instance, and one uses Microsoft's
+    Quicksand library with bundled QEMU. Pi, Claude Code or Codex can be pointed at the API,
+    and an optional HTTP proxy enforces a host allow-list and substitutes credentials so the
+    agent never sees the secret.
+  why: >-
+    It gives a way to try local models as coding agents without letting a mistake or prompt
+    injection touch the host machine.
+  sources:
+  - label: primary
+    url: https://simonwillison.net/2026/Nov/17/external-sandboxes-for-coding-agents/
+- title: >-
+    APM 0.36.0 adds host-qualified dependency policies, retires filename hook routing and
+    requires Python 3.11
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Microsoft's Agent Package Manager can now allow or deny dependencies by host, trace files
+    to packages, and declare marketplaces per user.
+  summary: >-
+    APM 0.36.0 adds host-qualified dependency allow and deny patterns in policy, a read-only
+    apm view --file command for reverse provenance, marketplaces declared in the user manifest
+    and reconciled by apm install -g, and an export-patch command. It is a breaking release
+    that retires filename-based hook routing with a migration and requires Python 3.11 or
+    newer. It also pins Git settings so package hashes match across platforms and hardens
+    trust boundaries for credentials and MCP consent.
+  why: >-
+    Teams that lock agent skills and MCP servers with APM get org-level source controls, but
+    must check hook layouts and Python versions before upgrading.
+  sources:
+  - label: primary
+    url: https://github.com/microsoft/apm/releases/tag/v0.36.0
+- title: >-
+    Paper: RL on five expert-built task sets lifts Nemotron 3.5 Super by 4.5 to 13.8 points
+    using LoRA adapters and no SFT
+  section: ML research
+  category: Paper
+  blurb: >-
+    Each task set trained a separate rank-32 LoRA with CISPO and no supervised stage, and
+    transcripts show which base model failures went away.
+  summary: >-
+    The authors post-train Nemotron 3.5 Super (120B total, 12B active) with RL on software
+    engineering, constraints, long-horizon tool use, chart and document tasks, one rank-32
+    LoRA per dataset with CISPO on Tinker. Terminal-Bench 2.1 rises from 63.9% to 70.3%, SWE-bench
+    Pro V2 from 86.9% to 92.1%, and AutomationBench from 14.8% to 27.5%. Side-by-side reads
+    show the coding adapter writes its own tests and the tool-use adapter finds data and rules
+    before acting.
+  why: >-
+    It is a measured recipe for adapter-only RL on an open-weight MoE model, with behavior-level
+    analysis of what each task set teaches.
+  background: >-
+    LoRA trains small low-rank matrices added to frozen weights, so each RL run yields a cheap
+    swappable adapter rather than a full model copy. CISPO is a policy-gradient objective
+    that clips importance-sampling weights instead of token updates, an alternative to PPO-style
+    clipping. Skipping supervised fine-tuning tests whether RL alone on verifiable tasks moves
+    a capable base model.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.22161v1
+- title: >-
+    GitHub adds Repository insights showing how often developers act on Copilot code review
+    comments
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    A new Insights page reports addressed comment rates, PRs with no later human change request,
+    and merged PRs that skipped Copilot review.
+  summary: >-
+    Repository insights is now the first item in a repository's Insights tab and shows comments
+    addressed, high-severity comments addressed, pull requests with no later human change
+    request, and merged pull requests Copilot did not review. It also breaks down the addressed
+    rate over time and by comment category. The same metrics are in the repos-1-day reports
+    of the Copilot usage metrics API, which requires the usage metrics policy.
+  why: >-
+    Teams measuring an AI pre-review gate get per-repository data on whether its comments
+    land and where merges bypass it.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-17-track-copilot-code-review-outcomes-in-repository-insights
+- title: >-
+    SeaweedFS 4.54 adds S3 Vectors buckets with Lance-backed engines and tightens S3 signature
+    and filer token checks
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The release adds vector buckets with Grafana views and Helm support, resumable lifecycle
+    passes, and fixes to S3 signed-body and policy checks.
+  summary: >-
+    SeaweedFS 4.54, released 2026-11-16, integrates S3 Vectors buckets with metrics, audit
+    events and request limits, adds Helm management of vector engines, and adds Grafana and
+    admin views for vector servers backed by Lance. S3 lifecycle passes now checkpoint daily
+    and fail over between S3 fronts. Security fixes verify signed request bodies against the
+    signed payload hash, evaluate each policy condition against its own values, stop treating
+    scoped filer tokens as admin credentials, and add an optional dialed-host check for gRPC
+    certificates.
+  why: >-
+    Operators on SeaweedFS should upgrade for the S3 authorization and token fixes, and can
+    now serve vector search from the same cluster.
+  sources:
+  - label: primary
+    url: https://github.com/seaweedfs/seaweedfs/releases/tag/4.54
+- title: >-
+    PostgresAI measures CREATE TEMP TABLE per transaction at 3783 TPS against 86997 for a
+    CTE on Postgres 18
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Each temp table writes 31 catalog rows and sends 132 invalidation messages, and with 5000
+    idle sessions DDL reached only 127 of 500 target TPS.
+  summary: >-
+    Nikolay Samokhvalov's benchmark on Postgres 18.6 with 16 vCPU shows a temp table per transaction
+    at 3783 TPS, a session-kept temp table with ON COMMIT DELETE ROWS at 17866, and a CTE
+    at 86997. Creating and dropping a two-column temp table inserts and deletes 31 catalog
+    rows, unlinks three files, and sends 132 messages through the 4096-slot shared invalidation
+    queue. With 5000 idle sessions, writers spent 91% of active time on LWLock:SInvalWrite
+    and backends hit 457 full cache resets per second.
+  why: >-
+    Temp tables in hot paths cost catalog bloat always and throughput collapse under many
+    idle connections, so move them out and pool connections.
+  background: >-
+    Every Postgres backend caches catalog rows and relation descriptors, and DDL tells other
+    backends to drop stale entries through one shared invalidation queue per instance. A slot
+    is reused only after every backend has read it, so idle backends hold the tail and get
+    signalled to catch up or are reset. Temp tables are DDL, so they pay this cost even though
+    their data is session-local.
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9Ch
+- title: >-
+    OpenAI's Codex team demos Codex Cloud V2 environments that set themselves up and reach
+    private services over Tailscale
+  section: Talks
+  category: Video
+  blurb: >-
+    Codex Cloud now clones several repositories, works out dependencies and test commands
+    itself, snapshots the VM, and supports OIDC or Tailscale.
+  summary: >-
+    At CODE Summit 2026, Dominik Kundel and Charlie Guo show Codex Cloud V2 environments that
+    clone multiple repositories, infer dependencies, secrets and dev server commands, and
+    snapshot and refresh the VM so idle tasks resume quickly. Private services are reachable
+    through OIDC or a Tailscale API key without exposing them publicly, and codex remote control
+    start serves a CLI session to a phone. They also describe an internal workflow where a
+    remote Codex agent edits launch videos in DaVinci Resolve, and advise lowering reasoning
+    effort with each new model.
+  why: >-
+    It shows how OpenAI expects long-running agents to run in managed cloud VMs with private
+    network access instead of spare machines under desks.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=IPh9YsWvDQk
+- title: >-
+    Cloudflare warns Quad9's court-forced exit from France signals more public DNS resolver
+    withdrawals
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A French penalty order over copyright blocking pushed Quad9 out, and a Belgian order targets
+    Cloudflare, Google and Cisco by January 2027.
+  summary: >-
+    Cloudflare writes that Quad9 will withdraw its free resolver from France after a court
+    imposed daily penalties for not blocking domains tied to alleged copyright infringement,
+    and that users who do not switch will see resolution fail without explanation. Cisco previously
+    pulled OpenDNS from France, Portugal and Belgium, and a Belgian order would penalize Cloudflare,
+    Google and Cisco if their public resolvers do not block by early January 2027. The Hacker
+    News thread drew 541 points and 167 comments.
+  why: >-
+    Hosts, CI runners and devices hard-coded to 9.9.9.9 in France will lose DNS, and resolver
+    choice is becoming jurisdiction-dependent.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/quad9-withdrawal-from-france/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50538994
+- title: >-
+    Harvard working paper finds coding agents raised code output 30% while time to merge rose
+    49%
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Data from 718 firms shows more lines, commits and pull requests after agent adoption,
+    but no measurable rise in resolved issues as review slowed.
+  summary: >-
+    Fiona Chen and James Stratton use Jellyfish data on 725,938 workers at 718 firms from
+    2021 to March 2026 in a staggered difference-in-differences design. Agents added about
+    30% more lines, 20% more commits and 23% more pull requests, but resolved Jira issues
+    did not measurably rise, time from PR to merge grew 3.45 days on a 7.03-day baseline,
+    and change requests nearly doubled. AI review tools wrote only 23.3% of review comments,
+    and the paper is not peer reviewed. The Hacker News thread drew 168 points and 224 comments.
+  why: >-
+    It is large-sample evidence that review capacity, not generation, limits agent throughput,
+    which argues for measuring review stage time and draft quality.
+  sources:
+  - label: primary
+    url: https://complexdiscovery.com/harvard-researchers-find-ai-coding-agents-shifted-the-bottleneck-to-code-review/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50538303
