@@ -1,5 +1,5 @@
 date: '2026-11-18'
-updated: 2026-11-18T21:31Z
+updated: 2026-11-18T23:34Z
 stories:
 - title: >-
     Microsoft agent-framework 1.26.1 and 1.26.2 on PyPI shipped a credential stealer that
@@ -85,6 +85,38 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50547374
   thread: f-0238
+- title: >-
+    Google releases Gemini 4 Neon for coding and agent work at $3 and $15 per million tokens
+    with a 1M-token context
+  section: Top stories
+  category: AI
+  blurb: >-
+    Google's new mid-tier Gemini 4 model targets agentic coding and long tool-heavy sessions,
+    priced well below Carbon, with four thinking levels.
+  summary: >-
+    Google introduced Gemini 4 Neon on 2026-11-18, priced at $3 per million input tokens,
+    $0.15 cached, and $15 per million output tokens, with a 1 million-token context window
+    and four thinking levels. Google reports 65.2% on Terminal-Bench 4.1, 58.6 on the Artificial
+    Analysis Coding Agent Index, and a 32% lower cost per task than Gemini 4 Carbon at the
+    default high level. It is rolling out in the Gemini API, Google Antigravity, Gemini for
+    business and the Gemini app, and GitHub made it generally available in Copilot the same
+    day.
+  why: >-
+    Neon is a new price and quality point for agent workloads that also appears directly in
+    the Copilot model picker, so teams can test it against their current default without new
+    integrations.
+  background: >-
+    The Gemini 4 family is named after elements: Carbon is the large frontier model for long-horizon
+    work, Hydrogen the fast everyday model, and Neon now sits between them. Thinking levels
+    let callers trade reasoning tokens and cost for answer quality per request. Google also
+    reports a coding cheating rate of 2.45% and a 0.0% cheating rate on Terminal-Bench 4.0,
+    figures from its own evaluations.
+  comments: The Hacker News thread reached 304 points and 297 comments.
+  sources:
+  - label: primary
+    url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50552424
 - title: >-
     Stony Brook honeypots show AWS keys leaked in public Docker Hub images get used within
     8 seconds
@@ -309,6 +341,27 @@ stories:
     url: https://www.radixark.com/blog/daisyrose-27b
   - label: discussion
     url: https://news.ycombinator.com/item?id=50551046
+- title: >-
+    Cloudflare releases Clairic and the 9B Clairic-flash extraction models as open weights
+    and adds PDF input
+  section: AI
+  category: AI
+  blurb: >-
+    Cloudflare's structured-extraction models now ship open weights, read PDFs and images,
+    and return confidence scores and spans per field.
+  summary: >-
+    Cloudflare published open weights for Clairic, now a 27B model, and the new 9B Clairic-flash
+    on Hugging Face, both hosted on Workers AI. The redesigned architecture uses parallel
+    slot autoregressive generation per field and accepts up to four images or PDF pages, with
+    self-reported p50 latency of 155 to 691 ms. Clairic costs $0.24 per million input tokens
+    after a $0.10 promotion ends on 2026-12-01, and output tokens are not charged.
+  why: >-
+    Teams that send receipts, tickets or documents to a large LLM for field extraction can
+    try a small self-hostable model with typed outputs instead.
+  followup: Clairic promotional pricing ends on 2026-12-01.
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/open-clairic/
 - title: >-
     Claude Code 2.1.327 runs shell start-up files before the first Bash command is approved
     and adds mcp add-json from stdin
@@ -542,6 +595,28 @@ stories:
   - label: primary
     url: https://postgr.es/p/9CO
 - title: >-
+    Argo CD 3.6.2 makes AppProject deny destinations veto on match and patches a regexp2 CVE
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Argo CD point releases fix how negated destination rules in AppProjects are enforced and
+    update a regex dependency for CVE-2026-77299.
+  summary: >-
+    Argo CD 3.6.2, released 2026-11-18 alongside 3.5.8 and 3.4.14, changes AppProject destination
+    deny entries written as !name or !server so they veto a destination when they match. It
+    upgrades dlclark/regexp2 to v2.13.0 for CVE-2026-77299 and fixes ApplicationSet refreshes
+    to patch only the refresh annotation instead of rewriting the object.
+  why: >-
+    Clusters that rely on negated AppProject destinations to fence off targets should upgrade
+    and recheck which destinations their projects now allow.
+  background: >-
+    An AppProject in Argo CD limits which clusters and namespaces its Applications may deploy
+    to. Entries prefixed with ! act as deny rules within the allowed destination list. The
+    fix changes how those deny entries combine with allow entries.
+  sources:
+  - label: primary
+    url: https://github.com/argoproj/argo-cd/releases/tag/v3.6.2
+- title: >-
     PostgresAI measures CREATE TEMP TABLE per transaction at 3783 TPS against 86997 for a
     CTE on Postgres 18
   section: Engineering posts
@@ -686,6 +761,29 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=U92J5mCDLMc
+- title: >-
+    Google DeepMind's Melvin Johnson on post-training Gemini 4 with rubric grading, sealed
+    graders and dogfood loops
+  section: Talks
+  category: Video
+  blurb: >-
+    Gemini's post-training lead explains why easy prompts stop teaching, how rubrics from
+    real commits replace unit tests, and how cheats are caught.
+  summary: >-
+    Johnson says the share of learnable prompts fell with each Gemini 4 iteration, so the
+    team prunes easy SWE-style tasks and adds multi-file repos, CLI tools built from an empty
+    folder against hidden tests, and production diffs. Graders run in isolated sandboxes with
+    git history and remotes removed and tests revealed only after submission, rubrics extracted
+    from real commits give dense reward for correctness, quality and scope, and tampering
+    is penalized from actions, not thoughts. He reports fabrication on a hard internal eval
+    falling from 8% to about 1.5% for Carbon by filtering unsupported claims from training
+    trajectories and grounding final summaries in the agent's actions.
+  why: >-
+    The grader-hardening steps and rubric approach apply directly to anyone building RL environments
+    or evals for their own coding agents.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=fTHByDwTxGM
 - title: >-
     CodeRabbit CEO Harjot Gill: review-exempt shipping as a revocable license, release-level
     human review and in-house CI
