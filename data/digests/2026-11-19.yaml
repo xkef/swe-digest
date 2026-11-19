@@ -1,5 +1,5 @@
 date: '2026-11-19'
-updated: 2026-11-19T21:44Z
+updated: 2026-11-19T23:46Z
 lede: >-
   Ruby ships fixes for seven memory corruption bugs in its regex engine and case conversion,
   including a pre-auth RCE in default Rails apps.
@@ -303,6 +303,28 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50562442
 - title: >-
+    Claude Code 2.1.329 shows where a folder's hooks are declared and stops erroring Code
+    Mode hooks from refusing tool calls
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    The trust dialog now names where hooks come from, and in Code Mode a failing PreToolUse
+    hook no longer blocks a call unless onFailure is block.
+  summary: >-
+    Claude Code 2.1.329 adds a trust dialog warning naming where a folder's hooks are declared
+    and warns when hooks in managed settings fail to load in Claude Desktop and other non-interactive
+    hosts. In Code Mode, a PreToolUse hook that errors no longer refuses a script's tool call,
+    matching behavior outside Code Mode, so hooks that must block need "onFailure": "block".
+    The release also makes /code-review with no target review the whole branch against the
+    default branch, and removes the 2.1.326 automatic retry on max_tokens errors behind gateways.
+  why: >-
+    Teams that rely on PreToolUse hooks as guardrails in Code Mode must set onFailure to block,
+    or a crashing hook now lets the call through.
+  event: claude-code-2-1-329-release
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/claude-code/releases/tag/v2.1.329
+- title: >-
     Paper: replaying RL experts' training logs consolidates them into one model at a seventh
     of their training compute
   section: ML research
@@ -447,6 +469,39 @@ stories:
   - label: primary
     url: https://www.phoronix.com/news/LLVM-Re-Licensing-Complete
 - title: >-
+    Spring Boot 4.2.0 and Spring Framework 7.1.0 ship, moving forwarded header settings under
+    server and deprecating Pulsar
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The new Spring Boot minor unifies forwarded header properties, deprecates Apache Pulsar
+    support and moves to Framework 7.1 and Micrometer 1.18.
+  summary: >-
+    Spring Boot 4.2.0, released 2026-11-19, unifies forwarded header properties under the
+    server configuration property, restores ForwardedHeaderFilter for servlet apps that do
+    not use WebMvc, and deprecates Apache Pulsar support. A related fix notes reactive web
+    servers stopped using forwarded headers on a cloud platform after that change. It upgrades
+    to Spring Framework 7.1.0, Spring Security 7.2.0, Spring Kafka 4.2.0, Micrometer 1.18.0
+    and OpenTelemetry 1.68.0, and Framework 7.1.0 lowers the default maximum SpEL expression
+    nesting depth to 200.
+  why: >-
+    Spring Boot apps behind a reverse proxy should recheck their forwarded header configuration
+    on upgrade, and Pulsar users should plan a move.
+  background: >-
+    Forwarded and X-Forwarded-* headers tell an application the original client address, scheme
+    and host when a proxy terminates the connection. Trusting them from the wrong source lets
+    a client spoof those values, which this digest covered on 2026-11-07 for Rails, Jetty
+    and Spring Boot. Spring Boot can resolve these headers in the embedded server or through
+    Spring's ForwardedHeaderFilter.
+  event: spring-boot-4-2-0-release
+  sources:
+  - label: primary
+    url: https://github.com/spring-projects/spring-boot/releases/tag/v4.2.0
+  - label: primary
+    url: https://github.com/spring-projects/spring-boot/issues/52800
+  - label: primary
+    url: https://github.com/spring-projects/spring-framework/releases/tag/v7.1.0
+- title: >-
     Debian APT will drop detached-signature, weak-hash and unsigned repository support in
     unstable after 2026-11-24
   section: Linux and kernel
@@ -550,6 +605,33 @@ stories:
   sources:
   - label: primary
     url: https://grafana.com/blog/bring-charts-queries-and-context-into-one-shareable-document-introducing-grafana-notebooks/
+- title: >-
+    Valkey 9.2 adds B+ tree sorted sets, Zstd compression for RDB and replication, and forkless
+    replica sync
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The Redis fork's latest feature release cuts sorted set memory, compresses snapshots with
+    Zstd and syncs replicas without forking the server.
+  summary: >-
+    Valkey 9.2, released 2026-11-19, stores sorted sets in B+ trees to cut memory overhead
+    and adds Zstd compression for RDB persistence and replication as an alternative to LZ4.
+    It adds forkless snapshotting and full replica synchronization, server-side hot key detection,
+    and a DELEX command that deletes a string key conditionally on its value. Phoronix notes
+    the release came days after the Redict fork was deprecated in favor of Valkey.
+  why: >-
+    Operators of large Valkey instances can avoid fork copy-on-write memory spikes during
+    snapshots and replica syncs and shrink sorted set memory.
+  background: >-
+    Redis-style servers have traditionally written RDB snapshots and fed new replicas by calling
+    fork, letting the child process write a point-in-time copy while the parent keeps serving.
+    Copy-on-write pages make that cheap at first, but heavy writes during a long snapshot
+    can nearly double memory use. Valkey forked from Redis in 2024 after the Redis license
+    change.
+  event: valkey-9-2-release
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Valkey-9.2
 - title: >-
     Google details Sashiko, its agentic Linux patch reviewer, with 1,200 reviews a day and
     a lower post-merge fix rate
