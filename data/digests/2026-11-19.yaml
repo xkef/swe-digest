@@ -1,5 +1,5 @@
 date: '2026-11-19'
-updated: 2026-11-19T18:29Z
+updated: 2026-11-19T21:44Z
 lede: >-
   Ruby ships fixes for seven memory corruption bugs in its regex engine and case conversion,
   including a pre-auth RCE in default Rails apps.
@@ -229,6 +229,34 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50563148
 - title: >-
+    Spotify shows when offline evals can replace A/B tests, and how measurement noise hides
+    real offline-online links
+  section: AI
+  category: AI
+  blurb: >-
+    In Spotify's example, a naive estimate says the offline eval explains 24% of online variation
+    when the true figure is 60%.
+  summary: >-
+    Spotify formalizes shipping an LLM feature change on offline evals alone as bounding the
+    risk of harming an online metric, using a gate that ships, kills, or sends a change to
+    an A/B test based on thresholds tied to offline-online correlation. It shows measurement
+    error attenuates the observed correlation, pooled experiment classes can fake a strong
+    link, and LLM judges whose bias depends on the treatment arm can flip signs. It recommends
+    a random audit pool of A/B tests to detect drift, and Spotify still pairs evals with online
+    experiments.
+  why: >-
+    Teams gating prompt or model swaps on LLM-judge evals need noise correction, homogeneous
+    history and ongoing audits before skipping A/B tests.
+  background: >-
+    A surrogate metric stands in for an outcome that is slow or costly to measure, here offline
+    eval scores standing in for online A/B results. Errors-in-variables bias means noise in
+    both measurements pulls an estimated correlation toward zero, which meta-analysis methods
+    can correct when error variances are known.
+  event: spotify-offline-evals-shipping-gate
+  sources:
+  - label: primary
+    url: https://engineering.atspotify.com/2026/11/when-can-you-ship-on-offline-evals-alone/
+- title: >-
     Claude Code 2.1.328 starts sessions on cloud providers in auto mode and lets failing MCP
     tool hooks block actions
   section: Agentic coding
@@ -303,6 +331,28 @@ stories:
   - label: primary
     url: https://arxiv.org/abs/2611.24059v1
 - title: >-
+    ProteinGeoBench finds frontier agents strong at structure lookup but weak at geometry
+    from atom coordinates
+  section: ML research
+  category: Paper
+  blurb: >-
+    Across 4,249 runs on 131 protein structure tasks, Claude Opus 5 scored 0.907 on lookups
+    and 0.716 on calculations from coordinates.
+  summary: >-
+    ProteinGeoBench gives agents protein structure files and asks them to look up facts, check
+    sequences, compute geometry or reason about structures, with four frontier models run
+    repeatedly and 26 models on a subset. Three of four frontier models do best at lookup
+    and worst at calculation, and the top three sit within 0.031, too close to rank. Blocking
+    structural databases or network access lowered scores, and swapping in each provider's
+    own CLI agent moved scores by up to 0.09.
+  why: >-
+    Scores for structural biology agents should be reported by task type with run counts,
+    harness and network access, since each shifts results.
+  event: proteingeobench-structural-biology-agents
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2610.26829
+- title: >-
     GitHub CLI 2.105.0 adds gh event listen to wait for pull request events over Event Streams
   section: Developer tools
   category: Dev tools
@@ -347,6 +397,56 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50557870
 - title: >-
+    JEP 515 method profiles cut javac warmup 14% on Java 25 but leave code 5% slower after
+    200 rounds on Java 28
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Measurements show cached method profiles speed early rounds, slow the first round on Java
+    28 through eager compilation, and lose lambda inlining.
+  summary: >-
+    Sven Woltmann measured a program that compiles 50 files per round with javac: with AOT
+    cache profiles, rounds 2 to 5 took 13.9% less time on Java 25, but from about round 30
+    the program ran slower than with no cache, 5% slower after 200 rounds on Java 28. He traces
+    the long-run loss to profiles losing their lambda entries when the cache is written, so
+    C2 stops inlining those lambdas. On Java 28, eager compilation of trained methods made
+    the first round 17.5% slower by queuing thousands of tasks ahead of methods the program
+    needed.
+  why: >-
+    Teams adopting AOT caches for startup should benchmark steady-state throughput too, and
+    can compare with -XX:-AOTReplayTraining or -XX:-AOTCompileEagerly.
+  background: >-
+    HotSpot runs code in an interpreter, then compiles hot methods with C1 and later the optimizing
+    C2 compiler, which uses runtime profiles of branches and receiver types to decide inlining
+    and speculation. Project Leyden's AOT cache, created from a training run, stores loaded
+    and linked classes since Java 25, and JEP 515 adds those method profiles so C2 can start
+    optimizing earlier.
+  event: jep-515-aot-method-profiling-measurements
+  sources:
+  - label: primary
+    url: https://foojay.io/today/ahead-of-time-method-profiling/
+- title: >-
+    LLVM declares its relicensing to Apache 2.0 with LLVM exception complete, covering over
+    99.5% of its code
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    After work begun in 2017, more than 1,300 contributors and about 100 organizations agreed
+    to move pre-2019 LLVM code to Apache 2.0.
+  summary: >-
+    Kristof Beyls announced on 2026-11-19 that over 99.5% of all code ever contributed to
+    LLVM is now under Apache-2.0 WITH LLVM-exception, has been removed, or is too small for
+    copyright. New contributions have used that license since 2019-01-19, while older code
+    was under UIUC/NCSA and MIT. Updated LICENSE files and documentation will point to the
+    single license for LLVM 25 in 2027.
+  why: >-
+    Projects that vendor or redistribute LLVM, Clang or its runtimes will deal with one license
+    instead of tracking legacy NCSA and MIT terms.
+  event: llvm-relicensing-complete
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/LLVM-Re-Licensing-Complete
+- title: >-
     Debian APT will drop detached-signature, weak-hash and unsigned repository support in
     unstable after 2026-11-24
   section: Linux and kernel
@@ -376,6 +476,36 @@ stories:
   - label: discussion
     url: https://www.phoronix.com/news/Debian-APT-Removing-Features
   thread: f-0243
+- title: >-
+    Firezone pushes its macOS WireGuard client past 5 Gbit/s after finding XNU UDP sockets
+    never signal backpressure
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    On macOS, UDP writes succeed while the interface queue silently drops packets, so Firezone
+    moved to connected sockets that return ENOBUFS.
+  summary: >-
+    Firezone's macOS client topped out near 1 Gbit/s down, with uploads often at a few hundred
+    Mbit/s. Reading the XNU source, the team found unconnected UDP sockets never fill their
+    send buffer, so non-blocking writes never return EWOULDBLOCK while the interface transmit
+    queue drops datagrams, and SO_SNDBUF only caps datagram size. Connected UDP sockets instead
+    fail with ENOBUFS when the queue is full and wake on write-readiness, which Firezone now
+    uses to pause its transmit thread, and with batching the client exceeds 5 Gbit/s.
+  why: >-
+    Any async runtime that relies on EWOULDBLOCK for UDP on macOS or iOS can lose packets
+    under load, so VPN and QUIC code there needs explicit ENOBUFS handling.
+  background: >-
+    Loss-based TCP congestion controllers such as CUBIC shrink their window when acknowledgments
+    show missing data. A VPN's TUN device looks like a network link to the inner TCP connection,
+    so packets dropped inside the VPN software are read as congestion and throttle the sender
+    even when the real link has spare capacity. XNU is the kernel under macOS and iOS, and
+    its networking stack descends from BSD.
+  event: firezone-macos-wireguard-5gbps
+  sources:
+  - label: primary
+    url: https://www.firezone.dev/blog/apple-client-performance
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50554076
 - title: >-
     GKE previews in-place migration of VPC-native clusters from Dataplane V1 to the eBPF-based
     Dataplane V2
@@ -588,6 +718,28 @@ stories:
   - label: primary
     url: https://www.youtube.com/watch?v=pZWPq_ZAmM4
 - title: >-
+    Thariq Shihipar keeps a linted, human-readable spec layer in his agent-built game so he
+    can follow and tune it
+  section: Talks
+  category: Video
+  blurb: >-
+    He splits his codebase into agent-written engine code and a readable folder that works
+    as a custom scripting language he edits directly.
+  summary: >-
+    At CODE Summit 2026, former Anthropic engineer Thariq Shihipar says vibe coding a fighting
+    game left him unsure what his characters did. He now keeps one folder of code with lint
+    rules and Claude instructions that make it read like English, using units such as meters,
+    while the engine below stays agent-owned. He tunes moves there by hand with IDE tab completion
+    and asks Claude only for new primitives, and argues he was wrong that Bash, React or diffusion
+    models would dominate how agents work.
+  why: >-
+    Splitting agent-written code into an opaque engine and a constrained, human-owned spec
+    layer is a concrete way to keep design control on agent-heavy projects.
+  event: thariq-shihipar-sweet-side-bitter-lesson-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=xRJMiaUoD_8
+- title: >-
     Let's Get Rusty: partitioning a 99M-row count by hash cut runtime 25% while doing 70%
     more CPU work
   section: Videos
@@ -656,3 +808,27 @@ stories:
     url: https://kapteko.com/15-million-webservers/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50556533
+- title: >-
+    Reverse engineer details an agent workflow with a Ghidra MCP bridge and a hypothesis-debugging
+    skill
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    The author has agents log findings to Markdown and test one hypothesis at a time in a
+    CSV loop, which stops them from going in circles.
+  summary: >-
+    The author points agents at binaries using a Ghidra MCP bridge, radare2 and a tooling
+    skill, and has them document all findings in Markdown to survive compaction and handoffs.
+    A published hypothesis-debugging skill forces a stuck agent to record a hypothesis, design
+    a definitive probe and log the result before moving on. The post drew 294 points and 75
+    comments on Hacker News.
+  why: >-
+    Explicit hypothesis logs and tool-specific skills are reusable patterns for any long agent
+    investigation, not only reverse engineering.
+  comments: The thread reached 294 points and 75 comments within a day.
+  event: llm-assisted-reverse-engineering-workflow
+  sources:
+  - label: primary
+    url: https://www.slowchronicle.com/posts/llm-assisted-reverse-engineering
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50553225
