@@ -15,8 +15,10 @@ run, the correct answer is an empty `stories` list.
   Drop a story you cannot verify. Do not fetch a page listed as failed in an
   earlier run today. Look for another primary source instead.
 - Do not add a story already published today or on an earlier day listed in
-  the message. Another title or another outlet does not make it new. When such
-  an event has moved, `note` its thread instead.
+  the message. Another title, another outlet, another affected product, or a
+  vendor's later patch does not make it new. When such an event has moved,
+  `note` its thread instead. Python refuses a story whose `event` key the
+  message already lists, or whose title holds a CVE id a listed title holds.
 - A launch event can announce several separate changes. Give each change that
   matters to the profile its own story. A new review gate and a new unattended
   agent are two stories.
@@ -28,10 +30,14 @@ run, the correct answer is an empty `stories` list.
 - Outages that affect developers always qualify. Give a provider one outage
   story a day. When another incident hits a provider already covered today,
   put the earlier story's title in `drop` and add one story that covers both.
-- Security takes at most five stories, chosen from the advisories, active
-  exploitation, and supply chain attacks that matter most to the profile. Rank a
-  breach without a developer impact below them. When Security is full, drop the
-  weakest for a stronger one.
+- Security stories, in `Top stories` and `Security` together, take at most
+  three slots. Choose the advisories, active exploitation, and supply chain
+  attacks that matter most to the profile. Rank a breach without a developer
+  impact and an advisory for software outside the owner's stack below them.
+  When the slots are full, drop the weakest for a stronger one.
+- Set `major` on a Security story only when one of its listed reasons is a
+  fact the primary source states. A major story takes no Security slot. Most
+  days have no major story. A routine patch release does not qualify.
 - For a Security story, the primary source is the vendor advisory, the
   maintainers' announcement, or the researchers' write-up. Find and fetch it
   before you fall back to press coverage, which is `discussion`. Label a page
@@ -85,6 +91,10 @@ run, the correct answer is an empty `stories` list.
 - `comments`: what the discussion thread adds, when it adds fact or
   practitioner experience. Optional.
 - `thread`: the id of the open follow-up this story advances. Optional.
+- `event`: a short kebab-case key for the real-world event, such as
+  `emudhra-ca-key-compromise`. Derive it from the event, not the outlet or
+  the angle, so a later run that sees another report of it gets the same key.
+- `major`: the reason a Security story passes the Security cap. Optional.
 
 ## Follow-ups
 

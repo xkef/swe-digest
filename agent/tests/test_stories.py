@@ -93,12 +93,53 @@ def test_vet_enforces_section_cap_but_not_for_outages():
     assert stories.vet(story(title="new", section="Outages"), incidents, set(), KNOWN) is None
 
 
-def test_vet_caps_security_at_five():
-    held = day(*[story(title=f"t{i}", section="Security") for i in range(4)])
-    assert stories.vet(story(title="new", section="Security"), held, set(), KNOWN) is None
+def security(**overrides):
+    return story(section="Security", category="Security") | overrides
 
-    full = day(*[story(title=f"t{i}", section="Security") for i in range(5)])
-    assert "full" in stories.vet(story(title="new", section="Security"), full, set(), KNOWN)
+
+def test_vet_caps_security_across_sections():
+    cap = config.settings()["category_caps"]["Security"]
+    held = day(*[security(title=f"t{i}") for i in range(cap - 1)])
+    assert stories.vet(security(title="new", section="Top stories"), held, set(), KNOWN) is None
+
+    full = day(
+        security(title="lead", section="Top stories"), *[security(title=f"t{i}") for i in range(cap - 1)]
+    )
+    assert "Security is full" in stories.vet(security(title="new"), full, set(), KNOWN)
+
+
+def test_vet_lets_a_major_story_past_the_caps():
+    cap = config.settings()["max_section_stories"]
+    full = day(*[security(title=f"t{i}") for i in range(cap)])
+    major = security(title="new", major=stories.MAJOR_REASONS[0])
+    assert stories.vet(major, full, set(), KNOWN) is None
+
+    majors = day(*[security(title=f"m{i}", major=stories.MAJOR_REASONS[0]) for i in range(cap)])
+    assert stories.vet(security(title="new"), majors, set(), KNOWN) is None
+
+
+@pytest.mark.parametrize(
+    "overrides",
+    [{"major": "it feels big"}, {"major": stories.MAJOR_REASONS[0], "category": "Dev tools"}],
+)
+def test_vet_refuses_an_unfounded_major(overrides):
+    assert "major" in stories.vet(security(**overrides), day(), set(), KNOWN)
+
+
+def test_vet_refuses_a_published_event():
+    assert "event already published" in stories.vet(story(event="tool-2-0"), day(), {"tool-2-0"}, KNOWN)
+    repeat = story(title="Distros ship the CVE-2026-1234 fix")
+    assert "event already published" in stories.vet(repeat, day(), {"cve-2026-1234"}, KNOWN)
+    assert stories.vet(story(event="tool-3-0"), day(), {"tool-2-0"}, KNOWN) is None
+
+
+def test_vet_refuses_a_malformed_event():
+    assert "event" in stories.vet(story(event="Tool 2.0"), day(), set(), KNOWN)
+
+
+def test_events_hold_keys_and_title_cves():
+    items = [story(event="tool-2-0"), story(title="Patch for CVE-2026-1234 and CVE-2026-99")]
+    assert stories.events(items) == {"tool-2-0", "cve-2026-1234", "cve-2026-99"}
 
 
 def test_vet_fills_top_stories_to_its_own_cap():

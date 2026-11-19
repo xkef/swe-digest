@@ -23,9 +23,6 @@ from digest.http import Fetcher
 
 MODE = "daily"
 MAX_NEW_STORIES = 15
-# Days before today whose stories the brief lists, so the model can tell a
-# new event from one an outlet reports again.
-RECENT_DAYS = 2
 STORY_KEYS = (
     "title",
     "section",
@@ -37,6 +34,8 @@ STORY_KEYS = (
     "followup",
     "comments",
     "thread",
+    "event",
+    "major",
     "sources",
 )
 # What a run takes from outside. Saved after each run, these replay it.
@@ -111,6 +110,7 @@ def merge(
     dropped = [s["title"] for s in digest["stories"] if s["title"] in set(answer["drop"])]
     updated: stories.Day = digest | {"stories": [s for s in digest["stories"] if s["title"] not in dropped]}
     published = stories.archive_urls(day) | stories.source_urls(updated["stories"])
+    published |= stories.archive_events(day) | stories.events(updated["stories"])
     open_ids = {entry["id"] for entry in followups if memory.is_open(entry)}
 
     added, rejected = [], []
@@ -123,7 +123,7 @@ def merge(
             rejected.append({"title": str(proposal.get("title")), "reason": reason})
             continue
         updated["stories"].append(story)
-        published.update(source["url"] for source in story["sources"])
+        published |= stories.source_urls([story]) | stories.events([story])
         added.append(story["title"])
 
     if answer.get("lede") and not stories.text_issues(answer["lede"]):
@@ -194,10 +194,14 @@ def brief(
     lines += [f"- [{s['section']}] {s['title']} | {s['sources'][0]['url']}" for s in digest["stories"]]
     lines += ["(none yet)"] if not digest["stories"] else []
 
+    # The whole archive window, so the model can tell a new event from one an
+    # outlet reports again, and reuse the event key Python checks against.
     lines += ["", "## Published on earlier days"]
-    for back in range(1, RECENT_DAYS + 1):
+    for back in range(1, settings["archive_days"] + 1):
         earlier = (date.fromisoformat(day) - timedelta(days=back)).isoformat()
-        lines += [f"- {earlier} [{s['section']}] {s['title']}" for s in stories.load(earlier)["stories"]]
+        for s in stories.load(earlier)["stories"]:
+            event = f" (event: {s['event']})" if s.get("event") else ""
+            lines.append(f"- {earlier} [{s['section']}] {s['title']}{event}")
 
     lines += ["", "## Budget"]
     lines.append(
@@ -205,6 +209,8 @@ def brief(
         f" {', '.join(f'{name}: at most {cap}' for name, cap in settings['section_caps'].items())}."
         f" {', '.join(settings['uncapped_sections'])} are outside both caps."
         f" {', '.join(settings['unbudgeted_sections'])} keep the section cap but not the day's."
+        f" {', '.join(f'{name}: at most {cap}' for name, cap in settings['category_caps'].items())}"
+        " in every section together, except stories marked major."
     )
     counts = Counter(story["section"] for story in digest["stories"])
     lines += [f"- {section}: {count} published" for section, count in counts.items()]
@@ -249,7 +255,7 @@ def schema() -> dict[str, Any]:
     story = {
         "type": "object",
         "additionalProperties": False,
-        "required": ["title", "section", "category", "blurb", "summary", "why", "sources"],
+        "required": ["title", "section", "category", "blurb", "summary", "why", "event", "sources"],
         "properties": {
             "title": text,
             "section": {"enum": settings["sections"]},
@@ -261,6 +267,8 @@ def schema() -> dict[str, Any]:
             "followup": text,
             "comments": text,
             "thread": text,
+            "event": {"type": "string", "pattern": f"^{stories.EVENT_KEY.pattern}$"},
+            "major": {"enum": list(stories.MAJOR_REASONS)},
             "sources": {
                 "type": "array",
                 "minItems": 1,

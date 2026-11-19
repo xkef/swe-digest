@@ -2,7 +2,7 @@ import pytest
 
 pytest.importorskip("claude_agent_sdk")
 
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime, timedelta
 
 from digest import config, daily, graph, improve, memory, runs, stories
 from digest.http import Fetcher
@@ -140,15 +140,33 @@ def test_brief_shows_each_open_thread_with_its_last_note():
     assert "f-0002" not in text
 
 
-def test_brief_lists_stories_of_the_two_days_before(data):
-    for earlier in ("2026-10-06", "2026-10-07", "2026-10-08"):
-        stories.save({"date": earlier, "stories": [STORY | {"title": f"Story of {earlier}"}]})
+def test_brief_lists_stories_and_events_of_the_archive_window(data):
+    window = config.settings()["archive_days"]
+    first = date.fromisoformat(DAY) - timedelta(days=window)
+    for earlier in (first - timedelta(days=1), first, date.fromisoformat(DAY) - timedelta(days=1)):
+        stories.save(
+            {
+                "date": earlier.isoformat(),
+                "stories": [STORY | {"title": f"Story of {earlier}", "event": "tool-2-0"}],
+            }
+        )
 
     text = daily.brief(DAY, {"stories": []}, [], [], [], {})["brief"]
 
-    assert "- 2026-10-08 [Developer tools] Story of 2026-10-08" in text
-    assert "Story of 2026-10-07" in text
-    assert "Story of 2026-10-06" not in text
+    assert "- 2026-10-08 [Developer tools] Story of 2026-10-08 (event: tool-2-0)" in text
+    assert f"Story of {first}" in text
+    assert f"Story of {first - timedelta(days=1)}" not in text
+
+
+def test_merge_refuses_an_event_published_on_an_earlier_day(data):
+    stories.save({"date": "2026-10-08", "stories": [STORY | {"event": "tool-2-0"}]})
+    again = STORY | {"title": "Tool 2.0 lands in distros", "event": "tool-2-0"}
+    again["sources"] = [{"label": "primary", "url": "https://tool.dev/distros"}]
+    replay = saved_reply(again) | {"fetched": [{"url": "https://tool.dev/distros", "ok": True}]}
+
+    record = daily.run(DAY, replay)
+
+    assert record["rejected"] == [{"title": again["title"], "reason": "event already published"}]
 
 
 def test_brief_lists_pages_that_failed_in_earlier_runs_today(data):

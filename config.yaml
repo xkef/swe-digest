@@ -45,14 +45,17 @@ settings:
   transcript_max_chars: 70000
 
   # A digest is a bounded page, not a feed.
-  # Security counts toward the day, so 30 leaves 25 for the other sections.
   max_stories: 30
   max_section_stories: 4
-  # Sections whose cap differs from max_section_stories. Security keeps only
-  # the advisories that matter most to the reader.
+  # Sections whose cap differs from max_section_stories.
   section_caps:
     Top stories: 5
-    Security: 5
+  # Categories capped across every section, Top stories included. Security
+  # filled five slots a day from 2026-11-01 to 2026-11-14 and crowded out
+  # engineering and language news. A story marked major passes these caps,
+  # so a week of large incidents still reaches the reader.
+  category_caps:
+    Security: 3
   # A heavy incident day is what the reader came for.
   uncapped_sections: [Outages]
   # Sections that keep their section cap but do not count toward max_stories,
@@ -238,7 +241,6 @@ watchlist:
       - AZURE
       - googlecloud
       - netsec
-      - cybersecurity
       - MachineLearning
       - LocalLLaMA
       - OpenAI
@@ -377,9 +379,6 @@ watchlist:
     GitHub Changelog (page 3): https://github.blog/changelog/feed/?paged=3
     CISA Advisories: https://www.cisa.gov/cybersecurity-advisories/all.xml
     BleepingComputer: https://www.bleepingcomputer.com/feed/
-    SecurityWeek: https://www.securityweek.com/feed/
-    The Hacker News: https://feeds.feedburner.com/TheHackersNews
-    The Register Security: https://www.theregister.com/security/headlines.atom
     Krebs on Security: https://krebsonsecurity.com/feed/
     Rapid7 Blog: https://www.rapid7.com/blog/rss/
     RustSec Advisories: https://rustsec.org/feed.xml
@@ -436,6 +435,20 @@ watchlist:
     Rust Blog: https://blog.rust-lang.org/feed.xml
     Inside Rust: https://blog.rust-lang.org/inside-rust/feed.xml
     This Week in Rust: https://this-week-in-rust.org/atom.xml
+    Niko Matsakis (baby steps): https://smallcultfollowing.com/babysteps/index.xml
+    matklad: https://matklad.github.io/feed.xml
+    Go Blog: https://go.dev/blog/feed.atom
+    TypeScript Blog: https://devblogs.microsoft.com/typescript/feed/
+    Node.js Blog: https://nodejs.org/en/feed/blog.xml
+    Deno Blog: https://deno.com/feed
+    Bun Blog: https://bun.com/rss.xml
+    JVM Weekly: https://www.jvm-weekly.com/feed
+    Foojay: https://foojay.io/feed/
+    Lobsters (languages and systems): https://lobste.rs/t/rust,java,javascript,compilers,performance,distributed.rss
+    Dropbox Tech: https://dropbox.tech/feed
+    Pinterest Engineering: https://medium.com/feed/pinterest-engineering
+    Murat Demirbas: https://muratbuffalo.blogspot.com/feeds/posts/default
+    Mitchell Hashimoto: https://mitchellh.com/feed.xml
     Apple Developer News: https://developer.apple.com/news/rss/news.rss
     The Eclectic Light Company: https://eclecticlight.co/feed/
     Spring Blog: https://spring.io/blog.atom
@@ -571,6 +584,11 @@ profile: |
 
   ## High interest
 
+  - First interest: engineering blog posts with mechanism-level detail, and
+    news in Rust, Java, TypeScript, and systems programming, such as compilers,
+    runtimes, kernels, databases, and performance work. On a full day, prefer
+    one of these over a security advisory for software outside the owner's
+    stack.
   - Hacker News stories with technical substance.
   - AI releases, model behavior changes, coding agents, inference, GPUs, open
     weights, safety, and AI security.
@@ -622,7 +640,8 @@ profile: |
     registries, and collaboration tools. Include an outage only when it has
     wide impact or a published postmortem. Skip routine status page incidents.
   - CVEs, active exploitation, supply chain attacks, breaches, and practical
-    mitigations.
+    mitigations, for the owner's stack and the platforms developers build on.
+    Outside them, cover an advisory only when attackers exploit it widely.
   - Ghostty, Neovim, LazyVim, wincent/wincent, Git, terminal tooling, shells,
     Wayland, and Linux desktop infrastructure. Within these, fish, atuin, and
     television (tv) releases with new features.
