@@ -1,5 +1,5 @@
 date: '2026-11-19'
-updated: 2026-11-19T09:01Z
+updated: 2026-11-19T14:39Z
 lede: >-
   Ruby ships fixes for seven memory corruption bugs in its regex engine and case conversion,
   including a pre-auth RCE in default Rails apps.
@@ -51,36 +51,38 @@ stories:
     url: https://news.ycombinator.com/item?id=50556287
   thread: f-0239
 - title: >-
-    PHP schedules critical security releases for all supported branches on 2026-11-19 at 14:00
-    UTC
-  section: Security
-  category: Security
+    PostgreSQL 19 ships REPACK CONCURRENTLY, plan advice, read-your-writes on standbys and
+    JIT off by default
+  section: Top stories
+  category: Infrastructure
   blurb: >-
-    PHP will ship security releases for all supported branches on 2026-11-19 between 14:00
-    and 14:30 UTC, with top severity rated critical.
+    PostgreSQL 19 adds REPACK CONCURRENTLY, pg_plan_advice, WAIT FOR LSN on standbys, and
+    turns JIT off by default.
   summary: >-
-    The PHP security team announced on 2026-11-18 that releases fixing vulnerabilities in
-    every supported version will ship on 2026-11-19 between 14:00 and 14:30 UTC, with the
-    highest severity rated critical. It says the critical issues need non-default configuration
-    or uncommon setups. An October informational advisory already promised a full advisory
-    for CVE-2026-115560, a session upload progress RCE vector, with this release, and recommended
-    session.upload_progress.enabled=0 until then.
+    The PostgreSQL Global Development Group released PostgreSQL 19 on 2026-11-19. REPACK replaces
+    VACUUM FULL and CLUSTER and with CONCURRENTLY reclaims bloat without blocking reads or
+    writes, pg_plan_advice and pg_stash_advice pin query plans by query identifier, and WAIT
+    FOR LSN lets a standby session wait until it has replayed a given WAL position. Creating
+    the first logical replication slot now raises the effective WAL level without a restart,
+    sequences replicate logically, JIT is off by default, lz4 becomes the default TOAST compression
+    when built in, md5 authentication logs a warning, and RADIUS support is removed.
   why: >-
-    Teams running PHP should stage upgrades for this afternoon and keep session.upload_progress
-    disabled until the fixed builds are deployed.
+    Upgrades need checks for RADIUS and md5 authentication and for analytic queries that relied
+    on JIT, while REPACK CONCURRENTLY and WAIT FOR LSN remove blocking VACUUM FULL runs and
+    hand-rolled replica lag checks.
   background: >-
-    PHP fixed two critical unauthenticated RCE flaws, CVE-2026-109618 and CVE-2026-109619,
-    on 2026-10-21. CVE-2026-115560 is a related variant that needs an application to switch
-    session.serialize_handler at runtime before session_start().
-  followup: Fixed version numbers and advisories at 14:00 UTC on 2026-11-19.
+    PostgreSQL uses MVCC, so updates and deletes leave dead row versions that plain VACUUM
+    marks reusable without shrinking the table. VACUUM FULL and CLUSTER rewrite the table
+    to reclaim space but hold an exclusive lock, which is why online rewrites lived in external
+    extensions such as pg_repack. Streaming replicas replay the primary's write-ahead log
+    asynchronously, and an LSN is a byte position in that log, so a read sent to a standby
+    can miss a write just committed on the primary. PostgreSQL 18 introduced the asynchronous
+    I/O subsystem that 19 now tunes with automatic worker scaling.
+  followup: CloudNativePG operand images for PostgreSQL 19 and the first 19.x minor release.
   sources:
   - label: primary
-    url: https://www.php.net/archive/2026.php
-  - label: discussion
-    url: https://www.securityweek.com/php-readies-critical-security-updates-to-patch-another-rce-flaw/
-  - label: discussion
-    url: https://news.ycombinator.com/item?id=50550111
-  thread: f-0240
+    url: https://www.postgresql.org/about/news/postgresql-19-released-3449/
+  thread: f-0241
 - title: >-
     Apache Roller CVE-2026-129448, an unauthenticated XML-RPC deserialization RCE, is exploited
     in the wild
@@ -105,6 +107,71 @@ stories:
     url: https://thehackernews.com/2026/11/critical-apache-roller-rce-flaw-under.html
   - label: discussion
     url: https://www.bleepingcomputer.com/news/security/apache-warns-of-roller-rce-vulnerability-exploited-in-attacks/
+- title: >-
+    PHP 8.5.13, 8.4.28, 8.3.37 and 8.2.36 fix session, timezone and CGI flaws that can lead
+    to code execution
+  section: Security
+  category: Security
+  blurb: >-
+    PHP's four supported branches fix critical bugs in sessions, timezone caching and PHP-CGI
+    that need non-default or uncommon setups to exploit.
+  summary: >-
+    PHP released 8.5.13, 8.4.28, 8.3.37 and 8.2.36 on 2026-11-19. The 8.5.13 changelog lists
+    remote code execution fixes for a session serializer mismatch (CVE-2026-115560), partially
+    overwritten session files (CVE-2026-126714), and use-after-frees in magic method backtraces
+    (CVE-2026-129474) and the timezone cache (CVE-2026-129496), plus a PHP-CGI PATH_INFO out-of-bounds
+    write (CVE-2026-129538), PHP-FPM request smuggling (CVE-2026-129289) and a PHAR signature
+    downgrade bypass (CVE-2026-128090). LWN reports the project says every critical-severity
+    flaw requires a non-default configuration or an uncommon setup.
+  why: >-
+    PHP and PHP-FPM deployments should move to the fixed releases or distribution packages,
+    and the session handler and serializer settings decide whether the worst bugs are reachable.
+  background: >-
+    PHP sessions store per-user state on the server as serialized data and restore it on each
+    request, and PHP's unserialize path has a long history of turning attacker-controlled
+    bytes into object injection or memory corruption. PHP-CGI and PHP-FPM are the two ways
+    PHP commonly runs behind a web server, and CGI's PATH_INFO handling has produced remote
+    code execution flaws before. PHP ships security fixes on a four-week cycle across its
+    supported branches.
+  thread: f-0240
+  sources:
+  - label: primary
+    url: https://www.php.net/ChangeLog-8.php
+  - label: discussion
+    url: https://lwn.net/Articles/1108552/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50560334
+- title: >-
+    Depthfirst shows low-privilege SQL accounts reaching code execution in PostgreSQL, MySQL
+    and ClickHouse
+  section: Security
+  category: Security
+  blurb: >-
+    A researcher turned memory bugs reachable with only temporary-table rights into shells
+    on PostgreSQL, MySQL and ClickHouse servers.
+  summary: >-
+    Zheng Yu of Depthfirst published proof-of-concept exploits on 2026-11-18 that use ordinary
+    grants, such as PostgreSQL's default TEMPORARY privilege, to reach memory corruption in
+    engine code. PostgreSQL CVE-2026-116331, a type confusion fixed in 18.7, 17.12, 16.16,
+    15.20 and 14.25, lets a login role run code as the database OS user, MySQL CVE-2026-101786
+    affects 26.7.0 to 26.7.1, and a ClickHouse binary row format overflow reproduced on 26.7.5.10
+    has no CVE or confirmed fix. A separate Oracle chain through Oracle Text and the ORDS
+    GraphQL interface needs no login, and no exploitation has been reported.
+  why: >-
+    SQL permissions limit which tables a role can read, not which engine code it can reach,
+    so roles that do not need temporary objects should lose TEMPORARY and temp-table rights
+    alongside patching.
+  background: >-
+    PostgreSQL grants the TEMPORARY privilege on each database to PUBLIC by default, so any
+    role that can log in can create temporary tables, types and functions in its own pg_temp
+    schema. Database engines parse, plan and execute SQL in large C and C++ codebases, so
+    a bug in that code is reachable by anyone who can send queries. The PostgreSQL fix shipped
+    in the 2026-11-12 minor releases that the digest tracked for an extension ABI change.
+  followup: A ClickHouse CVE and fixed release for the binary row format overflow.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/researcher-demonstrates-database-rce.html
+  thread: f-0242
 - title: >-
     Claude Code 2.1.328 starts sessions on cloud providers in auto mode and lets failing MCP
     tool hooks block actions
@@ -176,6 +243,36 @@ stories:
   - label: primary
     url: https://github.blog/changelog/2026-11-18-wait-for-pull-request-events-with-github-cli
 - title: >-
+    Debian APT will drop detached-signature, weak-hash and unsigned repository support in
+    unstable after 2026-11-24
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    APT's maintainer cuts legacy repository formats from its download code, citing a recent
+    MITM flaw and AI-driven vulnerability research.
+  summary: >-
+    Julian Andres Klode announced that APT in Debian unstable will remove support for repositories
+    with only detached Release.gpg signatures, repositories with only MD5 or SHA1 hashes,
+    and repositories without hashes or a Release file, with a cut-off of 2026-11-24 for next
+    week's changes. Insecure repositories using allow-insecure or allow-downgrade-to-insecure
+    and download fallbacks are also being considered for removal. He cites the recent vulnerability
+    in APT's download code and AI security research, and warns that security updates from
+    2027 onward may remove features without notice.
+  why: >-
+    Third-party apt repositories that still publish only detached signatures or weak hashes
+    will stop working on Debian unstable and may break later on stable.
+  background: >-
+    APT trusts a repository through a signed Release file that lists hashes of the package
+    indices, which in turn list hashes of each package. The file can be signed inline as InRelease
+    or with a separate Release.gpg signature, and InRelease avoids a race between fetching
+    the file and its signature. Older repository tooling still emits the detached form and
+    weak hashes.
+  followup: APT uploads to Debian unstable after 2026-11-24.
+  sources:
+  - label: discussion
+    url: https://www.phoronix.com/news/Debian-APT-Removing-Features
+  thread: f-0243
+- title: >-
     Google details Sashiko, its agentic Linux patch reviewer, with 1,200 reviews a day and
     a lower post-merge fix rate
   section: Engineering posts
@@ -208,6 +305,35 @@ stories:
   - label: discussion
     url: https://www.phoronix.com/news/Sashiko-0.9.4-Released
 - title: >-
+    ClickHouse Cloud open-sources Node Problem Mitigator to drain and replace unhealthy Kubernetes
+    nodes on three clouds
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    ClickHouse turns kernel log errors into permanent node conditions, then taints, drains
+    and replaces bad nodes with cooldowns and a kill switch.
+  summary: >-
+    ClickHouse Cloud found nodes that stayed Ready while pods failed writes, such as an EC2
+    node with a failed NVMe member of a RAID array, because the upstream Node Problem Detector
+    rule for EXT4 errors only emitted an event that expires after an hour. It now runs one
+    NPD rule catalog on AWS, GCP and Azure with permanent conditions and plugin checks, such
+    as NVMe timeouts on two devices within a minute, and a new open-source controller, node-problem-mitigator,
+    that evaluates, drains or terminates nodes per condition behind a kill switch, exclusions
+    and a global cooldown. A Node Debug Collector captures a diagnostic bundle before the
+    node is removed.
+  why: >-
+    Kubernetes Ready status misses disk, kernel and runtime faults, and this gives a tested
+    rollout pattern and an open-source controller for acting on Node Problem Detector conditions.
+  background: >-
+    The kubelet reports only its own view of a node through conditions such as Ready, MemoryPressure
+    and DiskPressure. Node Problem Detector is a DaemonSet that tails kernel and system logs
+    or runs probe scripts and publishes the results as node conditions or short-lived events.
+    Nothing in core Kubernetes acts on those custom conditions, so a separate controller has
+    to drain or replace the node.
+  sources:
+  - label: primary
+    url: https://clickhouse.com/blog/node-reliability-across-three-clouds
+- title: >-
     Anthropic prices its IPO at $83 a share and starts trading on Nasdaq as ANT on 2026-11-19
   section: Markets and companies
   category: Markets
@@ -232,6 +358,31 @@ stories:
     url: https://www.anthropic.com/news/anthropic-prices-initial-public-offering
   - label: discussion
     url: https://news.ycombinator.com/item?id=50553843
+- title: >-
+    Lovable CTO: Git-like agent trajectories, stateless workers and forkable VM checkpoints
+    for 10-hour agent runs
+  section: Talks
+  category: Video
+  blurb: >-
+    Lovable stores each agent's history as an append-only forkable log and restores checkpointed
+    VMs in about 230 ms for runs with no time limit.
+  summary: >-
+    At CODE Summit 2026, Lovable CTO Fabian Hedin said a 2023 multi-agent framework made the
+    product worse, so the team went back to a single LLM loop before returning to agents that
+    now use over a billion tokens per minute with no cap on run length. Each agent has an
+    inbox and an append-only trajectory where every event points to a parent, so runs fork
+    like Git branches, prompts are rendered per model from that log, and stateless workers
+    persist after each step so the service deploys about 700 times a day without interrupting
+    a 10-hour run. Sandboxes restore disk, memory and processes from checkpoints in about
+    230 ms, fork with copy-on-write RAM, and stream memory to boot early, and a Rust rewrite
+    of the JavaScript dev server cut preview start from 40 to 3 seconds with 6.5 times less
+    memory.
+  why: >-
+    Separating agent history from worker processes and checkpointing whole sandboxes are concrete
+    designs for long-running agents that survive frequent deploys.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=pZWPq_ZAmM4
 - title: >-
     Energy-Based Reasoners reach 99.9% on Sudoku-Extreme with 1.8M parameters and 345x less
     inference compute
@@ -259,3 +410,25 @@ stories:
     url: https://energy-based-reasoners.github.io/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50543989
+- title: >-
+    Experiment fits 16 million web servers in one 10 GB VM by replacing the kernel TCP stack
+    with smoltcp over DPDK
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    The kernel ran out of RAM near 2.5 million listeners at about 3.4 KB per socket, while
+    smoltcp needed about 620 bytes per idle server.
+  summary: >-
+    The post runs guest web servers inside one process with a custom scheduler and LFI sandboxing,
+    listens across a subnet with AnyIP, and finds each Linux socket costs about 3,384 bytes
+    in kernel structures. Moving TCP/IP to the userland smoltcp stack over TUN, TAP, DPDK
+    or AF_XDP reached 16 million servers, with DPDK fastest and AF_XDP close behind while
+    leaving the NIC visible to the kernel. The Hacker News thread drew 254 points and 30 comments.
+  why: >-
+    It quantifies the per-socket memory floor of the Linux network stack and the tradeoff
+    between DPDK's exclusive NIC access and AF_XDP.
+  sources:
+  - label: primary
+    url: https://kapteko.com/15-million-webservers/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50556533
