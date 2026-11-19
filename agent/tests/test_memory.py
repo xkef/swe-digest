@@ -54,6 +54,19 @@ def test_apply_closes_the_oldest_open_threads_over_the_cap(monkeypatch):
     assert [entry.get("closed") for entry in result] == ["2026-10-09", None]
 
 
+def test_apply_over_the_cap_keeps_the_thread_noted_today(monkeypatch):
+    settings = memory.config.settings() | {"max_open_followups": 2}
+    monkeypatch.setattr(memory.config, "settings", lambda: settings)
+    current = [followup(), followup(id="f-0002", opened="2026-09-20")]
+    changes = {
+        "open": [{"subject": "s", "watch_for": "w"}],
+        "note": [{"id": "f-0001", "note": "Moved."}],
+        "close": [],
+    }
+    result, _ = memory.apply(current, changes, "2026-10-09")
+    assert [entry.get("closed") for entry in result] == [None, "2026-10-09", None]
+
+
 def test_apply_ignores_unsafe_text():
     changes = {"open": [{"subject": "key sk-ant-" + "a" * 30, "watch_for": "w"}], "note": [], "close": []}
     assert memory.apply([], changes, "2026-10-09") == ([], {})

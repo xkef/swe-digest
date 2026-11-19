@@ -101,8 +101,9 @@ run, the correct answer is an empty `stories` list.
 Follow-ups are threads the digest tracks across days. A thread tracks one
 event. Another incident or flaw at the same vendor is a new event.
 
-- `open` a thread when a story has a known next step, such as a release date, a
-  deadline, or a pending fix. Set `story` to that story's exact title. When an
+- `open` a thread when a story has a dated next step that would itself make a
+  story, such as a release date or a court deadline. A patched flaw or a
+  resolved outage has none. Set `story` to that story's exact title. When an
   open thread already tracks the same event, `note` it and set the story's
   `thread` to its id instead, even if the story's angle or CVE id differs.
 - `note` an open thread when a candidate moves it. Say in one sentence what

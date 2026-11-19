@@ -98,8 +98,10 @@ def apply(
         entry["last_seen"] = today
         entry["notes"] = [*entry.get("notes", []), f"{today}: {note['note']}"][-MAX_NOTES:]
 
-    # Over the bound, the oldest open threads close first.
-    still_open = [entry for entry in result if is_open(entry)]
+    # Over the bound, the threads idle longest close first. A thread still
+    # moving stays open, so its next report joins it instead of opening a
+    # duplicate.
+    still_open = sorted((entry for entry in result if is_open(entry)), key=lambda e: str(e["last_seen"]))
     for entry in still_open[: -config.settings()["max_open_followups"]]:
         entry["closed"] = today
     return result, opened
