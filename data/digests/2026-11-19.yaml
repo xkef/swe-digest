@@ -1,0 +1,261 @@
+date: '2026-11-19'
+updated: 2026-11-19T09:01Z
+lede: >-
+  Ruby ships fixes for seven memory corruption bugs in its regex engine and case conversion,
+  including a pre-auth RCE in default Rails apps.
+stories:
+- title: >-
+    Ruby 4.0.10, 3.4.13 and 3.3.14 fix seven Regexp and case conversion flaws, one a pre-auth
+    RCE in default Rails
+  section: Top stories
+  category: Security
+  blurb: >-
+    Seven memory-safety bugs in Ruby's regex engine and case conversion allow RCE, and one
+    is reachable pre-auth in default Rails apps.
+  summary: >-
+    The Ruby team released 4.0.10, 3.4.13 and 3.3.14 on 2026-11-18 to fix seven vulnerabilities
+    in the regular expression engine and string case conversion, and says it knows of proofs
+    of concept that reach remote code execution for several. Veria Labs' write-up of GHSA-34m4-m9fh-gqp5,
+    which it calls Ruby2Shell, shows a one-byte heap overflow when upcasing ß in single-byte
+    encodings such as Windows-1252. The bug is reachable without authentication in default
+    Rails and classic Sinatra apps, and bundled Ruby in GitLab 19.6.0, GitHub Enterprise Server
+    3.22.5, Mastodon, Discourse, OpenProject and Chatwoot is affected.
+  why: >-
+    Every Rails or Sinatra service and every self-hosted GitLab, GHES or Mastodon instance
+    needs the new Ruby or a vendor release now, because Ruby 3.2 and older get no fix.
+  background: >-
+    CRuby's regex engine and its encoding-aware string functions are written in C and derive
+    from the Onigmo library, so memory-safety bugs there surface in Ruby code that looks safe.
+    In ISO-8859 and Windows-125x encodings there is no capital ß, so upcasing it emits two
+    bytes, SS, while the conversion loop checked room for only one. Rails accepts multipart
+    form fields that declare their own encoding, which is how attacker text in a legacy encoding
+    reaches upcase or casecmp?. Several of the seven flaws were reported by Stephan Lipp of
+    Ada Logics together with Anthropic.
+  followup: >-
+    Veria Labs plans to publish its proof of concept around 2026-11-25. CVE IDs are still
+    pending.
+  comments: >-
+    The Hacker News thread reached 237 points and 82 comments. Thomas Ptacek walks through
+    the ß expansion and notes Rails apps rarely need to accept Windows-1252 at all, while
+    a commenter points out that French Excel exports CSV in Windows-1252 by default, so ingesting
+    apps do run regexes over it. Another commenter says GitHub is taking about four weeks
+    to assign CVEs it used to issue in days.
+  sources:
+  - label: primary
+    url: https://www.ruby-lang.org/en/news/2026/11/18/multiple-vulnerabilities-in-regexp-and-string/
+  - label: primary
+    url: https://verialabs.com/ruby2shell/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50554038
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50556287
+  thread: f-0239
+- title: >-
+    PHP schedules critical security releases for all supported branches on 2026-11-19 at 14:00
+    UTC
+  section: Security
+  category: Security
+  blurb: >-
+    PHP will ship security releases for all supported branches on 2026-11-19 between 14:00
+    and 14:30 UTC, with top severity rated critical.
+  summary: >-
+    The PHP security team announced on 2026-11-18 that releases fixing vulnerabilities in
+    every supported version will ship on 2026-11-19 between 14:00 and 14:30 UTC, with the
+    highest severity rated critical. It says the critical issues need non-default configuration
+    or uncommon setups. An October informational advisory already promised a full advisory
+    for CVE-2026-115560, a session upload progress RCE vector, with this release, and recommended
+    session.upload_progress.enabled=0 until then.
+  why: >-
+    Teams running PHP should stage upgrades for this afternoon and keep session.upload_progress
+    disabled until the fixed builds are deployed.
+  background: >-
+    PHP fixed two critical unauthenticated RCE flaws, CVE-2026-109618 and CVE-2026-109619,
+    on 2026-10-21. CVE-2026-115560 is a related variant that needs an application to switch
+    session.serialize_handler at runtime before session_start().
+  followup: Fixed version numbers and advisories at 14:00 UTC on 2026-11-19.
+  sources:
+  - label: primary
+    url: https://www.php.net/archive/2026.php
+  - label: discussion
+    url: https://www.securityweek.com/php-readies-critical-security-updates-to-patch-another-rce-flaw/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50550111
+  thread: f-0240
+- title: >-
+    Apache Roller CVE-2026-129448, an unauthenticated XML-RPC deserialization RCE, is exploited
+    in the wild
+  section: Security
+  category: Security
+  blurb: >-
+    The ASF says attackers are exploiting an unauthenticated XML-RPC deserialization flaw
+    in Apache Roller 4.0.0 through 6.1.4.
+  summary: >-
+    The Apache Software Foundation says CVE-2026-129448, rated CVSS 9.8, lets an unauthenticated
+    attacker run code on Roller 4.0.0 through 6.1.4 because the XML-RPC endpoint deserializes
+    vendor extension types before it authenticates the caller, and that the issue is being
+    actively exploited. It is the same flaw as CVE-2026-82384, which was patched in 2026-09
+    but listed only 6.1.5 as affected. Roller 6.1.6 fixes it, and the workaround is to set
+    enabledForExtensions to false in WEB-INF/web.xml or remove the /roller-services/xmlrpc
+    mapping, since disabling XML-RPC in the admin UI does not help.
+  why: >-
+    Anyone running Roller on an older release than 6.1.5 skipped the September fix because
+    of the narrow affected range and must upgrade or remove the XML-RPC mapping.
+  sources:
+  - label: discussion
+    url: https://thehackernews.com/2026/11/critical-apache-roller-rce-flaw-under.html
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/apache-warns-of-roller-rce-vulnerability-exploited-in-attacks/
+- title: >-
+    Claude Code 2.1.328 starts sessions on cloud providers in auto mode and lets failing MCP
+    tool hooks block actions
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Claude Code 2.1.328 extends auto mode to Opus 4.6 and Sonnet 4.6 on cloud providers and
+    lets a failing MCP tool hook block the action.
+  summary: >-
+    Claude Code 2.1.328 adds auto mode for Opus 4.6 and Sonnet 4.6 on Amazon Bedrock, Google
+    Cloud's Agent Platform, Microsoft Foundry and the Claude apps gateway, and interactive
+    sessions with no permission mode set now start in it, with disableAutoMode to turn it
+    off. mcp_tool hooks gain "onFailure": "block", and Code Mode no longer runs UserPromptSubmit
+    hooks, managed ones included, on script output. /code-review now reports only bugs and
+    CLAUDE.md violations and tags each finding Important, Pre-existing or Nit.
+  why: >-
+    Teams on Bedrock, Agent Platform or Foundry get a changed default permission mode, and
+    anyone redacting Code Mode output with UserPromptSubmit hooks must move that to a PostToolUse
+    hook.
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/claude-code/releases/tag/v2.1.328
+- title: >-
+    Paper: replaying RL experts' training logs consolidates them into one model at a seventh
+    of their training compute
+  section: ML research
+  category: Paper
+  blurb: >-
+    A new paper merges RL-trained domain experts into one model by replaying their training
+    logs, at about a seventh of the training compute.
+  summary: >-
+    Multi-expert replay policy distillation (MRPD) replays each expert's logged rollouts,
+    sampling probabilities and rewards through the student in the order the experts saw them,
+    recomputing the policy gradient and distilling the final experts at logged prefixes, with
+    no new sampling, environment or reward model calls. On reasoning, search and SQL agent
+    tasks it beats online RL baselines and multi-teacher on-policy distillation from the same
+    experts at a fraction of the cost. The authors find log order matters more than amount
+    or reward, treating expert logs as a curriculum.
+  why: >-
+    Teams that post-train separate RL experts and then merge them can keep their rollout logs
+    and skip a costly second round of environment sampling.
+  background: >-
+    A common frontier recipe trains one RL expert per domain, then merges them with multi-teacher
+    on-policy distillation, where the student generates its own trajectories and each expert
+    scores every token. That second stage repeats sampling in every environment. Keeping the
+    replay close to the experts' own trajectory keeps updates inside the PPO-style clip range
+    even though the data is off-policy.
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.24059v1
+- title: >-
+    GitHub CLI 2.105.0 adds gh event listen to wait for pull request events over Event Streams
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    gh 2.105.0 adds gh event listen, which blocks until a pull request gets a review, check
+    result or state change instead of polling.
+  summary: >-
+    gh event listen takes a pull request URL and event types, creates an Event Streams subscription
+    and prints each event as JSON, exiting after the first by default, with --count, --follow,
+    --timeout, --jq and --template options. It covers submitted reviews, state and head changes,
+    merge conflicts and completed check suites, and gh pr create, gh pr view, gh run watch
+    and gh api now suggest it to agents instead of polling. The commands are in preview and
+    need Event Streams waitlist access.
+  why: >-
+    Agent loops and CI scripts that poll pull request state can block on one command and stop
+    spending API rate limit on loops.
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-18-wait-for-pull-request-events-with-github-cli
+- title: >-
+    Google details Sashiko, its agentic Linux patch reviewer, with 1,200 reviews a day and
+    a lower post-merge fix rate
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Google reports that Sashiko, its open agentic reviewer for kernel patches, runs 1,200
+    reviews a day and is credited in 528 kernel CVEs.
+  summary: >-
+    Sashiko splits review into up to seven parallel single-focus specialist sessions that
+    each list concerns and ruled-out concerns, then a triage verifier and one verification
+    agent per contested case that must prove either a bug or a dismissal from code across
+    all call sites. Since 2026-03 it has completed 241,000 reviews across 75 or more opted-in
+    kernel lists, is credited in over 2,000 mainline commits, and the 60-day follow-up fix
+    rate fell from a 3.4% baseline to 2.2% in Linux 7.2. Commits with a clean review needed
+    a fix 0.9% of the time against 7.6% for commits merged despite a critical warning, and
+    on a benchmark of nearly 1,000 real escaped kernel bugs it catches 75.8% with Gemini 4
+    Carbon.
+  why: >-
+    It is a measured design for AI pre-review: separate bug finding from verification, demand
+    proof for dismissals, and tune against a benchmark of historical escaped bugs.
+  background: >-
+    Kernel patches are reviewed on public mailing lists, and Syzkaller fuzzing and build bots
+    catch only crashes and build failures, so human maintainers are the bottleneck. Google
+    donated Sashiko to the Linux Foundation, and it posts review emails only to lists whose
+    maintainers opt in. The authors note its core engine does not depend on C or kernel rules
+    and suggest the same approach for GCC, LLVM and Git.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/products/application-development/lessons-from-building-sashiko-an-agentic-code-review-system/
+  - label: discussion
+    url: https://www.phoronix.com/news/Sashiko-0.9.4-Released
+- title: >-
+    Anthropic prices its IPO at $83 a share and starts trading on Nasdaq as ANT on 2026-11-19
+  section: Markets and companies
+  category: Markets
+  blurb: >-
+    Anthropic sold 980 million Class A shares at $83 each and is set to start trading on Nasdaq
+    as ANT on 2026-11-19.
+  summary: >-
+    Anthropic, PBC priced 980,000,000 Class A shares at $83.00, of which 956,351,354 are sold
+    by the company and 23,648,646 by existing holders, after the SEC declared its registration
+    effective on 2026-11-18. Trading on the Nasdaq Global Select Market under ANT is expected
+    on 2026-11-19 and the offering is expected to close on 2026-11-20. Underwriters have a
+    30-day option on 147,000,000 more shares.
+  why: >-
+    The company behind Claude Code and the Agent SDK becomes publicly traded, so its prospectus
+    and quarterly filings will now disclose compute commitments and product risks that shape
+    its platforms.
+  followup: Closing on 2026-11-20 and the final prospectus.
+  comments: The Hacker News thread drew 194 points and 251 comments.
+  thread: f-0213
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/news/anthropic-prices-initial-public-offering
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50553843
+- title: >-
+    Energy-Based Reasoners reach 99.9% on Sudoku-Extreme with 1.8M parameters and 345x less
+    inference compute
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A 1.8M-parameter looped reasoner that descends a learned energy function hits 99.9% on
+    Sudoku-Extreme with 345x less inference compute.
+  summary: >-
+    Researchers from Duke, UIUC and Harvard train a looped model whose updates are gradient
+    descent on a learned energy over latent reasoning states, using the energy to rank candidates
+    and a small gradient norm to stop early. With 1.8M parameters it reports 99.4% single-sample
+    and 99.9% five-sample accuracy on Sudoku-Extreme, and adaptive stopping cuts FLOPs 10.9x
+    against a fixed-depth version. The Hacker News post drew 309 points and 55 comments.
+  why: >-
+    It shows a built-in verifier and stopping signal for test-time compute, though only on
+    algorithmic puzzles so far.
+  background: >-
+    Looped or recurrent reasoners such as TRM reuse one block many times to gain depth, but
+    have no measure of progress to decide when to stop. An energy-based model assigns a scalar
+    score to each state, so lower energy marks a better answer and its gradient gives a direction
+    to improve.
+  sources:
+  - label: primary
+    url: https://energy-based-reasoners.github.io/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50543989
