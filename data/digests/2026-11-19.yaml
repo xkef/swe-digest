@@ -1,5 +1,5 @@
 date: '2026-11-19'
-updated: 2026-11-19T14:39Z
+updated: 2026-11-19T18:29Z
 lede: >-
   Ruby ships fixes for seven memory corruption bugs in its regex engine and case conversion,
   including a pre-auth RCE in default Rails apps.
@@ -83,6 +83,39 @@ stories:
   - label: primary
     url: https://www.postgresql.org/about/news/postgresql-19-released-3449/
   thread: f-0241
+- title: >-
+    Mandiant: ARMORY CASTLE exploited vCenter CVE-2026-123890 as a zero-day before Broadcom's
+    2026-11-19 patch
+  section: Top stories
+  category: Security
+  blurb: >-
+    A PRC-nexus group used an unauthenticated vCenter directory service bug in September to
+    mint SSO admins, two months before the fix.
+  summary: >-
+    Broadcom fixed CVE-2026-123890, a CVSS 9.8 authentication bypass in the VMware Directory
+    Service of vCenter 8.0, 9.0 and 9.1, on 2026-11-19 with no workaround. Mandiant and GTIG
+    report that ARMORY CASTLE exploited it in early September 2026 with a Go tool called BONESAW,
+    which leaks the SRP session key over the vmdir DCE/RPC interface on port 2012, exfiltrates
+    the directory database, steals the STS SAML signing key and creates an SSO administrator.
+    The actor then enabled SSH through the appliance API, took the vCenter master key and
+    PostgreSQL credentials, and moved to ESXi hosts.
+  why: >-
+    Patch vCenter now, restrict port 2012 to trusted hosts, and treat the SAML signing key
+    on any exposed vCenter as possibly stolen.
+  background: >-
+    vCenter is the management appliance for VMware ESXi hosts, and vmdir is the LDAP-style
+    directory that backs its single sign-on. Whoever holds the SSO Security Token Service
+    signing key can forge SAML assertions for any user, a technique called Golden SAML, so
+    patching alone does not evict an attacker who already took the key. Broadcom fixed CVE-2026-59309,
+    another 9.8 bypass in the same component, on 2026-07-29, and Mandiant says BONESAW ran
+    against a server already patched for that flaw.
+  followup: A CISA KEV listing and reports of exploitation beyond ARMORY CASTLE.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/topics/threat-intelligence/armory-castle-exploits-vsphere/
+  - label: discussion
+    url: https://thehackernews.com/2026/11/critical-vmware-vcenter-flaw-cvss-98.html
+  thread: f-0244
 - title: >-
     Apache Roller CVE-2026-129448, an unauthenticated XML-RPC deserialization RCE, is exploited
     in the wild
@@ -173,6 +206,29 @@ stories:
     url: https://thehackernews.com/2026/11/researcher-demonstrates-database-rce.html
   thread: f-0242
 - title: >-
+    Anthropic says Claude Fable 5.2 agents solved two open black hole physics problems over
+    six weeks of background runs
+  section: AI
+  category: AI
+  blurb: >-
+    A researcher ran one agent per open problem for six weeks. Two results, one verified in
+    Lean, came out with a physicist checking each.
+  summary: >-
+    An Anthropic researcher had Claude list 22 open problems and ran a separate agent on each,
+    with shared progress posts, for about six weeks. The agents completed a three-loop calculation
+    set up in 2003 showing the weak-coupling Hawking-Page transition in N=4 super Yang-Mills
+    is abrupt, and found and proved the exact limit of the simplest modular bootstrap bound
+    in 3D gravity. The bootstrap proof was formally verified in Lean, and a physicist checked
+    every main result.
+  why: >-
+    It is a first-party account of long-running, loosely coordinated research agents producing
+    verifiable results, with the setup described.
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/research/claude-black-hole-physics
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50563148
+- title: >-
     Claude Code 2.1.328 starts sessions on cloud providers in auto mode and lets failing MCP
     tool hooks block actions
   section: Agentic coding
@@ -194,6 +250,30 @@ stories:
   sources:
   - label: primary
     url: https://github.com/anthropics/claude-code/releases/tag/v2.1.328
+- title: >-
+    HubSpot's Aviator Java agent harness runs Breeze and Sidekick Code, which merges over
+    2,500 PRs a week
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    HubSpot built a model-agnostic Java harness with deferred tool search, SKILL.md tool loading
+    and WASM sandboxes for thousands of agents.
+  summary: >-
+    HubSpot's Aviator stores conversations in a provider-neutral transcript that it rewrites
+    per vendor, so agents can switch models mid-conversation, checkpoint to JSON and hand
+    transcripts between agents. It exposes existing internal RPCs as tools, defers most of
+    3,000-plus tools behind tool search, extends SKILL.md with load-tools and suggested-tools
+    metadata, and gives agents embedded Python and Bash sandboxes in WASM with fixed egress
+    points. HubSpot says Sidekick Code, its cloud coding agent on Aviator, merges more than
+    2,500 pull requests a week.
+  why: >-
+    It is a concrete design for a shared in-house harness where provider fallback, tool scaling
+    and sandboxing are solved once for every team.
+  sources:
+  - label: primary
+    url: https://hubspot.engineering/blog/aviator-hubspots-agent-harness/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50562442
 - title: >-
     Paper: replaying RL experts' training logs consolidates them into one model at a seventh
     of their training compute
@@ -243,6 +323,30 @@ stories:
   - label: primary
     url: https://github.blog/changelog/2026-11-18-wait-for-pull-request-events-with-github-cli
 - title: >-
+    PHP 8.6.0 adds partial function application, an Io\Poll API, a Duration class and stricter
+    session defaults
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    PHP 8.6 ships epoll and kqueue polling for event loops, post-quantum Sodium KEMs, and
+    turns on strict session mode and HttpOnly cookies.
+  summary: >-
+    PHP 8.6.0, released 2026-11-19, adds partial function application with ? placeholders,
+    a nanosecond \Time\Duration class, an Io\Poll API over epoll, kqueue, event ports and
+    WSAPoll, clamp(), a SortDirection enum and readonly property defaults. Sodium gains X-Wing
+    and ML-KEM-768, and TLS streams gain session resumption, PSKs and 0-RTT. Sessions now
+    default to strict mode, HttpOnly and SameSite Lax, and the release deprecates return inside
+    finally and the mbstring regex functions.
+  why: >-
+    PHP services upgrading to 8.6 should test session behavior and deprecation warnings, and
+    async PHP libraries get a native polling base.
+  comments: The Hacker News thread reached 225 points and 104 comments.
+  sources:
+  - label: primary
+    url: https://www.php.net/releases/8.6/en.php
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50557870
+- title: >-
     Debian APT will drop detached-signature, weak-hash and unsigned repository support in
     unstable after 2026-11-24
   section: Linux and kernel
@@ -272,6 +376,50 @@ stories:
   - label: discussion
     url: https://www.phoronix.com/news/Debian-APT-Removing-Features
   thread: f-0243
+- title: >-
+    GKE previews in-place migration of VPC-native clusters from Dataplane V1 to the eBPF-based
+    Dataplane V2
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    One gcloud update moves eligible GKE 1.35+ clusters to the Cilium-based dataplane node
+    pool by node pool, with rollback before finalizing.
+  summary: >-
+    Google Cloud released a preview of in-place migration to GKE Dataplane V2, started with
+    gcloud container clusters update --enable-dataplane-v2. GKE recreates node pools under
+    existing maintenance windows and upgrade strategies, and clusters can roll back to V1
+    until finalization. It supports VPC-native clusters on GKE 1.35 or later, not routes-based
+    or Calico clusters, and Google asks users to check Pod IP range capacity first.
+  why: >-
+    GKE users can adopt eBPF network policy and Hubble flow metrics without building a parallel
+    cluster.
+  background: >-
+    Dataplane V2 replaces iptables rules and kube-proxy with eBPF programs from Cilium that
+    look up services and policies in kernel maps. Until now, moving a GKE cluster onto it
+    meant creating a new cluster and migrating workloads.
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/products/networking/gke-dataplane-v2-in-place-migration/
+- title: >-
+    Grafana 13.3 adds Notebooks in public preview for combining panels, Explore queries and
+    Assistant findings
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Grafana Notebooks collect dashboard panels, editable queries and Assistant charts into
+    one shared document, behind a feature toggle.
+  summary: >-
+    Grafana Notebooks let users add dashboard panels, Explore queries and Grafana Assistant
+    visualizations to an autosaving document, refine queries without changing the source dashboard,
+    and pin absolute time ranges. Notebooks are in public preview in Grafana Cloud and in
+    self-managed Grafana 13.3 through the dashboard.notebooks feature toggle, with Cloud access
+    rolling out over the coming weeks. Grafana says comments and live editing are being explored.
+  why: >-
+    Incident analysis and post-incident reviews can live next to live queries inside Grafana
+    instead of in screenshots and wiki pages.
+  sources:
+  - label: primary
+    url: https://grafana.com/blog/bring-charts-queries-and-context-into-one-shareable-document-introducing-grafana-notebooks/
 - title: >-
     Google details Sashiko, its agentic Linux patch reviewer, with 1,200 reviews a day and
     a lower post-merge fix rate
@@ -334,6 +482,62 @@ stories:
   - label: primary
     url: https://clickhouse.com/blog/node-reliability-across-three-clouds
 - title: >-
+    Zerodha replaces SSDB with Blobasaur, a Rust blob server that shards SQLite behind the
+    Redis protocol
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Zerodha's open-source Blobasaur stores JSON blobs in sharded SQLite files with zstd and
+    Redis Cluster routing, at about 2 ms p99.
+  summary: >-
+    Zerodha built Blobasaur in Rust to store user layout blobs from kilobytes to megabytes,
+    after rejecting ScyllaDB, PostgreSQL, RocksDB, SeaweedFS and S3 for its overwrite-heavy
+    workload. Each node splits keys across SQLite WAL files with one group-committing writer
+    per shard, and 16 shards raised 64 KiB write throughput 3.3x over one shard. A three-node
+    cluster of 4 vCPU machines holds p99 near 2 ms during trading hours, and the post covers
+    fixes for file growth, async write visibility and TTL cleanup contention.
+  why: >-
+    It shows how far sharded SQLite with group commit and compression can go as a small-server
+    key-value store, and which SQLite defaults bite at scale.
+  background: >-
+    SQLite in WAL mode lets many readers run alongside one writer per database file, so write
+    concurrency comes from splitting data across files. Group commit batches many client writes
+    into one transaction to amortize fsync and WAL overhead. Redis Cluster clients route keys
+    by CRC16 hash slot and follow MOVED redirects, which lets a new server reuse existing
+    client libraries.
+  comments: The Hacker News thread reached 197 points and 58 comments.
+  sources:
+  - label: primary
+    url: https://zerodha.tech/blog/high-performance-distributed-blob-storage/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50557537
+- title: >-
+    Datadog rewrites queries from a knowledge graph so old OTel, current OTel and Datadog
+    names resolve together
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Datadog's Semantic Core encodes conditional equivalences, such as tag filters and unit
+    scaling, and expands queries across conventions.
+  summary: >-
+    Datadog models metrics and attributes as graph nodes, with deprecation and equivalence
+    edges that carry conditions such as a state:user tag filter or a 0 to 1 versus 0 to 100
+    unit scale. The graph compiles into a cached configuration that a Semantics SDK uses to
+    rewrite queries in memory, for example expanding service.name into an OR with service,
+    and to normalize results back to the caller's vocabulary. An external validator runs the
+    same scenarios through OTel-only and Datadog-only setups to check the equivalences against
+    real data.
+  why: >-
+    Teams running mixed OpenTelemetry convention versions get a pattern for query-time translation
+    instead of rewriting stored telemetry.
+  background: >-
+    OpenTelemetry semantic conventions name attributes and metrics, and they change as areas
+    stabilize, for example http.method becoming http.request.method. Services rarely upgrade
+    instrumentation together, so one backend sees several names for the same concept at once.
+  sources:
+  - label: primary
+    url: https://www.datadoghq.com/blog/engineering/semantic-translation-otel/
+- title: >-
     Anthropic prices its IPO at $83 a share and starts trading on Nasdaq as ANT on 2026-11-19
   section: Markets and companies
   category: Markets
@@ -383,6 +587,26 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=pZWPq_ZAmM4
+- title: >-
+    Let's Get Rusty: partitioning a 99M-row count by hash cut runtime 25% while doing 70%
+    more CPU work
+  section: Videos
+  category: Video
+  blurb: >-
+    Splitting user IDs into 4,096 hash partitions kept per-partition tables in cache, cutting
+    DRAM fetches from 76 million to 26 million.
+  summary: >-
+    The video counts 17 million unique user IDs across 99 million rows with a single hash
+    map, then with rows first scattered into 4,096 partitions by 12 hash bits and counted
+    one partition at a time. Warm runtime dropped from 3.6 to 2.7 seconds. perf stat showed
+    memory-bound stalls falling from about half of CPU capacity to 23%, retired work rising
+    from 16% to 32%, and main memory fetches falling from 76 million to 26 million.
+  why: >-
+    For large group-by workloads, a radix partition pass can beat a single big hash table
+    because cache misses, not instruction count, set the speed.
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=E2khZ_H-v4c
 - title: >-
     Energy-Based Reasoners reach 99.9% on Sudoku-Extreme with 1.8M parameters and 345x less
     inference compute
