@@ -1,5 +1,5 @@
 date: '2026-11-20'
-updated: 2026-11-20T14:16Z
+updated: 2026-11-20T17:58Z
 stories:
 - title: >-
     OpenSSL CVE-2026-121481, a buffer overflow in EVP_EncodeBlock, gets a public fix while
@@ -38,6 +38,32 @@ stories:
     url: https://github.com/openssl/openssl/pull/33652
   - label: discussion
     url: https://news.ycombinator.com/item?id=50569226
+- title: >-
+    Amazon: attackers' Cairn agents found a MONAI Label zero-day and went from API mapping
+    to exploit in 11 minutes
+  section: Security
+  category: Security
+  blurb: >-
+    An exposed Cairn instance showed agents told to obtain shell access finding a file-write
+    flaw in MONAI Label and planting a reverse shell.
+  summary: >-
+    Amazon Threat Intelligence found a suspected China-nexus actor's Cairn instance left open
+    without authentication, covering attacks from 2026-09-08 to 2026-09-10 on mostly East
+    Asian universities. The agents found a path traversal in MONAI Label and wrote a Python
+    reverse shell into sitecustomize.py to gain root. Other runs failed, including a 148-action
+    Redis attempt, and MONAI Label shipped a fix on 2026-11-18.
+  why: >-
+    Self-hosted AI research tools exposed on the network are now found and exploited by autonomous
+    agents, so teams running MONAI Label should update and restrict access.
+  background: >-
+    Cairn is an open-source framework that coordinates multiple AI agents for penetration
+    testing. Earlier reports from Unit 42 and Google tied it to other intrusions. Python imports
+    sitecustomize.py at interpreter start, which makes a writable site-packages path a persistence
+    point.
+  event: cairn-monai-label-zero-day
+  sources:
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/hackers-use-autonomous-ai-tool-cairn-to-find-zero-day-take-over-server/
 - title: >-
     NariQ quantizes Qwen3.8-27B to 2.5 and 3 bits per weight while matching BF16 on DeepSWE
     and Terminal Bench
@@ -149,6 +175,35 @@ stories:
   - label: primary
     url: https://github.com/earendil-works/pi/releases/tag/v1.6.0
 - title: >-
+    Zed restores OpenAI prompt caching after GPT-6.2 moved top-level instructions outside
+    the cacheable prefix
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    From GPT-6.2 on, OpenAI places top-level instructions after input, so Zed now sends its
+    system prompt as a leading developer message.
+  summary: >-
+    Zed's change 67245 says that starting with GPT-6.2, OpenAI's Responses API appends top-level
+    instructions after input, outside the cacheable prefix. Zed now sends its reusable system
+    prompt as a leading developer message, as Codex does, including when replaying a native
+    compaction window. In a local build with GPT-6.2 Sol, 98.4% of input tokens were cached
+    on the final request, and the fix shipped in Zed 1.29.3 and 1.30.2-pre.
+  why: >-
+    Any harness that passes its system prompt through the instructions field to GPT-6.2 or
+    later loses prefix caching and pays full input price until it moves the prompt into the
+    input.
+  background: >-
+    Prompt caching at OpenAI matches the longest identical prefix of a request against recent
+    requests and bills cached tokens at a discount. Anything that varies early in the request,
+    or a stable block placed after varying content, breaks the match. Agent harnesses rely
+    on a stable system prompt and tool list at the start to keep long sessions cheap.
+  event: gpt-6-2-instructions-cache-prefix-change
+  sources:
+  - label: primary
+    url: https://github.com/zed-industries/zed/releases/tag/collab-staging
+  - label: primary
+    url: https://github.com/zed-industries/zed/releases/tag/v1.29.3
+- title: >-
     Paper: RLVR with a fixed rollout cap teaches reasoning models to stop gaining from extra
     test-time tokens
   section: ML research
@@ -176,6 +231,28 @@ stories:
   sources:
   - label: primary
     url: https://arxiv.org/abs/2611.26172v1
+- title: >-
+    Paper: post-training changes how models read out what they represent, not what probes
+    can decode
+  section: ML research
+  category: Paper
+  blurb: >-
+    Probes on six open-weight models separate classes their answers miss, and the shift in
+    readout arises during supervised fine-tuning.
+  summary: >-
+    In six open-weight base models and their post-trained versions, linear probes separated
+    human from AI-written German texts while the models' answers often ordered them inversely,
+    and post-training lowered answer sensitivity by 0.34 d' on average. In two models with
+    stage checkpoints the change occurred during SFT. On negated statements post-training
+    instead repaired the readout, and adding 2,000 labeled examples to fine-tuning data set
+    the direction of the judgment.
+  why: >-
+    Evaluations that read only model answers can miss information a model holds, and small
+    fine-tuning sets can redirect how it is read out.
+  event: post-training-readout-paper
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.26584v1
 - title: >-
     Atuin 18.25.0 makes atuin setup the install path, moves datetime handling to jiff and
     removes the Atuin AI agent
@@ -242,6 +319,26 @@ stories:
     url: https://github.com/neovim/neovim/commit/022c59d4f9738a0b7b321a1c1c37bac24c373c91
   - label: primary
     url: https://github.com/neovim/neovim/commit/0274c7604b47ea79b18aef5b2048a275ada8beb0
+- title: >-
+    mise 2026.11.11 adds published_at release ordering and MacPorts bootstrap, and enforces
+    http: tool checksums
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    mise can now make latest follow the most recently published GitHub, GitLab or Forgejo
+    release, and http: installs fail on checksum mismatch.
+  summary: >-
+    version_order = "published_at" makes latest, mise upgrade and auto_update follow the most
+    recently published release. mise bootstrap can manage MacPorts ports, --self-update updates
+    mise before tools, and task locks gain if_pool. http: tools with checksum_url now verify
+    the download at install time, where previously only mise lock used the checksum.
+  why: >-
+    Teams that pinned http: tools with checksum_url were not protected against a bad download
+    until this release, so they should upgrade.
+  event: mise-2026-11-11-release
+  sources:
+  - label: primary
+    url: https://github.com/jdx/mise/releases/tag/v2026.11.11
 - title: JEP 547 Lazy Constants is targeted to JDK 28 as a fourth preview
   section: Languages and runtimes
   category: Languages
@@ -262,6 +359,32 @@ stories:
   sources:
   - label: primary
     url: https://inside.java/2026/11/20/jep547-target-jdk28/
+- title: >-
+    Spring AI 2.1.0 adds MCP 2026-07-28 support, a Session API replacing ChatMemory, and Decision
+    Models
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Spring AI 2.1 on Boot 4.2 serves the stateless MCP revision, adds tool call confirmation
+    and fixes 13 CVEs also patched in 2.0.3.
+  summary: >-
+    Spring AI 2.1.0 is built on Spring Boot 4.2 and supports servers and clients for the stateless
+    MCP 2026-07-28 revision alongside the older transports. It adds a Session API with turn-aware
+    compaction and recall that deprecates ChatMemory for removal in 3.0, ordered message parts,
+    an OpenAI Responses chat model, tool call confirmation and per-turn limits, and a DecisionModel
+    API. Both 2.1.0 and 2.0.3 fix 13 CVEs.
+  why: >-
+    Spring Boot services that host or call MCP servers can move to the stateless protocol,
+    and users on 2.0.x should take 2.0.3 for the security fixes.
+  background: >-
+    The 2026-07-28 MCP revision drops the initialize handshake and sessions, so every request
+    carries the protocol version and client capabilities. That lets servers scale like ordinary
+    stateless HTTP services. Spring AI is the Spring project's model and tool integration
+    layer.
+  event: spring-ai-2-1-0-release
+  sources:
+  - label: primary
+    url: https://spring.io/blog/2026/11/20/spring-ai-2-1-0-GA-available-now
 - title: >-
     DuckDB 2.0.1 LTS tightens SECRET scopes, restores UPDATE FROM semantics and avoids a kernel
     MADV_FREE bug
@@ -284,6 +407,32 @@ stories:
   sources:
   - label: primary
     url: https://duckdb.org/2026/11/20/announcing-duckdb-201.html
+- title: >-
+    GKE ambient networking reaches GA, replacing sidecar proxies with a per-node Envoy for
+    mTLS and L4 policy
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Google moves service mesh mTLS, authorization and telemetry on GKE into managed per-node
+    proxies, claiming up to 10x less L4 overhead.
+  summary: >-
+    Ambient networking for GKE is generally available. An NRI plugin redirects traffic from
+    ambient pods to a shared per-node Envoy that enforces mTLS, authorization policies and
+    load balancing, configured by Traffic Director with certificates from Certificate Authority
+    Service. Google claims up to 10x lower resource use for L4 mesh features and no pod restarts
+    for proxy CVE patches.
+  why: >-
+    GKE teams can get mesh mTLS and service metrics without injecting sidecars or restarting
+    workloads to patch proxies.
+  background: >-
+    A sidecar mesh such as classic Istio injects an Envoy container into every pod, which
+    costs memory and forces restarts on proxy upgrades. Ambient designs move L4 duties to
+    a per-node proxy and add L7 proxies only where needed. Istio introduced the ambient model,
+    and GKE now offers a managed version.
+  event: gke-ambient-networking-ga
+  sources:
+  - label: primary
+    url: https://cloud.google.com/blog/products/networking/ambient-networking-for-gke-sidecarless-service-mesh/
 - title: >-
     Argo CD self-heal can skip Sync hook migrations when a deny sync window closes, a CNCF
     ambassador shows
@@ -340,6 +489,32 @@ stories:
   - label: primary
     url: https://rust-glancer.github.io/blog/persistent-incrementality-in-rust/
 - title: >-
+    Fly.io replaces Vault with Petsem, cutting p99 secret reads at boot from 10 seconds to
+    300 ms
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Fly.io moved app secret reads off a single-region Vault cluster to regional read replicas,
+    gated by macaroon discharges per worker.
+  summary: >-
+    Fly.io says Vault's Raft cluster in IAD gave apps a p99 of 10 seconds to load secrets
+    at boot and made boot depend on that region. Petsem keeps a write primary in IAD with
+    read replicas in other regions, accepting stale reads, and cut p99 to 300 ms. A worker
+    can read an app's secrets only with its own credential plus a third-party macaroon discharge
+    proving it hosts that app, and denied reads raise alerts.
+  why: >-
+    It shows a concrete design for limiting a compromised host to the secrets of workloads
+    placed on it, and for trading secret consistency for boot latency.
+  background: >-
+    Macaroons are bearer tokens that carry caveats, and a third-party caveat requires a separate
+    discharge token from another service before the request is valid. Raft-backed stores such
+    as Vault need low latency between members, so they usually live in one region. Fly.io
+    earlier replaced Consul and Nomad with its own systems.
+  event: fly-io-petsem-vault-replacement
+  sources:
+  - label: primary
+    url: https://fly.io/blog/petsem/
+- title: >-
     OpenAI's Ahmed Ibrahim: Codex code mode exposes MCP tools as async functions in a V8-sandboxed
     JavaScript REPL
   section: Talks
@@ -361,6 +536,34 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=2H5QbeHalKo
+- title: >-
+    CppCon: Andrew Drakeford gets bitwise-identical Llama 2 output across AVX2, AVX-512, Neon
+    and CUDA at full speed
+  section: Talks
+  category: Video
+  blurb: >-
+    By fixing the expression tree of each reduction, scan and math function, he matched hashed
+    checkpoints across 13 hardware and thread setups.
+  summary: >-
+    Drakeford rebuilt about nine nondeterministic functions in llama2.c, mainly reductions,
+    linear algebra and transcendental math, on a fixed canonical block-dyadic expression tree
+    shared by reduce and scan. Hashed observers matched bit for bit across 13 configurations,
+    and the deterministic AVX-512 build ran about 630 tokens per second on one thread against
+    133 for the baseline. Correctly rounded math functions and fixed-order FMA chains for
+    matrix multiply kept results identical across CPUs and GPU.
+  why: >-
+    Reproducible model output across hardware and thread counts is achievable without a speed
+    penalty if you specify the summation order instead of leaving it to the library.
+  background: >-
+    Floating-point addition is not associative, so parallel or vectorized reductions that
+    regroup terms give results that differ in the low bits. Standard library reduce and transform_reduce
+    allow any grouping, which is why output changes with thread count or SIMD width. Correctly
+    rounded math functions return the infinitely precise result rounded once, so every conforming
+    implementation agrees.
+  event: cppcon-drakeford-reproducible-numerics
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=-5yzXMyyV98
 - title: >-
     Gemini 4 Neon tops the Models Engineering Index at 68.1, and Hacker News users compare
     it with Fable 5.2 in daily use
@@ -443,3 +646,38 @@ stories:
     url: https://architectlabs.com/blog/frostbite
   - label: discussion
     url: https://news.ycombinator.com/item?id=50572503
+- title: >-
+    Anthropic mathematician Levent Alpöge claims a Claude-assisted proof of the Riemann Hypothesis
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A mathematician at Anthropic says he and Claude proved the Riemann Hypothesis and formalized
+    it, and Hacker News weighs how to trust it.
+  summary: >-
+    Levent Alpöge, who works at Anthropic, wrote that working with Claude he discovered a
+    proof of the Riemann Hypothesis, that the method extends to the Generalized Riemann Hypothesis,
+    and that he and Claude formalized the arguments without assumptions. He wrote that Claude
+    far outpaced him near the finish. The Hacker News thread reached about 1,487 points and
+    1,019 comments within three hours.
+  why: >-
+    A formalized proof claim on a Millennium Prize problem is the strongest public test yet
+    of frontier models doing research-grade mathematics.
+  background: >-
+    The Riemann Hypothesis states that every nontrivial zero of the Riemann zeta function
+    has real part 1/2, and it is one of the Clay Millennium Prize problems. Many results in
+    number theory are proved conditionally on it. A formalized proof is one checked by a proof
+    assistant such as Lean, though reviewers must still confirm that the formal statement
+    matches the intended theorem.
+  comments: >-
+    Commenters note that Alpöge worked with Tristan Buckmaster on the Euler and Navier-Stokes
+    results that preceded OpenAI's Navier-Stokes paper, and rehash the authorship dispute
+    from that episode. Others argue that credentials and a compiling Lean project are not
+    enough until the formal statement is checked against the real conjecture.
+  event: alpoge-riemann-hypothesis-proof-claim
+  sources:
+  - label: primary
+    url: https://alpo.ge/remark.pdf
+  - label: discussion
+    url: https://simonwillison.net/2026/Nov/20/levent-alpoge/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50574968
