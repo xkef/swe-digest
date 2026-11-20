@@ -1,5 +1,5 @@
 date: '2026-11-20'
-updated: 2026-11-20T21:24Z
+updated: 2026-11-20T23:19Z
 stories:
 - title: >-
     OpenSSL CVE-2026-121481, a buffer overflow in EVP_EncodeBlock, gets a public fix while
@@ -269,6 +269,34 @@ stories:
     url: https://github.com/zed-industries/zed/releases/tag/collab-staging
   - label: primary
     url: https://github.com/zed-industries/zed/releases/tag/v1.29.3
+- title: >-
+    Claude Code 2.1.330 adds Enterprise Admin Console sign-in and lets scheduled tasks and
+    /loop run up to 30 days
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Claude Code now applies an enterprise org's settings and gateway at login, asks before
+    more rm commands, and narrows deniedMcpServers.
+  summary: >-
+    Claude Code 2.1.330, released 2026-11-20, adds sign-in to organizations managed in Anthropic's
+    Enterprise Admin Console, after which it applies the organization's settings and uses
+    its cloud provider or gateway. Recurring scheduled tasks and /loop now run up to 30 days
+    instead of 7, more rm commands aimed at root, home, a top-level folder or the working
+    folder now ask for approval, and deniedMcpServers name entries now hide only the named
+    claude.ai connector rather than every connector at its URL. It also adds easel, a built-in
+    chart mod, and a --start-dir option and new metrics for the self-hosted runner.
+  why: >-
+    Admins who blocked claude.ai connectors by name must now deny the exact URL to block every
+    connector at that server, and long-running /loop jobs no longer stop after a week.
+  background: >-
+    Claude Code reads permission and MCP policy from layered settings files, with managed
+    settings at the top that users cannot override. deniedMcpServers is the managed list that
+    keeps named MCP servers from loading, so a change in how a name entry matches changes
+    what an existing policy blocks.
+  event: claude-code-2-1-330-release
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/claude-code/releases/tag/v2.1.330
 - title: >-
     Paper: RLVR with a fixed rollout cap teaches reasoning models to stop gaining from extra
     test-time tokens
@@ -552,6 +580,36 @@ stories:
   - label: primary
     url: https://cloud.google.com/blog/products/networking/ambient-networking-for-gke-sidecarless-service-mesh/
 - title: >-
+    Cloud Hypervisor 55 adds AArch64 nested virtualization, drops host kernels before 6.8
+    and removes Intel TDX
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The Rust VMM behind several agent sandboxes fixes a virtio-pmem use-after-free, hardens
+    virtio and disk parsing, and now needs host kernel 6.8.
+  summary: >-
+    Cloud Hypervisor v55.0, released 2026-11-19, lets AArch64 guests on KVM run nested VMs
+    on FEAT_NV2 hardware, raises the AArch64 vCPU limit from 255 to 990, and adds CPU hotplug
+    for SEV-SNP guests and vsock SOCK_SEQPACKET. It fixes a virtio-pmem use-after-free at
+    VM shutdown, also fixed in v53.1 and v54.1, and adds hardening for virtio queues, virtio-iommu
+    permissions, QCOW2 and VHDX parsing and io_uring operations. Host kernels older than 6.8
+    are no longer supported, Intel TDX support is removed, and restoring VMs with VFIO devices
+    now requires file descriptors through the new external_fds option.
+  why: >-
+    Operators of microVM sandboxes on Cloud Hypervisor must check host kernel versions and
+    restore scripts before upgrading, and should take the virtio-pmem fix.
+  background: >-
+    Cloud Hypervisor is a virtual machine monitor written in Rust that runs on KVM or Microsoft's
+    MSHV and targets cloud workloads with a small device model. Replit rebuilt its sandbox
+    engine on Cloud Hypervisor microVMs, as the digest covered on 2026-11-06, which is why
+    its snapshot, restore and hardening work matters for agent isolation.
+  event: cloud-hypervisor-55-release
+  sources:
+  - label: primary
+    url: https://github.com/cloud-hypervisor/cloud-hypervisor/releases/tag/v55.0
+  - label: discussion
+    url: https://www.phoronix.com/news/Cloud-Hypervisor-55
+- title: >-
     Argo CD self-heal can skip Sync hook migrations when a deny sync window closes, a CNCF
     ambassador shows
   section: Engineering posts
@@ -725,6 +783,28 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=MDI81OaZAD4
+- title: >-
+    Low Level walks through how nginx's HTTP/2 window accounting overflows into a heap memcpy
+  section: Videos
+  category: Video
+  blurb: >-
+    A cancelled HTTP/2 stream returns send credit above nginx's window bound, and a negative
+    size later becomes a huge memcpy into the heap.
+  summary: >-
+    Low Level explains CVE-2026-123007: nginx returns flow-control credit when a queued HTTP/2
+    stream is cancelled, and a WINDOW_UPDATE sent while data is queued lets that cleanup push
+    the send window above the 2^31 minus 1 maximum without a check. The later bound check
+    then computes a negative value and passes, and a size truncated to signed off_t is cast
+    back to size_t in memcpy, producing a heap overflow. He argues that reliable remote exploitation
+    needs heap grooming that is hard on busy shared workers, while still advising patching
+    or disabling HTTP/2.
+  why: >-
+    It shows why the HTTP/2 flaw only matters where http2 is enabled and why patching beats
+    relying on exploitation difficulty.
+  event: low-level-nginx-http2-window-overflow-video
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=sFuzabpwL7o
 - title: >-
     Gemini 4 Neon tops the Models Engineering Index at 68.1, and Hacker News users compare
     it with Fable 5.2 in daily use
