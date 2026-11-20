@@ -1,5 +1,5 @@
 date: '2026-11-20'
-updated: 2026-11-20T08:48Z
+updated: 2026-11-20T14:16Z
 stories:
 - title: >-
     OpenSSL CVE-2026-121481, a buffer overflow in EVP_EncodeBlock, gets a public fix while
@@ -68,6 +68,34 @@ stories:
   - label: primary
     url: https://arxiv.org/abs/2611.26157v1
 - title: >-
+    Hugging Face trains per-harness LoRA adapters that lift Qwen3.8-27B in pi from 39% to
+    55% on Terminal-Bench 2.1
+  section: AI
+  category: AI
+  blurb: >-
+    Hugging Face trains one LoRA per agent harness on Qwen3.8-27B with async GRPO, lifting
+    pi on Terminal-Bench 2.1 from 39% to 55%.
+  summary: >-
+    Hugging Face trained a LoRA adapter for Qwen3.8-27B inside each of pi, OpenCode and Hermes
+    Agent with TRL's AsyncGRPOTrainer, using the harness as shipped and a proxy that records
+    tokens between harness and vLLM. In pi, Terminal-Bench 2.1 pass@1 rose from 39% to 55%
+    while average tokens per task fell from 2.9K to 1.5K, and the three adapters were also
+    merged into one super adapter. The task set filters 1,127 Hub candidates with openenv
+    validate and keeps 171 tasks the base model solves only sometimes.
+  why: >-
+    Teams self-hosting an open-weight coding model can RL-tune a cheap adapter for their own
+    harness and task mix instead of switching models.
+  background: >-
+    GRPO scores each rollout against other rollouts of the same task, so tasks that always
+    pass or always fail give no learning signal, which is why the pipeline filters by base
+    model pass rate. A LoRA adapter trains small low-rank matrices on top of frozen weights,
+    so it can be swapped per harness. Asynchronous GRPO keeps training while slow rollouts
+    finish instead of waiting for the whole batch.
+  event: hf-harness-adapters-qwen3-8-27b
+  sources:
+  - label: primary
+    url: https://huggingface.co/blog/harness-adapters-at-scale
+- title: >-
     Cognition runs each Devin macOS session in a fresh EC2 Mac VM with NBD snapshots and a
     user-space network gateway
   section: Agentic coding
@@ -98,6 +126,28 @@ stories:
   sources:
   - label: primary
     url: https://aws.amazon.com/blogs/architecture/ai-coding-agents-on-amazon-ec2-mac-how-cognition-scales-devin-for-macos/
+- title: >-
+    pi 1.6.0 makes GPT-6.2 Sol the default OpenAI model and makes extension render output
+    readonly
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    pi 1.6.0 adds GPT-6.2 Astra and Sol, makes Sol the default OpenAI model, and makes extension
+    render() output readonly and cached.
+  summary: >-
+    pi 1.6.0 adds GPT-6.2 Astra and GPT-6.2 Sol on the openai, azure and openai-codex providers
+    and makes Sol their default, though both reject thinking level off. Extension components
+    now get a readonly string array from render(), and Container returns a cached array, so
+    extensions that edit render output in place must copy it first. The find tool's path patterns
+    are now relative to the search directory, and the llama.cpp extension now targets port
+    9931.
+  why: >-
+    pi extension authors must copy render output before changing it, and scripts relying on
+    find path patterns matching at any depth need a leading **/.
+  event: pi-1-6-0-release
+  sources:
+  - label: primary
+    url: https://github.com/earendil-works/pi/releases/tag/v1.6.0
 - title: >-
     Paper: RLVR with a fixed rollout cap teaches reasoning models to stop gaining from extra
     test-time tokens
@@ -149,6 +199,147 @@ stories:
   - label: primary
     url: https://github.com/atuinsh/atuin/releases/tag/v18.25.0
 - title: >-
+    KDE's libghostty-based Kwi terminal ships v0.1 and becomes an official KDE application
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    KDE's new Kwi terminal, built on the Ghostty library, ships v0.1 on Flathub and passes
+    review to become an official KDE application.
+  summary: >-
+    Eike Hein released Kwi v0.1, a KDE terminal emulator built on the Ghostty library, in
+    source form and as a Flatpak on Flathub. The release adds global menu support, tab improvements
+    and theming work, and Kwi has passed the review to become an official KDE application.
+  why: >-
+    Plasma users get a native terminal on libghostty, which adds a second desktop consumer
+    of the library alongside Ghostty itself.
+  background: >-
+    libghostty packages Ghostty's terminal emulation core as a library so other programs can
+    embed it instead of writing their own VT parser and state machine. Konsole has been KDE's
+    default terminal for decades.
+  event: kwi-terminal-0-1-release
+  sources:
+  - label: discussion
+    url: https://www.phoronix.com/news/Kwi-Terminal-First-Release
+- title: >-
+    Neovim master adds HTTP status and headers to vim.net.request() response callbacks
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Neovim master now passes HTTP status and headers to vim.net.request() callbacks and reports
+    4xx and 5xx responses as errors.
+  summary: >-
+    A commit on Neovim master adds status and headers fields to the vim.net.request() response,
+    plus a vim.net.http_status table of codes, by having curl write the status and header
+    JSON after the body. Responses with status 400 or above now set an error, and curl no
+    longer runs with --fail. A follow-up fix on 2026-11-20 corrects response parsing when
+    a body contains the split marker.
+  why: >-
+    Plugins that call vim.net.request() can now branch on status codes and read headers, and
+    should expect HTTP errors to arrive through err.
+  event: neovim-vim-net-request-status-headers
+  sources:
+  - label: primary
+    url: https://github.com/neovim/neovim/commit/022c59d4f9738a0b7b321a1c1c37bac24c373c91
+  - label: primary
+    url: https://github.com/neovim/neovim/commit/0274c7604b47ea79b18aef5b2048a275ada8beb0
+- title: JEP 547 Lazy Constants is targeted to JDK 28 as a fourth preview
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Lazy Constants, the JDK API for values initialized once on demand and then treated as
+    constants, enters a fourth preview in JDK 28.
+  summary: OpenJDK has targeted JEP 547, Lazy Constants (Fourth Preview), to JDK 28.
+  why: >-
+    Java teams that defer expensive static initialization still need --enable-preview for
+    this API and should expect further changes before it is final.
+  background: >-
+    Lazy constants hold a value that is computed at most once, on first use, after which the
+    JIT can treat it like a final field and constant-fold it. They target the gap between
+    eager static final fields, which slow startup, and hand-written lazy holders or double-checked
+    locking, which the JVM cannot optimize as constants. The API began life under the name
+    Stable Values.
+  event: jep-547-lazy-constants-jdk-28
+  sources:
+  - label: primary
+    url: https://inside.java/2026/11/20/jep547-target-jdk28/
+- title: >-
+    DuckDB 2.0.1 LTS tightens SECRET scopes, restores UPDATE FROM semantics and avoids a kernel
+    MADV_FREE bug
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    DuckDB 2.0.1 tightens SECRET scope matching, restores per-match UPDATE FROM semantics
+    and avoids a kernel MADV_FREE data loss bug.
+  summary: >-
+    DuckDB 2.0.1 makes host and bucket SECRET scopes match only exact names or a following
+    slash, and restores 1.x behavior where UPDATE FROM and MERGE apply every matching source
+    row. Its bundled jemalloc no longer frees memory with MADV_FREE, avoiding silent zeroing
+    on kernels affected by CVE-2026-97945, and it blocks CREATE SECRET when enable_external_access
+    is false. Extension repositories can now be registered by host through a .well-known file,
+    and DuckDB 1.4 LTS reached end of life on 2026-11-17.
+  why: >-
+    Users upgrading must check prefix-style SECRET scopes and nondeterministic UPDATE FROM
+    or MERGE joins, and can set muzzy_decay_ms:0 if they cannot upgrade yet.
+  event: duckdb-2-0-1-lts-release
+  sources:
+  - label: primary
+    url: https://duckdb.org/2026/11/20/announcing-duckdb-201.html
+- title: >-
+    Argo CD self-heal can skip Sync hook migrations when a deny sync window closes, a CNCF
+    ambassador shows
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Two of five regional Argo CD apps skipped a Sync hook migration when a deny window closed,
+    because self-heal ran a partial sync instead.
+  summary: >-
+    Afzal Ansari reproduced the failure in five of six lab runs: when a level-1 refresh reaches
+    the controller first after a window closes, it compares the recorded revision against
+    itself, decides the app already synced, and self-heal runs a partial sync that skips all
+    hooks and writes no history. He recommends making the migration a managed Job with sync-wave
+    -1 and a per-release name, or turning off selfHeal on apps that run migrations so the
+    timer-driven refresh runs a full sync.
+  why: >-
+    Teams that run schema migrations as Argo CD hooks behind sync windows can ship new code
+    against an old schema while the UI shows Synced and Healthy.
+  background: >-
+    Argo CD sync windows block or allow automated syncs on a schedule, and resource hooks
+    are Jobs annotated to run at phases such as PreSync or Sync. Self-heal re-applies only
+    the resources that drifted from Git, and these partial syncs do not run hooks. Sync waves
+    order ordinary managed resources, so a Job placed in an earlier wave must be healthy before
+    later waves apply.
+  event: argo-cd-sync-window-self-heal-hook-skip
+  sources:
+  - label: primary
+    url: https://www.cncf.io/blog/2026/11/20/when-a-sync-window-closes-how-argo-cd-self-heal-skipped-the-migration-hook/
+- title: >-
+    Rust Glancer's author builds Ajika, a Salsa-style incremental engine that keeps query
+    memos on disk
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Rust Glancer's author builds Ajika, a Salsa-style incremental query engine that keeps
+    memos on disk and loads them only when queried.
+  summary: >-
+    The post walks through how Salsa memoizes queries with revisions, dependency tracking
+    and early cutoff when a recomputed dependency returns the same value. Because Salsa keeps
+    memos in memory, Rust Glancer, a low-memory Rust language server, built Ajika on stable
+    Rust to store query data on the filesystem, load it only while a query runs, and reload
+    it after a restart.
+  why: >-
+    Builders of language servers and build tools get a worked comparison of in-memory and
+    on-disk incremental computation, with Salsa, rustc, turbo-tasks and DICE as reference
+    points.
+  background: >-
+    rust-analyzer is built on Salsa, which records which inputs and queries each query read
+    so that an edit only recomputes the affected parts. The red-green approach marks a memo
+    valid again when its dependencies recompute to equal values, so expensive downstream queries
+    can be skipped.
+  event: ajika-persistent-incremental-rust
+  sources:
+  - label: primary
+    url: https://rust-glancer.github.io/blog/persistent-incrementality-in-rust/
+- title: >-
     OpenAI's Ahmed Ibrahim: Codex code mode exposes MCP tools as async functions in a V8-sandboxed
     JavaScript REPL
   section: Talks
@@ -197,3 +388,58 @@ stories:
     url: https://git-aarvin.github.io/mei/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50568130
+- title: >-
+    A Jujutsu primer draws 171 points as Hacker News argues over jj's missing staging area
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A Jujutsu primer draws 171 points and 106 comments as Hacker News users argue over jj's
+    missing staging area and auto-tracking.
+  summary: >-
+    Ethan Lowman's Jujutsu primer reached 171 points and 106 comments on Hacker News. Most
+    of the thread debates whether jj's working-copy commit replaces Git's staging area and
+    whether automatic file tracking and bookmark naming get in the way.
+  why: >-
+    Teams weighing jj get a list of the friction points experienced users hit and the commands
+    and settings they use to work around them.
+  comments: >-
+    Long-time users say jj split -i and jj squash -i replace hunk staging, and one recommends
+    setting snapshot.auto-track to none() to stop new files being added. Another reports jj
+    evolog let them recover an unrecorded state from that morning, while one user says Claude
+    Code refused to treat a jj workspace like a Git worktree. Several commenters want forges
+    that review jj changes and their evolution instead of Git branches.
+  event: jujutsu-primer-hn-discussion
+  sources:
+  - label: primary
+    url: https://ethanlowman.com/posts/jj-primer/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50570628
+- title: >-
+    Architect Labs says AI agents designed Frostbite, an interaction-net CPU reaching 4.59x
+    the perf per watt of an in-order core
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Architect Labs says agent swarms designed a CPU for interaction nets from ISA to GDS,
+    reaching 4.59x the perf per watt of an in-order core.
+  summary: >-
+    Architect Labs says its agents iterated on the compiler, ISA, microarchitecture, RTL,
+    verification and GDS of Frostbite, a tiled CPU that runs Vine programs compiled to interaction
+    nets, with tiles stealing work from neighbors instead of using a central scheduler. On
+    a 7 nm process, one quad reached a geometric mean of 4.59x the perf per watt of a dual-issue
+    in-order core across 25 workloads, and 3.83x on the 15 held out from tuning. The thread
+    drew 296 points and 201 comments on Hacker News.
+  why: >-
+    It is a detailed claim that formal specs plus agent swarms can explore hardware design
+    end to end, though results are pre-silicon and against a small in-order baseline.
+  background: >-
+    Interaction nets represent a program as a graph where computation rewrites pairs of connected
+    nodes, and because each node has one principal port, rewrites never overlap and can run
+    in parallel in any order. Every value is used exactly once, so the hardware needs no shared
+    mutable memory or cache coherence for it.
+  event: frostbite-ai-designed-cpu
+  sources:
+  - label: primary
+    url: https://architectlabs.com/blog/frostbite
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50572503
