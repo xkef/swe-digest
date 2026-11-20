@@ -1,5 +1,5 @@
 date: '2026-11-20'
-updated: 2026-11-20T17:58Z
+updated: 2026-11-20T21:24Z
 stories:
 - title: >-
     OpenSSL CVE-2026-121481, a buffer overflow in EVP_EncodeBlock, gets a public fix while
@@ -65,6 +65,38 @@ stories:
   - label: discussion
     url: https://www.bleepingcomputer.com/news/security/hackers-use-autonomous-ai-tool-cairn-to-find-zero-day-take-over-server/
 - title: >-
+    GPGME 2.3.1 fixes CVE-2026-129975, a double free triggered by a crafted long OpenPGP user
+    ID
+  section: Security
+  category: Security
+  blurb: >-
+    A crafted long user ID in an OpenPGP key triggers a double free in all GPGME releases,
+    hitting mail clients, Flatpak and Samba until 2.3.1.
+  summary: >-
+    GnuPG released GPGME 2.3.1 on 2026-11-20 to fix CVE-2026-129975, a double free in the
+    functions that read gpg status lines and key listings, which keep a stale pointer after
+    realloc when they return early. Werner Koch says the bug can be used to exfiltrate data,
+    for example by sending signed data, and that remote code execution cannot be ruled out.
+    Johan Carlsson found it, GitLab reported it on 2026-11-12, and disclosure moved up from
+    2026-11-25 because GitLab had to ship early for Ruby2Shell.
+  why: >-
+    Any service or client that verifies OpenPGP keys or signatures through GPGME, including
+    statically linked builds, needs 2.3.1 or the supplied backport patch.
+  background: >-
+    GPGME is the C library most applications use to talk to GnuPG. It runs the gpg binary
+    as a child process and parses its machine-readable status and colon-delimited output.
+    That makes it a shared dependency of mail clients, Flatpak signature checks, Samba and
+    forges that verify signed commits. A double free can corrupt allocator state, and here
+    other allocations between the two frees can hide it from common allocator checks.
+  event: gpgme-double-free-cve-2026-129975
+  sources:
+  - label: primary
+    url: https://lists.gnupg.org/pipermail/gnupg-announce/2026q4/000517.html
+  - label: primary
+    url: https://dev.gnupg.org/T8557
+  - label: discussion
+    url: https://www.phoronix.com/news/GnuPG-GPGME-Critical
+- title: >-
     NariQ quantizes Qwen3.8-27B to 2.5 and 3 bits per weight while matching BF16 on DeepSWE
     and Terminal Bench
   section: AI
@@ -121,6 +153,40 @@ stories:
   sources:
   - label: primary
     url: https://huggingface.co/blog/harness-adapters-at-scale
+- title: >-
+    Thinking Machines releases Inkling 2 Mini, an open-weights 26.4B MoE looped transformer
+    that runs on laptops
+  section: AI
+  category: AI
+  blurb: >-
+    Thinking Machines releases open weights for a 26.4B MoE that loops its middle layers three
+    times per token and fits in about 20 GB.
+  summary: >-
+    Inkling 2 Mini has 26.4B total and 3.4B active parameters, runs its two middle six-layer
+    blocks three times per token, and was trained and deployed natively in NVFP4 with the
+    last four layers in MXFP8. Thinking Machines reports 48.2% on DeepSWE v1.1 and 79.2% on
+    SWE-bench Verified, the best among open models under 100B parameters in its table, but
+    it trails Qwen3.8-27B on multi-turn chat and constraint following. It also released a
+    variable-loop research model and found that more loops did not meaningfully reduce chain-of-thought
+    monitorability at this scale.
+  why: >-
+    A roughly 20 GB open coding model with no quantization conversion loss is a new candidate
+    for local agent harnesses on a 48 GB Mac or a DGX Spark.
+  background: >-
+    A looped transformer reuses the same layer weights for several passes per token, which
+    adds serial computation without adding parameters. The approach goes back to Universal
+    Transformers in 2018. NVFP4 is a 4-bit floating point format with per-block scaling that
+    Blackwell-class GPUs accelerate. Thinking Machines published Inkling 2 Small weights,
+    a 594B MoE, on 2026-11-13, and Mini was pruned from the same recipe and then healed by
+    distillation.
+  comments: >-
+    The Hacker News thread reached 234 points and 25 comments within hours of release.
+  event: inkling-2-mini-release
+  sources:
+  - label: primary
+    url: https://thinkingmachines.ai/news/inkling-2-mini/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50581260
 - title: >-
     Cognition runs each Devin macOS session in a fresh EC2 Mac VM with NBD snapshots and a
     user-space network gateway
@@ -253,6 +319,58 @@ stories:
   sources:
   - label: primary
     url: https://arxiv.org/abs/2611.26584v1
+- title: >-
+    OpenAI's MedChemBench finds GPT models rebuild molecules well but struggle to select compounds
+    and predict properties
+  section: ML research
+  category: AI
+  blurb: >-
+    OpenAI's 99-problem medicinal chemistry benchmark finds GPT models rebuild molecules well
+    but earn about half credit on picking compounds.
+  summary: >-
+    MedChemBench has 99 problems drawn from 117 papers and patents covering 761 molecular
+    structures, and it grades structure reconstruction, scientific explanation, compound ranking
+    and numerical property prediction. GPT-6.2 Astra earned 84.5% of available credit at xhigh
+    effort, and GPT-6 Astra earned 95.4% on structures but about half on selection and prediction.
+    OpenAI says the benchmark cannot rule out exposure to the published sources and used single
+    attempts without tools.
+  why: >-
+    Drug discovery teams evaluating LLMs get a component-level benchmark that separates reading
+    chemical structures from making medicinal chemistry decisions.
+  background: >-
+    Medicinal chemists run design, make, test cycles in which improving potency against a
+    target can worsen absorption or metabolic stability. Earlier chemistry benchmarks mostly
+    tested isolated property prediction or reaction knowledge. MedChemBench instead hands
+    the model a research program's state at a point in time and grades its next decisions
+    against withheld results.
+  event: openai-medchembench
+  sources:
+  - label: primary
+    url: https://openai.com/index/introducing-medchembench
+- title: >-
+    Paper: an open 27B model rewrites its own weights without gradients and gains 6.6 points
+    on unseen problems
+  section: ML research
+  category: Paper
+  blurb: >-
+    An open 27B model edits its own weights from its graded answers, with no gradients, and
+    gains 6.6 points on unseen problems, a paper claims.
+  summary: >-
+    The authors give an open 27B model its weights, its graded answers and the ability to
+    run itself, and report that it diagnoses failures and edits its weights using only forward
+    passes. They report accuracy rising over eight consecutive sessions, repair of a damaged
+    copy to over 80% of original accuracy on unseen image tasks, and that smaller models in
+    the same family make no edit or break themselves.
+  why: >-
+    If it replicates, weight edits proposed by the model itself become a third adaptation
+    path next to fine-tuning and test-time compute.
+  comments: The paper drew 275 points and 93 comments on Hacker News.
+  event: llm-self-rewriting-weights-paper
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.21885
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50577265
 - title: >-
     Atuin 18.25.0 makes atuin setup the install path, moves datetime handling to jiff and
     removes the Atuin AI agent
@@ -564,6 +682,49 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=-5yzXMyyV98
+- title: >-
+    Warp's Zach Lloyd: declare the software factory as code, score every agent run, and let
+    agents PR fixes to it
+  section: Talks
+  category: Video
+  blurb: >-
+    Warp's CEO defines a software factory as agent workflows declared in code, scored by online
+    evals, and fixed by agents opening PRs on it.
+  summary: >-
+    Lloyd defines a software factory as a code-defined, closed-loop system for measuring and
+    improving cloud coding agents, with triggers, workflows, MCP servers and sandboxes declared
+    in a Terraform-style format. Warp records every agent conversation and artifact, runs
+    online evals over sessions, such as one that flags redundant tests, and has agents propose
+    fixes as pull requests against the factory definition. It replays real tasks as benchmarks
+    to compare models, harnesses and skill sets on cost and quality.
+  why: >-
+    Declaring agent workflows as code gives teams branching, rollback and a target for eval-driven
+    self-improvement instead of per-laptop setups.
+  event: warp-factory-engineering-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=0LeT996Hz3E
+- title: >-
+    Ramp says its multiplayer coding agent Inspect now writes and ships about 75% of the company's
+    code
+  section: Talks
+  category: Video
+  blurb: >-
+    Ramp says its in-house multiplayer coding agent Inspect writes and ships about 75% of
+    its code, with every session public inside the company.
+  summary: >-
+    Zach Bruggeman says Ramp runs one shared, remotely hosted Inspect for the whole company,
+    so setup improvements reach everyone and no usage mandate was needed. Sessions are public
+    by default, and reviewers see the conversation, tools used, screenshots and a verification
+    agent's recording alongside the diff. Engineers built the Review Buddy review agent on
+    Inspect's pull request triggers to replace rotating third-party review products.
+  why: >-
+    It is a named-company account of replacing per-engineer agent setups with one shared harness
+    and attaching agent transcripts to code review.
+  event: ramp-inspect-culture-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=MDI81OaZAD4
 - title: >-
     Gemini 4 Neon tops the Models Engineering Index at 68.1, and Hacker News users compare
     it with Fable 5.2 in daily use
