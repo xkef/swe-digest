@@ -1,0 +1,199 @@
+date: '2026-11-20'
+updated: 2026-11-20T08:48Z
+stories:
+- title: >-
+    OpenSSL CVE-2026-121481, a buffer overflow in EVP_EncodeBlock, gets a public fix while
+    its advisory is pending
+  section: Top stories
+  category: Security
+  blurb: >-
+    OpenSSL's base64 encoder writes past its buffer when the encoded size overflows an int,
+    and maintainers are debating the fix in public.
+  summary: >-
+    Pull request 33652, opened on 2026-11-10 by Nicky Mouha, fixes CVE-2026-121481 in EVP_EncodeBlock
+    for inputs whose encoded size does not fit in an int. The reporter says the OpenSSL security
+    team asked for a public fix while the advisory is still pending. The PR is labeled for
+    master and the 4.0 and 4.1 branches. The reporter shows openssl s_client can trigger it
+    with a large -proxy_pass read from an environment variable. Maintainer Bob Beck called
+    the reproducer synthetic, and after a debate over returning -1 or 0 the patch moved to
+    OPENSSL_assert.
+  why: >-
+    Code on OpenSSL 4.0 or 4.1 that base64-encodes input of attacker-controlled size through
+    EVP_EncodeBlock should cap the length until a fixed release ships.
+  background: >-
+    EVP_EncodeBlock takes an input pointer, an output pointer and an input length but no output
+    length, so each caller must size the output buffer itself from the rule that every 3 input
+    bytes become 4 output bytes, plus a NUL. The function computes and returns that length
+    as a signed int, so very large inputs can overflow the arithmetic and the function then
+    writes past the buffer the caller allocated. The reporter compares the pattern to CVE-2021-23840,
+    an earlier OpenSSL integer overflow.
+  followup: The OpenSSL security advisory and fixed 4.0 and 4.1 releases.
+  comments: >-
+    The Hacker News thread drew 208 points and 156 comments. Commenters blame an API that
+    never receives the output buffer size. One says the flaw sits in code written for OpenSSL
+    4.x, and others point to rustls and BoringSSL as alternatives.
+  event: openssl-evp-encodeblock-cve-2026-121481
+  sources:
+  - label: primary
+    url: https://github.com/openssl/openssl/pull/33652
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50569226
+- title: >-
+    NariQ quantizes Qwen3.8-27B to 2.5 and 3 bits per weight while matching BF16 on DeepSWE
+    and Terminal Bench
+  section: AI
+  category: AI
+  blurb: >-
+    Calibrating trellis-coded quantization on the model's own agent session tokens keeps the
+    long-horizon accuracy other low-bit quants lose.
+  summary: >-
+    The paper says existing quantizations of Qwen3.8-27B at or below 3 bits per weight match
+    BF16 on short tasks such as AIME but solve at most 72% as many DeepSWE tasks. NariQ calibrates
+    a trellis-coded post-training quantizer on tokens the BF16 model generated in agent sessions,
+    and at 3.0 and 2.5 bits it stays level with BF16 on DeepSWE, Terminal Bench, AIME and
+    RealWorldQA. The 2.0-bit checkpoint trails, and the GGUF files and an inference fork are
+    released.
+  why: >-
+    Teams self-hosting coding agents can test whether a 27B model fits smaller GPUs without
+    the agentic accuracy loss that perplexity-calibrated quants hide.
+  background: >-
+    Post-training quantization shrinks a trained model's weights to fewer bits without retraining,
+    using a small calibration set to pick scales that minimize error. Most methods calibrate
+    on short web text and report perplexity, which says little about a model that must keep
+    calling tools correctly across 100K-token contexts. Trellis-coded quantization encodes
+    groups of weights as paths through a state machine, which reaches lower error per bit
+    than rounding each weight on its own.
+  event: nariq-sub-3-bit-agentic-quantization
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.26157v1
+- title: >-
+    Cognition runs each Devin macOS session in a fresh EC2 Mac VM with NBD snapshots and a
+    user-space network gateway
+  section: Agentic coding
+  category: Engineering post
+  blurb: >-
+    Devin builds and tests iOS apps in its own macOS VMs, two per EC2 Mac host, freeing them
+    when idle and resuming from snapshots in seconds.
+  summary: >-
+    Cognition starts a macOS VM per Devin session in under a minute on EC2 Mac Dedicated Hosts
+    in six AWS Regions, two guests per host as the macOS license allows. The disks of idle
+    sessions go to S3 through an NBD frontend on its snapshot service, and about 90% of sessions
+    release their VM when idle. A per-VM user-space Ethernet gateway replaces Apple's NAT,
+    which fought Cognition's own pf rules. Prepared images grant accessibility and screen
+    recording permissions before first boot. Devin drives apps through the accessibility tree
+    using Dioxus's accessibility-cli, and nearly 1,000 organizations used it within six weeks
+    of the 2026-09-15 launch.
+  why: >-
+    It is a worked design for sandboxing agents that need Xcode and the iOS Simulator, covering
+    macOS licensing limits, snapshot persistence and egress policy enforcement.
+  background: >-
+    Apple's Virtualization framework lets a Mac run macOS guests, but Apple's license allows
+    at most two extra macOS copies per machine, so a cloud Mac fleet cannot pack many agents
+    onto each host. EC2 Mac instances are physical Mac minis or Mac Studios on Dedicated Hosts
+    with a 24-hour minimum allocation, so session lifetime has to be separated from host lifetime.
+    An accessibility tree is the structure of roles, names and states that apps expose for
+    assistive tools, which lets an agent click a named control without reading pixels.
+  event: cognition-devin-macos-ec2-mac
+  sources:
+  - label: primary
+    url: https://aws.amazon.com/blogs/architecture/ai-coding-agents-on-amazon-ec2-mac-how-cognition-scales-devin-for-macos/
+- title: >-
+    Paper: RLVR with a fixed rollout cap teaches reasoning models to stop gaining from extra
+    test-time tokens
+  section: ML research
+  category: Paper
+  blurb: >-
+    Models trained with a rollout cap beat their base near that budget but fall below it when
+    given more tokens, across three small open models.
+  summary: >-
+    The authors find that RLVR-trained Qwen3.5-4B, Gemma4-E2B and Nemotron-3-Nano-4B use few
+    tokens beyond the training budget and lose to their base models at larger budgets, and
+    the effect carries from math training to science and coding. Stronger KL regularization
+    keeps more scaling but cuts in-budget accuracy, and forcing an answer on truncated rollouts
+    removes the effect along with most of the gain. SFT on artificially truncated traces reproduces
+    it, which ties it to length-censored post-training rather than to RL.
+  why: >-
+    Teams setting rollout caps for RL post-training should evaluate at larger inference budgets,
+    because the cap can trade away test-time scaling.
+  background: >-
+    RL with verifiable rewards trains a model on tasks whose answers a program can check,
+    such as math or code, and each sampled rollout is cut off at a token limit to bound training
+    cost. Test-time scaling is the usual pattern where letting a reasoning model think longer
+    at inference raises accuracy. KL regularization penalizes the trained policy for drifting
+    from a reference model.
+  event: budget-internalization-rlvr-rollout-cap
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.26172v1
+- title: >-
+    Atuin 18.25.0 makes atuin setup the install path, moves datetime handling to jiff and
+    removes the Atuin AI agent
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    The shell history tool adds an interactive setup command, warns on unknown config keys
+    and switches to DST-aware time zones through jiff.
+  summary: >-
+    Atuin 18.25.0, released on 2026-11-20, makes atuin setup the way to configure Atuin, with
+    submenus and individually selectable options, and it ignores comments in shell init files.
+    It warns about and refuses unknown config keys, moves datetime handling to jiff with DST-aware
+    time zones, and removes the Atuin AI agent and the theme.max_depth and theme.debug settings.
+    It also fixes Threads handoff to Claude Code and opencode and updates the daemon search
+    index in place on delete.
+  why: >-
+    Users with stale config keys or theme debug settings will see warnings, and anyone using
+    the built-in Atuin AI agent loses it on upgrade.
+  event: atuin-18-25-0-release
+  sources:
+  - label: primary
+    url: https://github.com/atuinsh/atuin/releases/tag/v18.25.0
+- title: >-
+    OpenAI's Ahmed Ibrahim: Codex code mode exposes MCP tools as async functions in a V8-sandboxed
+    JavaScript REPL
+  section: Talks
+  category: Video
+  blurb: >-
+    Instead of one tool call per model turn, Codex agents write scripts that chain tools,
+    keep state across turns and read only what they need.
+  summary: >-
+    Ibrahim, who works on the Codex harness, says code mode gives the agent two tools, exec
+    to run a JavaScript script and wait to check its progress. All built-in and MCP tools
+    are deferred into a tools object, so the agent filters the list by description and calls
+    tools as async functions, chaining results through variables in one call. Scripts run
+    in a V8 sandbox with no file, network or console access, get a cell ID, and survive between
+    turns so a started server keeps running.
+  why: >-
+    Harness builders can cut inference round trips and context use by letting agents script
+    tool calls instead of reading every intermediate result.
+  event: openai-codex-code-mode-repl-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=2H5QbeHalKo
+- title: >-
+    Gemini 4 Neon tops the Models Engineering Index at 68.1, and Hacker News users compare
+    it with Fable 5.2 in daily use
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A composite of ten coding benchmarks puts Neon ahead of Fable 5.2 at about a quarter of
+    its relative cost, drawing 213 Hacker News comments.
+  summary: >-
+    The index scores Gemini 4 Neon at 68.1, Fable 5.2 at 66.3 and GPT-6.2 Astra at 62.0, with
+    Neon's relative cost at 1.6x against Fable's 5.9x. Its authors warn that models are tested
+    on different benchmark subsets, there are no error bars, and results are reproduced as
+    published. The thread drew 340 points and 213 comments.
+  why: >-
+    It is an early practitioner read on whether Neon can replace Claude models in coding agents,
+    with caveats on the index method.
+  comments: >-
+    Several users say Neon codes about as well as Opus 5.5 and writes clearer prose, and one
+    reports it trimmed an agents.md file. Others report that the Antigravity harness auto
+    mode still stops for many approvals, and debate whether Google's subscriptions match Claude's
+    usage limits outside Antigravity.
+  event: gemini-4-neon-models-engineering-index
+  sources:
+  - label: primary
+    url: https://git-aarvin.github.io/mei/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50568130
