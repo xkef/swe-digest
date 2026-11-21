@@ -1,5 +1,5 @@
 date: '2026-11-21'
-updated: 2026-11-21T18:39Z
+updated: 2026-11-21T20:12Z
 stories:
 - title: >-
     OpenAI says GPT-6.2 safeguards cut protected reasoning extraction from 54% to 0.2% in
@@ -443,6 +443,35 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50587875
 - title: >-
+    miniPG packages a real Postgres server and client into one cross-platform binary that
+    runs on the Hyper9 hypervisor layer
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    miniPG queries a directory as a Postgres database the way sqlite3 queries a file, built
+    after PGlite deadlocked and a v86 VM proved too slow.
+  summary: >-
+    Jeff Lindsay's miniPG takes a directory path and runs queries against it at once, and
+    it can also serve Postgres on a port or launch a program with connection environment variables
+    set. PGlite, Postgres compiled to WebAssembly, allows only one connection, so apps that
+    open a second connection inside a transaction deadlocked. Booting Postgres in a v86 x86
+    emulator inside a headless webview worked but took 7 seconds to accept connections. Running
+    it on Hyper9, which translates system APIs to run Plan 9 executables at near native speed,
+    cut startup to 800 ms.
+  why: >-
+    Tests, local tools and agents can spin up a disposable real Postgres per task without
+    Docker, and an app can ship Postgres embedded the way it would ship SQLite.
+  background: >-
+    SQLite is an in-process library over a single file, while Postgres is a client-server
+    system with a daemon, a data directory and connection management. The usual local substitute
+    is a Docker container, which adds a VM and a daemon on macOS and Windows. API translation
+    layers such as Wine and Proton run binaries built for one OS on another by mapping system
+    calls, the approach Hyper9 borrows.
+  event: minipg-single-binary-postgres
+  sources:
+  - label: primary
+    url: https://progrium.xyz/articles/2026/single-binary-postgres
+- title: >-
     Kagent 1.0 rebuilds Kubernetes agents on Agent Substrate with one sandboxed actor per
     session
   section: Talks
@@ -493,41 +522,6 @@ stories:
     url: https://signal.org/blog/protecting-your-privacy/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50572348
-- title: >-
-    Ravi Vakil posts Alessandro Masullo's human GRH proof draft, and AI-assisted readers report
-    problems within hours
-  section: Hacker News
-  category: Pulse
-  blurb: >-
-    Ravi Vakil posted Alessandro Masullo's GRH proof draft, and within hours mathematicians
-    using AI models reported problems in it.
-  summary: >-
-    On 2026-11-20 Ravi Vakil posted a draft proof of the Generalized Riemann Hypothesis by
-    Alessandro Maria Masullo, which Brian Conrad had checked for months and which Vakil says
-    used no AI. About eight hours later Vakil added that several people reported problems
-    found with the help of different AI models, and that all issues must be resolved before
-    the proof is accepted. The Hacker News thread reached 1,951 points and 895 comments, alongside
-    threads on Terence Tao's post (422 points), Scott Aaronson's post (274 points, 246 comments)
-    and Fernando Borretti's response (193 points, 190 comments).
-  why: >-
-    It is a live test of AI models as proof checkers, a day after a separate Claude-assisted
-    claim on the same problem.
-  comments: >-
-    The top thread is less about the mathematics than about access, with users worried that
-    intellectual work now depends on frontier AI accounts that providers can suspend, and
-    others answering that open-weight models keep that risk in check.
-  event: masullo-grh-proof-draft
-  sources:
-  - label: primary
-    url: https://math216.wordpress.com/2026/11/20/hurried-announcement-alessandro-masullo-grh/
-  - label: discussion
-    url: https://news.ycombinator.com/item?id=50579568
-  - label: discussion
-    url: https://news.ycombinator.com/item?id=50578358
-  - label: discussion
-    url: https://news.ycombinator.com/item?id=50581084
-  - label: discussion
-    url: https://news.ycombinator.com/item?id=50583982
 - title: >-
     Alpöge and Buckmaster post AI-assisted, Lean-formalized blowup proofs for 3D Euler and
     Navier-Stokes
@@ -598,3 +592,48 @@ stories:
     url: https://manidoraisamy.com/developer-to-architect.html
   - label: discussion
     url: https://news.ycombinator.com/item?id=50579331
+- title: >-
+    Lean and Mathlib communities certify Levent Alpöge's 17-million-line Lean proof of the
+    Riemann Hypothesis
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Several independent kernels accepted the exported proof, and two tools confirmed it proves
+    exactly Mathlib's statement of the hypothesis.
+  summary: >-
+    On 2026-11-21 the Lean and Mathlib communities, with backing from the Lean FRO and the
+    Mathlib Initiative, said they have full confidence in the Lean library Alpöge released
+    on 2026-11-20. Dozens of people reproduced the build. Two comparison tools matched the
+    proved theorem against Mathlib's RiemannHypothesis definition, and the raw export passed
+    Lean's kernel plus the formally verified con-leche and con-ron checkers. Andrew Sutherland's
+    MIT verification page reports 175,187 modules compiled, only the three standard axioms
+    used, and the independent Rust kernel nanoda accepting the 61 GB export, and notes that
+    the result also covers GRH for Dirichlet L-functions.
+  why: >-
+    A machine-checked proof at this scale shows that independent, small, verified kernels
+    can make AI-generated formal artifacts trustworthy without line-by-line human review.
+  background: >-
+    Lean is a proof assistant built on dependent type theory. A small trusted kernel checks
+    every proof term, so trust rests on the kernel and on the definitions, not on the code
+    that produced the proof. Mathlib is the community library of formalized mathematics, and
+    its definitions are reviewed by experts. Exporting a proof and re-checking it with kernels
+    written separately, some in other languages, guards against a bug in any one checker.
+  comments: >-
+    The thread drew 578 points and 442 comments, and related threads followed: Fernando Borretti's
+    essay Re: Riemann at 208 points and 216 comments, and the MIT verification files at 50
+    points. Commenters said a kernel bug is now unlikely because the export passed several
+    kernels, two of which carry their own consistency proofs. One recalled that a fake Collatz
+    refutation once got past a single checker. Others noted that soundness ultimately rests
+    on Lean's type theory and the ZFC axioms with inaccessible cardinals.
+  event: lean-community-certifies-riemann-hypothesis-proof
+  sources:
+  - label: primary
+    url: https://leanprover-community.github.io/blog/posts/riemann-hypothesis/
+  - label: primary
+    url: https://math.mit.edu/~drew/grh/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50589618
+  - label: discussion
+    url: https://borretti.me/article/re-riemann
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50590441
