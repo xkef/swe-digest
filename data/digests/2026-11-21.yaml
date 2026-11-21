@@ -1,0 +1,226 @@
+date: '2026-11-21'
+updated: 2026-11-21T08:30Z
+stories:
+- title: >-
+    OpenAI says GPT-6.2 safeguards cut protected reasoning extraction from 54% to 0.2% in
+    adaptive red-teaming
+  section: Top stories
+  category: AI
+  blurb: >-
+    OpenAI cut reasoning-extraction attacks on GPT-6.2 Astra to 0.2% and found exact traces
+    teach a student more cyber skill than summaries.
+  summary: >-
+    OpenAI describes its defenses against adversarial distillation: adversarial training,
+    input and output classifiers that also scan tool-call arguments, and API rules that tie
+    protected reasoning to the conversation that produced it and drop it when an earlier message
+    is rewritten. In adaptive black-box red-teaming, the success rate for extracting reasoning
+    from an earlier request fell from 54.0% on GPT-6 Astra to 0.2% on GPT-6.2 Astra, and from
+    22.9% to 0.9% for the current request. An internal study found a student fine-tuned on
+    exact reasoning traces from coding and defensive security tasks generally beat one trained
+    on reasoning summaries on ExploitBench and SEC-bench Pro.
+  why: >-
+    Clients that replay or edit conversation history should expect the API to discard reasoning
+    after any rewritten message, and older model families can no longer read GPT-6.2 reasoning.
+  background: >-
+    Distillation trains a student model on a teacher model's outputs, and a chain-of-thought
+    trace carries intermediate steps the final answer omits, which makes it richer training
+    data. Providers therefore hide raw reasoning and return summaries or encrypted reasoning
+    blobs that the client passes back so the model can continue its thinking across turns.
+    OpenAI said in September that attackers moved such encrypted reasoning between conversations
+    to get it decrypted, and it attributed part of that campaign to people tied to Moonshot
+    AI.
+  event: openai-adversarial-distillation-defenses
+  sources:
+  - label: primary
+    url: https://openai.com/index/combatting-adversarial-distillation
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50581242
+- title: >-
+    APM 0.37.0 writes lockfile version 4, moves Copilot MCP servers to a shared .mcp.json
+    and pins approvals to content
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    APM 0.37 writes lockfile version 4 that older clients refuse, moves Copilot MCP servers
+    to a shared .mcp.json and pins approvals to content.
+  summary: >-
+    APM 0.37.0 writes lockfile_version 4, which APM 0.36.1 and older refuse, so every machine
+    and CI runner must upgrade together. Copilot project MCP servers move to a root .mcp.json
+    shared with Claude Code, apm approve pins each package's hooks, MCP servers and native
+    plugins to their content, and apm audit --ci now fails MCP servers the lockfile admits
+    but apm.yml does not approve. In CI, apm install with a committed lockfile now verifies
+    it like --frozen, and apm install -g --target claude installs Claude plugins natively.
+  why: >-
+    Teams using APM need a coordinated upgrade, must replace --trust-transitive-mcp with apm
+    approve, and should review the shared .mcp.json because Claude Code ignores tools allow-lists.
+  background: >-
+    Agent Package Manager declares the skills, prompts, hooks and MCP servers a repository
+    gives its coding agents, then locks and deploys them for each harness. Version 0.36.0
+    added host-qualified dependency policies. Pinning approvals to content means a package
+    that changes what it runs has to be approved again.
+  event: apm-0-37-0-release
+  sources:
+  - label: primary
+    url: https://github.com/microsoft/apm/releases/tag/v0.37.0
+- title: >-
+    Reflection's Beam technical report details a 501B MoE post-trained with four weeks of
+    asynchronous RL on 10.5K GPUs
+  section: ML research
+  category: Paper
+  blurb: >-
+    Reflection's Beam report describes a 501.3B MoE with 23.4B active parameters, a 1M context
+    and RL over 100M rollouts on 10.5K GB300 GPUs.
+  summary: >-
+    Beam is a sparse MoE with 501.3B total and 23.4B active parameters, pretrained on 23.8T
+    tokens, with a 1M-token context from a two-stage midtraining phase. Post-training ran
+    fully asynchronous RL across 10.5K GB300 GPUs for four weeks and over 100M rollouts, and
+    the team reports capabilities still rising with RL compute. It ships with FP8 and NVFP4
+    quantization and a 1.93B-parameter speculative decoding drafter, and refuses or pivots
+    on 88.9% of harmful requests while complying with 81.5% of harmless ones.
+  why: >-
+    It is a rare first-party account of large-scale asynchronous RL post-training and serving
+    co-design for a coding and agent model.
+  background: >-
+    In a mixture-of-experts model a router sends each token to a few expert subnetworks, so
+    active parameters per token are a small share of the total, which cuts inference compute.
+    Asynchronous RL decouples rollout generation from training updates so slow agent episodes
+    do not stall the GPUs, at the cost of training on slightly stale policies. Speculative
+    decoding uses a small drafter to propose tokens that the large model verifies in one pass.
+  event: reflection-beam-technical-report
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.26358v1
+- title: >-
+    Paper: fixed steering vectors recover most of RL post-training's gains in diffusion transformers
+  section: ML research
+  category: Paper
+  blurb: >-
+    Fixed steering vectors with 65x fewer parameters than a LoRA recover 90 to 96% of the
+    reward gains RL gives image diffusion models.
+  summary: >-
+    The authors fit a fixed set of vectors added to block outputs of a frozen base model to
+    match the velocity predictions of public RL-tuned checkpoints, using no reward. On SD3.5-M
+    the vectors hold 0.29M parameters against 18.8M for the RL-tuned LoRA, recover 90.0 to
+    96.3% of the reward gains of six RL-tuned image models, and recover 89.8% and 111.9% on
+    two video models. Trained from zero with online RL, the vectors alone beat weight-based
+    RL on OCR and PickScore.
+  why: >-
+    It suggests most RL post-training gains in these models are a constant shift toward what
+    the base model can already compute, which bears on cheaper post-training and on interpretability.
+  background: >-
+    Activation steering adds a fixed vector to a layer's hidden states at inference to push
+    the model toward a behavior without changing its weights. RL post-training of diffusion
+    models optimizes rewards such as text-rendering accuracy or human-preference scores, usually
+    through LoRA adapters.
+  event: rl-diffusion-activation-steering-paper
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.26627v1
+- title: >-
+    Luau 0.748 blocks type function globals from leaking into inference and fixes inlined
+    functions clobbering captures
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Luau 0.748 keeps type function globals out of inference, fixes inlined functions clobbering
+    captures and lets NCG move constant loads.
+  summary: >-
+    Luau 0.748 fixes a class of bugs where globals assigned inside sandboxed type functions
+    could be inferred in ordinary code, and reverts LuauDecomposeIntersectionOfFreeType, which
+    fixes two issues and reopens two others. The runtime fixes inlined functions that could
+    clobber captured values, and native code generation can now move loads of immutable data
+    such as constants between blocks when safe. Embedded builtin definitions for the type
+    solver now use builder methods instead of declaration strings.
+  why: >-
+    Embedders running Luau with type functions or native codegen get a correctness fix for
+    inlining and a stricter type function sandbox.
+  event: luau-0-748-release
+  sources:
+  - label: primary
+    url: https://github.com/luau-lang/luau/releases/tag/0.748
+- title: >-
+    Kagent 1.0 rebuilds Kubernetes agents on Agent Substrate with one sandboxed actor per
+    session
+  section: Talks
+  category: Video
+  blurb: >-
+    Kagent 1.0 runs each agent session as a sandboxed actor inside Agent Substrate worker
+    pods, with an egress gateway injecting real credentials.
+  summary: >-
+    In a CNCF lightning talk, maintainer Peter Jausovec says Kagent 1.0 replaces one deployment
+    and pod per agent with Agent Substrate worker pools, where each worker pod runs many actors
+    and each actor is one agent session. Each actor gets its own filesystem and cryptographic
+    identity, holds only placeholder secrets, and an egress gateway authorizes outbound traffic
+    and injects real credentials. The release also adds standalone sandboxes, A2A-based support
+    for other harnesses such as Codex or Claude, cron-scheduled runs and shared chat sessions.
+  why: >-
+    It shows a concrete pattern for keeping API keys out of agent sandboxes on Kubernetes
+    while packing thousands of sessions into a pod.
+  event: kagent-1-0-agent-substrate-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=iFcjmAT9oQs
+- title: >-
+    Signal blocks OS AI agents from reading its screen on iOS 27 and Android, drawing 546
+    points on Hacker News
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Signal blocks screenshots on iOS 27 and Android AI screen reads, says macOS lacks the
+    APIs to do it, and asks OS vendors for an AI opt-out.
+  summary: >-
+    Signal now prevents screenshots on iOS 27 and turns on Screen security on Android when
+    it detects an AI assistant reading the screen, with a setting to turn the protection off.
+    It says it cannot reliably block screenshots on macOS and tells macOS 27 users to add
+    Signal to Excluded Apps under Siri settings. Signal asks Apple, Google and Microsoft for
+    a documented way for apps to opt out of AI data access and for specifications of how OS
+    agents read app data. The Hacker News thread drew 546 points and 318 comments.
+  why: >-
+    Apps that show sensitive data have no documented API to keep OS-level agents from capturing
+    it, and screenshot blocking does not stop filesystem access.
+  comments: >-
+    Commenters point to the iOS Siri Excluded Apps setting added after pressure from Signal
+    and the EFF, and argue that the app should set the default while the user can override
+    it without the app knowing. Others note that a contact's device can still leak a chat
+    to an AI agent.
+  event: signal-blocks-os-ai-agent-capture
+  sources:
+  - label: primary
+    url: https://signal.org/blog/protecting-your-privacy/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50572348
+- title: >-
+    Ravi Vakil posts Alessandro Masullo's human GRH proof draft, and AI-assisted readers report
+    problems within hours
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Ravi Vakil posted Alessandro Masullo's GRH proof draft, and within hours mathematicians
+    using AI models reported problems in it.
+  summary: >-
+    On 2026-11-20 Ravi Vakil posted a draft proof of the Generalized Riemann Hypothesis by
+    Alessandro Maria Masullo, which Brian Conrad had checked for months and which Vakil says
+    used no AI. About eight hours later Vakil added that several people reported problems
+    found with the help of different AI models, and that all issues must be resolved before
+    the proof is accepted. The Hacker News thread reached 1,951 points and 895 comments, alongside
+    threads on Terence Tao's post (422 points), Scott Aaronson's post (274 points, 246 comments)
+    and Fernando Borretti's response (193 points, 190 comments).
+  why: >-
+    It is a live test of AI models as proof checkers, a day after a separate Claude-assisted
+    claim on the same problem.
+  comments: >-
+    The top thread is less about the mathematics than about access, with users worried that
+    intellectual work now depends on frontier AI accounts that providers can suspend, and
+    others answering that open-weight models keep that risk in check.
+  event: masullo-grh-proof-draft
+  sources:
+  - label: primary
+    url: https://math216.wordpress.com/2026/11/20/hurried-announcement-alessandro-masullo-grh/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50579568
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50578358
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50581084
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50583982
