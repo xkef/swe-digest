@@ -5,12 +5,11 @@ template = "about.html"
 
 ## What this site is
 
-SWE Digest is an independent, automated software engineering digest. Scheduled
+SWE Digest is an automated software engineering digest. Scheduled
 runs collect public engineering news from primary sources, Hacker News, Reddit,
 arXiv, and engineering blogs, then publish dated summaries that link back to the
 original sources. Digests update five times a day, at 01:30, 05:30, 09:30,
-13:30, and 17:30 UTC. It is a personal editorial project. It is not affiliated
-with, endorsed by, or speaking for any company, vendor, or the people and
+13:30, and 17:30 UTC. It is not affiliated with, endorsed by, or speaking for any company, vendor, or the people and
 projects it covers.
 
 ## How it works
@@ -46,10 +45,7 @@ errors, omissions, or items that were accurate when written but have since
 changed. Nothing here is professional, security, legal, or financial advice.
 
 Security and outage items are time-sensitive and may be incomplete or wrong.
-Always verify against the linked primary source (the vendor advisory, release
-note, or status page) before acting, and follow your own vendor's official
-guidance for patching and incident response. Do not rely on this site as a sole
-source for any operational decision.
+Verify them against the linked primary source before acting.
 
 ## Licensing and reuse
 
@@ -57,7 +53,7 @@ source for any operational decision.
   `LICENSE` file).
 - Original digest text and site copy are licensed under
   [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/)
-  (CC BY 4.0). Reuse with attribution and a link back.
+  (CC BY 4.0).
 - Linked sources, quoted titles, and other third-party material remain the
   property of their respective owners and are referenced under applicable
   quotation provisions.
@@ -84,8 +80,7 @@ changes only when a field changes meaning or goes away.
 ## Privacy
 
 This site runs no analytics, sets no cookies, embeds no third-party trackers,
-and has no public accounts or comment system. Reading a page sends no data to
-the maintainer. The site is hosted on GitHub Pages, and the host may record
+and has no public accounts or comment system. The site is hosted on GitHub Pages, and the host may record
 standard request logs (such as IP address and user agent) under GitHub's own
 privacy policy; the maintainer does not collect or process those logs.
 
@@ -94,14 +89,13 @@ stories. That feedback goes to a Cloudflare Worker the maintainer runs. Every
 page loads the script for it, but in a browser that isn't enrolled the script
 sends nothing.
 
-Everyone else interacts through the public GitHub repository. Anything you
-submit there is public.
+Anything you submit to the GitHub repository is public.
 
 ## People and projects covered
 
 The digest reports on public, engineering-relevant work and public statements by
-named practitioners and organizations: releases, talks, posts, advisories, and
-similar. It links the primary source and attributes statements only to verified
+named practitioners and organizations: releases, talks, posts, and
+advisories. It links the primary source and attributes statements only to verified
 accounts. It does not
 publish private contact details, private personal information, or
 special-category data, and it does not track private behavior.
@@ -115,6 +109,5 @@ If you are mentioned and want a correction, added context, removal, or exclusion
 from future coverage, open a
 [correction or removal request]({{ config.extra.repository }}/issues/new?template=removal.yml)
 and identify the specific page or item. Use that template rather than a blank
-issue: it keeps the request open for a human. Reasonable
-requests are honored, and asking to be excluded does not require a
-reason.
+issue: it keeps the request open for a human. Asking to be excluded does not
+require a reason.
