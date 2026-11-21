@@ -1,6 +1,5 @@
 +++
 title = "About, privacy, and use"
-description = "What this site is, how to use it, how it handles personal data, and how to request a correction or removal."
 template = "about.html"
 +++
 
@@ -15,8 +14,6 @@ with, endorsed by, or speaking for any company, vendor, or the people and
 projects it covers.
 
 ## How it works
-
-The model can't change anything outside its call:
 
 - Python collects candidates from the
   [watchlist]({{ config.extra.repository }}/blob/main/config.yaml)
@@ -37,8 +34,6 @@ pages the model fetched and the stories it added or refused, with the reason
 for each refusal.
 
 {% include "run_stats.html" %}
-
-The [stats page](@/stats/_index.md) charts these numbers over time.
 
 To run your own digest with your own profile, see
 [Run your own]({{ config.extra.repository }}#run-your-own).
@@ -120,6 +115,6 @@ If you are mentioned and want a correction, added context, removal, or exclusion
 from future coverage, open a
 [correction or removal request]({{ config.extra.repository }}/issues/new?template=removal.yml)
 and identify the specific page or item. Use that template rather than a blank
-issue: it keeps the request open for a human. Issues are public and are monitored. Reasonable
-requests are honored promptly, and asking to be excluded does not require a
+issue: it keeps the request open for a human. Reasonable
+requests are honored, and asking to be excluded does not require a
 reason.
