@@ -1,5 +1,5 @@
 date: '2026-11-21'
-updated: 2026-11-21T20:12Z
+updated: 2026-11-21T22:20Z
 stories:
 - title: >-
     OpenAI says GPT-6.2 safeguards cut protected reasoning extraction from 54% to 0.2% in
@@ -128,6 +128,70 @@ stories:
   sources:
   - label: discussion
     url: https://www.bleepingcomputer.com/news/security/microsoft-entra-connect-health-flaw-exploited-to-steal-tenant-data/
+- title: >-
+    Upload2Shell: a Ghostscript Type 1 font use-after-free escapes -dSAFER and runs commands
+    through file uploads
+  section: Security
+  category: Security
+  blurb: >-
+    A crafted Type 1 font escapes Ghostscript's -dSAFER sandbox, giving command execution
+    through uploads, thumbnails and print queues.
+  summary: >-
+    pwn.ai says CVE-2026-125396, a use-after-free in Ghostscript's Type 1 font loader, lets
+    a crafted document leave the -dSAFER sandbox and run commands as the rendering process.
+    It confirmed execution in Debian 13 CUPS through an anonymous IPP job, Roundcube on message
+    view, MediaWiki PdfHandler, DokuWiki, Mayan EDMS and public WordPress upload forms, and
+    traced Pillow paths in Gradio, ComfyUI and Paperless-ngx. Ghostscript 10.08.0 fixed it
+    on 2026-09-08, Debian and Ubuntu ship fixed packages, and the CVE was published on 2026-11-09
+    as case studies begin.
+  why: >-
+    Any service that thumbnails, converts or prints user files can reach Ghostscript through
+    ImageMagick or Pillow even for files named .png, so check the installed Ghostscript version
+    on those hosts and images.
+  background: >-
+    Ghostscript interprets PostScript and PDF, and its -dSAFER mode is meant to block file
+    and process access from document code. ImageMagick delegates PDF, EPS and PS decoding
+    to Ghostscript, and Pillow calls it for EPS files, so an image upload pipeline can feed
+    an attacker's PostScript to the interpreter based on file content rather than extension.
+    Ghostscript sandbox escapes have recurred for years for this reason.
+  comments: The Hacker News thread drew 55 points and 14 comments.
+  event: ghostscript-upload2shell-cve-2026-125396
+  sources:
+  - label: primary
+    url: https://pwn.ai/upload2shell
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50592097
+- title: >-
+    LookAtMyQuant packs Inkling-2-Mini into 5.4 GB at 1.63 bits per weight and runs it on
+    Apple Silicon
+  section: AI
+  category: AI
+  blurb: >-
+    A quantization compiler packs Inkling-2-Mini into 5.4 GB at 1.63 bits per weight and beats
+    a larger Unsloth quant on GSM8K and HumanEval.
+  summary: >-
+    LookAtMyQuant measures how much each compressed piece of a model hurts output KL, then
+    assigns trellis codes per piece to fit a size budget, followed by proximal fine-tuning.
+    Its 5.38 GB Inkling-2-Mini solves 134 of 200 GSM8K and 60 of 164 HumanEval problems against
+    132 and 49 for Unsloth's 9.14 GB UD-Q2_K_XL, while the BF16 original scores 147 and 66.
+    On an M5 Max the 5.4 GB file decodes at 75.3 tokens per second serially and 124.4 with
+    a 4-bit drafter, in about 6 GB of RAM.
+  why: >-
+    Sensitivity-measured, per-row bit allocation shows that sub-2-bit local MoE models can
+    stay usable on a laptop, with code to reproduce the recipe on your own model.
+  background: >-
+    Common GGUF quants such as Q4_K_M apply a fixed scheme per tensor type. Sensitivity-based
+    allocation instead spends bits where compression hurts the output most, measured here
+    by KL divergence from the original model's token distribution. Trellis codes are vector
+    quantizers that encode a sequence of weights as a path through a small state machine,
+    which gets closer to the ideal rate than scalar rounding.
+  comments: The Hacker News thread drew 277 points and 56 comments.
+  event: lookatmyquant-inkling-2-mini-quantization
+  sources:
+  - label: primary
+    url: https://github.com/ShinMegamiBoson/lookatmyquant
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50591853
 - title: >-
     APM 0.37.0 writes lockfile version 4, moves Copilot MCP servers to a shared .mcp.json
     and pins approvals to content
@@ -356,6 +420,36 @@ stories:
   sources:
   - label: discussion
     url: https://www.phoronix.com/news/Sashiko-AI-Performance-Review
+- title: >-
+    gopgext builds PostgreSQL extensions from plain Go through TinyGo, with contrib ports
+    passing upstream tests
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    gopgext compiles plain Go with TinyGo into PostgreSQL extensions, and its ports of pgcrypto
+    and hstore pass upstream regression tests.
+  summary: >-
+    gopgext turns Go functions marked with a //gopgext:function comment into SQL functions,
+    generating the C glue, install script and control file and building with PGXS. Beyond
+    functions it supports triggers, aggregates, GiST, GIN, SP-GiST and BRIN operator classes,
+    index access methods, foreign data wrappers and hooks, and ports of pgcrypto, hstore,
+    pg_stat_statements and cube pass upstream regression tests. The author marks it experimental
+    and warns against production use, since a bug runs inside the server.
+  why: >-
+    It offers a Go path for PostgreSQL extension work that has so far meant C or Rust with
+    pgrx, though it is not yet safe for production servers.
+  background: >-
+    PostgreSQL extensions are shared libraries loaded into each backend process, so they share
+    memory and error handling with the server. PostgreSQL reports errors with longjmp, which
+    must not unwind through another language's stack frames. gopgext says it keeps those errors
+    out of Go frames and copies results into PostgreSQL memory.
+  comments: The Hacker News thread drew 98 points and 11 comments.
+  event: gopgext-postgres-extensions-go
+  sources:
+  - label: primary
+    url: https://jespino.github.io/gopgext/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50591260
 - title: >-
     Antithesis uses Claude, TLA+ and trace validation to prove models of etcd-raft and HashiCorp
     Raft safe
