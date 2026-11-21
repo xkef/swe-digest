@@ -45,7 +45,10 @@ class _BoundedSession(requests.Session):
 
     def request(self, *args: Any, **kwargs: Any) -> requests.Response:
         kwargs.setdefault("timeout", http.TIMEOUT_SECONDS)
-        return super().request(*args, **kwargs)
+        response = super().request(*args, **kwargs)
+        if http.proxy_url():
+            http.count_proxied(len(response.content))
+        return response
 
 
 def video_id(url: str) -> str | None:

@@ -6,9 +6,11 @@ private addresses, re-checked on every redirect hop, and a log of every attempt
 for the run record.
 
 Some sites refuse the cloud addresses GitHub runners use. When FETCH_PROXY_URL
-names a residential proxy, a page refused with 403 or 429 is requested once
-more through it. The URL holds the proxy's credentials, so no error that may
-mention it reaches the model or the run record.
+names a residential proxy, a request refused with 403 or 429 is sent once more
+through it, for collection and for the model's fetch alike. The URL holds the
+proxy's credentials, so no error that may mention it reaches the model or the
+run record. The proxy bills by traffic, so every response body it carries is
+counted for the run record.
 """
 
 import gzip
@@ -18,6 +20,7 @@ import json
 import os
 import re
 import socket
+import threading
 import urllib.error
 import urllib.request
 from http import HTTPStatus
@@ -48,13 +51,65 @@ class Blocked(RuntimeError):
     """A server refused the request, likely for the address it came from."""
 
 
+class ProxyFailed(Blocked):
+    """The proxy retry of a blocked request failed too."""
+
+
+_proxy_lock = threading.Lock()
+_proxy_bytes = 0
+
+
+def count_proxied(size: int) -> None:
+    """Adds a response body the proxy carried to the run's total."""
+    global _proxy_bytes
+    with _proxy_lock:
+        _proxy_bytes += size
+
+
+def proxy_bytes() -> int:
+    """Returns the response bytes the proxy has carried in this process.
+
+    Headers and TLS overhead are not counted, so the bill runs higher.
+    """
+    with _proxy_lock:
+        return _proxy_bytes
+
+
 def proxy_url() -> str | None:
     """Returns the residential proxy to retry blocked requests through, if one is set."""
     return os.environ.get(PROXY_ENV) or None
 
 
-def get(url: str, opener: urllib.request.OpenerDirector | None = None) -> bytes:
-    """Fetches a URL, bounded in size and time. Raises RuntimeError on failure."""
+def get(url: str) -> bytes:
+    """Fetches a URL, bounded in size and time. Raises RuntimeError on failure.
+
+    A blocked request is retried once through the proxy, when one is set.
+    """
+    body, _ = _unblocked(url, ())
+    return body
+
+
+def _unblocked(url: str, handlers: tuple[urllib.request.BaseHandler, ...]) -> tuple[bytes, bool]:
+    """Returns the body, and whether the proxy served it."""
+    try:
+        return _open(url, handlers), False
+    except Blocked as error:
+        proxy = proxy_url()
+        if not proxy:
+            raise
+        blocked = error
+
+    try:
+        body = _open(url, (urllib.request.ProxyHandler({"https": proxy}), *handlers))
+    except RuntimeError:
+        raise ProxyFailed(f"{blocked}, and the proxy retry failed too") from None
+
+    count_proxied(len(body))
+    return body, True
+
+
+def _open(url: str, handlers: tuple[urllib.request.BaseHandler, ...]) -> bytes:
+    opener = urllib.request.build_opener(*handlers) if handlers else None
     return _read(urllib.request.Request(url, headers={"User-Agent": USER_AGENT}), opener)
 
 
@@ -177,19 +232,14 @@ class Fetcher:
 
     def _get(self, url: str, entry: dict[str, Any]) -> bytes:
         try:
-            return get(url, urllib.request.build_opener(_CheckedRedirects))
-        except Blocked as error:
-            proxy = proxy_url()
-            if not proxy:
-                raise
-            blocked = error
+            body, proxied = _unblocked(url, (_CheckedRedirects(),))
+        except ProxyFailed:
+            entry["proxy"] = True
+            raise
 
-        entry["proxy"] = True
-        handler = urllib.request.ProxyHandler({"https": proxy})
-        try:
-            return get(url, urllib.request.build_opener(handler, _CheckedRedirects))
-        except RuntimeError:
-            raise RuntimeError(f"{blocked}, and the proxy retry failed too") from None
+        if proxied:
+            entry["proxy"] = True
+        return body
 
     def longest(self) -> int:
         """Returns the most characters one fetch can return."""

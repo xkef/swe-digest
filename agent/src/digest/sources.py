@@ -1,7 +1,7 @@
 """Collects candidate stories from the watchlist before the model starts.
 
-Three kinds of source: Hacker News through Algolia, arXiv through its API,
-and plain RSS or Atom feeds, which cover blogs, YouTube
+Four kinds of source: Hacker News through Algolia, arXiv and bioRxiv through
+their APIs, and plain RSS or Atom feeds, which cover blogs, YouTube
 channels, publishers, and GitHub releases. A source that fails is reported as
 degraded and the run continues without it.
 
@@ -30,9 +30,11 @@ HN_ITEM = "https://news.ycombinator.com/item?id="
 HN_TOP_MIN_POINTS = 100
 HN_QUERY_MIN_POINTS = 20
 HN_QUERY_HITS = 10
-WATCHLIST_KEYS = ("hacker_news", "arxiv", "github_releases", "feeds", "youtube")
+WATCHLIST_KEYS = ("hacker_news", "arxiv", "biorxiv", "github_releases", "feeds", "youtube")
 ARXIV = "https://export.arxiv.org/api/query"
 ARXIV_RESULTS = 40
+BIORXIV = "https://api.biorxiv.org/details/biorxiv"
+BIORXIV_PAPER = "https://www.biorxiv.org/content/"
 YOUTUBE_FEED = "https://www.youtube.com/feeds/videos.xml?channel_id="
 ENTRIES_PER_FEED = 25
 SUMMARY_CHARS = 300
@@ -52,6 +54,7 @@ def collect(watchlist: dict[str, Any], since: datetime) -> tuple[list[Item], dic
     jobs: dict[str, Callable[[], list[Item]]] = {
         "hacker_news": lambda: hacker_news(watchlist["hacker_news"]["queries"], cutoff),
         "arxiv": lambda: arxiv(watchlist["arxiv"]),
+        "biorxiv": lambda: biorxiv(watchlist["biorxiv"], since, datetime.now(UTC)),
     }
     for name, url in _feeds(watchlist):
         jobs[name] = partial(feed, name, url, cutoff)
@@ -148,11 +151,38 @@ def arxiv(config: dict[str, list[str]]) -> list[Item]:
     ]
 
 
+def biorxiv(config: dict[str, list[str]], since: datetime, until: datetime) -> list[Item]:
+    """Returns the window's preprints whose title or abstract names a query."""
+    queries = [query.lower() for query in config["queries"]]
+    interval = f"{since.date()}/{until.date()}"
+    papers = []
+    for category in config["categories"]:
+        params = urllib.parse.urlencode({"category": category})
+        collection = http.get_json(f"{BIORXIV}/{interval}/0?{params}")["collection"]
+        papers += [
+            {
+                "source": f"bioRxiv: {category}",
+                "title": paper["title"],
+                "url": f"{BIORXIV_PAPER}{paper['doi']}v{paper['version']}",
+                "published": paper["date"],
+                "summary": plain(paper["abstract"]),
+            }
+            for paper in collection
+            if any(query in f"{paper['title']} {paper['abstract']}".lower() for query in queries)
+        ]
+    return papers
+
+
 def feed(name: str, url: str, cutoff: int) -> list[Item]:
-    """Returns a feed's newest entries published since the cutoff."""
+    """Returns a feed's newest entries published since the cutoff.
+
+    A feed rebuilt on every fetch, such as GitHub Trending, dates only itself,
+    so its entries take the feed's date.
+    """
     items = []
-    for entry in parse(http.get(url)).entries[:ENTRIES_PER_FEED]:
-        published = _published(entry)
+    parsed = parse(http.get(url))
+    for entry in parsed.entries[:ENTRIES_PER_FEED]:
+        published = _published(entry) or _published(parsed.feed)
         if published is None or published < cutoff or not entry.get("link"):
             continue
         items.append(
@@ -201,6 +231,8 @@ def watchlist_problems(watchlist: Any) -> list[str]:
         ("hacker_news", "queries"),
         ("arxiv", "categories"),
         ("arxiv", "queries"),
+        ("biorxiv", "categories"),
+        ("biorxiv", "queries"),
     ]
     try:
         found = [

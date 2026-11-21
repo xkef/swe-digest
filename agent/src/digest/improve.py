@@ -86,6 +86,7 @@ def summary(state: State) -> runs.Record:
         "tools": reply.get("tools"),
         # A failed model call gives no ``fetched``, but its fetches still count.
         "fetched": state.get("fetched", state["fetcher"].log),
+        "proxy_bytes": http.proxy_bytes(),
         # The feedback the run read from the signals Worker. Run records are
         # public, so the owner's notes appear as a count, not as text.
         "feedback": [tally | {"notes": len(tally["notes"])} for tally in state["feedback"]]
@@ -175,6 +176,11 @@ def schema() -> dict[str, Any]:
                         "required": ["queries"],
                     },
                     "arxiv": {
+                        "type": "object",
+                        "properties": {"categories": texts, "queries": texts},
+                        "required": ["categories", "queries"],
+                    },
+                    "biorxiv": {
                         "type": "object",
                         "properties": {"categories": texts, "queries": texts},
                         "required": ["categories", "queries"],

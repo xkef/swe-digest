@@ -57,7 +57,7 @@ def test_fetcher_falls_back_to_the_page_without_a_transcript(monkeypatch):
         raise RuntimeError(f"no transcript for {video}")
 
     monkeypatch.setattr(youtube, "transcript", missing)
-    monkeypatch.setattr(http, "get", lambda *a: b"<html><title>Talk</title><p>Description</p></html>")
+    monkeypatch.setattr(http, "_open", lambda *a: b"<html><title>Talk</title><p>Description</p></html>")
     fetcher = http.Fetcher(max_chars=1000, transcript_max_chars=10)
 
     ok, text = fetcher.fetch(f"https://www.youtube.com/watch?v={VIDEO}")
@@ -104,3 +104,15 @@ def test_transcript_errors_never_carry_the_proxy_url(monkeypatch):
     with pytest.raises(RuntimeError) as raised:
         youtube.transcript(VIDEO)
     assert "secret" not in str(raised.value) and "ProxyError" in str(raised.value)
+
+
+def test_session_counts_the_bytes_the_proxy_served(monkeypatch):
+    response = requests.Response()
+    response._content = b"abc"
+    monkeypatch.setattr(requests.Session, "request", lambda self, *a, **k: response)
+    monkeypatch.setenv("FETCH_PROXY_URL", "http://user-rotate:secret@proxy.example:80")
+    before = http.proxy_bytes()
+
+    youtube._BoundedSession().request("GET", "https://www.youtube.com/")
+
+    assert http.proxy_bytes() - before == 3

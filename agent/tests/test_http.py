@@ -63,10 +63,9 @@ def blocked_then(direct_status, proxied_body):
     """Returns a ``get`` stand-in: ``direct_status`` directly, ``proxied_body`` via the proxy."""
     calls = []
 
-    def get(url, opener=None):
+    def open_once(url, handlers):
         proxied = any(
-            isinstance(h, urllib.request.ProxyHandler) and h.proxies.get("https") == PROXY
-            for h in opener.handlers
+            isinstance(h, urllib.request.ProxyHandler) and h.proxies.get("https") == PROXY for h in handlers
         )
         calls.append(proxied)
         if not proxied:
@@ -75,12 +74,12 @@ def blocked_then(direct_status, proxied_body):
             raise proxied_body
         return proxied_body
 
-    return get, calls
+    return open_once, calls
 
 
 def test_fetcher_retries_a_blocked_page_through_the_proxy(monkeypatch):
     get, calls = blocked_then(403, b"<html><title>Post</title><p>Text</p></html>")
-    monkeypatch.setattr(http, "get", get)
+    monkeypatch.setattr(http, "_open", get)
     monkeypatch.setenv("FETCH_PROXY_URL", PROXY)
     fetcher = http.Fetcher(max_chars=1000, transcript_max_chars=10)
 
@@ -91,7 +90,7 @@ def test_fetcher_retries_a_blocked_page_through_the_proxy(monkeypatch):
 
 def test_fetcher_reports_a_blocked_page_without_a_proxy(monkeypatch):
     get, calls = blocked_then(403, b"unused")
-    monkeypatch.setattr(http, "get", get)
+    monkeypatch.setattr(http, "_open", get)
     monkeypatch.delenv("FETCH_PROXY_URL", raising=False)
     fetcher = http.Fetcher(max_chars=1000, transcript_max_chars=10)
 
@@ -101,10 +100,40 @@ def test_fetcher_reports_a_blocked_page_without_a_proxy(monkeypatch):
 
 def test_fetcher_hides_the_proxy_url_when_the_proxy_fails(monkeypatch):
     get, _ = blocked_then(429, RuntimeError(f"https://example.com/post: cannot reach {PROXY}"))
-    monkeypatch.setattr(http, "get", get)
+    monkeypatch.setattr(http, "_open", get)
     monkeypatch.setenv("FETCH_PROXY_URL", PROXY)
     fetcher = http.Fetcher(max_chars=1000, transcript_max_chars=10)
 
     ok, reason = fetcher.fetch("https://example.com/post")
     assert not ok and "secret" not in reason and "429" in reason
     assert fetcher.log == [{"url": "https://example.com/post", "ok": False, "proxy": True}]
+
+
+def test_get_retries_a_blocked_feed_through_the_proxy(monkeypatch):
+    open_once, calls = blocked_then(429, b"<rss/>")
+    monkeypatch.setattr(http, "_open", open_once)
+    monkeypatch.setenv("FETCH_PROXY_URL", PROXY)
+
+    assert http.get("https://example.com/feed") == b"<rss/>"
+    assert calls == [False, True]
+
+
+def test_get_hides_the_proxy_url_when_the_proxy_fails(monkeypatch):
+    open_once, _ = blocked_then(403, RuntimeError(f"https://example.com/feed: cannot reach {PROXY}"))
+    monkeypatch.setattr(http, "_open", open_once)
+    monkeypatch.setenv("FETCH_PROXY_URL", PROXY)
+
+    with pytest.raises(RuntimeError) as error:
+        http.get("https://example.com/feed")
+    assert "secret" not in str(error.value) and "403" in str(error.value)
+
+
+def test_get_counts_the_bytes_the_proxy_served(monkeypatch):
+    open_once, _ = blocked_then(429, b"12345")
+    monkeypatch.setattr(http, "_open", open_once)
+    monkeypatch.setenv("FETCH_PROXY_URL", PROXY)
+    before = http.proxy_bytes()
+
+    http.get("https://example.com/feed")
+
+    assert http.proxy_bytes() - before == 5

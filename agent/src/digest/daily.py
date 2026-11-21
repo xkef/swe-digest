@@ -17,7 +17,7 @@ from collections import Counter
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
-from digest import agent, config, graph, memory, runs, signals, sources, stories
+from digest import agent, config, graph, http, memory, runs, signals, sources, stories
 from digest.graph import State, Step
 from digest.http import Fetcher
 
@@ -166,6 +166,7 @@ def summary(state: State) -> runs.Record:
         "tools": reply.get("tools"),
         # A failed model call gives no ``fetched``, but its fetches still count.
         "fetched": state.get("fetched", state["fetcher"].log),
+        "proxy_bytes": http.proxy_bytes(),
         "added": state.get("added"),
         "dropped": state.get("dropped"),
         "rejected": state.get("rejected"),

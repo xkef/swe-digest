@@ -22,7 +22,7 @@ last 30 days, cost included.
 
 Five times a day ([daily.py](agent/src/digest/daily.py)):
 
-1. Python collects candidates from Hacker News, arXiv, and the RSS
+1. Python collects candidates from Hacker News, arXiv, bioRxiv, and the RSS
    feeds in the watchlist in [config.yaml](config.yaml).
 2. One model call picks and writes the new stories. The session starts with
    all built-in tools removed. That includes the shell and file access. Its one
