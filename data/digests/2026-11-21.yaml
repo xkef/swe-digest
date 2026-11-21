@@ -1,5 +1,5 @@
 date: '2026-11-21'
-updated: 2026-11-21T12:56Z
+updated: 2026-11-21T13:39Z
 stories:
 - title: >-
     OpenAI says GPT-6.2 safeguards cut protected reasoning extraction from 54% to 0.2% in
@@ -195,6 +195,33 @@ stories:
   - label: primary
     url: https://antithesis.com/blog/2026/verifying-formal-models/
 - title: >-
+    Enroute replaces Multi-Raft with Raft replication plus Vertical Paxos failover to host
+    300,000 repositories per cluster
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    The Git hosting startup dropped per-group Raft consensus for a simpler design, aiming
+    at agent and app-builder workloads with millions of repos.
+  summary: >-
+    Enroute, which hosts Git for agent-heavy workloads, says its 0.4.0 release replaces its
+    Multi-Raft system with a design that keeps Raft-style replication but uses Vertical Paxos
+    for failover. It says this keeps complexity low while scaling one cluster to up to 300,000
+    repositories. An earlier post described a single repository passing 7,600 pushes per second.
+  why: >-
+    Forge builders weighing per-repository consensus groups get a worked alternative that
+    moves reconfiguration out of each replica group.
+  background: >-
+    Multi-Raft runs many independent Raft groups, one per shard, so each group elects its
+    own leader and carries its own heartbeats and logs, which adds overhead as shard counts
+    grow. Vertical Paxos, described by Lamport, Malkhi and Zhou, lets an external configuration
+    master choose the replica set and leader for each shard, so replicas only replicate and
+    the master handles failover. This is the same split that primary-backup systems use with
+    a separate coordination service.
+  event: enroute-beyond-multi-raft
+  sources:
+  - label: primary
+    url: https://enroute.sh/blog/scaling-horizontally-how-we-moved-beyond-multi-raft
+- title: >-
     Kagent 1.0 rebuilds Kubernetes agents on Agent Substrate with one sandboxed actor per
     session
   section: Talks
@@ -322,3 +349,31 @@ stories:
     url: https://news.ycombinator.com/item?id=50576232
   - label: discussion
     url: https://news.ycombinator.com/item?id=50581084
+- title: >-
+    Essay saying AI turned developers into architects without telling them draws 483 points
+    on Hacker News
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A 15-second welcome screen caused by AI-written logging code starts a debate over who
+    designs systems when agents write the code.
+  summary: >-
+    Mani Doraisamy describes an AI-written logging path in a Google Forms add-on that chained
+    identity lookups and delayed the welcome screen by 15 seconds. He argues that agents do
+    what the requirements say without pushing back, so developers now have to define the architecture
+    and data model and hold the agent to it. The Hacker News thread reached 483 points and
+    269 comments.
+  why: >-
+    It names a failure mode in agent-written code: performance and data model choices get
+    made silently when the prompt only states requirements.
+  comments: >-
+    Many commenters say pushing back on requirements and designing the data model was always
+    the engineer's job. Others report juniors who want line-level tickets, and say writing
+    a ticket that detailed takes as long as doing the work, more so with agents. Several warn
+    that AI lets weak architects ship their designs without pushback.
+  event: developers-promoted-to-architects-essay
+  sources:
+  - label: primary
+    url: https://manidoraisamy.com/developer-to-architect.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50579331
