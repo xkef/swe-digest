@@ -1,5 +1,5 @@
 date: '2026-11-21'
-updated: 2026-11-21T16:55Z
+updated: 2026-11-21T18:39Z
 stories:
 - title: >-
     OpenAI says GPT-6.2 safeguards cut protected reasoning extraction from 54% to 0.2% in
@@ -98,6 +98,36 @@ stories:
   sources:
   - label: primary
     url: https://www.dragos.com/blog/ai-supply-chain-security-canary-tokens
+- title: >-
+    Microsoft says attackers exploited an Entra Connect Health API flaw to read tenant admin
+    emails and metadata
+  section: Security
+  category: Security
+  blurb: >-
+    A bug added on 2026-07-23 let outsiders read admin contact emails, tenant IDs and sync
+    status from Connect Health until a fix on 2026-11-19.
+  summary: >-
+    Microsoft told affected admins that a vulnerability in the Entra Connect Health API, introduced
+    on 2026-07-23 and found on 2026-11-09, was exploited for unauthorized read-only access
+    to tenant metadata, including technical contact and administrator email addresses, tenant
+    IDs, domains, license tiers, directory sync status and an expired agent registration certificate.
+    It deployed a server-side fix on 2026-11-19 and finished its investigation on 2026-11-20.
+    Microsoft says no passwords, tokens, valid keys or Azure subscription data were exposed
+    and found no configuration changes, but has not said how many tenants were hit.
+  why: >-
+    Tenants that use Connect Health should expect targeted phishing of the exposed admin addresses
+    and confirm their privileged accounts use phishing-resistant MFA.
+  background: >-
+    Entra Connect Health is a cloud service that monitors on-premises identity components,
+    such as Entra Connect sync servers and AD FS, from the Entra admin center. Agents on those
+    servers report to a Microsoft API, which here returned more tenant data than it should
+    have to unauthorized callers. Microsoft published a PowerShell script that shows which
+    metadata types could have been exposed, though it displays current values, not what was
+    read.
+  event: microsoft-entra-connect-health-metadata-exposure
+  sources:
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/microsoft-entra-connect-health-flaw-exploited-to-steal-tenant-data/
 - title: >-
     APM 0.37.0 writes lockfile version 4, moves Copilot MCP servers to a shared .mcp.json
     and pins approvals to content
@@ -298,6 +328,34 @@ stories:
   sources:
   - label: primary
     url: https://www.iroh.computer/blog/iroh-1-5-0
+- title: >-
+    Sashiko 0.9.5 adds a performance review stage that catches 14 of 20 known kernel regressions,
+    up from 3
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Google's agentic kernel patch reviewer gains an optional stage that traces side effects
+    of patches and flags likely throughput regressions.
+  summary: >-
+    Sashiko 0.9.5 adds an optional performance specialist stage to its linux_patch_review
+    flow, run in daemon mode or with sashiko review --stages performance, which traces callers
+    and embedding structs one to two hops out and forbids dismissing hot-path costs. On a
+    40-commit benchmark of 20 upstream regressions and 20 clean commits, using gemini-4-argon
+    at high effort, detection rose from 3 of 20 to 14 of 20, the clean rate went from 11 of
+    20 to 12 of 20, and median input tokens rose 11%.
+  why: >-
+    Kernel and systems teams get a measured, opt-in way to have AI review flag performance
+    regressions that usually hide in ordinary fixes and struct layout changes.
+  background: >-
+    Sashiko is Google's open-source agentic reviewer for Linux kernel patches, which reviews
+    mailing list submissions and which Torvalds says many subsystems now require. Kernel performance
+    regressions often arrive as side effects of correctness fixes, such as a lock added on
+    a hot path or a struct field that changes cache line layout, which line-level review tends
+    to miss.
+  event: sashiko-0-9-5-performance-review-stage
+  sources:
+  - label: discussion
+    url: https://www.phoronix.com/news/Sashiko-AI-Performance-Review
 - title: >-
     Antithesis uses Claude, TLA+ and trace validation to prove models of etcd-raft and HashiCorp
     Raft safe
