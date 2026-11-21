@@ -1,5 +1,5 @@
 date: '2026-11-21'
-updated: 2026-11-21T13:39Z
+updated: 2026-11-21T16:55Z
 stories:
 - title: >-
     OpenAI says GPT-6.2 safeguards cut protected reasoning extraction from 54% to 0.2% in
@@ -36,6 +36,69 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50581242
 - title: >-
+    WG21 recompletes C++26 in Búzios, keeping contracts and adding an always-enforced label
+    for a second ISO ballot
+  section: Top stories
+  category: Languages
+  blurb: >-
+    The ISO C++ committee voted 111 to 9 to reship C++26 with contracts after five national
+    bodies blocked the first approval ballot.
+  summary: >-
+    At its November 2026 meeting in Búzios, the committee answered national body comments,
+    mostly on contracts, by adopting P4451R2, which lets pre, post and contract_assert be
+    marked always enforced, and voted 111 in favor, 9 opposed and 8 abstaining to reship C++26
+    with contracts. It also adopted C++26 fixes for reflection with modules, sender/receiver
+    memory allocation and standard structural types, and added labeled break and continue,
+    0o octal literals, std::ranges::any_view and views::slice to draft C++29. The updated
+    document is expected to go to a second DIS ballot.
+  why: >-
+    C++26 keeps its name and contracts, and code that must never skip a check can now say
+    so in source whatever contract semantics the build uses.
+  background: >-
+    C++26 contracts let a function declare preconditions (pre), postconditions (post) and
+    in-body assertions (contract_assert), with the build choosing whether a violated check
+    is ignored, observed or enforced. That per-build choice drew the main objection, since
+    a library author could not guarantee a check runs. A DIS, or Draft International Standard,
+    ballot is the ISO vote among national bodies. Sutter writes that past C++ DIS ballots
+    had always passed unanimously, and this one failed after five national bodies voted Disapprove
+    over contracts.
+  followup: The second C++26 DIS ballot and the next WG21 meeting in Istanbul in March.
+  thread: f-0215
+  event: wg21-buzios-cpp26-recompletion
+  sources:
+  - label: primary
+    url: https://herbsutter.com/2026/11/21/c26-is-done-again-trip-report-november-2026-iso-c-standards-meeting-buzios-brazil/
+- title: >-
+    Dragos canary prompts expose three breached AI inference providers and marketplace resellers
+    harvesting prompts
+  section: Security
+  category: Security
+  blurb: >-
+    HD Moore's team seeded two million prompts with fake AWS keys and URLs, then watched attackers
+    and resellers use them within hours.
+  summary: >-
+    From July to November 2026, Dragos sent about two million prompts carrying unique canary
+    credentials and URLs to AI services and found attackers inside three hosting providers
+    copying requests, including Zero Data Retention ones, then testing the AWS keys, searching
+    S3, Secrets Manager and Parameter Store, enabling Bedrock and adding IAM users. One attacker
+    added the ARTEX framework on 2026-11-01, with user agents artex-agent and artex-judge-r121.
+    Marketplace resellers read prompts through ordinary request logging, and a Chinese lab's
+    scraper fetched URLs from prompts sent to it directly or through US resellers, including
+    ZDR requests.
+  why: >-
+    Treat any secret an agent sends to a routed or resold model endpoint as exposed, and plant
+    a canary credential in agent context to detect leaks.
+  background: >-
+    AI routers expose one API endpoint and forward each request to a pool of model hosts,
+    sometimes through further routers, so every hop sees the full prompt and response. Zero
+    Data Retention is a per-account, per-key or per-request flag asking that prompts not be
+    stored, and it only binds the hop that honors it. Canary tokens are unique secrets that
+    exist in one place, so any use of one proves that place leaked.
+  event: dragos-ai-inference-canary-research
+  sources:
+  - label: primary
+    url: https://www.dragos.com/blog/ai-supply-chain-security-canary-tokens
+- title: >-
     APM 0.37.0 writes lockfile version 4, moves Copilot MCP servers to a shared .mcp.json
     and pins approvals to content
   section: Agentic coding
@@ -62,6 +125,31 @@ stories:
   sources:
   - label: primary
     url: https://github.com/microsoft/apm/releases/tag/v0.37.0
+- title: >-
+    folke releases zaly, an alpha terminal coding agent with persistent sessions, permission
+    presets and TypeScript plugins
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    The lazy.nvim and snacks.nvim author's agent resumes sessions per workspace, masks large
+    tool results and loads skills and plugins.
+  summary: >-
+    zaly is MIT licensed, installs as @zaly/cli with npm or Bun and needs Node.js 22.18 or
+    newer. It offers strict, readonly, permissive and yolo permission presets refined by per-tool
+    allow, ask and deny rules, mid-session model switching across providers, background tasks
+    for long-running tools, compaction, automatic masking of large tool results, and user
+    or project scoped commands, skills, resource packs, themes and TypeScript plugins. The
+    latest release is 0.3.3 on 2026-11-18, and the README warns that APIs, configuration and
+    session formats may change before 1.0.
+  why: >-
+    LazyVim users get a hackable terminal agent from the same author, with per-tool permission
+    rules and plugins scoped to user or project.
+  event: folke-zaly-coding-agent
+  sources:
+  - label: primary
+    url: https://github.com/folke/zaly
+  - label: primary
+    url: https://github.com/folke/zaly/blob/main/CHANGELOG.md
 - title: >-
     Reflection's Beam technical report details a 501B MoE post-trained with four weeks of
     asynchronous RL on 10.5K GPUs
@@ -143,6 +231,24 @@ stories:
   sources:
   - label: primary
     url: https://github.com/jdx/mise/releases/tag/v2026.11.12
+- title: A jj workflow keeps TODOs as empty private commits instead of a TODO.md file
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Ben C keeps planned work as a tree of empty jj changes, rebases one onto real work when
+    starting it and keeps them local.
+  summary: >-
+    The post creates empty jj changes with descriptions for planned work, stacks dependent
+    TODOs as empty commits on top of each other, and rebases one onto other work when starting
+    it. Because the TODO changes are empty, rebasing the TODO base forward never conflicts.
+    Setting git.private-commits to description('private:*') stops jj from pushing them.
+  why: >-
+    jj users can track planned work in the commit graph without an in-tree file, and private-commits
+    keeps those changes off the remote.
+  event: jj-todo-empty-commits-workflow
+  sources:
+  - label: primary
+    url: https://bwc9876.dev/blog/jj_todo/
 - title: >-
     Luau 0.748 blocks type function globals from leaking into inference and fixes inlined
     functions clobbering captures
@@ -165,6 +271,33 @@ stories:
   sources:
   - label: primary
     url: https://github.com/luau-lang/luau/releases/tag/0.748
+- title: >-
+    iroh 1.5.0 adds stream affinity to pin data to direct paths and freezes features until
+    January for security work
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The Rust peer-to-peer networking stack lets a stream stick to one direct path or block,
+    and fixes relay handshake and log leaks.
+  summary: >-
+    iroh 1.5.0, released 2026-11-19 with noq 1.5.0, adds StreamAffinity Any, Sticky and Block
+    on send streams and wait_any, wait_none and wait_closed helpers for watching paths. It
+    fixes a relay handshake that clients could hold open past the timeout and proxy passwords
+    in debug logs (GHSA-9v2v-w4v3-3qqq), updates iroh-dns-server, and accepts relay URLs with
+    a path prefix. The team will ship only patch releases until January while it hardens iroh
+    against AI bug finding.
+  why: >-
+    Apps on iroh can keep costly or sensitive streams off relays, and relay operators should
+    upgrade for the handshake timeout fix.
+  background: >-
+    iroh connects devices directly over QUIC, falling back to relay servers when a direct
+    path cannot be established, and a connection can hold a relay path and several direct
+    paths at once. Until this release the connection alone picked which path carried each
+    stream's data.
+  event: iroh-1-5-0-release
+  sources:
+  - label: primary
+    url: https://www.iroh.computer/blog/iroh-1-5-0
 - title: >-
     Antithesis uses Claude, TLA+ and trace validation to prove models of etcd-raft and HashiCorp
     Raft safe
@@ -221,6 +354,36 @@ stories:
   sources:
   - label: primary
     url: https://enroute.sh/blog/scaling-horizontally-how-we-moved-beyond-multi-raft
+- title: >-
+    Studio Display hub latency caps an RTL8156B USB Ethernet adapter near 2 Gbps because it
+    sends 4-packet bursts
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    A debugging write-up traces 600 Mbps downloads to USB 3 burst size plus hub go-ahead latency,
+    which an 8-packet RTL8157 avoids.
+  summary: >-
+    Oscar Molnar found that a 2.5G RTL8156B adapter plugged into a Studio Display XDR downloaded
+    at 600 Mbps while uploading at 2.4 Gbps, and its counters showed frames to the Mac flattening
+    near 168,000 per second with drops above that. He attributes it to four 1 KB USB packets
+    per burst, where about 7.6 µs of go-ahead latency through the display hub plus 8.2 µs
+    of transfer drains slower than 2.5 Gbps arrives. Realtek's driver raised downloads to
+    1.1 Gbps, Ethernet flow control to about 2 Gbps, and an RTL8157 adapter with 8-packet
+    bursts dropped no frames.
+  why: >-
+    When a USB NIC behind a dock or hub only underperforms on download, check its bMaxBurst
+    and its drop counters before blaming the link.
+  comments: >-
+    The post drew 226 points and 98 comments on Hacker News. One commenter reports the same
+    loss on MacBooks across several Thunderbolt docks, gone over a plain USB cable. Another
+    says Ghostty's io_uring use counted as I/O pressure and made Baldur's Gate 3 throttle
+    shader compilation until Ghostty was set to epoll.
+  event: studio-display-usb-ethernet-burst-throttle
+  sources:
+  - label: primary
+    url: https://blog.tymscar.com/posts/studiodisplayethernet/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50587875
 - title: >-
     Kagent 1.0 rebuilds Kubernetes agents on Agent Substrate with one sandboxed actor per
     session
