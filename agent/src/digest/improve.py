@@ -174,11 +174,6 @@ def schema() -> dict[str, Any]:
                         "properties": {"queries": texts},
                         "required": ["queries"],
                     },
-                    "reddit": {
-                        "type": "object",
-                        "properties": {"subreddits": texts},
-                        "required": ["subreddits"],
-                    },
                     "arxiv": {
                         "type": "object",
                         "properties": {"categories": texts, "queries": texts},

@@ -27,7 +27,7 @@ memory. Copy URLs exactly.
 
 - Primary source: official release note, changelog, advisory, incident report,
   filing, repository release, maintainer post, status page, or documentation.
-- Discussion source: Hacker News, Reddit, video commentary, or secondary
+- Discussion source: Hacker News, Lobsters, video commentary, or secondary
   analysis.
 - List the primary source first, labeled `primary`. Label discussion sources
   `discussion`.

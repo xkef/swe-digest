@@ -1,7 +1,7 @@
 """Collects candidate stories from the watchlist before the model starts.
 
-Four kinds of source: Hacker News through Algolia, Reddit through RSS, arXiv
-through its API, and plain RSS or Atom feeds, which cover blogs, YouTube
+Three kinds of source: Hacker News through Algolia, arXiv through its API,
+and plain RSS or Atom feeds, which cover blogs, YouTube
 channels, publishers, and GitHub releases. A source that fails is reported as
 degraded and the run continues without it.
 
@@ -30,9 +30,7 @@ HN_ITEM = "https://news.ycombinator.com/item?id="
 HN_TOP_MIN_POINTS = 100
 HN_QUERY_MIN_POINTS = 20
 HN_QUERY_HITS = 10
-WATCHLIST_KEYS = ("hacker_news", "reddit", "arxiv", "github_releases", "feeds", "youtube")
-REDDIT_HOSTS = ("www.reddit.com", "old.reddit.com")
-REDDIT_LIMIT = 100
+WATCHLIST_KEYS = ("hacker_news", "arxiv", "github_releases", "feeds", "youtube")
 ARXIV = "https://export.arxiv.org/api/query"
 ARXIV_RESULTS = 40
 YOUTUBE_FEED = "https://www.youtube.com/feeds/videos.xml?channel_id="
@@ -46,7 +44,6 @@ WORKERS = 16
 # doctype, which is harmless text.
 _DECLARATION = re.compile(rb"<!\s*(DOCTYPE|ENTITY)", re.I)
 _ROOT = re.compile(rb"<[A-Za-z]")
-_REDDIT_LINK = re.compile(r'<a href="(https?://[^"]+)">\[link\]</a>')
 
 
 def collect(watchlist: dict[str, Any], since: datetime) -> tuple[list[Item], dict[str, str]]:
@@ -54,7 +51,6 @@ def collect(watchlist: dict[str, Any], since: datetime) -> tuple[list[Item], dic
     cutoff = int(since.timestamp())
     jobs: dict[str, Callable[[], list[Item]]] = {
         "hacker_news": lambda: hacker_news(watchlist["hacker_news"]["queries"], cutoff),
-        "reddit": lambda: reddit(watchlist["reddit"]["subreddits"], cutoff),
         "arxiv": lambda: arxiv(watchlist["arxiv"]),
     }
     for name, url in _feeds(watchlist):
@@ -126,34 +122,6 @@ def hn_story(hit: dict[str, Any]) -> Item:
         "points": hit.get("points"),
         "comments": hit.get("num_comments"),
         "published": _iso(hit.get("created_at_i")),
-    }
-
-
-def reddit(subreddits: list[str], cutoff: int) -> list[Item]:
-    """Returns the day's top posts across every subreddit, in one request."""
-    path = f"/r/{'+'.join(subreddits)}/top/.rss?t=day&limit={REDDIT_LIMIT}"
-    errors = []
-    for host in REDDIT_HOSTS:
-        try:
-            entries = parse(http.get(f"https://{host}{path}")).entries
-        except (RuntimeError, ValueError) as error:
-            errors.append(str(error))
-            continue
-        return [post for entry in entries if (post := reddit_post(entry, cutoff))]
-    raise RuntimeError("; ".join(errors))
-
-
-def reddit_post(entry: Any, cutoff: int) -> Item | None:
-    published = _published(entry)
-    if published is not None and published < cutoff:
-        return None
-    link = _REDDIT_LINK.search(entry.get("summary") or "")
-    return {
-        "source": f"Reddit: {entry.get('tags', [{}])[0].get('term', '')}".rstrip(": "),
-        "title": entry.get("title", ""),
-        "url": unescape(link.group(1)) if link else entry.get("link"),
-        "discussion": entry.get("link"),
-        "published": _iso(published),
     }
 
 
@@ -231,7 +199,6 @@ def watchlist_problems(watchlist: Any) -> list[str]:
     """Returns why a proposed watchlist is malformed, or nothing."""
     lists = [
         ("hacker_news", "queries"),
-        ("reddit", "subreddits"),
         ("arxiv", "categories"),
         ("arxiv", "queries"),
     ]

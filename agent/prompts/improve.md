@@ -10,7 +10,7 @@ reviews. Small, well-argued changes get merged. Churn does not.
 Return the complete watchlist, changed only where the evidence supports it.
 
 - A missed story the reader would have wanted points to a gap: add the Hacker
-  News query, subreddit, feed, or repository that would have caught it.
+  News query, feed, or repository that would have caught it.
 - Every story the owner added by hand is such a miss. Find the feed of its
   primary source's site and add it.
 - Remove a source that failed every run this week, or a query whose matches
