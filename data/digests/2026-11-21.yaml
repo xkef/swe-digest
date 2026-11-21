@@ -1,5 +1,5 @@
 date: '2026-11-21'
-updated: 2026-11-21T08:30Z
+updated: 2026-11-21T12:56Z
 stories:
 - title: >-
     OpenAI says GPT-6.2 safeguards cut protected reasoning extraction from 54% to 0.2% in
@@ -117,6 +117,33 @@ stories:
   - label: primary
     url: https://arxiv.org/abs/2611.26627v1
 - title: >-
+    mise 2026.11.12 adds mise audit and mise upgrade --vulnerable, checking configured tools
+    against OSV.dev
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    mise can now list known advisories for every tool version a project pins, fail CI on them,
+    and upgrade only the affected tools in range.
+  summary: >-
+    mise audit checks each configured tool version against OSV.dev and exits 1 when it finds
+    advisories, with --json output and a list of tools it could not check. mise upgrade --vulnerable
+    upgrades only affected tools within the configured range unless --bump is given. The release
+    also adds a per-tool bump = false option, mise prune --system, and an unsupported_platforms
+    list in mise.lock so lock --check passes for platforms a tool has no build for.
+  why: >-
+    A mise-managed repo can gate CI on vulnerable tool pins without a separate scanner, as
+    long as its tools come from covered backends.
+  background: >-
+    OSV.dev is Google's open vulnerability database that aggregates advisories from GitHub,
+    RustSec, PyPI, npm and others under one schema keyed by package and version. mise covers
+    registry backends such as npm, cargo and pipx, GitHub and GitLab release tools matched
+    by repository and tag, and core tools such as node, python and go. Tools from private
+    registries are reported as not checked rather than clean.
+  event: mise-2026-11-12-release
+  sources:
+  - label: primary
+    url: https://github.com/jdx/mise/releases/tag/v2026.11.12
+- title: >-
     Luau 0.748 blocks type function globals from leaking into inference and fixes inlined
     functions clobbering captures
   section: Languages and runtimes
@@ -138,6 +165,35 @@ stories:
   sources:
   - label: primary
     url: https://github.com/luau-lang/luau/releases/tag/0.748
+- title: >-
+    Antithesis uses Claude, TLA+ and trace validation to prove models of etcd-raft and HashiCorp
+    Raft safe
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Agent-written TLA+ models of two production Raft libraries were checked against real test
+    traces, then proved in Lean, finding new bugs.
+  summary: >-
+    Antithesis had Claude Fable 5.2 infer TLA+ models of etcd-raft and HashiCorp Raft, checked
+    them against structured traces from fault-injected Antithesis runs, and proved Election
+    Safety, Log Matching, Leader Completeness and State Machine Safety in Lean via Veil and
+    then in TLAPS. The loop found known and new bugs, including hashicorp/raft#746 and etcd-io/raft#558,
+    and needed 7 patches across the two libraries. Each library cost under $1,200 in model
+    tokens and about 2,000 Antithesis compute-hours, and lease reads, async heartbeats and
+    HashiCorp membership changes were left unmodeled.
+  why: >-
+    Trace validation gives a practical way to check that a formal spec matches the code you
+    run, and agents now make writing and proving those specs affordable.
+  background: >-
+    Raft is proven correct on paper, but libraries add pre-votes, snapshots, leadership transfer
+    and membership changes that the original proof does not cover. Trace validation, described
+    in MongoDB's eXtreme Modeling in Practice paper, logs events from the real system and
+    checks that each trace is a legal behavior of the spec, so a divergence points to a modeling
+    error or a code bug. The proofs still cover the model, not the Go code itself.
+  event: antithesis-raft-formal-verification
+  sources:
+  - label: primary
+    url: https://antithesis.com/blog/2026/verifying-formal-models/
 - title: >-
     Kagent 1.0 rebuilds Kubernetes agents on Agent Substrate with one sandboxed actor per
     session
@@ -224,3 +280,45 @@ stories:
     url: https://news.ycombinator.com/item?id=50581084
   - label: discussion
     url: https://news.ycombinator.com/item?id=50583982
+- title: >-
+    Alpöge and Buckmaster post AI-assisted, Lean-formalized blowup proofs for 3D Euler and
+    Navier-Stokes
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Terence Tao flags AI-assisted proofs of finite-time singularities for 3D Euler and Navier-Stokes,
+    both with Lean formalizations, on one day.
+  summary: >-
+    Terence Tao writes that Levent Alpöge, Tristan Buckmaster and Matei Coiculescu, with heavy
+    AI help, wrote a human-readable proof of finite-time blowup for the unforced 3D incompressible
+    Euler equations, and that Alpöge and Buckmaster produced a Navier-Stokes blowup proof
+    that still needs a professional write-up. The Navier-Stokes repository holds a 79-page
+    paper and a Lean 4 package of about 2,270 files and 600,000 lines, while the numerical
+    certificate and its interval-arithmetic check are not yet released. Tao's post drew 473
+    points and 195 comments on Hacker News and the repository 299 points and 93 comments,
+    alongside Scott Aaronson's post on the RH claims at 309 points and 272 comments.
+  why: >-
+    Large Lean artifacts are becoming the unit of AI-assisted research, and checking them
+    raises the same trust questions as reviewing agent-written code.
+  background: >-
+    Navier-Stokes regularity is a Clay Millennium problem asking whether smooth 3D fluid flows
+    can develop singularities in finite time. Tao says the proof follows an expected route:
+    numerically build an approximate discretely self-similar solution, then use rigorous perturbation
+    theory to turn it into an exact one. Lean is a proof assistant whose kernel checks every
+    step, so the question shifts to whether the formal statements say what the paper claims.
+  comments: >-
+    Commenters debate whether AI can build new mathematical abstractions or only brute-force
+    with existing ones such as the Langlands program. One user reports a Fable-family model
+    confidently misexplaining their codebase, as a caution against reading fluency as understanding.
+  event: alpoge-buckmaster-euler-navier-stokes-blowup
+  sources:
+  - label: primary
+    url: https://terrytao.wordpress.com/2026/11/20/unforced-euler-singularity-unforced-navier-stokes-singularity-and-the-generalized-riemann-hypothesis/
+  - label: primary
+    url: https://github.com/tristanbuckmaster/navier-stokes/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50578358
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50576232
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50581084
