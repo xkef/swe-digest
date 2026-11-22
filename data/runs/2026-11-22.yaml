@@ -91,3 +91,80 @@ runs:
   - step: save
     status: ok
     seconds: 0.1
+- mode: daily
+  started: 2026-11-22T13:30Z
+  finished: 2026-11-22T13:32Z
+  candidates: 178
+  degraded:
+    arXiv q-bio.BM: feed has no entries (empty)
+    arXiv q-bio.QM: feed has no entries (empty)
+    Import AI: >-
+      https://importai.substack.com/feed: HTTP Error 403: Forbidden, and the proxy retry failed
+      too
+  usage:
+    input_tokens: 8
+    cache_read_tokens: 243386
+    cache_write_tokens: 93252
+    output_tokens: 4371
+    turns: 8
+    seconds: 42
+    cost_usd: 0.8894
+  tools:
+    mcp__digest__fetch_url: 6
+    StructuredOutput: 1
+  fetched:
+  - url: https://openrouter.ai/blog/announcements/data-processing-incidents-on-inference-providers/
+    ok: true
+  - url: https://rustsec.org/advisories/RUSTSEC-2026-0592.html
+    ok: true
+  - url: https://simonwillison.net/2026/Nov/21/muru/
+    ok: true
+  - url: https://www.together.ai/blog/security-event-prompt-leakage-for-requests-in-june-and-july-of-2026
+    ok: true
+  - url: https://onurgumus.github.io/zero-csharp/index.html
+    ok: true
+  - url: https://news.ycombinator.com/item?id=50590279
+    ok: true
+  proxy_bytes: 0
+  added:
+  - >-
+    url 2.5.9 fixes RUSTSEC-2026-0592, a stack overflow in Url::origin() on nested blob: URLs
+  - >-
+    Zero C# compiles C# to native binaries with no .NET runtime or GC, and Hacker News argues
+    arenas versus GC
+  dropped: []
+  rejected: []
+  requests: []
+  inbox_used: []
+  notes: >-
+    I left out OpenRouter's 2026-11-22 post and Together AI's prompt leakage disclosure, even
+    though both pages loaded. Both continue the Dragos canary research that was published
+    on 2026-11-21. OpenRouter removed three providers, pulled 125 endpoints from ZDR eligibility
+    and listed provider reports. Together says a credential that an AI coding agent committed
+    to its public xorl repo let an outside party download stored prompt samples. No thread
+    tracked that event, so I opened one rather than publish the same story twice. I skipped
+    the Muru link post because the primary posts were not among the candidates. The YouTube
+    candidates were Shorts or off-profile, and the remaining HN threads were off-topic or
+    thin. Import AI still returns 403.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 66.8
+  - step: load
+    status: ok
+    seconds: 0.0
+  - step: select
+    status: ok
+    seconds: 0.0
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 43.1
+  - step: merge
+    status: ok
+    seconds: 0.1
+  - step: save
+    status: ok
+    seconds: 0.1

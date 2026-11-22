@@ -1,5 +1,5 @@
 date: '2026-11-22'
-updated: 2026-11-22T08:22Z
+updated: 2026-11-22T13:32Z
 stories:
 - title: >-
     Rackspace Spot breach let an intruder with leaked credentials read Kubernetes Secrets
@@ -32,6 +32,34 @@ stories:
   sources:
   - label: discussion
     url: https://www.bleepingcomputer.com/news/security/rackspace-spot-breach-let-hackers-access-customer-kubernetes-secrets/
+- title: >-
+    url 2.5.9 fixes RUSTSEC-2026-0592, a stack overflow in Url::origin() on nested blob: URLs
+  section: Security
+  category: Security
+  blurb: >-
+    A URL with thousands of nested blob: prefixes makes the url crate recurse until the stack
+    overflows, aborting any process that reads its origin.
+  summary: >-
+    In url 2.5.8 and earlier, Url::origin() parsed a blob: URL's path as another URL and called
+    itself on it with no depth limit, so a 50,020-byte URL with 10,000 blob: prefixes overflowed
+    a spawned thread's default 2 MiB stack. The overflow aborts the process and catch_unwind()
+    cannot catch it. url 2.5.9, issued 2026-11-22 as GHSA-hrj5-67jp-wqp9, follows the URL
+    Standard by taking the inner origin only for http, https and file schemes and returning
+    an opaque origin otherwise.
+  why: >-
+    Rust services that call Url::origin() or url::quirks::origin() on untrusted input should
+    move to url 2.5.9, and code that relied on blob:ws:// or blob:blob: origins will now see
+    opaque origins.
+  background: >-
+    The url crate is the Servo project's implementation of the WHATWG URL Standard and sits
+    under most Rust HTTP clients and servers. An origin is the scheme, host and port tuple
+    browsers use for same-origin checks, and a blob: URL inherits the origin of the URL it
+    wraps. In Rust a stack overflow is not a panic, so it cannot be caught and ends the whole
+    process.
+  event: rust-url-origin-blob-stack-overflow
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0592.html
 - title: >-
     Raph Levien's advice for the next 100 Rust GUIs: Parley and AccessKit are solved, compositor
     layers are not
@@ -155,3 +183,32 @@ stories:
     url: https://math216.wordpress.com/2026/11/20/hurried-announcement-alessandro-masullo-grh/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50579568
+- title: >-
+    Zero C# compiles C# to native binaries with no .NET runtime or GC, and Hacker News argues
+    arenas versus GC
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A bflat fork drops the garbage collector for arenas and builds 11 KB Windows binaries,
+    and commenters weigh it against NativeAOT and Rust.
+  summary: >-
+    Zero C#, a fork of the bflat compiler, builds C# into native programs without the .NET
+    runtime or a garbage collector, freeing memory through arenas and ending the program on
+    throw. Hello world is 11 KB on Windows and 40 KB on Linux, and the same source targets
+    Linux, macOS, Windows, WASI and DOS on a 386. The Show HN post drew 163 points and 113
+    comments.
+  why: >-
+    It shows how far C# 15 features such as unions and per-type generics can go without a
+    runtime, though it gives up exceptions, reflection, async and the standard library.
+  comments: >-
+    Commenters asked what it adds over NativeAOT plus Span and unsafe code, noting NativeAOT
+    removes the JIT but not the GC. Others pointed out that existing C# libraries will not
+    work under arena memory management, and one warned that maintaining a fork of the .NET
+    toolchain is labor intensive. The longest subthread debated whether generational moving
+    GCs already behave like arenas.
+  event: zero-csharp-runtimeless-compiler
+  sources:
+  - label: primary
+    url: https://onurgumus.github.io/zero-csharp/index.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50590279
