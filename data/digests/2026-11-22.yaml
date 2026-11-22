@@ -1,0 +1,157 @@
+date: '2026-11-22'
+updated: 2026-11-22T08:22Z
+stories:
+- title: >-
+    Rackspace Spot breach let an intruder with leaked credentials read Kubernetes Secrets
+    in customer clusters
+  section: Security
+  category: Security
+  blurb: >-
+    Leaked credentials let an intruder create pods, read Kubernetes Secrets and list nodes
+    in some Rackspace Spot customer clusters on 2026-11-17.
+  summary: >-
+    Rackspace told customers that an unauthorized party used leaked credentials to access
+    parts of Rackspace Spot on 2026-11-17 from about 00:20 to 22:00 UTC, acting as legitimate
+    users to create pods, read Kubernetes Secrets, list nodes and volumes, and obtain Spot
+    API and refresh tokens. Rackspace learned of it from a customer report on 2026-11-18,
+    revoked tokens and sessions, removed the pods and rotated keys, and the admin console
+    stayed down until full restoration on 2026-11-21. Indicators include 23.224.79.106, the
+    range 23.224.0.0/15, and pod and object prefixes i1, glm- and probe.
+  why: >-
+    Spot users should reissue API and refresh tokens, fetch new kubeconfigs, rotate every
+    credential stored in cluster Secrets, and check downstream registry, Git, database and
+    cloud logs from 2026-11-17.
+  background: >-
+    Rackspace Spot is a managed Kubernetes service, co-developed with Platform9, that sells
+    spare server capacity through auctions. Kubernetes Secrets are stored base64-encoded rather
+    than encrypted from the client's view, so any identity with RBAC permission to get or
+    list Secrets reads their plaintext values. A platform credential that lets an attacker
+    act as a cluster user therefore exposes every database password and API key the workloads
+    hold.
+  event: rackspace-spot-breach-2026-11
+  sources:
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/rackspace-spot-breach-let-hackers-access-customer-kubernetes-secrets/
+- title: >-
+    Raph Levien's advice for the next 100 Rust GUIs: Parley and AccessKit are solved, compositor
+    layers are not
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Raph Levien says Parley and AccessKit now solve Rust GUI text layout and accessibility,
+    while system compositor integration is still missing.
+  summary: >-
+    In a 2026-11-21 follow-up to his 2022 post, Levien writes that Parley is now used by most
+    new Rust UI toolkits for text layout and AccessKit for accessibility, but that toolkits
+    still rarely use system compositor layers, which matter for hardware-accelerated video.
+    He argues immediate mode toolkits such as egui scale poorly for productivity apps because
+    they must build stable widget identities and cache text layouts, notes that Shopify and
+    Discord mobile use native UI over shared logic, and recommends separating design from
+    an incremental execution engine, adapting a curated subset of web standards through modular
+    engines such as Blitz.
+  why: >-
+    Teams planning AI-assisted Rust rewrites get a concrete map of which GUI infrastructure
+    is mature and which architectural choices, such as immediate mode or ignoring compositor
+    layers, cost them later.
+  background: >-
+    Retained mode toolkits keep a persistent widget tree and update it incrementally, while
+    immediate mode toolkits rebuild the UI description every frame from application state.
+    The system compositor, such as Core Animation on Apple platforms or SurfaceFlinger on
+    Android, blends separately rendered layers so unchanged content and video need not be
+    redrawn. Levien leads Linebender, which builds the Xilem, Masonry, Vello and Parley crates.
+  comments: The post drew 152 points and 50 comments on Hacker News.
+  event: raph-levien-next-100-rust-guis
+  sources:
+  - label: primary
+    url: https://linebender.org/blog/next-100-guis/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50593737
+- title: >-
+    Ahmad Osman: local inference needs per-model, per-chip engines, and batching decides the
+    hardware
+  section: Talks
+  category: Video
+  blurb: >-
+    Ahmad Osman argues local inference needs per-model, per-chip engines, and shows an RTX
+    Pro 6000 batching 50 requests near 1,300 tok/s.
+  summary: >-
+    At CODE Summit 2026, Osmantic founder Ahmad Osman says prefill is compute bound and decode
+    is memory bandwidth bound, so hardware should be chosen by workload, and shows a Qwen
+    3.6 27B race in which an RTX Pro 6000 reached almost 1,300 tokens per second at 50 parallel
+    requests while an M5 Max MacBook Pro, a DGX Spark and Strix Halo ran requests sequentially,
+    which he calls a software gap. He argues for inference engines tuned per model, per chip
+    and per workflow rather than one general engine, warns that uniform 4-bit quantization
+    damages models compared with per-layer dynamic schemes, and cautions that cheap hosted
+    providers may silently route to other models.
+  why: >-
+    Engineers sizing self-hosted inference for agents should benchmark concurrent throughput
+    on their own workload, since agent fan-out favors GPUs with mature batching software over
+    single-stream speed.
+  background: >-
+    Prefill processes the whole prompt in parallel and is limited by compute, while decode
+    emits one token at a time per sequence and is limited by how fast weights stream from
+    memory. Batching many sequences shares each weight read across requests, which is why
+    server engines such as vLLM gain throughput with concurrency while single-user engines
+    do not.
+  event: ahmad-osman-local-ai-production-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=GKSQYbELDzw
+- title: >-
+    GPT-6.1 Sol reads, patches and writes x86-64 executables from hex dumps with no disassembler
+    or compiler
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Given only xxd hex dumps and no tools, GPT-6.1 Sol explained five binaries, patched three
+    in place and wrote three working ELF files.
+  summary: >-
+    George Xenos and Sotiris Giannopoulos fed GPT-6.1 Sol hex dumps through Codex CLI with
+    every tool stripped, and it identified four programs including a stripped, -O3 musl build
+    of FreeBSD's ministat, where it found a real bug in the 99.5% confidence table. In one
+    reply each, it added features to three binaries by editing 1.4% to 5.9% of their bytes
+    and wrote three ELF64 programs from specs that matched GCC builds on every test, and it
+    correctly analyzed a VShell stager, which DeepSeek V4.1 Flash also identified with about
+    17 times the reasoning tokens. Hex costs about 2.4 tokens per byte, so a 67 KB binary
+    used about 163,000 tokens.
+  why: >-
+    Reverse engineers and malware triage teams can test frontier models on small binaries
+    without lifting them first, within a context limit of roughly tens of kilobytes per pass.
+  comments: The post drew 234 points and 149 comments on Hacker News.
+  event: llm-machine-code-programming
+  sources:
+  - label: primary
+    url: https://sgiannopoulos.github.io/blog/machine-code-programming/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50546587
+- title: >-
+    Ravi Vakil posts Alessandro Masullo's human-written GRH draft, and readers using AI models
+    report problems within hours
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Ravi Vakil posts Alessandro Masullo's human-written draft proof of GRH, and within hours
+    readers using AI models report problems in it.
+  summary: >-
+    On 2026-11-20 Ravi Vakil published Alessandro Maria Masullo's draft proof of the Generalized
+    Riemann Hypothesis, written without AI and reviewed for months by Brian Conrad, earlier
+    than planned and asking for quick checking and formalization. About eight hours later
+    he added that several people had reported problems found with the help of AI models and
+    that he makes no claim about the proof strategy. The thread drew 2,408 points and 1,171
+    comments on Hacker News, the most of any item this run.
+  why: >-
+    The episode shows AI-assisted checking now finds candidate flaws in a long human proof
+    within hours, the same week a Lean-certified AI proof of the Riemann Hypothesis appeared.
+  comments: >-
+    Commenters say Masullo, working for 12 years, likely rushed the draft out after Anthropic's
+    Alpöge announcement, and debate how researchers can claim priority, from posting a hash
+    with timestamps to partnering with formal-methods startups. One commenter says a few hours
+    with an LLM let him check the logic of a refutation by Nielsen and posted the work on
+    GitHub. Others contrast the 17-million-line Lean certificate, useful mainly as an oracle,
+    with a readable 900-page human argument.
+  event: masullo-grh-proof-draft
+  sources:
+  - label: primary
+    url: https://math216.wordpress.com/2026/11/20/hurried-announcement-alessandro-masullo-grh/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50579568
