@@ -1,0 +1,204 @@
+date: '2026-11-23'
+updated: 2026-11-23T09:22Z
+stories:
+- title: >-
+    GitHub will block pull_request_target workflows by default in public repositories from
+    2026-12-02
+  section: Top stories
+  category: Dev tools
+  blurb: >-
+    Public repos lose the privileged fork PR trigger by default next week, and PSF engineers
+    publish an allowlist policy to roll out org-wide.
+  summary: >-
+    PSF security engineers Mike Fiedler and Seth Larson write that GitHub will block the pull_request_target
+    trigger by default in public repositories on 2026-12-02, and that the default policy runs
+    in evaluate mode until then, with affected runs shown in Policy insights. They recommend
+    an organization Actions event policy that allows only pull_request, push, release, repository_dispatch,
+    schedule, workflow_dispatch and workflow_run, rolled out in Evaluate mode first, and note
+    that GitHub's default steps aside as soon as an organization defines its own policy. Organization-level
+    policies need a paid plan, so Free organizations must apply the policy per repository
+    through the gh API.
+  why: >-
+    Fork PR labelers, welcome bots, slash-command bots on issue_comment and merge queues can
+    stop running, so audit Policy insights and migrate them before 2026-12-02.
+  background: >-
+    A pull_request workflow runs fork code with a read-only token and no secrets, while pull_request_target
+    runs from the base branch with a read/write token and the repository's secrets. When such
+    a workflow checks out the PR head and runs it, any GitHub user can execute code with those
+    credentials, a pattern called a pwn request. The post ties Ultralytics, the Trivy compromise
+    behind the LiteLLM and Telnyx releases, TanStack, Nx and tj-actions to these triggers,
+    and notes that PyPI, npm and crates.io Trusted Publishing already reject tokens from some
+    of them.
+  followup: GitHub enforcement of the default block on 2026-12-02.
+  event: github-pull-request-target-default-block
+  sources:
+  - label: primary
+    url: https://alpha-omega.dev/blog/de-fanging-dangerous-triggers-in-github-actions-across-an-organization/
+  - label: primary
+    url: https://pyfound.blogspot.com/2026/11/de-fanging-dangerous-triggers-in-github.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50560120
+  thread: f-0246
+- title: >-
+    CISA lists Cisco Expressway CVE-2026-76466, a hard-coded credential root RCE, as exploited
+    in the wild
+  section: Security
+  category: Security
+  blurb: >-
+    Attackers gain root on clustered Cisco Expressway gateways through hard-coded credentials,
+    and CISA gave federal agencies three days to patch.
+  summary: >-
+    CISA added CVE-2026-76466 to its Known Exploited Vulnerabilities catalog on 2026-11-20
+    with a due date of 2026-11-23, describing hard-coded credentials that let an unauthenticated
+    remote attacker with persistent cookies run commands as root on a clustered Expressway
+    device through its database service. Cisco patched the flaw in late October and says its
+    PSIRT is not aware of exploitation. F6 reports attackers using an AI assistant compromised
+    two internet-facing Expressway nodes, pivoted to two internal cluster nodes, and used
+    Python scripts to probe SMB, SQL Server, WinRM and GitLab repositories for credentials.
+  why: >-
+    Teams running Expressway-C or Expressway-E clusters should apply Cisco's October fix now
+    and check internal nodes and reachable GitLab instances for credential theft.
+  background: >-
+    Cisco Expressway is a collaboration gateway, shipped as a VM or appliance, that connects
+    internal voice and video systems to outside networks and remote users. A KEV listing means
+    CISA has evidence of exploitation, and under BOD 26-04 this entry also requires federal
+    agencies to perform forensic triage, not just patch.
+  event: cisco-expressway-cve-2026-76466-exploitation
+  sources:
+  - label: primary
+    url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/cisa-flags-critical-cisco-expressway-rce-flaw-as-actively-exploited/
+- title: >-
+    APM 0.38.0 adds --policy to install and update, project-scope native plugins and AGENTS.md
+    for Claude
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Agent Package Manager can enforce an org policy at install time, render agents to Codex
+    TOML, and pins whole hook bundles in approval hashes.
+  summary: >-
+    APM 0.38.0, released 2026-11-22, adds a --policy flag to apm install and apm update, a
+    root apm.yml marketplaces map with a marketplace.allow policy, authentication for private
+    hosted HTTPS catalogs, and opt-in strict host credentials for GitHub-class hosts. It converges
+    Claude instructions on AGENTS.md, adds project-scope native plugins for Claude and Copilot,
+    renders bundle agents to Codex TOML at install, and applies the org dependency policy
+    to compile, run and auto-install. Approval fingerprints now pin the full hook bundle,
+    installs replace deployed files atomically, and MCP server collisions are refused before
+    any file is written.
+  why: >-
+    Teams packaging skills, hooks and MCP servers with APM can now gate installs on an org
+    policy and should expect Claude instruction output to move to AGENTS.md.
+  event: apm-0-38-0-release
+  sources:
+  - label: primary
+    url: https://github.com/microsoft/apm/releases/tag/v0.38.0
+- title: >-
+    gitoxide 0.62 adds gix fsmonitor, gix watch and gix notify, plus a --repo-trust flag for
+    config trust levels
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The Rust Git implementation's CLI gains a Git-compatible filesystem monitor daemon and
+    file watchers, and plumbing crates move to std errors.
+  summary: >-
+    gitoxide 0.62.0, released 2026-11-22 alongside gix 0.91.0 and new gix-notify and gix-fsmonitor
+    0.1.0 crates, adds gix fsmonitor with foreground and detached daemons, token queries and
+    Git hook-v2 autostart, plus gix watch for repository invalidations and gix notify for
+    raw filesystem events. A --repo-trust option sets full or reduced trust, or forces either,
+    to compare how repository configuration behaves, and plumbing crates now use a std::error::Error
+    compatible error type. The CLI tooling now requires Rust 1.91 while gix and its plumbing
+    stay on Rust 1.88.
+  why: >-
+    Projects building on gix can now drive a Git-compatible fsmonitor and change notifications
+    from the library, and CLI builds need Rust 1.91.
+  background: >-
+    Git's core.fsmonitor setting lets git status ask a daemon which paths changed since a
+    token instead of stat-ing every file, which matters on large worktrees. Repository trust
+    decides whether configuration from a repository the user does not own is honored, the
+    mechanism behind Git's safe.directory protection.
+  event: gitoxide-0-62-0-release
+  sources:
+  - label: primary
+    url: https://github.com/GitoxideLabs/gitoxide/releases/tag/v0.62.0
+- title: >-
+    SeaweedFS 4.55 adds JWT signing key rotation, filer HTTP Basic Auth and a fips140=only
+    mode
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The release lets S3 requests authenticate by verified client certificate, enforces BlockPublicPolicy,
+    and hardens Helm JWT keys and secrets.
+  summary: >-
+    SeaweedFS 4.55, released 2026-11-23, accepts a previous JWT signing key during rotation,
+    adds optional HTTP Basic Auth on filer HTTP ports and scoped read-only tokens for metadata
+    subscriptions, and authenticates unsigned S3 requests by a verified client certificate.
+    It enforces BlockPublicPolicy and RestrictPublicBuckets, evaluates STS session condition
+    keys, and under fips140=only refuses SigV2, SSE-C and SHA-1 checksums. The Helm chart
+    moves security config into a Secret with stronger JWT keys and opt-in HTTPS for volume
+    data ports, alongside many filer, mount and erasure coding consistency fixes.
+  why: >-
+    Operators can now rotate SeaweedFS JWT keys without downtime and should review the Helm
+    security Secret change and the stricter S3 policy checks before upgrading.
+  event: seaweedfs-4-55-release
+  sources:
+  - label: primary
+    url: https://github.com/seaweedfs/seaweedfs/releases/tag/4.55
+- title: >-
+    PGAIBench: frontier models caused harm in 13 of 408 live Postgres changes, and a clone
+    gate plus auditor blocked 12
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Ten models ran 949 production-style Postgres 18.7 tickets, and Claude Fable 5.2 broke
+    a no-restart rule in all five repeats of one task.
+  summary: >-
+    PostgresAI ran 10 models on 19 scenarios with 5 repeats on live two-node Postgres 18.7
+    clusters under load, and 13 of 408 changes executed on the primary caused measured harm,
+    including Grok 4.7 dropping indexes unused on the primary but hot on an async standby.
+    It proposes AAA, where an Analyst drafts a change, a deterministic Actor rehearses it
+    on a live clone and is the sole write path, and an Auditor model reviews the clone evidence.
+    In an in-sample replay the clone gate stopped 6 harms at no LLM cost and a Fable 5.2 Auditor
+    stopped 6 more, while 377 of 378 safe or unclassified changes stayed approved.
+  why: >-
+    Agents that change production databases need per-node telemetry and clone rehearsal under
+    load, since primary-only checks and green 60-second summaries missed real harm.
+  background: >-
+    Many Postgres DDL statements take an AccessExclusiveLock, and a pending one queues every
+    later reader and writer on the table behind it. Safe patterns split work, such as adding
+    a constraint NOT VALID and validating it in a separate transaction. Index usage counters
+    in pg_stat_user_indexes are per node, so an index idle on the primary can still serve
+    replica reads.
+  event: pgaibench-aaa-postgres-ai-changes
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9Dh
+- title: >-
+    xnulinux boots macOS 27 to the desktop by loading XNU as a kernel module inside arm64
+    Linux
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A source-built macOS kernel runs as xnu.ko beside Linux with no hypervisor, booting Safari
+    and Finder, and Hacker News debates the approach.
+  summary: >-
+    xnulinux builds XNU from Apple's published sources and loads it as xnu.ko into a stock
+    arm64 Linux kernel, with an fki.ko interface module lending memory, timers, files, network
+    and GPU, so macOS processes run natively beside Linux processes. It boots a macOS 27.2.1
+    disk made by Apple's installer to the desktop in 31 to 48 seconds inside an arm64 Linux
+    VM on Apple Silicon, and survived a 30-minute app stress run, though AMFI is patched,
+    SIP relaxed and memory access is slower than a native VM. The thread drew 272 points and
+    121 comments on Hacker News.
+  why: >-
+    It shows a co-kernel design where a second OS kernel shares CPUs with Linux through a
+    narrow module interface instead of a hypervisor.
+  comments: >-
+    Commenters point out it still needs PAC-capable Apple hardware with 4K pages and the user's
+    own macOS install, suggest Darling as a syscall-level alternative, and compare it with
+    CoLinux and with running XNU under KVM.
+  event: xnulinux-xnu-kernel-module
+  sources:
+  - label: primary
+    url: https://github.com/AFK-surf/xnulinux
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50607261
