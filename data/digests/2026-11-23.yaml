@@ -1,5 +1,5 @@
 date: '2026-11-23'
-updated: 2026-11-23T09:22Z
+updated: 2026-11-23T16:19Z
 stories:
 - title: >-
     GitHub will block pull_request_target workflows by default in public repositories from
@@ -40,6 +40,40 @@ stories:
     url: https://news.ycombinator.com/item?id=50560120
   thread: f-0246
 - title: >-
+    Nvidia's board reinstates Jensen Huang as president, CEO and board director, citing US
+    government input
+  section: Top stories
+  category: Markets
+  blurb: >-
+    Nvidia's board unanimously brought Jensen Huang back as president, CEO and director after
+    US government input, while its probe continues.
+  summary: >-
+    Nvidia announced on 2026-11-23 that its board voted unanimously to reinstate Jensen Huang
+    as president, CEO and board member, effective immediately, after meetings with him and
+    input from senior levels of the US government that left it confident his return poses
+    no national security risk. Harvey Jones stays board chair and Colette Kress returns to
+    CFO duties. The independent committee investigating reports that Huang was the target
+    of a foreign intelligence effort will continue, and Nvidia is hiring a Chief Compliance
+    Officer.
+  why: >-
+    Leadership of the dominant AI accelerator vendor is settled again, though the open investigation
+    and new export control oversight keep its China and compliance posture uncertain.
+  background: >-
+    Huang co-founded Nvidia and led it until his resignation, which this digest covered on
+    2026-11-12, when CFO Colette Kress became interim CEO. The press release ties the episode
+    to reporting that Huang was the target of a foreign intelligence effort, and says the
+    board also formed a National Security and Export Control Committee of independent directors.
+    Nvidia's CUDA platform and data center GPUs underpin most AI training and inference, so
+    its leadership and export posture shape GPU supply for the whole industry.
+  comments: The Hacker News thread on the announcement drew 1,624 points and 1,375 comments.
+  thread: f-0231
+  event: nvidia-reinstates-jensen-huang-ceo
+  sources:
+  - label: primary
+    url: https://nvidianews.nvidia.com/news/nvidia-board-reinstates-jensen-huang-as-president-ceo-and-board-director
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50611588
+- title: >-
     CISA lists Cisco Expressway CVE-2026-76466, a hard-coded credential root RCE, as exploited
     in the wild
   section: Security
@@ -70,6 +104,79 @@ stories:
   - label: discussion
     url: https://www.bleepingcomputer.com/news/security/cisa-flags-critical-cisco-expressway-rce-flaw-as-actively-exploited/
 - title: >-
+    cookie 0.18.3 fixes RUSTSEC-2026-0594, AES-GCM nonce reuse in private cookies after fork()
+  section: Security
+  category: Security
+  blurb: >-
+    Private cookies in the cookie crate can reuse AES-GCM nonces after fork(), letting attackers
+    forge them. Version 0.18.3 fixes it.
+  summary: >-
+    The cookie crate drew private cookie nonces from rand::thread_rng(), whose buffered bytes
+    survive fork(), so the first private cookies sealed after a fork in parent and children
+    can share nonces, which lets an attacker recover plaintext XORs and the GHASH key to forge
+    cookies. Only processes that fork without exec and add private cookies on the forking
+    thread are affected, which excludes axum on a normal multi-threaded runtime and Rocket.
+    Version 0.18.3 takes nonces from the OS random generator, and affected deployments should
+    rotate their Key.
+  why: >-
+    axum-extra PrivateCookieJar users who fork workers onto current-thread runtimes should
+    upgrade cookie and rotate keys, and everyone else should still bump the lockfile.
+  background: >-
+    AES-GCM is safe only while each nonce is used once per key. A repeated nonce exposes the
+    XOR of two plaintexts and lets an attacker derive the authentication key used to forge
+    tags. User-space random generators that buffer output are a known hazard across fork(),
+    since both processes continue from the same buffered state.
+  event: rust-cookie-private-nonce-reuse-fork
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0594.html
+- title: >-
+    Hetzner Object Storage in fsn1 is degraded again, with bucket requests failing on and
+    off since 2026-11-14
+  section: Outages
+  category: Outage
+  blurb: >-
+    Hetzner Object Storage in Falkenstein has had failing or timed-out bucket requests on
+    and off since 2026-11-14, and is degraded again today.
+  summary: >-
+    Hetzner's status page lists an Object Storage incident in fsn1 that began 2026-11-14 00:40
+    UTC, where requests to some buckets may fail or time out. It was marked fixed and then
+    reopened on 2026-11-15 and 2026-11-19, and on 2026-11-23 Hetzner reported a significant
+    increase in requests on the clusters and returned the incident to in progress while it
+    migrates data.
+  why: >-
+    Teams using fsn1 Object Storage for backups, such as CloudNativePG WAL archives, should
+    check for failed uploads over the past nine days and consider another location.
+  event: hetzner-object-storage-fsn1-degradation-2026-11
+  sources:
+  - label: primary
+    url: https://status.hetzner.com/incident/5538b885-8fe5-42ad-98f7-7f788a8af426
+- title: >-
+    Vercel AI Gateway runs canary audits to catch inference providers reading prompts despite
+    zero data retention
+  section: AI
+  category: AI
+  blurb: >-
+    Vercel AI Gateway now plants unique URLs in prompts to catch inference providers that
+    read or crawl prompt content despite ZDR terms.
+  summary: >-
+    Vercel's AI Gateway now sends prompts containing freshly minted URLs, each privately mapped
+    to a provider, model and run, through the normal inference path with Zero Data Retention
+    requested. Any request to a canary URL is recorded for investigation, and non-ZDR provider
+    pairs serve as positive controls.
+  why: >-
+    Teams routing source code or customer data through hosted inference get ongoing evidence
+    of provider behavior instead of relying only on contracts and point-in-time audits.
+  background: >-
+    Zero Data Retention is a contractual promise that a provider does not store or inspect
+    prompts after serving them. Canary tokens are a long-standing detection technique: a unique
+    value that only an unauthorized reader would ever act on. Dragos used the same method
+    to expose breached inference providers, which this digest covered on 2026-11-21.
+  event: vercel-ai-gateway-canary-zdr-audits
+  sources:
+  - label: primary
+    url: https://vercel.com/changelog/ai-gateway-now-runs-canary-zdr-audits
+- title: >-
     APM 0.38.0 adds --policy to install and update, project-scope native plugins and AGENTS.md
     for Claude
   section: Agentic coding
@@ -93,6 +200,73 @@ stories:
   sources:
   - label: primary
     url: https://github.com/microsoft/apm/releases/tag/v0.38.0
+- title: >-
+    Fly.io says agents run 55% of its deployments and its software factory rewrites its own
+    prompts after scoring
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Fly.io says agents now perform at least 55% of its deployments and describes a factory
+    whose Scorer agent opens PRs against its own prompts.
+  summary: >-
+    Fly.io says at least 55% of its deployments are now done by agents, and it added auth.md
+    agent signup with 24-hour self-renewing tokens and agent credit top-ups over HTTP 402
+    with human approval in Stripe Link. Its internal software factory runs Claude Code on
+    separate Sprites for research, change, verification and review, ending in a draft PR.
+    A Scorer agent grades each run against five criteria in a markdown file, and when one
+    criterion fails three times in two weeks another agent opens a draft PR against the agents'
+    prompts that a human must merge.
+  why: >-
+    It is a concrete pattern for eval-driven harness tuning: score every run against written
+    criteria and route fixes to the agents' own prompts through normal review.
+  event: fly-io-agent-signup-and-self-scoring-factory
+  sources:
+  - label: primary
+    url: https://fly.io/blog/holding-the-door-for-agents/
+- title: >-
+    Kotlin Benchmark 2.0 adds 30 private tasks and offline sandboxes, with Claude Code on
+    Opus 5.5 leading at 75.3%
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    JetBrains' harder Kotlin Benchmark adds 30 private tasks and blocks network access, and
+    Claude Code with Opus 5.5 leads at 75.3%.
+  summary: >-
+    JetBrains rebuilt its Kotlin Benchmark as 100 multi-file tasks, 70 from 25 open-source
+    repositories and 30 from private JetBrains server-side projects, after finding agents
+    looking up published fixes. Open-source tasks now run without network access or repository
+    history, each configuration runs three times with a 30-minute limit, and the leaderboard
+    reports cost, tokens and steps. Claude Code with Opus 5.5 resolved 75.3% overall at $0.84
+    per task, while on private tasks Antigravity CLI with Gemini 3.8 Flash scored 60% and
+    OpenCode with DeepSeek V4.1 Flash 58.9% at $0.08.
+  why: >-
+    Kotlin teams choosing an agent and model get per-task cost and contamination-resistant
+    private scores, which rank configurations differently from public tasks.
+  event: kotlin-benchmark-2-0
+  sources:
+  - label: primary
+    url: https://blog.jetbrains.com/kotlin/2026/11/kotlin-benchmark-2-0-how-ai-coding-agents-handle-harder-tasks-and-closed-source-code/
+- title: >-
+    Neovim master lets nvim_buf_set_lines, nvim_buf_set_text and nvim_put accept a multiline
+    string
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Neovim master lets nvim_buf_set_lines, nvim_buf_set_text and nvim_put take a multiline
+    string, about twice as fast as calling vim.split.
+  summary: >-
+    A commit by Justin M. Keyes lets the three API functions take a String that C splits at
+    newlines without copying, about 2x faster than vim.split() and about 20% faster than a
+    prebuilt table. The parameters are renamed to lines and text, docs add api-string and
+    api-lines definitions, and runtime code such as man.lua, vim.net and vim.snippet now passes
+    strings directly.
+  why: >-
+    Plugin authors can drop vim.split() before buffer writes for a measurable speedup, while
+    api_info now reports the parameter type as Object.
+  event: neovim-buf-set-lines-accepts-string
+  sources:
+  - label: primary
+    url: https://github.com/neovim/neovim/commit/735fc4f4f6817268cd65512695828fbb255826ab
 - title: >-
     gitoxide 0.62 adds gix fsmonitor, gix watch and gix notify, plus a --repo-trust flag for
     config trust levels
