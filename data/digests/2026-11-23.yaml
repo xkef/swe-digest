@@ -1,5 +1,5 @@
 date: '2026-11-23'
-updated: 2026-11-23T16:19Z
+updated: 2026-11-23T21:37Z
 stories:
 - title: >-
     GitHub will block pull_request_target workflows by default in public repositories from
@@ -131,6 +131,38 @@ stories:
   - label: primary
     url: https://rustsec.org/advisories/RUSTSEC-2026-0594.html
 - title: >-
+    Attackers exploited an Azure API Management Classic flaw to steal stored secrets, subscription
+    keys and tokens
+  section: Security
+  category: Security
+  blurb: >-
+    Microsoft says an Azure API Management Classic flaw let attackers read stored secrets,
+    and its fix does not invalidate stolen credentials.
+  summary: >-
+    Microsoft told customers in Azure Service Health advisory MZK9-GH0 that it found a flaw
+    in Azure API Management Classic tiers on 2026-11-18 and blocked the unauthorized management-plane
+    access path on 2026-11-19. Named Values secrets, identity provider and OpenID Connect
+    client secrets, subscription keys and management API tokens may have been exposed, and
+    v2 tiers are not affected. Norway's NSM ties the flaw to attacks on energy companies including
+    Equinor and Skagerak Energi.
+  why: >-
+    Teams on APIM Classic must rotate every secret stored in the service and check backends
+    reached with those credentials, because Microsoft's fix leaves stolen ones valid.
+  background: >-
+    Azure API Management is a gateway that publishes and secures APIs. It often holds backend
+    credentials as Named Values and client secrets for identity providers, so control of its
+    management plane exposes the systems behind it. This comes days after Microsoft disclosed
+    exploitation of an Entra Connect Health API flaw.
+  comments: >-
+    An administrator on Reddit, quoted by BleepingComputer but not verified, says attackers
+    used a valid administrator token against Key Vault through a deprecated legacy API that
+    wrote no customer-visible logs. NSM tells customers to confirm their instances run a patched
+    runtime version.
+  event: azure-apim-classic-secret-theft
+  sources:
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/microsoft-azure-flaw-exploited-to-steal-customers-api-credentials/
+- title: >-
     Hetzner Object Storage in fsn1 is degraded again, with bucket requests failing on and
     off since 2026-11-14
   section: Outages
@@ -247,6 +279,57 @@ stories:
   - label: primary
     url: https://blog.jetbrains.com/kotlin/2026/11/kotlin-benchmark-2-0-how-ai-coding-agents-handle-harder-tasks-and-closed-source-code/
 - title: >-
+    Claude Code 2.1.331 brings Code Mode to cloud provider sessions and adds optional plugin
+    dependencies
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Claude Code 2.1.331 brings Code Mode to Bedrock and Foundry terminals, adds optional plugin
+    dependencies and gen_ai trace attributes.
+  summary: >-
+    Claude Code 2.1.331 adds Code Mode to terminal sessions on Amazon Bedrock, Google Cloud's
+    Agent Platform, Microsoft Foundry and Claude Platform on AWS. It adds optionalDependencies
+    to plugin manifests, gen_ai.usage, gen_ai.response.model and gen_ai.operation.name attributes
+    on claude_code.llm_request trace spans, and an API connectivity check in claude doctor.
+    The notes say plugin marketplaces in managed extraKnownMarketplaces will auto-update by
+    default on or after 2026-11-30 unless an entry sets autoUpdate to false.
+  why: >-
+    Admins who pin managed plugin marketplaces must set autoUpdate to false before 2026-11-30
+    to keep control, and OpenTelemetry users can now read token usage from standard gen_ai
+    attributes.
+  followup: Managed marketplaces switch to auto-update on or after 2026-11-30.
+  event: claude-code-2-1-331-release
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/claude-code/releases/tag/v2.1.331
+- title: >-
+    Google's DeepCrossAttention routes residual connections per token and cuts transformer
+    depth 29% at equal perplexity
+  section: ML research
+  category: ML research
+  blurb: >-
+    Google's DeepCrossAttention replaces fixed residual sums with learned per-token routing
+    over earlier layers, matching quality in fewer steps.
+  summary: >-
+    Google Research describes DeepCrossAttention, from its ICML 2025 paper. Each layer mixes
+    the outputs of earlier layers with learned, input-dependent weights and applies cross-attention
+    across depth instead of summing residuals equally. On LM1B and C4 it matched standard
+    transformers in up to five times fewer training steps, and it reached under 14 perplexity
+    on LM1B with 30 layers where a baseline needed 42. It adds under 0.2% parameters and can
+    be retrofitted onto a pretrained model.
+  why: >-
+    Dynamic residual routing is spreading into open models such as Inkling 2, so engineers
+    who serve or fine-tune them should expect higher memory bandwidth use per layer.
+  background: >-
+    Residual connections add each layer's input to its output so that gradients flow through
+    deep networks. Summing every layer with equal weight dilutes features from early layers.
+    Related designs include Moonshot AI's attention residuals and hyper-connections, which
+    widen the residual stream into several channels.
+  event: google-deepcrossattention-residuals
+  sources:
+  - label: primary
+    url: https://research.google/blog/supercharging-transformer-residual-connections/
+- title: >-
     Neovim master lets nvim_buf_set_lines, nvim_buf_set_text and nvim_put accept a multiline
     string
   section: Developer tools
@@ -296,6 +379,27 @@ stories:
   - label: primary
     url: https://github.com/GitoxideLabs/gitoxide/releases/tag/v0.62.0
 - title: >-
+    hyper 1.13.0 adds an HTTP/2 executor getter and fixes HTTP/1 and HTTP/2 framing and shutdown
+    bugs
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    hyper 1.13.0 adds an HTTP/2 executor getter and fixes framing bugs, including Content-Length
+    kept alongside Transfer-Encoding.
+  summary: >-
+    hyper 1.13.0 adds an executor getter for HTTP/2 servers and clients. In HTTP/1 it now
+    drops Content-Length when a response also carries Transfer-Encoding, errors when the final
+    body chunk is shorter than Content-Length, rejects bare LF in trailers and drains in-flight
+    requests before dispatcher shutdown. In HTTP/2 it strips every header named in a Connection
+    header and fixes requests that hung during a concurrent connection shutdown.
+  why: >-
+    Services built on hyper, directly or through axum, tonic or reqwest, get stricter message
+    framing and fewer hung requests at shutdown after a semver-compatible upgrade.
+  event: hyper-1-13-0-release
+  sources:
+  - label: primary
+    url: https://github.com/hyperium/hyper/releases/tag/v1.13.0
+- title: >-
     SeaweedFS 4.55 adds JWT signing key rotation, filer HTTP Basic Auth and a fips140=only
     mode
   section: Infrastructure
@@ -318,6 +422,34 @@ stories:
   sources:
   - label: primary
     url: https://github.com/seaweedfs/seaweedfs/releases/tag/4.55
+- title: >-
+    Cisco and OpenAI open-source Shirudo, an agent-driven Tetragon rewrite that ships live
+    eBPF and bytecode shields
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Cisco and OpenAI open-source Shirudo, a Tetragon rewrite that lets agents write eBPF or
+    bytecode shields for unpatched flaws at runtime.
+  summary: >-
+    Shirudo delivers small mitigations to a running kernel or workload. A mitigation can block
+    a vulnerable path, replace vulnerable code or add detection, and it needs no restart.
+    An operator CLI builds shields as eBPF or application bytecode, signs them as .bee packages
+    and distributes them through an OCI registry, and targets check the signatures against
+    their TPM. In a Codex-driven demo, an agent generated a Java bytecode shield that blocked
+    a Java4Shell exploit against a running Elasticsearch 9.5.5.
+  why: >-
+    It shows a concrete design for agent-written runtime mitigations that cover the gap between
+    disclosure and patch rollout, built on eBPF and signed OCI artifacts that platform teams
+    already run.
+  background: >-
+    eBPF lets verified programs attach to kernel hook points and change or observe behavior
+    without rebooting. Isovalent's Tetragon used it for runtime security policy written by
+    humans. Shirudo replaces that policy language with code that agents write, and adds bytecode
+    injection for flaws that eBPF cannot reach, such as a JVM intrinsic bug.
+  event: shirudo-open-source-launch
+  sources:
+  - label: primary
+    url: https://isovalent.com/blog/post/cisco-openai-shirudo/
 - title: >-
     PGAIBench: frontier models caused harm in 13 of 408 live Postgres changes, and a clone
     gate plus auditor blocked 12
@@ -348,6 +480,30 @@ stories:
   - label: primary
     url: https://postgr.es/p/9Dh
 - title: >-
+    Dex Horthy: software factories are ordinary engineering, and top models score about 16%
+    on Slop Code Bench
+  section: Talks
+  category: Video
+  blurb: >-
+    Dex Horthy argues software factories are ordinary engineering with agents building, citing
+    Slop Code Bench scores near 16% for top models.
+  summary: >-
+    Horthy, now at Factory after Human Layer joined it, says a factory needs forward pressure,
+    such as routing feature requests and incidents to agents, and back pressure from agent
+    review, CI, linters and formal checks. Slop Code Bench measures how well models evolve
+    a codebase across checkpoints, and the best models score about 15% to 16%. He reports
+    newer Claude and GLM models falling back to Python 2 style percent formatting instead
+    of f-strings. He recommends planning in proportion to the cost of later change, giving
+    agents feature flags and ways to test their own work, and adopting anti-slop lint rule
+    sets.
+  why: >-
+    Unattended agents still degrade codebases over time, so teams should invest in automated
+    back pressure such as lint rules and verification before they remove human review.
+  event: dex-horthy-12-factor-factories-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=-NFMsM2y0Vk
+- title: >-
     xnulinux boots macOS 27 to the desktop by loading XNU as a kernel module inside arm64
     Linux
   section: Hacker News
@@ -376,3 +532,29 @@ stories:
     url: https://github.com/AFK-surf/xnulinux
   - label: discussion
     url: https://news.ycombinator.com/item?id=50607261
+- title: >-
+    Ladybird enters alpha with macOS and Linux builds of its from-scratch browser engine
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Ladybird ships alpha builds for macOS and Linux with its own from-scratch engine, WebDriver
+    support and automatic rolling updates.
+  summary: >-
+    Andreas Kling announced the Ladybird alpha on 2026-11-23 as a rolling channel with automatic
+    updates, in-browser broken-site reports and opt-in crash reports. It supports WebDriver
+    and the Firefox DevTools protocol, and the team makes no security promises yet. The Hacker
+    News thread drew over 1,000 points and 261 comments.
+  why: >-
+    Web developers can now test sites against an independent engine without building it from
+    source, and wire it into WebDriver test suites.
+  comments: >-
+    Testers report most sites rendering correctly with slightly jerky scrolling. One commenter
+    says Ladybird must pose as Chrome to pass some bot detection. Others note that it now
+    uses SQLite, Skia and ANGLE instead of in-house libraries and argue whether that weakens
+    its independence from Chrome.
+  event: ladybird-browser-alpha
+  sources:
+  - label: primary
+    url: https://ladybird.org/posts/alpha/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50614249
