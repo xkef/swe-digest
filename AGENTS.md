@@ -60,8 +60,8 @@ clone doesn't need an install step.
 
 `mise tasks --hidden` also lists the tasks that others call: `setup:*` builds
 the local environments, `ci:*` holds the checks that `ci` and the CI jobs run,
-`install:*` installs from uv.lock in CI, `publish` is the
-publish gate's entry point, and `check` checks the data alone.
+`install:*` installs from uv.lock in CI, `publish` is the entry point of
+the publish gate, and `check` checks the data alone.
 
 `daily --replay` and `improve --replay` rerun a day from the model
 reply saved under `.run/replies/`, without a new model call.
