@@ -1,5 +1,5 @@
 date: '2026-11-24'
-updated: 2026-11-24T16:07Z
+updated: 2026-11-24T20:18Z
 stories:
 - title: >-
     Anthropic's Claude Ship beta lets Claude Approvals approve pull requests under a policy
@@ -155,6 +155,41 @@ stories:
   - label: primary
     url: https://ii4gsp.github.io/iterm2-rce/
 - title: >-
+    GreyNoise: attackers control 24 Check Point Security Management Servers at 22 organizations
+    via a SmartConsole flaw
+  section: Security
+  category: Security
+  blurb: >-
+    GT13 used a SmartConsole auth bypass to copy firewall databases and internal CAs from
+    Check Point management servers at 22 organizations.
+  summary: >-
+    GreyNoise observed an actor it tracks as GT13 between 2026-10-02 and 2026-11-02, using
+    99 IP addresses and a hijacked Rejetto HFS server as a relay. A script for CVE-2026-16232,
+    a Check Point SmartConsole auth bypass to Run Script, launched over 100 management tasks
+    that copied the firewall database and internal CA, minted a certificate and unloaded security
+    policies, and a later bulk task hit 24 servers. GreyNoise does not know how the actor
+    first got into the Check Point servers and expects the campaign to be ongoing.
+  why: >-
+    Teams running Check Point management servers should look for GreyNoise's indicators, such
+    as /usr/lib/.libproc.so in /etc/ld.so.preload, and rotate internal CA material if they
+    find them.
+  background: >-
+    A Check Point Security Management Server holds the firewall policy for a fleet of gateways
+    and pushes it to them. It also runs the internal certificate authority that gateways trust,
+    so an attacker who controls it can read the network layout, change or unload policy, and
+    issue trusted certificates. GreyNoise says the actor likely used agentic tooling for scanning,
+    exploitation and follow-up work, a pattern seen in other campaigns this month.
+  comments: The Hacker News thread drew 206 points and 72 comments.
+  event: greynoise-gt13-check-point-management-server-campaign
+  major: exploited in the wild against widely deployed software
+  sources:
+  - label: primary
+    url: https://www.greynoise.io/blog/check-point-security-management-servers-intrusion-campaign
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50630594
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/hackers-compromise-check-point-servers-in-22-organizations/
+- title: >-
     DeepMind's Gemini 4 agent teams cut a fusion quantum circuit's cost 11.8x, with every
     result proved in Lean
   section: AI
@@ -212,6 +247,63 @@ stories:
     url: https://simonwillison.net/2026/Nov/23/glm-54/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50609685
+- title: >-
+    iFood's Remote Agents Platform runs coding agents across 15,000 repositories at about
+    $0.04 per run
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    A REST API sends a prompt to an isolated sandbox runner, and deterministic steps clone
+    the repo and open a merge request around the agent.
+  summary: >-
+    iFood built an internal REST API that runs a coding agent in an isolated Ubuntu sandbox
+    with toolchains for eight languages and access to Nexus, GitLab, Docker, Snyk, Kubernetes
+    and AWS. Deterministic steps clone the repository, load skills, create a branch and publish
+    the merge request, and Structured Outputs forces every session to return a success or
+    failure result in a fixed schema. The platform has completed over 25,000 runs on 27 billion
+    tokens, and its first user, a dependency vulnerability fixer, more than doubled the vulnerabilities
+    it resolved.
+  why: >-
+    It is a concrete design for fleet-wide unattended agent work: wrap the agent in deterministic
+    setup and publish steps, and require a structured verdict so failures are counted automatically.
+  background: >-
+    Structured Outputs constrains a model's reply to a JSON schema, so a caller can parse
+    a pass or fail field instead of reading free text. The source is an OpenAI customer story,
+    so the cost and accuracy figures come from iFood through the vendor.
+  event: ifood-remote-agents-platform
+  sources:
+  - label: primary
+    url: https://openai.com/business/customer-stories/ifood
+- title: >-
+    Paper: KL divergence formulas in PyTorch lose accuracy near zero, and about 30% of tiny
+    FP32 values turn negative
+  section: ML research
+  category: Paper
+  blurb: >-
+    Across 18 closed-form KL families and F.kl_div, conventional formulas give wrong values
+    and gradients for nearby distributions on CPU and GPU.
+  summary: >-
+    On 8.5 million inputs with certified references, over 85% of FP32 scalar-family values
+    near KL 1e-7 had at least 1% relative error, and about 30% became negative at smaller
+    divergences, while computing one precision higher still left 7 to 51% significantly wrong.
+    Stable closed-form decompositions, compensated arithmetic and analytic gradients removed
+    over 97% of significant errors. The errors caused up to 97% top-1 disagreement in identical-start
+    distillation and changed 19 to 59% of GPT-2 circuit edge scores.
+  why: >-
+    Clamping negative KL to zero hides the error, so KL penalties in distillation, RL post-training
+    and quantization layer ranking may need the authors' stable formulations.
+  background: >-
+    KL divergence measures how far one probability distribution is from another and is used
+    as the penalty that keeps a post-trained policy near its reference model, and as the loss
+    in distillation. When the two distributions are nearly equal, the textbook formula subtracts
+    nearly equal logarithms, and floating-point cancellation leaves mostly rounding noise.
+    That regime is common in training, because the policy starts identical to its reference.
+  event: pytorch-kl-divergence-numerical-errors-paper
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.30835v1
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50629962
 - title: >-
     mise 2026.11.13 adds global task picker filters, main_checkout dotfile links and daemon
     _URL exports
@@ -492,6 +584,35 @@ stories:
   - label: primary
     url: https://www.youtube.com/watch?v=SRhXgeNluIk
 - title: >-
+    Jarred Sumner: Bun's agent-written AOT compiler took five rewrites and cuts Claude Code
+    memory use about 4x
+  section: Talks
+  category: Video
+  blurb: >-
+    Bun's creator verified a multi-million-line agent-written compiler with pre-existing test
+    suites, three-way differential runs and fuzzing.
+  summary: >-
+    Sumner, now at Anthropic, describes an ahead-of-time compiler for Bun that treats TypeScript
+    types as predictions, which he says makes Claude Code use about 4x less memory and start
+    about 2x faster. Agents wrote it through five rewrites in about a month, with one round
+    running 140 agents in parallel, and it was checked against Bun's, WebKit's and test262's
+    existing suites, differential runs of JIT, AOT and type-stripped builds, and a JavaScript
+    engine fuzzer extended for types. The compiler bans assignments to Object.prototype to
+    block prototype pollution, and it is available through bun upgrade --canary.
+  why: >-
+    Trusting a large agent-written change depends on tests that existed before the project
+    and on differential runs the agent cannot edit, more than on review of the code.
+  background: >-
+    A JIT compiler turns JavaScript into machine code while the program runs, so every process
+    pays compile time and memory again. An AOT compiler does that work at build time, which
+    matters for many short sessions on constrained devices. Sumner says the team rejected
+    a Rust rewrite of Claude Code because its tests are in TypeScript, and porting them would
+    remove the independent check.
+  event: jarred-sumner-bun-aot-compiler-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=TvsF67C2F54
+- title: >-
     Dan Vega: AGENTS.md rules are requests, and ArchUnit tests make a Spring build fail when
     agents break them
   section: Videos
@@ -594,41 +715,6 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50617499
 - title: >-
-    Apple pulls the paid open-source FSNotes app from EU App Stores while its DSA trader check
-    stays pending
-  section: Hacker News
-  category: Pulse
-  blurb: >-
-    An indie developer says Apple pulled his paid open-source notes app from EU stores while
-    his DSA trader verification sat unanswered for weeks.
-  summary: >-
-    FSNotes developer Oleksandr Hlushchenko says Apple removed the nine-year-old macOS and
-    iOS app from every European App Store after his October payout failed, and that two support
-    cases opened 2026-11-05 and 2026-11-17 got no reply. He says he completed the EU Digital
-    Services Act compliance information in App Store Connect and submitted Ukrainian business
-    registry documents. The thread drew 537 points and 119 comments on Hacker News.
-  why: >-
-    Developers who sell apps in the EU need verified DSA trader status in App Store Connect,
-    and a lapse or a slow review can take an existing app off sale.
-  background: >-
-    The EU Digital Services Act requires online marketplaces to verify and publish contact
-    details for traders who sell to EU consumers. Apple asks developers to declare whether
-    they are traders in App Store Connect and removes apps of undeclared or unverified traders
-    from EU storefronts.
-  comments: >-
-    Commenters note the app is still listed in the US and UK, and a cached Dutch store page
-    says the developer had not identified as a trader. The author confirmed in the thread
-    that his DSA status is pending. A developer who filed last week says declaring non-trader
-    status for a free app cleared at once, while any paid app or tip jar makes an individual
-    a trader who must publish a postal address and phone number and wait on document review.
-    Another says DSA approval for a new app took a month after an October rule change.
-  event: fsnotes-eu-app-store-dsa-removal
-  sources:
-  - label: primary
-    url: https://github.com/glushchenko/fsnotes/discussions/2056
-  - label: discussion
-    url: https://news.ycombinator.com/item?id=50616933
-- title: >-
     Stalwart 1.2.0 speaks MAPI over HTTP, EWS and ActiveSync so Outlook connects to it as
     if to Exchange
   section: Hacker News
@@ -657,3 +743,31 @@ stories:
     url: https://stalw.art/blog/microsoft-exchange-replacement/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50620349
+- title: >-
+    trynix.dev switches to unkernel, Linux compiled to WebAssembly, and runs Firefox with
+    GL and sound in a tab
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Farid Zakaria swapped QEMU-in-wasm for unkernel, reporting 2x to 32x speedups and Wayland
+    windows, virgl over WebGL2, audio and networking.
+  summary: >-
+    Zakaria moved trynix.dev, which runs Nix packages in the browser, from qemu-wasm to unkernel,
+    a Linux kernel compiled to WebAssembly that emulates only user programs, and reports 2x
+    to 32x speedups. The VM composites Wayland windows in the page, renders through a virgl-only
+    Mesa on WebGL2, plays ALSA audio, and tunnels TCP over WebSockets to a Wisp relay. The
+    post drew 873 points and 327 comments on Hacker News.
+  why: >-
+    Browser-hosted Linux is now fast enough to consider for demos, docs and possibly agent
+    sandboxes, not only as a novelty.
+  comments: >-
+    The author of waarm64, a parallel aarch64 emulator for the browser built with Claude,
+    says Claude found a Rust wasm miscompile that was traced to LLVM and fixed upstream. Others
+    point to the WALI research toolchain for Linux userland on wasm, and one user reports
+    pathological memory growth with unkernel on WebKit.
+  event: trynix-unkernel-linux-wasm
+  sources:
+  - label: primary
+    url: https://fzakaria.com/2026/11/23/2035-came-early
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50624497
