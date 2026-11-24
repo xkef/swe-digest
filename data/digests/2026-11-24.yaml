@@ -1,5 +1,5 @@
 date: '2026-11-24'
-updated: 2026-11-24T03:29Z
+updated: 2026-11-24T11:16Z
 stories:
 - title: >-
     Anthropic's Claude Ship beta lets Claude Approvals approve pull requests under a policy
@@ -60,6 +60,38 @@ stories:
   sources:
   - label: primary
     url: https://rustsec.org/advisories/RUSTSEC-2026-0595.html
+- title: >-
+    Zstandard 1.6.0 fixes CVE-2026-124851 and over a dozen memory safety bugs, and disables
+    legacy formats by default
+  section: Security
+  category: Security
+  blurb: >-
+    Zstandard 1.6.0 ships early after a wave of bug reports, fixing memory corruption bugs
+    and disabling legacy format support by default.
+  summary: >-
+    Meta released Zstandard 1.6.0 on 2026-11-23, earlier than planned, to answer a flood of
+    bug reports, one of which was published as CVE-2026-124851. The changelog fixes uninitialized
+    memory exposure in streaming decompression of malformed data, out-of-bounds reads and
+    writes in the DDict hash table, use-after-free bugs in prefix and multithreaded compression
+    paths, and memory corruption in ZSTD_compressSequences(). Legacy format support is now
+    off by default in all build systems, and the CLI no longer writes output through symbolic
+    links.
+  why: >-
+    Any service or binary that bundles libzstd, directly or through bindings such as zstd-sys,
+    needs a rebuild against 1.6.0, and code that still reads pre-1.0 frames must re-enable
+    legacy support explicitly.
+  background: >-
+    Zstandard is a general-purpose compression library and format used in the Linux kernel,
+    package managers, databases, filesystems and HTTP content encoding. Many projects vendor
+    a copy of the C library rather than link the system one, so fixes reach them only when
+    each project updates its bundled copy. The legacy decoders handle frame formats from before
+    the format was frozen, code that is rarely exercised and so receives less scrutiny.
+  event: zstd-1-6-0-release
+  sources:
+  - label: primary
+    url: https://github.com/facebook/zstd/releases/tag/v1.6.0
+  - label: discussion
+    url: https://www.phoronix.com/news/Zstandard-Zstd-1.6
 - title: >-
     DeepMind's Gemini 4 agent teams cut a fusion quantum circuit's cost 11.8x, with every
     result proved in Lean
@@ -161,6 +193,35 @@ stories:
   - label: primary
     url: https://github.blog/changelog/2026-11-23-issue-statuses-and-repository-boards-are-in-public-preview
 - title: >-
+    mise 2026.11.14 adds an experimental Landlock sandbox that fails cached tasks reading
+    files outside their sources
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Cached mise tasks can now run under Landlock on Linux, so a read outside declared sources
+    fails the task instead of caching a wrong result.
+  summary: >-
+    With cache.sandbox = true, mise restricts a cached task to files matched by sources, its
+    config files, outputs of cached dependencies, system paths and mise-installed tools, limits
+    writes to output directories and a private TMPDIR, trims the environment and blocks network
+    access. Sandboxed cache entries are keyed separately, macOS and Windows run the task unsandboxed
+    with a warning, and invalid #MISE header values in file tasks are now errors instead of
+    being silently dropped. The release also cuts environment variable lookups per command
+    from about 2,800 to about 500.
+  why: >-
+    Teams relying on mise task caching can now detect undeclared inputs on Linux CI instead
+    of restoring cache entries built from inputs mise never checked.
+  background: >-
+    Landlock is a Linux security module that lets an unprivileged process restrict its own
+    filesystem and network access, with no root or container needed. Build caches are only
+    correct when every input that affects an output is part of the cache key, and undeclared
+    inputs are a classic source of stale or wrong cached builds, the problem hermetic build
+    tools like Bazel address with sandboxing.
+  event: mise-2026-11-14-release
+  sources:
+  - label: primary
+    url: https://github.com/jdx/mise/releases/tag/v2026.11.14
+- title: >-
     cgo's pointer check panics on legal code and can turn a 48 ns C call into 76 µs depending
     on syntax
   section: Engineering posts
@@ -219,6 +280,35 @@ stories:
   sources:
   - label: primary
     url: https://blog.cloudflare.com/probing-dns-at-cloudflare/
+- title: >-
+    Spring AI 2.1 pauses tool calls marked requiresConfirmation, and Session Extensions 0.11.0
+    resumes them after restarts
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    A Spring AI agent can park a money-moving tool call in its JDBC session log and resume
+    it from another JVM once a person approves it.
+  summary: >-
+    Spring AI 2.1 lets a @Tool carry requiresConfirmation = true, a property or a ToolCallConfirmationPolicy
+    bean, and the tool loop returns an ordinary response naming the calls awaiting a decision
+    while harmless tools still run. The new community project Spring AI Session Extensions
+    0.11.0 adds a turn status to the Session API's append-only log, so a parked turn and its
+    question survive a restart and any instance can resume it with allow or deny decisions.
+    The post warns that 0.11.0 has no lease for turns whose process died and that models sending
+    tool calls without ids can mismatch decisions.
+  why: >-
+    Java teams building agents that take irreversible actions get a framework pattern for
+    durable human approval without taking over the whole tool loop.
+  background: >-
+    Human-in-the-loop approval for agent tool calls is easy inside one process but hard when
+    the answer arrives hours later on another instance, because the pending conversation state
+    must be persisted and must not be editable by the client. In Spring AI 2.0 the only option
+    was user-controlled tool execution, where the application runs every round of the tool
+    loop itself.
+  event: spring-ai-tool-call-confirmation-session-extensions
+  sources:
+  - label: primary
+    url: https://spring.io/blog/2026/11/24/spring-ai-tool-call-confirmation-park-resume
 - title: >-
     Carl Kadie's nine rules for Rust const fn move file decoding, lookup tables and DSLs to
     compile time
@@ -357,3 +447,32 @@ stories:
     url: https://github.com/glushchenko/fsnotes/discussions/2056
   - label: discussion
     url: https://news.ycombinator.com/item?id=50616933
+- title: >-
+    Stalwart 1.2.0 speaks MAPI over HTTP, EWS and ActiveSync so Outlook connects to it as
+    if to Exchange
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    The open-source Rust mail server now lets classic Outlook, Apple Mail and phones use it
+    as an Exchange server, drawing 496 points on HN.
+  summary: >-
+    Stalwart 1.2.0 implements MAPI over HTTP, Exchange Web Services, ActiveSync 14.1 and 16.1
+    and Autodiscover in its AGPL Community edition, behind a Cargo feature and disabled by
+    default, adding about 200,000 lines of code. The new Outlook for Windows still cannot
+    connect, and the project advises against it because it relays IMAP credentials through
+    Microsoft's cloud. The Hacker News thread reached 496 points and 262 comments.
+  why: >-
+    Organizations leaving on-premises Exchange can move the server first and keep classic
+    Outlook and native mobile clients working during migration.
+  comments: >-
+    Commenters debated how long classic Outlook will remain usable given Microsoft's 2029
+    support date, with enterprise integrators saying customers still forbid the new Outlook.
+    A long subthread covered German GoBD rules requiring tamper-proof email archiving for
+    up to 10 years, with users pointing to Stalwart's compliance add-on and S3 Object Lock
+    as possible routes.
+  event: stalwart-1-2-0-exchange-protocols
+  sources:
+  - label: primary
+    url: https://stalw.art/blog/microsoft-exchange-replacement/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50620349
