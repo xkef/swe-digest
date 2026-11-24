@@ -1,5 +1,5 @@
 date: '2026-11-24'
-updated: 2026-11-24T01:07Z
+updated: 2026-11-24T03:29Z
 stories:
 - title: >-
     Anthropic's Claude Ship beta lets Claude Approvals approve pull requests under a policy
@@ -84,6 +84,41 @@ stories:
   - label: primary
     url: https://deepmind.google/blog/finding-faster-quantum-algorithms-with-agents-and-formal-verification/
 - title: >-
+    Z.ai releases GLM-5.4, its first looped transformer model, to GLM Coding Plan users without
+    open weights
+  section: AI
+  category: AI
+  blurb: >-
+    Z.ai's GLM-5.4 reruns a block of weight-shared layers per token for depth without more
+    parameters, and ships only through its Coding Plan.
+  summary: >-
+    Z.ai made GLM-5.4 available to all GLM Coding Plan users on 2026-11-23, citing new vision
+    capabilities, stronger coding and 50% more weekly quota than GLM-5.3. Z.ai describes it
+    as its first loop transformer, in which a group of weight-shared layers runs for several
+    iterations to refine hidden states. Simon Willison reports the model has no open weights
+    yet and is reachable only with a Coding Plan key through Z.ai's OpenAI-compatible API.
+  why: >-
+    Teams evaluating GLM for coding agents must use the Coding Plan endpoint for now, and
+    looped architectures change the compute per token of open models they may later self-host.
+  background: >-
+    A standard transformer runs each layer once per token. A looped transformer reuses a block
+    of layers several times, so the model gets more effective depth and more compute per token
+    without adding parameters. The idea goes back to Google's 2018 Universal Transformer paper.
+    Thinking Machines shipped Inkling 2 Mini, an open-weights looped model, on 2026-11-20.
+  comments: >-
+    The Hacker News thread drew 1078 points and 350 comments. Commenters say the article describes
+    running 28 of the layers twice, a fixed loop count rather than iterating to a fixed point,
+    and debate whether latent looping makes reasoning harder to monitor than visible chain
+    of thought.
+  event: glm-5-4-release
+  sources:
+  - label: primary
+    url: https://twitter.com/Zai_org/status/2124719658074825004
+  - label: discussion
+    url: https://simonwillison.net/2026/Nov/23/glm-54/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50609685
+- title: >-
     mise 2026.11.13 adds global task picker filters, main_checkout dotfile links and daemon
     _URL exports
   section: Developer tools
@@ -153,6 +188,37 @@ stories:
   sources:
   - label: primary
     url: https://theconsensus.dev/p/2026/11/15/cgos-pointer-check.html
+- title: >-
+    Cloudflare extends its Rust Flamingo test framework to probe DNS propagation and gate
+    releases on it
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Cloudflare probes DNS from every data center, checking a timestamped TXT record stays
+    fresh within 90 seconds, and gates releases on it.
+  summary: >-
+    Cloudflare added a DNS module to Flamingo, its Rust end-to-end test framework that runs
+    hundreds of millions of tests a day against its edge through a setup, action, assert DSL.
+    A probe keeps updating a TXT record with a timestamp and queries three authoritative nameserver
+    IPs and 1.1.1.1 from every data center, asserting freshness within 90 seconds for authoritative
+    answers and 600 seconds for the resolver. The work followed a rollout where a scheduling
+    bug left record changes unpublished for hours while the service looked healthy, and these
+    measurements now decide whether a release proceeds or rolls back.
+  why: >-
+    It shows a concrete way to turn a slow, partial failure mode such as propagation lag into
+    a synthetic SLI that can block a deploy, instead of relying on health checks that stay
+    green.
+  background: >-
+    Synthetic probing sends scripted requests to production from the user's vantage point
+    and records whether they succeed, which catches failures that unit tests and process health
+    checks miss. An SLI is the measured series, such as the share of probes that see a fresh
+    record, and an SLO is the target percentage for it. Flamingo's design dispatches each
+    action type, such as an HTTP request or a DNS query, to its own handler through typed
+    Rust enums, so new protocols reuse scheduling and reporting.
+  event: cloudflare-flamingo-dns-probing
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/probing-dns-at-cloudflare/
 - title: >-
     Carl Kadie's nine rules for Rust const fn move file decoding, lookup tables and DSLs to
     compile time
@@ -256,3 +322,38 @@ stories:
     url: https://arm.jonpalmisc.com/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50617499
+- title: >-
+    Apple pulls the paid open-source FSNotes app from EU App Stores while its DSA trader check
+    stays pending
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    An indie developer says Apple pulled his paid open-source notes app from EU stores while
+    his DSA trader verification sat unanswered for weeks.
+  summary: >-
+    FSNotes developer Oleksandr Hlushchenko says Apple removed the nine-year-old macOS and
+    iOS app from every European App Store after his October payout failed, and that two support
+    cases opened 2026-11-05 and 2026-11-17 got no reply. He says he completed the EU Digital
+    Services Act compliance information in App Store Connect and submitted Ukrainian business
+    registry documents. The thread drew 537 points and 119 comments on Hacker News.
+  why: >-
+    Developers who sell apps in the EU need verified DSA trader status in App Store Connect,
+    and a lapse or a slow review can take an existing app off sale.
+  background: >-
+    The EU Digital Services Act requires online marketplaces to verify and publish contact
+    details for traders who sell to EU consumers. Apple asks developers to declare whether
+    they are traders in App Store Connect and removes apps of undeclared or unverified traders
+    from EU storefronts.
+  comments: >-
+    Commenters note the app is still listed in the US and UK, and a cached Dutch store page
+    says the developer had not identified as a trader. The author confirmed in the thread
+    that his DSA status is pending. A developer who filed last week says declaring non-trader
+    status for a free app cleared at once, while any paid app or tip jar makes an individual
+    a trader who must publish a postal address and phone number and wait on document review.
+    Another says DSA approval for a new app took a month after an October rule change.
+  event: fsnotes-eu-app-store-dsa-removal
+  sources:
+  - label: primary
+    url: https://github.com/glushchenko/fsnotes/discussions/2056
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50616933
