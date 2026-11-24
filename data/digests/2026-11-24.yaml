@@ -1,5 +1,5 @@
 date: '2026-11-24'
-updated: 2026-11-24T11:16Z
+updated: 2026-11-24T16:07Z
 stories:
 - title: >-
     Anthropic's Claude Ship beta lets Claude Approvals approve pull requests under a policy
@@ -33,6 +33,41 @@ stories:
     url: https://claude.com/resources/articles/introducing-claude-ship
   - label: discussion
     url: https://news.ycombinator.com/item?id=50618513
+- title: >-
+    Attacker runs commands on six hex.pm servers through CVE-2026-129514, an Erlang term decoding
+    flaw
+  section: Top stories
+  category: Security
+  blurb: >-
+    An attacker ran commands on six hex.pm web servers through a struct deserialization chain,
+    so Elixir users must reset passwords and 2FA.
+  summary: >-
+    On 2026-11-23 between 18:16 and 18:29 UTC, an attacker sent 69 requests whose Erlang term
+    bodies held fake structs that chained Plug, Ecto and DBConnection code into OS command
+    execution on six hex.pm web servers. Hex found no package or database changes but cannot
+    rule out database reads of emails, password hashes, API key hashes, 2FA secrets and sessions,
+    so it rotated all server credentials and session keys and asks users to change passwords
+    and reset 2FA. The registry signing key is not yet rotated, so Hex says to fetch only
+    from repo.hex.pm until new clients with a rotatable signing system ship, and the same
+    bug class in Ash is fixed in ash 3.38.0 as CVE-2026-124283.
+  why: >-
+    Elixir, Erlang and Gleam teams should reset Hex credentials, avoid mirrors until the new
+    Hex client ships, and audit any endpoint that decodes Erlang terms from unauthenticated
+    input.
+  background: >-
+    Hex is the package registry for the BEAM ecosystem, used by mix, rebar3 and Gleam. Erlang's
+    binary_to_term decodes the External Term Format, and its safe mode blocks new atoms and
+    functions but not maps. An Elixir struct is just a map with a __struct__ key, and protocols
+    such as Inspect and Enumerable dispatch on that key, so attacker-built data can choose
+    which library code runs, much like gadget chains in Java deserialization.
+  followup: >-
+    New Hex client releases with registry signing key rotation, expected in the coming days.
+  event: hexpm-cve-2026-129514-breach
+  major: breach of a platform that developers build on
+  sources:
+  - label: primary
+    url: https://hex.pm/blog/security-incident-on-hexpm
+  thread: f-0247
 - title: >-
     parquet crate RUSTSEC-2026-0595: encrypted Parquet files written with bloom filters store
     the filters in plaintext
@@ -92,6 +127,33 @@ stories:
     url: https://github.com/facebook/zstd/releases/tag/v1.6.0
   - label: discussion
     url: https://www.phoronix.com/news/Zstandard-Zstd-1.6
+- title: >-
+    iTerm2 3.7.9 fixes Kitty graphics response injection that runs commands when a crafted
+    file is printed
+  section: Security
+  category: Security
+  blurb: >-
+    Catting a file with a hidden Kitty graphics escape sequence in iTerm2 3.6.1 to 3.7.8 can
+    type attacker commands into the shell.
+  summary: >-
+    An APC Kitty image transmit command naming a nonexistent file path with embedded newlines
+    makes iTerm2 send an error reply to the PTY that keeps those newlines, so the shell runs
+    the text between them as a command. The APC handler had no trust check and the reply is
+    sent at default verbosity, so it works on default installs with bash, zsh and fish. iTerm2
+    3.7.9 replaces control characters with spaces in Kitty image, Kitty drag-and-drop and
+    title reports.
+  why: >-
+    Upgrade iTerm2 to 3.7.9 before printing untrusted files such as READMEs or logs, since
+    a cat of a cloned repository was enough to execute code.
+  background: >-
+    Terminals answer some escape sequences by writing a reply into the same input stream the
+    shell reads, which is how queries like cursor position work. When a reply echoes attacker-controlled
+    text, control characters in it act as keystrokes, a recurring class of terminal bugs.
+    The Kitty graphics protocol uses APC sequences to move images, including by file path.
+  event: iterm2-kitty-apc-response-injection
+  sources:
+  - label: primary
+    url: https://ii4gsp.github.io/iterm2-rce/
 - title: >-
     DeepMind's Gemini 4 agent teams cut a fusion quantum circuit's cost 11.8x, with every
     result proved in Lean
@@ -221,6 +283,53 @@ stories:
   sources:
   - label: primary
     url: https://github.com/jdx/mise/releases/tag/v2026.11.14
+- title: TornadoVM 8.2 adds a ROCm HIP backend for AMD GPUs and runs on Eclipse OpenJ9
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    TornadoVM 8.2 compiles Java kernels straight to AMD GPUs through HIP, and adds cuBLASLt
+    epilogues and an OpenJ9 path.
+  summary: >-
+    TornadoVM 8.2.0, released 2026-11-24, adds a HIP backend that talks directly to the AMD
+    ROCm runtime on Linux and Windows, where AMD GPUs previously went through OpenCL. It also
+    adds cuDNN channels-last convolutions with fused epilogues, FP32 and TF32 cuBLASLt products,
+    Metal foreign device views, warp shuffle and tensor-core fragment APIs, and support for
+    Eclipse OpenJ9 and IBM Semeru. SDK archives ship for JDK 21, 25, 26 and 27.
+  why: >-
+    Java teams can target AMD GPUs natively from TornadoVM instead of through OpenCL, and
+    run it on OpenJ9-based JDKs.
+  background: >-
+    TornadoVM is a plugin to OpenJDK that JIT-compiles annotated Java methods into GPU kernels
+    for OpenCL, CUDA PTX, SPIR-V, Metal and now HIP. HIP is AMD's CUDA-like C++ runtime and
+    kernel language in the ROCm stack.
+  event: tornadovm-8-2-release
+  sources:
+  - label: primary
+    url: https://github.com/beehive-lab/TornadoVM/releases/tag/v8.2.0
+  - label: discussion
+    url: https://www.phoronix.com/news/TornadoVM-8.2
+- title: >-
+    AWS Lambda doubles the Event Function timeout to 30 minutes and adds GPU instances on
+    Managed Instances
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Lambda Event Functions can now run for up to 30 minutes, but synchronous callers, client
+    sockets and NAT idle timeouts still cut in.
+  summary: >-
+    AWS raised the Lambda timeout for on-demand Event Functions from 15 to 30 minutes for
+    synchronous, asynchronous and event source mapping invocations, at standard pricing in
+    all commercial Regions. AWS warns that services invoking synchronously apply their own
+    timeouts, client read timeouts must be longer, and NAT gateways drop idle connections
+    after 350 seconds. Lambda Managed Instances also gained GPU instances from G4dn to G6e,
+    billed at the EC2 fee plus a 9.75% management fee and $0.20 per million requests.
+  why: >-
+    Long agent tool chains and batch conversions can move to plain Lambda, provided callers,
+    clients and NAT keep-alives are tuned for 30-minute calls.
+  event: aws-lambda-30-minute-timeout-gpu
+  sources:
+  - label: primary
+    url: https://aws.amazon.com/blogs/aws/aws-weekly-roundup-local-zone-in-bogota-30-minute-lambda-timeout-and-more-november-24-2026/
 - title: >-
     cgo's pointer check panics on legal code and can turn a 48 ns C call into 76 µs depending
     on syntax
@@ -310,6 +419,33 @@ stories:
   - label: primary
     url: https://spring.io/blog/2026/11/24/spring-ai-tool-call-confirmation-park-resume
 - title: >-
+    Lean models and differential tests find 17 unreported bugs in Clojure 1.12.7's Java core
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Lean models and differential tests against java.util found 17 unreported bugs in Clojure
+    1.12.7, including a reduce that never returns.
+  summary: >-
+    Naoya Yamashita modeled small integer and bit functions from Clojure's core as BitVec
+    definitions in Lean 4 and used bv_decide to find counterexamples, and compared persistent
+    collections with java.util over 3 million random operations. A 0xffe0 mask in gvec.clj
+    makes reduce on a dropped vector-of loop forever at 65505 or more elements, and HashCollisionNode.without
+    stores the dissoc key's hash instead of its own, hiding another key. The HAMT and vector
+    trees showed no mismatches, and the bugs sat where two mechanisms meet, such as equality
+    and hashing.
+  why: >-
+    Bit-precise Lean models of arithmetic helpers plus differential testing against a reference
+    collection is a cheap recipe that finds real bugs in mature runtime code.
+  background: >-
+    A hash array mapped trie splits a key's hash into 5-bit pieces to walk a 32-way tree,
+    with collision nodes at the bottom for keys whose full hashes match. Lean's bv_decide
+    tactic turns bitvector goals into SAT problems, so it proves or refutes properties over
+    every 32- or 64-bit input, including wraparound.
+  event: clojure-core-lean-differential-bugs
+  sources:
+  - label: primary
+    url: https://s.conao3.com/blog/2026/e4f733
+- title: >-
     Carl Kadie's nine rules for Rust const fn move file decoding, lookup tables and DSLs to
     compile time
   section: Talks
@@ -333,6 +469,29 @@ stories:
   - label: primary
     url: https://www.youtube.com/watch?v=KznFsjlPCbo
 - title: >-
+    Steve Yegge: his 50-agent game factory ships up to 100 features a day and needs rebuilding
+    every two months
+  section: Talks
+  category: Video
+  blurb: >-
+    Steve Yegge says his 50-agent game factory shipped up to 100 features a day, swamped players,
+    and needs rebuilding every two months.
+  summary: >-
+    Yegge runs about 20 named agents on 22 Claude Max accounts against his long-running MUD,
+    spending about $5,000 a month on inference and an estimated 5 billion tokens a day, and
+    says the factory cleared about 60 years of backlog in four months until players asked
+    him to slow down. He names work routing, token cost, append-only context that agents never
+    prune, and agents that over-fence themselves after criticism as the main problems, and
+    says giving agents records of their predecessors cuts the tokens they spend validating
+    the environment.
+  why: >-
+    Teams running agent fleets should budget for pruning accumulated agent notes and for human
+    review capacity, which Yegge says becomes the bottleneck.
+  event: yegge-software-factories-trash-mountain-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=SRhXgeNluIk
+- title: >-
     Dan Vega: AGENTS.md rules are requests, and ArchUnit tests make a Spring build fail when
     agents break them
   section: Videos
@@ -354,6 +513,28 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=meQlaQiM6jY
+- title: >-
+    Let's Get Rusty: Blaze patches changed functions in memory and rebuilds ripgrep about
+    10x faster than Cargo
+  section: Videos
+  category: Video
+  blurb: >-
+    Blaze keeps a Rust program in memory and patches changed functions with jumps, rebuilding
+    ripgrep about 10x faster than Cargo.
+  summary: >-
+    On ripgrep, Blaze's first build took about 21 seconds, five times slower than Cargo, but
+    a function edit rebuilt 10 times faster, a library edit 4 times faster, and a no-op build
+    in 0.03 seconds, at the cost of much higher memory use. Blaze keeps the whole program
+    in memory, recompiles only changed functions and their callers, and appends new code with
+    a jump instead of relinking, while running proc macros and build scripts in WebAssembly
+    sandboxes. Its v2 plan aims to make it a Rust build system and compiler for coding agents.
+  why: >-
+    Rust developers with slow edit loops can try Blaze on a large crate, provided their machines
+    have memory to spare for its resident build state.
+  event: blaze-rust-incremental-builds
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=JhLkqZb-yAE
 - title: >-
     Anthropic posts an AI-written, Lean-formalized proof that VP ≠ VNP over every field, not
     yet checked by humans

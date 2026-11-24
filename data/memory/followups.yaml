@@ -3714,11 +3714,16 @@
     A CISA KEV listing, exploitation by other actors after disclosure, a public proof of concept,
     and the VCF 9.1.2 release that resolves the upgrade conflict.
   opened: '2026-11-19'
-  last_seen: '2026-11-21'
+  last_seen: '2026-11-24'
   notes:
   - >-
     2026-11-21: CISA added vCenter CVE-2026-123890 to its Known Exploited Vulnerabilities
     catalog on 2026-11-20, together with Apache Roller CVE-2026-129448.
+  - >-
+    2026-11-24: Rapid7 published a technical analysis on 2026-11-24 showing CVE-2026-123890
+    combines a pre-auth SRP session-key getter on TCP 2012 with an RPC context lookup that
+    ignores ownership and predictable UUIDv1 handles, and reproduced a chain to root on vCenter
+    8.0.2 by stealing the STS signing key and forging an admin session.
 - id: f-0245
   subject: GL.iNet GoodCloud router and KVM compromise
   watch_for: >-
@@ -3739,4 +3744,13 @@
     bots and merge queues, and any extension to issue_comment.
   opened: '2026-11-23'
   last_seen: '2026-11-23'
+  notes: []
+- id: f-0247
+  subject: hex.pm CVE-2026-129514 breach
+  watch_for: >-
+    New Hex, rebar3 and Gleam client releases with registry signing key rotation, hardening
+    releases of plug_crypto, plug, ecto and db_connection, notices to affected private package
+    organizations, and evidence of data misuse.
+  opened: '2026-11-24'
+  last_seen: '2026-11-24'
   notes: []
