@@ -1,0 +1,258 @@
+date: '2026-11-24'
+updated: 2026-11-24T01:07Z
+stories:
+- title: >-
+    Anthropic's Claude Ship beta lets Claude Approvals approve pull requests under a policy
+    file in the repository
+  section: Top stories
+  category: Agentic coding
+  blurb: >-
+    Claude can now approve routine GitHub pull requests itself when a team's checked-in policy
+    allows it, and ask for human sign-off otherwise.
+  summary: >-
+    Claude Ship launched in beta on 2026-11-23 for Claude Team and Enterprise plans on GitHub,
+    combining the generally available Code Review with two new beta agents. Claude Approvals
+    starts when a repository has an approval policy file on its default branch, can weigh
+    Code Review findings and natural-language classifiers, and either approves routine changes
+    or requires human sign-off. Anthropic recommends running it in observe-only mode before
+    making its approval a required check through branch protection.
+  why: >-
+    Teams can move the human review gate from every pull request to a policy-defined subset,
+    enforced through the branch protection they already use.
+  background: >-
+    Most teams require a human approval through branch protection, often routed by a CODEOWNERS
+    file that maps paths to reviewers, and Anthropic describes Claude Approvals as a smarter
+    CODEOWNERS file. As coding agents raise pull request volume, review has become the bottleneck,
+    and this digest has tracked companies such as Robinhood and Sourcegraph routing some changes
+    past human review. Anthropic says that on the Claude Code team, where Claude's review
+    is one layer of the process, merged pull requests more than doubled from June to September
+    while the reverted share fell by more than 40%.
+  event: claude-ship-claude-approvals
+  sources:
+  - label: primary
+    url: https://claude.com/resources/articles/introducing-claude-ship
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50618513
+- title: >-
+    parquet crate RUSTSEC-2026-0595: encrypted Parquet files written with bloom filters store
+    the filters in plaintext
+  section: Security
+  category: Security
+  blurb: >-
+    Arrow Rust wrote bloom filter headers and bitsets unencrypted into encrypted Parquet files,
+    and patched releases now reject that setup.
+  summary: >-
+    RUSTSEC-2026-0595, also CVE-2026-125651, says the parquet crate from 55.0.0 wrote the
+    header and bitsets of column bloom filters in plaintext when writing encrypted files.
+    Versions 60.2.0, 59.3.3, 58.4.2 and 57.3.3 raise a runtime error when bloom filters and
+    encryption are both enabled. Files already written this way stay exposed, and the advisory
+    recommends rewriting them with bloom filters disabled.
+  why: >-
+    Teams writing encrypted Parquet from Rust should upgrade and rewrite affected files, since
+    a plaintext filter lets anyone test which values a column holds.
+  background: >-
+    Parquet modular encryption encrypts column data and metadata with per-column keys so files
+    can sit in shared object storage. A bloom filter is a compact probabilistic set summary
+    that lets readers skip row groups that cannot contain a value. Left in plaintext, it lets
+    an attacker without keys check guesses, such as whether an email address appears in a
+    column.
+  event: rust-parquet-encrypted-bloom-filter-plaintext
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0595.html
+- title: >-
+    DeepMind's Gemini 4 agent teams cut a fusion quantum circuit's cost 11.8x, with every
+    result proved in Lean
+  section: AI
+  category: AI
+  blurb: >-
+    Teams of Gemini 4 agents found cheaper quantum circuits for fusion, chemistry and search,
+    and proved each one correct in an open Lean library.
+  summary: >-
+    Independent Gemini 4 agent teams proposed algorithm improvements, verified them in Lean
+    before adding them to a shared notebook, and traded ideas at a virtual conference every
+    four hours. They cut the cost of an inertial confinement fusion circuit 11.8x and its
+    memory from 5,650 to 4,338 error-corrected qubits, cut Cytochrome P450 simulation cost
+    2.5x with 481 to 333 qubits, and found a 2.57x Grover speedup and a 290x faster arcsin
+    routine. Google DeepMind open-sources the Lean library, problem specifications and verified
+    solutions.
+  why: >-
+    It shows formal proof working as the acceptance gate for agent search in domains where
+    results cannot be checked by running them.
+  event: deepmind-quantum-algorithms-agents-lean
+  sources:
+  - label: primary
+    url: https://deepmind.google/blog/finding-faster-quantum-algorithms-with-agents-and-formal-verification/
+- title: >-
+    mise 2026.11.13 adds global task picker filters, main_checkout dotfile links and daemon
+    _URL exports
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    mise run can now hide or show only global tasks, and dotfile links can target a repo's
+    main checkout so they survive worktree removal.
+  summary: >-
+    mise run --no-global and --global filter the interactive task picker, and main_checkout
+    = true points dotfile symlinks at the repository's main checkout. Daemons the proxy does
+    not serve now export their declared url as NAME_URL, and a new prune.forget_unused_after
+    setting, 90d by default, forgets configs not loaded for that long. Core tools warn about
+    options they ignore, and MISE_USE_TOML=0 is deprecated for removal in 2027.11.0.
+  why: >-
+    Dotfiles managed from a worktree no longer break when the worktree is removed, and stale
+    projects stop pinning old tool versions.
+  event: mise-2026-11-13-release
+  sources:
+  - label: primary
+    url: https://github.com/jdx/mise/releases/tag/v2026.11.13
+- title: >-
+    GitHub previews issue statuses that follow linked pull requests and agent assignment,
+    plus repository boards
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Issues gain seven statuses such as In progress and In review that update automatically
+    from linked pull requests and assigned agents.
+  summary: >-
+    Issues can now be Backlog, Todo, In progress, In review, Done, Not planned or Duplicate.
+    Linking a draft pull request or assigning an agent moves an issue to In progress, an open
+    or ready pull request moves it to In review, and statuses sync with matching GitHub Project
+    fields. GraphQL, REST and the MCP server can read and set status, status changes can trigger
+    Copilot automations, and repository saved views gain a board layout.
+  why: >-
+    Agents and automations get a shared, API-readable work state on the issue itself without
+    a separate Project board.
+  event: github-issue-statuses-repository-boards
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-23-issue-statuses-and-repository-boards-are-in-public-preview
+- title: >-
+    cgo's pointer check panics on legal code and can turn a 48 ns C call into 76 µs depending
+    on syntax
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    cgo rewrites calls by syntax, so passing unsafe.Pointer through a variable or extra parentheses
+    makes the runtime check the whole object.
+  summary: >-
+    Shraddha Agrawal shows that cgo passes field-level information to runtime.cgoCheckPointer
+    only when it recognizes how the argument is written. Otherwise runtime.cgoCheckUnknownPointer
+    scans the entire heap object and panics on any unpinned Go pointer, even in fields C never
+    touches, although the docs allow passing a pointer to a field. The deficiency has been
+    reported since 2016, and Ian Lance Taylor wrote that fixing it would need full type checking
+    of cgo input.
+  why: >-
+    Go code calling C should take addresses inside the call expression or pin nested pointers
+    with runtime.Pinner, and measure call overhead after refactors.
+  background: >-
+    Go's garbage collector cannot see pointers once they are handed to C, so the cgo rules
+    forbid passing C memory that contains unpinned Go pointers. cgo enforces this at runtime
+    by inserting checks into the code it generates, and GODEBUG=cgocheck=0 turns them off.
+    runtime.Pinner, added in Go 1.21, lets a program pin nested objects so the check accepts
+    them.
+  event: cgo-pointer-check-syntax-dependence
+  sources:
+  - label: primary
+    url: https://theconsensus.dev/p/2026/11/15/cgos-pointer-check.html
+- title: >-
+    Carl Kadie's nine rules for Rust const fn move file decoding, lookup tables and DSLs to
+    compile time
+  section: Talks
+  category: Video
+  blurb: >-
+    A Seattle Rust talk uses const fn to decode images, audio and LED layouts at build time
+    so a $19, 520 KB RAM board stores only results.
+  summary: >-
+    Kadie uses include_bytes with const fn to validate a TGA image and convert it to RGB565,
+    and to size PCM audio clips through a two-pass pattern that feeds const generics, keeping
+    only the output in flash. Lookup tables computed at compile time replace per-pixel gamma
+    and power-budget math, a const builder encodes a robot arm as a fixed-capacity DSL, and
+    static references to dyn traits mix clip types without a heap. He warns that parsing a
+    746 KB motion capture file in const fn added about 8 seconds per clean build, so a generator
+    or build.rs fits there better.
+  why: >-
+    Rust teams can push validation and data conversion into the compiler, and the talk marks
+    where that stops paying off.
+  event: kadie-rust-const-fn-nine-rules-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=KznFsjlPCbo
+- title: >-
+    Dan Vega: AGENTS.md rules are requests, and ArchUnit tests make a Spring build fail when
+    agents break them
+  section: Videos
+  category: Video
+  blurb: >-
+    A Spring bookstore passed mvnw verify while violating AGENTS.md packaging rules, until
+    ArchUnit tests turned each rule into a failing check.
+  summary: >-
+    Vega's agent-built Spring app mixed package-by-layer controller, model and service packages
+    into a package-by-feature codebase while the build stayed green. ArchUnit tests then enforced
+    no layer packages, package-private repositories, controllers that never call repositories,
+    no @Transactional on controllers, constructor injection, SLF4J only, no deprecated APIs
+    and Jackson 3 imports. His AGENTS.md also forbids weakening checks and relies on a stop
+    hook that reruns verify.
+  why: >-
+    Java teams can convert agent instructions into deterministic architecture tests that also
+    catch the same violations from humans.
+  event: dan-vega-agents-md-archunit-video
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=meQlaQiM6jY
+- title: >-
+    Anthropic posts an AI-written, Lean-formalized proof that VP ≠ VNP over every field, not
+    yet checked by humans
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    An internal Claude model claims a proof of Valiant's algebraic separation in Lean, and
+    Hacker News debates what it means for P vs NP.
+  summary: >-
+    The anthropics/formal-math repository says an internal research Claude model proved that
+    circuits for the Hamiltonian cycle polynomial, and for the permanent outside characteristic
+    2, need more than m^(c (log m)^(1/3)) gates, so VP is a proper subset of VNP over every
+    field. The paper and Lean proof were written by AI models, no human mathematician has
+    checked the proof, and the README says it does not settle P vs NP. The main Hacker News
+    thread had 211 points and 179 comments within two hours, with a second thread on the PDF
+    at 25 points.
+  why: >-
+    Readers can verify the claim themselves with lake build, an axiom printout and a second
+    independent Lean kernel rather than trusting the announcement.
+  comments: >-
+    Commenters explain that VP = VNP would have pointed toward P = NP, so this result closes
+    one line of attack without implying P ≠ NP. Others cite the relativization and natural
+    proofs barriers, and several argue over whether the work is research or marketing after
+    Anthropic's IPO.
+  event: anthropic-vp-vnp-separation-proof
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/formal-math/tree/main/vp-vnp
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50620102
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50620252
+- title: >-
+    Arm's lawyers force the searchable Jon's Arm Reference site for AArch64 offline on 2026-12-04
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A widely used searchable reference for AArch64 instructions and system registers will
+    shut down after Arm cited trademark and IP claims.
+  summary: >-
+    The site indexes Armv8-A and Armv9-A Base, SIMD, SVE and SME instructions and AArch64
+    and AArch32 registers, and now says Arm's lawyers told its author to take it down or face
+    legal action. On Hacker News the author says Arm cites use of its trademarks and IP in
+    hosting the documentation, and that he is weighing mirrors or releasing source that builds
+    the site locally. The thread drew 825 points and 164 comments.
+  why: >-
+    Engineers who rely on it for AArch64 work should plan for Arm's official documentation
+    or a locally generated copy after 2026-12-04.
+  comments: >-
+    The thread argues over trademark law, with some saying unlicensed use can weaken a mark
+    under naked licensing doctrine and others that describing genuine Arm products is nominative
+    fair use. Several suspect the real issue is copyright in the documentation text.
+  event: arm-reference-site-takedown
+  sources:
+  - label: primary
+    url: https://arm.jonpalmisc.com/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50617499
