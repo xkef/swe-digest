@@ -27,9 +27,10 @@ run, the correct answer is an empty `stories` list.
 - Stay inside the budget. When a section or the day is full and a candidate
   ranks higher than one of today's stories, add the candidate. Put the
   lower-ranked story's exact title in `drop`. Drop only for a clear improvement.
-- Outages that affect developers always qualify. Give a provider one outage
-  story a day. When another incident hits a provider already covered today,
-  put the earlier story's title in `drop` and add one story that covers both.
+- Outages that affect developers always qualify. Cover at most one outage
+  per provider a day. When another incident hits a provider already covered
+  today, put the earlier story's title in `drop` and add one story that covers
+  both.
 - Security stories, in `Top stories` and `Security` together, take at most
   three slots. Choose the advisories, active exploitation, and supply chain
   attacks that matter most to the profile. Rank a breach without a developer
@@ -48,8 +49,8 @@ run, the correct answer is an empty `stories` list.
   would act on. A new technique or a measured result qualifies. Put a
   conference or meetup talk in `Talks` and any other video in `Videos`, with
   the category `Video`. The video is the primary source. Summarize the
-  transcript, not the title. These two sections do not count toward the day's
-  budget. Never drop a news story for a video.
+  transcript, not the title. The day's budget excludes both sections, so never
+  drop a news story for a video.
 - `Hacker News` shows what trends among
   practitioners and what they argue about. Here, and only here, reach counts.
   A thread qualifies when it draws unusual points or comments for its source,
@@ -62,8 +63,8 @@ run, the correct answer is an empty `stories` list.
   the linked page as `primary` and the threads as `discussion`, with the
   category `Pulse`. Never move an event out of its topical section to fill
   it. When you add a topical story whose thread also trends, note its reach
-  in that story's `comments` instead. This section does not count toward
-  the day's budget.
+  in that story's `comments` instead. The day's budget excludes this
+  section.
 - Skip market news unless it changes engineering context, and benchmark
   claims without a method or primary source.
 - A story request, which the owner wrote or approved, is a strong signal. Cover
@@ -79,8 +80,8 @@ run, the correct answer is an empty `stories` list.
 - `summary`: one to three sentences of fact from the source.
 - `why`: one sentence on what changes for an engineer.
 - `background`: two to four sentences that help the reader learn the area and
-  place the story: the concept or mechanism it rests on, the history that led
-  here, or the earlier events it continues. Do not repeat the summary. Write
+  place the story: the concept or mechanism it rests on, or the history and
+  earlier events that led here. Do not repeat the summary. Write
   settled knowledge, such as how a protocol works, from what you know. Take
   dates, numbers, versions, and recent events only from a page you fetched,
   and fetch a reference page, such as documentation, when a claim needs one.
