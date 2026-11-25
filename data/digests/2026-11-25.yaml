@@ -1,5 +1,5 @@
 date: '2026-11-25'
-updated: 2026-11-25T19:34Z
+updated: 2026-11-25T22:41Z
 stories:
 - title: >-
     Argo CD 3.6.3 fixes seven advisories, including an unauthenticated request that crashes
@@ -103,33 +103,37 @@ stories:
   - label: discussion
     url: https://newsletter.pragmaticengineer.com/p/how-anthropic-builds-software-in
 - title: >-
-    Fake recruiters AccuraSoftHire and HuntRole run malware through npm look-alikes and a
-    VS Code extension
+    PolinRider loader force-pushed into AsyncAPI, CircuitVerse and Open Food Facts PRs ran
+    in CircuitVerse release CI
   section: Security
   category: Security
   blurb: >-
-    Fake recruiters' take-home tests load malware via look-alike Tailwind npm packages and
-    a VS Code extension, and the operator is still active.
+    Rewritten commits in fork pull requests hid a credential-stealing loader that ran in CircuitVerse's
+    release CI and shipped in 40 installers.
   summary: >-
-    StepSecurity found that look-alike Tailwind plugins used in AccuraSoftHire's take-home
-    test stayed on npm for up to 211 days. The loader runs at CSS build time, not during npm
-    install, and reads its server address from an Ethereum wallet whose 609 transactions name
-    eight servers. A 2026-11-24 update ties a second front, HuntRole, to the same operator
-    through shared funding and servers. HuntRole's assessment used the VS Code Marketplace
-    extension huntrole.assessment-tool, and its wallet posted a new server address on 2026-11-24.
+    StepSecurity reports that on 2026-10-19 the GitHub account Eternity0207 force-pushed unsigned,
+    rewritten commits carrying the 16,674-byte PolinRider loader into open pull requests.
+    The loader hid after hundreds of tabs in api.js, in jest.config.js and postcss.config.js,
+    and in a fake font file started by a hidden VS Code folderOpen task. CircuitVerse's workflows
+    ran it without approval and its maintainers deleted 40 published installers. GitHub suspended
+    the account on 2026-11-25. The loader reads its server from an Ethereum wallet tied to
+    the HuntRole fake recruiter in the AccuraSoftHire campaign. StepSecurity found the loader
+    in 576 repositories across 311 accounts.
   why: >-
-    Developer laptops need checks for these npm packages, for .vscode/tasks.json files that
-    run on folder open, and for the huntrole.assessment-tool extension, and any credential
-    on an affected machine should count as stolen.
+    Fork pull request workflows need maintainer approval and must not publish artifacts, because
+    blocking npm install scripts does not stop a loader wired into build scripts and config
+    files.
   background: >-
-    Fake job interviews are a known North Korea-linked tactic. Binance says its 2026-10-29
-    theft began when an engineer ran an interview assignment on his work computer. Loaders
-    that read their next server from blockchain transactions let attackers change infrastructure
-    without republishing a package, so blocklists built from one sample go stale.
-  event: accurasofthire-huntrole-fake-interview-campaign
+    For pull_request workflows from forks, GitHub withholds repository secrets and gives GITHUB_TOKEN
+    read-only access, but the contributed code still runs on the runner with network access.
+    A force-push after review swaps a branch's commits, so a reviewer who only reads the final
+    diff can miss code that existed on the branch while CI ran. This campaign shares its operator
+    with the fake interview lures reported earlier today, now reaching projects through infected
+    contributors' accounts.
+  event: polinrider-oss-pull-request-injection
   sources:
   - label: primary
-    url: https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines
+    url: https://www.stepsecurity.io/blog/polinrider-malware-open-source-pull-requests
 - title: >-
     GitHub outage degrades Git operations, Actions, pull requests, Packages and Pages for
     about an hour on 2026-11-25
@@ -314,6 +318,27 @@ stories:
   - label: primary
     url: https://github.com/microsoft/apm/releases/tag/v0.39.0
 - title: >-
+    pi 1.6.1 calls decision models from codemode and splits cache-miss notices into four settings
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    pi's codemode models.classify() now reaches GitHub Copilot and Radius decision models,
+    and showCacheMissNotices gives way to four settings.
+  summary: >-
+    pi 1.6.1 lets codemode models.classify() call GitHub Copilot's gpt-6-luna-decisions and
+    Radius decision models, with a responseId in results. It replaces showCacheMissNotices
+    with notices.cacheMisses, notices.cacheWarming, notices.compactionCosts and notices.reasoningDrops,
+    migrating the old value and removing the old SettingsManager methods. Extension dialogs
+    gain a blockedKind option for OSC 7501 program status, and after_provider_response now
+    fires for HTTP errors and retries on OpenAI, Azure, Anthropic and Google models.
+  why: >-
+    Extensions that call getShowCacheMissNotices() break, and extensions can now read status
+    and retry-after on rate-limited requests.
+  event: pi-1-6-1-release
+  sources:
+  - label: primary
+    url: https://github.com/earendil-works/pi/releases/tag/v1.6.1
+- title: >-
     Paper: maximum likelihood on archived RL rollouts, replayed in order, recovers online
     RL performance
   section: ML research
@@ -464,6 +489,35 @@ stories:
   - label: primary
     url: https://github.com/cloudnative-pg/cloudnative-pg/releases/tag/v1.31.0-rc1
 - title: >-
+    Stormatics traces 39% of a Supabase customer's 1.8 TB daily WAL to full-page images after
+    five-minute checkpoints
+  section: Infrastructure
+  category: Engineering post
+  blurb: >-
+    Each checkpoint makes Postgres log a full 8 kB copy of every page on its first change,
+    so the default checkpoint_timeout can bloat WAL.
+  summary: >-
+    Umair Shahid found about 39% of a SaaS team's 1.8 TB of daily WAL was full-page-image
+    overhead, driven by checkpoints every five minutes on hot tables and indexes. He checks
+    it with wal_fpi in pg_stat_wal, pg_waldump --stats, and the ratio of timed to requested
+    checkpoints, and recommends raising checkpoint_timeout to 15 to 30 minutes with a larger
+    max_wal_size, sized to the recovery time objective. Fillfactor and autovacuum tuning plus
+    writing only changed columns had already cut daily WAL about 11%, to 1.6 TB, and the checkpoint
+    change was projected to cut roughly another 25%.
+  why: >-
+    Before scaling disks or replicas for WAL volume, measure full-page images, since checkpoint
+    spacing trades WAL size against crash recovery time.
+  background: >-
+    With full_page_writes on, PostgreSQL logs the whole 8 kB page the first time it changes
+    after a checkpoint, so a crash mid-write cannot leave a torn page. Every checkpoint resets
+    that first-change state, so frequent checkpoints on frequently touched pages multiply
+    page copies in WAL. HOT updates, which need free space on the page, avoid index writes
+    and reduce WAL further.
+  event: stormatics-wal-full-page-image-checkpoints
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9DH
+- title: >-
     Antithesis's Amnesia FUSE filesystem injects power loss and fsync EIO, and finds a bbolt
     bug that breaks etcd
   section: Engineering posts
@@ -550,6 +604,36 @@ stories:
   - label: primary
     url: https://blog.sentry.io/quadratic-webhook-autoscaler-ceiling/
 - title: >-
+    ClickHouse reaches 91.8% line coverage and uses per-test coverage to pick which tests
+    run under sanitizers
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    ClickHouse records which lines each of 17,000 tests executes, picks sanitizer runs from
+    it, and an agent writes tests for uncovered code.
+  summary: >-
+    ClickHouse builds with Clang source-based coverage in continuous mode, so servers that
+    tests kill still leave profiles, and merges 23 CI shards every 3 hours. On 2026-11-12
+    master covered 91.8% of 1,257,404 lines and 81.0% of branches. Nightly per-test line data,
+    about 36 billion rows in its CI database, now chooses which tests the sanitizer jobs run
+    for a PR, ignoring regions wider than 40 lines or owned by more than 150 tests. Its ClickGap
+    agent had opened 17 test PRs by 2026-11-03, with 16 merged and about 5,600 newly covered
+    lines. A manager agent reviews the tests, and only a deterministic publishing script holds
+    the GitHub token.
+  why: >-
+    Per-test coverage turns expensive sanitizer runs from full suites into targeted selections
+    without dropping full-suite runs on cheaper builds.
+  background: >-
+    Clang offers two instrumentations. SanitizerCoverage calls a callback on every control-flow
+    edge and is what libFuzzer uses. Source-based coverage puts counters on source regions
+    with a mapping to file and line ranges, which llvm-profdata and llvm-cov turn into reports.
+    Branch coverage matters because an if with no else has a false edge that line coverage
+    cannot see.
+  event: clickhouse-test-coverage-per-test-selection
+  sources:
+  - label: primary
+    url: https://clickhouse.com/blog/how-well-is-clickhouse-tested
+- title: >-
     containerd maintainers: 156 security reports in 2026, 14 CVEs, and a four-month release
     cycle aligned with Kubernetes
   section: Talks
@@ -596,6 +680,35 @@ stories:
   - label: primary
     url: https://www.youtube.com/watch?v=Xyb1Bn_L2U4
 - title: >-
+    Anthropic's Lance Martin: 1,000 Claude agents formalized Fermat's Last Theorem in Lean
+    using only Git and a database
+  section: Talks
+  category: Video
+  blurb: >-
+    A lead agent built its own coordination tables in SQL, and 999 helpers in sandboxes finished
+    the formalization in about 30 hours unsteered.
+  summary: >-
+    Martin says each of 1,000 agents ran in its own network-restricted sandbox with access
+    only to Git and a SQL database, under real-time tool call monitoring, with no domain-specific
+    harness and no human steering. Five minutes in, the lead agent created announcement, assignment,
+    notes and landed tables, and the run took about 30 hours, compared with an earlier result
+    that used about a dozen agents, a proof orchestration platform and researcher help. He
+    also shows stronger models using a memory directory better on CL Bench, and an offline
+    dreaming pass fixing a poisoned memory in Pokémon and building a wiki that beat a 53%
+    raw search baseline.
+  why: >-
+    Large agent teams can coordinate through plain shared state like Git and SQL tables, and
+    periodic memory consolidation can repair bad notes that trap agents in loops.
+  background: >-
+    Lean is a proof assistant whose kernel checks every step of a formal proof, which makes
+    machine-checked mathematics a long-horizon task with an exact verifier. Andrew Wiles proved
+    Fermat's Last Theorem in the 1990s after seven years of work, and formalizing that proof
+    has been a long-running effort in the Lean community.
+  event: lance-martin-claude-fermat-formalization-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=wrfbI5eyLAI
+- title: >-
     Dan Vega builds a Spring AI 2.1 comment moderator from DecisionModel yes-no, choice and
     score questions
   section: Videos
@@ -640,6 +753,53 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=V4i2FQRTZJU
+- title: >-
+    Katelyn Lesse: Anthropic shadowed Python with Rust for its API, and agents wrote PRs engineers
+    mostly did not read
+  section: Videos
+  category: Video
+  blurb: >-
+    Anthropic's platform lead explains the five-to-six-month Rust rewrite, verified by token-count
+    diffs, and its Managed Agents redesign.
+  summary: >-
+    Lesse tells The Pragmatic Engineer that a thin Python front door sent each request through
+    Python and shadowed it through Rust, and that the team compared behavior up to the inference
+    boundary and output token counts, because staff cannot read prompts or completions. Lint
+    and static checks forced teams to build new features in both stacks, Python stayed as
+    a fallback until cutover, and engineers estimate about 80% of agent pull requests were
+    not read closely. She says Managed Agents was rebuilt to run the harness on durable servers,
+    spawn sandboxes only for execution and inject credentials at an egress proxy, using about
+    a third of the CPU. Anthropic has also phased out coding interviews across product and
+    platform teams.
+  why: >-
+    A shadow-traffic diff that agents can drive to zero is what let a small team skip line-by-line
+    review of a rewrite of a critical service.
+  event: katelyn-lesse-anthropic-pragmatic-engineer-video
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=9oNvKMd7xJo
+- title: >-
+    Dan Vega migrates a Spring Boot app from RestTemplate, deprecated for removal in 4.2,
+    to RestClient and RestTestClient
+  section: Videos
+  category: Video
+  blurb: >-
+    Upgrading to Spring Boot 4.2 flags RestTemplate and TestRestTemplate for removal, and
+    this walkthrough shows the step-by-step RestClient move.
+  summary: >-
+    Bumping a sample app from Spring Boot 4.1.3 to 4.2.0 produced 10 removal warnings for
+    RestTemplate, RestTemplateCustomizer and TestRestTemplate. Vega replaces the RestTemplate
+    bean with a RestClient from the builder, moves connect and read timeouts into HTTP client
+    properties, turns the API key interceptor into a builder default header, and handles not-found
+    responses at the call site so the separate error handler class goes away. Tests switch
+    to RestTestClient with its fluent exchange and expect assertions.
+  why: >-
+    Code still compiles on 4.2, but deprecated-for-removal APIs usually disappear two versions
+    later, so Spring teams should plan the RestClient migration now.
+  event: dan-vega-resttemplate-to-restclient-video
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=gh7i3FKmubk
 - title: >-
     Hacker News argues over whether hosted coding agents serve their users, from refusals
     to distillation flags
@@ -747,3 +907,29 @@ stories:
     url: https://news.ycombinator.com/item?id=50643065
   - label: discussion
     url: https://scottaaronson.blog/?p=10379
+- title: >-
+    Anthropic staff post a 76,000-line Lean proof of GRH, cut down from Alpöge's 17 million
+    lines
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A compact edition proves the same five theorems in 76,000 lines and a readable one in
+    300,000, with machine checks but no human reading yet.
+  summary: >-
+    The grh-lean repository, produced with colleagues at Anthropic and Claude, proves the
+    Riemann Hypothesis and GRH for Dirichlet L-functions on Lean v4.35.0 and Mathlib using
+    only the standard axioms propext, Classical.choice and Quot.sound. A build takes one to
+    two hours on 12 cores with 24 GB of memory. The README says no mathematician has read
+    it through. It drew 73 points and 20 comments on Hacker News and a Lobsters thread pointing
+    to the Lean Zulip announcement.
+  why: >-
+    A 76,000-line proof is short enough for humans to start reviewing, which the 17-million-line
+    original was not.
+  event: grh-lean-proof-shortened
+  sources:
+  - label: primary
+    url: https://github.com/lsernau/grh-lean
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50648050
+  - label: discussion
+    url: https://leanprover.zulipchat.com/#narrow/channel/658556-Riemann-Hypothesis/topic/Cleaning.20up.20the.20proof/near/643702366
