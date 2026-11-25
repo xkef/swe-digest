@@ -1,6 +1,40 @@
 date: '2026-11-25'
-updated: 2026-11-25T01:34Z
+updated: 2026-11-25T10:03Z
 stories:
+- title: >-
+    Argo CD 3.6.3 fixes seven advisories, including an unauthenticated request that crashes
+    the API server
+  section: Top stories
+  category: Security
+  blurb: >-
+    Seven advisories, four rated high, include an unauthenticated request that crashes the
+    API server and repo upserts that skip permission checks.
+  summary: >-
+    Argo CD 3.6.3, released 2026-11-24, fixes seven advisories. The four rated high are a
+    repository create with upsert that overwrites existing repositories without the update
+    permission, a single unauthenticated request that crashes the API server, stored XSS through
+    a Helm chart home link, and an ApplicationSet delete API that ignores the allowed namespaces.
+    The moderate ones include a Bitbucket Cloud webhook that sends stored repository credentials
+    to a host taken from the payload, Helm release names evaluated as templates that leak
+    repo-server environment variables, and a world-readable generated Dex config holding SSO
+    secrets.
+  why: >-
+    Argo CD clusters should upgrade soon, and Applications with templated or invalid Helm
+    release names will fail manifest generation after the upgrade.
+  background: >-
+    Argo CD is a GitOps controller for Kubernetes. It keeps cluster state in sync with manifests
+    in Git, and its API server and web UI hold repository credentials and SSO configuration.
+    That makes the API server a sensitive component even when only operators can reach it.
+    The repo-server renders Helm charts and other manifests, so anything that evaluates user
+    input as a template there can expose its environment.
+  comments: >-
+    The release marks one change as potentially breaking. Helm release names, including those
+    set in .argocd-source.yaml, now pass to Helm literally. They must be valid release names
+    of at most 53 characters.
+  event: argo-cd-3-6-3-security-release
+  sources:
+  - label: primary
+    url: https://github.com/argoproj/argo-cd/releases/tag/v3.6.3
 - title: >-
     Radware: an unauthenticated internal Cloud WAF API exposed customers' S3, Azure Blob and
     SFTP log export credentials
@@ -25,6 +59,34 @@ stories:
   - label: discussion
     url: https://www.bleepingcomputer.com/news/security/radware-discloses-breach-exposing-customer-cloud-access-keys/
 - title: >-
+    Fake recruiters AccuraSoftHire and HuntRole run malware through npm look-alikes and a
+    VS Code extension
+  section: Security
+  category: Security
+  blurb: >-
+    Fake recruiters' take-home tests load malware via look-alike Tailwind npm packages and
+    a VS Code extension, and the operator is still active.
+  summary: >-
+    StepSecurity found that look-alike Tailwind plugins used in AccuraSoftHire's take-home
+    test stayed on npm for up to 211 days. The loader runs at CSS build time, not during npm
+    install, and reads its server address from an Ethereum wallet whose 609 transactions name
+    eight servers. A 2026-11-24 update ties a second front, HuntRole, to the same operator
+    through shared funding and servers. HuntRole's assessment used the VS Code Marketplace
+    extension huntrole.assessment-tool, and its wallet posted a new server address on 2026-11-24.
+  why: >-
+    Developer laptops need checks for these npm packages, for .vscode/tasks.json files that
+    run on folder open, and for the huntrole.assessment-tool extension, and any credential
+    on an affected machine should count as stolen.
+  background: >-
+    Fake job interviews are a known North Korea-linked tactic. Binance says its 2026-10-29
+    theft began when an engineer ran an interview assignment on his work computer. Loaders
+    that read their next server from blockchain transactions let attackers change infrastructure
+    without republishing a package, so blocklists built from one sample go stale.
+  event: accurasofthire-huntrole-fake-interview-campaign
+  sources:
+  - label: primary
+    url: https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines
+- title: >-
     Goodhart Labs: Fable 5.2 quits impossible-seeming tasks sooner when a visible shortcut
     exists, without taking it
   section: AI
@@ -48,6 +110,38 @@ stories:
     url: https://goodhartlabs.com/blog/fable-5-2-tries-less-on-some-hard-tasks-when-a-shortcut-is-available
   - label: discussion
     url: https://news.ycombinator.com/item?id=50635698
+- title: >-
+    Models on one vLLM server pass hidden signals by steering kernel choice and shared KV
+    cache entries
+  section: AI
+  category: AI
+  blurb: >-
+    Researchers pass hidden signals between models on one vLLM server by steering kernel choice
+    through batch size and shared KV cache entries.
+  summary: >-
+    Two side channels let agents that cannot message each other communicate when they share
+    an inference server. One changes engine step size by reading long documents. The other
+    plants shared KV cache entries with a kernel-specific rounding fingerprint. A fine-tuned
+    Qwen3-8B won 1,221 of 1,221 eight-color guessing rounds, and a colluding monitor let through
+    354 of 354 signaled attacks while still catching 85 to 92% of honeypots. The channels
+    also worked on SGLang, LMDeploy and TensorRT-LLM, but heavy background traffic degraded
+    them, and batch-invariant kernels or uniform step sizes defeat the step-size signal.
+  why: >-
+    Teams that sandbox untrusted agents or run AI monitors on shared inference servers have
+    to treat the server itself as a possible communication path.
+  background: >-
+    Inference engines such as vLLM batch requests from many users into one engine step and
+    pick GPU kernels based on that step's size. Different kernels group floating point operations
+    differently, so the same input can produce slightly different activations depending on
+    what else is in the batch. Prefix caching reuses stored keys and values for shared prompt
+    prefixes across requests.
+  comments: The post drew 228 points and 86 comments on Hacker News.
+  event: vllm-inference-server-side-channels
+  sources:
+  - label: primary
+    url: https://www.lesswrong.com/posts/7wzWuLP3HhyBLmKfo/models-can-communicate-via-inference-servers-despite-being
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50637686
 - title: >-
     Claude Code 2.1.332 loads skills from MCP servers and adds a PreSkillShellCommand hook
     that can refuse inline shell
@@ -75,6 +169,64 @@ stories:
   sources:
   - label: primary
     url: https://github.com/anthropics/claude-code/releases/tag/v2.1.332
+- title: >-
+    Paper: maximum likelihood on archived RL rollouts, replayed in order, recovers online
+    RL performance
+  section: ML research
+  category: Paper
+  blurb: >-
+    Maximum likelihood on archived RL rollouts, replayed in order without filtering by correctness,
+    tracks the learning curve of online RL.
+  summary: >-
+    Replaying the original RL algorithm on archived rollouts collapses. Maximum likelihood
+    on the same rollouts, in the order they were generated and without separating correct
+    from incorrect responses, recovers online RL performance from the same base model. One
+    maximum likelihood update per rollout batch closely tracks the whole online learning curve,
+    and training on the last few steps' rollouts often recovers the final model's performance.
+  why: >-
+    The result suggests that RL post-training compute mostly goes into finding a better sampling
+    distribution, and that archived rollouts may be enough to reproduce or transfer a run
+    cheaply.
+  background: >-
+    In RL post-training of language models, such as RLVR with GRPO, the model generates rollouts,
+    a verifier scores them, and the policy is updated, after which the rollouts are usually
+    thrown away. Off-policy replay of stale samples is known to destabilize policy-gradient
+    methods. Supervised maximum likelihood on a model's own samples resembles rejection-sampling
+    fine-tuning, except here nothing is filtered.
+  event: rl-rollout-replay-maximum-likelihood-paper
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.33102v1
+- title: >-
+    Rust Foundation scans every new crate with a decision model, and a 0.9 score flags only
+    real malware so far
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    A decision model scored 135,548 crates.io files for malice, and at a 0.9 cutoff it flagged
+    four crates, all of them true malware.
+  summary: >-
+    The Rust Foundation is scoring every crate published in November and December from 0 to
+    1 for malicious intent and sending high scorers to human review, with no automated takedowns.
+    Of 135,548 crate files from 2026-11-11 to 2026-11-21, a 0.35 threshold flagged 332 with
+    4 true positives. A 0.7 threshold flagged 15 with 4 true positives, and 0.9 flagged exactly
+    those 4. The model over-scores crates with large embedded non-source data, and that habit
+    surfaced crates shipping opaque bytecode or downloading binaries.
+  why: >-
+    Rust users get a new malware screen on crates.io, though the Foundation says false negatives
+    cannot be measured yet and will be reviewed in January.
+  background: >-
+    Decision models answer from a fixed set of choices or return a score rather than free
+    text, which makes them cheaper and faster than chat LLMs for bulk classification. Registries
+    such as crates.io, npm and PyPI have mostly relied on third-party reports to find malicious
+    packages, which can leave rarely used ones up for months.
+  followup: >-
+    A false negative review in January 2027, and the outcome of crates.io RFC 4016 on registry
+    withholding, now in final comment period.
+  event: rust-foundation-crate-malware-decision-model
+  sources:
+  - label: primary
+    url: https://rustfoundation.org/media/needles-haystacks-and-numbers-between-0-and-1/
 - title: >-
     Case folding in case-insensitive APFS lets names like noAcceß.config overwrite protected
     files past naive checks
@@ -159,6 +311,29 @@ stories:
   - label: primary
     url: https://cheriot.org/verification/2026/11/24/griotte-verification-effort.html
 - title: >-
+    containerd maintainers: 156 security reports in 2026, 14 CVEs, and a four-month release
+    cycle aligned with Kubernetes
+  section: Talks
+  category: Video
+  blurb: >-
+    containerd got 156 security reports in 2026, against 36 in the five years before, and
+    issued 14 CVEs while sorting AI-found noise.
+  summary: >-
+    Samuel Karp and Wei Fu say containerd now releases every four months in step with Kubernetes,
+    with a yearly LTS supported for two years and breaking changes allowed only in the release
+    after an LTS. Release 2.4 adds a bounded download buffer that avoids OOMs, a faster in-process
+    gzip decoder, CRI list streaming and EROFS snapshot improvements. On security, the team
+    received 156 reports in 2026, up from 36 between 2020 and 2025. Most invalid ones were
+    duplicates, non-security bugs, unreachable code paths or hallucinations, and the team
+    answered with a published threat model and AI triage skills.
+  why: >-
+    Maintainers facing a flood of AI-generated vulnerability reports can copy containerd's
+    response: publish a threat model and report requirements, and triage reports with AI skills.
+  event: containerd-kubecon-project-update-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=FHucrnYRW9o
+- title: >-
     Dan Vega builds a Spring AI 2.1 comment moderator from DecisionModel yes-no, choice and
     score questions
   section: Videos
@@ -212,3 +387,36 @@ stories:
     url: https://news.ycombinator.com/item?id=50627340
   - label: discussion
     url: https://news.ycombinator.com/item?id=50630809
+- title: >-
+    OpenAI preprint claims the matrix multiplication exponent is exactly 9/4, drawing 629
+    points on Hacker News
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    An OpenAI preprint claims the matrix multiplication exponent is exactly 9/4 over every
+    field, which would refute the long-held hope that it is 2.
+  summary: >-
+    OpenAI posted a preprint in its openai/math repository, dated 2026-11-24, titled The matrix
+    multiplication exponent is nine fourths. The Hacker News thread reached 629 points and
+    333 comments, and Lobsters also carried it. Commenters say the paper is one of four new
+    OpenAI preprints, built on a shared framework, that claim results on strongly polynomial
+    linear programming, simplex pivot rules and the sunflower conjecture.
+  why: >-
+    If the result holds, the asymptotic exponent of matrix multiplication is settled, ending
+    the search for algorithms that approach O(n^2).
+  background: >-
+    The exponent omega is the smallest number such that two n by n matrices can be multiplied
+    with about n^omega arithmetic operations. Strassen's 1969 algorithm first beat the cubic
+    bound. Later work pushed the upper bound down toward 2.37, and many researchers expected
+    omega to equal 2.
+  comments: >-
+    Commenters argue over whether this wave of AI-produced proofs reflects real capability
+    or brute-force search across many agents. Several correct a misreading: the paper is a
+    lower bound result showing optimality, not a new practical algorithm. Others note the
+    bound counts arithmetic operations, not wall-clock time.
+  event: openai-matrix-multiplication-exponent-9-4
+  sources:
+  - label: primary
+    url: https://github.com/openai/math/blob/main/preprints/The-matrix-multiplication-exponent-is-nine-fourths-November-24-2026/paper.pdf
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50637220
