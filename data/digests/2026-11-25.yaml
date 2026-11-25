@@ -1,5 +1,5 @@
 date: '2026-11-25'
-updated: 2026-11-25T10:03Z
+updated: 2026-11-25T19:34Z
 stories:
 - title: >-
     Argo CD 3.6.3 fixes seven advisories, including an unauthenticated request that crashes
@@ -36,28 +36,72 @@ stories:
   - label: primary
     url: https://github.com/argoproj/argo-cd/releases/tag/v3.6.3
 - title: >-
-    Radware: an unauthenticated internal Cloud WAF API exposed customers' S3, Azure Blob and
-    SFTP log export credentials
-  section: Security
+    1Password says an attacker used an employee's GitHub account to push backend code that
+    copied customer account data
+  section: Top stories
   category: Security
   blurb: >-
-    An internal Radware Cloud WAF API answered without authentication and exposed log export
-    cloud keys for some customers.
+    An attacker took over a 1Password employee's GitHub account, reached CI/CD, and shipped
+    backend code that copied customer names and emails.
   summary: >-
-    Radware's root cause report, seen by BleepingComputer, says an unauthorized party reached
-    an internal-only Cloud WAF management API from the internet without authentication on
-    2026-11-19, and the company detected it ten hours later. Exposed data includes customer
-    contact details and, for a subset, credentials for log export to AWS S3, Azure Blob Storage
-    or SFTP. Radware tells AppSec customers to rotate those keys and review storage access
-    logs since 2026-11-19, and some customers report AWS alerts about an unfamiliar IP trying
-    their log buckets.
+    1Password began investigating on 2026-11-19 after an attacker gained access to an employee's
+    corporate GitHub account, read source code, reached the CI/CD system and pushed malicious
+    code to backend services that downloaded account records for a subset of users. The records
+    include names, email addresses, account identifiers, public keys, SRP parameters and tokens
+    from invitation, provisioning and recovery emails, while vault contents and keys were
+    not accessed. 1Password revoked the stolen token, rotated internal credentials and lengthened
+    the codes in invitation and recovery emails from six digits to ten alphanumeric characters.
   why: >-
-    Teams that export Radware WAF logs to their own buckets should rotate those keys and check
-    bucket access logs now, because attempts on them are already reported.
-  event: radware-cloud-waf-api-breach
+    Expect targeted phishing about 1Password invitations or recovery, and treat one developer's
+    GitHub account as a direct path to production deploys in your own threat model.
+  background: >-
+    1Password encrypts vault data on the client with keys derived from the account password
+    and a separate Secret Key, so a server breach does not expose vault items. Sign-in uses
+    the Secure Remote Password protocol, in which the server stores a verifier and parameters
+    instead of the password, so leaked SRP parameters alone do not unlock an account. The
+    exposed metadata still helps attackers craft convincing phishing that names real accounts
+    and sign-in addresses.
+  comments: >-
+    The Hacker News thread drew 432 points and 192 comments within hours of the post.
+  event: 1password-github-account-backend-breach-2026-11
   sources:
+  - label: primary
+    url: https://1password.com/blog/update-on-nov-2026-security-incident
   - label: discussion
-    url: https://www.bleepingcomputer.com/news/security/radware-discloses-breach-exposing-customer-cloud-access-keys/
+    url: https://news.ycombinator.com/item?id=50644817
+- title: >-
+    Anthropic moves its Messages API from Python to Rust, cutting CPU per request about 70%
+  section: Top stories
+  category: Engineering post
+  blurb: >-
+    Anthropic shadowed live traffic and had Claude agents fix diffs grouped by fingerprint
+    to move the Messages API from Python to Rust.
+  summary: >-
+    Anthropic migrated the Messages API, which serves customers and its own apps such as Claude
+    Code, from Python to Rust, and reports about 70% less CPU per request and about 20% lower
+    median time to first token without taking the service offline. The Rust version passed
+    about 98% of roughly 700 integration tests in April while only about a quarter of production
+    inputs matched, and an audit of ported tests found over 100 weakened assertions. Anthropic
+    replayed one model output to both versions, compared each step at checkpoints, recorded
+    only the position and size of each difference, and had a coordinating Claude agent dispatch
+    worker agents to reproduce and fix each new fingerprint, with engineers reviewing every
+    fix before deployment.
+  why: >-
+    For a large rewrite of a live service, production shadowing with privacy-preserving diff
+    fingerprints can serve as the verifier where a test suite cannot.
+  background: >-
+    Shadowing sends the same production request through old and new code and compares results,
+    a standard way to validate rewrites, but common tools assume requests are safe to run
+    twice and outputs are deterministic. LLM replies are nondeterministic and requests are
+    billed, so Anthropic ran the model once and fed the same output to both versions. An earlier
+    partial rewrite of only the output parser in Rust saved 8% to 10% of CPU but made each
+    token cross the Python and Rust boundary three times.
+  event: anthropic-messages-api-rust-migration
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/research/migrating-api-to-rust
+  - label: discussion
+    url: https://newsletter.pragmaticengineer.com/p/how-anthropic-builds-software-in
 - title: >-
     Fake recruiters AccuraSoftHire and HuntRole run malware through npm look-alikes and a
     VS Code extension
@@ -86,6 +130,53 @@ stories:
   sources:
   - label: primary
     url: https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines
+- title: >-
+    GitHub outage degrades Git operations, Actions, pull requests, Packages and Pages for
+    about an hour on 2026-11-25
+  section: Outages
+  category: Outage
+  blurb: >-
+    High database load degraded Git operations, Actions, Issues, pull requests, Packages,
+    Pages, webhooks and the API on GitHub for about an hour.
+  summary: >-
+    GitHub opened the incident at 15:55 UTC on 2026-11-25 for Actions and Webhooks, and it
+    spread to Git operations, API requests, Issues, Pull Requests, Packages and Pages. GitHub
+    attributed the failures to high database load, said it updated its database load distribution,
+    and marked the incident resolved at 16:52 UTC. It promised a detailed root cause analysis.
+  why: >-
+    CI runs, webhook-driven automation and agent workflows that failed during that hour may
+    need retries.
+  comments: The Hacker News thread drew 159 points and 83 comments.
+  event: github-database-load-outage-2026-11-25
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/qn8mfv6q5hlx
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50643720
+- title: >-
+    Hetzner Object Storage returns 403 on bucket configuration changes in all locations, and
+    HEL writes still lag
+  section: Outages
+  category: Outage
+  blurb: >-
+    A security change at Hetzner makes bucket policy, CORS, lifecycle and versioning updates
+    fail with 403, while HEL writes have lagged since 11-13.
+  summary: >-
+    Since 12:56 UTC on 2026-11-25, Hetzner Object Storage in NBG, FSN and HEL may return 403
+    AccessDenied for PutBucketPolicy, PutBucketCors, PutBucketLifecycleConfiguration and PutBucketVersioning,
+    after a change that Hetzner says cannot be reversed because of security implications.
+    Reading, uploading and deleting objects is not affected. A separate incident open since
+    2026-11-13 still leaves some HEL requests slow, with some writes failing or timing out
+    as of 2026-11-25 18:05 UTC.
+  why: >-
+    OpenTofu applies or scripts that set bucket policies, lifecycle rules or versioning on
+    Hetzner may fail until Hetzner ships a fix.
+  event: hetzner-object-storage-bucket-config-403-2026-11-25
+  sources:
+  - label: primary
+    url: https://status.hetzner.com/incident/9428fdb1-f1c7-4d80-ac6c-23513bbd40ab
+  - label: primary
+    url: https://status.hetzner.com/incident/dc7b91f2-74e9-4931-82f7-ddc5e405534e
 - title: >-
     Goodhart Labs: Fable 5.2 quits impossible-seeming tasks sooner when a visible shortcut
     exists, without taking it
@@ -143,6 +234,36 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50637686
 - title: >-
+    Hugging Face's agent tunes Inkling 2 Mini to 190.6 tok/s on one RTX PRO 6000 with vLLM
+    and DSpark speculation
+  section: AI
+  category: AI
+  blurb: >-
+    An agent following a control-bracketed benchmark protocol lifted single-user Inkling 2
+    Mini decode 40% on one 96 GB GPU and deployed the result.
+  summary: >-
+    Across 46 benchmark runs on Hugging Face Jobs, a coding agent raised single-user decode
+    from 136 to 190.6 tok/s and 8-user throughput from about 570 to 716 tok/s by switching
+    from SGLang to vLLM nightly and enabling DSpark speculative decoding with 7 drafts and
+    probabilistic draft sampling. vLLM needed max-model-len 262144 and gpu-memory-utilization
+    0.85 to fit the drafter, since vLLM 0.34.0 raised the default utilization to 1.0. Greedy
+    outputs were byte-identical with and without speculation, and the agent estimated speculation
+    on this MoE caps decode near 201 tok/s because verification reads about 40% of each layer's
+    experts.
+  why: >-
+    For self-hosted MoE models, speculative decoding raises the share of experts read per
+    step, so compute the bandwidth ceiling before chasing more flags.
+  background: >-
+    Speculative decoding has a small drafter propose several tokens that the main model verifies
+    in one pass, which helps when decode is limited by memory bandwidth rather than compute.
+    In a mixture-of-experts model each token activates only a few experts, but verifying several
+    positions at once activates the union of their experts, so more weights are read per step.
+    Inkling 2 Mini is a looped MoE whose middle 12 of 24 layers run three times per token.
+  event: hf-inkling-2-mini-rtx-pro-6000-hillclimb
+  sources:
+  - label: primary
+    url: https://huggingface.co/blog/inkling-2-mini-inference-hillclimb
+- title: >-
     Claude Code 2.1.332 loads skills from MCP servers and adds a PreSkillShellCommand hook
     that can refuse inline shell
   section: Agentic coding
@@ -169,6 +290,29 @@ stories:
   sources:
   - label: primary
     url: https://github.com/anthropics/claude-code/releases/tag/v2.1.332
+- title: >-
+    APM 0.39.0 enforces blocking org policy on installs, requires exact refs and parks untrusted
+    transitive MCP servers
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Microsoft's Agent Package Manager now verifies checkouts against commits, gates transitive
+    MCP servers by policy, and installs up to 2.4x faster.
+  summary: >-
+    APM 0.39.0 verifies checkouts against their commit objects, allow-lists cached git config,
+    requires dependency refs to match an origin branch or tag exactly, and resolves helper
+    tools such as git only from PATH directories outside the project. Blocking org policy
+    now refuses installs that violate manifest.scripts deny, unmanaged_files deny or dependencies.max_depth,
+    and transitive MCP servers need an mcp.allow entry unless mcp.trust_transitive is true.
+    Fresh installs of 50 packages run 2.4x faster than 0.38.1 on Linux and macOS, and interrupted
+    installs restore the files they changed.
+  why: >-
+    Teams pinning agent skills and MCP servers through APM should check org policies and re-approve
+    trusted transitive MCP servers before the first 0.39 install removes them.
+  event: apm-0-39-0-release
+  sources:
+  - label: primary
+    url: https://github.com/microsoft/apm/releases/tag/v0.39.0
 - title: >-
     Paper: maximum likelihood on archived RL rollouts, replayed in order, recovers online
     RL performance
@@ -228,6 +372,40 @@ stories:
   - label: primary
     url: https://rustfoundation.org/media/needles-haystacks-and-numbers-between-0-and-1/
 - title: >-
+    Rust's next trait solver will land in Rust 1.102.0 after performance work removed quadratic
+    slowdowns
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    A rustc developer explains how the replacement trait solver works and how caching and
+    fast paths fixed cases that compiled 200 times slower.
+  summary: >-
+    Jana Dönszelmann writes that the next trait solver, the project started in October 2022
+    to replace rustc's old solver and fix long-standing soundness bugs, will land in Rust
+    1.102.0, with performance as the last major blocker. One example: in unic-ucd, the new
+    solver unified lifetime variables during borrow checking and rolled them back by copying,
+    which made a long constant table quadratic and the crate 200 times slower to compile than
+    with the old solver. The post, a writeup of a EuroRust 2026 talk, covers how the solver
+    caches results and skips the cache for trivial goals such as i32: Sized.
+  why: >-
+    Crates with heavy trait or type-level code may see compile times shift in either direction
+    when 1.102.0 ships, so measure builds on nightly before then.
+  background: >-
+    A trait solver answers whether a type satisfies a trait bound by searching impl blocks,
+    where clauses and compiler built-ins, recursively creating subgoals much like a Prolog
+    engine. Because impls with associated types act as functions, the trait system is Turing
+    complete and a single query can do unbounded work. The Chalk project, started in 2015,
+    explored a logic-programming formulation and was retired in favor of the in-compiler next-generation
+    solver.
+  followup: >-
+    The Rust 1.102.0 release and reports of compile time regressions or new errors from the
+    new solver.
+  event: rustc-next-trait-solver-stabilization
+  sources:
+  - label: primary
+    url: https://donsz.nl/blog/optimizing-rustcs-next-trait-solver
+  thread: f-0249
+- title: >-
     Case folding in case-insensitive APFS lets names like noAcceß.config overwrite protected
     files past naive checks
   section: Apple platforms
@@ -253,6 +431,38 @@ stories:
   sources:
   - label: primary
     url: https://eclecticlight.co/2026/11/24/how-normalisation-and-case-folding-in-apfs-led-to-vulnerabilities/
+- title: >-
+    CloudNativePG 1.31.0-rc1 revokes CONNECT from PUBLIC, defaults to PostgreSQL 19 and bootstraps
+    in init containers
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The CloudNativePG 1.31 release candidate locks down new databases, drops the smart shutdown
+    wait, and swaps bootstrap Jobs for init containers.
+  summary: >-
+    CloudNativePG 1.31.0-rc1 revokes CONNECT from PUBLIC on databases it creates, disables
+    automountServiceAccountToken on instance Pods, changes the default smartShutdownTimeout
+    from 180 to 0 seconds, and bootstraps new instances in an init container instead of a
+    separate Job. It adds PostgreSQL 19 support with 19.0-system-trixie as the default image
+    for new clusters, OTLP log export without a DaemonSet, in-place Pod resource resizing
+    on Kubernetes 1.33 or later, failure-domain-aware synchronous replicas, and declarative
+    database and schema privileges. Failover now builds on the primary Lease, including detection
+    and fencing of replicas that diverged from the primary's timeline.
+  why: >-
+    Managed roles that are not database owners will need an explicit CONNECT grant on new
+    databases, and tooling that watches bootstrap Jobs must change before upgrading.
+  background: >-
+    CloudNativePG is a Kubernetes operator that runs PostgreSQL clusters as Pods with streaming
+    replication and handles failover itself rather than through an external tool like Patroni.
+    Version 1.30.0 introduced a primary Lease, a Kubernetes coordination object that the primary
+    must keep renewing, and 1.31 moves isolation checks and switchover coordination onto it.
+    Smart shutdown waits for every client to disconnect, which with long-lived pooler connections
+    can stall node drains.
+  thread: f-0241
+  event: cloudnative-pg-1-31-0-rc1
+  sources:
+  - label: primary
+    url: https://github.com/cloudnative-pg/cloudnative-pg/releases/tag/v1.31.0-rc1
 - title: >-
     Antithesis's Amnesia FUSE filesystem injects power loss and fsync EIO, and finds a bbolt
     bug that breaks etcd
@@ -311,6 +521,35 @@ stories:
   - label: primary
     url: https://cheriot.org/verification/2026/11/24/griotte-verification-effort.html
 - title: >-
+    Sentry traces 8x Control RPC autoscaling to an N-squared GitLab webhook lookup across
+    2,000 shared installations
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Three GitLab integration bugs at Sentry turned one webhook into millions of cross-silo
+    RPC calls and kept an autoscaler at 256 pods.
+  summary: >-
+    Sentry's Control RPC deployment sat at its 256-pod ceiling for hours while external traffic
+    had only doubled. A four-year-old bug grouped every group-less gitlab.com installation
+    under one shared Integration record with over 2,000 installations, a September webhook
+    backfill fix enabled assignment webhooks on all of them, and the assignment sync path
+    looked up installations per installation, each lookup an RPC from a Region silo to Control.
+    The fix cut the weekly average from about 150 pods to about 42, and Sentry also found
+    that a P95 busyness scaling target never fell as pods were added.
+  why: >-
+    Break internal RPC volume down by method, because flat totals hid a 10x rise in one call,
+    and check that each autoscaler metric actually drops when pods are added.
+  background: >-
+    Sentry splits its service into Region silos that hold customer data and a single Control
+    silo for globally unique data such as users and integrations, so region code reaches Control
+    data only through RPC. KEDA scales Kubernetes workloads on external metrics and takes
+    the most demanding of several targets, so one unsatisfiable metric pins the deployment
+    at its maximum.
+  event: sentry-gitlab-webhook-quadratic-rpc
+  sources:
+  - label: primary
+    url: https://blog.sentry.io/quadratic-webhook-autoscaler-ceiling/
+- title: >-
     containerd maintainers: 156 security reports in 2026, 14 CVEs, and a four-month release
     cycle aligned with Kubernetes
   section: Talks
@@ -334,6 +573,29 @@ stories:
   - label: primary
     url: https://www.youtube.com/watch?v=FHucrnYRW9o
 - title: >-
+    Quinn Slack: Amp runs with 21 people, no task tracker or PMs, one weekly meeting, and
+    agents for bug follow-up
+  section: Talks
+  category: Video
+  blurb: >-
+    Amp's CEO describes running a 21-person agent company where every bug fix triggers log
+    searches to notify other affected users.
+  summary: >-
+    Quinn Slack says Amp spun out of Sourcegraph with 21 people who could not hire for a year,
+    and now runs without task tracking, a support system or PMs, with one meeting a week and
+    everything done in agent threads. The team pushes small changes often, has the agent add
+    logging and monitor each push, and runs shadow systems beside old ones to compare results.
+    When a user reports a bug, the agent fixes it, then searches logs for other users who
+    hit the same error so the team can notify and credit them, and Slack says Amp is over
+    $100M in annual revenue.
+  why: >-
+    Small, agent-monitored pushes and shadow comparisons are presented as the risk control
+    that replaces mandatory pull request review.
+  event: quinn-slack-amp-21-people-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=Xyb1Bn_L2U4
+- title: >-
     Dan Vega builds a Spring AI 2.1 comment moderator from DecisionModel yes-no, choice and
     score questions
   section: Videos
@@ -355,6 +617,29 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=iiwzX-70o9I
+- title: >-
+    Matt Wynne builds dark factories with a Kaizen backlog, Gherkin specs and ADRs he reads
+    word for word
+  section: Videos
+  category: Video
+  blurb: >-
+    Cucumber's creator says an unattended software factory needs continuous human tuning,
+    and splits commits into factory fixes and agent output.
+  summary: >-
+    In a Modern Software Engineering interview, Matt Wynne shows an RPG kata built from a
+    few skill files and a Ralph loop script, where commits split into Kaizen commits that
+    improve the skills and harness and Ralph commits produced by the agent loop. Early history
+    is dominated by Kaizen commits and later by Ralph commits. He keeps a separate backlog
+    of factory improvements, pins behavior in Gherkin acceptance tests and architecture in
+    ADRs checked by a regular coherence review, and reads generated code early on to judge
+    whether the factory works.
+  why: >-
+    Treat the factory itself as a product with its own backlog, and keep human control over
+    behavior specs and architecture records rather than line-level code.
+  event: matt-wynne-dark-factory-kaizen-video
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=V4i2FQRTZJU
 - title: >-
     Hacker News argues over whether hosted coding agents serve their users, from refusals
     to distillation flags
@@ -420,3 +705,45 @@ stories:
     url: https://github.com/openai/math/blob/main/preprints/The-matrix-multiplication-exponent-is-nine-fourths-November-24-2026/paper.pdf
   - label: discussion
     url: https://news.ycombinator.com/item?id=50637220
+- title: >-
+    Google posts Cogentic papers on unconditional L[1/3] factoring and discrete logs as Hacker
+    News weighs crypto rumors
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Google Research uploaded AI-produced papers on factoring and discrete logs, and two Hacker
+    News threads debated what labs may hold back.
+  summary: >-
+    Google Research added papers produced by its Cogentic system to the google-research repository
+    on 2026-11-25, including unconditional integer factorization in time L_N[1/3, O(1)], discrete
+    logarithms in finite fields of fixed characteristic in sub-quasi-polynomial time, and
+    unconditional deterministic subexponential factoring. The Hacker News thread drew 355
+    points and 268 comments, and a related thread about rumors that labs have factoring in
+    P drew 307 points and 214 comments. Scott Aaronson wrote on 2026-11-25 that he is virtually
+    certain from multiple sources that AI labs hold results that will break deployed cryptosystems,
+    but has not seen details.
+  why: >-
+    None of the posted results breaks RSA in practice, but the discussion is a prompt to inventory
+    where RSA still anchors identity in your PKI.
+  background: >-
+    L-notation measures subexponential running time, with L_N[1/3] being the class of the
+    number field sieve, the fastest known classical factoring method, whose L[1/3] running
+    time had rested on unproven heuristics. Rigorous bounds were previously weaker, around
+    L[1/2], so an unconditional L[1/3] result is a theory milestone rather than a faster attack.
+    Polynomial-time factoring would break RSA directly, which is what the rumors are about.
+  comments: >-
+    Commenters note that TLS handshakes largely moved to ECDHE but identity layers still default
+    to RSA, citing kubeadm generating RSA-2048 cluster certificates with a 10-year CA unless
+    configured otherwise, and similar defaults in cert-manager and Istio. Others argue post-quantum
+    schemes are newer and not obviously safer against algorithmic advances, and that polynomial
+    time does not mean practical, citing AKS primality testing.
+  event: google-cogentic-factoring-papers
+  sources:
+  - label: primary
+    url: https://github.com/google-research/google-research/tree/master/cogentic_research_papers
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50642086
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50643065
+  - label: discussion
+    url: https://scottaaronson.blog/?p=10379
