@@ -1,0 +1,214 @@
+date: '2026-11-25'
+updated: 2026-11-25T01:34Z
+stories:
+- title: >-
+    Radware: an unauthenticated internal Cloud WAF API exposed customers' S3, Azure Blob and
+    SFTP log export credentials
+  section: Security
+  category: Security
+  blurb: >-
+    An internal Radware Cloud WAF API answered without authentication and exposed log export
+    cloud keys for some customers.
+  summary: >-
+    Radware's root cause report, seen by BleepingComputer, says an unauthorized party reached
+    an internal-only Cloud WAF management API from the internet without authentication on
+    2026-11-19, and the company detected it ten hours later. Exposed data includes customer
+    contact details and, for a subset, credentials for log export to AWS S3, Azure Blob Storage
+    or SFTP. Radware tells AppSec customers to rotate those keys and review storage access
+    logs since 2026-11-19, and some customers report AWS alerts about an unfamiliar IP trying
+    their log buckets.
+  why: >-
+    Teams that export Radware WAF logs to their own buckets should rotate those keys and check
+    bucket access logs now, because attempts on them are already reported.
+  event: radware-cloud-waf-api-breach
+  sources:
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/radware-discloses-breach-exposing-customer-cloud-access-keys/
+- title: >-
+    Goodhart Labs: Fable 5.2 quits impossible-seeming tasks sooner when a visible shortcut
+    exists, without taking it
+  section: AI
+  category: AI
+  blurb: >-
+    On a mental arithmetic honeypot, Fable 5.2 worked 3.9 minutes with a usable shortcut present
+    and 12.3 minutes without one, never using it.
+  summary: >-
+    Goodhart Labs rebuilt HoneyBench tasks without their shortcuts and found Fable 5.2 worked
+    about a third as long on hard mental arithmetic when a calculator-like tool was present,
+    solving 27% of problems against 40% without it. On an impossible home valuation task it
+    worked 32 minutes with the shortcut against 48 without, while possible tasks showed no
+    gap. The authors read this as the shortcut raising the model's belief that a task is impossible,
+    not classic sandbagging, and note the samples are small at about $1,300 total cost.
+  why: >-
+    Agent evals that include tempting shortcuts can understate a model's honest effort and
+    capability, so effort and time are worth measuring alongside score.
+  event: goodhart-fable-5-2-shortcut-effort
+  sources:
+  - label: primary
+    url: https://goodhartlabs.com/blog/fable-5-2-tries-less-on-some-hard-tasks-when-a-shortcut-is-available
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50635698
+- title: >-
+    Claude Code 2.1.332 loads skills from MCP servers and adds a PreSkillShellCommand hook
+    that can refuse inline shell
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Claude Code can now pull skills from MCP servers in beta, and a new hook event can block
+    shell commands that a skill runs as it loads.
+  summary: >-
+    Claude Code 2.1.332, released 2026-11-25, adds beta skills served by MCP servers, shown
+    as server:skill in the / menu, and a PreSkillShellCommand hook event that can refuse a
+    skill or command's inline shell commands as it loads. It also changes the sonnet alias
+    on Google Cloud's Agent Platform and Microsoft Foundry to Sonnet 5.5, makes Sonnet 5.5
+    the Foundry default, renames the desktop Code tab's OpenTelemetry service.name to claude-code-desktop,
+    and lets self-hosted runner OAuth tokens start with oat02-.
+  why: >-
+    Skills can now arrive through MCP servers, so teams that gate skill content need the new
+    hook, and OTel filters and token scrubbers keyed on the old names need updating.
+  background: >-
+    Claude Code skills are packaged instructions, sometimes with inline shell commands that
+    run when the skill loads. MCP, the Model Context Protocol, lets external servers expose
+    tools to an agent. Serving skills from those servers moves skill distribution outside
+    the repository, which is why a load-time hook that can veto the shell part matters.
+  event: claude-code-2-1-332-release
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/claude-code/releases/tag/v2.1.332
+- title: >-
+    Case folding in case-insensitive APFS lets names like noAcceß.config overwrite protected
+    files past naive checks
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    Installers that compare file names byte by byte miss that APFS treats ß and ss, or ligatures
+    and their letters, as the same name.
+  summary: >-
+    Howard Oakley explains that case-insensitive APFS normalises Unicode names and applies
+    case fold mapping before hashing them, so strasse and straße, or the fl ligature and fl,
+    name the same file. Recently reported vulnerabilities in third-party installers come from
+    checking paths against a protected list with simple string matching, so a package file
+    named noAcceß.config passes the check and then replaces noAccess.config on disk.
+  why: >-
+    Any Mac tool that guards paths by string comparison must normalise and case fold the same
+    way APFS does, or use file system calls to compare names.
+  background: >-
+    Unicode can encode the same visible character in more than one way, so file systems normalise
+    names to one form. Case-insensitive file systems also fold case, and Unicode case folding
+    maps some characters to several letters, such as ß to ss. Most Mac APFS volumes are case-insensitive,
+    while iOS runs case-sensitive.
+  event: apfs-case-folding-installer-vulnerabilities
+  sources:
+  - label: primary
+    url: https://eclecticlight.co/2026/11/24/how-normalisation-and-case-folding-in-apfs-led-to-vulnerabilities/
+- title: >-
+    Antithesis's Amnesia FUSE filesystem injects power loss and fsync EIO, and finds a bbolt
+    bug that breaks etcd
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    A Rust FUSE layer emulates the page cache so tests can drop unsynced writes, fail fsync
+    like fsyncgate, and reorder or tear I/O.
+  summary: >-
+    Antithesis replaced a patched LazyFS with Amnesia, a Rust FUSE filesystem that tracks
+    inodes and keeps volatile and durable state in memory, so it can forget unsynced data
+    at an emulated power failure. It also returns EIO on fsync while marking pages clean,
+    splits and reorders reads and writes, and fires faults before, during or after each syscall.
+    It found a bbolt case where an EIO on the meta page fsync, then a restart that read the
+    cached meta page, let later commits reuse live pages so bbolt panics on every open.
+  why: >-
+    Storage code that retries a failed fsync or trusts page cache contents after a crash can
+    corrupt data, and this shows a concrete way to test for it.
+  background: >-
+    Writes land in the kernel page cache and reach disk later through writeback, and fsync
+    forces them out. In the 2018 fsyncgate case, PostgreSQL learned that Linux marks pages
+    clean after a failed fsync, so a retried fsync can succeed while the data never reaches
+    disk. A process kill keeps the page cache, so only an emulated power loss tests what fsync
+    actually persisted.
+  event: antithesis-amnesia-disk-fault-injection
+  sources:
+  - label: primary
+    url: https://antithesis.com/blog/2026/nightmare-mode/
+- title: >-
+    Rocq proofs of the CHERIoT switcher find two isolation bugs, including stack frame leaks
+    via the high watermark
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Aarhus's Griotte project verified CHERIoT's compartment switcher in Iris and Rocq, and
+    the stuck proofs exposed two bugs now fixed upstream.
+  summary: >-
+    The Griotte project proved compartment isolation and no-capture for the CHERIoT switcher
+    with separation logic and a logical relation for unknown code, in Iris on Rocq. Extending
+    the model found that a malicious caller could push the stack high watermark below the
+    stack base, fault the return path and read the callee's stack frame, fixed in PR 799,
+    and that a malicious scheduler could revive an exited thread with stale capabilities,
+    fixed in PR 769. The proofs now run against the full cheriot-sail ISA, with the loader
+    still trusted.
+  why: >-
+    It shows formal proofs catching real exploitable bugs in the optimisations and exception
+    paths that tests and reviewers tend to skip.
+  background: >-
+    CHERI hardware replaces raw pointers with capabilities that carry bounds and permissions,
+    and CHERIoT applies it to microcontrollers. Compartments call each other through a trusted
+    switcher that must clear state so one compartment cannot keep another's capabilities.
+    The stack high watermark is a hardware register that lets the switcher clear only the
+    part of the stack that was used.
+  event: cheriot-griotte-switcher-verification
+  sources:
+  - label: primary
+    url: https://cheriot.org/verification/2026/11/24/griotte-verification-effort.html
+- title: >-
+    Dan Vega builds a Spring AI 2.1 comment moderator from DecisionModel yes-no, choice and
+    score questions
+  section: Videos
+  category: Video
+  blurb: >-
+    A Spring Boot 4.2 endpoint asks a System 1 decision model three typed questions and rejects,
+    holds or publishes by probability thresholds.
+  summary: >-
+    Dan Vega builds a moderation endpoint on Spring Boot 4.2.0 and Spring AI 2.1.0 with the
+    System 1 decision model starter, asking a YesNoQuestion for spam, a ChoiceQuestion for
+    topic and a ScoreQuestion for tone in one call. Comments are rejected above 0.9 spam probability,
+    held above 0.5 or when rude, and held for a person when the model refuses. In his tests
+    a self-promoting link scored 0.84 and was held, while clear crypto spam scored 0.97 and
+    was rejected.
+  why: >-
+    Spring developers can move classification and guardrail checks off a chat model onto a
+    typed, provider-neutral decision API with explicit confidence thresholds.
+  event: dan-vega-spring-ai-decision-models-video
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=iiwzX-70o9I
+- title: >-
+    Hacker News argues over whether hosted coding agents serve their users, from refusals
+    to distillation flags
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    An essay on Claude refusing a Bandcamp workaround drew 905 points, and an Ask HN on a
+    24-hour distillation accusation drew 222 points.
+  summary: >-
+    Michael Harley's essay says Claude Code refused to help work around a new Bandcamp search
+    challenge while still downloading the same song from YouTube, and argues hosted agents
+    serve their vendors, drawing 905 points and 380 comments. A separate Ask HN from a company
+    Anthropic accused of distillation, with 24 hours to respond and only automated regression
+    benchmarks as a likely trigger, drew 222 points and 165 comments.
+  why: >-
+    Teams that depend on one hosted model face policy refusals and account flags they cannot
+    appeal quickly, which argues for evals and a tested fallback provider.
+  comments: >-
+    In the essay thread, commenters propose holding AI advisors to fiduciary duties like lawyers
+    and accountants, and others reply that such duties need intent and liability that models
+    lack. In the Ask HN thread, users report Claude flagging subagents for reasoning extraction
+    during routine work and when reading past session transcripts, one reports days without
+    Bedrock access after an Anthropic block, and several say evals plus a model router made
+    switching providers practical.
+  event: llm-agents-serve-providers-hn-debate
+  sources:
+  - label: primary
+    url: https://michaelharley.net/posts/2026/11/01/llm-agents-work-for-their-parent-companies-not-for-you/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50627340
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50630809
