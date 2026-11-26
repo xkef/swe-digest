@@ -1,5 +1,5 @@
 date: '2026-11-26'
-updated: 2026-11-26T15:34Z
+updated: 2026-11-26T19:14Z
 stories:
 - title: >-
     NFS2ROOT: a 12-year-old nfsd heap overflow, CVE-2026-99362, lets unauthenticated clients
@@ -146,6 +146,35 @@ stories:
   sources:
   - label: primary
     url: https://blog.cloudflare.com/search-for-agents/
+- title: >-
+    Hugging Face trains four Qwen3-0.6B agents to share private data, lifting team success
+    from 6.6% to 82.3%
+  section: AI
+  category: AI
+  blurb: >-
+    A shared 0.6B policy trained with a team reward learns to broadcast private numbers to
+    teammates, and uses 37% fewer tokens per attempt.
+  summary: >-
+    Hugging Face reproduced the s3 information-aggregation task with four agents sharing one
+    Qwen3-0.6B policy and messaging tools, trained with GRPO-style group advantages over eight
+    team attempts per problem. Over 75 updates, training success rose from 6.6% to 82.3% while
+    generated tokens per team fell from about 12,800 to 8,000, and the trained checkpoint
+    solved 26 of 32 held-out problems. The untrained team's best-of-8 success was 37.5% at
+    about 103,000 tokens per problem, and a TRL example reproduces the run on two H200s in
+    about five hours.
+  why: >-
+    It gives a runnable baseline for asking whether agent communication helps or just spends
+    more compute, with token cost measured next to success.
+  background: >-
+    Multi-agent reinforcement learning treats a team as a decentralized partially observable
+    decision process, where agents share a reward but each sees only part of the state. A
+    common pattern is centralized training with decentralized execution, where training uses
+    the whole team's outcome while each agent acts on its own context. GRPO normalizes rewards
+    within a group of attempts at the same problem, so no separate value model is needed.
+  event: hf-multi-agent-swarm-rl-training
+  sources:
+  - label: primary
+    url: https://huggingface.co/blog/training-swarms
 - title: >-
     Snap's MCP Gateway fronts 1,100 tools and checks both the person and the agent on every
     restricted call
@@ -312,6 +341,34 @@ stories:
   - label: primary
     url: https://foojay.io/today/the-148-ms-was-waiting-not-work/
 - title: >-
+    Jan Nidzwetzki explains how PostgreSQL's barrier macros, volatile and atomics stop compiler
+    and CPU reordering
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    GCC at -O2 swaps two shared-memory stores in a writer function, and store buffers and
+    invalidate queues reorder them again on ARM.
+  summary: >-
+    The post compiles a two-store writer with GCC 14.2 at -O2 and shows the compiler emitting
+    the done flag store before the tuples store, then fixes it with pg_compiler_barrier, an
+    empty inline asm with a memory clobber. It walks through MESI cache coherency, store buffers
+    that let later stores overtake earlier ones on ARM but not x86, and invalidate queues
+    that let readers see stale values. It then maps these to pg_memory_barrier, pg_write_barrier
+    and pg_read_barrier, and notes PostgreSQL 19 raised its requirement from C99 to C11.
+  why: >-
+    Code with shared-memory flags that works on x86 can fail on Graviton or Apple Silicon
+    unless it uses the right barrier pair.
+  background: >-
+    PostgreSQL runs one process per connection and coordinates them through shared memory,
+    so ordering between processes matters as much as between threads. The C11 memory model
+    lets compilers reorder accesses that a single thread cannot observe, and CPUs with weak
+    memory models, such as ARM, also reorder stores and loads at runtime. A write barrier
+    on the producer must pair with a read barrier on the consumer to guarantee ordering.
+  event: postgresql-memory-barriers-explainer
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9DL
+- title: >-
     LinkedIn cut P99 image pull time 72% by enabling parallel kubelet pulls and lowering containerd
     download concurrency
   section: Talks
@@ -440,3 +497,33 @@ stories:
     url: https://github.com/xoxorwr/pw-loudness-eq
   - label: discussion
     url: https://news.ycombinator.com/item?id=50641171
+- title: >-
+    Hanno Böck's post on slow Ubuntu kernel fixes draws 399 points as Hacker News weighs backports
+    against LTS kernels
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Ubuntu had no fix for NoisyTCP or an AMD KVM host escape days after disclosure, and practitioners
+    argue over Ubuntu's kernel backport model.
+  summary: >-
+    Hanno Böck wrote on oss-security on 2026-11-25 that Ubuntu still had no fix for NoisyTCP,
+    CVE-2026-99288, nine days after disclosure, nor for the AMD KVM host escape CVE-2026-99312
+    published on 2026-11-18. He contrasts Ubuntu's backporting onto its own 7.0.0 kernel with
+    Debian stable's 6.12.118 longterm kernel. The Hacker News thread reached 399 points and
+    245 comments.
+  why: >-
+    Teams running Ubuntu hosts exposed to the network should check kernel fix status per CVE
+    rather than assume same-day distribution patches.
+  comments: >-
+    Commenters quote the stable kernel maintainer's advice to take every stable or LTS release
+    instead of cherry-picking. One notes Debian backported the NoisyTCP fix to its 6.1 kernel
+    on 2026-11-14, while upstream 6.1.193 with the fix shipped only on 2026-11-23. Others
+    argue Debian's near-weekly kernel updates leave little testing time, and sysadmins describe
+    unattended-upgrades with automatic reboots as the practical answer.
+  thread: f-0224
+  event: ubuntu-slow-kernel-security-response
+  sources:
+  - label: primary
+    url: https://www.openwall.com/lists/oss-security/2026/11/25/9
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50647181
