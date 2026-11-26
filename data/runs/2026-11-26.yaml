@@ -1,0 +1,108 @@
+date: '2026-11-26'
+runs:
+- mode: daily
+  started: 2026-11-26T01:06Z
+  finished: 2026-11-26T01:09Z
+  candidates: 259
+  degraded:
+    biorxiv: >-
+      https://api.biorxiv.org/details/biorxiv/2026-11-25/2026-11-26/0?category=bioinformatics:
+      The read operation timed out
+  usage:
+    input_tokens: 6
+    cache_read_tokens: 193531
+    cache_write_tokens: 149353
+    output_tokens: 11242
+    turns: 14
+    seconds: 121
+    cost_usd: 1.4669
+  tools:
+    mcp__digest__fetch_url: 12
+    StructuredOutput: 1
+  fetched:
+  - url: https://opensec.in/blog/nfs2root-cve-2026-99362
+    ok: true
+  - url: https://rustsec.org/advisories/RUSTSEC-2026-0600.html
+    ok: true
+  - url: https://www.rapid7.com/blog/post/etr-cve-2026-123903-critical-vmware-directory-service-authentication-bypass-affects-vcenter
+    ok: true
+  - url: https://defang.io/blog/post/security-incident-november-2026/
+    ok: true
+  - url: https://www.openwall.com/lists/oss-security/2026/11/25/9
+    ok: true
+  - url: https://status.hetzner.com/incident/24d2e841-c44b-4bc6-a51a-4df19ca67c42
+    ok: true
+  - url: https://www.bleepingcomputer.com/news/security/palo-alto-networks-warns-of-fragnesia-flaw-exploited-in-pan-os-attacks/
+    ok: true
+  - url: https://blog.cloudflare.com/search-for-agents/
+    ok: true
+  - url: https://clickhouse.com/blog/pg-plan-advice-postgresql-19
+    ok: true
+  - url: https://modaic.dev/blog/latency-doesnt-lie
+    ok: true
+  - url: https://www.youtube.com/watch?v=DZgRiIrii40
+    ok: true
+  - url: https://www.youtube.com/watch?v=GrcEH4lDE9I
+    ok: true
+  proxy_bytes: 4130764
+  added:
+  - >-
+    NFS2ROOT: a 12-year-old nfsd heap overflow, CVE-2026-99362, lets unauthenticated clients
+    root Linux NFS servers
+  - >-
+    Defang says an attacker copied its production credentials and database, and held its GitHub
+    App key for 11 days
+  - >-
+    kube-client RUSTSEC-2026-0600: the openssl-tls connector trusts OpenSSL's default CA store
+    alongside the cluster CA
+  - >-
+    Hetzner vSwitch coupling fault can cut links between dedicated and cloud servers from
+    2026-11-25 14:18 UTC
+  - >-
+    Cloudflare Search for Agents indexes a zone and serves /.well-known/search, including
+    the new HTTP QUERY method
+  - >-
+    ClickHouse tests PostgreSQL 19's pg_plan_advice: a JOIN_ORDER hint cuts a correlated-filter
+    join from 3.8 s to 20 ms
+  - >-
+    LinkedIn cut P99 image pull time 72% by enabling parallel kubelet pulls and lowering containerd
+    download concurrency
+  - >-
+    DB9's three founders built a Postgres-compatible multi-tenant engine on TiKV with agents,
+    merging 14,000 PRs in a year
+  dropped: []
+  rejected: []
+  requests: []
+  inbox_used: []
+  notes: >-
+    Security slots: NFS2ROOT and the kube-client advisory. Defang is marked major because
+    its own post confirms the breach of a deploy platform that holds GitHub App access to
+    customer repositories. I skipped Palo Alto's Fragnesia exploitation because only BleepingComputer
+    coverage loaded and I had no vendor advisory URL. I skipped vCenter CVE-2026-123903 (public
+    PoC but no reported exploitation, outside the stack) and the Drupal Fail2Install exploitation
+    (low-interest platform). The modaic.dev page on Jev returned only a loading shell, so
+    that story was not verified. The Ubuntu slow-patching thread moved the NoisyTCP follow-up
+    as a note, not a new story. The Hetzner NBG1 UPS fault was skipped because Hetzner says
+    servers were not affected. The biorxiv feed was degraded.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 37.6
+  - step: load
+    status: ok
+    seconds: 0.1
+  - step: select
+    status: ok
+    seconds: 0.0
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 122.1
+  - step: merge
+    status: ok
+    seconds: 0.0
+  - step: save
+    status: ok
+    seconds: 0.1
