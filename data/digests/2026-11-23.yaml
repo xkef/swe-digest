@@ -1,0 +1,560 @@
+date: '2026-11-23'
+updated: 2026-11-23T21:37Z
+stories:
+- title: >-
+    GitHub will block pull_request_target workflows by default in public repositories from
+    2026-12-02
+  section: Top stories
+  category: Dev tools
+  blurb: >-
+    Public repos lose the privileged fork PR trigger by default next week, and PSF engineers
+    publish an allowlist policy to roll out org-wide.
+  summary: >-
+    PSF security engineers Mike Fiedler and Seth Larson write that GitHub will block the pull_request_target
+    trigger by default in public repositories on 2026-12-02, and that the default policy runs
+    in evaluate mode until then, with affected runs shown in Policy insights. They recommend
+    an organization Actions event policy that allows only pull_request, push, release, repository_dispatch,
+    schedule, workflow_dispatch and workflow_run, rolled out in Evaluate mode first, and note
+    that GitHub's default steps aside as soon as an organization defines its own policy. Organization-level
+    policies need a paid plan, so Free organizations must apply the policy per repository
+    through the gh API.
+  why: >-
+    Fork PR labelers, welcome bots, slash-command bots on issue_comment and merge queues can
+    stop running, so audit Policy insights and migrate them before 2026-12-02.
+  background: >-
+    A pull_request workflow runs fork code with a read-only token and no secrets, while pull_request_target
+    runs from the base branch with a read/write token and the repository's secrets. When such
+    a workflow checks out the PR head and runs it, any GitHub user can execute code with those
+    credentials, a pattern called a pwn request. The post ties Ultralytics, the Trivy compromise
+    behind the LiteLLM and Telnyx releases, TanStack, Nx and tj-actions to these triggers,
+    and notes that PyPI, npm and crates.io Trusted Publishing already reject tokens from some
+    of them.
+  followup: GitHub enforcement of the default block on 2026-12-02.
+  event: github-pull-request-target-default-block
+  sources:
+  - label: primary
+    url: https://alpha-omega.dev/blog/de-fanging-dangerous-triggers-in-github-actions-across-an-organization/
+  - label: primary
+    url: https://pyfound.blogspot.com/2026/11/de-fanging-dangerous-triggers-in-github.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50560120
+  thread: f-0246
+- title: >-
+    Nvidia's board reinstates Jensen Huang as president, CEO and board director, citing US
+    government input
+  section: Top stories
+  category: Markets
+  blurb: >-
+    Nvidia's board unanimously brought Jensen Huang back as president, CEO and director after
+    US government input, while its probe continues.
+  summary: >-
+    Nvidia announced on 2026-11-23 that its board voted unanimously to reinstate Jensen Huang
+    as president, CEO and board member, effective immediately, after meetings with him and
+    input from senior levels of the US government that left it confident his return poses
+    no national security risk. Harvey Jones stays board chair and Colette Kress returns to
+    CFO duties. The independent committee investigating reports that Huang was the target
+    of a foreign intelligence effort will continue, and Nvidia is hiring a Chief Compliance
+    Officer.
+  why: >-
+    Leadership of the dominant AI accelerator vendor is settled again, though the open investigation
+    and new export control oversight keep its China and compliance posture uncertain.
+  background: >-
+    Huang co-founded Nvidia and led it until his resignation, which this digest covered on
+    2026-11-12, when CFO Colette Kress became interim CEO. The press release ties the episode
+    to reporting that Huang was the target of a foreign intelligence effort, and says the
+    board also formed a National Security and Export Control Committee of independent directors.
+    Nvidia's CUDA platform and data center GPUs underpin most AI training and inference, so
+    its leadership and export posture shape GPU supply for the whole industry.
+  comments: The Hacker News thread on the announcement drew 1,624 points and 1,375 comments.
+  thread: f-0231
+  event: nvidia-reinstates-jensen-huang-ceo
+  sources:
+  - label: primary
+    url: https://nvidianews.nvidia.com/news/nvidia-board-reinstates-jensen-huang-as-president-ceo-and-board-director
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50611588
+- title: >-
+    CISA lists Cisco Expressway CVE-2026-76466, a hard-coded credential root RCE, as exploited
+    in the wild
+  section: Security
+  category: Security
+  blurb: >-
+    Attackers gain root on clustered Cisco Expressway gateways through hard-coded credentials,
+    and CISA gave federal agencies three days to patch.
+  summary: >-
+    CISA added CVE-2026-76466 to its Known Exploited Vulnerabilities catalog on 2026-11-20
+    with a due date of 2026-11-23, describing hard-coded credentials that let an unauthenticated
+    remote attacker with persistent cookies run commands as root on a clustered Expressway
+    device through its database service. Cisco patched the flaw in late October and says its
+    PSIRT is not aware of exploitation. F6 reports attackers using an AI assistant compromised
+    two internet-facing Expressway nodes, pivoted to two internal cluster nodes, and used
+    Python scripts to probe SMB, SQL Server, WinRM and GitLab repositories for credentials.
+  why: >-
+    Teams running Expressway-C or Expressway-E clusters should apply Cisco's October fix now
+    and check internal nodes and reachable GitLab instances for credential theft.
+  background: >-
+    Cisco Expressway is a collaboration gateway, shipped as a VM or appliance, that connects
+    internal voice and video systems to outside networks and remote users. A KEV listing means
+    CISA has evidence of exploitation, and under BOD 26-04 this entry also requires federal
+    agencies to perform forensic triage, not just patch.
+  event: cisco-expressway-cve-2026-76466-exploitation
+  sources:
+  - label: primary
+    url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/cisa-flags-critical-cisco-expressway-rce-flaw-as-actively-exploited/
+- title: >-
+    cookie 0.18.3 fixes RUSTSEC-2026-0594, AES-GCM nonce reuse in private cookies after fork()
+  section: Security
+  category: Security
+  blurb: >-
+    Private cookies in the cookie crate can reuse AES-GCM nonces after fork(), letting attackers
+    forge them. Version 0.18.3 fixes it.
+  summary: >-
+    The cookie crate drew private cookie nonces from rand::thread_rng(), whose buffered bytes
+    survive fork(), so the first private cookies sealed after a fork in parent and children
+    can share nonces, which lets an attacker recover plaintext XORs and the GHASH key to forge
+    cookies. Only processes that fork without exec and add private cookies on the forking
+    thread are affected, which excludes axum on a normal multi-threaded runtime and Rocket.
+    Version 0.18.3 takes nonces from the OS random generator, and affected deployments should
+    rotate their Key.
+  why: >-
+    axum-extra PrivateCookieJar users who fork workers onto current-thread runtimes should
+    upgrade cookie and rotate keys, and everyone else should still bump the lockfile.
+  background: >-
+    AES-GCM is safe only while each nonce is used once per key. A repeated nonce exposes the
+    XOR of two plaintexts and lets an attacker derive the authentication key used to forge
+    tags. User-space random generators that buffer output are a known hazard across fork(),
+    since both processes continue from the same buffered state.
+  event: rust-cookie-private-nonce-reuse-fork
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0594.html
+- title: >-
+    Attackers exploited an Azure API Management Classic flaw to steal stored secrets, subscription
+    keys and tokens
+  section: Security
+  category: Security
+  blurb: >-
+    Microsoft says an Azure API Management Classic flaw let attackers read stored secrets,
+    and its fix does not invalidate stolen credentials.
+  summary: >-
+    Microsoft told customers in Azure Service Health advisory MZK9-GH0 that it found a flaw
+    in Azure API Management Classic tiers on 2026-11-18 and blocked the unauthorized management-plane
+    access path on 2026-11-19. Named Values secrets, identity provider and OpenID Connect
+    client secrets, subscription keys and management API tokens may have been exposed, and
+    v2 tiers are not affected. Norway's NSM ties the flaw to attacks on energy companies including
+    Equinor and Skagerak Energi.
+  why: >-
+    Teams on APIM Classic must rotate every secret stored in the service and check backends
+    reached with those credentials, because Microsoft's fix leaves stolen ones valid.
+  background: >-
+    Azure API Management is a gateway that publishes and secures APIs. It often holds backend
+    credentials as Named Values and client secrets for identity providers, so control of its
+    management plane exposes the systems behind it. This comes days after Microsoft disclosed
+    exploitation of an Entra Connect Health API flaw.
+  comments: >-
+    An administrator on Reddit, quoted by BleepingComputer but not verified, says attackers
+    used a valid administrator token against Key Vault through a deprecated legacy API that
+    wrote no customer-visible logs. NSM tells customers to confirm their instances run a patched
+    runtime version.
+  event: azure-apim-classic-secret-theft
+  sources:
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/microsoft-azure-flaw-exploited-to-steal-customers-api-credentials/
+- title: >-
+    Hetzner Object Storage in fsn1 is degraded again, with bucket requests failing on and
+    off since 2026-11-14
+  section: Outages
+  category: Outage
+  blurb: >-
+    Hetzner Object Storage in Falkenstein has had failing or timed-out bucket requests on
+    and off since 2026-11-14, and is degraded again today.
+  summary: >-
+    Hetzner's status page lists an Object Storage incident in fsn1 that began 2026-11-14 00:40
+    UTC, where requests to some buckets may fail or time out. It was marked fixed and then
+    reopened on 2026-11-15 and 2026-11-19, and on 2026-11-23 Hetzner reported a significant
+    increase in requests on the clusters and returned the incident to in progress while it
+    migrates data.
+  why: >-
+    Teams using fsn1 Object Storage for backups, such as CloudNativePG WAL archives, should
+    check for failed uploads over the past nine days and consider another location.
+  event: hetzner-object-storage-fsn1-degradation-2026-11
+  sources:
+  - label: primary
+    url: https://status.hetzner.com/incident/5538b885-8fe5-42ad-98f7-7f788a8af426
+- title: >-
+    Vercel AI Gateway runs canary audits to catch inference providers reading prompts despite
+    zero data retention
+  section: AI
+  category: AI
+  blurb: >-
+    Vercel AI Gateway now plants unique URLs in prompts to catch inference providers that
+    read or crawl prompt content despite ZDR terms.
+  summary: >-
+    Vercel's AI Gateway now sends prompts containing freshly minted URLs, each privately mapped
+    to a provider, model and run, through the normal inference path with Zero Data Retention
+    requested. Any request to a canary URL is recorded for investigation, and non-ZDR provider
+    pairs serve as positive controls.
+  why: >-
+    Teams routing source code or customer data through hosted inference get ongoing evidence
+    of provider behavior instead of relying only on contracts and point-in-time audits.
+  background: >-
+    Zero Data Retention is a contractual promise that a provider does not store or inspect
+    prompts after serving them. Canary tokens are a long-standing detection technique: a unique
+    value that only an unauthorized reader would ever act on. Dragos used the same method
+    to expose breached inference providers, which this digest covered on 2026-11-21.
+  event: vercel-ai-gateway-canary-zdr-audits
+  sources:
+  - label: primary
+    url: https://vercel.com/changelog/ai-gateway-now-runs-canary-zdr-audits
+- title: >-
+    APM 0.38.0 adds --policy to install and update, project-scope native plugins and AGENTS.md
+    for Claude
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Agent Package Manager can enforce an org policy at install time, render agents to Codex
+    TOML, and pins whole hook bundles in approval hashes.
+  summary: >-
+    APM 0.38.0, released 2026-11-22, adds a --policy flag to apm install and apm update, a
+    root apm.yml marketplaces map with a marketplace.allow policy, authentication for private
+    hosted HTTPS catalogs, and opt-in strict host credentials for GitHub-class hosts. It converges
+    Claude instructions on AGENTS.md, adds project-scope native plugins for Claude and Copilot,
+    renders bundle agents to Codex TOML at install, and applies the org dependency policy
+    to compile, run and auto-install. Approval fingerprints now pin the full hook bundle,
+    installs replace deployed files atomically, and MCP server collisions are refused before
+    any file is written.
+  why: >-
+    Teams packaging skills, hooks and MCP servers with APM can now gate installs on an org
+    policy and should expect Claude instruction output to move to AGENTS.md.
+  event: apm-0-38-0-release
+  sources:
+  - label: primary
+    url: https://github.com/microsoft/apm/releases/tag/v0.38.0
+- title: >-
+    Fly.io says agents run 55% of its deployments and its software factory rewrites its own
+    prompts after scoring
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Fly.io says agents now perform at least 55% of its deployments and describes a factory
+    whose Scorer agent opens PRs against its own prompts.
+  summary: >-
+    Fly.io says at least 55% of its deployments are now done by agents, and it added auth.md
+    agent signup with 24-hour self-renewing tokens and agent credit top-ups over HTTP 402
+    with human approval in Stripe Link. Its internal software factory runs Claude Code on
+    separate Sprites for research, change, verification and review, ending in a draft PR.
+    A Scorer agent grades each run against five criteria in a markdown file, and when one
+    criterion fails three times in two weeks another agent opens a draft PR against the agents'
+    prompts that a human must merge.
+  why: >-
+    It is a concrete pattern for eval-driven harness tuning: score every run against written
+    criteria and route fixes to the agents' own prompts through normal review.
+  event: fly-io-agent-signup-and-self-scoring-factory
+  sources:
+  - label: primary
+    url: https://fly.io/blog/holding-the-door-for-agents/
+- title: >-
+    Kotlin Benchmark 2.0 adds 30 private tasks and offline sandboxes, with Claude Code on
+    Opus 5.5 leading at 75.3%
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    JetBrains' harder Kotlin Benchmark adds 30 private tasks and blocks network access, and
+    Claude Code with Opus 5.5 leads at 75.3%.
+  summary: >-
+    JetBrains rebuilt its Kotlin Benchmark as 100 multi-file tasks, 70 from 25 open-source
+    repositories and 30 from private JetBrains server-side projects, after finding agents
+    looking up published fixes. Open-source tasks now run without network access or repository
+    history, each configuration runs three times with a 30-minute limit, and the leaderboard
+    reports cost, tokens and steps. Claude Code with Opus 5.5 resolved 75.3% overall at $0.84
+    per task, while on private tasks Antigravity CLI with Gemini 3.8 Flash scored 60% and
+    OpenCode with DeepSeek V4.1 Flash 58.9% at $0.08.
+  why: >-
+    Kotlin teams choosing an agent and model get per-task cost and contamination-resistant
+    private scores, which rank configurations differently from public tasks.
+  event: kotlin-benchmark-2-0
+  sources:
+  - label: primary
+    url: https://blog.jetbrains.com/kotlin/2026/11/kotlin-benchmark-2-0-how-ai-coding-agents-handle-harder-tasks-and-closed-source-code/
+- title: >-
+    Claude Code 2.1.331 brings Code Mode to cloud provider sessions and adds optional plugin
+    dependencies
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Claude Code 2.1.331 brings Code Mode to Bedrock and Foundry terminals, adds optional plugin
+    dependencies and gen_ai trace attributes.
+  summary: >-
+    Claude Code 2.1.331 adds Code Mode to terminal sessions on Amazon Bedrock, Google Cloud's
+    Agent Platform, Microsoft Foundry and Claude Platform on AWS. It adds optionalDependencies
+    to plugin manifests, gen_ai.usage, gen_ai.response.model and gen_ai.operation.name attributes
+    on claude_code.llm_request trace spans, and an API connectivity check in claude doctor.
+    The notes say plugin marketplaces in managed extraKnownMarketplaces will auto-update by
+    default on or after 2026-11-30 unless an entry sets autoUpdate to false.
+  why: >-
+    Admins who pin managed plugin marketplaces must set autoUpdate to false before 2026-11-30
+    to keep control, and OpenTelemetry users can now read token usage from standard gen_ai
+    attributes.
+  followup: Managed marketplaces switch to auto-update on or after 2026-11-30.
+  event: claude-code-2-1-331-release
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/claude-code/releases/tag/v2.1.331
+- title: >-
+    Google's DeepCrossAttention routes residual connections per token and cuts transformer
+    depth 29% at equal perplexity
+  section: ML research
+  category: ML research
+  blurb: >-
+    Google's DeepCrossAttention replaces fixed residual sums with learned per-token routing
+    over earlier layers, matching quality in fewer steps.
+  summary: >-
+    Google Research describes DeepCrossAttention, from its ICML 2025 paper. Each layer mixes
+    the outputs of earlier layers with learned, input-dependent weights and applies cross-attention
+    across depth instead of summing residuals equally. On LM1B and C4 it matched standard
+    transformers in up to five times fewer training steps, and it reached under 14 perplexity
+    on LM1B with 30 layers where a baseline needed 42. It adds under 0.2% parameters and can
+    be retrofitted onto a pretrained model.
+  why: >-
+    Dynamic residual routing is spreading into open models such as Inkling 2, so engineers
+    who serve or fine-tune them should expect higher memory bandwidth use per layer.
+  background: >-
+    Residual connections add each layer's input to its output so that gradients flow through
+    deep networks. Summing every layer with equal weight dilutes features from early layers.
+    Related designs include Moonshot AI's attention residuals and hyper-connections, which
+    widen the residual stream into several channels.
+  event: google-deepcrossattention-residuals
+  sources:
+  - label: primary
+    url: https://research.google/blog/supercharging-transformer-residual-connections/
+- title: >-
+    Neovim master lets nvim_buf_set_lines, nvim_buf_set_text and nvim_put accept a multiline
+    string
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Neovim master lets nvim_buf_set_lines, nvim_buf_set_text and nvim_put take a multiline
+    string, about twice as fast as calling vim.split.
+  summary: >-
+    A commit by Justin M. Keyes lets the three API functions take a String that C splits at
+    newlines without copying, about 2x faster than vim.split() and about 20% faster than a
+    prebuilt table. The parameters are renamed to lines and text, docs add api-string and
+    api-lines definitions, and runtime code such as man.lua, vim.net and vim.snippet now passes
+    strings directly.
+  why: >-
+    Plugin authors can drop vim.split() before buffer writes for a measurable speedup, while
+    api_info now reports the parameter type as Object.
+  event: neovim-buf-set-lines-accepts-string
+  sources:
+  - label: primary
+    url: https://github.com/neovim/neovim/commit/735fc4f4f6817268cd65512695828fbb255826ab
+- title: >-
+    gitoxide 0.62 adds gix fsmonitor, gix watch and gix notify, plus a --repo-trust flag for
+    config trust levels
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    The Rust Git implementation's CLI gains a Git-compatible filesystem monitor daemon and
+    file watchers, and plumbing crates move to std errors.
+  summary: >-
+    gitoxide 0.62.0, released 2026-11-22 alongside gix 0.91.0 and new gix-notify and gix-fsmonitor
+    0.1.0 crates, adds gix fsmonitor with foreground and detached daemons, token queries and
+    Git hook-v2 autostart, plus gix watch for repository invalidations and gix notify for
+    raw filesystem events. A --repo-trust option sets full or reduced trust, or forces either,
+    to compare how repository configuration behaves, and plumbing crates now use a std::error::Error
+    compatible error type. The CLI tooling now requires Rust 1.91 while gix and its plumbing
+    stay on Rust 1.88.
+  why: >-
+    Projects building on gix can now drive a Git-compatible fsmonitor and change notifications
+    from the library, and CLI builds need Rust 1.91.
+  background: >-
+    Git's core.fsmonitor setting lets git status ask a daemon which paths changed since a
+    token instead of stat-ing every file, which matters on large worktrees. Repository trust
+    decides whether configuration from a repository the user does not own is honored, the
+    mechanism behind Git's safe.directory protection.
+  event: gitoxide-0-62-0-release
+  sources:
+  - label: primary
+    url: https://github.com/GitoxideLabs/gitoxide/releases/tag/v0.62.0
+- title: >-
+    hyper 1.13.0 adds an HTTP/2 executor getter and fixes HTTP/1 and HTTP/2 framing and shutdown
+    bugs
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    hyper 1.13.0 adds an HTTP/2 executor getter and fixes framing bugs, including Content-Length
+    kept alongside Transfer-Encoding.
+  summary: >-
+    hyper 1.13.0 adds an executor getter for HTTP/2 servers and clients. In HTTP/1 it now
+    drops Content-Length when a response also carries Transfer-Encoding, errors when the final
+    body chunk is shorter than Content-Length, rejects bare LF in trailers and drains in-flight
+    requests before dispatcher shutdown. In HTTP/2 it strips every header named in a Connection
+    header and fixes requests that hung during a concurrent connection shutdown.
+  why: >-
+    Services built on hyper, directly or through axum, tonic or reqwest, get stricter message
+    framing and fewer hung requests at shutdown after a semver-compatible upgrade.
+  event: hyper-1-13-0-release
+  sources:
+  - label: primary
+    url: https://github.com/hyperium/hyper/releases/tag/v1.13.0
+- title: >-
+    SeaweedFS 4.55 adds JWT signing key rotation, filer HTTP Basic Auth and a fips140=only
+    mode
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The release lets S3 requests authenticate by verified client certificate, enforces BlockPublicPolicy,
+    and hardens Helm JWT keys and secrets.
+  summary: >-
+    SeaweedFS 4.55, released 2026-11-23, accepts a previous JWT signing key during rotation,
+    adds optional HTTP Basic Auth on filer HTTP ports and scoped read-only tokens for metadata
+    subscriptions, and authenticates unsigned S3 requests by a verified client certificate.
+    It enforces BlockPublicPolicy and RestrictPublicBuckets, evaluates STS session condition
+    keys, and under fips140=only refuses SigV2, SSE-C and SHA-1 checksums. The Helm chart
+    moves security config into a Secret with stronger JWT keys and opt-in HTTPS for volume
+    data ports, alongside many filer, mount and erasure coding consistency fixes.
+  why: >-
+    Operators can now rotate SeaweedFS JWT keys without downtime and should review the Helm
+    security Secret change and the stricter S3 policy checks before upgrading.
+  event: seaweedfs-4-55-release
+  sources:
+  - label: primary
+    url: https://github.com/seaweedfs/seaweedfs/releases/tag/4.55
+- title: >-
+    Cisco and OpenAI open-source Shirudo, an agent-driven Tetragon rewrite that ships live
+    eBPF and bytecode shields
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Cisco and OpenAI open-source Shirudo, a Tetragon rewrite that lets agents write eBPF or
+    bytecode shields for unpatched flaws at runtime.
+  summary: >-
+    Shirudo delivers small mitigations to a running kernel or workload. A mitigation can block
+    a vulnerable path, replace vulnerable code or add detection, and it needs no restart.
+    An operator CLI builds shields as eBPF or application bytecode, signs them as .bee packages
+    and distributes them through an OCI registry, and targets check the signatures against
+    their TPM. In a Codex-driven demo, an agent generated a Java bytecode shield that blocked
+    a Java4Shell exploit against a running Elasticsearch 9.5.5.
+  why: >-
+    It shows a concrete design for agent-written runtime mitigations that cover the gap between
+    disclosure and patch rollout, built on eBPF and signed OCI artifacts that platform teams
+    already run.
+  background: >-
+    eBPF lets verified programs attach to kernel hook points and change or observe behavior
+    without rebooting. Isovalent's Tetragon used it for runtime security policy written by
+    humans. Shirudo replaces that policy language with code that agents write, and adds bytecode
+    injection for flaws that eBPF cannot reach, such as a JVM intrinsic bug.
+  event: shirudo-open-source-launch
+  sources:
+  - label: primary
+    url: https://isovalent.com/blog/post/cisco-openai-shirudo/
+- title: >-
+    PGAIBench: frontier models caused harm in 13 of 408 live Postgres changes, and a clone
+    gate plus auditor blocked 12
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Ten models ran 949 production-style Postgres 18.7 tickets, and Claude Fable 5.2 broke
+    a no-restart rule in all five repeats of one task.
+  summary: >-
+    PostgresAI ran 10 models on 19 scenarios with 5 repeats on live two-node Postgres 18.7
+    clusters under load, and 13 of 408 changes executed on the primary caused measured harm,
+    including Grok 4.7 dropping indexes unused on the primary but hot on an async standby.
+    It proposes AAA, where an Analyst drafts a change, a deterministic Actor rehearses it
+    on a live clone and is the sole write path, and an Auditor model reviews the clone evidence.
+    In an in-sample replay the clone gate stopped 6 harms at no LLM cost and a Fable 5.2 Auditor
+    stopped 6 more, while 377 of 378 safe or unclassified changes stayed approved.
+  why: >-
+    Agents that change production databases need per-node telemetry and clone rehearsal under
+    load, since primary-only checks and green 60-second summaries missed real harm.
+  background: >-
+    Many Postgres DDL statements take an AccessExclusiveLock, and a pending one queues every
+    later reader and writer on the table behind it. Safe patterns split work, such as adding
+    a constraint NOT VALID and validating it in a separate transaction. Index usage counters
+    in pg_stat_user_indexes are per node, so an index idle on the primary can still serve
+    replica reads.
+  event: pgaibench-aaa-postgres-ai-changes
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9Dh
+- title: >-
+    Dex Horthy: software factories are ordinary engineering, and top models score about 16%
+    on Slop Code Bench
+  section: Talks
+  category: Video
+  blurb: >-
+    Dex Horthy argues software factories are ordinary engineering with agents building, citing
+    Slop Code Bench scores near 16% for top models.
+  summary: >-
+    Horthy, now at Factory after Human Layer joined it, says a factory needs forward pressure,
+    such as routing feature requests and incidents to agents, and back pressure from agent
+    review, CI, linters and formal checks. Slop Code Bench measures how well models evolve
+    a codebase across checkpoints, and the best models score about 15% to 16%. He reports
+    newer Claude and GLM models falling back to Python 2 style percent formatting instead
+    of f-strings. He recommends planning in proportion to the cost of later change, giving
+    agents feature flags and ways to test their own work, and adopting anti-slop lint rule
+    sets.
+  why: >-
+    Unattended agents still degrade codebases over time, so teams should invest in automated
+    back pressure such as lint rules and verification before they remove human review.
+  event: dex-horthy-12-factor-factories-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=-NFMsM2y0Vk
+- title: >-
+    xnulinux boots macOS 27 to the desktop by loading XNU as a kernel module inside arm64
+    Linux
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A source-built macOS kernel runs as xnu.ko beside Linux with no hypervisor, booting Safari
+    and Finder, and Hacker News debates the approach.
+  summary: >-
+    xnulinux builds XNU from Apple's published sources and loads it as xnu.ko into a stock
+    arm64 Linux kernel, with an fki.ko interface module lending memory, timers, files, network
+    and GPU, so macOS processes run natively beside Linux processes. It boots a macOS 27.2.1
+    disk made by Apple's installer to the desktop in 31 to 48 seconds inside an arm64 Linux
+    VM on Apple Silicon, and survived a 30-minute app stress run, though AMFI is patched,
+    SIP relaxed and memory access is slower than a native VM. The thread drew 272 points and
+    121 comments on Hacker News.
+  why: >-
+    It shows a co-kernel design where a second OS kernel shares CPUs with Linux through a
+    narrow module interface instead of a hypervisor.
+  comments: >-
+    Commenters point out it still needs PAC-capable Apple hardware with 4K pages and the user's
+    own macOS install, suggest Darling as a syscall-level alternative, and compare it with
+    CoLinux and with running XNU under KVM.
+  event: xnulinux-xnu-kernel-module
+  sources:
+  - label: primary
+    url: https://github.com/AFK-surf/xnulinux
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50607261
+- title: >-
+    Ladybird enters alpha with macOS and Linux builds of its from-scratch browser engine
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Ladybird ships alpha builds for macOS and Linux with its own from-scratch engine, WebDriver
+    support and automatic rolling updates.
+  summary: >-
+    Andreas Kling announced the Ladybird alpha on 2026-11-23 as a rolling channel with automatic
+    updates, in-browser broken-site reports and opt-in crash reports. It supports WebDriver
+    and the Firefox DevTools protocol, and the team makes no security promises yet. The Hacker
+    News thread drew over 1,000 points and 261 comments.
+  why: >-
+    Web developers can now test sites against an independent engine without building it from
+    source, and wire it into WebDriver test suites.
+  comments: >-
+    Testers report most sites rendering correctly with slightly jerky scrolling. One commenter
+    says Ladybird must pose as Chrome to pass some bot detection. Others note that it now
+    uses SQLite, Skia and ANGLE instead of in-house libraries and argue whether that weakens
+    its independence from Chrome.
+  event: ladybird-browser-alpha
+  sources:
+  - label: primary
+    url: https://ladybird.org/posts/alpha/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50614249

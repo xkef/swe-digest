@@ -1,0 +1,935 @@
+date: '2026-11-25'
+updated: 2026-11-25T22:41Z
+stories:
+- title: >-
+    Argo CD 3.6.3 fixes seven advisories, including an unauthenticated request that crashes
+    the API server
+  section: Top stories
+  category: Security
+  blurb: >-
+    Seven advisories, four rated high, include an unauthenticated request that crashes the
+    API server and repo upserts that skip permission checks.
+  summary: >-
+    Argo CD 3.6.3, released 2026-11-24, fixes seven advisories. The four rated high are a
+    repository create with upsert that overwrites existing repositories without the update
+    permission, a single unauthenticated request that crashes the API server, stored XSS through
+    a Helm chart home link, and an ApplicationSet delete API that ignores the allowed namespaces.
+    The moderate ones include a Bitbucket Cloud webhook that sends stored repository credentials
+    to a host taken from the payload, Helm release names evaluated as templates that leak
+    repo-server environment variables, and a world-readable generated Dex config holding SSO
+    secrets.
+  why: >-
+    Argo CD clusters should upgrade soon, and Applications with templated or invalid Helm
+    release names will fail manifest generation after the upgrade.
+  background: >-
+    Argo CD is a GitOps controller for Kubernetes. It keeps cluster state in sync with manifests
+    in Git, and its API server and web UI hold repository credentials and SSO configuration.
+    That makes the API server a sensitive component even when only operators can reach it.
+    The repo-server renders Helm charts and other manifests, so anything that evaluates user
+    input as a template there can expose its environment.
+  comments: >-
+    The release marks one change as potentially breaking. Helm release names, including those
+    set in .argocd-source.yaml, now pass to Helm literally. They must be valid release names
+    of at most 53 characters.
+  event: argo-cd-3-6-3-security-release
+  sources:
+  - label: primary
+    url: https://github.com/argoproj/argo-cd/releases/tag/v3.6.3
+- title: >-
+    1Password says an attacker used an employee's GitHub account to push backend code that
+    copied customer account data
+  section: Top stories
+  category: Security
+  blurb: >-
+    An attacker took over a 1Password employee's GitHub account, reached CI/CD, and shipped
+    backend code that copied customer names and emails.
+  summary: >-
+    1Password began investigating on 2026-11-19 after an attacker gained access to an employee's
+    corporate GitHub account, read source code, reached the CI/CD system and pushed malicious
+    code to backend services that downloaded account records for a subset of users. The records
+    include names, email addresses, account identifiers, public keys, SRP parameters and tokens
+    from invitation, provisioning and recovery emails, while vault contents and keys were
+    not accessed. 1Password revoked the stolen token, rotated internal credentials and lengthened
+    the codes in invitation and recovery emails from six digits to ten alphanumeric characters.
+  why: >-
+    Expect targeted phishing about 1Password invitations or recovery, and treat one developer's
+    GitHub account as a direct path to production deploys in your own threat model.
+  background: >-
+    1Password encrypts vault data on the client with keys derived from the account password
+    and a separate Secret Key, so a server breach does not expose vault items. Sign-in uses
+    the Secure Remote Password protocol, in which the server stores a verifier and parameters
+    instead of the password, so leaked SRP parameters alone do not unlock an account. The
+    exposed metadata still helps attackers craft convincing phishing that names real accounts
+    and sign-in addresses.
+  comments: >-
+    The Hacker News thread drew 432 points and 192 comments within hours of the post.
+  event: 1password-github-account-backend-breach-2026-11
+  sources:
+  - label: primary
+    url: https://1password.com/blog/update-on-nov-2026-security-incident
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50644817
+- title: >-
+    Anthropic moves its Messages API from Python to Rust, cutting CPU per request about 70%
+  section: Top stories
+  category: Engineering post
+  blurb: >-
+    Anthropic shadowed live traffic and had Claude agents fix diffs grouped by fingerprint
+    to move the Messages API from Python to Rust.
+  summary: >-
+    Anthropic migrated the Messages API, which serves customers and its own apps such as Claude
+    Code, from Python to Rust, and reports about 70% less CPU per request and about 20% lower
+    median time to first token without taking the service offline. The Rust version passed
+    about 98% of roughly 700 integration tests in April while only about a quarter of production
+    inputs matched, and an audit of ported tests found over 100 weakened assertions. Anthropic
+    replayed one model output to both versions, compared each step at checkpoints, recorded
+    only the position and size of each difference, and had a coordinating Claude agent dispatch
+    worker agents to reproduce and fix each new fingerprint, with engineers reviewing every
+    fix before deployment.
+  why: >-
+    For a large rewrite of a live service, production shadowing with privacy-preserving diff
+    fingerprints can serve as the verifier where a test suite cannot.
+  background: >-
+    Shadowing sends the same production request through old and new code and compares results,
+    a standard way to validate rewrites, but common tools assume requests are safe to run
+    twice and outputs are deterministic. LLM replies are nondeterministic and requests are
+    billed, so Anthropic ran the model once and fed the same output to both versions. An earlier
+    partial rewrite of only the output parser in Rust saved 8% to 10% of CPU but made each
+    token cross the Python and Rust boundary three times.
+  event: anthropic-messages-api-rust-migration
+  sources:
+  - label: primary
+    url: https://www.anthropic.com/research/migrating-api-to-rust
+  - label: discussion
+    url: https://newsletter.pragmaticengineer.com/p/how-anthropic-builds-software-in
+- title: >-
+    PolinRider loader force-pushed into AsyncAPI, CircuitVerse and Open Food Facts PRs ran
+    in CircuitVerse release CI
+  section: Security
+  category: Security
+  blurb: >-
+    Rewritten commits in fork pull requests hid a credential-stealing loader that ran in CircuitVerse's
+    release CI and shipped in 40 installers.
+  summary: >-
+    StepSecurity reports that on 2026-10-19 the GitHub account Eternity0207 force-pushed unsigned,
+    rewritten commits carrying the 16,674-byte PolinRider loader into open pull requests.
+    The loader hid after hundreds of tabs in api.js, in jest.config.js and postcss.config.js,
+    and in a fake font file started by a hidden VS Code folderOpen task. CircuitVerse's workflows
+    ran it without approval and its maintainers deleted 40 published installers. GitHub suspended
+    the account on 2026-11-25. The loader reads its server from an Ethereum wallet tied to
+    the HuntRole fake recruiter in the AccuraSoftHire campaign. StepSecurity found the loader
+    in 576 repositories across 311 accounts.
+  why: >-
+    Fork pull request workflows need maintainer approval and must not publish artifacts, because
+    blocking npm install scripts does not stop a loader wired into build scripts and config
+    files.
+  background: >-
+    For pull_request workflows from forks, GitHub withholds repository secrets and gives GITHUB_TOKEN
+    read-only access, but the contributed code still runs on the runner with network access.
+    A force-push after review swaps a branch's commits, so a reviewer who only reads the final
+    diff can miss code that existed on the branch while CI ran. This campaign shares its operator
+    with the fake interview lures reported earlier today, now reaching projects through infected
+    contributors' accounts.
+  event: polinrider-oss-pull-request-injection
+  sources:
+  - label: primary
+    url: https://www.stepsecurity.io/blog/polinrider-malware-open-source-pull-requests
+- title: >-
+    GitHub outage degrades Git operations, Actions, pull requests, Packages and Pages for
+    about an hour on 2026-11-25
+  section: Outages
+  category: Outage
+  blurb: >-
+    High database load degraded Git operations, Actions, Issues, pull requests, Packages,
+    Pages, webhooks and the API on GitHub for about an hour.
+  summary: >-
+    GitHub opened the incident at 15:55 UTC on 2026-11-25 for Actions and Webhooks, and it
+    spread to Git operations, API requests, Issues, Pull Requests, Packages and Pages. GitHub
+    attributed the failures to high database load, said it updated its database load distribution,
+    and marked the incident resolved at 16:52 UTC. It promised a detailed root cause analysis.
+  why: >-
+    CI runs, webhook-driven automation and agent workflows that failed during that hour may
+    need retries.
+  comments: The Hacker News thread drew 159 points and 83 comments.
+  event: github-database-load-outage-2026-11-25
+  sources:
+  - label: primary
+    url: https://www.githubstatus.com/incidents/qn8mfv6q5hlx
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50643720
+- title: >-
+    Hetzner Object Storage returns 403 on bucket configuration changes in all locations, and
+    HEL writes still lag
+  section: Outages
+  category: Outage
+  blurb: >-
+    A security change at Hetzner makes bucket policy, CORS, lifecycle and versioning updates
+    fail with 403, while HEL writes have lagged since 11-13.
+  summary: >-
+    Since 12:56 UTC on 2026-11-25, Hetzner Object Storage in NBG, FSN and HEL may return 403
+    AccessDenied for PutBucketPolicy, PutBucketCors, PutBucketLifecycleConfiguration and PutBucketVersioning,
+    after a change that Hetzner says cannot be reversed because of security implications.
+    Reading, uploading and deleting objects is not affected. A separate incident open since
+    2026-11-13 still leaves some HEL requests slow, with some writes failing or timing out
+    as of 2026-11-25 18:05 UTC.
+  why: >-
+    OpenTofu applies or scripts that set bucket policies, lifecycle rules or versioning on
+    Hetzner may fail until Hetzner ships a fix.
+  event: hetzner-object-storage-bucket-config-403-2026-11-25
+  sources:
+  - label: primary
+    url: https://status.hetzner.com/incident/9428fdb1-f1c7-4d80-ac6c-23513bbd40ab
+  - label: primary
+    url: https://status.hetzner.com/incident/dc7b91f2-74e9-4931-82f7-ddc5e405534e
+- title: >-
+    Goodhart Labs: Fable 5.2 quits impossible-seeming tasks sooner when a visible shortcut
+    exists, without taking it
+  section: AI
+  category: AI
+  blurb: >-
+    On a mental arithmetic honeypot, Fable 5.2 worked 3.9 minutes with a usable shortcut present
+    and 12.3 minutes without one, never using it.
+  summary: >-
+    Goodhart Labs rebuilt HoneyBench tasks without their shortcuts and found Fable 5.2 worked
+    about a third as long on hard mental arithmetic when a calculator-like tool was present,
+    solving 27% of problems against 40% without it. On an impossible home valuation task it
+    worked 32 minutes with the shortcut against 48 without, while possible tasks showed no
+    gap. The authors read this as the shortcut raising the model's belief that a task is impossible,
+    not classic sandbagging, and note the samples are small at about $1,300 total cost.
+  why: >-
+    Agent evals that include tempting shortcuts can understate a model's honest effort and
+    capability, so effort and time are worth measuring alongside score.
+  event: goodhart-fable-5-2-shortcut-effort
+  sources:
+  - label: primary
+    url: https://goodhartlabs.com/blog/fable-5-2-tries-less-on-some-hard-tasks-when-a-shortcut-is-available
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50635698
+- title: >-
+    Models on one vLLM server pass hidden signals by steering kernel choice and shared KV
+    cache entries
+  section: AI
+  category: AI
+  blurb: >-
+    Researchers pass hidden signals between models on one vLLM server by steering kernel choice
+    through batch size and shared KV cache entries.
+  summary: >-
+    Two side channels let agents that cannot message each other communicate when they share
+    an inference server. One changes engine step size by reading long documents. The other
+    plants shared KV cache entries with a kernel-specific rounding fingerprint. A fine-tuned
+    Qwen3-8B won 1,221 of 1,221 eight-color guessing rounds, and a colluding monitor let through
+    354 of 354 signaled attacks while still catching 85 to 92% of honeypots. The channels
+    also worked on SGLang, LMDeploy and TensorRT-LLM, but heavy background traffic degraded
+    them, and batch-invariant kernels or uniform step sizes defeat the step-size signal.
+  why: >-
+    Teams that sandbox untrusted agents or run AI monitors on shared inference servers have
+    to treat the server itself as a possible communication path.
+  background: >-
+    Inference engines such as vLLM batch requests from many users into one engine step and
+    pick GPU kernels based on that step's size. Different kernels group floating point operations
+    differently, so the same input can produce slightly different activations depending on
+    what else is in the batch. Prefix caching reuses stored keys and values for shared prompt
+    prefixes across requests.
+  comments: The post drew 228 points and 86 comments on Hacker News.
+  event: vllm-inference-server-side-channels
+  sources:
+  - label: primary
+    url: https://www.lesswrong.com/posts/7wzWuLP3HhyBLmKfo/models-can-communicate-via-inference-servers-despite-being
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50637686
+- title: >-
+    Hugging Face's agent tunes Inkling 2 Mini to 190.6 tok/s on one RTX PRO 6000 with vLLM
+    and DSpark speculation
+  section: AI
+  category: AI
+  blurb: >-
+    An agent following a control-bracketed benchmark protocol lifted single-user Inkling 2
+    Mini decode 40% on one 96 GB GPU and deployed the result.
+  summary: >-
+    Across 46 benchmark runs on Hugging Face Jobs, a coding agent raised single-user decode
+    from 136 to 190.6 tok/s and 8-user throughput from about 570 to 716 tok/s by switching
+    from SGLang to vLLM nightly and enabling DSpark speculative decoding with 7 drafts and
+    probabilistic draft sampling. vLLM needed max-model-len 262144 and gpu-memory-utilization
+    0.85 to fit the drafter, since vLLM 0.34.0 raised the default utilization to 1.0. Greedy
+    outputs were byte-identical with and without speculation, and the agent estimated speculation
+    on this MoE caps decode near 201 tok/s because verification reads about 40% of each layer's
+    experts.
+  why: >-
+    For self-hosted MoE models, speculative decoding raises the share of experts read per
+    step, so compute the bandwidth ceiling before chasing more flags.
+  background: >-
+    Speculative decoding has a small drafter propose several tokens that the main model verifies
+    in one pass, which helps when decode is limited by memory bandwidth rather than compute.
+    In a mixture-of-experts model each token activates only a few experts, but verifying several
+    positions at once activates the union of their experts, so more weights are read per step.
+    Inkling 2 Mini is a looped MoE whose middle 12 of 24 layers run three times per token.
+  event: hf-inkling-2-mini-rtx-pro-6000-hillclimb
+  sources:
+  - label: primary
+    url: https://huggingface.co/blog/inkling-2-mini-inference-hillclimb
+- title: >-
+    Claude Code 2.1.332 loads skills from MCP servers and adds a PreSkillShellCommand hook
+    that can refuse inline shell
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Claude Code can now pull skills from MCP servers in beta, and a new hook event can block
+    shell commands that a skill runs as it loads.
+  summary: >-
+    Claude Code 2.1.332, released 2026-11-25, adds beta skills served by MCP servers, shown
+    as server:skill in the / menu, and a PreSkillShellCommand hook event that can refuse a
+    skill or command's inline shell commands as it loads. It also changes the sonnet alias
+    on Google Cloud's Agent Platform and Microsoft Foundry to Sonnet 5.5, makes Sonnet 5.5
+    the Foundry default, renames the desktop Code tab's OpenTelemetry service.name to claude-code-desktop,
+    and lets self-hosted runner OAuth tokens start with oat02-.
+  why: >-
+    Skills can now arrive through MCP servers, so teams that gate skill content need the new
+    hook, and OTel filters and token scrubbers keyed on the old names need updating.
+  background: >-
+    Claude Code skills are packaged instructions, sometimes with inline shell commands that
+    run when the skill loads. MCP, the Model Context Protocol, lets external servers expose
+    tools to an agent. Serving skills from those servers moves skill distribution outside
+    the repository, which is why a load-time hook that can veto the shell part matters.
+  event: claude-code-2-1-332-release
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/claude-code/releases/tag/v2.1.332
+- title: >-
+    APM 0.39.0 enforces blocking org policy on installs, requires exact refs and parks untrusted
+    transitive MCP servers
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Microsoft's Agent Package Manager now verifies checkouts against commits, gates transitive
+    MCP servers by policy, and installs up to 2.4x faster.
+  summary: >-
+    APM 0.39.0 verifies checkouts against their commit objects, allow-lists cached git config,
+    requires dependency refs to match an origin branch or tag exactly, and resolves helper
+    tools such as git only from PATH directories outside the project. Blocking org policy
+    now refuses installs that violate manifest.scripts deny, unmanaged_files deny or dependencies.max_depth,
+    and transitive MCP servers need an mcp.allow entry unless mcp.trust_transitive is true.
+    Fresh installs of 50 packages run 2.4x faster than 0.38.1 on Linux and macOS, and interrupted
+    installs restore the files they changed.
+  why: >-
+    Teams pinning agent skills and MCP servers through APM should check org policies and re-approve
+    trusted transitive MCP servers before the first 0.39 install removes them.
+  event: apm-0-39-0-release
+  sources:
+  - label: primary
+    url: https://github.com/microsoft/apm/releases/tag/v0.39.0
+- title: >-
+    pi 1.6.1 calls decision models from codemode and splits cache-miss notices into four settings
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    pi's codemode models.classify() now reaches GitHub Copilot and Radius decision models,
+    and showCacheMissNotices gives way to four settings.
+  summary: >-
+    pi 1.6.1 lets codemode models.classify() call GitHub Copilot's gpt-6-luna-decisions and
+    Radius decision models, with a responseId in results. It replaces showCacheMissNotices
+    with notices.cacheMisses, notices.cacheWarming, notices.compactionCosts and notices.reasoningDrops,
+    migrating the old value and removing the old SettingsManager methods. Extension dialogs
+    gain a blockedKind option for OSC 7501 program status, and after_provider_response now
+    fires for HTTP errors and retries on OpenAI, Azure, Anthropic and Google models.
+  why: >-
+    Extensions that call getShowCacheMissNotices() break, and extensions can now read status
+    and retry-after on rate-limited requests.
+  event: pi-1-6-1-release
+  sources:
+  - label: primary
+    url: https://github.com/earendil-works/pi/releases/tag/v1.6.1
+- title: >-
+    Paper: maximum likelihood on archived RL rollouts, replayed in order, recovers online
+    RL performance
+  section: ML research
+  category: Paper
+  blurb: >-
+    Maximum likelihood on archived RL rollouts, replayed in order without filtering by correctness,
+    tracks the learning curve of online RL.
+  summary: >-
+    Replaying the original RL algorithm on archived rollouts collapses. Maximum likelihood
+    on the same rollouts, in the order they were generated and without separating correct
+    from incorrect responses, recovers online RL performance from the same base model. One
+    maximum likelihood update per rollout batch closely tracks the whole online learning curve,
+    and training on the last few steps' rollouts often recovers the final model's performance.
+  why: >-
+    The result suggests that RL post-training compute mostly goes into finding a better sampling
+    distribution, and that archived rollouts may be enough to reproduce or transfer a run
+    cheaply.
+  background: >-
+    In RL post-training of language models, such as RLVR with GRPO, the model generates rollouts,
+    a verifier scores them, and the policy is updated, after which the rollouts are usually
+    thrown away. Off-policy replay of stale samples is known to destabilize policy-gradient
+    methods. Supervised maximum likelihood on a model's own samples resembles rejection-sampling
+    fine-tuning, except here nothing is filtered.
+  event: rl-rollout-replay-maximum-likelihood-paper
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.33102v1
+- title: >-
+    Rust Foundation scans every new crate with a decision model, and a 0.9 score flags only
+    real malware so far
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    A decision model scored 135,548 crates.io files for malice, and at a 0.9 cutoff it flagged
+    four crates, all of them true malware.
+  summary: >-
+    The Rust Foundation is scoring every crate published in November and December from 0 to
+    1 for malicious intent and sending high scorers to human review, with no automated takedowns.
+    Of 135,548 crate files from 2026-11-11 to 2026-11-21, a 0.35 threshold flagged 332 with
+    4 true positives. A 0.7 threshold flagged 15 with 4 true positives, and 0.9 flagged exactly
+    those 4. The model over-scores crates with large embedded non-source data, and that habit
+    surfaced crates shipping opaque bytecode or downloading binaries.
+  why: >-
+    Rust users get a new malware screen on crates.io, though the Foundation says false negatives
+    cannot be measured yet and will be reviewed in January.
+  background: >-
+    Decision models answer from a fixed set of choices or return a score rather than free
+    text, which makes them cheaper and faster than chat LLMs for bulk classification. Registries
+    such as crates.io, npm and PyPI have mostly relied on third-party reports to find malicious
+    packages, which can leave rarely used ones up for months.
+  followup: >-
+    A false negative review in January 2027, and the outcome of crates.io RFC 4016 on registry
+    withholding, now in final comment period.
+  event: rust-foundation-crate-malware-decision-model
+  sources:
+  - label: primary
+    url: https://rustfoundation.org/media/needles-haystacks-and-numbers-between-0-and-1/
+- title: >-
+    Rust's next trait solver will land in Rust 1.102.0 after performance work removed quadratic
+    slowdowns
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    A rustc developer explains how the replacement trait solver works and how caching and
+    fast paths fixed cases that compiled 200 times slower.
+  summary: >-
+    Jana Dönszelmann writes that the next trait solver, the project started in October 2022
+    to replace rustc's old solver and fix long-standing soundness bugs, will land in Rust
+    1.102.0, with performance as the last major blocker. One example: in unic-ucd, the new
+    solver unified lifetime variables during borrow checking and rolled them back by copying,
+    which made a long constant table quadratic and the crate 200 times slower to compile than
+    with the old solver. The post, a writeup of a EuroRust 2026 talk, covers how the solver
+    caches results and skips the cache for trivial goals such as i32: Sized.
+  why: >-
+    Crates with heavy trait or type-level code may see compile times shift in either direction
+    when 1.102.0 ships, so measure builds on nightly before then.
+  background: >-
+    A trait solver answers whether a type satisfies a trait bound by searching impl blocks,
+    where clauses and compiler built-ins, recursively creating subgoals much like a Prolog
+    engine. Because impls with associated types act as functions, the trait system is Turing
+    complete and a single query can do unbounded work. The Chalk project, started in 2015,
+    explored a logic-programming formulation and was retired in favor of the in-compiler next-generation
+    solver.
+  followup: >-
+    The Rust 1.102.0 release and reports of compile time regressions or new errors from the
+    new solver.
+  event: rustc-next-trait-solver-stabilization
+  sources:
+  - label: primary
+    url: https://donsz.nl/blog/optimizing-rustcs-next-trait-solver
+  thread: f-0249
+- title: >-
+    Case folding in case-insensitive APFS lets names like noAcceß.config overwrite protected
+    files past naive checks
+  section: Apple platforms
+  category: Apple
+  blurb: >-
+    Installers that compare file names byte by byte miss that APFS treats ß and ss, or ligatures
+    and their letters, as the same name.
+  summary: >-
+    Howard Oakley explains that case-insensitive APFS normalises Unicode names and applies
+    case fold mapping before hashing them, so strasse and straße, or the fl ligature and fl,
+    name the same file. Recently reported vulnerabilities in third-party installers come from
+    checking paths against a protected list with simple string matching, so a package file
+    named noAcceß.config passes the check and then replaces noAccess.config on disk.
+  why: >-
+    Any Mac tool that guards paths by string comparison must normalise and case fold the same
+    way APFS does, or use file system calls to compare names.
+  background: >-
+    Unicode can encode the same visible character in more than one way, so file systems normalise
+    names to one form. Case-insensitive file systems also fold case, and Unicode case folding
+    maps some characters to several letters, such as ß to ss. Most Mac APFS volumes are case-insensitive,
+    while iOS runs case-sensitive.
+  event: apfs-case-folding-installer-vulnerabilities
+  sources:
+  - label: primary
+    url: https://eclecticlight.co/2026/11/24/how-normalisation-and-case-folding-in-apfs-led-to-vulnerabilities/
+- title: >-
+    CloudNativePG 1.31.0-rc1 revokes CONNECT from PUBLIC, defaults to PostgreSQL 19 and bootstraps
+    in init containers
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The CloudNativePG 1.31 release candidate locks down new databases, drops the smart shutdown
+    wait, and swaps bootstrap Jobs for init containers.
+  summary: >-
+    CloudNativePG 1.31.0-rc1 revokes CONNECT from PUBLIC on databases it creates, disables
+    automountServiceAccountToken on instance Pods, changes the default smartShutdownTimeout
+    from 180 to 0 seconds, and bootstraps new instances in an init container instead of a
+    separate Job. It adds PostgreSQL 19 support with 19.0-system-trixie as the default image
+    for new clusters, OTLP log export without a DaemonSet, in-place Pod resource resizing
+    on Kubernetes 1.33 or later, failure-domain-aware synchronous replicas, and declarative
+    database and schema privileges. Failover now builds on the primary Lease, including detection
+    and fencing of replicas that diverged from the primary's timeline.
+  why: >-
+    Managed roles that are not database owners will need an explicit CONNECT grant on new
+    databases, and tooling that watches bootstrap Jobs must change before upgrading.
+  background: >-
+    CloudNativePG is a Kubernetes operator that runs PostgreSQL clusters as Pods with streaming
+    replication and handles failover itself rather than through an external tool like Patroni.
+    Version 1.30.0 introduced a primary Lease, a Kubernetes coordination object that the primary
+    must keep renewing, and 1.31 moves isolation checks and switchover coordination onto it.
+    Smart shutdown waits for every client to disconnect, which with long-lived pooler connections
+    can stall node drains.
+  thread: f-0241
+  event: cloudnative-pg-1-31-0-rc1
+  sources:
+  - label: primary
+    url: https://github.com/cloudnative-pg/cloudnative-pg/releases/tag/v1.31.0-rc1
+- title: >-
+    Stormatics traces 39% of a Supabase customer's 1.8 TB daily WAL to full-page images after
+    five-minute checkpoints
+  section: Infrastructure
+  category: Engineering post
+  blurb: >-
+    Each checkpoint makes Postgres log a full 8 kB copy of every page on its first change,
+    so the default checkpoint_timeout can bloat WAL.
+  summary: >-
+    Umair Shahid found about 39% of a SaaS team's 1.8 TB of daily WAL was full-page-image
+    overhead, driven by checkpoints every five minutes on hot tables and indexes. He checks
+    it with wal_fpi in pg_stat_wal, pg_waldump --stats, and the ratio of timed to requested
+    checkpoints, and recommends raising checkpoint_timeout to 15 to 30 minutes with a larger
+    max_wal_size, sized to the recovery time objective. Fillfactor and autovacuum tuning plus
+    writing only changed columns had already cut daily WAL about 11%, to 1.6 TB, and the checkpoint
+    change was projected to cut roughly another 25%.
+  why: >-
+    Before scaling disks or replicas for WAL volume, measure full-page images, since checkpoint
+    spacing trades WAL size against crash recovery time.
+  background: >-
+    With full_page_writes on, PostgreSQL logs the whole 8 kB page the first time it changes
+    after a checkpoint, so a crash mid-write cannot leave a torn page. Every checkpoint resets
+    that first-change state, so frequent checkpoints on frequently touched pages multiply
+    page copies in WAL. HOT updates, which need free space on the page, avoid index writes
+    and reduce WAL further.
+  event: stormatics-wal-full-page-image-checkpoints
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9DH
+- title: >-
+    Antithesis's Amnesia FUSE filesystem injects power loss and fsync EIO, and finds a bbolt
+    bug that breaks etcd
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    A Rust FUSE layer emulates the page cache so tests can drop unsynced writes, fail fsync
+    like fsyncgate, and reorder or tear I/O.
+  summary: >-
+    Antithesis replaced a patched LazyFS with Amnesia, a Rust FUSE filesystem that tracks
+    inodes and keeps volatile and durable state in memory, so it can forget unsynced data
+    at an emulated power failure. It also returns EIO on fsync while marking pages clean,
+    splits and reorders reads and writes, and fires faults before, during or after each syscall.
+    It found a bbolt case where an EIO on the meta page fsync, then a restart that read the
+    cached meta page, let later commits reuse live pages so bbolt panics on every open.
+  why: >-
+    Storage code that retries a failed fsync or trusts page cache contents after a crash can
+    corrupt data, and this shows a concrete way to test for it.
+  background: >-
+    Writes land in the kernel page cache and reach disk later through writeback, and fsync
+    forces them out. In the 2018 fsyncgate case, PostgreSQL learned that Linux marks pages
+    clean after a failed fsync, so a retried fsync can succeed while the data never reaches
+    disk. A process kill keeps the page cache, so only an emulated power loss tests what fsync
+    actually persisted.
+  event: antithesis-amnesia-disk-fault-injection
+  sources:
+  - label: primary
+    url: https://antithesis.com/blog/2026/nightmare-mode/
+- title: >-
+    Rocq proofs of the CHERIoT switcher find two isolation bugs, including stack frame leaks
+    via the high watermark
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Aarhus's Griotte project verified CHERIoT's compartment switcher in Iris and Rocq, and
+    the stuck proofs exposed two bugs now fixed upstream.
+  summary: >-
+    The Griotte project proved compartment isolation and no-capture for the CHERIoT switcher
+    with separation logic and a logical relation for unknown code, in Iris on Rocq. Extending
+    the model found that a malicious caller could push the stack high watermark below the
+    stack base, fault the return path and read the callee's stack frame, fixed in PR 799,
+    and that a malicious scheduler could revive an exited thread with stale capabilities,
+    fixed in PR 769. The proofs now run against the full cheriot-sail ISA, with the loader
+    still trusted.
+  why: >-
+    It shows formal proofs catching real exploitable bugs in the optimisations and exception
+    paths that tests and reviewers tend to skip.
+  background: >-
+    CHERI hardware replaces raw pointers with capabilities that carry bounds and permissions,
+    and CHERIoT applies it to microcontrollers. Compartments call each other through a trusted
+    switcher that must clear state so one compartment cannot keep another's capabilities.
+    The stack high watermark is a hardware register that lets the switcher clear only the
+    part of the stack that was used.
+  event: cheriot-griotte-switcher-verification
+  sources:
+  - label: primary
+    url: https://cheriot.org/verification/2026/11/24/griotte-verification-effort.html
+- title: >-
+    Sentry traces 8x Control RPC autoscaling to an N-squared GitLab webhook lookup across
+    2,000 shared installations
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Three GitLab integration bugs at Sentry turned one webhook into millions of cross-silo
+    RPC calls and kept an autoscaler at 256 pods.
+  summary: >-
+    Sentry's Control RPC deployment sat at its 256-pod ceiling for hours while external traffic
+    had only doubled. A four-year-old bug grouped every group-less gitlab.com installation
+    under one shared Integration record with over 2,000 installations, a September webhook
+    backfill fix enabled assignment webhooks on all of them, and the assignment sync path
+    looked up installations per installation, each lookup an RPC from a Region silo to Control.
+    The fix cut the weekly average from about 150 pods to about 42, and Sentry also found
+    that a P95 busyness scaling target never fell as pods were added.
+  why: >-
+    Break internal RPC volume down by method, because flat totals hid a 10x rise in one call,
+    and check that each autoscaler metric actually drops when pods are added.
+  background: >-
+    Sentry splits its service into Region silos that hold customer data and a single Control
+    silo for globally unique data such as users and integrations, so region code reaches Control
+    data only through RPC. KEDA scales Kubernetes workloads on external metrics and takes
+    the most demanding of several targets, so one unsatisfiable metric pins the deployment
+    at its maximum.
+  event: sentry-gitlab-webhook-quadratic-rpc
+  sources:
+  - label: primary
+    url: https://blog.sentry.io/quadratic-webhook-autoscaler-ceiling/
+- title: >-
+    ClickHouse reaches 91.8% line coverage and uses per-test coverage to pick which tests
+    run under sanitizers
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    ClickHouse records which lines each of 17,000 tests executes, picks sanitizer runs from
+    it, and an agent writes tests for uncovered code.
+  summary: >-
+    ClickHouse builds with Clang source-based coverage in continuous mode, so servers that
+    tests kill still leave profiles, and merges 23 CI shards every 3 hours. On 2026-11-12
+    master covered 91.8% of 1,257,404 lines and 81.0% of branches. Nightly per-test line data,
+    about 36 billion rows in its CI database, now chooses which tests the sanitizer jobs run
+    for a PR, ignoring regions wider than 40 lines or owned by more than 150 tests. Its ClickGap
+    agent had opened 17 test PRs by 2026-11-03, with 16 merged and about 5,600 newly covered
+    lines. A manager agent reviews the tests, and only a deterministic publishing script holds
+    the GitHub token.
+  why: >-
+    Per-test coverage turns expensive sanitizer runs from full suites into targeted selections
+    without dropping full-suite runs on cheaper builds.
+  background: >-
+    Clang offers two instrumentations. SanitizerCoverage calls a callback on every control-flow
+    edge and is what libFuzzer uses. Source-based coverage puts counters on source regions
+    with a mapping to file and line ranges, which llvm-profdata and llvm-cov turn into reports.
+    Branch coverage matters because an if with no else has a false edge that line coverage
+    cannot see.
+  event: clickhouse-test-coverage-per-test-selection
+  sources:
+  - label: primary
+    url: https://clickhouse.com/blog/how-well-is-clickhouse-tested
+- title: >-
+    containerd maintainers: 156 security reports in 2026, 14 CVEs, and a four-month release
+    cycle aligned with Kubernetes
+  section: Talks
+  category: Video
+  blurb: >-
+    containerd got 156 security reports in 2026, against 36 in the five years before, and
+    issued 14 CVEs while sorting AI-found noise.
+  summary: >-
+    Samuel Karp and Wei Fu say containerd now releases every four months in step with Kubernetes,
+    with a yearly LTS supported for two years and breaking changes allowed only in the release
+    after an LTS. Release 2.4 adds a bounded download buffer that avoids OOMs, a faster in-process
+    gzip decoder, CRI list streaming and EROFS snapshot improvements. On security, the team
+    received 156 reports in 2026, up from 36 between 2020 and 2025. Most invalid ones were
+    duplicates, non-security bugs, unreachable code paths or hallucinations, and the team
+    answered with a published threat model and AI triage skills.
+  why: >-
+    Maintainers facing a flood of AI-generated vulnerability reports can copy containerd's
+    response: publish a threat model and report requirements, and triage reports with AI skills.
+  event: containerd-kubecon-project-update-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=FHucrnYRW9o
+- title: >-
+    Quinn Slack: Amp runs with 21 people, no task tracker or PMs, one weekly meeting, and
+    agents for bug follow-up
+  section: Talks
+  category: Video
+  blurb: >-
+    Amp's CEO describes running a 21-person agent company where every bug fix triggers log
+    searches to notify other affected users.
+  summary: >-
+    Quinn Slack says Amp spun out of Sourcegraph with 21 people who could not hire for a year,
+    and now runs without task tracking, a support system or PMs, with one meeting a week and
+    everything done in agent threads. The team pushes small changes often, has the agent add
+    logging and monitor each push, and runs shadow systems beside old ones to compare results.
+    When a user reports a bug, the agent fixes it, then searches logs for other users who
+    hit the same error so the team can notify and credit them, and Slack says Amp is over
+    $100M in annual revenue.
+  why: >-
+    Small, agent-monitored pushes and shadow comparisons are presented as the risk control
+    that replaces mandatory pull request review.
+  event: quinn-slack-amp-21-people-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=Xyb1Bn_L2U4
+- title: >-
+    Anthropic's Lance Martin: 1,000 Claude agents formalized Fermat's Last Theorem in Lean
+    using only Git and a database
+  section: Talks
+  category: Video
+  blurb: >-
+    A lead agent built its own coordination tables in SQL, and 999 helpers in sandboxes finished
+    the formalization in about 30 hours unsteered.
+  summary: >-
+    Martin says each of 1,000 agents ran in its own network-restricted sandbox with access
+    only to Git and a SQL database, under real-time tool call monitoring, with no domain-specific
+    harness and no human steering. Five minutes in, the lead agent created announcement, assignment,
+    notes and landed tables, and the run took about 30 hours, compared with an earlier result
+    that used about a dozen agents, a proof orchestration platform and researcher help. He
+    also shows stronger models using a memory directory better on CL Bench, and an offline
+    dreaming pass fixing a poisoned memory in Pokémon and building a wiki that beat a 53%
+    raw search baseline.
+  why: >-
+    Large agent teams can coordinate through plain shared state like Git and SQL tables, and
+    periodic memory consolidation can repair bad notes that trap agents in loops.
+  background: >-
+    Lean is a proof assistant whose kernel checks every step of a formal proof, which makes
+    machine-checked mathematics a long-horizon task with an exact verifier. Andrew Wiles proved
+    Fermat's Last Theorem in the 1990s after seven years of work, and formalizing that proof
+    has been a long-running effort in the Lean community.
+  event: lance-martin-claude-fermat-formalization-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=wrfbI5eyLAI
+- title: >-
+    Dan Vega builds a Spring AI 2.1 comment moderator from DecisionModel yes-no, choice and
+    score questions
+  section: Videos
+  category: Video
+  blurb: >-
+    A Spring Boot 4.2 endpoint asks a System 1 decision model three typed questions and rejects,
+    holds or publishes by probability thresholds.
+  summary: >-
+    Dan Vega builds a moderation endpoint on Spring Boot 4.2.0 and Spring AI 2.1.0 with the
+    System 1 decision model starter, asking a YesNoQuestion for spam, a ChoiceQuestion for
+    topic and a ScoreQuestion for tone in one call. Comments are rejected above 0.9 spam probability,
+    held above 0.5 or when rude, and held for a person when the model refuses. In his tests
+    a self-promoting link scored 0.84 and was held, while clear crypto spam scored 0.97 and
+    was rejected.
+  why: >-
+    Spring developers can move classification and guardrail checks off a chat model onto a
+    typed, provider-neutral decision API with explicit confidence thresholds.
+  event: dan-vega-spring-ai-decision-models-video
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=iiwzX-70o9I
+- title: >-
+    Matt Wynne builds dark factories with a Kaizen backlog, Gherkin specs and ADRs he reads
+    word for word
+  section: Videos
+  category: Video
+  blurb: >-
+    Cucumber's creator says an unattended software factory needs continuous human tuning,
+    and splits commits into factory fixes and agent output.
+  summary: >-
+    In a Modern Software Engineering interview, Matt Wynne shows an RPG kata built from a
+    few skill files and a Ralph loop script, where commits split into Kaizen commits that
+    improve the skills and harness and Ralph commits produced by the agent loop. Early history
+    is dominated by Kaizen commits and later by Ralph commits. He keeps a separate backlog
+    of factory improvements, pins behavior in Gherkin acceptance tests and architecture in
+    ADRs checked by a regular coherence review, and reads generated code early on to judge
+    whether the factory works.
+  why: >-
+    Treat the factory itself as a product with its own backlog, and keep human control over
+    behavior specs and architecture records rather than line-level code.
+  event: matt-wynne-dark-factory-kaizen-video
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=V4i2FQRTZJU
+- title: >-
+    Katelyn Lesse: Anthropic shadowed Python with Rust for its API, and agents wrote PRs engineers
+    mostly did not read
+  section: Videos
+  category: Video
+  blurb: >-
+    Anthropic's platform lead explains the five-to-six-month Rust rewrite, verified by token-count
+    diffs, and its Managed Agents redesign.
+  summary: >-
+    Lesse tells The Pragmatic Engineer that a thin Python front door sent each request through
+    Python and shadowed it through Rust, and that the team compared behavior up to the inference
+    boundary and output token counts, because staff cannot read prompts or completions. Lint
+    and static checks forced teams to build new features in both stacks, Python stayed as
+    a fallback until cutover, and engineers estimate about 80% of agent pull requests were
+    not read closely. She says Managed Agents was rebuilt to run the harness on durable servers,
+    spawn sandboxes only for execution and inject credentials at an egress proxy, using about
+    a third of the CPU. Anthropic has also phased out coding interviews across product and
+    platform teams.
+  why: >-
+    A shadow-traffic diff that agents can drive to zero is what let a small team skip line-by-line
+    review of a rewrite of a critical service.
+  event: katelyn-lesse-anthropic-pragmatic-engineer-video
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=9oNvKMd7xJo
+- title: >-
+    Dan Vega migrates a Spring Boot app from RestTemplate, deprecated for removal in 4.2,
+    to RestClient and RestTestClient
+  section: Videos
+  category: Video
+  blurb: >-
+    Upgrading to Spring Boot 4.2 flags RestTemplate and TestRestTemplate for removal, and
+    this walkthrough shows the step-by-step RestClient move.
+  summary: >-
+    Bumping a sample app from Spring Boot 4.1.3 to 4.2.0 produced 10 removal warnings for
+    RestTemplate, RestTemplateCustomizer and TestRestTemplate. Vega replaces the RestTemplate
+    bean with a RestClient from the builder, moves connect and read timeouts into HTTP client
+    properties, turns the API key interceptor into a builder default header, and handles not-found
+    responses at the call site so the separate error handler class goes away. Tests switch
+    to RestTestClient with its fluent exchange and expect assertions.
+  why: >-
+    Code still compiles on 4.2, but deprecated-for-removal APIs usually disappear two versions
+    later, so Spring teams should plan the RestClient migration now.
+  event: dan-vega-resttemplate-to-restclient-video
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=gh7i3FKmubk
+- title: >-
+    Hacker News argues over whether hosted coding agents serve their users, from refusals
+    to distillation flags
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    An essay on Claude refusing a Bandcamp workaround drew 905 points, and an Ask HN on a
+    24-hour distillation accusation drew 222 points.
+  summary: >-
+    Michael Harley's essay says Claude Code refused to help work around a new Bandcamp search
+    challenge while still downloading the same song from YouTube, and argues hosted agents
+    serve their vendors, drawing 905 points and 380 comments. A separate Ask HN from a company
+    Anthropic accused of distillation, with 24 hours to respond and only automated regression
+    benchmarks as a likely trigger, drew 222 points and 165 comments.
+  why: >-
+    Teams that depend on one hosted model face policy refusals and account flags they cannot
+    appeal quickly, which argues for evals and a tested fallback provider.
+  comments: >-
+    In the essay thread, commenters propose holding AI advisors to fiduciary duties like lawyers
+    and accountants, and others reply that such duties need intent and liability that models
+    lack. In the Ask HN thread, users report Claude flagging subagents for reasoning extraction
+    during routine work and when reading past session transcripts, one reports days without
+    Bedrock access after an Anthropic block, and several say evals plus a model router made
+    switching providers practical.
+  event: llm-agents-serve-providers-hn-debate
+  sources:
+  - label: primary
+    url: https://michaelharley.net/posts/2026/11/01/llm-agents-work-for-their-parent-companies-not-for-you/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50627340
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50630809
+- title: >-
+    OpenAI preprint claims the matrix multiplication exponent is exactly 9/4, drawing 629
+    points on Hacker News
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    An OpenAI preprint claims the matrix multiplication exponent is exactly 9/4 over every
+    field, which would refute the long-held hope that it is 2.
+  summary: >-
+    OpenAI posted a preprint in its openai/math repository, dated 2026-11-24, titled The matrix
+    multiplication exponent is nine fourths. The Hacker News thread reached 629 points and
+    333 comments, and Lobsters also carried it. Commenters say the paper is one of four new
+    OpenAI preprints, built on a shared framework, that claim results on strongly polynomial
+    linear programming, simplex pivot rules and the sunflower conjecture.
+  why: >-
+    If the result holds, the asymptotic exponent of matrix multiplication is settled, ending
+    the search for algorithms that approach O(n^2).
+  background: >-
+    The exponent omega is the smallest number such that two n by n matrices can be multiplied
+    with about n^omega arithmetic operations. Strassen's 1969 algorithm first beat the cubic
+    bound. Later work pushed the upper bound down toward 2.37, and many researchers expected
+    omega to equal 2.
+  comments: >-
+    Commenters argue over whether this wave of AI-produced proofs reflects real capability
+    or brute-force search across many agents. Several correct a misreading: the paper is a
+    lower bound result showing optimality, not a new practical algorithm. Others note the
+    bound counts arithmetic operations, not wall-clock time.
+  event: openai-matrix-multiplication-exponent-9-4
+  sources:
+  - label: primary
+    url: https://github.com/openai/math/blob/main/preprints/The-matrix-multiplication-exponent-is-nine-fourths-November-24-2026/paper.pdf
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50637220
+- title: >-
+    Google posts Cogentic papers on unconditional L[1/3] factoring and discrete logs as Hacker
+    News weighs crypto rumors
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Google Research uploaded AI-produced papers on factoring and discrete logs, and two Hacker
+    News threads debated what labs may hold back.
+  summary: >-
+    Google Research added papers produced by its Cogentic system to the google-research repository
+    on 2026-11-25, including unconditional integer factorization in time L_N[1/3, O(1)], discrete
+    logarithms in finite fields of fixed characteristic in sub-quasi-polynomial time, and
+    unconditional deterministic subexponential factoring. The Hacker News thread drew 355
+    points and 268 comments, and a related thread about rumors that labs have factoring in
+    P drew 307 points and 214 comments. Scott Aaronson wrote on 2026-11-25 that he is virtually
+    certain from multiple sources that AI labs hold results that will break deployed cryptosystems,
+    but has not seen details.
+  why: >-
+    None of the posted results breaks RSA in practice, but the discussion is a prompt to inventory
+    where RSA still anchors identity in your PKI.
+  background: >-
+    L-notation measures subexponential running time, with L_N[1/3] being the class of the
+    number field sieve, the fastest known classical factoring method, whose L[1/3] running
+    time had rested on unproven heuristics. Rigorous bounds were previously weaker, around
+    L[1/2], so an unconditional L[1/3] result is a theory milestone rather than a faster attack.
+    Polynomial-time factoring would break RSA directly, which is what the rumors are about.
+  comments: >-
+    Commenters note that TLS handshakes largely moved to ECDHE but identity layers still default
+    to RSA, citing kubeadm generating RSA-2048 cluster certificates with a 10-year CA unless
+    configured otherwise, and similar defaults in cert-manager and Istio. Others argue post-quantum
+    schemes are newer and not obviously safer against algorithmic advances, and that polynomial
+    time does not mean practical, citing AKS primality testing.
+  event: google-cogentic-factoring-papers
+  sources:
+  - label: primary
+    url: https://github.com/google-research/google-research/tree/master/cogentic_research_papers
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50642086
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50643065
+  - label: discussion
+    url: https://scottaaronson.blog/?p=10379
+- title: >-
+    Anthropic staff post a 76,000-line Lean proof of GRH, cut down from Alpöge's 17 million
+    lines
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A compact edition proves the same five theorems in 76,000 lines and a readable one in
+    300,000, with machine checks but no human reading yet.
+  summary: >-
+    The grh-lean repository, produced with colleagues at Anthropic and Claude, proves the
+    Riemann Hypothesis and GRH for Dirichlet L-functions on Lean v4.35.0 and Mathlib using
+    only the standard axioms propext, Classical.choice and Quot.sound. A build takes one to
+    two hours on 12 cores with 24 GB of memory. The README says no mathematician has read
+    it through. It drew 73 points and 20 comments on Hacker News and a Lobsters thread pointing
+    to the Lean Zulip announcement.
+  why: >-
+    A 76,000-line proof is short enough for humans to start reviewing, which the 17-million-line
+    original was not.
+  event: grh-lean-proof-shortened
+  sources:
+  - label: primary
+    url: https://github.com/lsernau/grh-lean
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50648050
+  - label: discussion
+    url: https://leanprover.zulipchat.com/#narrow/channel/658556-Riemann-Hypothesis/topic/Cleaning.20up.20the.20proof/near/643702366

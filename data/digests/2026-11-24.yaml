@@ -1,0 +1,932 @@
+date: '2026-11-24'
+updated: 2026-11-24T23:12Z
+stories:
+- title: >-
+    Anthropic's Claude Ship beta lets Claude Approvals approve pull requests under a policy
+    file in the repository
+  section: Top stories
+  category: Agentic coding
+  blurb: >-
+    Claude can now approve routine GitHub pull requests itself when a team's checked-in policy
+    allows it, and ask for human sign-off otherwise.
+  summary: >-
+    Claude Ship launched in beta on 2026-11-23 for Claude Team and Enterprise plans on GitHub,
+    combining the generally available Code Review with two new beta agents. Claude Approvals
+    starts when a repository has an approval policy file on its default branch, can weigh
+    Code Review findings and natural-language classifiers, and either approves routine changes
+    or requires human sign-off. Anthropic recommends running it in observe-only mode before
+    making its approval a required check through branch protection.
+  why: >-
+    Teams can move the human review gate from every pull request to a policy-defined subset,
+    enforced through the branch protection they already use.
+  background: >-
+    Most teams require a human approval through branch protection, often routed by a CODEOWNERS
+    file that maps paths to reviewers, and Anthropic describes Claude Approvals as a smarter
+    CODEOWNERS file. As coding agents raise pull request volume, review has become the bottleneck,
+    and this digest has tracked companies such as Robinhood and Sourcegraph routing some changes
+    past human review. Anthropic says that on the Claude Code team, where Claude's review
+    is one layer of the process, merged pull requests more than doubled from June to September
+    while the reverted share fell by more than 40%.
+  event: claude-ship-claude-approvals
+  sources:
+  - label: primary
+    url: https://claude.com/resources/articles/introducing-claude-ship
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50618513
+- title: >-
+    Attacker runs commands on six hex.pm servers through CVE-2026-129514, an Erlang term decoding
+    flaw
+  section: Top stories
+  category: Security
+  blurb: >-
+    An attacker ran commands on six hex.pm web servers through a struct deserialization chain,
+    so Elixir users must reset passwords and 2FA.
+  summary: >-
+    On 2026-11-23 between 18:16 and 18:29 UTC, an attacker sent 69 requests whose Erlang term
+    bodies held fake structs that chained Plug, Ecto and DBConnection code into OS command
+    execution on six hex.pm web servers. Hex found no package or database changes but cannot
+    rule out database reads of emails, password hashes, API key hashes, 2FA secrets and sessions,
+    so it rotated all server credentials and session keys and asks users to change passwords
+    and reset 2FA. The registry signing key is not yet rotated, so Hex says to fetch only
+    from repo.hex.pm until new clients with a rotatable signing system ship, and the same
+    bug class in Ash is fixed in ash 3.38.0 as CVE-2026-124283.
+  why: >-
+    Elixir, Erlang and Gleam teams should reset Hex credentials, avoid mirrors until the new
+    Hex client ships, and audit any endpoint that decodes Erlang terms from unauthenticated
+    input.
+  background: >-
+    Hex is the package registry for the BEAM ecosystem, used by mix, rebar3 and Gleam. Erlang's
+    binary_to_term decodes the External Term Format, and its safe mode blocks new atoms and
+    functions but not maps. An Elixir struct is just a map with a __struct__ key, and protocols
+    such as Inspect and Enumerable dispatch on that key, so attacker-built data can choose
+    which library code runs, much like gadget chains in Java deserialization.
+  followup: >-
+    New Hex client releases with registry signing key rotation, expected in the coming days.
+  event: hexpm-cve-2026-129514-breach
+  major: breach of a platform that developers build on
+  sources:
+  - label: primary
+    url: https://hex.pm/blog/security-incident-on-hexpm
+  thread: f-0247
+- title: >-
+    parquet crate RUSTSEC-2026-0595: encrypted Parquet files written with bloom filters store
+    the filters in plaintext
+  section: Security
+  category: Security
+  blurb: >-
+    Arrow Rust wrote bloom filter headers and bitsets unencrypted into encrypted Parquet files,
+    and patched releases now reject that setup.
+  summary: >-
+    RUSTSEC-2026-0595, also CVE-2026-125651, says the parquet crate from 55.0.0 wrote the
+    header and bitsets of column bloom filters in plaintext when writing encrypted files.
+    Versions 60.2.0, 59.3.3, 58.4.2 and 57.3.3 raise a runtime error when bloom filters and
+    encryption are both enabled. Files already written this way stay exposed, and the advisory
+    recommends rewriting them with bloom filters disabled.
+  why: >-
+    Teams writing encrypted Parquet from Rust should upgrade and rewrite affected files, since
+    a plaintext filter lets anyone test which values a column holds.
+  background: >-
+    Parquet modular encryption encrypts column data and metadata with per-column keys so files
+    can sit in shared object storage. A bloom filter is a compact probabilistic set summary
+    that lets readers skip row groups that cannot contain a value. Left in plaintext, it lets
+    an attacker without keys check guesses, such as whether an email address appears in a
+    column.
+  event: rust-parquet-encrypted-bloom-filter-plaintext
+  sources:
+  - label: primary
+    url: https://rustsec.org/advisories/RUSTSEC-2026-0595.html
+- title: >-
+    Zstandard 1.6.0 fixes CVE-2026-124851 and over a dozen memory safety bugs, and disables
+    legacy formats by default
+  section: Security
+  category: Security
+  blurb: >-
+    Zstandard 1.6.0 ships early after a wave of bug reports, fixing memory corruption bugs
+    and disabling legacy format support by default.
+  summary: >-
+    Meta released Zstandard 1.6.0 on 2026-11-23, earlier than planned, to answer a flood of
+    bug reports, one of which was published as CVE-2026-124851. The changelog fixes uninitialized
+    memory exposure in streaming decompression of malformed data, out-of-bounds reads and
+    writes in the DDict hash table, use-after-free bugs in prefix and multithreaded compression
+    paths, and memory corruption in ZSTD_compressSequences(). Legacy format support is now
+    off by default in all build systems, and the CLI no longer writes output through symbolic
+    links.
+  why: >-
+    Any service or binary that bundles libzstd, directly or through bindings such as zstd-sys,
+    needs a rebuild against 1.6.0, and code that still reads pre-1.0 frames must re-enable
+    legacy support explicitly.
+  background: >-
+    Zstandard is a general-purpose compression library and format used in the Linux kernel,
+    package managers, databases, filesystems and HTTP content encoding. Many projects vendor
+    a copy of the C library rather than link the system one, so fixes reach them only when
+    each project updates its bundled copy. The legacy decoders handle frame formats from before
+    the format was frozen, code that is rarely exercised and so receives less scrutiny.
+  event: zstd-1-6-0-release
+  sources:
+  - label: primary
+    url: https://github.com/facebook/zstd/releases/tag/v1.6.0
+  - label: discussion
+    url: https://www.phoronix.com/news/Zstandard-Zstd-1.6
+- title: >-
+    iTerm2 3.7.9 fixes Kitty graphics response injection that runs commands when a crafted
+    file is printed
+  section: Security
+  category: Security
+  blurb: >-
+    Catting a file with a hidden Kitty graphics escape sequence in iTerm2 3.6.1 to 3.7.8 can
+    type attacker commands into the shell.
+  summary: >-
+    An APC Kitty image transmit command naming a nonexistent file path with embedded newlines
+    makes iTerm2 send an error reply to the PTY that keeps those newlines, so the shell runs
+    the text between them as a command. The APC handler had no trust check and the reply is
+    sent at default verbosity, so it works on default installs with bash, zsh and fish. iTerm2
+    3.7.9 replaces control characters with spaces in Kitty image, Kitty drag-and-drop and
+    title reports.
+  why: >-
+    Upgrade iTerm2 to 3.7.9 before printing untrusted files such as READMEs or logs, since
+    a cat of a cloned repository was enough to execute code.
+  background: >-
+    Terminals answer some escape sequences by writing a reply into the same input stream the
+    shell reads, which is how queries like cursor position work. When a reply echoes attacker-controlled
+    text, control characters in it act as keystrokes, a recurring class of terminal bugs.
+    The Kitty graphics protocol uses APC sequences to move images, including by file path.
+  event: iterm2-kitty-apc-response-injection
+  sources:
+  - label: primary
+    url: https://ii4gsp.github.io/iterm2-rce/
+- title: >-
+    GreyNoise: attackers control 24 Check Point Security Management Servers at 22 organizations
+    via a SmartConsole flaw
+  section: Security
+  category: Security
+  blurb: >-
+    GT13 used a SmartConsole auth bypass to copy firewall databases and internal CAs from
+    Check Point management servers at 22 organizations.
+  summary: >-
+    GreyNoise observed an actor it tracks as GT13 between 2026-10-02 and 2026-11-02, using
+    99 IP addresses and a hijacked Rejetto HFS server as a relay. A script for CVE-2026-16232,
+    a Check Point SmartConsole auth bypass to Run Script, launched over 100 management tasks
+    that copied the firewall database and internal CA, minted a certificate and unloaded security
+    policies, and a later bulk task hit 24 servers. GreyNoise does not know how the actor
+    first got into the Check Point servers and expects the campaign to be ongoing.
+  why: >-
+    Teams running Check Point management servers should look for GreyNoise's indicators, such
+    as /usr/lib/.libproc.so in /etc/ld.so.preload, and rotate internal CA material if they
+    find them.
+  background: >-
+    A Check Point Security Management Server holds the firewall policy for a fleet of gateways
+    and pushes it to them. It also runs the internal certificate authority that gateways trust,
+    so an attacker who controls it can read the network layout, change or unload policy, and
+    issue trusted certificates. GreyNoise says the actor likely used agentic tooling for scanning,
+    exploitation and follow-up work, a pattern seen in other campaigns this month.
+  comments: The Hacker News thread drew 206 points and 72 comments.
+  event: greynoise-gt13-check-point-management-server-campaign
+  major: exploited in the wild against widely deployed software
+  sources:
+  - label: primary
+    url: https://www.greynoise.io/blog/check-point-security-management-servers-intrusion-campaign
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50630594
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/hackers-compromise-check-point-servers-in-22-organizations/
+- title: >-
+    DeepMind's Gemini 4 agent teams cut a fusion quantum circuit's cost 11.8x, with every
+    result proved in Lean
+  section: AI
+  category: AI
+  blurb: >-
+    Teams of Gemini 4 agents found cheaper quantum circuits for fusion, chemistry and search,
+    and proved each one correct in an open Lean library.
+  summary: >-
+    Independent Gemini 4 agent teams proposed algorithm improvements, verified them in Lean
+    before adding them to a shared notebook, and traded ideas at a virtual conference every
+    four hours. They cut the cost of an inertial confinement fusion circuit 11.8x and its
+    memory from 5,650 to 4,338 error-corrected qubits, cut Cytochrome P450 simulation cost
+    2.5x with 481 to 333 qubits, and found a 2.57x Grover speedup and a 290x faster arcsin
+    routine. Google DeepMind open-sources the Lean library, problem specifications and verified
+    solutions.
+  why: >-
+    It shows formal proof working as the acceptance gate for agent search in domains where
+    results cannot be checked by running them.
+  event: deepmind-quantum-algorithms-agents-lean
+  sources:
+  - label: primary
+    url: https://deepmind.google/blog/finding-faster-quantum-algorithms-with-agents-and-formal-verification/
+- title: >-
+    Z.ai releases GLM-5.4, its first looped transformer model, to GLM Coding Plan users without
+    open weights
+  section: AI
+  category: AI
+  blurb: >-
+    Z.ai's GLM-5.4 reruns a block of weight-shared layers per token for depth without more
+    parameters, and ships only through its Coding Plan.
+  summary: >-
+    Z.ai made GLM-5.4 available to all GLM Coding Plan users on 2026-11-23, citing new vision
+    capabilities, stronger coding and 50% more weekly quota than GLM-5.3. Z.ai describes it
+    as its first loop transformer, in which a group of weight-shared layers runs for several
+    iterations to refine hidden states. Simon Willison reports the model has no open weights
+    yet and is reachable only with a Coding Plan key through Z.ai's OpenAI-compatible API.
+  why: >-
+    Teams evaluating GLM for coding agents must use the Coding Plan endpoint for now, and
+    looped architectures change the compute per token of open models they may later self-host.
+  background: >-
+    A standard transformer runs each layer once per token. A looped transformer reuses a block
+    of layers several times, so the model gets more effective depth and more compute per token
+    without adding parameters. The idea goes back to Google's 2018 Universal Transformer paper.
+    Thinking Machines shipped Inkling 2 Mini, an open-weights looped model, on 2026-11-20.
+  comments: >-
+    The Hacker News thread drew 1078 points and 350 comments. Commenters say the article describes
+    running 28 of the layers twice, a fixed loop count rather than iterating to a fixed point,
+    and debate whether latent looping makes reasoning harder to monitor than visible chain
+    of thought.
+  event: glm-5-4-release
+  sources:
+  - label: primary
+    url: https://twitter.com/Zai_org/status/2124719658074825004
+  - label: discussion
+    url: https://simonwillison.net/2026/Nov/23/glm-54/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50609685
+- title: OpenAI says GPT-6 models design binding proteins using only reasoning and code
+  section: AI
+  category: AI
+  blurb: >-
+    OpenAI reports GPT-6.2 designed minibinder structures and antibody loops without specialized
+    protein models, with lab binding on five targets.
+  summary: >-
+    OpenAI published a preprint on 2026-11-24 reporting that its GPT-6 models design protein
+    structures and amino acid sequences using reasoning and general coding tools, without
+    calling specialized biology models. With partner Onava, 322 minibinders from GPT-6.2 structures
+    were tested against five targets and 35 (10.9%) bound. Redesigned sequences for existing
+    minibinders bound in 75 of 88 designs for MDM2, 26 of 42 for VEGF-A and 8 of 59 for PD-1,
+    and 128 of 182 redesigned antibody loop sequences bound IL-4Ra. On PoseBusters docking,
+    GPT-6.2 matched the observed pose in 93% of scored predictions against 50% for DiffDock-L.
+  why: >-
+    A general model that takes structural constraints in a prompt could replace parts of a
+    pipeline that today needs RFdiffusion, ProteinMPNN and separate docking tools.
+  background: >-
+    Protein design normally chains specialized models: RFdiffusion generates a backbone structure,
+    ProteinMPNN or SolubleMPNN proposes an amino acid sequence for it, and a folding model
+    such as ESMFold checks that the sequence folds as designed. Each takes fixed inputs and
+    cannot easily accept new constraints without retraining. OpenAI still used those specialized
+    models to supply sequences and filter candidates before lab testing, so the claim is about
+    the structure and sequence generation step.
+  comments: The Hacker News thread drew 87 points and 14 comments.
+  event: openai-gpt6-protein-design
+  sources:
+  - label: primary
+    url: https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50634658
+- title: >-
+    PrismML releases Ternary Bonsai 2.5 27B under Apache 2.0, at 5.9 GB and 75.6% on SWE-bench
+    Verified
+  section: AI
+  category: AI
+  blurb: >-
+    A ternary-quantized Qwen3.8 27B keeps a 5.9 GB footprint and lifts SWE-bench Verified
+    from 60.8% to 75.6% against 80.6% for the base model.
+  summary: >-
+    PrismML released Ternary Bonsai 2.5 27B on 2026-11-24 with Apache 2.0 weights. It is based
+    on Qwen3.8 27B and keeps the previous release's 5.9 GB footprint. Reported scores against
+    Bonsai 2 27B and the full-precision base are 75.6 versus 60.8 and 80.6 on SWE-bench Verified,
+    90.5 versus 51.2 and 93.2 on AppWorld, 60.1 versus 52.8 and 70.8 on Terminal-Bench 2.1,
+    and 27 versus 0 and 30.1 on DeepSWE v1.1. PrismML measures 291 tokens per second with
+    MTP on an H100 and 204 on an RTX 4090, and says the model addresses excessive thinking
+    and repetitive loops. It runs through llama.cpp on NVIDIA and Intel GPUs and MLX on Apple
+    devices.
+  why: >-
+    A 5.9 GB local model within five points of its full-precision base on SWE-bench Verified
+    makes on-device agent work on a laptop plausible for a reader weighing self-hosted inference.
+  background: >-
+    Ternary quantization stores each weight as one of three values, roughly 1.58 bits, far
+    below the 4-bit schemes most local deployments use, so a 27B model fits in single-digit
+    gigabytes. The hard part is agentic work, where small errors compound across tool calls,
+    which is why the previous Bonsai 2 scored zero on DeepSWE despite reasonable single-shot
+    coding numbers. Benchmark figures here come from PrismML's own whitepaper rather than
+    independent runs.
+  comments: The Hacker News thread drew 238 points and 75 comments.
+  event: prismml-ternary-bonsai-2-5-27b
+  sources:
+  - label: primary
+    url: https://prismml.com/news/bonsai-2-5-27b
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50633922
+- title: >-
+    iFood's Remote Agents Platform runs coding agents across 15,000 repositories at about
+    $0.04 per run
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    A REST API sends a prompt to an isolated sandbox runner, and deterministic steps clone
+    the repo and open a merge request around the agent.
+  summary: >-
+    iFood built an internal REST API that runs a coding agent in an isolated Ubuntu sandbox
+    with toolchains for eight languages and access to Nexus, GitLab, Docker, Snyk, Kubernetes
+    and AWS. Deterministic steps clone the repository, load skills, create a branch and publish
+    the merge request, and Structured Outputs forces every session to return a success or
+    failure result in a fixed schema. The platform has completed over 25,000 runs on 27 billion
+    tokens, and its first user, a dependency vulnerability fixer, more than doubled the vulnerabilities
+    it resolved.
+  why: >-
+    It is a concrete design for fleet-wide unattended agent work: wrap the agent in deterministic
+    setup and publish steps, and require a structured verdict so failures are counted automatically.
+  background: >-
+    Structured Outputs constrains a model's reply to a JSON schema, so a caller can parse
+    a pass or fail field instead of reading free text. The source is an OpenAI customer story,
+    so the cost and accuracy figures come from iFood through the vendor.
+  event: ifood-remote-agents-platform
+  sources:
+  - label: primary
+    url: https://openai.com/business/customer-stories/ifood
+- title: >-
+    Paper: KL divergence formulas in PyTorch lose accuracy near zero, and about 30% of tiny
+    FP32 values turn negative
+  section: ML research
+  category: Paper
+  blurb: >-
+    Across 18 closed-form KL families and F.kl_div, conventional formulas give wrong values
+    and gradients for nearby distributions on CPU and GPU.
+  summary: >-
+    On 8.5 million inputs with certified references, over 85% of FP32 scalar-family values
+    near KL 1e-7 had at least 1% relative error, and about 30% became negative at smaller
+    divergences, while computing one precision higher still left 7 to 51% significantly wrong.
+    Stable closed-form decompositions, compensated arithmetic and analytic gradients removed
+    over 97% of significant errors. The errors caused up to 97% top-1 disagreement in identical-start
+    distillation and changed 19 to 59% of GPT-2 circuit edge scores.
+  why: >-
+    Clamping negative KL to zero hides the error, so KL penalties in distillation, RL post-training
+    and quantization layer ranking may need the authors' stable formulations.
+  background: >-
+    KL divergence measures how far one probability distribution is from another and is used
+    as the penalty that keeps a post-trained policy near its reference model, and as the loss
+    in distillation. When the two distributions are nearly equal, the textbook formula subtracts
+    nearly equal logarithms, and floating-point cancellation leaves mostly rounding noise.
+    That regime is common in training, because the policy starts identical to its reference.
+  event: pytorch-kl-divergence-numerical-errors-paper
+  sources:
+  - label: primary
+    url: https://arxiv.org/abs/2611.30835v1
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50629962
+- title: >-
+    mise 2026.11.13 adds global task picker filters, main_checkout dotfile links and daemon
+    _URL exports
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    mise run can now hide or show only global tasks, and dotfile links can target a repo's
+    main checkout so they survive worktree removal.
+  summary: >-
+    mise run --no-global and --global filter the interactive task picker, and main_checkout
+    = true points dotfile symlinks at the repository's main checkout. Daemons the proxy does
+    not serve now export their declared url as NAME_URL, and a new prune.forget_unused_after
+    setting, 90d by default, forgets configs not loaded for that long. Core tools warn about
+    options they ignore, and MISE_USE_TOML=0 is deprecated for removal in 2027.11.0.
+  why: >-
+    Dotfiles managed from a worktree no longer break when the worktree is removed, and stale
+    projects stop pinning old tool versions.
+  event: mise-2026-11-13-release
+  sources:
+  - label: primary
+    url: https://github.com/jdx/mise/releases/tag/v2026.11.13
+- title: >-
+    GitHub previews issue statuses that follow linked pull requests and agent assignment,
+    plus repository boards
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Issues gain seven statuses such as In progress and In review that update automatically
+    from linked pull requests and assigned agents.
+  summary: >-
+    Issues can now be Backlog, Todo, In progress, In review, Done, Not planned or Duplicate.
+    Linking a draft pull request or assigning an agent moves an issue to In progress, an open
+    or ready pull request moves it to In review, and statuses sync with matching GitHub Project
+    fields. GraphQL, REST and the MCP server can read and set status, status changes can trigger
+    Copilot automations, and repository saved views gain a board layout.
+  why: >-
+    Agents and automations get a shared, API-readable work state on the issue itself without
+    a separate Project board.
+  event: github-issue-statuses-repository-boards
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-23-issue-statuses-and-repository-boards-are-in-public-preview
+- title: >-
+    mise 2026.11.14 adds an experimental Landlock sandbox that fails cached tasks reading
+    files outside their sources
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Cached mise tasks can now run under Landlock on Linux, so a read outside declared sources
+    fails the task instead of caching a wrong result.
+  summary: >-
+    With cache.sandbox = true, mise restricts a cached task to files matched by sources, its
+    config files, outputs of cached dependencies, system paths and mise-installed tools, limits
+    writes to output directories and a private TMPDIR, trims the environment and blocks network
+    access. Sandboxed cache entries are keyed separately, macOS and Windows run the task unsandboxed
+    with a warning, and invalid #MISE header values in file tasks are now errors instead of
+    being silently dropped. The release also cuts environment variable lookups per command
+    from about 2,800 to about 500.
+  why: >-
+    Teams relying on mise task caching can now detect undeclared inputs on Linux CI instead
+    of restoring cache entries built from inputs mise never checked.
+  background: >-
+    Landlock is a Linux security module that lets an unprivileged process restrict its own
+    filesystem and network access, with no root or container needed. Build caches are only
+    correct when every input that affects an output is part of the cache key, and undeclared
+    inputs are a classic source of stale or wrong cached builds, the problem hermetic build
+    tools like Bazel address with sandboxing.
+  event: mise-2026-11-14-release
+  sources:
+  - label: primary
+    url: https://github.com/jdx/mise/releases/tag/v2026.11.14
+- title: >-
+    uv 0.13.10 addresses GHSA-vjvj-3m3f-fgmm and rejects wheels with inconsistent ZIP size
+    fields
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    uv 0.13.10 ships a security fix plus lockfile integrity checks that validate requirements
+    against locked versions and reject mismatched wheels.
+  summary: >-
+    uv 0.13.10, released 2026-11-24, addresses GHSA-vjvj-3m3f-fgmm. It now validates that
+    dependency requirements in uv.lock match the locked package versions, reports dependencies
+    whose package entries are missing from uv.lock, and explains why uv.lock needs updating
+    when --locked rejects it. It also rejects wheels whose ZIP data descriptor and central
+    directory disagree on the compressed size, refreshes cached interpreter information when
+    libc, the macOS version or pyvenv.cfg changes, and updates bundled Mozilla root certificates
+    through webpki-root-certs 1.0.12.
+  why: >-
+    The lockfile consistency checks and the ZIP size mismatch rejection close paths where
+    a lockfile or wheel could claim one thing and install another.
+  background: >-
+    A wheel is a ZIP archive, and a ZIP stores the compressed size of each entry in both the
+    local data descriptor and the central directory. When readers disagree about which to
+    trust, an archive can present different content to a checker and an installer, a class
+    of confusion used in past packaging attacks. uv writes a uv.lock with resolved versions
+    and hashes, and --locked asserts that the lockfile is already up to date.
+  event: uv-0-13-10-release
+  sources:
+  - label: primary
+    url: https://github.com/astral-sh/uv/releases/tag/0.13.10
+- title: TornadoVM 8.2 adds a ROCm HIP backend for AMD GPUs and runs on Eclipse OpenJ9
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    TornadoVM 8.2 compiles Java kernels straight to AMD GPUs through HIP, and adds cuBLASLt
+    epilogues and an OpenJ9 path.
+  summary: >-
+    TornadoVM 8.2.0, released 2026-11-24, adds a HIP backend that talks directly to the AMD
+    ROCm runtime on Linux and Windows, where AMD GPUs previously went through OpenCL. It also
+    adds cuDNN channels-last convolutions with fused epilogues, FP32 and TF32 cuBLASLt products,
+    Metal foreign device views, warp shuffle and tensor-core fragment APIs, and support for
+    Eclipse OpenJ9 and IBM Semeru. SDK archives ship for JDK 21, 25, 26 and 27.
+  why: >-
+    Java teams can target AMD GPUs natively from TornadoVM instead of through OpenCL, and
+    run it on OpenJ9-based JDKs.
+  background: >-
+    TornadoVM is a plugin to OpenJDK that JIT-compiles annotated Java methods into GPU kernels
+    for OpenCL, CUDA PTX, SPIR-V, Metal and now HIP. HIP is AMD's CUDA-like C++ runtime and
+    kernel language in the ROCm stack.
+  event: tornadovm-8-2-release
+  sources:
+  - label: primary
+    url: https://github.com/beehive-lab/TornadoVM/releases/tag/v8.2.0
+  - label: discussion
+    url: https://www.phoronix.com/news/TornadoVM-8.2
+- title: >-
+    Armin Ronacher argues Rust should drop mutex poisoning, citing outages in RLS, Neon and
+    Mozilla code
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    A survey of real failures argues Rust's poisoned mutexes turn one panic into a permanent
+    outage and that nobody, including std, handles them.
+  summary: >-
+    Armin Ronacher's post backs the Rust libs team discussion on making non-poisoning locks
+    the default in the next edition. He notes that PoisonError holds the guard, so an innocent
+    m.lock()? inside error conversion keeps the mutex locked and deadlocks, as seen in cc-switch
+    and ox-embed-server. He cites RLS, a Neon safekeeper and Mozilla application-services,
+    where PoisonError reached rank 5 in crash stats before the team moved to parking_lot,
+    plus poisoned statics breaking test suites in cargo, deno, polars and rustc. Tokio, wasmtime,
+    crossbeam-channel and tracing-subscriber all ignore poisoning, and std ignores it in stdio,
+    panic capture and the backtrace lock.
+  why: >-
+    If you catch panics anywhere, in tokio tasks, thread pools or FFI boundaries, lock().unwrap()
+    turns one panic into a process that stays up and fails every later lock.
+  background: >-
+    When Rust code panics while holding a std::sync::Mutex, the mutex is poisoned and every
+    later lock() returns PoisonError, on the theory that the panic may have left broken invariants
+    behind. The flag could not even be cleared until clear_poison arrived in Rust 1.77, nine
+    years after the feature landed. With panic = abort the question never arises, and parking_lot
+    has never implemented poisoning. RefCell and OnceLock do not poison, while LazyLock poisons
+    permanently.
+  followup: >-
+    A libs team decision on stabilizing std::sync::nonpoison and making it the edition default
+  event: rust-mutex-poisoning-nonpoison-default
+  sources:
+  - label: primary
+    url: https://lucumr.pocoo.org/2026/11/25/poisoning/
+  thread: f-0248
+- title: >-
+    Linus Torvalds warns ext4 maintainers after a 41,000-line AI fix pull request lands at
+    rc5
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Torvalds merged a 41,197-insertion ext4 pull request of AI-generated fixes and KUnit tests
+    under protest, warning he will ignore the next one.
+  summary: >-
+    Phoronix reports that the ext4 pull request for Linux 7.4-rc5 contained over 41,000 lines,
+    mostly AI-generated bug fixes and new KUnit test coverage intended to make validating
+    future AI-generated patches safer. Torvalds merged it despite conflicts and wrote on the
+    mailing list that the notion that anything labeled a fix belongs in an rc is bogus, that
+    subtle long-standing bugs imply subtle and possibly buggy fixes, and that new development
+    and test cases belong on a separate branch for the merge window. He said he would ignore
+    a pull request like it next time. The same tree also spreads inodes of sibling directories
+    across a flex group's block groups to speed parallel file creation.
+  why: >-
+    Filesystem maintainers now face an explicit rule from Torvalds that AI-generated fix volume
+    and new test coverage wait for the merge window.
+  background: >-
+    The Linux release cycle opens with a two-week merge window for new code, after which only
+    fixes are supposed to land during the weekly release candidates. KUnit is the in-kernel
+    unit test framework, and expanding it is how several subsystems plan to gate machine-generated
+    patches. Btrfs maintainers raised similar concerns about AI-assisted patch volume earlier
+    in the cycle.
+  followup: Linux 7.4-rc5 and any regressions traced to the merged ext4 fixes
+  event: torvalds-ext4-ai-pull-request-rc5
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Linus-Torvalds-EXT4-AI-Big
+- title: >-
+    AWS Lambda doubles the Event Function timeout to 30 minutes and adds GPU instances on
+    Managed Instances
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    Lambda Event Functions can now run for up to 30 minutes, but synchronous callers, client
+    sockets and NAT idle timeouts still cut in.
+  summary: >-
+    AWS raised the Lambda timeout for on-demand Event Functions from 15 to 30 minutes for
+    synchronous, asynchronous and event source mapping invocations, at standard pricing in
+    all commercial Regions. AWS warns that services invoking synchronously apply their own
+    timeouts, client read timeouts must be longer, and NAT gateways drop idle connections
+    after 350 seconds. Lambda Managed Instances also gained GPU instances from G4dn to G6e,
+    billed at the EC2 fee plus a 9.75% management fee and $0.20 per million requests.
+  why: >-
+    Long agent tool chains and batch conversions can move to plain Lambda, provided callers,
+    clients and NAT keep-alives are tuned for 30-minute calls.
+  event: aws-lambda-30-minute-timeout-gpu
+  sources:
+  - label: primary
+    url: https://aws.amazon.com/blogs/aws/aws-weekly-roundup-local-zone-in-bogota-30-minute-lambda-timeout-and-more-november-24-2026/
+- title: >-
+    cgo's pointer check panics on legal code and can turn a 48 ns C call into 76 µs depending
+    on syntax
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    cgo rewrites calls by syntax, so passing unsafe.Pointer through a variable or extra parentheses
+    makes the runtime check the whole object.
+  summary: >-
+    Shraddha Agrawal shows that cgo passes field-level information to runtime.cgoCheckPointer
+    only when it recognizes how the argument is written. Otherwise runtime.cgoCheckUnknownPointer
+    scans the entire heap object and panics on any unpinned Go pointer, even in fields C never
+    touches, although the docs allow passing a pointer to a field. The deficiency has been
+    reported since 2016, and Ian Lance Taylor wrote that fixing it would need full type checking
+    of cgo input.
+  why: >-
+    Go code calling C should take addresses inside the call expression or pin nested pointers
+    with runtime.Pinner, and measure call overhead after refactors.
+  background: >-
+    Go's garbage collector cannot see pointers once they are handed to C, so the cgo rules
+    forbid passing C memory that contains unpinned Go pointers. cgo enforces this at runtime
+    by inserting checks into the code it generates, and GODEBUG=cgocheck=0 turns them off.
+    runtime.Pinner, added in Go 1.21, lets a program pin nested objects so the check accepts
+    them.
+  event: cgo-pointer-check-syntax-dependence
+  sources:
+  - label: primary
+    url: https://theconsensus.dev/p/2026/11/15/cgos-pointer-check.html
+- title: >-
+    Cloudflare extends its Rust Flamingo test framework to probe DNS propagation and gate
+    releases on it
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Cloudflare probes DNS from every data center, checking a timestamped TXT record stays
+    fresh within 90 seconds, and gates releases on it.
+  summary: >-
+    Cloudflare added a DNS module to Flamingo, its Rust end-to-end test framework that runs
+    hundreds of millions of tests a day against its edge through a setup, action, assert DSL.
+    A probe keeps updating a TXT record with a timestamp and queries three authoritative nameserver
+    IPs and 1.1.1.1 from every data center, asserting freshness within 90 seconds for authoritative
+    answers and 600 seconds for the resolver. The work followed a rollout where a scheduling
+    bug left record changes unpublished for hours while the service looked healthy, and these
+    measurements now decide whether a release proceeds or rolls back.
+  why: >-
+    It shows a concrete way to turn a slow, partial failure mode such as propagation lag into
+    a synthetic SLI that can block a deploy, instead of relying on health checks that stay
+    green.
+  background: >-
+    Synthetic probing sends scripted requests to production from the user's vantage point
+    and records whether they succeed, which catches failures that unit tests and process health
+    checks miss. An SLI is the measured series, such as the share of probes that see a fresh
+    record, and an SLO is the target percentage for it. Flamingo's design dispatches each
+    action type, such as an HTTP request or a DNS query, to its own handler through typed
+    Rust enums, so new protocols reuse scheduling and reporting.
+  event: cloudflare-flamingo-dns-probing
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/probing-dns-at-cloudflare/
+- title: >-
+    Spring AI 2.1 pauses tool calls marked requiresConfirmation, and Session Extensions 0.11.0
+    resumes them after restarts
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    A Spring AI agent can park a money-moving tool call in its JDBC session log and resume
+    it from another JVM once a person approves it.
+  summary: >-
+    Spring AI 2.1 lets a @Tool carry requiresConfirmation = true, a property or a ToolCallConfirmationPolicy
+    bean, and the tool loop returns an ordinary response naming the calls awaiting a decision
+    while harmless tools still run. The new community project Spring AI Session Extensions
+    0.11.0 adds a turn status to the Session API's append-only log, so a parked turn and its
+    question survive a restart and any instance can resume it with allow or deny decisions.
+    The post warns that 0.11.0 has no lease for turns whose process died and that models sending
+    tool calls without ids can mismatch decisions.
+  why: >-
+    Java teams building agents that take irreversible actions get a framework pattern for
+    durable human approval without taking over the whole tool loop.
+  background: >-
+    Human-in-the-loop approval for agent tool calls is easy inside one process but hard when
+    the answer arrives hours later on another instance, because the pending conversation state
+    must be persisted and must not be editable by the client. In Spring AI 2.0 the only option
+    was user-controlled tool execution, where the application runs every round of the tool
+    loop itself.
+  event: spring-ai-tool-call-confirmation-session-extensions
+  sources:
+  - label: primary
+    url: https://spring.io/blog/2026/11/24/spring-ai-tool-call-confirmation-park-resume
+- title: >-
+    Lean models and differential tests find 17 unreported bugs in Clojure 1.12.7's Java core
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Lean models and differential tests against java.util found 17 unreported bugs in Clojure
+    1.12.7, including a reduce that never returns.
+  summary: >-
+    Naoya Yamashita modeled small integer and bit functions from Clojure's core as BitVec
+    definitions in Lean 4 and used bv_decide to find counterexamples, and compared persistent
+    collections with java.util over 3 million random operations. A 0xffe0 mask in gvec.clj
+    makes reduce on a dropped vector-of loop forever at 65505 or more elements, and HashCollisionNode.without
+    stores the dissoc key's hash instead of its own, hiding another key. The HAMT and vector
+    trees showed no mismatches, and the bugs sat where two mechanisms meet, such as equality
+    and hashing.
+  why: >-
+    Bit-precise Lean models of arithmetic helpers plus differential testing against a reference
+    collection is a cheap recipe that finds real bugs in mature runtime code.
+  background: >-
+    A hash array mapped trie splits a key's hash into 5-bit pieces to walk a 32-way tree,
+    with collision nodes at the bottom for keys whose full hashes match. Lean's bv_decide
+    tactic turns bitvector goals into SAT problems, so it proves or refutes properties over
+    every 32- or 64-bit input, including wraparound.
+  event: clojure-core-lean-differential-bugs
+  sources:
+  - label: primary
+    url: https://s.conao3.com/blog/2026/e4f733
+- title: >-
+    Carl Kadie's nine rules for Rust const fn move file decoding, lookup tables and DSLs to
+    compile time
+  section: Talks
+  category: Video
+  blurb: >-
+    A Seattle Rust talk uses const fn to decode images, audio and LED layouts at build time
+    so a $19, 520 KB RAM board stores only results.
+  summary: >-
+    Kadie uses include_bytes with const fn to validate a TGA image and convert it to RGB565,
+    and to size PCM audio clips through a two-pass pattern that feeds const generics, keeping
+    only the output in flash. Lookup tables computed at compile time replace per-pixel gamma
+    and power-budget math, a const builder encodes a robot arm as a fixed-capacity DSL, and
+    static references to dyn traits mix clip types without a heap. He warns that parsing a
+    746 KB motion capture file in const fn added about 8 seconds per clean build, so a generator
+    or build.rs fits there better.
+  why: >-
+    Rust teams can push validation and data conversion into the compiler, and the talk marks
+    where that stops paying off.
+  event: kadie-rust-const-fn-nine-rules-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=KznFsjlPCbo
+- title: >-
+    Steve Yegge: his 50-agent game factory ships up to 100 features a day and needs rebuilding
+    every two months
+  section: Talks
+  category: Video
+  blurb: >-
+    Steve Yegge says his 50-agent game factory shipped up to 100 features a day, swamped players,
+    and needs rebuilding every two months.
+  summary: >-
+    Yegge runs about 20 named agents on 22 Claude Max accounts against his long-running MUD,
+    spending about $5,000 a month on inference and an estimated 5 billion tokens a day, and
+    says the factory cleared about 60 years of backlog in four months until players asked
+    him to slow down. He names work routing, token cost, append-only context that agents never
+    prune, and agents that over-fence themselves after criticism as the main problems, and
+    says giving agents records of their predecessors cuts the tokens they spend validating
+    the environment.
+  why: >-
+    Teams running agent fleets should budget for pruning accumulated agent notes and for human
+    review capacity, which Yegge says becomes the bottleneck.
+  event: yegge-software-factories-trash-mountain-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=SRhXgeNluIk
+- title: >-
+    Jarred Sumner: Bun's agent-written AOT compiler took five rewrites and cuts Claude Code
+    memory use about 4x
+  section: Talks
+  category: Video
+  blurb: >-
+    Bun's creator verified a multi-million-line agent-written compiler with pre-existing test
+    suites, three-way differential runs and fuzzing.
+  summary: >-
+    Sumner, now at Anthropic, describes an ahead-of-time compiler for Bun that treats TypeScript
+    types as predictions, which he says makes Claude Code use about 4x less memory and start
+    about 2x faster. Agents wrote it through five rewrites in about a month, with one round
+    running 140 agents in parallel, and it was checked against Bun's, WebKit's and test262's
+    existing suites, differential runs of JIT, AOT and type-stripped builds, and a JavaScript
+    engine fuzzer extended for types. The compiler bans assignments to Object.prototype to
+    block prototype pollution, and it is available through bun upgrade --canary.
+  why: >-
+    Trusting a large agent-written change depends on tests that existed before the project
+    and on differential runs the agent cannot edit, more than on review of the code.
+  background: >-
+    A JIT compiler turns JavaScript into machine code while the program runs, so every process
+    pays compile time and memory again. An AOT compiler does that work at build time, which
+    matters for many short sessions on constrained devices. Sumner says the team rejected
+    a Rust rewrite of Claude Code because its tests are in TypeScript, and porting them would
+    remove the independent check.
+  event: jarred-sumner-bun-aot-compiler-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=TvsF67C2F54
+- title: >-
+    Dan Vega: AGENTS.md rules are requests, and ArchUnit tests make a Spring build fail when
+    agents break them
+  section: Videos
+  category: Video
+  blurb: >-
+    A Spring bookstore passed mvnw verify while violating AGENTS.md packaging rules, until
+    ArchUnit tests turned each rule into a failing check.
+  summary: >-
+    Vega's agent-built Spring app mixed package-by-layer controller, model and service packages
+    into a package-by-feature codebase while the build stayed green. ArchUnit tests then enforced
+    no layer packages, package-private repositories, controllers that never call repositories,
+    no @Transactional on controllers, constructor injection, SLF4J only, no deprecated APIs
+    and Jackson 3 imports. His AGENTS.md also forbids weakening checks and relies on a stop
+    hook that reruns verify.
+  why: >-
+    Java teams can convert agent instructions into deterministic architecture tests that also
+    catch the same violations from humans.
+  event: dan-vega-agents-md-archunit-video
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=meQlaQiM6jY
+- title: >-
+    Let's Get Rusty: Blaze patches changed functions in memory and rebuilds ripgrep about
+    10x faster than Cargo
+  section: Videos
+  category: Video
+  blurb: >-
+    Blaze keeps a Rust program in memory and patches changed functions with jumps, rebuilding
+    ripgrep about 10x faster than Cargo.
+  summary: >-
+    On ripgrep, Blaze's first build took about 21 seconds, five times slower than Cargo, but
+    a function edit rebuilt 10 times faster, a library edit 4 times faster, and a no-op build
+    in 0.03 seconds, at the cost of much higher memory use. Blaze keeps the whole program
+    in memory, recompiles only changed functions and their callers, and appends new code with
+    a jump instead of relinking, while running proc macros and build scripts in WebAssembly
+    sandboxes. Its v2 plan aims to make it a Rust build system and compiler for coding agents.
+  why: >-
+    Rust developers with slow edit loops can try Blaze on a large crate, provided their machines
+    have memory to spare for its resident build state.
+  event: blaze-rust-incremental-builds
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=JhLkqZb-yAE
+- title: >-
+    Anthropic posts an AI-written, Lean-formalized proof that VP ≠ VNP over every field, not
+    yet checked by humans
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    An internal Claude model claims a proof of Valiant's algebraic separation in Lean, and
+    Hacker News debates what it means for P vs NP.
+  summary: >-
+    The anthropics/formal-math repository says an internal research Claude model proved that
+    circuits for the Hamiltonian cycle polynomial, and for the permanent outside characteristic
+    2, need more than m^(c (log m)^(1/3)) gates, so VP is a proper subset of VNP over every
+    field. The paper and Lean proof were written by AI models, no human mathematician has
+    checked the proof, and the README says it does not settle P vs NP. The main Hacker News
+    thread had 211 points and 179 comments within two hours, with a second thread on the PDF
+    at 25 points.
+  why: >-
+    Readers can verify the claim themselves with lake build, an axiom printout and a second
+    independent Lean kernel rather than trusting the announcement.
+  comments: >-
+    Commenters explain that VP = VNP would have pointed toward P = NP, so this result closes
+    one line of attack without implying P ≠ NP. Others cite the relativization and natural
+    proofs barriers, and several argue over whether the work is research or marketing after
+    Anthropic's IPO.
+  event: anthropic-vp-vnp-separation-proof
+  sources:
+  - label: primary
+    url: https://github.com/anthropics/formal-math/tree/main/vp-vnp
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50620102
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50620252
+- title: >-
+    Arm's lawyers force the searchable Jon's Arm Reference site for AArch64 offline on 2026-12-04
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A widely used searchable reference for AArch64 instructions and system registers will
+    shut down after Arm cited trademark and IP claims.
+  summary: >-
+    The site indexes Armv8-A and Armv9-A Base, SIMD, SVE and SME instructions and AArch64
+    and AArch32 registers, and now says Arm's lawyers told its author to take it down or face
+    legal action. On Hacker News the author says Arm cites use of its trademarks and IP in
+    hosting the documentation, and that he is weighing mirrors or releasing source that builds
+    the site locally. The thread drew 825 points and 164 comments.
+  why: >-
+    Engineers who rely on it for AArch64 work should plan for Arm's official documentation
+    or a locally generated copy after 2026-12-04.
+  comments: >-
+    The thread argues over trademark law, with some saying unlicensed use can weaken a mark
+    under naked licensing doctrine and others that describing genuine Arm products is nominative
+    fair use. Several suspect the real issue is copyright in the documentation text.
+  event: arm-reference-site-takedown
+  sources:
+  - label: primary
+    url: https://arm.jonpalmisc.com/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50617499
+- title: >-
+    Stalwart 1.2.0 speaks MAPI over HTTP, EWS and ActiveSync so Outlook connects to it as
+    if to Exchange
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    The open-source Rust mail server now lets classic Outlook, Apple Mail and phones use it
+    as an Exchange server, drawing 496 points on HN.
+  summary: >-
+    Stalwart 1.2.0 implements MAPI over HTTP, Exchange Web Services, ActiveSync 14.1 and 16.1
+    and Autodiscover in its AGPL Community edition, behind a Cargo feature and disabled by
+    default, adding about 200,000 lines of code. The new Outlook for Windows still cannot
+    connect, and the project advises against it because it relays IMAP credentials through
+    Microsoft's cloud. The Hacker News thread reached 496 points and 262 comments.
+  why: >-
+    Organizations leaving on-premises Exchange can move the server first and keep classic
+    Outlook and native mobile clients working during migration.
+  comments: >-
+    Commenters debated how long classic Outlook will remain usable given Microsoft's 2029
+    support date, with enterprise integrators saying customers still forbid the new Outlook.
+    A long subthread covered German GoBD rules requiring tamper-proof email archiving for
+    up to 10 years, with users pointing to Stalwart's compliance add-on and S3 Object Lock
+    as possible routes.
+  event: stalwart-1-2-0-exchange-protocols
+  sources:
+  - label: primary
+    url: https://stalw.art/blog/microsoft-exchange-replacement/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50620349
+- title: >-
+    trynix.dev switches to unkernel, Linux compiled to WebAssembly, and runs Firefox with
+    GL and sound in a tab
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Farid Zakaria swapped QEMU-in-wasm for unkernel, reporting 2x to 32x speedups and Wayland
+    windows, virgl over WebGL2, audio and networking.
+  summary: >-
+    Zakaria moved trynix.dev, which runs Nix packages in the browser, from qemu-wasm to unkernel,
+    a Linux kernel compiled to WebAssembly that emulates only user programs, and reports 2x
+    to 32x speedups. The VM composites Wayland windows in the page, renders through a virgl-only
+    Mesa on WebGL2, plays ALSA audio, and tunnels TCP over WebSockets to a Wisp relay. The
+    post drew 873 points and 327 comments on Hacker News.
+  why: >-
+    Browser-hosted Linux is now fast enough to consider for demos, docs and possibly agent
+    sandboxes, not only as a novelty.
+  comments: >-
+    The author of waarm64, a parallel aarch64 emulator for the browser built with Claude,
+    says Claude found a Rust wasm miscompile that was traced to LLVM and fixed upstream. Others
+    point to the WALI research toolchain for Linux userland on wasm, and one user reports
+    pathological memory growth with unkernel on WebKit.
+  event: trynix-unkernel-linux-wasm
+  sources:
+  - label: primary
+    url: https://fzakaria.com/2026/11/23/2035-came-early
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50624497

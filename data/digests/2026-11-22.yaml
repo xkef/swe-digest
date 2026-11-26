@@ -1,5 +1,5 @@
 date: '2026-11-22'
-updated: 2026-11-22T13:32Z
+updated: 2026-11-22T20:26Z
 stories:
 - title: >-
     Rackspace Spot breach let an intruder with leaked credentials read Kubernetes Secrets
@@ -60,6 +60,101 @@ stories:
   sources:
   - label: primary
     url: https://rustsec.org/advisories/RUSTSEC-2026-0592.html
+- title: >-
+    GL.iNet confirms attackers used a GoodCloud flaw to plant malware on its routers and KVM
+    devices
+  section: Security
+  category: Security
+  blurb: >-
+    Attackers abused GL.iNet's GoodCloud remote management to install backdoors and reverse
+    shells on routers and KVM-over-IP devices.
+  summary: >-
+    In an advisory dated 2026-11-20, GL.iNet said an unauthorized party exploited a flaw in
+    its cloud remote management service to install malware on customer routers and KVM devices,
+    and that it has fixed the cloud flaw but that existing infections remain. BleepingComputer
+    examined a ni.sh installer that targets GL.iNet models, persists through startup scripts,
+    replaces netstat to hide its connections and installs SSH keys, while RemoteToHome Consulting
+    found suspicious activity on 152 of 183 routers it manages. GL.iNet recommends KVM firmware
+    1.10.3 or later for RM10, RM1, RM1V2, RM1PE and RM4PE, 1.8.7 or later for RMQ1, and new
+    router firmware scheduled for 2026-11-22.
+  why: >-
+    Anyone with a GL.iNet KVM attached to a server or workstation should treat the attached
+    machine as possibly compromised, reflash without restoring settings and rotate credentials.
+  background: >-
+    KVM-over-IP devices sit between a network and a computer's keyboard, video and mouse ports,
+    so control of the device gives an attacker console access to the attached machine, often
+    including firmware setup. GoodCloud is GL.iNet's hosted service for managing its devices
+    remotely, which means a flaw in the cloud side can push commands to every enrolled device
+    without the attacker reaching each one directly.
+  followup: >-
+    GL.iNet's stable router and KVM security firmware due 2026-11-22 and its count of affected
+    customers.
+  event: glinet-goodcloud-device-compromise
+  sources:
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/security/hackers-exploit-glinet-cloud-flaw-to-infect-routers-kvm-devices/
+  thread: f-0245
+- title: >-
+    OpenAI publishes its models' log-perplexity and proposes shared industry limits based
+    on it
+  section: AI
+  category: AI
+  blurb: >-
+    OpenAI's chief scientist publishes internal log-perplexity figures for its models and
+    proposes shared industry limits tied to them.
+  summary: >-
+    Jakub Pachocki writes that GPT-3.5 sat near 0.99 log-perplexity on OpenAI's internal code
+    evaluation set and GPT-4 near 0.91, that losses below 0.8 brought new capabilities in
+    security and mathematics, and that a model near 0.76 began producing major math results.
+    He proposes that labs agree on limits, measured by perplexity and other metrics, that
+    they will not cross until monitoring reaches concrete milestones, and warns of a possible
+    avalanche of AI-driven pretraining advances as soon as 2027. He lists limits of the metric,
+    including cross-lab dataset differences and that chain-of-thought gains do not show up
+    in perplexity.
+  why: >-
+    It gives engineers a rare first-party number for tracking base model progress and signals
+    how OpenAI may argue for pacing rules that shape future model releases.
+  background: >-
+    Perplexity is the exponential of the average cross-entropy loss a model assigns to the
+    next token in held-out text, so lower values mean better prediction. Because labs train
+    on different data and evaluate on different held-out sets, raw perplexity numbers have
+    rarely been comparable across companies, which is one reason public discussion has relied
+    on task benchmarks instead.
+  comments: The Hacker News thread drew 298 points and 197 comments.
+  event: openai-perplexity-pacing-proposal
+  sources:
+  - label: primary
+    url: https://openai.com/index/perplexity-and-intelligence
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50601525
+- title: >-
+    Tangled spindles add a Namespace CI engine using per-run OIDC tokens, and knot 1.20.1
+    fixes Go module fetches
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Tangled spindles can now run CI on a user's Namespace workspace through OIDC, and knot
+    1.20.1 fixes Go module fetches from knots.
+  summary: >-
+    Tangled's spindle CI gains a namespace engine that runs workflows on the user's own Namespace
+    workspace with configurable machines, multiarch builds and cache volumes, using a short-lived
+    OIDC token per run instead of stored credentials. Knot 1.20.1 fixes GOPROXY=direct and
+    Go module proxy fetches, requests crawling automatically, adds knot doctor and a handover
+    repair command, and removes the old Go knot from the tree. The post also lists community
+    knots backed by static files, a Cloudflare Worker and S3, and spindles that drive Crow
+    CI and OCluster.
+  why: >-
+    Teams evaluating AT Protocol forges can now attach their own CI capacity without handing
+    the forge long-lived secrets, and knot operators should upgrade for Go module fixes.
+  background: >-
+    Tangled is a code forge built on the AT Protocol, where a knot is a Git server that exposes
+    a defined XRPC interface and a spindle is a CI runner that reads workflows and reports
+    results. Because both are defined by protocol surfaces, third parties can build their
+    own implementations that the central Tangled app indexes.
+  event: tangled-namespace-spindle-engine
+  sources:
+  - label: primary
+    url: https://tangled.org/blog/namespace-engine
 - title: >-
     Raph Levien's advice for the next 100 Rust GUIs: Parley and AccessKit are solved, compositor
     layers are not
@@ -125,6 +220,59 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=GKSQYbELDzw
+- title: >-
+    Armin Ronacher: Pi's p90 task time grew from 2.5 to 14 minutes with no harness changes,
+    but upkeep stays flat
+  section: Talks
+  category: Video
+  blurb: >-
+    Armin Ronacher's Pi session data shows fewer corrections and 14-minute p90 runs, yet only
+    10 to 15 of 141 started projects stay alive.
+  summary: >-
+    Ronacher says Pi's core tools have not changed in a year, yet his corrections per session
+    fell with each model and the 90th percentile run length rose from about 2.5 minutes with
+    Opus 4.6 to over 14 minutes. His daily prompts stayed flat at roughly 120 to 190 while
+    agent active time grew to many times his working day, and of 141 repositories he started
+    only 10 to 15 get regular commits. He asks agents for a typeset HTML summary at about
+    70% of a task, before verification, and argues for durable agents that suspend with their
+    sandboxes during flex-priced inference and for code mode workflows that call cheap decision
+    models at each branch.
+  why: >-
+    It gives measured evidence that model upgrades alone change how a stable harness behaves,
+    and concrete checkpoints for keeping human understanding in long agent runs.
+  event: ronacher-workshop-before-factory-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=JNexz3Tbiu8
+- title: >-
+    Theo: open-weight models drew 0.5% of T3 Code turns, and installs that tried one fell
+    from 16% to 6%
+  section: Videos
+  category: Video
+  blurb: >-
+    Theo argues the gap between open-weight and closed models is widening, citing his own
+    T3 Code usage data and score drops on altered tasks.
+  summary: >-
+    In a 2026-11-22 video, Theo says open-weight models account for 0.5% of turns and 0.7%
+    of tokens in T3 Code, and the share of installs that used one at least once fell from
+    16% to 6%. He blames compute access, tighter anti-distillation measures and AI-assisted
+    model work at closed labs for the widening gap. He also says Opus 5.5 and Fable 5.2 use
+    the file read and edit tools for under 1% of their file operations and write throwaway
+    Python or JavaScript scripts instead.
+  why: >-
+    Usage data from a real harness, set against benchmark scores, argues for testing open-weight
+    models on your own agent tasks before you adopt them.
+  background: >-
+    Open-weight models publish their parameters, so anyone can self-host and fine-tune them.
+    Closed labs serve their models only through APIs. Distillation trains one model on another
+    model's outputs. Labs have tried to block it by hiding or degrading reasoning traces,
+    as the digest reported for OpenAI's GPT-6.2 safeguards on 2026-11-21. Theo also leans
+    on MaxxBench, which the digest covered on 2026-11-08. MaxxBench changes DeepSWE tasks
+    slightly and measures how much each model's score drops.
+  event: theo-open-weight-models-gap-video
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=B2rFx4Fy1us
 - title: >-
     GPT-6.1 Sol reads, patches and writes x86-64 executables from hex dumps with no disassembler
     or compiler
