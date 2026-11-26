@@ -1,5 +1,5 @@
 date: '2026-11-26'
-updated: 2026-11-26T09:47Z
+updated: 2026-11-26T15:34Z
 stories:
 - title: >-
     NFS2ROOT: a 12-year-old nfsd heap overflow, CVE-2026-99362, lets unauthenticated clients
@@ -63,28 +63,39 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50648035
 - title: >-
-    kube-client RUSTSEC-2026-0600: the openssl-tls connector trusts OpenSSL's default CA store
-    alongside the cluster CA
+    Spring publishes 90 advisories on 2026-11-19, and Spring Framework 7.0.11 alone fixes
+    13 CVEs
   section: Security
   category: Security
   blurb: >-
-    With openssl-tls, kube-rs accepted apiserver certificates from any system root, letting
-    a TLS inspection proxy capture bearer tokens.
+    Spring's November batch patches Framework data binding, multipart smuggling, STOMP and
+    SpEL flaws, plus Spring Security and Spring AI issues.
   summary: >-
-    The kube-rs openssl-tls connector, added in 0.64.0, started from OpenSSL's default verify
-    paths and added the configured cluster CA, so any certificate chaining to a system root
-    and valid for the server name passed. kube 4.2.1 and 5.2.0 install a store holding only
-    the configured roots, and the rustls-tls connector, the default since 0.86.0, was never
-    affected. kube 0.71.0 to 0.85.x made openssl-tls a default feature that took precedence
-    over rustls-tls.
+    Spring Framework 7.0.11, released 2026-11-19, fixes 13 CVEs, including CVE-2026-59374
+    in data binding on indexed types, CVE-2026-59389 multipart part smuggling, STOMP message
+    smuggling and disclosure, an open redirect in UrlHandlerFilter and CVE-2026-59430, unintended
+    constructor and method invocation through SpEL type conversion. The Spring advisories
+    page lists the same day's batch across Spring Security, Spring AI, Spring Data, Spring
+    Web Services and Spring Integration, with several rated HIGH. JVM Weekly counts 90 advisories,
+    four of them critical, including CVE-2026-59414, a Spring Boot authorization bypass from
+    mismatched path normalization.
   why: >-
-    Rust services and operators that talk to Kubernetes through kube with OpenSSL should upgrade
-    or switch to rustls-tls, and check that any https proxy CA is in the kubeconfig bundle
-    after upgrading.
-  event: rust-kube-client-openssl-default-ca-trust
+    A Spring Boot service needs its Framework, Security and Boot versions moved to the 2026-11-19
+    fix releases, because several flaws sit in request binding and path handling.
+  background: >-
+    Spring publishes its security fixes in a monthly batch, so one day can bring fixes for
+    many projects at once. Path normalization bypasses happen when the security filter and
+    the request router turn the same URL into different paths. A rule then checks one path
+    while the handler serves another. JVM Weekly notes that Quarkus and Micronaut fixed the
+    same class of bug in the same days.
+  event: spring-november-2026-security-advisories
   sources:
   - label: primary
-    url: https://rustsec.org/advisories/RUSTSEC-2026-0600.html
+    url: https://github.com/spring-projects/spring-framework/releases/tag/v7.0.11
+  - label: primary
+    url: https://spring.io/security
+  - label: discussion
+    url: https://www.jvm-weekly.com/p/the-rest-of-the-story-november-edition
 - title: >-
     Hetzner vSwitch coupling fault can cut links between dedicated and cloud servers from
     2026-11-25 14:18 UTC
@@ -135,6 +146,85 @@ stories:
   sources:
   - label: primary
     url: https://blog.cloudflare.com/search-for-agents/
+- title: >-
+    Snap's MCP Gateway fronts 1,100 tools and checks both the person and the agent on every
+    restricted call
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Snap's agents carry an attestation token naming the original requester, and tool grants
+    for agents go through pull requests to the tool owners.
+  summary: >-
+    Snap's central MCP Gateway, built with Docker as a design partner, fronts more than 60
+    MCP servers and over 1,100 tools and handled about 1.6 million calls from people and its
+    Casper agent in the week ending 2026-10-11. An Agent Attestation Token carries both the
+    original requester and the calling agent, and the gateway authorizes restricted tools
+    against both. Agents start with read-only defaults, extra tools come through pull requests
+    that the tool owners approve, and third-party OAuth tokens live in a separate security-owned
+    service, not in the gateway or MCP servers.
+  why: >-
+    It shows a working pattern for agent tool access in which an agent never inherits all
+    of a user's rights and never holds service credentials.
+  background: >-
+    Service-to-service authentication usually tells the receiving service only which service
+    called it. The human who started a chain of calls is lost after the first hop. Agents
+    add one more hop, so a gateway has to carry the person's identity forward in a trusted
+    token. MCP, the Model Context Protocol, is the interface through which agents discover
+    and call tools.
+  event: snap-mcp-gateway-agent-identity
+  sources:
+  - label: primary
+    url: https://eng.snap.com/mcp-gateway
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50620120
+- title: >-
+    Copilot code review will bill organizations by default from 2026-12-30 when no billing
+    choice is saved
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Reviews by licensed members move from their own Copilot entitlement to the repository
+    owner's AI Credits unless admins pick Member first.
+  summary: >-
+    GitHub says that from 2026-12-30, Copilot code reviews by members with a paid Copilot
+    license will be billed to the organization that owns the repository when no billing choice
+    is saved. Today those reviews use the member's entitlement. Admins of Copilot Business
+    and Enterprise accounts can select Member to keep the current behavior, and accounts without
+    AI Credits paid usage, with a billing lock or with no billable customer default to Member.
+  why: >-
+    Organizations that leave the setting unset may see AI review spend move onto the organization's
+    paid usage at the end of December.
+  followup: The billing default changes on 2026-12-30.
+  event: copilot-code-review-org-billing-default
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-25-copilot-code-review-billing-will-default-to-the-organization
+- title: >-
+    sudo-rs on Ubuntu 26.04 breaks Ansible become prompts, fixed in Ansible Core 2.22.0 with
+    backports underway
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Ubuntu 26.04's Rust sudo prints extra text before its password prompt, so Ansible runs
+    with -K time out waiting for privilege escalation.
+  summary: >-
+    Jeff Geerling reports that Ansible playbooks run with --ask-become-pass fail on Ubuntu
+    26.04 with a 12-second timeout waiting for the privilege escalation prompt, because sudo-rs
+    prints an extra string before the prompt. The fix is in Ansible Core 2.22.0 and is being
+    backported to 2.16 through 2.20, and pyinfra fixed the same break in 3.11. Setting ansible_become_exe=sudo.ws
+    or switching sudo back with update-alternatives also works.
+  why: >-
+    Fleets moving to Ubuntu 26.04 need an updated Ansible or the classic sudo binary before
+    password-protected become stops working.
+  background: >-
+    Ubuntu has been replacing core utilities with Rust rewrites, and sudo-rs is its implementation
+    of sudo. Automation tools such as Ansible drive sudo through a pseudo-terminal and match
+    its output to know when to send the password. Any change in prompt text can stall that
+    match even when the command itself behaves the same.
+  event: ubuntu-sudo-rs-ansible-become-timeout
+  sources:
+  - label: primary
+    url: https://www.jeffgeerling.com/blog/2026/ansible-fails-become-ubuntu2604/
 - title: >-
     ClickHouse tests PostgreSQL 19's pg_plan_advice: a JOIN_ORDER hint cuts a correlated-filter
     join from 3.8 s to 20 ms

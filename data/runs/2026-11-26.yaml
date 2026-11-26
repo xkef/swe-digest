@@ -207,3 +207,95 @@ runs:
   - step: save
     status: ok
     seconds: 0.1
+- mode: daily
+  started: 2026-11-26T15:32Z
+  finished: 2026-11-26T15:34Z
+  candidates: 300
+  degraded:
+    In the Pipeline: 'https://www.science.org/blogs/pipeline/feed: The read operation timed
+      out'
+  usage:
+    input_tokens: 8
+    cache_read_tokens: 357083
+    cache_write_tokens: 142512
+    output_tokens: 6611
+    turns: 11
+    seconds: 102
+    cost_usd: 1.3532
+  tools:
+    mcp__digest__fetch_url: 9
+    StructuredOutput: 1
+  fetched:
+  - url: https://github.com/spring-projects/spring-framework/releases/tag/v7.0.11
+    ok: true
+  - url: https://sunshowers.io/posts/on-poisoning/
+    ok: true
+  - url: https://eng.snap.com/mcp-gateway
+    ok: true
+  - url: https://www.youtube.com/watch?v=1S4hx3wgvBE
+    ok: true
+  - url: https://www.jeffgeerling.com/blog/2026/ansible-fails-become-ubuntu2604/
+    ok: true
+  - url: https://www.jvm-weekly.com/p/the-rest-of-the-story-november-edition
+    ok: true
+  - url: https://www.techmeme.com/261126/p16#a261126p16
+    ok: true
+    proxy: true
+  - url: https://github.blog/changelog/2026-11-25-copilot-code-review-billing-will-default-to-the-organization
+    ok: true
+  - url: https://spring.io/security
+    ok: true
+  proxy_bytes: 2854655
+  added:
+  - >-
+    Spring publishes 90 advisories on 2026-11-19, and Spring Framework 7.0.11 alone fixes
+    13 CVEs
+  - >-
+    Snap's MCP Gateway fronts 1,100 tools and checks both the person and the agent on every
+    restricted call
+  - >-
+    sudo-rs on Ubuntu 26.04 breaks Ansible become prompts, fixed in Ansible Core 2.22.0 with
+    backports underway
+  - >-
+    Copilot code review will bill organizations by default from 2026-12-30 when no billing
+    choice is saved
+  dropped:
+  - >-
+    kube-client RUSTSEC-2026-0600: the openssl-tls connector trusts OpenSSL's default CA store
+    alongside the cluster CA
+  rejected: []
+  requests: []
+  inbox_used: []
+  notes: >-
+    I added four stories. The Spring advisory batch came out on 2026-11-19 but no earlier
+    digest covered it, and it hits the owner's Spring Boot stack directly. To make room in
+    the full security budget I dropped the kube-client RUSTSEC story, which only affects the
+    openssl-tls feature. I left major unset on the Spring story because the release page and
+    advisory list I loaded do not show the critical ratings. Only JVM Weekly, a discussion
+    source, says four are critical. I skipped the OpenAI GPT-6.2 billing correction because
+    the Techmeme page I loaded did not include the details. The Ubuntu security response thread
+    was already noted on f-0224 today. The sunshowers lock poisoning post is dated 2025, so
+    it does not move f-0248. The Justin McCarthy talk was opinion with no measured results.
+    In the Pipeline remains degraded.
+  steps:
+  - step: collect
+    status: ok
+    seconds: 39.2
+  - step: load
+    status: ok
+    seconds: 0.0
+  - step: select
+    status: ok
+    seconds: 0.1
+  - step: brief
+    status: ok
+    seconds: 0.0
+  - step: ask
+    status: ok
+    seconds: 104.2
+  - step: merge
+    status: ok
+    seconds: 0.1
+  - step: save
+    status: ok
+    seconds: 0.1
