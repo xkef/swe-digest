@@ -1,5 +1,5 @@
 date: '2026-11-26'
-updated: 2026-11-26T01:09Z
+updated: 2026-11-26T09:47Z
 stories:
 - title: >-
     NFS2ROOT: a 12-year-old nfsd heap overflow, CVE-2026-99362, lets unauthenticated clients
@@ -163,6 +163,65 @@ stories:
   - label: primary
     url: https://clickhouse.com/blog/pg-plan-advice-postgresql-19
 - title: >-
+    Christophe Pettus: functions in indexes and constraints break under the empty search_path
+    of autovacuum, pg_restore and replication
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    PL/pgSQL bodies resolve names on the caller's path, so autovacuum, pg_restore and replication
+    workers can break functions that work in app.
+  summary: >-
+    Pettus shows that PL/pgSQL functions and string-bodied SQL functions resolve names against
+    the caller's search_path, which is empty or pg_catalog, pg_temp for autovacuum, pg_restore,
+    vacuumdb and, from PostgreSQL 17, maintenance commands such as ANALYZE and REINDEX, and
+    empty for the logical replication apply worker. In his tests a CHECK constraint function
+    that assumed the path made a table restore empty with only one error, and an inlinable
+    SQL function in an index expression made pg_upgrade fail after --check passed. He also
+    shows that SECURITY DEFINER functions need SET search_path ending in pg_temp, that clusters
+    upgraded from 14 keep CREATE on public even in template1, and that a session-level SET
+    search_path leaks between clients behind a transaction-mode PgBouncer.
+  why: >-
+    Any function used by an index, constraint, trigger or materialized view needs schema-qualified
+    names, a SET search_path clause or a BEGIN ATOMIC body before the next upgrade or restore.
+  background: >-
+    search_path is the PostgreSQL setting that lists the schemas searched for unqualified
+    names. Views, defaults and index expressions are stored already resolved, but most function
+    bodies are stored as text and resolved at call time. Since the 2018 CVE-2018-1058 fixes,
+    PostgreSQL tools run with an empty path to stop untrusted schemas from hijacking names.
+  event: pettus-postgres-search-path-guc
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9DI
+- title: >-
+    Foojay: wrk's coordinated-omission correction and a co-resident JVM distorted Java benchmark
+    tails by orders of magnitude
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    wrk's coordinated-omission fix inflated closed-loop percentiles, and a resident neighbouring
+    JVM turned a 2 ms open-loop p99 into seconds.
+  summary: >-
+    Arkadiusz Przychocki traced a 148 ms worst request in closed-loop wrk runs of his Java
+    runtime and found wrk 4.1 inserted synthetic samples that pushed the reported mean to
+    5.61 ms where Little's law caps it at 2.25 ms, while the max itself was real and not a
+    GC pause, the longest being 23 ms. Measured open loop with wrk2 at 30k rps the worst request
+    was 25.6 ms, and the gated p99.9 was 2.61 ms. In a later open-loop pair with two heavyweight
+    JVMs resident, a target whose p99 was about 2 ms beside a lighter neighbour read 2.4 to
+    8.5 s at 12k rps, and the rate-attainment gate caught only three of four bad runs.
+  why: >-
+    Closed-loop percentiles and runs with other JVMs resident on the same box should not gate
+    latency decisions without open-loop measurement and neighbour visibility.
+  background: >-
+    Coordinated omission happens when a load generator waits for slow responses before sending
+    more, so it under-samples exactly the periods when the server is slow. Closed-loop tools
+    like wrk send the next request only after the previous one returns, while open-loop tools
+    like wrk2 send at a fixed declared rate and time each request from when it should have
+    been sent.
+  event: foojay-exeris-benchmark-tail-latency
+  sources:
+  - label: primary
+    url: https://foojay.io/today/the-148-ms-was-waiting-not-work/
+- title: >-
     LinkedIn cut P99 image pull time 72% by enabling parallel kubelet pulls and lowering containerd
     download concurrency
   section: Talks
@@ -207,3 +266,87 @@ stories:
   sources:
   - label: primary
     url: https://www.youtube.com/watch?v=GrcEH4lDE9I
+- title: >-
+    Timur Doumler: the C++29 draft checks base and overrider contracts on virtual calls, one
+    of six planned extensions
+  section: Talks
+  category: Video
+  blurb: >-
+    The C++29 draft checks both the base and overriding function's pre and post conditions
+    on virtual calls, one of six planned contract extensions.
+  summary: >-
+    At CppCon 2026 Doumler said pre and post on virtual functions, removed from C++26, were
+    voted into the C++29 draft, checking the statically called function's precondition, the
+    final overrider's precondition, then both postconditions in reverse order, rather than
+    Eiffel's OR and AND rules. The other five extensions in roadmap paper P3850 are user-defined
+    violation messages, explicitly triggered violations including a hook for C assert, postcondition
+    captures of old values and parameters, labels that group assertions and constrain their
+    evaluation semantics, and implicit assertions for undefined behavior. All six are implemented
+    on GCC and Clang branches available in Compiler Explorer.
+  why: >-
+    C++ teams adopting C++26 contract_assert, pre and post can see which gaps, such as per-library
+    control and virtual function support, are on track for C++29.
+  background: >-
+    C++26 contract assertions are language keywords that replace the assert macro, with build-time
+    evaluation semantics ignore, observe, enforce and quick-enforce and a replaceable violation
+    handler. WG21 kept them in C++26 at its Búzios meeting after a failed ISO ballot.
+  event: doumler-cpp-contracts-cpp29-roadmap-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=nqEwi-DU2oo
+- title: >-
+    Lemire: an = default constructor makes a span loop over four times slower than {} under
+    GCC 15 and 16
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Declaring an empty constructor as = default instead of {} makes a span loop over four
+    times slower under GCC 15 and 16, but not under Clang 21.
+  summary: >-
+    Daniel Lemire shows that span() = default keeps a struct trivial, so value-initialization
+    zeroes it, while span() {} is user-provided and does not. In his loop GCC 15.2 and 16.2
+    route fields through a temporary and copy them, taking 7.75 and 8.04 ns per span against
+    1.73 ns with {}, while GCC 14.3 and Clang 21 run both at about 1.74 ns. The post drew
+    116 points and 176 comments on Hacker News.
+  why: >-
+    Hot C++ value types built with GCC 15 or later may need their codegen checked when constructors
+    are defaulted.
+  comments: >-
+    Most of the thread compares C++ constructors with the static factory functions of Rust,
+    Go and Zig. Commenters note that C++ constructors allow in-place construction, while Rust
+    has no guaranteed copy elision yet and has an open issue to add in-place initialization.
+  event: lemire-cpp-default-vs-braces-constructor
+  sources:
+  - label: primary
+    url: https://lemire.me/blog/2026/11/02/default-and-braces-are-not-the-same-constructor/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50643199
+- title: >-
+    pw-loudness-eq ports Windows Loudness Equalization and its output limiter to PipeWire
+    from reverse-engineered DLLs
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A PipeWire module reimplements Windows' loudness gain control and output limiter from
+    its DLLs, with settings scriptable via pw-metadata.
+  summary: >-
+    pw-loudness-eq reimplements the algorithm in WMALFXGFXDSP.dll as a per-stream PipeWire
+    filter graph that measures loudness over 25 bands and applies up to 20 dB of broadband
+    gain, plus the look-ahead limiter from AudioEng.dll on every playback device. It needs
+    PipeWire 1.4 or later, skips JACK clients and Flatpak apps that use PipeWire directly,
+    and stores settings in a PipeWire metadata object. The repository drew 336 points and
+    186 comments on Hacker News.
+  why: >-
+    Linux desktop users get a close match to the Windows feature, and the README documents
+    exactly what Windows does to shared-mode audio.
+  comments: >-
+    Commenters confirm that Windows shared-mode audio passes through the CAudioLimiter even
+    with one stream, which altered peaks in one reader's loopback metering. Much of the thread
+    argues the feature is gain normalization rather than equalization and points to EasyEffects
+    presets, though one user says none of those match Windows.
+  event: pw-loudness-eq-pipewire-port
+  sources:
+  - label: primary
+    url: https://github.com/xoxorwr/pw-loudness-eq
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50641171
