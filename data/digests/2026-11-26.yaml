@@ -1,5 +1,5 @@
 date: '2026-11-26'
-updated: 2026-11-26T19:14Z
+updated: 2026-11-26T22:30Z
 stories:
 - title: >-
     NFS2ROOT: a 12-year-old nfsd heap overflow, CVE-2026-99362, lets unauthenticated clients
@@ -176,6 +176,32 @@ stories:
   - label: primary
     url: https://huggingface.co/blog/training-swarms
 - title: >-
+    OpenAI fixes a GPT-6.2 billing bug, so Astra plans hit usage limits 40% faster and Sol
+    plans 25% faster
+  section: AI
+  category: AI
+  blurb: >-
+    GPT-6.2 Astra and Sol were undercounted against plan allowances since launch, and the
+    fix means Codex and ChatGPT limits now arrive sooner.
+  summary: >-
+    Tibo Sottiaux of OpenAI said a launch mistake had discounted GPT-6.2 Astra and Sol usage,
+    and that after the fix users reach limits 40% faster on Astra and 25% faster on Sol than
+    last week. OpenAI will not charge for the difference and adds one banked reset for Go,
+    Plus, Pro and Business users. Other models keep their usage calculations.
+  why: >-
+    Teams sizing Codex subscriptions for agent work get noticeably less GPT-6.2 capacity per
+    plan than the first week suggested.
+  comments: >-
+    The Hacker News thread drew 452 points and 258 comments. Practitioners report switching
+    coding work to Claude Opus 5.5 or Gemini 4 Neon, say Sol 6.2 needs higher reasoning effort
+    to match 6.1, and note a separate change that makes chat usage draw from the coding quota.
+  event: openai-gpt-6-2-usage-billing-fix
+  sources:
+  - label: discussion
+    url: https://www.bleepingcomputer.com/news/artificial-intelligence/openai-warns-gpt-62-astra-will-hit-usage-limits-40-percent-faster-because-it-fixed-a-bug/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50651117
+- title: >-
     Snap's MCP Gateway fronts 1,100 tools and checks both the person and the agent on every
     restricted call
   section: Agentic coding
@@ -254,6 +280,87 @@ stories:
   sources:
   - label: primary
     url: https://www.jeffgeerling.com/blog/2026/ansible-fails-become-ubuntu2604/
+- title: >-
+    Sasha Levin readies an in-tree agents/skills directory with AI agent skills for the Linux
+    7.5 merge window
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Kernel AI agent skills for Fixes tags, stable tags, commit messages and KUnit tests are
+    headed to Linus Torvalds when the 7.5 merge window opens.
+  summary: >-
+    Sasha Levin asked on 2026-11-26 for his agents branch to be dropped from linux-next because
+    he intends to send it to Linus Torvalds. The branch adds an agents/skills directory with
+    skills for finding Fixes tags, deciding stable tags, finding other instances of a fixed
+    bug, writing commit messages and writing KUnit tests. Phoronix expects the pull during
+    the Linux 7.5 merge window in late December.
+  why: >-
+    Kernel contributors using coding agents may soon get maintainer-written instructions in
+    the tree itself, which shapes how AI-generated patches are expected to look.
+  background: >-
+    Agent skills are packaged instruction files, often with scripts, that coding agents load
+    when a task matches. The kernel community has argued over AI-generated patches, including
+    Torvalds' warning to ext4 maintainers about a 41,000-line AI fix pull at rc5. Levin co-maintains
+    the stable and LTS kernels and has used AI to pick patches for backporting.
+  followup: The Linux 7.5 merge window opening in late December 2026.
+  event: linux-kernel-agent-skills-directory
+  sources:
+  - label: discussion
+    url: https://www.phoronix.com/news/Linux-AI-Agent-Skills-Ready
+- title: >-
+    Radim Marek: ANALYZE calls a 99.8%-NULL PostgreSQL column unique in about four runs of
+    ten, flipping join plans
+  section: Infrastructure
+  category: Engineering post
+  blurb: >-
+    On a sparse join column, each PostgreSQL ANALYZE run gives a new n_distinct, sometimes
+    claiming uniqueness, and the planner switches join plans.
+  summary: >-
+    On a 10 million row lab table where escalated_to is NULL in 99.8% of rows, 200 runs of
+    ANALYZE produced 94 different n_distinct values, 75 of them negative, because the 30,000-row
+    sample holds about 60 non-NULL values and compute_scalar_stats declares a column unique
+    when none repeat. The team query flipped between a nested loop at 5,404 buffers and a
+    merge join at 11,091 buffers depending only on the last ANALYZE. SET STATISTICS 1000 stopped
+    the flips at the cost of ANALYZE going from 92 ms to 624 ms, and a fixed n_distinct override
+    pins the estimate.
+  why: >-
+    Sparse nullable join columns can change query plans after any autovacuum ANALYZE, and
+    the post gives a pg_stats query to find columns in that state.
+  background: >-
+    PostgreSQL's planner estimates join and filter row counts from per-column statistics that
+    ANALYZE builds from a random sample of rows, 300 times the statistics target. n_distinct
+    is stored either as a positive count or, when negative, as a fraction of the row count,
+    so a negative value grows with the table. The post shows that a nullable foreign key makes
+    the planner skip n_distinct and assume every row matches, a stable but far too high estimate.
+  event: boringsql-analyze-mostly-null-n-distinct
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9DN
+- title: >-
+    Garage 2.6.0 adds a web admin UI, publishes an official Helm chart, and ends Garage 1.x
+    support
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    The self-hosted S3 store Garage gains a browser admin console on its admin port, a Helm
+    repository, and a 3.0 beta that swaps its RPC handshake.
+  summary: >-
+    Garage 2.6.0 serves an NLnet-funded web administration UI on the admin API port, covering
+    cluster monitoring, layout, buckets and keys, and the project now publishes an official
+    Helm chart. Garage 1.x is end of life. Garage 3.0.0 beta 1 adds anonymous S3 reads and
+    object tagging, replaces the SSB handshake with the Noise protocol, renames most Prometheus
+    metrics, and breaks 2.x Fjall metadata files.
+  why: >-
+    Garage operators on Kubernetes get a supported chart, and 1.x users must move to 2.x,
+    while planned S3 object locking will be best effort because Garage has no consensus algorithm.
+  background: >-
+    Garage is a geo-distributed S3-compatible object store aimed at small self-hosted clusters,
+    an alternative to MinIO or SeaweedFS. It replicates data without a consensus protocol,
+    which keeps it simple but limits guarantees such as conditional writes acting as a mutex.
+  event: garage-2-6-0-release
+  sources:
+  - label: primary
+    url: https://garagehq.deuxfleurs.fr/blog/2026-11-webadmin-release/
 - title: >-
     ClickHouse tests PostgreSQL 19's pg_plan_advice: a JOIN_ORDER hint cuts a correlated-filter
     join from 3.8 s to 20 ms
