@@ -1,0 +1,442 @@
+date: '2026-11-26'
+updated: 2026-11-26T15:34Z
+stories:
+- title: >-
+    NFS2ROOT: a 12-year-old nfsd heap overflow, CVE-2026-99362, lets unauthenticated clients
+    root Linux NFS servers
+  section: Top stories
+  category: Security
+  blurb: >-
+    Any host serving NFSv4.1 or 4.2 on a reachable port 2049 can be rooted with one TCP connection,
+    fixed in 6.12.117, 6.18.61 and 7.3.2.
+  summary: >-
+    OpenSec says a client can shrink its NFSv4.1 session reply cache to zero bytes and make
+    nfsd copy a full SEQUENCE reply into it, writing 61 bytes past a kernel heap object, a
+    bug present since Linux 3.16 in 2014. Its Antara agent chained the overflow into a KASLR
+    leak, an arbitrary free and a root shell with no human help, and the exploit stays private.
+    Fixes by ANSSI's Jérémy Jean shipped in 6.12.117, 6.18.61, 7.3.2 and 7.4-rc1, with CVE-2026-99362
+    published on 2026-11-20.
+  why: >-
+    Any file server, NAS or Kubernetes storage node running in-kernel nfsd needs a patched
+    kernel and a reboot, or a firewall on tcp/2049 or NFSv4.1 and 4.2 disabled until then.
+  background: >-
+    NFSv4.1 added sessions, in which each slot caches its last reply so a retried request
+    is answered exactly once. The client negotiates how big that cache is when it creates
+    the session, before any authentication. The in-kernel NFS server, nfsd, parses that input
+    in kernel context, so a memory bug there is a remote kernel bug rather than a daemon crash.
+  event: nfsd-nfs2root-cve-2026-99362
+  sources:
+  - label: primary
+    url: https://opensec.in/blog/nfs2root-cve-2026-99362
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50647161
+- title: >-
+    Defang says an attacker copied its production credentials and database, and held its GitHub
+    App key for 11 days
+  section: Top stories
+  category: Security
+  blurb: >-
+    A tagged release from an over-permissioned dev GitHub App ran in Defang's CI, exposing
+    customer deploy state, Stripe data and repo access.
+  summary: >-
+    On 2026-11-12 an attacker acting as Defang's development GitHub App pushed a commit and
+    tagged it as a release, which production CI trusted, and copied production credentials
+    and the main database. The credentials, including the Defang GitHub App key, the key encrypting
+    stored GitHub tokens and a Stripe key, stayed valid until Defang detected the activity
+    and replaced them on 2026-11-23. Exposed data includes Compose files and deployment state
+    from 2026-10-12 to 2026-11-19, which can hold database passwords, and Defang cannot yet
+    rule out later use of the GitHub credentials.
+  why: >-
+    Defang users who installed its GitHub App should audit repositories and the defang-cd-CIRole
+    deploy role for activity since 2026-11-11, restrict defang- environments to the deploy
+    branch, and rotate secrets from deployment state.
+  background: >-
+    Defang deploys Docker Compose projects into a customer's own AWS, Google Cloud or Azure
+    account. Its GitHub App can push, edit workflows and change deployment environments, and
+    a GitHub Actions OIDC role in the customer cloud trusts workflows from the repository.
+    A stolen app key can therefore turn into cloud admin access through a workflow run.
+  event: defang-ci-credential-breach-2026-11
+  major: breach of a platform that developers build on
+  sources:
+  - label: primary
+    url: https://defang.io/blog/post/security-incident-november-2026/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50648035
+- title: >-
+    Spring publishes 90 advisories on 2026-11-19, and Spring Framework 7.0.11 alone fixes
+    13 CVEs
+  section: Security
+  category: Security
+  blurb: >-
+    Spring's November batch patches Framework data binding, multipart smuggling, STOMP and
+    SpEL flaws, plus Spring Security and Spring AI issues.
+  summary: >-
+    Spring Framework 7.0.11, released 2026-11-19, fixes 13 CVEs, including CVE-2026-59374
+    in data binding on indexed types, CVE-2026-59389 multipart part smuggling, STOMP message
+    smuggling and disclosure, an open redirect in UrlHandlerFilter and CVE-2026-59430, unintended
+    constructor and method invocation through SpEL type conversion. The Spring advisories
+    page lists the same day's batch across Spring Security, Spring AI, Spring Data, Spring
+    Web Services and Spring Integration, with several rated HIGH. JVM Weekly counts 90 advisories,
+    four of them critical, including CVE-2026-59414, a Spring Boot authorization bypass from
+    mismatched path normalization.
+  why: >-
+    A Spring Boot service needs its Framework, Security and Boot versions moved to the 2026-11-19
+    fix releases, because several flaws sit in request binding and path handling.
+  background: >-
+    Spring publishes its security fixes in a monthly batch, so one day can bring fixes for
+    many projects at once. Path normalization bypasses happen when the security filter and
+    the request router turn the same URL into different paths. A rule then checks one path
+    while the handler serves another. JVM Weekly notes that Quarkus and Micronaut fixed the
+    same class of bug in the same days.
+  event: spring-november-2026-security-advisories
+  sources:
+  - label: primary
+    url: https://github.com/spring-projects/spring-framework/releases/tag/v7.0.11
+  - label: primary
+    url: https://spring.io/security
+  - label: discussion
+    url: https://www.jvm-weekly.com/p/the-rest-of-the-story-november-edition
+- title: >-
+    Hetzner vSwitch coupling fault can cut links between dedicated and cloud servers from
+    2026-11-25 14:18 UTC
+  section: Outages
+  category: Outage
+  blurb: >-
+    Changes to private networks or cloud server migrations may fail to configure gateways,
+    dropping traffic between dedicated and cloud servers.
+  summary: >-
+    Hetzner reports the vSwitch coupling faulty since 2026-11-25 14:18 UTC, with the incident
+    still in progress. Only networks and servers that use a vSwitch are affected, and connectivity
+    from dedicated servers to cloud servers can drop when a private network is changed or
+    a cloud server migrates to another host.
+  why: >-
+    Setups that bridge Hetzner Cloud networks to dedicated servers should hold private network
+    changes until Hetzner resolves the fault.
+  background: >-
+    A Hetzner vSwitch is a VLAN that joins dedicated servers, and coupling attaches it to
+    a Hetzner Cloud private network through gateways. Hybrid clusters use it to reach bare
+    metal databases or storage from cloud nodes.
+  event: hetzner-vswitch-coupling-fault-2026-11-25
+  sources:
+  - label: primary
+    url: https://status.hetzner.com/incident/24d2e841-c44b-4bc6-a51a-4df19ca67c42
+- title: >-
+    Cloudflare Search for Agents indexes a zone and serves /.well-known/search, including
+    the new HTTP QUERY method
+  section: AI
+  category: AI
+  blurb: >-
+    One toggle creates an AI Search index for a site, advertises its endpoint in meta tags,
+    and answers GET or RFC 10008 QUERY requests.
+  summary: >-
+    Enabling Search for Agents on a zone creates an AI Search instance, crawls and indexes
+    the site, and serves Markdown search results, not generated answers, from /.well-known/search
+    on the customer's domain. Every HTML page gets agent:endpoint and agent:instructions meta
+    tags, and Markdown for Agents responses carry the same data in front matter. It is available
+    on all plans, including Free with limits, billed at AI Search pricing.
+  why: >-
+    Documentation sites can give coding agents a search endpoint instead of letting them crawl
+    pages, and API builders get a production example of the QUERY method.
+  background: >-
+    HTTP QUERY, published as RFC 10008 in 2026-06, is a safe and idempotent method that carries
+    its query in a request body, filling the gap between GET with long query strings and POST,
+    which caches and retries cannot treat as safe. Cloudflare says curl and undici have adopted
+    it.
+  event: cloudflare-search-for-agents
+  sources:
+  - label: primary
+    url: https://blog.cloudflare.com/search-for-agents/
+- title: >-
+    Snap's MCP Gateway fronts 1,100 tools and checks both the person and the agent on every
+    restricted call
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    Snap's agents carry an attestation token naming the original requester, and tool grants
+    for agents go through pull requests to the tool owners.
+  summary: >-
+    Snap's central MCP Gateway, built with Docker as a design partner, fronts more than 60
+    MCP servers and over 1,100 tools and handled about 1.6 million calls from people and its
+    Casper agent in the week ending 2026-10-11. An Agent Attestation Token carries both the
+    original requester and the calling agent, and the gateway authorizes restricted tools
+    against both. Agents start with read-only defaults, extra tools come through pull requests
+    that the tool owners approve, and third-party OAuth tokens live in a separate security-owned
+    service, not in the gateway or MCP servers.
+  why: >-
+    It shows a working pattern for agent tool access in which an agent never inherits all
+    of a user's rights and never holds service credentials.
+  background: >-
+    Service-to-service authentication usually tells the receiving service only which service
+    called it. The human who started a chain of calls is lost after the first hop. Agents
+    add one more hop, so a gateway has to carry the person's identity forward in a trusted
+    token. MCP, the Model Context Protocol, is the interface through which agents discover
+    and call tools.
+  event: snap-mcp-gateway-agent-identity
+  sources:
+  - label: primary
+    url: https://eng.snap.com/mcp-gateway
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50620120
+- title: >-
+    Copilot code review will bill organizations by default from 2026-12-30 when no billing
+    choice is saved
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Reviews by licensed members move from their own Copilot entitlement to the repository
+    owner's AI Credits unless admins pick Member first.
+  summary: >-
+    GitHub says that from 2026-12-30, Copilot code reviews by members with a paid Copilot
+    license will be billed to the organization that owns the repository when no billing choice
+    is saved. Today those reviews use the member's entitlement. Admins of Copilot Business
+    and Enterprise accounts can select Member to keep the current behavior, and accounts without
+    AI Credits paid usage, with a billing lock or with no billable customer default to Member.
+  why: >-
+    Organizations that leave the setting unset may see AI review spend move onto the organization's
+    paid usage at the end of December.
+  followup: The billing default changes on 2026-12-30.
+  event: copilot-code-review-org-billing-default
+  sources:
+  - label: primary
+    url: https://github.blog/changelog/2026-11-25-copilot-code-review-billing-will-default-to-the-organization
+- title: >-
+    sudo-rs on Ubuntu 26.04 breaks Ansible become prompts, fixed in Ansible Core 2.22.0 with
+    backports underway
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Ubuntu 26.04's Rust sudo prints extra text before its password prompt, so Ansible runs
+    with -K time out waiting for privilege escalation.
+  summary: >-
+    Jeff Geerling reports that Ansible playbooks run with --ask-become-pass fail on Ubuntu
+    26.04 with a 12-second timeout waiting for the privilege escalation prompt, because sudo-rs
+    prints an extra string before the prompt. The fix is in Ansible Core 2.22.0 and is being
+    backported to 2.16 through 2.20, and pyinfra fixed the same break in 3.11. Setting ansible_become_exe=sudo.ws
+    or switching sudo back with update-alternatives also works.
+  why: >-
+    Fleets moving to Ubuntu 26.04 need an updated Ansible or the classic sudo binary before
+    password-protected become stops working.
+  background: >-
+    Ubuntu has been replacing core utilities with Rust rewrites, and sudo-rs is its implementation
+    of sudo. Automation tools such as Ansible drive sudo through a pseudo-terminal and match
+    its output to know when to send the password. Any change in prompt text can stall that
+    match even when the command itself behaves the same.
+  event: ubuntu-sudo-rs-ansible-become-timeout
+  sources:
+  - label: primary
+    url: https://www.jeffgeerling.com/blog/2026/ansible-fails-become-ubuntu2604/
+- title: >-
+    ClickHouse tests PostgreSQL 19's pg_plan_advice: a JOIN_ORDER hint cuts a correlated-filter
+    join from 3.8 s to 20 ms
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Session-level advice such as BITMAP_HEAP_SCAN and JOIN_ORDER fixes plans that the planner's
+    independence assumptions get wrong.
+  summary: >-
+    PostgreSQL 19 ships pg_plan_advice, set per session, and pg_stash_advice, applied per
+    query identifier, both working by forbidding the plans not chosen. In ClickHouse's tests,
+    BITMAP_HEAP_SCAN cut an ORDER BY LIMIT query over clustered rows from 1,462 ms to 9.7
+    ms, and JOIN_ORDER(a act) cut a join with correlated filters from 3,837 ms to 20 ms. EXPLAIN
+    with PLAN_ADVICE reports whether supplied advice matched, and the post shows stale advice
+    can make a query slower once the data changes.
+  why: >-
+    Postgres users get supported hints for the rare plans the planner gets wrong, but should
+    scope them with SET LOCAL and recheck them as data shifts.
+  background: >-
+    The Postgres project long refused query hints, treating bad plans as planner bugs, which
+    left users with the third-party pg_hint_plan extension or blunt enable_ settings. The
+    planner keeps statistics per table and assumes filters on different tables are independent,
+    so correlated columns across a join can push its row estimates off by orders of magnitude.
+  event: clickhouse-pg-plan-advice-pg19
+  sources:
+  - label: primary
+    url: https://clickhouse.com/blog/pg-plan-advice-postgresql-19
+- title: >-
+    Christophe Pettus: functions in indexes and constraints break under the empty search_path
+    of autovacuum, pg_restore and replication
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    PL/pgSQL bodies resolve names on the caller's path, so autovacuum, pg_restore and replication
+    workers can break functions that work in app.
+  summary: >-
+    Pettus shows that PL/pgSQL functions and string-bodied SQL functions resolve names against
+    the caller's search_path, which is empty or pg_catalog, pg_temp for autovacuum, pg_restore,
+    vacuumdb and, from PostgreSQL 17, maintenance commands such as ANALYZE and REINDEX, and
+    empty for the logical replication apply worker. In his tests a CHECK constraint function
+    that assumed the path made a table restore empty with only one error, and an inlinable
+    SQL function in an index expression made pg_upgrade fail after --check passed. He also
+    shows that SECURITY DEFINER functions need SET search_path ending in pg_temp, that clusters
+    upgraded from 14 keep CREATE on public even in template1, and that a session-level SET
+    search_path leaks between clients behind a transaction-mode PgBouncer.
+  why: >-
+    Any function used by an index, constraint, trigger or materialized view needs schema-qualified
+    names, a SET search_path clause or a BEGIN ATOMIC body before the next upgrade or restore.
+  background: >-
+    search_path is the PostgreSQL setting that lists the schemas searched for unqualified
+    names. Views, defaults and index expressions are stored already resolved, but most function
+    bodies are stored as text and resolved at call time. Since the 2018 CVE-2018-1058 fixes,
+    PostgreSQL tools run with an empty path to stop untrusted schemas from hijacking names.
+  event: pettus-postgres-search-path-guc
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9DI
+- title: >-
+    Foojay: wrk's coordinated-omission correction and a co-resident JVM distorted Java benchmark
+    tails by orders of magnitude
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    wrk's coordinated-omission fix inflated closed-loop percentiles, and a resident neighbouring
+    JVM turned a 2 ms open-loop p99 into seconds.
+  summary: >-
+    Arkadiusz Przychocki traced a 148 ms worst request in closed-loop wrk runs of his Java
+    runtime and found wrk 4.1 inserted synthetic samples that pushed the reported mean to
+    5.61 ms where Little's law caps it at 2.25 ms, while the max itself was real and not a
+    GC pause, the longest being 23 ms. Measured open loop with wrk2 at 30k rps the worst request
+    was 25.6 ms, and the gated p99.9 was 2.61 ms. In a later open-loop pair with two heavyweight
+    JVMs resident, a target whose p99 was about 2 ms beside a lighter neighbour read 2.4 to
+    8.5 s at 12k rps, and the rate-attainment gate caught only three of four bad runs.
+  why: >-
+    Closed-loop percentiles and runs with other JVMs resident on the same box should not gate
+    latency decisions without open-loop measurement and neighbour visibility.
+  background: >-
+    Coordinated omission happens when a load generator waits for slow responses before sending
+    more, so it under-samples exactly the periods when the server is slow. Closed-loop tools
+    like wrk send the next request only after the previous one returns, while open-loop tools
+    like wrk2 send at a fixed declared rate and time each request from when it should have
+    been sent.
+  event: foojay-exeris-benchmark-tail-latency
+  sources:
+  - label: primary
+    url: https://foojay.io/today/the-148-ms-was-waiting-not-work/
+- title: >-
+    LinkedIn cut P99 image pull time 72% by enabling parallel kubelet pulls and lowering containerd
+    download concurrency
+  section: Talks
+  category: Video
+  blurb: >-
+    Omer Oz shows unpacking, not download, dominates pulls, and that EROFS snapshots skip
+    eager unpacking to finish it in under 0.4 s.
+  summary: >-
+    On LinkedIn's bare metal fleet a 9 GB image downloaded in 13 seconds but took 85 to pull,
+    because containerd unpacks layers sequentially and kubelet pulls one image at a time.
+    Three parallel kubelet pulls and fewer concurrent containerd downloads cut Flink pod pull
+    P99 from 14 to 4 minutes and stateless P50 from 30 to 8 seconds, for 3.6 times faster
+    pod startup at P99. Zstd images, parallel unpack and the EROFS snapshotter, plus a containerd
+    fix lifting an 8 Gbit/s download cap, cut pulls further.
+  why: >-
+    Kubernetes operators with large images can tune maxParallelImagePulls and containerd concurrency
+    before reaching for lazy-loading or P2P systems.
+  event: linkedin-container-image-pull-latency-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=DZgRiIrii40
+- title: >-
+    DB9's three founders built a Postgres-compatible multi-tenant engine on TiKV with agents,
+    merging 14,000 PRs in a year
+  section: Talks
+  category: Video
+  blurb: >-
+    Xin Shi explains per-tenant schema leases for online DDL, idle tenants costing only their
+    data, and Postgres 17.7 as test oracle.
+  summary: >-
+    At the CMU Database Group, Xin Shi says agents now create most new databases on several
+    platforms, so DB9 runs many tenants in one new Rust SQL engine over TiKV, keeps no runtime
+    for idle tenants, and stores about 100 catalog keys per new database. Schema leases scoped
+    to one tenant keep transactional DDL online without a cluster-wide schema version, and
+    every PR must match Postgres 17.7 on about 1,400 SQL cases. Claude models plan, Gemini
+    writes a competing plan, Codex writes the code and a fresh model reviews it, with humans
+    still starting engine deploys region by region.
+  why: >-
+    It is a concrete account of agent-built database work, including where humans stay in
+    the loop and how a reference implementation serves as the correctness check.
+  event: db9-agent-built-database-cmu-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=GrcEH4lDE9I
+- title: >-
+    Timur Doumler: the C++29 draft checks base and overrider contracts on virtual calls, one
+    of six planned extensions
+  section: Talks
+  category: Video
+  blurb: >-
+    The C++29 draft checks both the base and overriding function's pre and post conditions
+    on virtual calls, one of six planned contract extensions.
+  summary: >-
+    At CppCon 2026 Doumler said pre and post on virtual functions, removed from C++26, were
+    voted into the C++29 draft, checking the statically called function's precondition, the
+    final overrider's precondition, then both postconditions in reverse order, rather than
+    Eiffel's OR and AND rules. The other five extensions in roadmap paper P3850 are user-defined
+    violation messages, explicitly triggered violations including a hook for C assert, postcondition
+    captures of old values and parameters, labels that group assertions and constrain their
+    evaluation semantics, and implicit assertions for undefined behavior. All six are implemented
+    on GCC and Clang branches available in Compiler Explorer.
+  why: >-
+    C++ teams adopting C++26 contract_assert, pre and post can see which gaps, such as per-library
+    control and virtual function support, are on track for C++29.
+  background: >-
+    C++26 contract assertions are language keywords that replace the assert macro, with build-time
+    evaluation semantics ignore, observe, enforce and quick-enforce and a replaceable violation
+    handler. WG21 kept them in C++26 at its Búzios meeting after a failed ISO ballot.
+  event: doumler-cpp-contracts-cpp29-roadmap-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=nqEwi-DU2oo
+- title: >-
+    Lemire: an = default constructor makes a span loop over four times slower than {} under
+    GCC 15 and 16
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Declaring an empty constructor as = default instead of {} makes a span loop over four
+    times slower under GCC 15 and 16, but not under Clang 21.
+  summary: >-
+    Daniel Lemire shows that span() = default keeps a struct trivial, so value-initialization
+    zeroes it, while span() {} is user-provided and does not. In his loop GCC 15.2 and 16.2
+    route fields through a temporary and copy them, taking 7.75 and 8.04 ns per span against
+    1.73 ns with {}, while GCC 14.3 and Clang 21 run both at about 1.74 ns. The post drew
+    116 points and 176 comments on Hacker News.
+  why: >-
+    Hot C++ value types built with GCC 15 or later may need their codegen checked when constructors
+    are defaulted.
+  comments: >-
+    Most of the thread compares C++ constructors with the static factory functions of Rust,
+    Go and Zig. Commenters note that C++ constructors allow in-place construction, while Rust
+    has no guaranteed copy elision yet and has an open issue to add in-place initialization.
+  event: lemire-cpp-default-vs-braces-constructor
+  sources:
+  - label: primary
+    url: https://lemire.me/blog/2026/11/02/default-and-braces-are-not-the-same-constructor/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50643199
+- title: >-
+    pw-loudness-eq ports Windows Loudness Equalization and its output limiter to PipeWire
+    from reverse-engineered DLLs
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A PipeWire module reimplements Windows' loudness gain control and output limiter from
+    its DLLs, with settings scriptable via pw-metadata.
+  summary: >-
+    pw-loudness-eq reimplements the algorithm in WMALFXGFXDSP.dll as a per-stream PipeWire
+    filter graph that measures loudness over 25 bands and applies up to 20 dB of broadband
+    gain, plus the look-ahead limiter from AudioEng.dll on every playback device. It needs
+    PipeWire 1.4 or later, skips JACK clients and Flatpak apps that use PipeWire directly,
+    and stores settings in a PipeWire metadata object. The repository drew 336 points and
+    186 comments on Hacker News.
+  why: >-
+    Linux desktop users get a close match to the Windows feature, and the README documents
+    exactly what Windows does to shared-mode audio.
+  comments: >-
+    Commenters confirm that Windows shared-mode audio passes through the CAudioLimiter even
+    with one stream, which altered peaks in one reader's loopback metering. Much of the thread
+    argues the feature is gain normalization rather than equalization and points to EasyEffects
+    presets, though one user says none of those match Windows.
+  event: pw-loudness-eq-pipewire-port
+  sources:
+  - label: primary
+    url: https://github.com/xoxorwr/pw-loudness-eq
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50641171
