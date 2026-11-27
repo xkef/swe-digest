@@ -1,6 +1,35 @@
 date: '2026-11-27'
-updated: 2026-11-27T09:51Z
+updated: 2026-11-27T15:28Z
 stories:
+- title: >-
+    Spotify's 2026-09-29 outage: Argo CD reset autoscaled login service replicas to minReplicas
+    on every sync
+  section: Top stories
+  category: Engineering post
+  blurb: >-
+    Two separately tested deployment changes made Argo CD overwrite autoscaler replica counts,
+    and returning logins hit 200 times normal load.
+  summary: >-
+    Spotify says one change moved workloads from Kubernetes Deployments to Argo Rollouts and
+    another changed which fields its deployment diff ignores, so Argo CD set replicas to minReplicas
+    on every sync for Rollouts services with a test environment. A login service was among
+    them, and reissuing tokens drove the login system to 200 times its pre-incident traffic
+    while automation kept reapplying the faulty configuration. Errors began at 13:45 UTC,
+    most regions recovered by 16:30, and one European region took until 19:34.
+  why: >-
+    Teams running Argo CD next to an autoscaler should confirm replica fields are excluded
+    from sync diffs and that responders can pause reconciliation fast.
+  background: >-
+    A Kubernetes HorizontalPodAutoscaler owns a workload's replica count, so a GitOps controller
+    that also writes that field fights it. Argo CD compares live state with the desired state
+    and reapplies any difference unless the field is ignored. Argo Rollouts replaces the Deployment
+    object with its own resource type to add canary and blue-green strategies, so ignore rules
+    written for one schema can miss the other. A thundering herd is the load spike when many
+    clients retry or reauthenticate at once after an outage.
+  event: spotify-2026-09-29-outage-argo-replicas
+  sources:
+  - label: primary
+    url: https://engineering.atspotify.com/2026/11/september-29-outage-incident-report-what-we-learnt/
 - title: >-
     Researcher traces OpenRouter DeepSeek traffic from Novita, StreamLake and Ant Digital
     to ByteDance's Ark API
@@ -37,6 +66,34 @@ stories:
     url: https://kendell.dev/blog/arkwrapper/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50660273
+- title: >-
+    Florian Marending runs coding agents in per-project smolvm microVMs driven by a mise shell
+    alias
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    He dropped nono's Seatbelt sandbox and a shared Lima VM for smolvm, whose balloon memory
+    makes one VM per repository affordable.
+  summary: >-
+    Marending found that Lima allocates memory statically and cannot return it to the host
+    on macOS, which pushed him toward one VM for all projects. smolvm boots from OCI images
+    and supports elastic memory through virtio balloon, so each repository gets its own VM,
+    and a mise shell alias m runs mise tasks and pi inside it with the workspace mounted.
+    He copies agent transcripts out before teardown and says the setup is too convoluted for
+    a team.
+  why: >-
+    It shows a workable per-repository VM boundary for agents on macOS that keeps host editing
+    and jj while the agent cannot touch the rest of the machine.
+  background: >-
+    Seatbelt is the macOS kernel sandbox behind sandbox-exec, which Apple deprecated without
+    a supported replacement for arbitrary processes. A virtio balloon driver lets a guest
+    hand unused memory back to the hypervisor, so idle VMs do not hold their full allocation.
+    MicroVMs give agents a separate kernel, a stronger boundary than containers that share
+    the host kernel.
+  event: marending-smolvm-agent-isolation
+  sources:
+  - label: primary
+    url: https://marending.dev/notes/agent-isolation/
 - title: >-
     Brush 0.5 passes 96% of the bash-completion test suite and ships prebuilt Windows binaries
   section: Developer tools
@@ -120,6 +177,60 @@ stories:
   - label: primary
     url: https://maskray.me/blog/llvm-direct-o0-code-generator
 - title: >-
+    systemd 263-rc1 adds optional Rust programs and makes /run read-only under ProtectSystem=strict
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    The release candidate isolates AF_VSOCK sockets per network namespace, adds a PTY broker
+    and merges networkd with networkctl.
+  summary: >-
+    systemd v263-rc1, tagged 2026-11-27, adds a -Drust= meson option for building programs
+    in Rust, needing rustc 1.85 or later. It sets net.vsock.child_ns_mode=local on kernels
+    7.0 and later, so services and containers in private network namespaces can no longer
+    reach host vsock services, and it fixes ProtectSystem=strict leaving /run writable since
+    v248. It also adds systemd-ptybrokerd, which keeps pseudo TTYs open independently of the
+    client, and an IOuringFilter= unit setting.
+  why: >-
+    Services that wrote to /run under ProtectSystem=strict or containers that talk to host
+    vsock need ReadWritePaths=, RuntimeDirectory= or a sysctl override before upgrading.
+  background: >-
+    AF_VSOCK is a socket family for communication between a VM and its hypervisor, and between
+    VMs, without a network stack. ProtectSystem=strict mounts the whole file system read-only
+    for a service except paths it explicitly lists. systemd announced Rust support earlier
+    for new leaf programs, not for rewriting its core C library.
+  event: systemd-263-rc1
+  sources:
+  - label: primary
+    url: https://github.com/systemd/systemd/releases/tag/v263-rc1
+  - label: discussion
+    url: https://www.phoronix.com/news/systemd-263-rc1
+- title: >-
+    Cloudflare Workers gain an oidc_tokens binding that issues short-lived OIDC tokens for
+    a Worker's own identity
+  section: Infrastructure
+  category: Infrastructure
+  blurb: >-
+    A Worker can now mint signed JWTs for one audience and trade them for cloud credentials
+    instead of storing long-lived secrets.
+  summary: >-
+    workers-utils 0.58.0, released with the 2026-11-27 Wrangler batch, adds the oidc_tokens
+    binding, where env.BINDING.getToken() returns a newly signed JWT, ES256 by default with
+    RS256 as an option. After a deploy, Wrangler prints the issuer and a subject containing
+    the Worker's immutable ID for the verifier's trust policy. The binding does not work in
+    local development yet, and accounts must be enabled before deploying it.
+  why: >-
+    Workers that call AWS, Google Cloud or internal APIs can drop stored API keys in favor
+    of federated short-lived credentials.
+  background: >-
+    Workload identity federation lets a cloud provider trust an external OpenID Connect issuer
+    and exchange its signed token for temporary credentials when the issuer, subject and audience
+    match a policy. GitHub Actions popularized the pattern for CI, removing long-lived cloud
+    keys from repository secrets.
+  event: cloudflare-workers-oidc-tokens-binding
+  sources:
+  - label: primary
+    url: https://github.com/cloudflare/workers-sdk/releases/tag/%40cloudflare%2Fworkers-utils%400.58.0
+- title: >-
     Christophe Pettus: a missing PostgreSQL segment file silently truncates a table, and checksums
     and amcheck pass
   section: Engineering posts
@@ -147,6 +258,49 @@ stories:
   sources:
   - label: primary
     url: https://postgr.es/p/9D_
+- title: >-
+    Cloudflare's Michelle Chen: decision and extraction models in front of GLM 5.3 cut a CI
+    triage agent's tokens 94%
+  section: Talks
+  category: Video
+  blurb: >-
+    In a demo, Clef pruned 40 tools to 10 and an extraction model trimmed logs, so GLM 5.3
+    made one call instead of five, in 9.2 s versus 17.2 s.
+  summary: >-
+    Chen says Cloudflare trained its first decision model over 48 hours after Jev launched
+    on 2026-09-15 and shipped four models in three weeks. In a CI triage demo, the decision
+    model selected tools and the extraction model pulled the PR number and the failing log
+    lines, leaving one LLM call. She reports 72% lower cost, about 94% fewer LLM tokens and
+    runtime falling from 17.2 to 9.2 seconds.
+  why: >-
+    Routing tool selection and log extraction to single-pass models is a measurable way to
+    cut agent token spend without changing the final answer.
+  event: cloudflare-neolab-michelle-chen-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=cYcYfM9Mvwo
+- title: >-
+    Grafana's Will explains Assistant Watchers: calibrated queries run deterministically and
+    one LLM call decides to alert
+  section: Videos
+  category: Video
+  blurb: >-
+    Watchers calibrate once with an agent, then run fixed queries on a schedule and hand one
+    report to a light LLM call, at a median $5 a month.
+  summary: >-
+    A calibration agent studies dashboards, knowledge graph memories and test queries to build
+    a watcher, at under $1 on average. On each tick, from 5 minutes to 3 hours, code runs
+    the same queries plus log pattern searches and an LLM reads the report to alert via Slack,
+    Teams, webhooks or Grafana alerting, or to start an Investigation. Grafana says almost
+    all internal watchers cost under $10 a month with a median of $5, and a weekly recalibration
+    agent reviews run history to cut noise.
+  why: >-
+    It is a concrete design for LLM alerting that keeps query cost and nondeterminism bounded
+    by moving the agent work to setup time.
+  event: grafana-assistant-watchers-video
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=RwFZoxe5lP4
 - title: >-
     Google's terms will require AI agents to use its Workspace MCP servers, and the public
     Gmail server cannot send
@@ -238,3 +392,30 @@ stories:
     url: https://janlukas.blog/posts/ai-self-hosting
   - label: discussion
     url: https://news.ycombinator.com/item?id=50660180
+- title: >-
+    Alex Kretzschmar's 20TB drive went from $249.99 to $549.99 in two years, and Hacker News
+    argues cartel or supply
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A homelabber's receipts show recertified enterprise drives up 58% to 218% per TB, and
+    404 comments debate hyperscaler demand versus collusion.
+  summary: >-
+    Kretzschmar's eight years of receipts show the WD EasyStore 20TB at $549.99 this Black
+    Friday against $249.99 in November 2024, and recertified ServerPartDeals drives up 58%
+    to 218% per TB. He plans to consolidate ten disks into five 20TB drives despite redoing
+    ZFS pools. The thread drew 469 points and 404 comments.
+  why: >-
+    Storage costs for self-hosted and small-server setups have roughly doubled, which changes
+    disk refresh and pool layout plans.
+  comments: >-
+    Commenters split between supply and demand and oligopoly behavior, citing inflation-adjusted
+    figures of DRAM up 4.46x, SSD 2.49x and HDD 1.85x per GB since 2023, a Forbes estimate
+    that HDD capacity rose 27% in a year, and advice to hedge next year's cloud bill against
+    memory prices.
+  event: hard-drive-prices-black-friday-2026
+  sources:
+  - label: primary
+    url: https://blog.ktz.me/black-friday-hard-drive-prices-are-messed-up/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50661646
