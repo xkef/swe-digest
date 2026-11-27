@@ -1,0 +1,116 @@
+date: '2026-11-27'
+updated: 2026-11-27T01:09Z
+stories:
+- title: >-
+    Brush 0.5 passes 96% of the bash-completion test suite and ships prebuilt Windows binaries
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    Brush, a Bash-compatible shell in Rust, passes 96% of the bash-completion suite and ships
+    its first prebuilt Windows binaries.
+  summary: >-
+    Brush v0.5.0, released 2026-11-26 after more than 360 merged PRs, passes 2,040 upstream
+    bash-completion tests and grows its Bash-oracle suite from about 2,100 to over 3,600 cases,
+    with end-to-end suites against fzf, atuin, mise, starship and zoxide. It fixes pipeline
+    hangs when a function writes before its reader starts, honors HISTCONTROL, and adds an
+    install.sh with SHA-256 and optional attestation checks. brush-core drops its direct clap
+    dependency and replaces chrono with jiff, and each crate ships a versioned API migration
+    guide.
+  why: >-
+    Brush is now close enough to Bash that existing scripts, mise activate and completion
+    setups can be tried on it unchanged, and it can be embedded as a library with pluggable
+    process launchers.
+  background: >-
+    Bash has no formal specification, so alternative implementations measure compatibility
+    by running Bash's own behavior as an oracle and by passing the test suites of large Bash
+    programs such as bash-completion. Brush is written in Rust and splits into parser, core
+    and builtins crates so other programs can embed the shell engine.
+  event: brush-0-5-0-release
+  sources:
+  - label: primary
+    url: https://github.com/reubeno/brush/releases
+  - label: discussion
+    url: https://www.phoronix.com/news/Brush-0.5-Released
+- title: >-
+    jjui 0.10.14 deletes bookmarks on abandon like jj does and lets Lua actions resize the
+    preview
+  section: Developer tools
+  category: Dev tools
+  blurb: >-
+    The jj terminal UI now deletes bookmarks on abandon like jj itself, and Lua actions can
+    set the preview pane's size up to full screen.
+  summary: >-
+    jjui v0.10.14, released 2026-11-26, stops passing --retain-bookmarks on abandon, so bookmarks
+    on abandoned revisions are deleted as with jj abandon, and revisions.abandon.retain_bookmarks
+    = true restores the old behavior. ui.preview gains set_size(percent) and size() for Lua
+    actions, the help view widens to 120 columns, and bookmark renames and remote filtering
+    are fixed. It closes the v0.10 series before v0.11.
+  why: >-
+    jjui users who relied on abandon moving bookmarks to the parent need the config flag,
+    or bookmarks will disappear.
+  event: jjui-0-10-14-release
+  sources:
+  - label: primary
+    url: https://github.com/idursun/jjui/releases/tag/v0.10.14
+- title: >-
+    Google's terms will require AI agents to use its Workspace MCP servers, and the public
+    Gmail server cannot send
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    From 2027-02-01 Google's terms require AI agents to reach Workspace through its MCP servers,
+    whose public Gmail tools cannot send mail.
+  summary: >-
+    Tech Stackups reports that Google made eight Workspace MCP servers generally available
+    on 2026-11-24 and added a Workspace AI Tools Addendum requiring any tool that is or is
+    driven by an AI agent to use them from 2027-02-01, with agents calling REST held to Standard-tier
+    quotas. The public Gmail server can search, read and create drafts, but send, reply, forward
+    and draft editing are partner-only, and the addendum lets Google cap retention of embeddings
+    and memory indexes built from Workspace data at 30 days. The thread drew 227 points and
+    202 comments on Hacker News.
+  why: >-
+    Anyone running an agent or MCP server against Gmail or Drive needs an OAuth client marked
+    agentic and a plan for the missing write operations before 2027-02-01.
+  followup: 2027-02-01, when the addendum takes effect.
+  comments: >-
+    Commenters note MCP already has an elicitation primitive, including a URL mode the server
+    controls, that could gate sending behind human confirmation, so several read the partner-only
+    restriction as a business decision. Others say agents will fall back to SMTP or browser
+    automation, and one developer describes being sent to a paid CASA security assessment
+    after OAuth verification for a draft-only Gmail agent.
+  event: google-workspace-agent-mcp-mandate
+  sources:
+  - label: primary
+    url: https://techstackups.com/articles/google-workspace-ai-agents-mcp/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50653477
+  thread: f-0250
+- title: >-
+    llama-cpp-rdna-boosts patch set lifts a Radeon R9700 from 35 to 55 tokens per second on
+    Qwen3.8-27B
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    A writeup on llama-cpp-rdna-boosts, a patch set on llama.cpp for AMD RDNA cards, lifts
+    token generation from 35 to 55 tokens per second.
+  summary: >-
+    A devnull.land post recommends llama-cpp-rdna-boosts, a small set of AMD-specific patches
+    reapplied to pinned llama.cpp commits, which raised prefill from about 700 to 1300 tokens
+    per second and generation from 35 to 55 on an eGPU-attached R9700 running a Q6_K_L Qwen3.8-27B
+    with MTP. The author contrasts it with engines such as Strata that gain speed by changing
+    expert selection toward experts already in VRAM. The thread drew 277 points and 65 comments
+    on Hacker News.
+  why: >-
+    Hardware-specific patch sets can roughly double local inference speed on AMD cards, but
+    engines that alter model computation need quality checks before agent use.
+  comments: >-
+    Commenters report similar agent-written kernel forks for older gfx906 MI50 and MI100 cards
+    and RDNA3 7900 XTX cards, with gains of two to three times. Several warn that speed-focused
+    forks rely on fast-math changes or expert substitution that degrade output at long context,
+    and point to a Level1Techs benchmark of vLLM attention backends showing quality loss.
+  event: llama-cpp-rdna-boosts-amd-fork
+  sources:
+  - label: primary
+    url: https://devnull.land/amd-specific-llama-cpp
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50657265
