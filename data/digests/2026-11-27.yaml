@@ -1,6 +1,42 @@
 date: '2026-11-27'
-updated: 2026-11-27T01:09Z
+updated: 2026-11-27T09:51Z
 stories:
+- title: >-
+    Researcher traces OpenRouter DeepSeek traffic from Novita, StreamLake and Ant Digital
+    to ByteDance's Ark API
+  section: AI
+  category: AI
+  blurb: >-
+    Request IDs, tool-call formats, image fetches and canned refusals show prompts sent to
+    several ZDR-labeled providers ended up at ByteDance.
+  summary: >-
+    A post on kendell.dev fingerprints OpenRouter providers and finds DeepSeek and GLM requests
+    to Novita, StreamLake and Ant Digital returning ByteDance Ark request and tool-call ID
+    formats, images fetched from Volcano Engine and BytePlus addresses, and ByteDance's canned
+    censorship refusal, with chains such as SiliconFlow to StreamLake to Novita to ByteDance.
+    OpenRouter removed ZDR labels from Novita around 2026-11-20 and Ant Digital on 2026-11-22,
+    after AtlasCloud, Novita and StreamLake admitted forwarding MiniMax requests to MiniMax,
+    whose security system opened URLs from ZDR prompts. The author discloses an OpenRouter
+    grant and publishes attested test runs.
+  why: >-
+    A provider's zero data retention label says nothing about where it forwards requests,
+    so routing sensitive prompts through aggregators needs a pinned, verified provider list.
+  background: >-
+    OpenRouter routes one API call to any of many inference hosts for the same open-weight
+    model, and labels hosts that promise zero data retention (ZDR). A host that resells another
+    vendor's API passes the prompt to a party the customer never vetted. Earlier canary studies
+    by Vercel and Dragos used unique URLs in prompts to catch providers reading traffic.
+  comments: >-
+    The Hacker News thread drew 100 points and 15 comments. One commenter reports Novita's
+    Qwen endpoint returned Alibaba error messages months ago and Novita admitted routing to
+    Alibaba after first denying it. Another explains the arbitrage: wrappers route base load
+    to the upstream API at cost and shift traffic to cheap preemptible GPUs when available.
+  event: novita-streamlake-bytedance-ark-routing
+  sources:
+  - label: primary
+    url: https://kendell.dev/blog/arkwrapper/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50660273
 - title: >-
     Brush 0.5 passes 96% of the bash-completion test suite and ships prebuilt Windows binaries
   section: Developer tools
@@ -52,6 +88,65 @@ stories:
   sources:
   - label: primary
     url: https://github.com/idursun/jjui/releases/tag/v0.10.14
+- title: >-
+    MaskRay's direct -O0 code generator for LLVM cuts clang -O0 -g build instructions 14%
+    on x86-64 and 21% on AArch64
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    Fangrui Song's experimental LLVM pass turns IR straight into machine code bytes at -O0,
+    falling back to the normal pipeline per function.
+  summary: >-
+    Fangrui Song describes a DirectCodeGen pass, enabled by -direct-codegen, that compiles
+    a function from LLVM IR to encoded bytes without building a MachineFunction and sends
+    any function it cannot handle to the regular pipeline in the same object file. On the
+    compile-time tracker, clang -O0 -g builds take 14.3% fewer instructions on x86-64 and
+    21.0% fewer on AArch64, while x86-64 text grows about 10% and AArch64 size is roughly
+    unchanged. Claude Code wrote most of the code and drafted the post, and MC fixes found
+    along the way landed separately.
+  why: >-
+    Debug build latency is dominated by the back end at -O0, and this shows how much a pipeline-skipping
+    code generator can recover inside LLVM itself.
+  background: >-
+    At -O0 LLVM selects instructions with FastISel (or GlobalISel on AArch64), then runs dozens
+    of machine IR passes such as fast register allocation, prologue insertion and debug value
+    analysis before the assembly printer emits code. Skipping those passes means each one
+    that can change output, such as stack protectors, CFI or pointer authentication, must
+    be reimplemented or trigger fallback. The post gates on an exhaustive switch over function
+    attributes so a new upstream attribute breaks the build instead of silently miscompiling,
+    and checks that clang -S output assembles to the same bytes as clang -c.
+  event: llvm-direct-o0-codegen
+  sources:
+  - label: primary
+    url: https://maskray.me/blog/llvm-direct-o0-code-generator
+- title: >-
+    Christophe Pettus: a missing PostgreSQL segment file silently truncates a table, and checksums
+    and amcheck pass
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    PostgreSQL finds a table's end by walking 1GB segment files, so a lost middle file hides
+    later rows with no error from scans or pg_dump.
+  summary: >-
+    Pettus removed the middle 1GB file of a three-segment table in a restored base backup
+    on PostgreSQL 18.6 and 19rc1: sequential scans and pg_dump returned only the first file's
+    917,504 rows without error, and pg_checksums and pg_amcheck passed. Later inserts reused
+    the lost block numbers so index lookups returned wrong rows, and WAL replay recreated
+    the segment as zeroed pages, while only pg_verifybackup against the backup manifest flagged
+    the missing file. He also shows that packaged pg_checksums, pgBackRest and WAL-G assume
+    1GB segments and misreport or corrupt clusters built with other sizes.
+  why: >-
+    After any file-level copy or restore, run pg_verifybackup against the manifest before
+    starting the server, because a successful start proves nothing about missing segments.
+  background: >-
+    PostgreSQL stores each table or index as files of segment_size, 1GB by default, named
+    after the relation's filenode with .1, .2 suffixes. The server keeps no authoritative
+    length, so it measures files in order until one is short or absent. segment_size is fixed
+    at compile time with --with-segsize and cannot be changed in postgresql.conf.
+  event: pettus-postgres-segment-size
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9D_
 - title: >-
     Google's terms will require AI agents to use its Workspace MCP servers, and the public
     Gmail server cannot send
@@ -114,3 +209,32 @@ stories:
     url: https://devnull.land/amd-specific-llama-cpp
   - label: discussion
     url: https://news.ycombinator.com/item?id=50657265
+- title: >-
+    Essay on AI making self-hosting fun again draws 686 points and 341 comments as readers
+    weigh vibe-coded home servers
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Jan-Lukas Else says coding agents let him run NixOS, a bootc image and Renovate-driven
+    deploys at home, and Hacker News splits on the cost.
+  summary: >-
+    Jan-Lukas Else writes that keeping his Docker Compose and system configuration in Git
+    let coding agents set up NixOS on his home server, a Debian bootc image for his VPSes
+    in half a day, and Renovate plus Forgejo Actions deploys triggered by a push, mostly using
+    open-weight models. The Hacker News thread reached 686 points and 341 comments within
+    12 hours.
+  why: >-
+    The thread shows practitioners handing whole infrastructure repositories to agents, and
+    the security and maintenance load that follows.
+  comments: >-
+    One commenter says his home server was breached twice in the past year amid the volume
+    of CVEs and constant bot traffic. Another had an agent build a bare-metal Kubernetes cluster
+    on three Raspberry Pi 4s, with Traefik ingress, NFS volumes and Jenkins CI, without running
+    a command by hand, and advises giving the agent a written inventory of the infrastructure.
+    Others report shutting down tools they built only because they could.
+  event: ai-self-hosting-hn-debate
+  sources:
+  - label: primary
+    url: https://janlukas.blog/posts/ai-self-hosting
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50660180
