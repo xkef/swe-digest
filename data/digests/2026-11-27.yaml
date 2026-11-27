@@ -1,5 +1,5 @@
 date: '2026-11-27'
-updated: 2026-11-27T15:28Z
+updated: 2026-11-27T19:08Z
 stories:
 - title: >-
     Spotify's 2026-09-29 outage: Argo CD reset autoscaled login service replicas to minReplicas
@@ -67,6 +67,36 @@ stories:
   - label: discussion
     url: https://news.ycombinator.com/item?id=50660273
 - title: >-
+    SemiAnalysis: Trainium3 with vLLM beats GB300 on inference margin at 135 tokens per second
+    per user
+  section: AI
+  category: AI
+  blurb: >-
+    SemiAnalysis benchmarks Trainium3 and finds vLLM on it earns a 73.5% margin at 135 tok/s
+    per user, against 53% for GB300 with SGLang.
+  summary: >-
+    SemiAnalysis added Trainium3 to InferenceX, replaying real coding-agent sessions on GLM-5.3,
+    and reports better performance per TCO than every accelerator except Vera Rubin across
+    the p90 interactivity curve, while trailing GB300 on time to first token. Prefill runs
+    as a 16-stage pipeline with one chip per stage, and decode spreads one model copy across
+    128 NeuronCores as separate expert-parallel ranks. Its UBenchX microbenchmarks show Trainium's
+    descriptor generation engines reaching peak HBM bandwidth at small message sizes.
+  why: >-
+    Teams pricing self-hosted open-weight serving now have measured cost and latency tradeoffs
+    for Trainium3 against Nvidia, including where prefill-heavy workloads lose.
+  background: >-
+    Prefill processes the prompt and is compute bound, while decode generates one token at
+    a time and is bound by memory bandwidth. Trainium3 has about 17% of GB300's FP4 compute
+    but 61% of its HBM bandwidth per chip, which is why it competes on decode interactivity
+    more than on time to first token.
+  comments: >-
+    The figures assume Z.ai list token prices, 60% fleet utilization and three-year rental
+    prices, and much of the post sits behind a paywall.
+  event: semianalysis-trainium3-inferencex
+  sources:
+  - label: primary
+    url: https://newsletter.semianalysis.com/p/trainium3-inferencex
+- title: >-
     Florian Marending runs coding agents in per-project smolvm microVMs driven by a mise shell
     alias
   section: Agentic coding
@@ -94,6 +124,32 @@ stories:
   sources:
   - label: primary
     url: https://marending.dev/notes/agent-isolation/
+- title: >-
+    pi 1.7.0 adds terminal session resume over OSC 7577 and removes install telemetry
+  section: Agentic coding
+  category: Agentic coding
+  blurb: >-
+    pi can now be resumed by compatible terminals after a restart with its original tools
+    and flags, and it no longer reports install telemetry.
+  summary: >-
+    pi 1.7.0, released 2026-11-27, reports a pi --session resume command through the Program
+    Resume Protocol (OSC 7577) in terminals that set OSC7577_TOKEN, and the command repeats
+    restriction flags such as --tools and --no-extensions so a resumed session cannot gain
+    access. It removes the install telemetry endpoint, the enableInstallTelemetry setting
+    and PI_TELEMETRY, adds an --agent-dir flag, and keeps the GitHub Copilot prompt cache
+    when thinking levels change on supported Claude 5.x and GPT-6 models.
+  why: >-
+    Per-project pi profiles and tool restrictions now survive terminal restarts, and anyone
+    parsing pi telemetry settings must drop them.
+  background: >-
+    OSC sequences are terminal escape codes a program writes to stdout to talk to the terminal
+    emulator. A resume protocol lets the terminal record which command to rerun in a pane,
+    so a crashed or restarted terminal can bring back long-running agent sessions instead
+    of leaving a bare shell.
+  event: pi-1-7-0-release
+  sources:
+  - label: primary
+    url: https://github.com/earendil-works/pi/releases/tag/v1.7.0
 - title: >-
     Brush 0.5 passes 96% of the bash-completion test suite and ships prebuilt Windows binaries
   section: Developer tools
@@ -177,6 +233,33 @@ stories:
   - label: primary
     url: https://maskray.me/blog/llvm-direct-o0-code-generator
 - title: >-
+    cetra3 shows what Rust's stabilized allocator API enables: bump arenas, memory accounting
+    and O_DIRECT buffers
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    With the Rust allocator API stable since 1.100, cetra3 shows bump arenas, accounting allocators
+    and block-aligned buffers for O_DIRECT reads.
+  summary: >-
+    The post walks through Allocator implementations for a 32 MiB bump arena that frees a
+    million-node linked structure in one deallocation, an accounting wrapper that counts live
+    bytes, and a stack-first allocator that spills to the heap. It also shows a 4096-byte
+    block-aligned allocator for O_DIRECT file reads and the author's thresher crate, which
+    Logfire uses to trigger heap profiles when allocation crosses a threshold.
+  why: >-
+    Collections such as Vec can now take a per-use allocator on stable Rust, so arena and
+    accounting strategies no longer need nightly or bespoke container types.
+  background: >-
+    Rust's Allocator trait lets a collection be generic over where its memory comes from,
+    as in Vec<T, A>, separate from the single process-wide GlobalAlloc. Before stabilization,
+    crates such as bumpalo, smallvec and aligned-vec each shipped their own container types
+    to get these behaviors. O_DIRECT bypasses the Linux page cache but requires buffers aligned
+    to the device's logical block size.
+  event: cetra3-rust-allocators-stabilised-post
+  sources:
+  - label: primary
+    url: https://cetra3.github.io/blog/state-of-allocators-2026-finally-stabilised/
+- title: >-
     systemd 263-rc1 adds optional Rust programs and makes /run read-only under ProtectSystem=strict
   section: Linux and kernel
   category: Linux/Kernel
@@ -258,6 +341,33 @@ stories:
   sources:
   - label: primary
     url: https://postgr.es/p/9D_
+- title: >-
+    pg_orca supports PostgreSQL 18 and 19 from one tree, and PG 19's regression suite exposed
+    four optimizer bugs
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    Porting the ORCA optimizer extension to PostgreSQL 19 took 13 version guards, and the
+    PG 19 regression suite found four real planner bugs.
+  summary: >-
+    Jianghua Yang reports that all PostgreSQL 19 API changes fit in 13 PG_VERSION_NUM guards
+    across six translation files, with none inside ORCA's Cascades engine. Running PG 19's
+    223 regression tests found a LATERAL predicate pushdown gap that took a join from about
+    two minutes to about 15 ms once fixed, wrong results from hashed aggregates because Agg.aggParams
+    was never set, and dropped multi-key DISTINCT sort keys. The port also plumbs PG 19's
+    IGNORE NULLS window option through ORCA and fixes a Result node assertion from PG 19's
+    new result_type field.
+  why: >-
+    Extension authors targeting PostgreSQL 19 get a concrete list of changed planner and executor
+    APIs, including table_beginscan flag splits and the Result.result_type assertion.
+  background: >-
+    ORCA is the Cascades-style cost-based optimizer from Greenplum, now in Apache Cloudberry.
+    pg_orca loads it into stock PostgreSQL through planner_hook and translates query trees
+    to and from ORCA's DXL format, falling back to the standard planner on unsupported features.
+  event: pg-orca-postgresql-19-port
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9Ez
 - title: >-
     Cloudflare's Michelle Chen: decision and extraction models in front of GLM 5.3 cut a CI
     triage agent's tokens 94%
