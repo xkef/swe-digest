@@ -1,5 +1,5 @@
 date: '2026-11-28'
-updated: 2026-11-28T09:03Z
+updated: 2026-11-28T14:26Z
 stories:
 - title: >-
     InfoHawk finds a WebRTC card skimmer on five stores' mobile checkouts, planted via a pixel,
@@ -37,6 +37,39 @@ stories:
     url: https://www.infohawk.com/news/2026-11-27-black-friday-webrtc-skimmer
   - label: discussion
     url: https://news.ycombinator.com/item?id=50668145
+- title: >-
+    Malspark finds five malicious GGUF models on Hugging Face, downloaded 2,428 times, hiding
+    a RAT and hijacking agents
+  section: Security
+  category: Security
+  blurb: >-
+    A scan of 3.27 million Hugging Face repos found five GGUF models hiding a Windows trojan
+    after the weights or hijacking agents via templates.
+  summary: >-
+    Malspark scanned all 3,273,389 public Hugging Face model repositories on 2026-11-26 and
+    found five malicious GGUF models with 2,428 downloads by 2026-11-27, all still online.
+    The Mir2k account appended a Windows remote access trojan called ollie after the last
+    tensor of two uncensored models, including an Inkling-2-Mini build, then rewrote their
+    chat templates on 2026-11-26 so the model opens every reply with a PowerShell line that
+    extracts and runs it. The timdedid account's three Qwen3 models insert a hidden directive
+    telling agents with a powershell tool to download and run a script when a prompt contains
+    'What is'.
+  why: >-
+    Running community GGUF files with embedded chat templates, especially behind an agent
+    with shell access, now needs a template review or a pinned template file and a check for
+    bytes past the last tensor.
+  background: >-
+    GGUF is the single-file model format used by llama.cpp, Ollama and LM Studio. It holds
+    a header, a metadata table, a tensor table and the weights, and loaders read only the
+    byte ranges the header declares, so appended data is ignored silently. The metadata includes
+    a Jinja chat template that the runtime applies to every conversation, which lets a file
+    author inject text the user never sees.
+  event: mir2k-gguf-malware-hugging-face
+  sources:
+  - label: primary
+    url: https://malspark.com/blog/malicious-gguf-models-hugging-face/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50676752
 - title: >-
     Inkling 2 Mini reaches 101 tok/s on one GB10 in vLLM with INT8 drafting, adaptive verify
     width and tuned MoE GEMMs
@@ -161,6 +194,31 @@ stories:
   - label: primary
     url: https://www.youtube.com/watch?v=pRqxQjO5wVU
 - title: >-
+    ZoomInfo's Brian Kennedy: an LLM judge was right 65% of the time, and a decision model
+    with seven yes-no questions caught more
+  section: Talks
+  category: Video
+  blurb: >-
+    An audit of 500 production steps found ZoomInfo's LLM judge right 65% of the time, so
+    the team now asks seven yes-or-no questions instead.
+  summary: >-
+    ZoomInfo regraded 500 production agent steps and found its LLM judge right 65% of the
+    time, accepting 118 steps it should have sent back, most often when an agent claimed an
+    action such as sending an email that no tool call performed. The team replaced the open
+    question with one accept, redo or stop choice plus seven yes-no questions answered from
+    tool results by the Jev decision model, accepting at 30% or higher, rejecting at 5% or
+    lower, and sending the middle band to the LLM judge. In shadow mode over 37,000 decisions,
+    Jev caught 623 of 728 clear tool failures against the LLM judge's 294, at 10 times the
+    speed and 40 times lower cost.
+  why: >-
+    A judge that reads the agent's own summary alongside tool results can trust the summary,
+    so grading from the tool receipts with narrow questions, run first in shadow mode, is
+    a cheap check on any LLM-as-judge setup.
+  event: zoominfo-llm-judge-decision-model-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=DQwcuXgAIA0
+- title: >-
     Bernstein's list of soundness bugs in proof checkers draws Hacker News debate over trusting
     AI-written Lean proofs
   section: Hacker News
@@ -214,3 +272,30 @@ stories:
     url: https://neuralnetworksanddeeplearning.com/
   - label: discussion
     url: https://news.ycombinator.com/item?id=50670757
+- title: >-
+    Knuth stops accepting book error reports after LLM-assisted readers flood him with duplicates
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Knuth stops reading new book error reports sent after 2026-11-25, saying LLM-assisted
+    readers send mostly duplicates faster than he can read.
+  summary: >-
+    Donald Knuth says he will not look at error reports submitted after 2026-11-25 until he
+    posts updated known-error lists, because LLMs let readers send reports faster than he
+    can verify them and random sampling shows most recent reports repeat earlier ones. The
+    Hacker News thread reached 236 points and 122 comments.
+  why: >-
+    It is another maintainer pausing intake under AI-generated report volume, after this week's
+    removal of the vme_user staging driver from Linux.
+  comments: >-
+    Commenters point out that Knuth is pausing intake, not closing it, and that duplicates
+    follow when everyone finds errors with the same tools. One commenter calls the volume
+    a DDoS on maintainers and describes a friend whose commercial open source project gets
+    daily low-quality reports with inflated CVSS scores. Others propose LLM deduplication
+    against the known-error list, while some answer that this adds another cost for maintainers.
+  event: knuth-error-report-moratorium
+  sources:
+  - label: primary
+    url: https://www-cs-faculty.stanford.edu/~knuth/moratorium.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50674452
