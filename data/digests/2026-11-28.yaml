@@ -1,0 +1,140 @@
+date: '2026-11-28'
+updated: 2026-11-28T00:42Z
+stories:
+- title: >-
+    InfoHawk finds a WebRTC card skimmer on five stores' mobile checkouts, planted via a pixel,
+    consent banner and CDN
+  section: Security
+  category: Security
+  blurb: >-
+    A skimmer on Samsonite, Revolve and three other stores pulled code and sent card data
+    over WebRTC via Cloudflare's TURN relay.
+  summary: >-
+    InfoHawk found a card skimmer on Lascana, Samsonite, American Tourister, Revolve and FWRD,
+    delivered through an altered Quorum marketing pixel, edited Seers consent-banner settings
+    and a modified file on Revolve's CDN, all removed on 2026-11-24 or 2026-11-25. The loader
+    ran only on small or touch screens, made two signaling requests to a northbridgeads host,
+    then fetched the skimmer and sent card data over a WebRTC data channel relayed through
+    turn.cloudflare.com. InfoHawk captured live test card details leaving Lascana's checkout.
+  why: >-
+    A connect-src rule on payment pages blocks the two signaling requests, but the WebRTC
+    data channel itself sits outside connect-src, and desktop-only checkout scans miss this
+    skimmer.
+  background: >-
+    Content Security Policy's connect-src directive limits which hosts scripts can reach with
+    fetch, XHR and WebSocket. WebRTC data channels negotiate peer connections through ICE
+    and can route through TURN relays, a path that CSP has not historically covered. Skimmers
+    that ride third-party tags inherit the page's full script privileges, which is why payment
+    fields are usually isolated in a processor's iframe.
+  comments: >-
+    The Hacker News thread reached 405 points and 209 comments, mostly arguing over ad blocking
+    and over making sites liable for third-party scripts they load, with one commenter noting
+    that bank-app transaction approval, as in the Netherlands, makes stolen card numbers less
+    useful.
+  event: webrtc-checkout-skimmer-2026-11
+  sources:
+  - label: primary
+    url: https://www.infohawk.com/news/2026-11-27-black-friday-webrtc-skimmer
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50668145
+- title: >-
+    Inkling 2 Mini reaches 101 tok/s on one GB10 in vLLM with INT8 drafting, adaptive verify
+    width and tuned MoE GEMMs
+  section: AI
+  category: AI
+  blurb: >-
+    One GB10 box runs Inkling 2 Mini at 101 tok/s in vLLM after INT8 draft copies, adaptive
+    verify width and retuned prefill MoE kernels.
+  summary: >-
+    Anand D N tuned vLLM serving of Inkling 2 Mini on an MSI GB10 box, using 36% of memory
+    beside an idle Qwen3.8-27B, from 90.3 to 101 tok/s for one request and 195.7 tok/s across
+    four. Changes included rounding a Triton compile constant to cut first-token stalls 67
+    to 90%, INT8 copies of the DFlash2 draft weights, probabilistic drafting that lifted sampled
+    requests 14 to 20%, and marking low-confidence verify rows as MoE padding so they skip
+    expert reads without changing CUDA graph shapes. Retuned expert GEMM tiles cut a 32K-token
+    prefill's time to first token from 12.2 to 9.7 seconds with bit-identical output.
+  why: >-
+    It shows where self-hosted MoE inference time goes on unified-memory hardware and which
+    vLLM speculative decoding settings pay off for sampled rather than greedy requests.
+  background: >-
+    Speculative decoding uses a small draft model to propose several tokens that the large
+    model verifies in one forward pass, keeping the accepted prefix. In a mixture-of-experts
+    model each token reads only a few expert blocks, so expert matrix multiplies dominate
+    step time. CUDA graphs replay recorded kernel launches with fixed shapes, which constrains
+    how far a server can vary the work per step.
+  event: runtimenotes-inkling-2-mini-gb10-vllm-tuning
+  sources:
+  - label: primary
+    url: https://runtimenotes.com/blog/getting-101-tok-s-from-inkling-2-mini-in-vllm-on-one-gb10/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50670443
+- title: >-
+    JetBrains launches a Kotlin Security Newsletter after 10 security fixes across Kotlin
+    libraries in 2026
+  section: Languages and runtimes
+  category: Languages
+  blurb: >-
+    JetBrains starts a monthly digest of security fixes across Kotlin, Ktor, Exposed, kotlinx
+    and Compose after 10 fixes this year.
+  summary: >-
+    JetBrains published the first Kotlin Security Newsletter on 2026-11-27, to collect security
+    fixes in Kotlin, the kotlinx libraries, Compose Multiplatform, Ktor and Exposed with affected
+    and fixed versions. The team says it shipped 10 security fixes this year against one in
+    each of the previous two, mostly from researcher reports. It asks reporters to confirm
+    AI-assisted findings manually and notes Kotlin stdlib JVM release lines get 18 months
+    of security fixes since 2.4.0.
+  why: >-
+    Kotlin and Spring Boot teams get one feed for fixes in Ktor, Exposed, kotlinx.serialization
+    and the build tooling instead of tracking each project.
+  event: kotlin-security-newsletter-launch
+  sources:
+  - label: primary
+    url: https://blog.jetbrains.com/kotlin/2026/11/introducing-the-kotlin-security-newsletter/
+- title: >-
+    Linux removes the vme_user staging driver after LLM-generated security reports flood the
+    lists
+  section: Linux and kernel
+  category: Linux/Kernel
+  blurb: >-
+    Greg Kroah-Hartman pulls the orphaned vme_user staging driver, about 9,000 lines, because
+    LLMs kept reporting security bugs in unused code.
+  summary: >-
+    Greg Kroah-Hartman's staging pull ahead of Linux 7.4-rc5 removes the vme_user driver for
+    the 1980s VME bus, nearly 9,000 lines including docs, Kconfig and the MAINTAINERS entry.
+    He wrote that LLMs were reporting security bugs in a driver no one uses, so removal saves
+    everyone's time. It follows earlier removals of old ISA, PCMCIA, ham radio and ISDN code
+    for the same reason.
+  why: >-
+    AI-generated bug reports are now a reason maintainers delete unmaintained code, a pattern
+    other large projects with legacy corners can expect.
+  event: linux-vme-user-staging-removal
+  sources:
+  - label: primary
+    url: https://www.phoronix.com/news/Linux-Drops-VME-Bus-User
+- title: >-
+    Bernstein's list of soundness bugs in proof checkers draws Hacker News debate over trusting
+    AI-written Lean proofs
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Bernstein lists reported soundness bugs in seven proof checkers, from 3 in HOL Light to
+    111 in Rocq, as Hacker News weighs AI proofs.
+  summary: >-
+    D. J. Bernstein's page counts reported soundness bugs in HOL Light (3), Mizar (7), Metamath
+    (9), Isabelle (20), Lean (23), HOL4 (24) and Rocq (111), many dated 2026, and argues for
+    small verified checkers such as Candle. The Hacker News thread drew 174 points and 75
+    comments.
+  why: >-
+    Engineers relying on machine-checked proofs, including AI-generated ones, should check
+    them with several independent kernels rather than trust one checker.
+  comments: >-
+    Commenters note that Metamath's main databases require five independent verifiers in five
+    languages, that Lean now has independent kernels such as nanoda and the verified con-leche,
+    and that a buggy Collatz proof exploiting a Lean bug was posted as a deliberate joke.
+    Others worry that models reward hack into soundness bugs where no human reads the proof.
+  event: djb-false-computer-checked-proofs
+  sources:
+  - label: primary
+    url: https://cr.yp.to/proofs/falseccp.html
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50667989
