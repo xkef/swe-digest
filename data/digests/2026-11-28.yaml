@@ -1,5 +1,5 @@
 date: '2026-11-28'
-updated: 2026-11-28T00:42Z
+updated: 2026-11-28T09:03Z
 stories:
 - title: >-
     InfoHawk finds a WebRTC card skimmer on five stores' mobile checkouts, planted via a pixel,
@@ -112,6 +112,55 @@ stories:
   - label: primary
     url: https://www.phoronix.com/news/Linux-Drops-VME-Bus-User
 - title: >-
+    Christophe Pettus: send_abort_for_crash without send_abort_for_kill leaves truncated PostgreSQL
+    core files
+  section: Engineering posts
+  category: Engineering post
+  blurb: >-
+    PostgreSQL 16's two developer GUCs swap SIGQUIT and SIGKILL for SIGABRT, so every child
+    dumps core, and one alone yields truncated cores.
+  summary: >-
+    Pettus tested both parameters on PostgreSQL 18.6. With send_abort_for_crash on, one segfault
+    produced eleven core files of 1.8 GB at 128 MB shared_buffers, and at 1 GB shared_buffers
+    the postmaster's SIGKILL after five seconds cut ten of eleven cores short. send_abort_for_kill
+    on its own captures the stuck process the default destroys, but a stopped or gdb-attached
+    backend then keeps the cluster in recovery indefinitely, since SIGKILL is never sent.
+  why: >-
+    Anyone chasing an unreproducible Postgres hang should enable both settings together, check
+    ulimit -c and core_pattern first, and use gcore for a single stuck backend on a live system.
+  background: >-
+    When any PostgreSQL child process crashes, the postmaster tells every other child to quit,
+    reinitializes shared memory, and replays WAL, which normally leaves only the crashed process's
+    core file. Linux's default coredump_filter includes anonymous shared mappings, so each
+    core contains all of shared_buffers unless huge pages are used. Tom Lane added both parameters
+    in November 2022 while chasing an intermittent buildfarm hang.
+  event: pettus-postgres-send-abort-gucs
+  sources:
+  - label: primary
+    url: https://postgr.es/p/9EA
+- title: >-
+    CppCon 2026: Conan's co-founder gives multi-repo C++ projects promoted package repositories
+    and superbuild workspaces
+  section: Talks
+  category: Video
+  blurb: >-
+    Conan's Diego shows package promotion between repositories and a computed build order
+    for multi-repo C++ CI, plus CMake superbuild workspaces.
+  summary: >-
+    The talk stages new package versions in a separate packages repository and promotes them,
+    with rebuilt consumer binaries, to the developer repository only after a merge, and computes
+    what to rebuild with conan graph build order from the product graphs rather than encoding
+    the dependency chain in CI jobs. Conan workspaces pull several packages into editable
+    mode by their recorded Git commit and use CMake FetchContent with OVERRIDE_FIND_PACKAGE
+    to build them as one incremental superbuild.
+  why: >-
+    Teams running many C++ repositories can get monorepo-style CI and local development without
+    moving code, and the promotion pattern applies to any binary package registry.
+  event: cppcon-2026-conan-component-monorepo-talk
+  sources:
+  - label: primary
+    url: https://www.youtube.com/watch?v=pRqxQjO5wVU
+- title: >-
     Bernstein's list of soundness bugs in proof checkers draws Hacker News debate over trusting
     AI-written Lean proofs
   section: Hacker News
@@ -138,3 +187,30 @@ stories:
     url: https://cr.yp.to/proofs/falseccp.html
   - label: discussion
     url: https://news.ycombinator.com/item?id=50667989
+- title: >-
+    Michael Nielsen takes down his neural networks book in protest at frontier labs, drawing
+    519 points on Hacker News
+  section: Hacker News
+  category: Pulse
+  blurb: >-
+    Michael Nielsen removes his 2015 neural networks book, citing frontier lab recklessness,
+    and the thread splits on whether it changes anything.
+  summary: >-
+    Nielsen replaced the book written between 2011 and 2015 with a November 2026 statement
+    saying he does not want to help train people for frontier AI work, arguing the core risk
+    is destructive technology latent in nature rather than misalignment of single systems.
+    The Hacker News thread reached 519 points and 320 comments.
+  why: >-
+    A widely used free introduction to neural networks is gone from its canonical site, and
+    the debate shows how sharply practitioners now split on AI risk.
+  comments: >-
+    Most commenters call the removal symbolic, noting archive copies, a TeX source on GitHub
+    and a clone site appeared within hours. Others defend it as a statement and debate whether
+    neural network knowledge is attack or defense dominant, with nuclear and fire analogies.
+    Some point out the book predates the transformer.
+  event: nielsen-neural-networks-book-takedown
+  sources:
+  - label: primary
+    url: https://neuralnetworksanddeeplearning.com/
+  - label: discussion
+    url: https://news.ycombinator.com/item?id=50670757
